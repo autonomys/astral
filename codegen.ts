@@ -1,10 +1,12 @@
 
+import * as dotenv from 'dotenv';
 import type { CodegenConfig } from '@graphql-codegen/cli';
+
+dotenv.config()
 
 const config: CodegenConfig = {
   overwrite: true,
-  // TODO: don't forget to replace with https endpoint
-  schema: "http://164.92.238.249:4444/graphql",
+  schema: process.env.REACT_APP_GRAPHQL_API_URL,
   documents: "./src/components/**/*.{ts,tsx}",
   generates: {
     './src/gql/': {
