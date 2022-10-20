@@ -11,12 +11,8 @@ import {
     toHex,
 } from '@subsquid/substrate-processor'
 import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
-import {
-    // saveCurrentChainState, 
-    saveRegularChainState
-} from './chainState'
 import config from './config'
-import { Account, ChainState } from './model'
+import { Account } from './model'
 import {
     BalancesBalanceSetEvent,
     BalancesDepositEvent,
@@ -34,41 +30,23 @@ import {
 } from './types/storage'
 import { Event, Block, ChainContext } from './types/support'
 
+const addEventDataConfig = {
+    data: { event: { args: true } },
+} as const
+
 const processor = new SubstrateBatchProcessor()
     .setBatchSize(config.batchSize || 500)
     .setDataSource(config.dataSource)
     .setBlockRange(config.blockRange || { from: 0 })
-    .addEvent('Balances.Endowed', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.Transfer', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.BalanceSet', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.Reserved', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.Unreserved', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.ReserveRepatriated', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.Deposit', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.Withdraw', {
-        data: { event: { args: true } },
-    } as const)
-    .addEvent('Balances.Slashed', {
-        data: { event: { args: true } },
-    } as const)
-    .addCall('*', {
-        data: { call: { origin: true } },
-    } as const)
-    .includeAllBlocks()
+    .addEvent('Balances.Endowed', addEventDataConfig)
+    .addEvent('Balances.Transfer', addEventDataConfig)
+    .addEvent('Balances.BalanceSet', addEventDataConfig)
+    .addEvent('Balances.Reserved', addEventDataConfig)
+    .addEvent('Balances.Unreserved', addEventDataConfig)
+    .addEvent('Balances.ReserveRepatriated', addEventDataConfig)
+    .addEvent('Balances.Deposit', addEventDataConfig)
+    .addEvent('Balances.Withdraw', addEventDataConfig)
+    .addEvent('Balances.Slashed', addEventDataConfig)
 
 type Item = BatchProcessorItem<typeof processor>
 type EventItem = BatchProcessorEventItem<typeof processor>
@@ -79,15 +57,6 @@ processor.run(new TypeormDatabase(), processBalances)
 
 const SAVE_PERIOD = 12 * 60 * 60 * 1000
 let lastStateTimestamp: number | undefined
-
-async function getLastChainState(store: Store) {
-    return await store.get(ChainState, {
-        where: {},
-        order: {
-            timestamp: 'DESC',
-        },
-    })
-}
 
 async function processBalances(ctx: Context): Promise<void> {
     const accountIdsHex = new Set<string>()
@@ -102,13 +71,12 @@ async function processBalances(ctx: Context): Promise<void> {
         }
 
         if (lastStateTimestamp == null) {
-            lastStateTimestamp = (await getLastChainState(ctx.store))?.timestamp.getTime() || 0
+            lastStateTimestamp = 0
         }
         if (block.header.timestamp - lastStateTimestamp >= SAVE_PERIOD) {
             const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
 
             await saveAccounts(ctx, block.header, accountIdsU8)
-            await saveRegularChainState(ctx, block.header)
 
             lastStateTimestamp = block.header.timestamp
             accountIdsHex.clear()
@@ -119,7 +87,6 @@ async function processBalances(ctx: Context): Promise<void> {
     const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
 
     await saveAccounts(ctx, block.header, accountIdsU8)
-    // await saveCurrentChainState(ctx, block.header)
 }
 
 async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: Uint8Array[]) {
