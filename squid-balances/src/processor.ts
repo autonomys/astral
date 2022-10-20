@@ -1,127 +1,376 @@
-import {lookupArchive} from "@subsquid/archive-registry"
-import * as ss58 from "@subsquid/ss58"
-import {BatchContext, BatchProcessorItem, SubstrateBatchProcessor} from "@subsquid/substrate-processor"
-import {Store, TypeormDatabase} from "@subsquid/typeorm-store"
-import {In} from "typeorm"
-import {Account, Transfer} from "./model"
-import {BalancesTransferEvent} from "./types/events"
-
+import * as ss58 from '@subsquid/ss58'
+import {
+    BatchContext,
+    BatchProcessorCallItem,
+    BatchProcessorEventItem,
+    BatchProcessorItem,
+    decodeHex,
+    SubstrateBatchProcessor,
+    SubstrateBlock,
+    SubstrateCall,
+    toHex,
+} from '@subsquid/substrate-processor'
+import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
+import {
+    // saveCurrentChainState, 
+    saveRegularChainState
+} from './chainState'
+import config from './config'
+import { Account, ChainState } from './model'
+import {
+    BalancesBalanceSetEvent,
+    BalancesDepositEvent,
+    BalancesEndowedEvent,
+    BalancesReservedEvent,
+    BalancesReserveRepatriatedEvent,
+    BalancesSlashedEvent,
+    BalancesTransferEvent,
+    BalancesUnreservedEvent,
+    BalancesWithdrawEvent,
+} from './types/events'
+import {
+    BalancesAccountStorage,
+    SystemAccountStorage,
+} from './types/storage'
+import { Event, Block, ChainContext } from './types/support'
 
 const processor = new SubstrateBatchProcessor()
-    .setBatchSize(500)
-    .setDataSource({
-        // Lookup archive by the network name in the Subsquid registry
-        archive: lookupArchive("kusama", {release: "FireSquid"})
-
-        // Use archive created by archive/docker-compose.yml
-        // archive: 'http://localhost:8888/graphql'
-    })
-    .addEvent('Balances.Transfer', {
-        data: {
-            event: {
-                args: true,
-                extrinsic: {
-                    hash: true,
-                    fee: true
-                }
-            }
-        }
+    .setBatchSize(config.batchSize || 500)
+    .setDataSource(config.dataSource)
+    .setBlockRange(config.blockRange || { from: 0 })
+    .addEvent('Balances.Endowed', {
+        data: { event: { args: true } },
     } as const)
-
+    .addEvent('Balances.Transfer', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.BalanceSet', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.Reserved', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.Unreserved', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.ReserveRepatriated', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.Deposit', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.Withdraw', {
+        data: { event: { args: true } },
+    } as const)
+    .addEvent('Balances.Slashed', {
+        data: { event: { args: true } },
+    } as const)
+    .addCall('*', {
+        data: { call: { origin: true } },
+    } as const)
+    .includeAllBlocks()
 
 type Item = BatchProcessorItem<typeof processor>
-type Ctx = BatchContext<Store, Item>
+type EventItem = BatchProcessorEventItem<typeof processor>
+type CallItem = BatchProcessorCallItem<typeof processor>
+type Context = BatchContext<Store, Item>
 
+processor.run(new TypeormDatabase(), processBalances)
 
-processor.run(new TypeormDatabase(), async ctx => {
-    let transfersData = getTransfers(ctx)
+const SAVE_PERIOD = 12 * 60 * 60 * 1000
+let lastStateTimestamp: number | undefined
 
-    let accountIds = new Set<string>()
-    for (let t of transfersData) {
-        accountIds.add(t.from)
-        accountIds.add(t.to)
-    }
-
-    let accounts = await ctx.store.findBy(Account, {id: In([...accountIds])}).then(accounts => {
-        return new Map(accounts.map(a => [a.id, a]))
+async function getLastChainState(store: Store) {
+    return await store.get(ChainState, {
+        where: {},
+        order: {
+            timestamp: 'DESC',
+        },
     })
-
-    let transfers: Transfer[] = []
-
-    for (let t of transfersData) {
-        let {id, blockNumber, timestamp, extrinsicHash, amount, fee} = t
-
-        let from = getAccount(accounts, t.from)
-        let to = getAccount(accounts, t.to)
-
-        transfers.push(new Transfer({
-            id,
-            blockNumber,
-            timestamp,
-            extrinsicHash,
-            from,
-            to,
-            amount,
-            fee
-        }))
-    }
-
-    await ctx.store.save(Array.from(accounts.values()))
-    await ctx.store.insert(transfers)
-})
-
-
-interface TransferEvent {
-    id: string
-    blockNumber: number
-    timestamp: Date
-    extrinsicHash?: string
-    from: string
-    to: string
-    amount: bigint
-    fee?: bigint
 }
 
+async function processBalances(ctx: Context): Promise<void> {
+    const accountIdsHex = new Set<string>()
 
-function getTransfers(ctx: Ctx): TransferEvent[] {
-    let transfers: TransferEvent[] = []
-    for (let block of ctx.blocks) {
-        for (let item of block.items) {
-            if (item.name == "Balances.Transfer") {
-                let e = new BalancesTransferEvent(ctx, item.event)
-                let rec: {from: Uint8Array, to: Uint8Array, amount: bigint}
-                if (e.isV1020) {
-                    let [from, to, amount,] = e.asV1020
-                    rec = {from, to, amount}
-                } else if (e.isV1050) {
-                    let [from, to, amount] = e.asV1050
-                    rec = {from, to, amount}
-                } else {
-                    rec = e.asV9130
-                }
-                transfers.push({
-                    id: item.event.id,
-                    blockNumber: block.header.height,
-                    timestamp: new Date(block.header.timestamp),
-                    extrinsicHash: item.event.extrinsic?.hash,
-                    from: ss58.codec('kusama').encode(rec.from),
-                    to: ss58.codec('kusama').encode(rec.to),
-                    amount: rec.amount,
-                    fee: item.event.extrinsic?.fee || 0n
-                })
+    for (const block of ctx.blocks) {
+        for (const item of block.items) {
+            if (item.kind === 'call') {
+                processBalancesCallItem(ctx, item, accountIdsHex)
+            } else if (item.kind === 'event') {
+                processBalancesEventItem(ctx, item, accountIdsHex)
             }
         }
+
+        if (lastStateTimestamp == null) {
+            lastStateTimestamp = (await getLastChainState(ctx.store))?.timestamp.getTime() || 0
+        }
+        if (block.header.timestamp - lastStateTimestamp >= SAVE_PERIOD) {
+            const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
+
+            await saveAccounts(ctx, block.header, accountIdsU8)
+            await saveRegularChainState(ctx, block.header)
+
+            lastStateTimestamp = block.header.timestamp
+            accountIdsHex.clear()
+        }
     }
-    return transfers
+
+    const block = ctx.blocks[ctx.blocks.length - 1]
+    const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id))
+
+    await saveAccounts(ctx, block.header, accountIdsU8)
+    // await saveCurrentChainState(ctx, block.header)
 }
 
-
-function getAccount(m: Map<string, Account>, id: string): Account {
-    let acc = m.get(id)
-    if (acc == null) {
-        acc = new Account()
-        acc.id = id
-        m.set(id, acc)
+async function saveAccounts(ctx: Context, block: SubstrateBlock, accountIds: Uint8Array[]) {
+    const balances = await getBalances(ctx, block, accountIds)
+    if (!balances) {
+        ctx.log.warn('No balances')
+        return
     }
-    return acc
+
+    const accounts = new Map<string, Account>()
+    const deletions = new Map<string, Account>()
+
+    for (let i = 0; i < accountIds.length; i++) {
+        const id = encodeId(accountIds[i])
+        const balance = balances[i]
+
+        if (!balance) continue
+        const total = balance.free + balance.reserved
+        if (total > 0n) {
+            accounts.set(
+                id,
+                new Account({
+                    id,
+                    free: balance.free,
+                    reserved: balance.reserved,
+                    total,
+                    updatedAt: block.height,
+                })
+            )
+        } else {
+            deletions.set(id, new Account({ id }))
+        }
+    }
+
+    await ctx.store.save([...accounts.values()])
+    await ctx.store.remove([...deletions.values()])
+
+    ctx.log.child('accounts').info(`updated: ${accounts.size}, deleted: ${deletions.size}`)
+}
+
+function processBalancesCallItem(ctx: Context, item: CallItem, accountIdsHex: Set<string>) {
+    const call = item.call as SubstrateCall
+    if (call.parent != null) return
+
+    const id = getOriginAccountId(call.origin)
+    if (id == null) return
+
+    accountIdsHex.add(id)
+}
+
+function processBalancesEventItem(ctx: Context, item: EventItem, accountIdsHex: Set<string>) {
+    switch (item.name) {
+        case 'Balances.BalanceSet': {
+            const account = getBalanceSetAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Endowed': {
+            const account = getEndowedAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Deposit': {
+            const account = getDepositAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Reserved': {
+            const account = getReservedAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Unreserved': {
+            const account = getUnreservedAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Withdraw': {
+            const account = getWithdrawAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Slashed': {
+            const account = getSlashedAccount(ctx, item.event)
+            accountIdsHex.add(account)
+            break
+        }
+        case 'Balances.Transfer': {
+            const accounts = getTransferAccounts(ctx, item.event)
+            accountIdsHex.add(accounts[0])
+            accountIdsHex.add(accounts[1])
+            break
+        }
+        case 'Balances.ReserveRepatriated': {
+            const accounts = getReserveRepatriatedAccounts(ctx, item.event)
+            accountIdsHex.add(accounts[0])
+            accountIdsHex.add(accounts[1])
+            break
+        }
+    }
+}
+
+function getBalanceSetAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesBalanceSetEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.who)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getTransferAccounts(ctx: ChainContext, event: Event) {
+    const data = new BalancesTransferEvent(ctx, event)
+
+    if (data.isV3) {
+        return [toHex(data.asV3.from), toHex(data.asV3.to)]
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getEndowedAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesEndowedEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.account)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getDepositAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesDepositEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.who)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getReservedAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesReservedEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.who)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getUnreservedAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesUnreservedEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.who)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getWithdrawAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesWithdrawEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.who)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getSlashedAccount(ctx: ChainContext, event: Event) {
+    const data = new BalancesSlashedEvent(ctx, event)
+
+    if (data.isV3) {
+        return toHex(data.asV3.who)
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+function getReserveRepatriatedAccounts(ctx: ChainContext, event: Event) {
+    const data = new BalancesReserveRepatriatedEvent(ctx, event)
+
+    if (data.isV3) {
+        return [toHex(data.asV3.from), toHex(data.asV3.to)]
+    } else {
+        throw new UnknownVersionError(data.constructor.name)
+    }
+}
+
+interface Balance {
+    free: bigint
+    reserved: bigint
+}
+
+async function getBalances(
+    ctx: ChainContext,
+    block: Block,
+    accounts: Uint8Array[]
+): Promise<(Balance | undefined)[] | undefined> {
+    return (
+        (await getSystemAccountBalances(ctx, block, accounts)) ||
+        (await getBalancesAccountBalances(ctx, block, accounts))
+    )
+}
+
+async function getBalancesAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
+    const storage = new BalancesAccountStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    const data = await ctx._chain.queryStorage(
+        block.hash,
+        'Balances',
+        'Account',
+        accounts.map((a) => [a])
+    )
+
+    return data.map((d) => ({ free: d.free, reserved: d.reserved }))
+}
+
+async function getSystemAccountBalances(ctx: ChainContext, block: Block, accounts: Uint8Array[]) {
+    const storage = new SystemAccountStorage(ctx, block)
+    if (!storage.isExists) return undefined
+
+    const data = await ctx._chain.queryStorage(
+        block.hash,
+        'System',
+        'Account',
+        accounts.map((a) => [a])
+    )
+
+    return data.map((d) => ({ free: d.data.free, reserved: d.data.reserved }))
+}
+
+export class UnknownVersionError extends Error {
+    constructor(name: string) {
+        super(`There is no relevant version for ${name}`)
+    }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getOriginAccountId(origin: any) {
+    if (origin && origin.__kind === 'system' && origin.value.__kind === 'Signed') {
+        return origin.value.value
+    } else {
+        return undefined
+    }
+}
+
+export function encodeId(id: Uint8Array) {
+    return ss58.codec(config.prefix).encode(id)
 }

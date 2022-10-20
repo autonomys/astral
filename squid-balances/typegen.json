@@ -1,11 +1,25 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://kusama.archive.subsquid.io/graphql",
+  "specVersions": "http://164.92.238.249:4444/graphql",
   "events": [
-    "Balances.Transfer"
+    "Balances.Transfer",
+    "Balances.Endowed",
+    "Balances.DustLost",
+    "Balances.BalanceSet",
+    "Balances.Reserved",
+    "Balances.Unreserved",
+    "Balances.ReserveRepatriated",
+    "Balances.Deposit",
+    "Balances.Withdraw",
+    "Balances.Slashed"
   ],
   "calls": [ 
   ],
   "storage": [
+    "System.Account",
+    "Balances.Account",
+    "Balances.TotalIssuance",
+    "Balances.Locks",
+    "Balances.Reserves"
   ]
 }
