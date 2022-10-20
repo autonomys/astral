@@ -21,10 +21,10 @@ export interface ProcessorConfig {
 
 const config: ProcessorConfig = {
     chainName: 'gemini-2a',
-    prefix: 'gemini-2a',
+    prefix: 2254,
     dataSource: {
         // TODO: replace with env vars
-        archive: 'http://164.92.238.249:4444/graphql',
+        archive: 'http://164.92.238.249:8888/graphql',
         chain: 'wss://eu-0.gemini-2a.subspace.network/ws',
     },
     typesBundle: 'gemini-2a',
