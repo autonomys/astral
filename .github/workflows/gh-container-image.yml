@@ -6,7 +6,8 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/squid-blockexplorer:latest
+  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-processor:latest
+  API_SERVER_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-api-server:latest
 
 jobs:
   push:
@@ -18,12 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
-        working-directory: backend
+      - name: Build processor image
+        run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
+        working-directory: squid-blockexplorer
+
+      - name: Build API server image
+        run: docker build . --target query-node -t graphql-server --tag $API_SERVER_NAME
+        working-directory: squid-blockexplorer
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Push image
-        run: docker push $IMAGE_NAME
+      - name: Push processor image
+        run: docker push $PROCESSOR_NAME
+
+       - name: Push API server image
+        run: docker push $API_SERVER_NAME
