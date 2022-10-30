@@ -33,5 +33,5 @@ jobs:
       - name: Push processor image
         run: docker push $PROCESSOR_NAME
 
-       - name: Push API server image
+      - name: Push API server image
         run: docker push $API_SERVER_NAME
