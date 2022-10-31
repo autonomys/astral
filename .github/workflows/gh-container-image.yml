@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
       - name: Build processor image
         run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
         working-directory: squid-blockexplorer
@@ -26,9 +29,6 @@ jobs:
       - name: Build API server image
         run: docker build . --target query-node -t graphql-server --tag $API_SERVER_NAME
         working-directory: squid-blockexplorer
-
-      - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push processor image
         run: docker push $PROCESSOR_NAME
