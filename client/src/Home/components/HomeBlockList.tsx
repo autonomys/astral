@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 // common
 import Table, { Column } from "common/components/Table";
 import { shortString } from "common/helpers";
+import { INTERNAL_ROUTES } from "common/routes";
 
 //gql
 import { Block } from "gql/graphql";
@@ -54,7 +55,7 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
           Latest Blocks
         </div>
         <Link
-          to="block"
+          to={INTERNAL_ROUTES.blocks}
           className="px-2 py-2 rounded-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
         >
           View all
@@ -63,7 +64,7 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
       <Table
         columns={columns}
         emptyMessage="There are no blocks to show"
-        id="latest-blocks"
+        id="home-latest-blocks"
       />
     </div>
   );

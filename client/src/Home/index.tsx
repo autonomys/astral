@@ -45,6 +45,7 @@ const Home: FC = () => {
     );
   }
 
+  // TODO: Add error component
   if (blocksError || !blocksData || extrinsicsError || !extrinsicsData) {
     return <div>ERROR</div>;
   }

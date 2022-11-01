@@ -35,7 +35,7 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
     },
     {
       title: "Status",
-      cells: blocks.map((ghy) => <div></div>),
+      cells: blocks.map(() => <div></div>),
     },
     {
       title: "Extrinsics",

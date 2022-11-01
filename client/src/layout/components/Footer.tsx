@@ -1,7 +1,9 @@
-import React, { FC } from "react";
-
+import { FC } from "react";
+import dayjs from "dayjs";
 import { Link } from "react-router-dom";
-import { EXTERNAL_ROUTES } from "../common/routes";
+
+// common
+import { EXTERNAL_ROUTES } from "common/routes";
 
 const Footer: FC = () => {
   return (
@@ -56,7 +58,7 @@ const Footer: FC = () => {
       <div className="bg-gray-100">
         <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
           <p className="text-gray-500 text-sm text-center sm:text-left">
-            © 2022 Subspace
+            © {dayjs().year()} Subspace
           </p>
         </div>
       </div>

@@ -40,7 +40,7 @@ const ExtrinsicList: FC<Props> = ({
     },
     {
       title: "Status",
-      cells: extrinsics.map(({ success }) => <div></div>),
+      cells: extrinsics.map(() => <div></div>),
     },
     {
       title: "Action",

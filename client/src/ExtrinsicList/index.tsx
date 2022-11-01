@@ -16,21 +16,10 @@ const BlockListContainer: FC = () => {
   });
 
   if (loading) {
-    return (
-      <div className="w-full">
-        <TableLoadingSkeleton />
-        <div className="flex py-8 justify-end">
-          <div className="animate-pulse">
-            <div className="relative z-0 inline-flex shadow-sm">
-              <div className="h-10 bg-gray-100 w-12 rounded-l-md"></div>
-              <div className="h-10 bg-gray-100 rounded-r-md w-12 "></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    return <TableLoadingSkeleton withPagination={true} />;
   }
 
+  // TODO: Add error component
   if (error || !data) {
     return <div>ERROR</div>;
   }

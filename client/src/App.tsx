@@ -5,29 +5,24 @@ import BlockListContainer from "BlockList";
 // extrinsicList
 import ExtrinsicListContainer from "ExtrinsicList";
 // layout
-import {
-  MainLayout,
-  MainLayoutContainer,
-  MainLayoutFooter,
-  MainLayoutHeader,
-} from "layout";
+import { Layout, Container, Footer, Header } from "layout/components";
 // home
 import Home from "Home";
 
 function App() {
   return (
     <BrowserRouter>
-      <MainLayout>
-        <MainLayoutHeader />
-        <MainLayoutContainer>
+      <Layout>
+        <Header />
+        <Container>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="block" element={<BlockListContainer />} />
-            <Route path="extrinsic" element={<ExtrinsicListContainer />} />
+            <Route path="blocks" element={<BlockListContainer />} />
+            <Route path="extrinsics" element={<ExtrinsicListContainer />} />
           </Routes>
-        </MainLayoutContainer>
-        <MainLayoutFooter />
-      </MainLayout>
+        </Container>
+        <Footer />
+      </Layout>
     </BrowserRouter>
   );
 }

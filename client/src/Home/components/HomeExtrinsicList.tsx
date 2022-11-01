@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 // common
 import Table, { Column } from "common/components/Table";
 import { shortString } from "common/helpers";
+import { INTERNAL_ROUTES } from "common/routes";
 
 //gql
 import { Extrinsic } from "gql/graphql";
@@ -58,7 +59,7 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
           Latest Extrinsics
         </div>
         <Link
-          to="extrinsic"
+          to={INTERNAL_ROUTES.extrinsics}
           className="px-2 py-2 rounded-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
         >
           View all
@@ -67,7 +68,7 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
       <Table
         columns={columns}
         emptyMessage="There are no extrinsics to show"
-        id="latest-extrinsics"
+        id="home-latest-extrinsics"
       />
     </div>
   );
