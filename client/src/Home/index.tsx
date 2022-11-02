@@ -14,6 +14,7 @@ import HomeChainInfo from "Home/components/HomeChainInfo";
 
 // common
 import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
+import ErrorFallback from "common/components/ErrorFallback";
 
 const Home: FC = () => {
   const PAGE_SIZE = 10;
@@ -45,9 +46,8 @@ const Home: FC = () => {
     );
   }
 
-  // TODO: Add error component
   if (blocksError || !blocksData || extrinsicsError || !extrinsicsData) {
-    return <div>ERROR</div>;
+    return <ErrorFallback error={blocksError || extrinsicsError} />;
   }
 
   return (

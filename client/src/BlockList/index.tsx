@@ -7,6 +7,7 @@ import { QUERY_BLOCK_LIST } from "BlockList/query";
 
 // common
 import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
+import ErrorFallback from "common/components/ErrorFallback";
 
 const BlockListContainer: FC = () => {
   const [page, setPage] = useState(0);
@@ -19,9 +20,8 @@ const BlockListContainer: FC = () => {
     return <TableLoadingSkeleton withPagination={true} />;
   }
 
-  // TODO: Add error component
   if (error || !data) {
-    return <div>ERROR</div>;
+    return <ErrorFallback error={error} />;
   }
 
   const nextPage = () => setPage((prev) => prev + 1);
