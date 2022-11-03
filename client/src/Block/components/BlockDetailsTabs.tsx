@@ -1,9 +1,12 @@
 import { FC } from "react";
-
-import Tabs from "common/components/Tabs";
 import { Event, Extrinsic } from "gql/graphql";
-import BlockDetailsExtrinsicList from "./BlockDetailsExtrinsicList";
-import BlockDetailsEventList from "./BlockDetailsEventList";
+
+// common
+import Tabs from "common/components/Tabs";
+
+// block
+import BlockDetailsExtrinsicList from "Block/components/BlockDetailsExtrinsicList";
+import BlockDetailsEventList from "Block/components/BlockDetailsEventList";
 
 type Props = {
   events: Event[];

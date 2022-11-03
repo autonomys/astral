@@ -1,15 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// blockList
+// block
 import BlockList from "Block/components/BlockList";
-// extrinsicList
-import ExtrinsicListContainer from "ExtrinsicList";
+import Block from "Block/components/Block";
+
+// extrinsic
+import ExtrinsicList from "Extrinsic/components/ExtrinsicList";
 // layout
 import { Layout, Container, Footer, Header } from "layout/components";
 // home
 import Home from "Home";
 import { INTERNAL_ROUTES } from "common/routes";
-import Block from "Block/components/Block";
 
 function App() {
   return (
@@ -31,7 +32,7 @@ function App() {
             </Route>
             <Route
               path={INTERNAL_ROUTES.extrinsics.list}
-              element={<ExtrinsicListContainer />}
+              element={<ExtrinsicList />}
             />
           </Routes>
         </Container>

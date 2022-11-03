@@ -5,7 +5,7 @@ import { useQuery } from "@apollo/client";
 import { QUERY_BLOCK_LIST } from "Block/query";
 
 // extrinsicList
-import { QUERY_EXTRINSIC_LIST } from "ExtrinsicList/query";
+import { QUERY_EXTRINSIC_LIST } from "Extrinsic/query";
 
 // home
 import HomeBlockList from "Home/components/HomeBlockList";

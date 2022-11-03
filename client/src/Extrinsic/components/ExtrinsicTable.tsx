@@ -19,7 +19,7 @@ interface Props {
   page: number;
 }
 
-const ExtrinsicList: FC<Props> = ({
+const ExtrinsicTable: FC<Props> = ({
   extrinsics,
   page,
   nextPage,
@@ -83,4 +83,4 @@ const ExtrinsicList: FC<Props> = ({
   );
 };
 
-export default ExtrinsicList;
+export default ExtrinsicTable;

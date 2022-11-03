@@ -2,14 +2,14 @@ import { useState, FC } from "react";
 import { useQuery } from "@apollo/client";
 
 // ExtrinsicList
-import ExtrinsicList from "ExtrinsicList/components/ExtrinsicList";
-import { QUERY_EXTRINSIC_LIST } from "ExtrinsicList/query";
+import ExtrinsicTable from "Extrinsic/components/ExtrinsicTable";
+import { QUERY_EXTRINSIC_LIST } from "Extrinsic/query";
 
 // common
 import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
 import ErrorFallback from "common/components/ErrorFallback";
 
-const BlockListContainer: FC = () => {
+const ExtrinsicList: FC = () => {
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 10;
   const { data, error, loading } = useQuery(QUERY_EXTRINSIC_LIST, {
@@ -28,7 +28,7 @@ const BlockListContainer: FC = () => {
   const previousPage = () => setPage((prev) => prev - 1);
 
   return (
-    <ExtrinsicList
+    <ExtrinsicTable
       extrinsics={data.extrinsics}
       page={page}
       nextPage={nextPage}
@@ -37,4 +37,4 @@ const BlockListContainer: FC = () => {
   );
 };
 
-export default BlockListContainer;
+export default ExtrinsicList;
