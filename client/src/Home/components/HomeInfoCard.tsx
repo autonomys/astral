@@ -4,11 +4,17 @@ interface Props {
   title: string;
   value: string;
   icon: ReactElement;
+  additionalClass?: string;
 }
 
-const HomeInfoCard: FC<Props> = ({ title, icon, value }) => {
+const HomeInfoCard: FC<Props> = ({
+  title,
+  icon,
+  value,
+  additionalClass = "",
+}) => {
   return (
-    <div className="pr-4 lg:w-1/2 md:w-full">
+    <div className={`w-full lg:w-1/2 md:w-full ${additionalClass}`}>
       <div className="flex border-2 rounded-lg border-gray-200 border-opacity-50 p-6 sm:flex-row flex-col">
         <div className="flex-grow">
           <h2 className="text-gray-900 text-md title-font font-medium mb-3">

@@ -1,15 +1,15 @@
 import { FC, useState } from "react";
 import { useQuery } from "@apollo/client";
 
-// blockList
-import BlockList from "BlockList/components/BlockList";
-import { QUERY_BLOCK_LIST } from "BlockList/query";
+// block
+import BlockTable from "Block/components/BlockTable";
+import { QUERY_BLOCK_LIST } from "Block/query";
 
 // common
 import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
 import ErrorFallback from "common/components/ErrorFallback";
 
-const BlockListContainer: FC = () => {
+const BlockList: FC = () => {
   const [page, setPage] = useState(0);
   const PAGE_SIZE = 10;
   const { data, error, loading } = useQuery(QUERY_BLOCK_LIST, {
@@ -28,7 +28,7 @@ const BlockListContainer: FC = () => {
   const previousPage = () => setPage((prev) => prev - 1);
 
   return (
-    <BlockList
+    <BlockTable
       blocks={data.blocks}
       page={page}
       nextPage={nextPage}
@@ -37,4 +37,4 @@ const BlockListContainer: FC = () => {
   );
 };
 
-export default BlockListContainer;
+export default BlockList;

@@ -2,10 +2,10 @@ import { FC } from "react";
 import { useQuery } from "@apollo/client";
 
 // blockList
-import { QUERY_BLOCK_LIST } from "BlockList/query";
+import { QUERY_BLOCK_LIST } from "Block/query";
 
 // extrinsicList
-import { QUERY_EXTRINSIC_LIST } from "ExtrinsicList/query";
+import { QUERY_EXTRINSIC_LIST } from "Extrinsic/query";
 
 // home
 import HomeBlockList from "Home/components/HomeBlockList";

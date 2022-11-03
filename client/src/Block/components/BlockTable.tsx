@@ -59,18 +59,24 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
   const columns = generateColumns(blocks);
 
   return (
-    <Table
-      columns={columns}
-      emptyMessage="There are no blocks to show"
-      footer={
-        <Pagination
-          page={page}
-          nextPage={nextPage}
-          previousPage={previousPage}
+    <div className="w-full">
+      <div className="rounded my-6">
+        <Table
+          columns={columns}
+          emptyMessage="There are no blocks to show"
+          tableProps="shadow-md"
+          tableHeaderProps="bg-gray-200"
+          footer={
+            <Pagination
+              page={page}
+              nextPage={nextPage}
+              previousPage={previousPage}
+            />
+          }
+          id="latest-blocks"
         />
-      }
-      id="latest-blocks"
-    />
+      </div>
+    </div>
   );
 };
 
