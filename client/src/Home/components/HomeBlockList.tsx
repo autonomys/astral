@@ -49,8 +49,8 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
   const columns = generateColumns(blocks);
 
   return (
-    <div className="pr-4 py-4 lg:w-1/2 md:w-full">
-      <div className="w-full inline-flex justify-between align-middle">
+    <div className="flex-col p-4 lg:w-1/2 md:w-full border border-gray-200 rounded-lg mr-2">
+      <div className="w-full inline-flex justify-between align-middle mb-6">
         <div className="text-gray-600 uppercase text-md leading-normal">
           Latest Blocks
         </div>

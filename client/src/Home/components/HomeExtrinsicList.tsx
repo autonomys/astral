@@ -53,8 +53,8 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
   const columns = generateColumns(extrinsics);
 
   return (
-    <div className="p-4 lg:w-1/2 md:w-full">
-      <div className="inline-flex justify-between align-middle w-full">
+    <div className="flex-col p-4 lg:w-1/2 md:w-full border border-gray-200 rounded-lg ml-2">
+      <div className="inline-flex justify-between align-middle w-full mb-6">
         <div className="text-gray-600 uppercase text-md leading-normal">
           Latest Extrinsics
         </div>
