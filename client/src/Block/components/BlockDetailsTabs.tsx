@@ -29,11 +29,7 @@ const BlockDetailsTabs: FC<Props> = ({ events, extrinsics }) => {
     },
   ];
 
-  return (
-    <>
-      <Tabs id="block-details-tab" color="pink" tabs={tabs} />
-    </>
-  );
+  return <Tabs id="block-details-tab" tabs={tabs} />;
 };
 
 export default BlockDetailsTabs;

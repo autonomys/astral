@@ -60,23 +60,25 @@ const HomeChainInfo: FC = () => {
 
   return (
     <div className="w-full">
-      <div className="pb-6 flex">
+      <div className="flex pb-6">
         {listOfCards.slice(0, half).map(({ title, value, icon }, index) => (
           <HomeInfoCard
             key={`${title}-${index}`}
             title={title}
             value={value}
             icon={icon}
+            additionalClass={index !== half - 1 ? "pr-4" : ""}
           />
         ))}
       </div>
-      <div className="pb-6 flex">
+      <div className="flex pb-6">
         {listOfCards.slice(half).map(({ title, value, icon }, index) => (
           <HomeInfoCard
             key={`${title}-${index}`}
             title={title}
             value={value}
             icon={icon}
+            additionalClass={index !== half - 1 ? "pr-4" : ""}
           />
         ))}
       </div>

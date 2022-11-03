@@ -9,10 +9,15 @@ type Props = {
   id: string;
   tabs: Tab[];
   initialIndex?: number;
-  color?: string;
+  bgColor?: string;
 };
 
-const Tabs: FC<Props> = ({ id, color = "purple", tabs, initialIndex = 0 }) => {
+const Tabs: FC<Props> = ({
+  id,
+  bgColor = "bg-purple-600",
+  tabs,
+  initialIndex = 0,
+}) => {
   const [openTab, setOpenTab] = useState(initialIndex);
 
   return (
@@ -32,7 +37,7 @@ const Tabs: FC<Props> = ({ id, color = "purple", tabs, initialIndex = 0 }) => {
                   className={
                     "text-xs font-bold uppercase px-5 py-3 rounded block leading-normal " +
                     (openTab === index
-                      ? `text-white bg-${color}-600`
+                      ? `text-white ${bgColor}`
                       : `text-gray-600 bg-white`)
                   }
                   onClick={(e) => {
