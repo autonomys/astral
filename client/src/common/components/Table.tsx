@@ -44,22 +44,19 @@ const Table: FC<Props> = ({
 
   return (
     <div className="w-full">
-      <div className="rounded my-6">
-        <table
-          className={`min-w-max w-full table-auto shadow-md ${tableProps}`}
-        >
+      <>
+        <table className={`min-w-max w-full table-auto  ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+              <tr
+                className={`text-gray-600 uppercase text-sm leading-normal ${tableHeaderProps}`}
+              >
                 {columns?.map(
                   (
                     { title, isNumeric = false, centerTitle = false },
                     index
                   ) => (
-                    <th
-                      key={`table-header-${id}-${index}`}
-                      className={`${tableHeaderProps}`}
-                    >
+                    <th key={`table-header-${id}-${index}`}>
                       {isNumeric ? (
                         <div className="py-3 px-6 text-right">{title}</div>
                       ) : centerTitle ? (
@@ -105,9 +102,9 @@ const Table: FC<Props> = ({
             <p className="text-gray-600 text-md font-medium">{emptyMessage}</p>
           </div>
         ) : null}
-      </div>
+      </>
       {hasRows && footer != null ? (
-        <div className="flex justify-end">{footer}</div>
+        <div className="flex justify-end mt-6">{footer}</div>
       ) : null}
     </div>
   );

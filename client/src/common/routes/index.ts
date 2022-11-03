@@ -7,6 +7,18 @@ export const EXTERNAL_ROUTES = {
 
 export const INTERNAL_ROUTES = {
   home: "/",
-  blocks: "blocks",
-  extrinsics: "extrinsics",
+  blocks: {
+    id: {
+      path: ":blockId",
+      page: (blockId: string): string => `/blocks/${blockId}`,
+    },
+    list: "blocks",
+  },
+  extrinsics: {
+    id: {
+      path: ":extrinsicId",
+      page: (extrinsicId: string): string => `/extrinsics/${extrinsicId}`,
+    },
+    list: "extrinsics",
+  },
 };

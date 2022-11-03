@@ -62,18 +62,24 @@ const ExtrinsicList: FC<Props> = ({
   const columns = generateColumns(extrinsics);
 
   return (
-    <Table
-      columns={columns}
-      emptyMessage="There are no extrinsics to show"
-      id="latest-extrinsics"
-      footer={
-        <Pagination
-          page={page}
-          nextPage={nextPage}
-          previousPage={previousPage}
+    <div className="w-full">
+      <div className="rounded my-6">
+        <Table
+          columns={columns}
+          emptyMessage="There are no extrinsics to show"
+          id="latest-extrinsics"
+          tableProps="shadow-md"
+          tableHeaderProps="bg-gray-200"
+          footer={
+            <Pagination
+              page={page}
+              nextPage={nextPage}
+              previousPage={previousPage}
+            />
+          }
         />
-      }
-    />
+      </div>
+    </div>
   );
 };
 
