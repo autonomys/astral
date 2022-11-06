@@ -8,15 +8,35 @@ type Account @entity {
 
 type Block @entity {
   id: ID!
-  height: BigInt
-  timestamp: DateTime
-  hash: String
-  parentHash: String
-  specId: String
-  stateRoot: String
+  height: BigInt!
+  timestamp: DateTime!
+  hash: String!
+  parentHash: String!
+  specId: String!
+  stateRoot: String!
   extrinsicRoot: String
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
+  # events: [Event] @derivedFrom(field: "block")
+  # TODO: add implementation for spacePledged and blockchainSize
   spacePledged: BigInt!
   blockchainSize: BigInt!
-  # extrinsics: [Extrinsic] @derivedFrom(field: "block")
-  # events: [Event] @derivedFrom(field: "block")
+}
+
+type Extrinsic @entity {
+  id: ID!
+  hash: String!
+  indexInBlock: Int!
+  nonce: BigInt
+  name: String!
+  signer: String
+  signature: String
+  error: JSON
+  tip: BigInt
+  fee: BigInt
+  success: Boolean!
+  block: Block!
+  pos: Int
+  timestamp: DateTime
+  args: JSON
+  # events: [Event] @derivedFrom(field: "extrinsic")
 }

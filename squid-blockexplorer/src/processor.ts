@@ -41,7 +41,7 @@ async function processChain(ctx: Context): Promise<void> {
         await processBalances(ctx);
         // TODO: add other things to process here (history size, space pledged, etc.)
     } catch (error) {
-        ctx.log.error('Error while processing blocks: ');
+        ctx.log.error('Error while processing chain: ');
         ctx.log.error(getErrorMessage(error));
     }
 }
