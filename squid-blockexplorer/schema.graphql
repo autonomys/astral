@@ -5,3 +5,18 @@ type Account @entity {
   total: BigInt!
   updatedAt: Int
 }
+
+type Block @entity {
+  id: ID!
+  height: BigInt
+  timestamp: DateTime
+  hash: String
+  parentHash: String
+  specId: String
+  stateRoot: String
+  extrinsicRoot: String
+  spacePledged: BigInt!
+  blockchainSize: BigInt!
+  # extrinsics: [Extrinsic] @derivedFrom(field: "block")
+  # events: [Event] @derivedFrom(field: "block")
+}
