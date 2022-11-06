@@ -124,7 +124,7 @@ function processBalancesEventItem(
   item: EventItem,
   accountIdsHex: Set<string>
 ) {
-  switch (item.name) {
+  switch (item.name as string) {
     case 'Balances.BalanceSet': {
       const account = getBalanceSetAccount(ctx, item.event);
       accountIdsHex.add(account);

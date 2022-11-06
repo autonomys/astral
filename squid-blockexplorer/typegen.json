@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "http://134.122.91.110:4444/graphql",
+  "specVersions": "https://archive.subspace.network/api",
   "events": [
     "Balances.Transfer",
     "Balances.Endowed",
