@@ -29,7 +29,9 @@ const ExtrinsicTable: FC<Props> = ({
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: "Block",
-      cells: extrinsics.map(({ block }) => <div>{block.height}</div>),
+      cells: extrinsics.map(({ block, pos }) => (
+        <div>{`${block.height}-${pos}`}</div>
+      )),
     },
     {
       title: "Time",
