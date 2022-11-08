@@ -22,15 +22,6 @@ const processor = new SubstrateBatchProcessor()
     .setBlockRange(config.blockRange || { from: 0 })
     .addEvent('*') // process all events
     .addCall('*') // process all calls
-    // .addEvent('Balances.Endowed', addEventDataConfig)
-    // .addEvent('Balances.Transfer', addEventDataConfig)
-    // .addEvent('Balances.BalanceSet', addEventDataConfig)
-    // .addEvent('Balances.Reserved', addEventDataConfig)
-    // .addEvent('Balances.Unreserved', addEventDataConfig)
-    // .addEvent('Balances.ReserveRepatriated', addEventDataConfig)
-    // .addEvent('Balances.Deposit', addEventDataConfig)
-    // .addEvent('Balances.Withdraw', addEventDataConfig)
-    // .addEvent('Balances.Slashed', addEventDataConfig)
     .includeAllBlocks();
 
 processor.run(new TypeormDatabase(), processChain)
