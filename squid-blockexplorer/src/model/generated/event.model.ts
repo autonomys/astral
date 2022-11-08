@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import {Block} from "./block.model"
 import {Extrinsic} from "./extrinsic.model"
+import {Call} from "./call.model"
 
 @Entity_()
 export class Event {
@@ -36,4 +37,8 @@ export class Event {
   @Index_()
   @ManyToOne_(() => Extrinsic, {nullable: true})
   extrinsic!: Extrinsic | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => Call, {nullable: true})
+  call!: Call | undefined | null
 }

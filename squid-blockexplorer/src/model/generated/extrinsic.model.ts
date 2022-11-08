@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {Block} from "./block.model"
 import {Event} from "./event.model"
+import {Call} from "./call.model"
 
 @Entity_()
 export class Extrinsic {
@@ -57,4 +58,7 @@ export class Extrinsic {
 
   @OneToMany_(() => Event, e => e.extrinsic)
   events!: Event[]
+
+  @OneToMany_(() => Call, e => e.extrinsic)
+  calls!: Call[]
 }
