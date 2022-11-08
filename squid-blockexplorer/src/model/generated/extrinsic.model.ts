@@ -1,6 +1,7 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Block} from "./block.model"
+import {Event} from "./event.model"
 
 @Entity_()
 export class Extrinsic {
@@ -53,4 +54,7 @@ export class Extrinsic {
 
   @Column_("jsonb", {nullable: true})
   args!: unknown | undefined | null
+
+  @OneToMany_(() => Event, e => e.extrinsic)
+  events!: Event[]
 }

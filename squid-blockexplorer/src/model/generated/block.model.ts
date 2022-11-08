@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Extrinsic} from "./extrinsic.model"
+import {Event} from "./event.model"
 
 @Entity_()
 export class Block {
@@ -34,6 +35,9 @@ export class Block {
 
   @OneToMany_(() => Extrinsic, e => e.block)
   extrinsics!: Extrinsic[]
+
+  @OneToMany_(() => Event, e => e.block)
+  events!: Event[]
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   spacePledged!: bigint

@@ -16,10 +16,11 @@ type Block @entity {
   stateRoot: String!
   extrinsicRoot: String
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
-  # events: [Event] @derivedFrom(field: "block")
+  events: [Event] @derivedFrom(field: "block")
   # TODO: add implementation for spacePledged and blockchainSize
   spacePledged: BigInt!
   blockchainSize: BigInt!
+  # TODO: add calls
 }
 
 type Extrinsic @entity {
@@ -38,5 +39,21 @@ type Extrinsic @entity {
   pos: Int
   timestamp: DateTime
   args: JSON
-  # events: [Event] @derivedFrom(field: "extrinsic")
+  events: [Event] @derivedFrom(field: "extrinsic")
+  # TODO: add call and calls
 }
+
+type Event @entity {
+  id: ID!
+  indexInBlock: Int!
+  name: String!
+  timestamp: DateTime
+  phase: String!
+  pos: Int
+  args: JSON
+  block: Block
+  extrinsic: Extrinsic
+  # TODO: add call
+}
+
+# TODO: add Call

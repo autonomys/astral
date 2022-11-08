@@ -1,80 +1,72 @@
+import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from './processor'
-import { Block, Extrinsic } from './model';
+import { Block, Extrinsic, Event } from './model';
 
 export async function processBlocks(ctx: Context) {
-  // extrinsics for the whole batch of blocks
-  const batchExtrinsics: Extrinsic[] = [];
-  const batchEvents = [];
+  const extrinsicsMap = new Map<string, Extrinsic>();
+  const batchEvents: Event[] = [];
+  // TODO: add batch calls
 
   const batchBlocks = ctx.blocks.map(({ header, items }) => {
-    const height = BigInt(header.height);
-    const block = new Block({
-      ...header,
-      height,
-      timestamp: new Date(header.timestamp),
-      // TODO: add implementation for space pledged
-      spacePledged: BigInt(header.height),
-      // TODO: add implementation for blockchain size
-      blockchainSize: BigInt(header.height),
-      // TODO: add implementation for events
-      // events: [],
+    const block = createBlock(header);
+    const calls = items.filter(({ kind }) => kind === "call") as CallItem[];
+    const events = items.filter(({ kind }) => kind === "event") as EventItem[];
+
+    calls
+      // only need parent calls:
+      // `Utility.batch_all` can have multiple nested calls, but here we only care about the extrinsic
+      .filter(({ call }) => !call.parent)
+      .forEach((call) => {
+        const extrinsic = createExtrinsic(call, block);
+        extrinsicsMap.set(extrinsic.id, extrinsic);
+      });
+
+    events.forEach((item) => {
+      const extrinsic = extrinsicsMap.get(item.event.extrinsic!.id);
+      const event = new Event({ ...item.event, block, extrinsic });
+      batchEvents.push(event);
     });
 
-    const blockExtrinsics = getExtrinsics(block, items);
-    batchExtrinsics.push(...blockExtrinsics);
+    // TODO: add block calls
 
     return block;
   })
 
   await ctx.store.save(batchBlocks);
-  await ctx.store.save(batchExtrinsics);
+  await ctx.store.save([...extrinsicsMap.values()]);
+  await ctx.store.save(batchEvents);
 
   ctx.log
     .child('blocks')
     .info(`
       added: 
       ${batchBlocks.length} blocks, 
-      ${batchExtrinsics.length} extrinsics, 
+      ${extrinsicsMap.size} extrinsics, 
       ${batchEvents.length} events
     `);
 }
 
-function getExtrinsics(block: Block, items: Array<EventItem | CallItem>) {
-  // only need parent calls:
-  // `Utility.batch_all` can have multiple nested calls, but here we only care about the extrinsic
-  const calls = items.filter((item) => item.kind === "call" && !item.call.parent) as CallItem[];
-
-  const extrinsics = calls.map(({ name, extrinsic }) => {
-    const { id, hash, indexInBlock, success, fee, tip, signature } = extrinsic;
-    return new Extrinsic({
-      id,
-      hash,
-      indexInBlock,
-      // TODO: add nonce?
-      nonce: BigInt(1),
-      name,
-      success,
-      fee: fee || null,
-      tip: tip || null,
-      block,
-      signer: signature ? signature.address.value : null,
-      signature: signature ? signature.signature.value : null,
-    })
-  })
-
-  return extrinsics;
+function createBlock(header: SubstrateBlock) {
+  return new Block({
+    ...header,
+    height: BigInt(header.height),
+    timestamp: new Date(header.timestamp),
+    // TODO: add implementation for space pledged
+    spacePledged: BigInt(1),
+    // TODO: add implementation for blockchain size
+    blockchainSize: BigInt(1),
+  });
 }
 
-// export function createEvent(extrinsicEntity: Extrinsic, event: Event): Events {
-//   const { id, name, call, indexInBlock } = event;
-//   return new Events({
-//     id,
-//     extrinsic: extrinsicEntity,
-//     name,
-//     method: call?.name,
-//     blockNumber: extrinsicEntity.blockNumber.toString(),
-//     indexInBlock: indexInBlock.toString(),
-//     createdAt: extrinsicEntity.createdAt,
-//     params: <Args>event.args,
-//   });
-// }
+function createExtrinsic({ name, extrinsic }: CallItem, block: Block) {
+  const { fee, tip, signature } = extrinsic;
+  return new Extrinsic({
+    ...extrinsic,
+    name,
+    fee: fee || null,
+    tip: tip || null,
+    signer: signature ? signature.address.value : null,
+    signature: signature ? signature.signature.value : null,
+    block,
+  })
+}
