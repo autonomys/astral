@@ -23,7 +23,9 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
     {
       title: "ID",
       cells: extrinsics.map(({ block, pos }) => (
-        <div>{`${pos}.${block.height}`}</div>
+        <Link to={INTERNAL_ROUTES.extrinsics.id.page(`${block.height}-${pos}`)}>
+          <div>{`${pos}.${block.height}`}</div>
+        </Link>
       )),
     },
     {

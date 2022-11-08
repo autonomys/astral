@@ -2,10 +2,12 @@ import { FC } from "react";
 import { Extrinsic } from "gql/graphql";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Link } from "react-router-dom";
 
 // common
 import Table, { Column } from "common/components/Table";
 import { shortString } from "common/helpers";
+import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime);
 
@@ -19,7 +21,9 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
     {
       title: "Extrinsic Id",
       cells: extrinsics.map(({ block, pos }) => (
-        <div>{`${block.height}-${pos}`}</div>
+        <Link to={INTERNAL_ROUTES.extrinsics.id.page(`${block.height}-${pos}`)}>
+          <div>{`${block.height}-${pos}`}</div>
+        </Link>
       )),
     },
     {

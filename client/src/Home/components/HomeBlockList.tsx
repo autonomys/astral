@@ -22,7 +22,11 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
   const generateColumns = (blocks: Block[]): Column[] => [
     {
       title: "Block",
-      cells: blocks.map(({ height }) => <div>{height}</div>),
+      cells: blocks.map(({ height }) => (
+        <Link to={INTERNAL_ROUTES.blocks.id.page(height)}>
+          <div>{height}</div>
+        </Link>
+      )),
     },
     {
       title: "Time",

@@ -10,9 +10,15 @@ export const INTERNAL_ROUTES = {
   blocks: {
     id: {
       path: ":blockId",
-      page: (blockId: string): string => `/blocks/${blockId}`,
+      page: (blockId: number): string => `/blocks/${blockId}`,
     },
     list: "blocks",
+  },
+  accounts: {
+    list: "accounts",
+  },
+  events: {
+    list: "events",
   },
   extrinsics: {
     id: {

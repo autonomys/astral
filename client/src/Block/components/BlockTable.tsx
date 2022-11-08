@@ -1,6 +1,7 @@
 import { FC } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Link } from "react-router-dom";
 
 // gql
 import { Block } from "gql/graphql";
@@ -9,6 +10,7 @@ import { Block } from "gql/graphql";
 import { shortString } from "common/helpers";
 import Table, { Column } from "common/components/Table";
 import Pagination from "common/components/Pagination";
+import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime);
 
@@ -24,7 +26,9 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
   const generateColumns = (blocks: Block[]): Column[] => [
     {
       title: "Block",
-      cells: blocks.map(({ height }) => <div>{height}</div>),
+      cells: blocks.map(({ height }) => (
+        <Link to={INTERNAL_ROUTES.blocks.id.page(height)}>{height}</Link>
+      )),
     },
     {
       title: "Time",
