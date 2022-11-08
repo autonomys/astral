@@ -19,8 +19,8 @@ export const QUERY_EXTRINSIC_LIST = gql`
 `;
 
 export const QUERY_EXTRINSIC_BY_ID = gql`
-  query ExtrinsicsById($blockId: Int!, $pos: Int!) {
-    extrinsics(where: { block: { height_eq: $blockId }, pos_eq: $pos }) {
+  query ExtrinsicsById($extrinsicId: String!) {
+    extrinsicById(id: $extrinsicId) {
       pos
       id
       hash
