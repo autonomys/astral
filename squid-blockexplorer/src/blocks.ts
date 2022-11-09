@@ -1,6 +1,6 @@
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from './processor'
-import { Block, Extrinsic, Event, Call, Account } from './model';
+import { Block, Extrinsic, Event, Call } from './model';
 import { getOrCreateAccount } from './utils';
 
 export async function processBlocks(ctx: Context) {
