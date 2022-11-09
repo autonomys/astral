@@ -17,3 +17,42 @@ export const QUERY_EXTRINSIC_LIST = gql`
     }
   }
 `;
+
+export const QUERY_EXTRINSIC_BY_ID = gql`
+  query ExtrinsicsById($extrinsicId: String!) {
+    extrinsicById(id: $extrinsicId) {
+      pos
+      id
+      hash
+      signature
+      success
+      tip
+      version
+      block {
+        height
+        id
+        events(limit: 10) {
+          id
+          name
+          phase
+          pos
+          block {
+            height
+            id
+          }
+          extrinsic {
+            pos
+            block {
+              height
+              id
+            }
+          }
+        }
+        timestamp
+      }
+      call {
+        name
+      }
+    }
+  }
+`;

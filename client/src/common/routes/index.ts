@@ -10,7 +10,7 @@ export const INTERNAL_ROUTES = {
   blocks: {
     id: {
       path: ":blockId",
-      page: (blockId: string): string => `/blocks/${blockId}`,
+      page: (blockId: number): string => `/blocks/${blockId}`,
     },
     list: "blocks",
   },
