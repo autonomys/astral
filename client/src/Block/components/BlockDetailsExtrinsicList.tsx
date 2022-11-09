@@ -20,8 +20,8 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: "Extrinsic Id",
-      cells: extrinsics.map(({ block, pos }) => (
-        <Link to={INTERNAL_ROUTES.extrinsics.id.page(`${block.height}-${pos}`)}>
+      cells: extrinsics.map(({ block, pos, id }) => (
+        <Link to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
           <div>{`${block.height}-${pos}`}</div>
         </Link>
       )),

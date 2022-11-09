@@ -27,7 +27,9 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
     {
       title: "Block",
       cells: blocks.map(({ height }) => (
-        <Link to={INTERNAL_ROUTES.blocks.id.page(height)}>{height}</Link>
+        <Link to={INTERNAL_ROUTES.blocks.id.page(height)}>
+          <div>{height}</div>
+        </Link>
       )),
     },
     {

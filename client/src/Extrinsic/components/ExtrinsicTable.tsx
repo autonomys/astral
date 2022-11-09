@@ -31,8 +31,8 @@ const ExtrinsicTable: FC<Props> = ({
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: "Block",
-      cells: extrinsics.map(({ block, pos }) => (
-        <Link to={INTERNAL_ROUTES.extrinsics.id.page(`${block.height}-${pos}`)}>
+      cells: extrinsics.map(({ block, pos, id }) => (
+        <Link to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
           <div>{`${block.height}-${pos}`}</div>
         </Link>
       )),
