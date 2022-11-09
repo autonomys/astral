@@ -30,6 +30,7 @@ interface Balance {
   reserved: bigint;
 }
 
+// TODO: should also include accounts with vested tokens (hardcoded in the chain config)
 export async function processBalances(ctx: Context): Promise<void> {
   const accountIdsHex = new Set<string>();
 
@@ -80,20 +81,24 @@ async function saveAccounts(
     const balance = balances[i];
 
     if (!balance) continue;
+    
     const total = balance.free + balance.reserved;
+
     if (total > 0n) {
-      accounts.set(
+      // check if there is an existing account created earlier (i.e. when processing blocks)
+      const existingAccount = await ctx.store.get(Account, id);
+      const account = new Account({
+        ...existingAccount,
         id,
-        new Account({
-          id,
-          free: balance.free,
-          reserved: balance.reserved,
-          total,
-          updatedAt: block.height,
-        })
-      );
+        free: balance.free,
+        reserved: balance.reserved,
+        total,
+        updatedAt: BigInt(block.height),
+      });
+      accounts.set(id, account);
     } else {
-      deletions.set(id, new Account({ id }));
+      const account = new Account({ id });
+      deletions.set(id, account);
     }
   }
 

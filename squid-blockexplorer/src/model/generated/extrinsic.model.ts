@@ -1,5 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
+import {Account} from "./account.model"
 import {Block} from "./block.model"
 import {Event} from "./event.model"
 import {Call} from "./call.model"
@@ -25,8 +26,9 @@ export class Extrinsic {
   @Column_("text", {nullable: false})
   name!: string
 
-  @Column_("text", {nullable: true})
-  signer!: string | undefined | null
+  @Index_()
+  @ManyToOne_(() => Account, {nullable: true})
+  signer!: Account | undefined | null
 
   @Column_("text", {nullable: true})
   signature!: string | undefined | null

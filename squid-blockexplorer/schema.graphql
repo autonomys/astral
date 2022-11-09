@@ -1,9 +1,10 @@
 type Account @entity {
   id: ID!
-  free: BigInt!
-  reserved: BigInt!
-  total: BigInt!
-  updatedAt: Int
+  free: BigInt
+  reserved: BigInt
+  total: BigInt
+  updatedAt: BigInt
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer")
 }
 
 type Block @entity {
@@ -28,7 +29,7 @@ type Extrinsic @entity {
   indexInBlock: Int!
   nonce: BigInt
   name: String!
-  signer: String
+  signer: Account
   signature: String
   error: JSON
   tip: BigInt

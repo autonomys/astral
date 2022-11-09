@@ -1,14 +1,18 @@
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from './processor'
-import { Block, Extrinsic, Event, Call } from './model';
+import { Block, Extrinsic, Event, Call, Account } from './model';
+import { getOrCreateAccount } from './utils';
 
 export async function processBlocks(ctx: Context) {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
   const batchEvents: Event[] = [];
+  const batchBlocks: Block[] = [];
 
-  const batchBlocks = ctx.blocks.map(({ header, items }) => {
+  for (const { header, items } of ctx.blocks) {
     const block = createBlock(header);
+    batchBlocks.push(block);
+
     const callItems = items.filter(({ kind }) => kind === "call") as CallItem[];
     const eventItems = items.filter(({ kind }) => kind === "event") as EventItem[];
     // some extrinsics (i.e. Utility.batch_all) have parent call and child calls
@@ -18,7 +22,7 @@ export async function processBlocks(ctx: Context) {
 
     // process block extrinsics / parent calls
     for (const item of parentCalls) {
-      const extrinsic = createExtrinsic(item, block);
+      const extrinsic = await createExtrinsic(ctx, item, block);
       const call = createCall(item, block, extrinsic!, null);
       extrinsicsMap.set(extrinsic.id, extrinsic);
       callsMap.set(call.id, call);
@@ -47,9 +51,7 @@ export async function processBlocks(ctx: Context) {
       const event = new Event({ ...item.event, block, extrinsic, call });
       batchEvents.push(event);
     }
-
-    return block;
-  })
+  }
 
   await ctx.store.save(batchBlocks);
   await ctx.store.save([...extrinsicsMap.values()]);
@@ -78,15 +80,22 @@ function createBlock(header: SubstrateBlock) {
   });
 }
 
-function createExtrinsic({ name, extrinsic }: CallItem, block: Block) {
-  const { fee, tip, signature } = extrinsic;
+async function createExtrinsic(ctx: Context, { name, extrinsic }: CallItem, block: Block) {
+  let signer = null;
+  let signature = null;
+
+  if (extrinsic.signature) {
+    signer = await getOrCreateAccount(ctx, block.height, extrinsic.signature.address.value);
+    signature = extrinsic.signature.signature.value;
+  }
+
   return new Extrinsic({
     ...extrinsic,
     name,
-    fee: fee || null,
-    tip: tip || null,
-    signer: signature ? signature.address.value : null,
-    signature: signature ? signature.signature.value : null,
+    fee: extrinsic.fee || null,
+    tip: extrinsic.tip || null,
+    signer,
+    signature,
     block,
     timestamp: block.timestamp,
   })
