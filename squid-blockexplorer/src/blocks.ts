@@ -48,7 +48,14 @@ export async function processBlocks(ctx: Context) {
         call = callsMap.get(item.event.extrinsic.call.id);
       }
 
-      const event = new Event({ ...item.event, block, extrinsic, call });
+      const event = new Event({
+        ...item.event,
+        block,
+        extrinsic,
+        call,
+        timestamp: block.timestamp,
+      });
+
       batchEvents.push(event);
     }
   }

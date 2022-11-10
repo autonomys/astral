@@ -14,8 +14,8 @@ export class Call {
   @Column_("text", {nullable: false})
   name!: string
 
-  @Column_("timestamp with time zone", {nullable: true})
-  timestamp!: Date | undefined | null
+  @Column_("timestamp with time zone", {nullable: false})
+  timestamp!: Date
 
   @Column_("bool", {nullable: false})
   success!: boolean

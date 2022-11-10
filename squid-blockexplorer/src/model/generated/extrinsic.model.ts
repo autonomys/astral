@@ -52,8 +52,8 @@ export class Extrinsic {
   @Column_("int4", {nullable: true})
   pos!: number | undefined | null
 
-  @Column_("timestamp with time zone", {nullable: true})
-  timestamp!: Date | undefined | null
+  @Column_("timestamp with time zone", {nullable: false})
+  timestamp!: Date
 
   @Column_("jsonb", {nullable: true})
   args!: unknown | undefined | null

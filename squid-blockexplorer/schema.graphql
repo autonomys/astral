@@ -37,7 +37,7 @@ type Extrinsic @entity {
   success: Boolean!
   block: Block!
   pos: Int
-  timestamp: DateTime
+  timestamp: DateTime!
   args: JSON
   events: [Event] @derivedFrom(field: "extrinsic")
   calls: [Call!] @derivedFrom(field: "extrinsic")
@@ -47,7 +47,7 @@ type Event @entity {
   id: ID!
   indexInBlock: Int!
   name: String!
-  timestamp: DateTime
+  timestamp: DateTime!
   phase: String!
   pos: Int
   args: JSON
@@ -59,7 +59,7 @@ type Event @entity {
 type Call @entity {
   id: ID!
   name: String!
-  timestamp: DateTime
+  timestamp: DateTime!
   success: Boolean!
   args: JSON
   block: Block!
