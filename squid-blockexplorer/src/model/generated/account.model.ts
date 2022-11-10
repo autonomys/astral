@@ -1,5 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
+import {Extrinsic} from "./extrinsic.model"
 
 @Entity_()
 export class Account {
@@ -10,15 +11,18 @@ export class Account {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  free!: bigint
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  free!: bigint | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  reserved!: bigint
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  reserved!: bigint | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  total!: bigint
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  total!: bigint | undefined | null
 
-  @Column_("int4", {nullable: true})
-  updatedAt!: number | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  updatedAt!: bigint | undefined | null
+
+  @OneToMany_(() => Extrinsic, e => e.signer)
+  extrinsics!: Extrinsic[]
 }

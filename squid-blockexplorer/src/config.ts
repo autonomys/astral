@@ -27,7 +27,7 @@ const config: ProcessorConfig = {
         chain: process.env.CHAIN_RPC_ENDPOINT as string,
     },
     typesBundle: 'gemini-2a',
-    batchSize: 100,
+    batchSize: parseInt(process.env.BATCH_SIZE as string, 10),
 }
 
 export default config;

@@ -1,25 +1,8 @@
 {
   "outDir": "src/types",
-  "specVersions": "http://134.122.91.110:4444/graphql",
-  "events": [
-    "Balances.Transfer",
-    "Balances.Endowed",
-    "Balances.DustLost",
-    "Balances.BalanceSet",
-    "Balances.Reserved",
-    "Balances.Unreserved",
-    "Balances.ReserveRepatriated",
-    "Balances.Deposit",
-    "Balances.Withdraw",
-    "Balances.Slashed"
-  ],
-  "calls": [ 
-  ],
-  "storage": [
-    "System.Account",
-    "Balances.Account",
-    "Balances.TotalIssuance",
-    "Balances.Locks",
-    "Balances.Reserves"
-  ]
+  "specVersions": "https://archive.subspace.network/api",
+  "constants": true,
+  "events": true,
+  "calls": true,
+  "storage": true
 }
