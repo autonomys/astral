@@ -1,25 +1,8 @@
 {
   "outDir": "src/types",
   "specVersions": "https://archive.subspace.network/api",
-  "events": [
-    "Balances.Transfer",
-    "Balances.Endowed",
-    "Balances.DustLost",
-    "Balances.BalanceSet",
-    "Balances.Reserved",
-    "Balances.Unreserved",
-    "Balances.ReserveRepatriated",
-    "Balances.Deposit",
-    "Balances.Withdraw",
-    "Balances.Slashed"
-  ],
-  "calls": [ 
-  ],
-  "storage": [
-    "System.Account",
-    "Balances.Account",
-    "Balances.TotalIssuance",
-    "Balances.Locks",
-    "Balances.Reserves"
-  ]
+  "constants": true,
+  "events": true,
+  "calls": true,
+  "storage": true
 }
