@@ -74,7 +74,6 @@ async function saveAccounts(
   }
 
   const accounts: Account[] = [];
-  const deletions: Account[] = [];
 
   for (let i = 0; i < accountIds.length; i++) {
     const id = encodeId(accountIds[i]);
@@ -85,31 +84,24 @@ async function saveAccounts(
     const total = balance.free + balance.reserved;
     // check if there is an existing account created earlier (i.e. when processing blocks)
     const existingAccount = await ctx.store.get(Account, id);
-    
-    // in order to maintain relationship with extrinsics
-    // only delete account if balance is zero and it has no extrinsics
-    if (total > 0n) {
-      const account = new Account({
-        ...existingAccount,
-        id,
-        free: balance.free,
-        reserved: balance.reserved,
-        total,
-        updatedAt: BigInt(block.height),
-      });
-      accounts.push(account);
-    } else if (!existingAccount?.extrinsics.length) {
-      const account = new Account({ id });
-      deletions.push(account);
-    }
+
+    const account = new Account({
+      ...existingAccount,
+      id,
+      free: balance.free,
+      reserved: balance.reserved,
+      total,
+      updatedAt: BigInt(block.height),
+    });
+
+    accounts.push(account);
   }
 
   await ctx.store.save(accounts);
-  await ctx.store.remove(deletions);
 
   ctx.log
     .child('accounts')
-    .info(`updated: ${accounts.length}, deleted: ${deletions.length}`);
+    .info(`updated: ${accounts.length}`);
 }
 
 function processBalancesCallItem(
