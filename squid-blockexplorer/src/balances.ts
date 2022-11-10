@@ -37,7 +37,7 @@ export async function processBalances(ctx: Context): Promise<void> {
   for (const block of ctx.blocks) {
     for (const item of block.items) {
       if (item.kind === 'call') {
-        processBalancesCallItem(ctx, item, accountIdsHex);
+        processBalancesCallItem(item, accountIdsHex);
       } else if (item.kind === 'event') {
         processBalancesEventItem(ctx, item, accountIdsHex);
       }
@@ -73,20 +73,22 @@ async function saveAccounts(
     return;
   }
 
-  const accounts = new Map<string, Account>();
-  const deletions = new Map<string, Account>();
+  const accounts: Account[] = [];
+  const deletions: Account[] = [];
 
   for (let i = 0; i < accountIds.length; i++) {
     const id = encodeId(accountIds[i]);
     const balance = balances[i];
 
     if (!balance) continue;
-    
-    const total = balance.free + balance.reserved;
 
+    const total = balance.free + balance.reserved;
+    // check if there is an existing account created earlier (i.e. when processing blocks)
+    const existingAccount = await ctx.store.get(Account, id);
+    
+    // in order to maintain relationship with extrinsics
+    // only delete account if balance is zero and it has no extrinsics
     if (total > 0n) {
-      // check if there is an existing account created earlier (i.e. when processing blocks)
-      const existingAccount = await ctx.store.get(Account, id);
       const account = new Account({
         ...existingAccount,
         id,
@@ -95,23 +97,22 @@ async function saveAccounts(
         total,
         updatedAt: BigInt(block.height),
       });
-      accounts.set(id, account);
-    } else {
+      accounts.push(account);
+    } else if (!existingAccount?.extrinsics.length) {
       const account = new Account({ id });
-      deletions.set(id, account);
+      deletions.push(account);
     }
   }
 
-  await ctx.store.save([...accounts.values()]);
-  await ctx.store.remove([...deletions.values()]);
+  await ctx.store.save(accounts);
+  await ctx.store.remove(deletions);
 
   ctx.log
     .child('accounts')
-    .info(`updated: ${accounts.size}, deleted: ${deletions.size}`);
+    .info(`updated: ${accounts.length}, deleted: ${deletions.length}`);
 }
 
 function processBalancesCallItem(
-  ctx: Context,
   item: CallItem,
   accountIdsHex: Set<string>
 ) {
