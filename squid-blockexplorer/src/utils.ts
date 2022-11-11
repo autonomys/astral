@@ -6,7 +6,7 @@ import { Account } from './model';
  * @param {unknown} error - can be instance of Error object or string
  * @returns {string} - error message
  */
- export function getErrorMessage(error: unknown): string | undefined {
+export function getErrorMessage(error: unknown): string | undefined {
   if (error instanceof Error) {
     return error.message;
   } else if (typeof error === 'string') {
