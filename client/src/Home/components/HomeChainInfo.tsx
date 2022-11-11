@@ -1,13 +1,11 @@
 import { FC } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 // common/icons
 import BlockIcon from "common/icons/BlockIcon";
 import DocIcon from "common/icons/DocIcon";
 import WalletIcon from "common/icons/WalletIcon";
 import PieChartIcon from "common/icons/PieChartIcon";
-import MaximizeIcon from "common/icons/MaximizeIcon";
-import ClosedWalletIcon from "common/icons/ClosedWalletIcon";
-import CoinIcon from "common/icons/CoinIcon";
 
 // home
 import HomeInfoCard from "Home/components/HomeInfoCard";
@@ -41,47 +39,35 @@ const HomeChainInfo: FC = () => {
     },
     {
       title: "Total Rewards Unlocked",
-      icon: <CoinIcon />,
+      icon: <BlockIcon />,
       value: "8.687M",
     },
     {
       title: "Total Reward Addresses",
-      icon: <ClosedWalletIcon />,
+      icon: <PieChartIcon />,
       value: "88.687",
     },
     {
       title: "Blockchain History Size",
-      icon: <MaximizeIcon />,
+      icon: <WalletIcon />,
       value: "87.87 GB",
     },
   ];
 
-  const half = Math.ceil(listOfCards.length / 2);
-
   return (
-    <div className="w-full">
-      <div className="flex pb-6">
-        {listOfCards.slice(0, half).map(({ title, value, icon }, index) => (
-          <HomeInfoCard
-            key={`${title}-${index}`}
-            title={title}
-            value={value}
-            icon={icon}
-            additionalClass={index !== half - 1 ? "pr-4" : ""}
-          />
+    <div className="w-full flex mb-12 items-center justify-center">
+      <Swiper spaceBetween={4} slidesPerView={5.5}>
+        {listOfCards.map(({ title, value, icon }, index) => (
+          <SwiperSlide>
+            <HomeInfoCard
+              key={`${title}-${index}`}
+              title={title}
+              value={value}
+              icon={icon}
+            />
+          </SwiperSlide>
         ))}
-      </div>
-      <div className="flex pb-6">
-        {listOfCards.slice(half).map(({ title, value, icon }, index) => (
-          <HomeInfoCard
-            key={`${title}-${index}`}
-            title={title}
-            value={value}
-            icon={icon}
-            additionalClass={index !== half - 1 ? "pr-4" : ""}
-          />
-        ))}
-      </div>
+      </Swiper>
     </div>
   );
 };

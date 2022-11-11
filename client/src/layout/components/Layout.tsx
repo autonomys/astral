@@ -5,7 +5,11 @@ interface Props {
 }
 
 const MainLayout: FC<Props> = ({ children }) => {
-  return <div className="flex flex-col min-h-screen w-full">{children}</div>;
+  return (
+    <div className="flex flex-col min-h-screen w-full background-gradient font-['Montserrat'] relative">
+      {children}
+    </div>
+  );
 };
 
 export default MainLayout;

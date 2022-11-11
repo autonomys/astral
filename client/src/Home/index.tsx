@@ -15,6 +15,7 @@ import HomeChainInfo from "Home/components/HomeChainInfo";
 // common
 import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
 import ErrorFallback from "common/components/ErrorFallback";
+import SearchBar from "common/components/SearchBar";
 
 const Home: FC = () => {
   const PAGE_SIZE = 10;
@@ -52,6 +53,7 @@ const Home: FC = () => {
 
   return (
     <div className="w-full flex flex-col align-middle">
+      <SearchBar />
       <HomeChainInfo />
       <div className="flex w-full">
         <HomeBlockList blocks={blocksData.blocks} />

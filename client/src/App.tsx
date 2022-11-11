@@ -16,11 +16,16 @@ import Home from "Home";
 import AccountList from "Account/components/AccountList";
 //event
 import EventList from "Event/components/EventList";
+import HeaderBackground from "layout/components/HeaderBackground";
+
+// Import Swiper styles
+import "swiper/css";
 
 function App() {
   return (
     <BrowserRouter>
       <Layout>
+        <HeaderBackground />
         <Header />
         <Container>
           <Routes>
