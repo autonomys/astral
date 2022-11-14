@@ -14,6 +14,7 @@ import { Layout, Container, Footer, Header } from "layout/components";
 import Home from "Home";
 // account
 import AccountList from "Account/components/AccountList";
+import Account from "Account/components/Account";
 //event
 import EventList from "Event/components/EventList";
 import HeaderBackground from "layout/components/HeaderBackground";
@@ -40,13 +41,16 @@ function App() {
             <Route path={INTERNAL_ROUTES.extrinsics.list}>
               <Route index element={<ExtrinsicList />} />
               <Route
-                index
                 path={INTERNAL_ROUTES.extrinsics.id.path}
                 element={<Extrinsic />}
               />
             </Route>
             <Route path={INTERNAL_ROUTES.accounts.list}>
               <Route index element={<AccountList />} />
+              <Route
+                path={INTERNAL_ROUTES.accounts.id.path}
+                element={<Account />}
+              />
             </Route>
             <Route path={INTERNAL_ROUTES.events.list}>
               <Route index element={<EventList />} />

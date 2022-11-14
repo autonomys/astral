@@ -25,19 +25,17 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
         <div className="border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6 w-full">
           <div className="flow-root">
             <List>
-              <StyledListItem
-                title="Timestamp"
-                value={dayjs(extrinsic.block.timestamp).format(
+              <StyledListItem title="Timestamp">
+                {dayjs(extrinsic.block.timestamp).format(
                   "DD MMM YYYY | HH:mm:ss(Z)"
                 )}
-              />
-              <StyledListItem
-                title="Block Time"
-                value={dayjs(extrinsic.block.timestamp).fromNow(true)}
-              />
-              <StyledListItem title="Hash" value={extrinsic.hash} />
-              <StyledListItem title="Module" value={extrinsic.call.name} />
-              <StyledListItem title="Call" value={extrinsic.call.name} />
+              </StyledListItem>
+              <StyledListItem title="Block Time">
+                {dayjs(extrinsic.block.timestamp).fromNow(true)}
+              </StyledListItem>
+              <StyledListItem title="Hash">{extrinsic.hash}</StyledListItem>
+              <StyledListItem title="Module">{extrinsic.name}</StyledListItem>
+              <StyledListItem title="Call">{extrinsic.name}</StyledListItem>
             </List>
           </div>
         </div>

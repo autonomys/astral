@@ -23,24 +23,22 @@ const BlockDetailsCard: FC<Props> = ({ block }) => {
       <div className="border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6 w-full">
         <div className="flow-root">
           <List>
-            <StyledListItem
-              title="Timestamp"
-              value={dayjs(block.timestamp).format("DD MMM YYYY | HH:mm:ss(Z)")}
-            />
-            <StyledListItem
-              title="Block Time"
-              value={dayjs(block.timestamp).fromNow(true)}
-            />
-            <StyledListItem title="Hash" value={block.hash} />
-            <StyledListItem title="Parent Hash" value={block.parentHash} />
-            <StyledListItem
-              title="Extrinsics Root"
-              value={block.extrinsicsRoot}
-            />
-            <StyledListItem
-              title="Spec Version"
-              value={block.spec.specVersion?.toString() || ""}
-            />
+            <StyledListItem title="Timestamp">
+              {dayjs(block.timestamp).format("DD MMM YYYY | HH:mm:ss(Z)")}
+            </StyledListItem>
+            <StyledListItem title="Block Time">
+              {dayjs(block.timestamp).fromNow(true)}
+            </StyledListItem>
+            <StyledListItem title="Hash">{block.hash}</StyledListItem>
+            <StyledListItem title="Parent Hash">
+              {block.parentHash}
+            </StyledListItem>
+            <StyledListItem title="Extrinsics Root">
+              {block?.extrinsicRoot}
+            </StyledListItem>
+            <StyledListItem title="Spec Version">
+              {block.specId?.toString() || ""}
+            </StyledListItem>
           </List>
         </div>
       </div>
