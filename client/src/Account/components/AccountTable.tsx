@@ -1,25 +1,31 @@
 import { FC } from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { Link } from "react-router-dom";
+
+// gql
+import { Account } from "gql/graphql";
 
 // common
 import Table, { Column } from "common/components/Table";
+import Pagination from "common/components/Pagination";
+import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime);
 
-type Account = {
-  id: string;
-  updatedAt: number;
-  total: string;
-  reserved: string;
-  free: string;
-};
-
 interface Props {
   accounts: Account[];
+  nextPage: () => void;
+  previousPage: () => void;
+  page: number;
 }
 
-const AccountTable: FC<Props> = ({ accounts }) => {
+const AccountTable: FC<Props> = ({
+  accounts,
+  nextPage,
+  previousPage,
+  page,
+}) => {
   // methods
   const generateColumns = (accounts: Account[]): Column[] => [
     {
@@ -28,13 +34,15 @@ const AccountTable: FC<Props> = ({ accounts }) => {
     },
     {
       title: "Account",
-      cells: accounts.map(({ id }) => {
-        return <div>{id}</div>;
-      }),
+      cells: accounts.map(({ id }) => (
+        <Link to={INTERNAL_ROUTES.accounts.id.page(id)}>
+          <div>{id}</div>
+        </Link>
+      )),
     },
     {
       title: "Extrinsics",
-      cells: accounts.map(() => <div></div>),
+      cells: accounts.map(({ extrinsics }) => <div>{extrinsics.length}</div>),
     },
     {
       title: "Locked (TSSC)",
@@ -42,7 +50,7 @@ const AccountTable: FC<Props> = ({ accounts }) => {
     },
     {
       title: "Balance (TSSC)",
-      cells: accounts.map(({ free }) => <div>{free}</div>),
+      cells: accounts.map(({ total }) => <div>{total}</div>),
     },
   ];
 
@@ -58,6 +66,13 @@ const AccountTable: FC<Props> = ({ accounts }) => {
           tableProps="shadow-md"
           tableHeaderProps="bg-gray-200"
           id="accounts-list"
+          footer={
+            <Pagination
+              page={page}
+              nextPage={nextPage}
+              previousPage={previousPage}
+            />
+          }
         />
       </div>
     </div>

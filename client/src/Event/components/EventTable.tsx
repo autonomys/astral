@@ -24,15 +24,15 @@ const EventTable: FC<Props> = ({ events, nextPage, previousPage, page }) => {
     {
       title: "Block",
       cells: events.map(({ block }) => (
-        <Link to={INTERNAL_ROUTES.blocks.id.page(block.height)}>
-          {block.height}
+        <Link to={INTERNAL_ROUTES.blocks.id.page(block?.height || 0)}>
+          {block?.height}
         </Link>
       )),
     },
     {
       title: "Time",
       cells: events.map(({ block }) => {
-        const blockDate = dayjs(block.timestamp).fromNow(true);
+        const blockDate = dayjs(block?.timestamp).fromNow(true);
         return <div>{blockDate}</div>;
       }),
     },

@@ -16,6 +16,10 @@ export const INTERNAL_ROUTES = {
   },
   accounts: {
     list: "accounts",
+    id: {
+      path: ":accountId",
+      page: (accountId: string): string => `/accounts/${accountId}`,
+    },
   },
   events: {
     list: "events",

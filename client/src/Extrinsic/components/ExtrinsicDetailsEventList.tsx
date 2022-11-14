@@ -17,8 +17,8 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: "Event Id",
-      cells: events.map(({ block, pos }) => (
-        <div>{`${block.height}-${pos}`}</div>
+      cells: events.map(({ block, pos }, index) => (
+        <div>{`${block?.height || index}-${pos}`}</div>
       )),
     },
     {
