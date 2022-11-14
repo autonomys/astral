@@ -24,6 +24,7 @@ export async function processBlocks(ctx: Context) {
     // process block extrinsics / parent calls
     for (const item of parentCalls) {
       const extrinsic = await createExtrinsic(ctx, item, block);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const call = createCall(item, block, extrinsic!, null);
       extrinsicsMap.set(extrinsic.id, extrinsic);
       callsMap.set(call.id, call);
@@ -32,7 +33,9 @@ export async function processBlocks(ctx: Context) {
     // process child calls
     for (const item of childCalls) {
       const extrinsic = extrinsicsMap.get(item.extrinsic.id);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const parent = callsMap.get(item.call.parent!.id);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const call = createCall(item, block, extrinsic!, parent!);
       callsMap.set(call.id, call);
     }
