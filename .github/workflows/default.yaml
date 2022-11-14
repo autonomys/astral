@@ -1,0 +1,21 @@
+name: Default
+
+on: [push, pull_request]
+
+jobs:
+  ts-lint-and-build:
+    runs-on: ubuntu-latest
+    name: Run eslint, check typescript and run tests
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "16"
+      - run: npm ci
+        working-directory: squid-blockexplorer
+      - run: npm test
+        working-directory: squid-blockexplorer
+      - run: npm run lint
+        working-directory: squid-blockexplorer
+      - run: npm run build
+        working-directory: squid-blockexplorer
