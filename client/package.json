@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.0",
+    "@ethersproject/bignumber": "^5.7.0",
+    "@ethersproject/units": "^5.7.0",
     "@headlessui/react": "^1.7.4",
     "@headlessui/tailwindcss": "^0.1.1",
     "@heroicons/react": "^2.0.13",
@@ -35,7 +37,7 @@
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.ts",
     "prestart": "yarn codegen",
-    "predev": "yarn codegen"
+    "prebuild": "yarn codegen"
   },
   "eslintConfig": {
     "extends": [

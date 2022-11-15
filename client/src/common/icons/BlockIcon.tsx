@@ -62,8 +62,8 @@ const BlockIcon: FC = () => {
           y2="63.6695"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#4F378D" />
-          <stop offset="1" stop-color="#7B72D9" />
+          <stop stopColor="#4F378D" />
+          <stop offset="1" stopColor="#7B72D9" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_131_9529"
@@ -73,8 +73,8 @@ const BlockIcon: FC = () => {
           y2="31.47"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#E970F8" />
-          <stop offset="1" stop-color="#F7D3FB" />
+          <stop stopColor="#E970F8" />
+          <stop offset="1" stopColor="#F7D3FB" />
         </linearGradient>
       </defs>
     </svg>

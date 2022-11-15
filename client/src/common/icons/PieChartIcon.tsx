@@ -90,8 +90,8 @@ const PieChartIcon: FC = () => {
           y2="63.8103"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#4F378D" />
-          <stop offset="1" stop-color="#7B72D9" />
+          <stop stopColor="#4F378D" />
+          <stop offset="1" stopColor="#7B72D9" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_128_8846"
@@ -101,8 +101,8 @@ const PieChartIcon: FC = () => {
           y2="17.2532"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#9179EC" />
-          <stop offset="1" stop-color="#E3DAFA" />
+          <stop stopColor="#9179EC" />
+          <stop offset="1" stopColor="#E3DAFA" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_128_8846"
@@ -112,8 +112,8 @@ const PieChartIcon: FC = () => {
           y2="55.7513"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#4F378D" />
-          <stop offset="1" stop-color="#7B72D9" />
+          <stop stopColor="#4F378D" />
+          <stop offset="1" stopColor="#7B72D9" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_128_8846"
@@ -123,8 +123,8 @@ const PieChartIcon: FC = () => {
           y2="57.822"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#4F378D" />
-          <stop offset="1" stop-color="#7B72D9" />
+          <stop stopColor="#4F378D" />
+          <stop offset="1" stopColor="#7B72D9" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_128_8846"
@@ -134,8 +134,8 @@ const PieChartIcon: FC = () => {
           y2="23.8729"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#E970F8" />
-          <stop offset="1" stop-color="#F7D3FB" />
+          <stop stopColor="#E970F8" />
+          <stop offset="1" stopColor="#F7D3FB" />
         </linearGradient>
       </defs>
     </svg>

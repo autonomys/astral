@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Block } from "gql/graphql";
 
 // common/icons
 import BlockIcon from "common/icons/BlockIcon";
@@ -9,13 +10,25 @@ import PieChartIcon from "common/icons/PieChartIcon";
 
 // home
 import HomeInfoCard from "Home/components/HomeInfoCard";
+import { formatSpacePledged } from "common/helpers";
 
-const HomeChainInfo: FC = () => {
+interface Props {
+  blocks: Block[];
+}
+
+const HomeChainInfo: FC<Props> = ({ blocks }) => {
+  const [block] = blocks;
+  const archivedBlock = block.height - 100;
+  const spacePledgedVal = Number(block.spacePledged);
+  const spacePledged = formatSpacePledged(spacePledgedVal);
+  const historySizeVal = Number(block.blockchainSize);
+  const historySize = formatSpacePledged(historySizeVal);
+
   const listOfCards = [
     {
-      title: "Archived Blocks",
+      title: "Archived Block",
       icon: <BlockIcon />,
-      value: "788.687",
+      value: `${archivedBlock} `,
     },
     {
       title: "Signed Extrinsics",
@@ -30,12 +43,12 @@ const HomeChainInfo: FC = () => {
     {
       title: "Total Space Pledged",
       icon: <PieChartIcon />,
-      value: "487.64 TB",
+      value: spacePledged,
     },
     {
       title: "Best Block",
       icon: <BlockIcon />,
-      value: "713.256",
+      value: `${block.height}`,
     },
     {
       title: "Total Rewards Unlocked",
@@ -50,7 +63,7 @@ const HomeChainInfo: FC = () => {
     {
       title: "Blockchain History Size",
       icon: <WalletIcon />,
-      value: "87.87 GB",
+      value: historySize,
     },
   ];
 
@@ -58,7 +71,7 @@ const HomeChainInfo: FC = () => {
     <div className="w-full flex mb-12 items-center justify-center">
       <Swiper spaceBetween={4} slidesPerView={5.5}>
         {listOfCards.map(({ title, value, icon }, index) => (
-          <SwiperSlide>
+          <SwiperSlide key={`${title}-${value}`}>
             <HomeInfoCard
               key={`${title}-${index}`}
               title={title}

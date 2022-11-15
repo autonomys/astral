@@ -74,8 +74,8 @@ const ExtrinsicTable: FC<Props> = ({
           columns={columns}
           emptyMessage="There are no extrinsics to show"
           id="latest-extrinsics"
-          tableProps="shadow-md"
-          tableHeaderProps="bg-gray-200"
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
           footer={
             <Pagination
               page={page}

@@ -26,9 +26,9 @@ function App() {
   return (
     <BrowserRouter>
       <Layout>
-        <HeaderBackground />
         <Header />
         <Container>
+          <HeaderBackground />
           <Routes>
             <Route path={INTERNAL_ROUTES.home} element={<Home />} />
             <Route path={INTERNAL_ROUTES.blocks.list}>

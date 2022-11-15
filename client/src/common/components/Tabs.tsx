@@ -14,7 +14,7 @@ type Props = {
 
 const Tabs: FC<Props> = ({
   id,
-  bgColor = "bg-purple-600",
+  bgColor = "bg-[#241235]",
   tabs,
   initialIndex = 0,
 }) => {
@@ -35,7 +35,7 @@ const Tabs: FC<Props> = ({
               >
                 <a
                   className={
-                    "text-xs font-bold uppercase px-5 py-3 rounded block leading-normal " +
+                    "text-xs font-semibold px-5 py-3 rounded-full block leading-normal " +
                     (openTab === index
                       ? `text-white ${bgColor}`
                       : `text-gray-600 bg-white`)

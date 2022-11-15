@@ -26,13 +26,13 @@ const WalletIcon: FC = () => {
         d="M61.6454 32.4739V34.9525C61.6454 34.9525 61.6454 34.0089 61.3159 34.2381L61.6454 32.4739Z"
         fill="#241235"
         stroke="#241235"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
       />
       <path
         d="M60.6976 34.4441L19.4761 10.7813L21.8625 9.40576L63.0774 33.0686L60.6976 34.4441Z"
         fill="#241235"
         stroke="#241235"
-        stroke-miterlimit="10"
+        strokeMiterlimit="10"
       />
       <path
         d="M21.8627 9.1665L19.0508 10.7879L60.6977 34.7099L61.1896 34.4241C62.3596 35.0886 62.3796 35.9193 62.3796 35.9591H62.8116V33.4473L63.4764 33.0752L21.8627 9.1665Z"
@@ -80,8 +80,8 @@ const WalletIcon: FC = () => {
           y2="6.46321"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#9179EC" />
-          <stop offset="1" stop-color="#E3DAFA" />
+          <stop stopColor="#9179EC" />
+          <stop offset="1" stopColor="#E3DAFA" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_152_727"
@@ -91,8 +91,8 @@ const WalletIcon: FC = () => {
           y2="3.95309"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#9179EC" />
-          <stop offset="1" stop-color="#53447A" />
+          <stop stopColor="#9179EC" />
+          <stop offset="1" stopColor="#53447A" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_152_727"
@@ -102,8 +102,8 @@ const WalletIcon: FC = () => {
           y2="40.9498"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#9179EC" />
-          <stop offset="1" stop-color="#53447A" />
+          <stop stopColor="#9179EC" />
+          <stop offset="1" stopColor="#53447A" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_152_727"
@@ -113,8 +113,8 @@ const WalletIcon: FC = () => {
           y2="40.7063"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#E970F8" />
-          <stop offset="1" stop-color="#F7D3FB" />
+          <stop stopColor="#E970F8" />
+          <stop offset="1" stopColor="#F7D3FB" />
         </linearGradient>
         <linearGradient
           id="paint4_linear_152_727"
@@ -124,8 +124,8 @@ const WalletIcon: FC = () => {
           y2="10.2297"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#E970F8" />
-          <stop offset="1" stop-color="#F7D3FB" />
+          <stop stopColor="#E970F8" />
+          <stop offset="1" stopColor="#F7D3FB" />
         </linearGradient>
         <linearGradient
           id="paint5_linear_152_727"
@@ -135,8 +135,8 @@ const WalletIcon: FC = () => {
           y2="8.54494"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#E970F8" />
-          <stop offset="1" stop-color="#F7D3FB" />
+          <stop stopColor="#E970F8" />
+          <stop offset="1" stopColor="#F7D3FB" />
         </linearGradient>
       </defs>
     </svg>

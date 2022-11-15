@@ -10,6 +10,7 @@ import { Account } from "gql/graphql";
 import Table, { Column } from "common/components/Table";
 import Pagination from "common/components/Pagination";
 import { INTERNAL_ROUTES } from "common/routes";
+import { bigNumberToNumber } from "common/helpers";
 
 dayjs.extend(relativeTime);
 
@@ -46,11 +47,15 @@ const AccountTable: FC<Props> = ({
     },
     {
       title: "Locked (TSSC)",
-      cells: accounts.map(({ reserved }) => <div>{reserved}</div>),
+      cells: accounts.map(({ reserved }) => (
+        <div>{bigNumberToNumber(reserved || 0, 18)}</div>
+      )),
     },
     {
       title: "Balance (TSSC)",
-      cells: accounts.map(({ total }) => <div>{total}</div>),
+      cells: accounts.map(({ total }) => (
+        <div>{bigNumberToNumber(total || 0, 18)}</div>
+      )),
     },
   ];
 
@@ -63,8 +68,8 @@ const AccountTable: FC<Props> = ({
         <Table
           columns={columns}
           emptyMessage="There are no accounts to show"
-          tableProps="shadow-md"
-          tableHeaderProps="bg-gray-200"
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
           id="accounts-list"
           footer={
             <Pagination

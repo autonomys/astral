@@ -6,6 +6,7 @@ import StatItem from "common/components/StatItem";
 
 // account
 import AccountBalancePieChart from "./AccountBalancePieChart";
+import { bigNumberToNumber } from "common/helpers";
 
 type Props = {
   account: Account;
@@ -13,17 +14,23 @@ type Props = {
 
 const AccountBalanceStats: FC<Props> = ({ account }) => {
   return (
-    <div className="w-full flex h-full bg-[#F3FBFF] rounded-md p-4">
+    <div className="w-full flex bg-[#F3FBFF] rounded-md p-4">
       <AccountBalancePieChart account={account} />
       <div className="flex w-full py-10">
         <div className="flex flex-col gap-8">
           <div className="flex">
             <div className="mr-4 w-1 bg-[#E970F8] h-10" />
-            <StatItem title="Transferable" value={`${account.free} tSSC`} />
+            <StatItem
+              title="Transferable"
+              value={`${bigNumberToNumber(account.free, 18)} tSSC`}
+            />
           </div>
           <div className="flex">
             <div className="mr-4 w-1 bg-[#9179EC] h-10" />
-            <StatItem title="Stacking" value={`${account.reserved} tSSC`} />
+            <StatItem
+              title="Stacking"
+              value={`${bigNumberToNumber(account.reserved, 18)} tSSC`}
+            />
           </div>
           <div className="flex">
             <div className="mr-4 w-1 bg-[#D9F0FC] h-10" />

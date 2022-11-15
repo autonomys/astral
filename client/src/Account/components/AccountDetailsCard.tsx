@@ -1,5 +1,6 @@
 import Accordion from "common/components/Accordion";
 import { List, ListItem, StyledListItem } from "common/components/List";
+import { bigNumberToNumber } from "common/helpers";
 import { Account } from "gql/graphql";
 import { FC } from "react";
 import AccountBalanceStats from "./AccountBalanceStats";
@@ -9,6 +10,7 @@ type Props = {
 };
 
 const AccountDetailsCard: FC<Props> = ({ account }) => {
+  const accountTotal = bigNumberToNumber(account.total, 18);
   return (
     <div className="border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6">
       <div className="flex items-center justify-between mb-10">
@@ -22,7 +24,7 @@ const AccountDetailsCard: FC<Props> = ({ account }) => {
           <StyledListItem title="Account index">-</StyledListItem>
           <StyledListItem title="Nonce">{account.updatedAt}</StyledListItem>
           <ListItem>
-            <Accordion title="Balance" value={account.total}>
+            <Accordion title="Balance" value={`${accountTotal}`}>
               <AccountBalanceStats account={account} />
             </Accordion>
           </ListItem>

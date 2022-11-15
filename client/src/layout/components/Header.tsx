@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // common
 import { INTERNAL_ROUTES } from "common/routes";
@@ -8,21 +8,29 @@ import HeaderDropdownMenu from "./HeaderDropdownMenu";
 import HeaderChainDropdown from "./HeaderChainDropdown";
 
 const Header: FC = () => {
+  const location = useLocation();
+  const pathName = location.pathname;
+
+  const isHomeActive = pathName === "/";
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] mx-[50px] z-10">
-      <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+      <div className="container mx-auto flex flex-wrap py-5 flex-col md:flex-row items-center">
         <Link
           to={INTERNAL_ROUTES.home}
           className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
         >
-          <span className="ml-3 text-xl">
+          <span className="text-xl">
             <LogoIcon fillColor="#282929" />
           </span>
         </Link>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
           <Link
             to={INTERNAL_ROUTES.home}
-            className="text-[#282929] font-semibold mr-5 hover:text-gray-900"
+            className={
+              isHomeActive
+                ? "text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] "
+                : "text-[#282929] font-semibold mr-5 hover:text-gray-900"
+            }
           >
             Home
           </Link>

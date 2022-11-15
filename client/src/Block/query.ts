@@ -7,6 +7,8 @@ export const QUERY_BLOCK_LIST = gql`
       height
       timestamp
       stateRoot
+      blockchainSize
+      spacePledged
       events(limit: 100) {
         id
       }
@@ -19,7 +21,7 @@ export const QUERY_BLOCK_LIST = gql`
 
 export const QUERY_BLOCK_BY_ID = gql`
   query BlockById($blockId: BigInt!) {
-    blocks(where: { height_eq: $blockId }) {
+    blocks(limit: 10, where: { height_eq: $blockId }) {
       id
       height
       hash

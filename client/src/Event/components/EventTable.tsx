@@ -59,8 +59,8 @@ const EventTable: FC<Props> = ({ events, nextPage, previousPage, page }) => {
         <Table
           columns={columns}
           emptyMessage="There are no blocks to show"
-          tableProps="shadow-md"
-          tableHeaderProps="bg-gray-200"
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
           footer={
             <Pagination
               page={page}
