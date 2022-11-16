@@ -1,3 +1,5 @@
+import BN from "bn.js";
+
 export const shortString = (
   value: string,
   initialLength = 6,
@@ -6,4 +8,34 @@ export const shortString = (
 
 export const generateArrayOfNumbers = (length: number): number[] => {
   return Array.from(Array(length).keys());
+};
+
+export const formatUnits = (value: string, decimals: number): number => {
+  const base = new BN(10).pow(new BN(decimals));
+  const dm = new BN(value).divmod(base);
+
+  return parseFloat(dm.div.toString() + "." + dm.mod.toString());
+};
+
+export const bigNumberToNumber = (
+  bigNumber: string,
+  decimals: number
+): number => {
+  const number = Number(formatUnits(bigNumber, decimals));
+
+  return limitNumberDecimals(number);
+};
+
+export const limitNumberDecimals = (number: number, precision = 2): number => {
+  if (number === 0) {
+    return number;
+  }
+
+  const [integer, decimals] = String(number).split(".");
+
+  if (!decimals) return Number(integer);
+
+  const decimalsToUse = decimals.slice(0, precision);
+
+  return Number(integer + "." + decimalsToUse);
 };

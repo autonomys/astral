@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { ResponsivePie } from "@nivo/pie";
 import { Account } from "gql/graphql";
-import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
+import { bigNumberToNumber } from "common/helpers";
 
 type Props = {
   account: Account;
@@ -19,13 +18,13 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
     {
       id: "transferable",
       label: "Transferable",
-      value: Number(formatUnits(BigNumber.from(account.free), 18)),
+      value: bigNumberToNumber(account.free, 18),
       color: "#E970F8",
     },
     {
       id: "staking",
       label: "Staking",
-      value: Number(formatUnits(BigNumber.from(account.reserved), 18)),
+      value: bigNumberToNumber(account.reserved, 18),
       color: "#9179EC",
     },
   ];
