@@ -1,8 +1,6 @@
 import { FC } from "react";
 import { ResponsivePie } from "@nivo/pie";
 import { Account } from "gql/graphql";
-import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils";
 import { bigNumberToNumber } from "common/helpers";
 
 type Props = {

@@ -1,5 +1,4 @@
-import { BigNumber } from "@ethersproject/bignumber";
-import { formatUnits } from "@ethersproject/units";
+import BN from "bn.js";
 
 export const shortString = (
   value: string,
@@ -11,22 +10,15 @@ export const generateArrayOfNumbers = (length: number): number[] => {
   return Array.from(Array(length).keys());
 };
 
-export const formatSpacePledged = (value: number) => {
-  const TB = 1024 * 1024 * 1024 * 1024;
-  const GB = 1024 * 1024 * 1024;
-  const MB = 1024 * 1024;
+export const formatUnits = (value: string, decimals: number): number => {
+  const base = new BN(10).pow(new BN(decimals));
+  const dm = new BN(value).divmod(base);
 
-  if (value >= TB) {
-    return `${Math.round((value * 100) / TB) / 100} TB`;
-  } else if (value >= GB) {
-    return `${Math.round((value * 100) / GB) / 100} GB`;
-  } else {
-    return `${Math.round((value * 100) / MB) / 100} MB`;
-  }
+  return parseFloat(dm.div.toString() + "." + dm.mod.toString());
 };
 
 export const bigNumberToNumber = (
-  bigNumber: BigNumber,
+  bigNumber: string,
   decimals: number
 ): number => {
   const number = Number(formatUnits(bigNumber, decimals));
