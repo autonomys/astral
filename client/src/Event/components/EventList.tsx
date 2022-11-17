@@ -3,36 +3,67 @@ import { useQuery } from "@apollo/client";
 
 // common
 import ErrorFallback from "common/components/ErrorFallback";
-import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
+import Spinner from "common/components/Spinner";
 //event
-import { QUERY_EVENT_LIST } from "Event/query";
+import { QUERY_EVENT_CONNECTION_LIST } from "Event/query";
 import EventTable from "Event/components/EventTable";
+import SearchBar from "common/components/SearchBar";
+import Pagination from "common/components/Pagination";
 
 const EventList: FC = () => {
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastCursor, setLastCursor] = useState(undefined);
   const PAGE_SIZE = 10;
-  const { data, error, loading } = useQuery(QUERY_EVENT_LIST, {
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE },
+
+  const {
+    data: connectionData,
+    error: connectionError,
+    loading: connectionLoading,
+  } = useQuery(QUERY_EVENT_CONNECTION_LIST, {
+    variables: { first: PAGE_SIZE, after: lastCursor },
   });
 
-  if (loading) {
-    return <TableLoadingSkeleton withPagination={true} />;
+  if (connectionLoading) {
+    return <Spinner />;
   }
 
-  if (error || !data) {
-    return <ErrorFallback error={error} />;
+  if (connectionError || !connectionData) {
+    return <ErrorFallback error={connectionError} />;
   }
 
-  const nextPage = () => setPage((prev) => prev + 1);
-  const previousPage = () => setPage((prev) => prev - 1);
+  const eventsConnection = connectionData.eventsConnection.edges.map(
+    (event) => event.node
+  );
+  const totalCount = connectionData.eventsConnection.totalCount;
+
+  const pageInfo = connectionData.eventsConnection.pageInfo;
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
+    setLastCursor(pageInfo.endCursor);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => prev - 1);
+    setLastCursor(pageInfo.endCursor);
+  };
 
   return (
-    <EventTable
-      events={data.events}
-      page={page}
-      nextPage={nextPage}
-      previousPage={previousPage}
-    />
+    <div className="w-full flex flex-col align-middle">
+      <div className="grid grid-cols-2">
+        <SearchBar />
+      </div>
+      <EventTable events={eventsConnection} />
+      <Pagination
+        nextPage={handleNextPage}
+        previousPage={handlePreviousPage}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        totalCount={totalCount}
+        hasNextPage={pageInfo.hasNextPage}
+        hasPreviousPage={pageInfo.hasPreviousPage}
+      />
+    </div>
   );
 };
 

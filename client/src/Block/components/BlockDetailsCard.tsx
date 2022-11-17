@@ -15,12 +15,16 @@ type Props = {
 const BlockDetailsCard: FC<Props> = ({ block }) => {
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-10">
-        <h3 className="font-semibold leading-none text-gray-900 text-2xl">
-          Block #{block.height}
-        </h3>
-      </div>
       <div className="border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6 w-full">
+        <div className="flex items-center justify-between mb-10">
+          <h3 className="font-semibold leading-none text-gray-900 text-2xl">
+            Block #{block.height}
+          </h3>
+          <div className="bg-[#241235] text-xs font-semibold px-5 py-3 rounded-full block leading-normal text-white">
+            Best Block
+          </div>
+        </div>
+
         <div className="flow-root">
           <List>
             <StyledListItem title="Timestamp">

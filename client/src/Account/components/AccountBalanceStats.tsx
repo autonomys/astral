@@ -16,7 +16,7 @@ const AccountBalanceStats: FC<Props> = ({ account }) => {
   const accountFree = bigNumberToNumber(account.free || 0, 18);
   const accountReserved = bigNumberToNumber(account.reserved || 0, 18);
   return (
-    <div className="w-full flex h-full bg-[#F3FBFF] rounded-md p-4">
+    <div className="w-full flex bg-[#F3FBFF] rounded-md p-4">
       <AccountBalancePieChart account={account} />
       <div className="flex w-full py-10">
         <div className="flex flex-col gap-8">

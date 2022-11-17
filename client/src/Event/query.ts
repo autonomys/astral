@@ -15,3 +15,33 @@ export const QUERY_EVENT_LIST = gql`
     }
   }
 `;
+
+export const QUERY_EVENT_CONNECTION_LIST = gql`
+  query EventsConnection($first: Int!, $after: String) {
+    eventsConnection(orderBy: block_height_DESC, first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          args
+          id
+          indexInBlock
+          name
+          phase
+          pos
+          timestamp
+          block {
+            timestamp
+            height
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
+  }
+`;

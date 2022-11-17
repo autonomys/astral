@@ -2,13 +2,13 @@ import { FC } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 
-// common
-import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
-
 // account
 import { QUERY_ACCOUNT_BY_ID } from "Account/query";
 import AccountDetailsCard from "./AccountDetailsCard";
 import AccountDetailsTabs from "./AccountDetailsTabs";
+
+// common
+import Spinner from "common/components/Spinner";
 
 const Account: FC = () => {
   const { accountId } = useParams();
@@ -18,7 +18,7 @@ const Account: FC = () => {
   });
 
   if (loading) {
-    return <TableLoadingSkeleton withPagination={true} />;
+    return <Spinner />;
   }
 
   if (error || !data) {
@@ -28,7 +28,7 @@ const Account: FC = () => {
   const account = data.accountById;
 
   return (
-    <div className="w-full grid grid-rows-2 gap-3">
+    <div className="w-full">
       <AccountDetailsCard account={account} />
       <AccountDetailsTabs extrinsics={account.extrinsics} />
     </div>

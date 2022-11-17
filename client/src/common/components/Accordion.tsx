@@ -42,14 +42,13 @@ const Accordion: FC<Props> = ({ title, children, value = "" }) => {
           </div>
         </button>
       </h2>
-      {isActive && (
-        <div
-          id="accordion-open-body-1"
-          aria-labelledby="accordion-open-heading-1"
-        >
-          {children}
-        </div>
-      )}
+      <div
+        className={isActive ? "block" : "hidden"}
+        id="accordion-open-body-1"
+        aria-labelledby="accordion-open-heading-1"
+      >
+        {children}
+      </div>
     </div>
   );
 };

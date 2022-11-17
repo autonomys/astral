@@ -8,7 +8,6 @@ import { Account } from "gql/graphql";
 
 // common
 import Table, { Column } from "common/components/Table";
-import Pagination from "common/components/Pagination";
 import { INTERNAL_ROUTES } from "common/routes";
 import { bigNumberToNumber } from "common/helpers";
 
@@ -16,17 +15,9 @@ dayjs.extend(relativeTime);
 
 interface Props {
   accounts: Account[];
-  nextPage: () => void;
-  previousPage: () => void;
-  page: number;
 }
 
-const AccountTable: FC<Props> = ({
-  accounts,
-  nextPage,
-  previousPage,
-  page,
-}) => {
+const AccountTable: FC<Props> = ({ accounts }) => {
   // methods
   const generateColumns = (accounts: Account[]): Column[] => [
     {
@@ -68,16 +59,9 @@ const AccountTable: FC<Props> = ({
         <Table
           columns={columns}
           emptyMessage="There are no accounts to show"
-          tableProps="shadow-md"
-          tableHeaderProps="bg-gray-200"
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
           id="accounts-list"
-          footer={
-            <Pagination
-              page={page}
-              nextPage={nextPage}
-              previousPage={previousPage}
-            />
-          }
         />
       </div>
     </div>

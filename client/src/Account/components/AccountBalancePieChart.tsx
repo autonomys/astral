@@ -35,14 +35,11 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
         data={data}
         margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
         innerRadius={0.5}
-        padAngle={2}
+        padAngle={0}
         cornerRadius={3}
         activeOuterRadiusOffset={8}
         colors={{ datum: "data.color" }}
-        arcLabelsTextColor={{
-          from: "color",
-          modifiers: [["darker", 2]],
-        }}
+        enableArcLabels={false}
         sortByValue={true}
         enableArcLinkLabels={false}
       />

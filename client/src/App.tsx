@@ -17,6 +17,10 @@ import AccountList from "Account/components/AccountList";
 import Account from "Account/components/Account";
 //event
 import EventList from "Event/components/EventList";
+import HeaderBackground from "layout/components/HeaderBackground";
+
+// Import Swiper styles
+import "swiper/css";
 
 function App() {
   return (
@@ -24,6 +28,7 @@ function App() {
       <Layout>
         <Header />
         <Container>
+          <HeaderBackground />
           <Routes>
             <Route path={INTERNAL_ROUTES.home} element={<Home />} />
             <Route path={INTERNAL_ROUTES.blocks.list}>

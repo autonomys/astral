@@ -15,6 +15,33 @@ export const QUERY_ACCOUNT_LIST = gql`
   }
 `;
 
+export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
+  query AccountsConnection($first: Int!, $after: String) {
+    accountsConnection(orderBy: total_DESC, first: $first, after: $after) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      edges {
+        cursor
+        node {
+          free
+          id
+          reserved
+          total
+          updatedAt
+          extrinsics(limit: 300) {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
     accountById(id: $accountId) {
