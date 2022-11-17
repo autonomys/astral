@@ -3,50 +3,66 @@ import { useQuery } from "@apollo/client";
 
 // block
 import BlockTable from "Block/components/BlockTable";
-import { QUERY_BLOCK_LIST } from "Block/query";
+import { QUERY_BLOCK_LIST_CONNECTION } from "Block/query";
 
 // common
-import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
+import Spinner from "common/components/Spinner";
 import ErrorFallback from "common/components/ErrorFallback";
 import SearchBar from "common/components/SearchBar";
+import Pagination from "common/components/Pagination";
 
 const BlockList: FC = () => {
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastCursor, setLastCursor] = useState(undefined);
   const PAGE_SIZE = 10;
-  const { data, error, loading } = useQuery(QUERY_BLOCK_LIST, {
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE },
+
+  const {
+    data: connectionData,
+    error: connectionError,
+    loading: connectionLoading,
+  } = useQuery(QUERY_BLOCK_LIST_CONNECTION, {
+    variables: { first: PAGE_SIZE, after: lastCursor },
   });
 
-  if (loading) {
-    //return <TableLoadingSkeleton withPagination={true} />;
-    return (
-      <div className=" w-full min-h-screen flex justify-center items-center">
-        <div className="flex min-h-screen w-full items-center justify-center ">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[#ABCFEF] via-[#929EEA] to-[#91D3A0] animate-spin">
-            <div className="h-9 w-9 rounded-full background-gradient"></div>
-          </div>
-        </div>
-      </div>
-    );
+  if (connectionLoading) {
+    return <Spinner />;
   }
 
-  if (error || !data) {
-    return <ErrorFallback error={error} />;
+  if (connectionError || !connectionData) {
+    return <ErrorFallback error={connectionError} />;
   }
 
-  const nextPage = () => setPage((prev) => prev + 1);
-  const previousPage = () => setPage((prev) => prev - 1);
+  const blocksConnection = connectionData.blocksConnection.edges.map(
+    (block) => block.node
+  );
+  const totalCount = connectionData.blocksConnection.totalCount;
+
+  const pageInfo = connectionData.blocksConnection.pageInfo;
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
+    setLastCursor(pageInfo.endCursor);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => prev - 1);
+    setLastCursor(pageInfo.endCursor);
+  };
 
   return (
     <div className="w-full flex flex-col align-middle">
       <div className="grid grid-cols-2">
         <SearchBar />
       </div>
-      <BlockTable
-        blocks={data.blocks}
-        page={page}
-        nextPage={nextPage}
-        previousPage={previousPage}
+      <BlockTable blocks={blocksConnection} />
+      <Pagination
+        nextPage={handleNextPage}
+        previousPage={handlePreviousPage}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        totalCount={totalCount}
+        hasNextPage={pageInfo.hasNextPage}
+        hasPreviousPage={pageInfo.hasPreviousPage}
       />
     </div>
   );

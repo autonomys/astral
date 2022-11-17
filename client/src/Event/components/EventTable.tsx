@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 // common
-import Pagination from "common/components/Pagination";
 import Table, { Column } from "common/components/Table";
 import { INTERNAL_ROUTES } from "common/routes";
 
@@ -13,12 +12,9 @@ dayjs.extend(relativeTime);
 
 interface Props {
   events: Event[];
-  nextPage: () => void;
-  previousPage: () => void;
-  page: number;
 }
 
-const EventTable: FC<Props> = ({ events, nextPage, previousPage, page }) => {
+const EventTable: FC<Props> = ({ events }) => {
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
@@ -61,13 +57,6 @@ const EventTable: FC<Props> = ({ events, nextPage, previousPage, page }) => {
           emptyMessage="There are no blocks to show"
           tableProps="bg-white rounded-md"
           tableHeaderProps="border-b border-gray-200"
-          footer={
-            <Pagination
-              page={page}
-              nextPage={nextPage}
-              previousPage={previousPage}
-            />
-          }
           id="latest-events"
         />
       </div>

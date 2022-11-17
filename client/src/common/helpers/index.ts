@@ -39,3 +39,17 @@ export const limitNumberDecimals = (number: number, precision = 2): number => {
 
   return Number(integer + "." + decimalsToUse);
 };
+
+export const formatSpacePledged = (value: number) => {
+  const TB = 1024 * 1024 * 1024 * 1024;
+  const GB = 1024 * 1024 * 1024;
+  const MB = 1024 * 1024;
+
+  if (value >= TB) {
+    return `${Math.round((value * 100) / TB) / 100} TB`;
+  } else if (value >= GB) {
+    return `${Math.round((value * 100) / GB) / 100} GB`;
+  } else {
+    return `${Math.round((value * 100) / MB) / 100} MB`;
+  }
+};

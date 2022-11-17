@@ -19,6 +19,41 @@ export const QUERY_BLOCK_LIST = gql`
   }
 `;
 
+export const QUERY_BLOCK_LIST_CONNECTION = gql`
+  query BlocksConnection($first: Int!, $after: String) {
+    blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          blockchainSize
+          extrinsicRoot
+          hash
+          height
+          id
+          parentHash
+          spacePledged
+          specId
+          stateRoot
+          timestamp
+          events(limit: 300) {
+            id
+          }
+          extrinsics(limit: 300) {
+            id
+          }
+        }
+      }
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+`;
+
 export const QUERY_BLOCK_BY_ID = gql`
   query BlockById($blockId: BigInt!) {
     blocks(limit: 10, where: { height_eq: $blockId }) {
