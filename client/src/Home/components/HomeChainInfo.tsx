@@ -28,7 +28,7 @@ const HomeChainInfo: FC<Props> = ({ blocks }) => {
     {
       title: "Archived Block",
       icon: <BlockIcon />,
-      value: `${archivedBlock} `,
+      value: archivedBlock,
     },
     {
       title: "Signed Extrinsics",
@@ -48,7 +48,7 @@ const HomeChainInfo: FC<Props> = ({ blocks }) => {
     {
       title: "Best Block",
       icon: <BlockIcon />,
-      value: `${block.height}`,
+      value: block.height,
     },
     {
       title: "Total Rewards Unlocked",
