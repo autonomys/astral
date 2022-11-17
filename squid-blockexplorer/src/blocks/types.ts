@@ -26,6 +26,5 @@ export interface ProcessBlocksDependencies {
   ) => Promise<void>;
 }
 
-
 export type ExtrinsicsMap = Map<string, Extrinsic>;
 export type CallsMap = Map<string, Call>;
