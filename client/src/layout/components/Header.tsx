@@ -16,6 +16,12 @@ const Header: FC = () => {
         </Link>
         <nav className="md:ml-auto flex flex-wrap items-center text-base justify-center">
           <Link
+            to={INTERNAL_ROUTES.accounts.list}
+            className="mr-5 hover:text-gray-900"
+          >
+            Accounts
+          </Link>
+          <Link
             to={INTERNAL_ROUTES.blocks.list}
             className="mr-5 hover:text-gray-900"
           >
@@ -25,7 +31,13 @@ const Header: FC = () => {
             to={INTERNAL_ROUTES.extrinsics.list}
             className="mr-5 hover:text-gray-900"
           >
-            Extrinsic
+            Extrinsics
+          </Link>
+          <Link
+            to={INTERNAL_ROUTES.events.list}
+            className="mr-5 hover:text-gray-900"
+          >
+            Events
           </Link>
         </nav>
       </div>

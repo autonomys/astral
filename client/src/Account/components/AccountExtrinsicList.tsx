@@ -15,7 +15,7 @@ interface Props {
   extrinsics: Extrinsic[];
 }
 
-const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
+const AccountExtrinsicList: FC<Props> = ({ extrinsics }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -56,9 +56,9 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
     <Table
       columns={columns}
       emptyMessage="There are no extrinsics to show"
-      id="block-details-extrinsics-list"
+      id="account-details-extrinsics-list"
     />
   );
 };
 
-export default BlockDetailsExtrinsicList;
+export default AccountExtrinsicList;

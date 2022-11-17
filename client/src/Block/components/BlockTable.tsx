@@ -52,10 +52,6 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
       cells: blocks.map(({ events }) => <div>{events?.length}</div>),
     },
     {
-      title: "Validator",
-      cells: blocks.map(({ validator }) => <div>{validator}</div>),
-    },
-    {
       title: "Block hash",
       cells: blocks.map(({ hash }) => <div>{shortString(hash)}</div>),
     },

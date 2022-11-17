@@ -11,9 +11,7 @@ export const QUERY_EXTRINSIC_LIST = gql`
         height
         timestamp
       }
-      call {
-        name
-      }
+      name
     }
   }
 `;
@@ -27,7 +25,6 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       signature
       success
       tip
-      version
       block {
         height
         id
@@ -50,9 +47,7 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
         }
         timestamp
       }
-      call {
-        name
-      }
+      name
     }
   }
 `;

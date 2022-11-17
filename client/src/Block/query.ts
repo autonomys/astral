@@ -6,12 +6,11 @@ export const QUERY_BLOCK_LIST = gql`
       hash
       height
       timestamp
-      validator
       stateRoot
-      events {
+      events(limit: 100) {
         id
       }
-      extrinsics {
+      extrinsics(limit: 100) {
         id
       }
     }
@@ -19,25 +18,20 @@ export const QUERY_BLOCK_LIST = gql`
 `;
 
 export const QUERY_BLOCK_BY_ID = gql`
-  query BlockById($blockId: Int!) {
+  query BlockById($blockId: BigInt!) {
     blocks(where: { height_eq: $blockId }) {
       id
       height
       hash
       stateRoot
       timestamp
-      validator
-      extrinsicsRoot
-      spec {
-        specVersion
-      }
+      extrinsicRoot
+      specId
       parentHash
       extrinsics(limit: 10, orderBy: block_height_DESC) {
         id
         hash
-        call {
-          name
-        }
+        name
         block {
           height
           timestamp
