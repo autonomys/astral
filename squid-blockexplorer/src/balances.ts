@@ -30,13 +30,14 @@ interface Balance {
   reserved: bigint;
 }
 
+// TODO: should also include accounts with vested tokens (hardcoded in the chain config)
 export async function processBalances(ctx: Context): Promise<void> {
   const accountIdsHex = new Set<string>();
 
   for (const block of ctx.blocks) {
     for (const item of block.items) {
       if (item.kind === 'call') {
-        processBalancesCallItem(ctx, item, accountIdsHex);
+        processBalancesCallItem(item, accountIdsHex);
       } else if (item.kind === 'event') {
         processBalancesEventItem(ctx, item, accountIdsHex);
       }
@@ -72,41 +73,38 @@ async function saveAccounts(
     return;
   }
 
-  const accounts = new Map<string, Account>();
-  const deletions = new Map<string, Account>();
+  const accounts: Account[] = [];
 
   for (let i = 0; i < accountIds.length; i++) {
     const id = encodeId(accountIds[i]);
     const balance = balances[i];
 
     if (!balance) continue;
+
     const total = balance.free + balance.reserved;
-    if (total > 0n) {
-      accounts.set(
-        id,
-        new Account({
-          id,
-          free: balance.free,
-          reserved: balance.reserved,
-          total,
-          updatedAt: block.height,
-        })
-      );
-    } else {
-      deletions.set(id, new Account({ id }));
-    }
+    // check if there is an existing account created earlier (i.e. when processing blocks)
+    const existingAccount = await ctx.store.get(Account, id);
+
+    const account = new Account({
+      ...existingAccount,
+      id,
+      free: balance.free,
+      reserved: balance.reserved,
+      total,
+      updatedAt: BigInt(block.height),
+    });
+
+    accounts.push(account);
   }
 
-  await ctx.store.save([...accounts.values()]);
-  await ctx.store.remove([...deletions.values()]);
+  await ctx.store.save(accounts);
 
   ctx.log
     .child('accounts')
-    .info(`updated: ${accounts.size}, deleted: ${deletions.size}`);
+    .info(`updated: ${accounts.length}`);
 }
 
 function processBalancesCallItem(
-  ctx: Context,
   item: CallItem,
   accountIdsHex: Set<string>
 ) {
@@ -124,7 +122,7 @@ function processBalancesEventItem(
   item: EventItem,
   accountIdsHex: Set<string>
 ) {
-  switch (item.name) {
+  switch (item.name as string) {
     case 'Balances.BalanceSet': {
       const account = getBalanceSetAccount(ctx, item.event);
       accountIdsHex.add(account);
