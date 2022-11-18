@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Chain } from "@subsquid/substrate-processor/lib/chain";
 import { Logger } from "@subsquid/logger";
 import { Store } from "@subsquid/typeorm-store";
@@ -117,32 +118,27 @@ const chainMock = {
   getEventHash(): string {
     return 'event hash';
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   decodeEvent(): any {
     return;
   },
   getCallHash(): string {
     return 'call hash';
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   decodeCall(): any {
     return;
   },
   getStorageItemTypeHash(): string | undefined {
     return 'random hash';
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getStorage(): Promise<any> {
     return Promise.resolve();
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryStorage(): Promise<any[]> {
     return Promise.resolve([]);
   },
   getConstantTypeHash(): string | undefined {
     return;
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getConstant(): any {
     return;
   }

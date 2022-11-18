@@ -84,7 +84,7 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
 }
 
 export function calcHistorySize(segmentsCount: number): bigint {
-  // these constants may change post Gemini-II
+  // TODO: these constants may change post Gemini-II
   const WITNESS_SIZE = 48;
   const PIECE_SIZE = 32 * 1024;
   const PIECES_IN_SEGMENT = 256;
