@@ -3,37 +3,68 @@ import { useQuery } from "@apollo/client";
 
 // ExtrinsicList
 import ExtrinsicTable from "Extrinsic/components/ExtrinsicTable";
-import { QUERY_EXTRINSIC_LIST } from "Extrinsic/query";
+import { QUERY_EXTRINSIC_LIST_CONNECTION } from "Extrinsic/query";
 
 // common
-import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
+import Spinner from "common/components/Spinner";
 import ErrorFallback from "common/components/ErrorFallback";
+import SearchBar from "common/components/SearchBar";
+import Pagination from "common/components/Pagination";
 
 const ExtrinsicList: FC = () => {
-  const [page, setPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastCursor, setLastCursor] = useState(undefined);
   const PAGE_SIZE = 10;
-  const { data, error, loading } = useQuery(QUERY_EXTRINSIC_LIST, {
-    variables: { limit: PAGE_SIZE, offset: page * PAGE_SIZE },
+
+  const {
+    data: connectionData,
+    error: connectionError,
+    loading: connectionLoading,
+  } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
+    variables: { first: PAGE_SIZE, after: lastCursor },
   });
 
-  if (loading) {
-    return <TableLoadingSkeleton withPagination={true} />;
+  if (connectionLoading) {
+    return <Spinner />;
   }
 
-  if (error || !data) {
-    return <ErrorFallback error={error} />;
+  if (connectionError || !connectionData) {
+    return <ErrorFallback error={connectionError} />;
   }
 
-  const nextPage = () => setPage((prev) => prev + 1);
-  const previousPage = () => setPage((prev) => prev - 1);
+  const extrinsicsConnection = connectionData.extrinsicsConnection.edges.map(
+    (extrinsic) => extrinsic.node
+  );
+  const totalCount = connectionData.extrinsicsConnection.totalCount;
+
+  const pageInfo = connectionData.extrinsicsConnection.pageInfo;
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1);
+    setLastCursor(pageInfo.endCursor);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => prev - 1);
+    setLastCursor(pageInfo.endCursor);
+  };
 
   return (
-    <ExtrinsicTable
-      extrinsics={data.extrinsics}
-      page={page}
-      nextPage={nextPage}
-      previousPage={previousPage}
-    />
+    <div className="w-full flex flex-col align-middle">
+      <div className="grid grid-cols-2">
+        <SearchBar />
+      </div>
+      <ExtrinsicTable extrinsics={extrinsicsConnection} />
+      <Pagination
+        nextPage={handleNextPage}
+        previousPage={handlePreviousPage}
+        currentPage={currentPage}
+        pageSize={PAGE_SIZE}
+        totalCount={totalCount}
+        hasNextPage={pageInfo.hasNextPage}
+        hasPreviousPage={pageInfo.hasPreviousPage}
+      />
+    </div>
   );
 };
 

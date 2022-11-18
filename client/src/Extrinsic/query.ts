@@ -11,9 +11,40 @@ export const QUERY_EXTRINSIC_LIST = gql`
         height
         timestamp
       }
-      call {
-        name
+      name
+    }
+  }
+`;
+
+export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
+  query ExtrinsicsConnection($first: Int!, $after: String) {
+    extrinsicsConnection(
+      orderBy: block_height_DESC
+      first: $first
+      after: $after
+    ) {
+      edges {
+        cursor
+        node {
+          hash
+          pos
+          id
+          success
+          block {
+            timestamp
+            height
+          }
+          name
+          nonce
+        }
       }
+      pageInfo {
+        endCursor
+        hasPreviousPage
+        hasNextPage
+        startCursor
+      }
+      totalCount
     }
   }
 `;
@@ -27,7 +58,6 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       signature
       success
       tip
-      version
       block {
         height
         id
@@ -50,9 +80,7 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
         }
         timestamp
       }
-      call {
-        name
-      }
+      name
     }
   }
 `;

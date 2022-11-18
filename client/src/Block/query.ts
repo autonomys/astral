@@ -6,38 +6,69 @@ export const QUERY_BLOCK_LIST = gql`
       hash
       height
       timestamp
-      validator
       stateRoot
-      events {
+      blockchainSize
+      spacePledged
+      events(limit: 100) {
         id
       }
-      extrinsics {
+      extrinsics(limit: 100) {
         id
       }
     }
   }
 `;
 
+export const QUERY_BLOCK_LIST_CONNECTION = gql`
+  query BlocksConnection($first: Int!, $after: String) {
+    blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          blockchainSize
+          extrinsicRoot
+          hash
+          height
+          id
+          parentHash
+          spacePledged
+          specId
+          stateRoot
+          timestamp
+          events(limit: 300) {
+            id
+          }
+          extrinsics(limit: 300) {
+            id
+          }
+        }
+      }
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+`;
+
 export const QUERY_BLOCK_BY_ID = gql`
-  query BlockById($blockId: Int!) {
-    blocks(where: { height_eq: $blockId }) {
+  query BlockById($blockId: BigInt!) {
+    blocks(limit: 10, where: { height_eq: $blockId }) {
       id
       height
       hash
       stateRoot
       timestamp
-      validator
-      extrinsicsRoot
-      spec {
-        specVersion
-      }
+      extrinsicRoot
+      specId
       parentHash
       extrinsics(limit: 10, orderBy: block_height_DESC) {
         id
         hash
-        call {
-          name
-        }
+        name
         block {
           height
           timestamp

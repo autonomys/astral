@@ -32,8 +32,8 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
     },
     {
       title: "Action",
-      cells: extrinsics.map(({ call }) => (
-        <div>{call.name.split(".")[1].toUpperCase()}</div>
+      cells: extrinsics.map(({ name }) => (
+        <div>{name.split(".")[1].toUpperCase()}</div>
       )),
     },
     {

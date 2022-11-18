@@ -9,19 +9,15 @@ import { Block } from "gql/graphql";
 // common
 import { shortString } from "common/helpers";
 import Table, { Column } from "common/components/Table";
-import Pagination from "common/components/Pagination";
 import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime);
 
 interface Props {
   blocks: Block[];
-  nextPage: () => void;
-  previousPage: () => void;
-  page: number;
 }
 
-const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
+const BlockList: FC<Props> = ({ blocks }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -52,10 +48,6 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
       cells: blocks.map(({ events }) => <div>{events?.length}</div>),
     },
     {
-      title: "Validator",
-      cells: blocks.map(({ validator }) => <div>{validator}</div>),
-    },
-    {
       title: "Block hash",
       cells: blocks.map(({ hash }) => <div>{shortString(hash)}</div>),
     },
@@ -70,15 +62,8 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
         <Table
           columns={columns}
           emptyMessage="There are no blocks to show"
-          tableProps="shadow-md"
-          tableHeaderProps="bg-gray-200"
-          footer={
-            <Pagination
-              page={page}
-              nextPage={nextPage}
-              previousPage={previousPage}
-            />
-          }
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
           id="latest-blocks"
         />
       </div>

@@ -14,6 +14,16 @@ export const INTERNAL_ROUTES = {
     },
     list: "blocks",
   },
+  accounts: {
+    list: "accounts",
+    id: {
+      path: ":accountId",
+      page: (accountId: string): string => `/accounts/${accountId}`,
+    },
+  },
+  events: {
+    list: "events",
+  },
   extrinsics: {
     id: {
       path: ":extrinsicId",

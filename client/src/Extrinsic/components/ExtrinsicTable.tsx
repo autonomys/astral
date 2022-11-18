@@ -9,24 +9,15 @@ import { Extrinsic } from "gql/graphql";
 // common
 import { shortString } from "common/helpers";
 import Table, { Column } from "common/components/Table";
-import Pagination from "common/components/Pagination";
 import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime);
 
 interface Props {
   extrinsics: Extrinsic[];
-  nextPage: () => void;
-  previousPage: () => void;
-  page: number;
 }
 
-const ExtrinsicTable: FC<Props> = ({
-  extrinsics,
-  page,
-  nextPage,
-  previousPage,
-}) => {
+const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -50,8 +41,8 @@ const ExtrinsicTable: FC<Props> = ({
     },
     {
       title: "Action",
-      cells: extrinsics.map(({ call }) => (
-        <div>{call.name.split(".")[1].toUpperCase()}</div>
+      cells: extrinsics.map(({ name }) => (
+        <div>{name.split(".")[1].toUpperCase()}</div>
       )),
     },
     {
@@ -74,15 +65,8 @@ const ExtrinsicTable: FC<Props> = ({
           columns={columns}
           emptyMessage="There are no extrinsics to show"
           id="latest-extrinsics"
-          tableProps="shadow-md"
-          tableHeaderProps="bg-gray-200"
-          footer={
-            <Pagination
-              page={page}
-              nextPage={nextPage}
-              previousPage={previousPage}
-            />
-          }
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
         />
       </div>
     </div>

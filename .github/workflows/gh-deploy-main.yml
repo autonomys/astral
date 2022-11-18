@@ -20,8 +20,11 @@ jobs:
         run: |
           yarn install --frozen-lockfile
           yarn build
+        env:
+          REACT_APP_GRAPHQL_API_URL: ${{secrets.REACT_APP_GRAPHQL_API_URL}}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: build
+          folder: ./client/build
+        
