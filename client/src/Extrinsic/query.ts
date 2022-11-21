@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const QUERY_EXTRINSIC_LIST = gql`
   query Extrinsics($limit: Int!, $offset: Int!) {
@@ -16,7 +16,7 @@ export const QUERY_EXTRINSIC_LIST = gql`
       }
     }
   }
-`;
+`
 
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
@@ -55,4 +55,4 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       }
     }
   }
-`;
+`

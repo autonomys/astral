@@ -1,22 +1,22 @@
-import { FC, ReactElement, useMemo } from "react";
-import { generateArrayOfNumbers } from "../helpers";
+import { FC, ReactElement, useMemo } from 'react'
+import { generateArrayOfNumbers } from '../helpers'
 
 export type Column = {
-  title: string;
-  cells: ReactElement[];
-  isNumeric?: boolean;
-  centerTitle?: boolean;
-};
+  title: string
+  cells: ReactElement[]
+  isNumeric?: boolean
+  centerTitle?: boolean
+}
 
 type Props = {
-  id: string;
-  columns: Column[];
-  footer?: ReactElement;
-  emptyMessage: string;
-  tableRowProps?: string;
-  tableHeaderProps?: string;
-  tableProps?: string;
-};
+  id: string
+  columns: Column[]
+  footer?: ReactElement
+  emptyMessage: string
+  tableRowProps?: string
+  tableHeaderProps?: string
+  tableProps?: string
+}
 
 const Table: FC<Props> = ({
   id,
@@ -27,20 +27,20 @@ const Table: FC<Props> = ({
   tableRowProps,
   tableProps,
 }) => {
-  const cellsCount = useMemo(() => columns?.[0]?.cells?.length ?? 0, [columns]);
+  const cellsCount = useMemo(() => columns?.[0]?.cells?.length ?? 0, [columns])
   const rows = useMemo(
     () =>
       generateArrayOfNumbers(cellsCount)?.reduce<ReactElement[][]>(
         (acc, _, index) => {
-          const row = columns.map((column) => column.cells[index]);
+          const row = columns.map((column) => column.cells[index])
 
-          return [...acc, row];
+          return [...acc, row]
         },
-        []
+        [],
       ),
-    [cellsCount, columns]
-  );
-  const hasRows = Boolean(rows.length);
+    [cellsCount, columns],
+  )
+  const hasRows = Boolean(rows.length)
 
   return (
     <div className="w-full">
@@ -54,7 +54,7 @@ const Table: FC<Props> = ({
                 {columns?.map(
                   (
                     { title, isNumeric = false, centerTitle = false },
-                    index
+                    index,
                   ) => (
                     <th key={`table-header-${id}-${index}`}>
                       {isNumeric ? (
@@ -65,7 +65,7 @@ const Table: FC<Props> = ({
                         <div className="py-3 px-6 text-left">{title}</div>
                       )}
                     </th>
-                  )
+                  ),
                 )}
               </tr>
             </thead>
@@ -91,7 +91,7 @@ const Table: FC<Props> = ({
                     >
                       {content}
                     </td>
-                  )
+                  ),
                 )}
               </tr>
             ))}
@@ -107,7 +107,7 @@ const Table: FC<Props> = ({
         <div className="flex justify-end mt-6">{footer}</div>
       ) : null}
     </div>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table

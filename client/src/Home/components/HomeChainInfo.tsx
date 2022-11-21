@@ -1,62 +1,62 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 // common/icons
-import BlockIcon from "common/icons/BlockIcon";
-import DocIcon from "common/icons/DocIcon";
-import WalletIcon from "common/icons/WalletIcon";
-import PieChartIcon from "common/icons/PieChartIcon";
-import MaximizeIcon from "common/icons/MaximizeIcon";
-import ClosedWalletIcon from "common/icons/ClosedWalletIcon";
-import CoinIcon from "common/icons/CoinIcon";
+import BlockIcon from 'common/icons/BlockIcon'
+import DocIcon from 'common/icons/DocIcon'
+import WalletIcon from 'common/icons/WalletIcon'
+import PieChartIcon from 'common/icons/PieChartIcon'
+import MaximizeIcon from 'common/icons/MaximizeIcon'
+import ClosedWalletIcon from 'common/icons/ClosedWalletIcon'
+import CoinIcon from 'common/icons/CoinIcon'
 
 // home
-import HomeInfoCard from "Home/components/HomeInfoCard";
+import HomeInfoCard from 'Home/components/HomeInfoCard'
 
 const HomeChainInfo: FC = () => {
   const listOfCards = [
     {
-      title: "Archived Blocks",
+      title: 'Archived Blocks',
       icon: <BlockIcon />,
-      value: "788.687",
+      value: '788.687',
     },
     {
-      title: "Signed Extrinsics",
+      title: 'Signed Extrinsics',
       icon: <DocIcon />,
-      value: "2.598",
+      value: '2.598',
     },
     {
-      title: "Qualified Reward Addresses",
+      title: 'Qualified Reward Addresses',
       icon: <WalletIcon />,
-      value: "88.687",
+      value: '88.687',
     },
     {
-      title: "Total Space Pledged",
+      title: 'Total Space Pledged',
       icon: <PieChartIcon />,
-      value: "487.64 TB",
+      value: '487.64 TB',
     },
     {
-      title: "Best Block",
+      title: 'Best Block',
       icon: <BlockIcon />,
-      value: "713.256",
+      value: '713.256',
     },
     {
-      title: "Total Rewards Unlocked",
+      title: 'Total Rewards Unlocked',
       icon: <CoinIcon />,
-      value: "8.687M",
+      value: '8.687M',
     },
     {
-      title: "Total Reward Addresses",
+      title: 'Total Reward Addresses',
       icon: <ClosedWalletIcon />,
-      value: "88.687",
+      value: '88.687',
     },
     {
-      title: "Blockchain History Size",
+      title: 'Blockchain History Size',
       icon: <MaximizeIcon />,
-      value: "87.87 GB",
+      value: '87.87 GB',
     },
-  ];
+  ]
 
-  const half = Math.ceil(listOfCards.length / 2);
+  const half = Math.ceil(listOfCards.length / 2)
 
   return (
     <div className="w-full">
@@ -64,10 +64,10 @@ const HomeChainInfo: FC = () => {
         {listOfCards.slice(0, half).map(({ title, value, icon }, index) => (
           <HomeInfoCard
             key={`${title}-${index}`}
+            additionalClass={index !== half - 1 ? 'pr-4' : ''}
+            icon={icon}
             title={title}
             value={value}
-            icon={icon}
-            additionalClass={index !== half - 1 ? "pr-4" : ""}
           />
         ))}
       </div>
@@ -75,15 +75,15 @@ const HomeChainInfo: FC = () => {
         {listOfCards.slice(half).map(({ title, value, icon }, index) => (
           <HomeInfoCard
             key={`${title}-${index}`}
+            additionalClass={index !== half - 1 ? 'pr-4' : ''}
+            icon={icon}
             title={title}
             value={value}
-            icon={icon}
-            additionalClass={index !== half - 1 ? "pr-4" : ""}
           />
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HomeChainInfo;
+export default HomeChainInfo

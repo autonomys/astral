@@ -1,12 +1,12 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 const PieChartIcon: FC = () => {
   return (
     <svg
-      width="28"
+      fill="none"
       height="28"
       viewBox="0 0 20 20"
-      fill="none"
+      width="28"
       xmlns="http://www.w3.org/2000/svg"
     >
       <g clipPath="url(#clip0_12_1094)">
@@ -25,11 +25,11 @@ const PieChartIcon: FC = () => {
       </g>
       <defs>
         <clipPath id="clip0_12_1094">
-          <rect width="20" height="20" fill="white" />
+          <rect fill="white" height="20" width="20" />
         </clipPath>
       </defs>
     </svg>
-  );
-};
+  )
+}
 
-export default PieChartIcon;
+export default PieChartIcon

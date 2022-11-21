@@ -1,12 +1,12 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 const CoinIcon: FC = () => {
   return (
     <svg
-      width="26"
+      fill="none"
       height="26"
       viewBox="0 0 20 20"
-      fill="none"
+      width="26"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -22,7 +22,7 @@ const CoinIcon: FC = () => {
         fill="#DE67E4"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default CoinIcon;
+export default CoinIcon

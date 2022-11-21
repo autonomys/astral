@@ -1,9 +1,9 @@
-import { FC } from "react";
-import dayjs from "dayjs";
-import { Link } from "react-router-dom";
+import { FC } from 'react'
+import dayjs from 'dayjs'
+import { Link } from 'react-router-dom'
 
 // common
-import { EXTERNAL_ROUTES } from "common/routes";
+import { EXTERNAL_ROUTES } from 'common/routes'
 
 const Footer: FC = () => {
   return (
@@ -11,8 +11,8 @@ const Footer: FC = () => {
       <div className="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
         <div className="w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left">
           <Link
-            to="/"
             className="flex title-font font-medium items-center text-gray-900 mb-4 "
+            to="/"
           >
             <span className="text-xl">SUBSPACE</span>
           </Link>
@@ -29,24 +29,24 @@ const Footer: FC = () => {
             <nav className="list-none mb-10">
               <li>
                 <a
-                  href={EXTERNAL_ROUTES.subspace}
                   className="text-gray-600 hover:text-gray-800"
+                  href={EXTERNAL_ROUTES.subspace}
                 >
                   Subspace
                 </a>
               </li>
               <li>
                 <a
-                  href={EXTERNAL_ROUTES.forum}
                   className="text-gray-600 hover:text-gray-800"
+                  href={EXTERNAL_ROUTES.forum}
                 >
                   Forum
                 </a>
               </li>
               <li>
                 <a
-                  href={EXTERNAL_ROUTES.docs}
                   className="text-gray-600 hover:text-gray-800"
+                  href={EXTERNAL_ROUTES.docs}
                 >
                   Docs
                 </a>
@@ -63,7 +63,7 @@ const Footer: FC = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

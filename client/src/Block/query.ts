@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const QUERY_BLOCK_LIST = gql`
   query Blocks($limit: Int!, $offset: Int!) {
@@ -16,7 +16,7 @@ export const QUERY_BLOCK_LIST = gql`
       }
     }
   }
-`;
+`
 
 export const QUERY_BLOCK_BY_ID = gql`
   query BlockById($blockId: Int!) {
@@ -63,4 +63,4 @@ export const QUERY_BLOCK_BY_ID = gql`
       }
     }
   }
-`;
+`

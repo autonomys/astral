@@ -1,17 +1,17 @@
-import { FC } from "react";
-import { Extrinsic } from "gql/graphql";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import ReactJson from "react-json-view";
+import { FC } from 'react'
+import { Extrinsic } from 'gql/graphql'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import ReactJson from 'react-json-view'
 
 // common
-import { List, StyledListItem } from "common/components/List";
+import { List, StyledListItem } from 'common/components/List'
 
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 
 type Props = {
-  extrinsic: Extrinsic;
-};
+  extrinsic: Extrinsic
+}
 
 const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
   return (
@@ -28,7 +28,7 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
               <StyledListItem
                 title="Timestamp"
                 value={dayjs(extrinsic.block.timestamp).format(
-                  "DD MMM YYYY | HH:mm:ss(Z)"
+                  'DD MMM YYYY | HH:mm:ss(Z)',
                 )}
               />
               <StyledListItem
@@ -42,11 +42,11 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
           </div>
         </div>
         <div className="border border-slate-100 bg-white shadow rounded-lg ml-4 mb-4 p-4 sm:p-6 w-full">
-          <ReactJson src={{}} iconStyle="circle" />
+          <ReactJson iconStyle="circle" src={{}} />
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ExtrinsicDetailsCard;
+export default ExtrinsicDetailsCard

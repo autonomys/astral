@@ -1,7 +1,7 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react'
 
-interface Props {
-  children?: ReactNode;
+type Props = {
+  children?: ReactNode
 }
 
 const Container: FC<Props> = ({ children }) => {
@@ -9,7 +9,7 @@ const Container: FC<Props> = ({ children }) => {
     <div className="flex  min-h-screen justify-center container px-5 py-24 mx-auto">
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Container;
+export default Container

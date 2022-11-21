@@ -1,17 +1,17 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement } from 'react'
 
-interface Props {
-  title: string;
-  value: string;
-  icon: ReactElement;
-  additionalClass?: string;
+type Props = {
+  title: string
+  value: string
+  icon: ReactElement
+  additionalClass?: string
 }
 
 const HomeInfoCard: FC<Props> = ({
   title,
   icon,
   value,
-  additionalClass = "",
+  additionalClass = '',
 }) => {
   return (
     <div className={`w-full lg:w-1/2 md:w-full ${additionalClass}`}>
@@ -27,7 +27,7 @@ const HomeInfoCard: FC<Props> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HomeInfoCard;
+export default HomeInfoCard

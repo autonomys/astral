@@ -1,30 +1,30 @@
-import { FC } from "react";
-import { useQuery } from "@apollo/client";
+import { FC } from 'react'
+import { useQuery } from '@apollo/client'
 
 // blockList
-import { QUERY_BLOCK_LIST } from "Block/query";
+import { QUERY_BLOCK_LIST } from 'Block/query'
 
 // extrinsicList
-import { QUERY_EXTRINSIC_LIST } from "Extrinsic/query";
+import { QUERY_EXTRINSIC_LIST } from 'Extrinsic/query'
 
 // home
-import HomeBlockList from "Home/components/HomeBlockList";
-import HomeExtrinsicList from "Home/components/HomeExtrinsicList";
-import HomeChainInfo from "Home/components/HomeChainInfo";
+import HomeBlockList from 'Home/components/HomeBlockList'
+import HomeExtrinsicList from 'Home/components/HomeExtrinsicList'
+import HomeChainInfo from 'Home/components/HomeChainInfo'
 
 // common
-import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
-import ErrorFallback from "common/components/ErrorFallback";
+import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
+import ErrorFallback from 'common/components/ErrorFallback'
 
 const Home: FC = () => {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 10
   const {
     data: blocksData,
     error: blocksError,
     loading: blocksLoading,
   } = useQuery(QUERY_BLOCK_LIST, {
     variables: { limit: PAGE_SIZE, offset: 0 },
-  });
+  })
 
   const {
     data: extrinsicsData,
@@ -32,7 +32,7 @@ const Home: FC = () => {
     loading: extrinsicsLoading,
   } = useQuery(QUERY_EXTRINSIC_LIST, {
     variables: { limit: PAGE_SIZE, offset: 0 },
-  });
+  })
 
   if (blocksLoading || extrinsicsLoading) {
     return (
@@ -43,11 +43,11 @@ const Home: FC = () => {
           <TableLoadingSkeleton additionClass="p-4 lg:w-1/2 md:w-full" />
         </div>
       </div>
-    );
+    )
   }
 
   if (blocksError || !blocksData || extrinsicsError || !extrinsicsData) {
-    return <ErrorFallback error={blocksError || extrinsicsError} />;
+    return <ErrorFallback error={blocksError || extrinsicsError} />
   }
 
   return (
@@ -58,7 +58,7 @@ const Home: FC = () => {
         <HomeExtrinsicList extrinsics={extrinsicsData.extrinsics} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
