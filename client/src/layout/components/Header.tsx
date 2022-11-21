@@ -1,17 +1,17 @@
-import { FC } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { FC } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 // common
-import { INTERNAL_ROUTES } from "common/routes";
-import LogoIcon from "common/icons/LogoIcon";
-import HeaderDropdownMenu from "./HeaderDropdownMenu";
-import HeaderChainDropdown from "./HeaderChainDropdown";
+import { INTERNAL_ROUTES } from 'common/routes';
+import LogoIcon from 'common/icons/LogoIcon';
+import HeaderDropdownMenu from './HeaderDropdownMenu';
+import HeaderChainDropdown from './HeaderChainDropdown';
 
 const Header: FC = () => {
   const location = useLocation();
   const pathName = location.pathname;
 
-  const isHomeActive = pathName === "/";
+  const isHomeActive = pathName === '/';
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] mx-[50px] z-10">
       <div className="container mx-auto flex flex-wrap py-5 flex-col md:flex-row items-center">
@@ -28,8 +28,8 @@ const Header: FC = () => {
             to={INTERNAL_ROUTES.home}
             className={
               isHomeActive
-                ? "text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] "
-                : "text-[#282929] font-semibold mr-5 hover:text-gray-900"
+                ? 'text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] '
+                : 'text-[#282929] font-semibold mr-5 hover:text-gray-900'
             }
           >
             Home

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const QUERY_EVENT_LIST = gql`
   query Events($limit: Int!, $offset: Int!) {
@@ -14,7 +14,7 @@ export const QUERY_EVENT_LIST = gql`
       indexInBlock
     }
   }
-`;
+`
 
 export const QUERY_EVENT_CONNECTION_LIST = gql`
   query EventsConnection($first: Int!, $after: String) {
@@ -30,6 +30,7 @@ export const QUERY_EVENT_CONNECTION_LIST = gql`
           pos
           timestamp
           block {
+            id
             timestamp
             height
           }
@@ -44,4 +45,4 @@ export const QUERY_EVENT_CONNECTION_LIST = gql`
       totalCount
     }
   }
-`;
+`

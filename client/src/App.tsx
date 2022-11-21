@@ -11,16 +11,16 @@ import ExtrinsicList from 'Extrinsic/components/ExtrinsicList'
 // layout
 import { Layout, Container, Footer, Header } from 'layout/components'
 // home
-import Home from "Home";
+import Home from 'Home';
 // account
-import AccountList from "Account/components/AccountList";
-import Account from "Account/components/Account";
-//event
-import EventList from "Event/components/EventList";
-import HeaderBackground from "layout/components/HeaderBackground";
+import AccountList from 'Account/components/AccountList';
+import Account from 'Account/components/Account';
+// event
+import EventList from 'Event/components/EventList';
+import HeaderBackground from 'layout/components/HeaderBackground';
 
 // Import Swiper styles
-import "swiper/css";
+import 'swiper/css';
 
 function App() {
   return (

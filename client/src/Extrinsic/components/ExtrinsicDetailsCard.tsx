@@ -31,7 +31,7 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
               <List>
                 <StyledListItem title="Timestamp">
                   {dayjs(extrinsic.block.timestamp).format(
-                    "DD MMM YYYY | HH:mm:ss(Z)"
+                    'DD MMM YYYY | HH:mm:ss(Z)'
                   )}
                 </StyledListItem>
                 <StyledListItem title="Block Time">

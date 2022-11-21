@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 // common
-import Spinner from "common/components/Spinner";
+import Spinner from 'common/components/Spinner';
 
 // extrinsic
 import ExtrinsicDetailsCard from 'Extrinsic/components/ExtrinsicDetailsCard'

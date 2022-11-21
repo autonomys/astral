@@ -15,14 +15,14 @@ export const INTERNAL_ROUTES = {
     list: 'blocks',
   },
   accounts: {
-    list: "accounts",
+    list: 'accounts',
     id: {
-      path: ":accountId",
+      path: ':accountId',
       page: (accountId: string): string => `/accounts/${accountId}`,
     },
   },
   events: {
-    list: "events",
+    list: 'events',
   },
   extrinsics: {
     id: {

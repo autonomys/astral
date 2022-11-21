@@ -28,7 +28,7 @@ const BlockDetailsCard: FC<Props> = ({ block }) => {
         <div className="flow-root">
           <List>
             <StyledListItem title="Timestamp">
-              {dayjs(block.timestamp).format("DD MMM YYYY | HH:mm:ss(Z)")}
+              {dayjs(block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
             </StyledListItem>
             <StyledListItem title="Block Time">
               {dayjs(block.timestamp).fromNow(true)}
@@ -41,7 +41,7 @@ const BlockDetailsCard: FC<Props> = ({ block }) => {
               {block?.extrinsicRoot}
             </StyledListItem>
             <StyledListItem title="Spec Version">
-              {block.specId?.toString() || ""}
+              {block.specId?.toString() || ''}
             </StyledListItem>
           </List>
         </div>

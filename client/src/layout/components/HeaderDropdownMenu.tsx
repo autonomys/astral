@@ -1,10 +1,10 @@
-import { FC, Fragment } from "react";
-import { Popover, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { Link } from "react-router-dom";
+import { FC, Fragment } from 'react';
+import { Popover, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import { Link } from 'react-router-dom';
 
 // common
-import { INTERNAL_ROUTES } from "common/routes";
+import { INTERNAL_ROUTES } from 'common/routes';
 
 const HeaderDropdownMenu: FC = () => {
   return (

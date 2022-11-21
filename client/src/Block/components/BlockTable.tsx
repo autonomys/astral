@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom'
 import { Block } from 'gql/graphql'
 
 // common
-import { shortString } from "common/helpers";
-import Table, { Column } from "common/components/Table";
-import { INTERNAL_ROUTES } from "common/routes";
+import { shortString } from 'common/helpers';
+import Table, { Column } from 'common/components/Table';
+import { INTERNAL_ROUTES } from 'common/routes';
 
 dayjs.extend(relativeTime)
 
@@ -51,7 +51,7 @@ const BlockList: FC<Props> = ({ blocks }) => {
       cells: blocks.map(({ events, id }) => <div key={`${id}-block-events`}>{events?.length}</div>),
     },
     {
-      title: "Block hash",
+      title: 'Block hash',
       cells: blocks.map(({ hash, id }) => <div key={`${id}-block-hash`}>{shortString(hash)}</div>),
     },
   ]

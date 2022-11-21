@@ -1,4 +1,4 @@
-import BN from "bn.js";
+import BN from 'bn.js';
 
 export const shortString = (
   value: string,
@@ -14,7 +14,7 @@ export const formatUnits = (value: string, decimals: number): number => {
   const base = new BN(10).pow(new BN(decimals));
   const dm = new BN(value).divmod(base);
 
-  return parseFloat(dm.div.toString() + "." + dm.mod.toString());
+  return parseFloat(dm.div.toString() + '.' + dm.mod.toString());
 };
 
 export const bigNumberToNumber = (
@@ -31,13 +31,13 @@ export const limitNumberDecimals = (number: number, precision = 2): number => {
     return number;
   }
 
-  const [integer, decimals] = String(number).split(".");
+  const [integer, decimals] = String(number).split('.');
 
   if (!decimals) return Number(integer);
 
   const decimalsToUse = decimals.slice(0, precision);
 
-  return Number(integer + "." + decimalsToUse);
+  return Number(integer + '.' + decimalsToUse);
 };
 
 export const formatSpacePledged = (value: number) => {

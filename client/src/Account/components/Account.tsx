@@ -1,14 +1,14 @@
-import { FC } from "react";
-import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { FC } from 'react';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 
 // account
-import { QUERY_ACCOUNT_BY_ID } from "Account/query";
-import AccountDetailsCard from "./AccountDetailsCard";
-import AccountDetailsTabs from "./AccountDetailsTabs";
+import { QUERY_ACCOUNT_BY_ID } from 'Account/query';
+import AccountDetailsCard from './AccountDetailsCard';
+import AccountDetailsTabs from './AccountDetailsTabs';
 
 // common
-import Spinner from "common/components/Spinner";
+import Spinner from 'common/components/Spinner';
 
 const Account: FC = () => {
   const { accountId } = useParams();

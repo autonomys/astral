@@ -1,9 +1,9 @@
-import { FC } from "react";
-import { Extrinsic } from "gql/graphql";
+import { FC } from 'react';
+import { Extrinsic } from 'gql/graphql';
 
 // common
-import Tabs from "common/components/Tabs";
-import AccountExtrinsicList from "./AccountExtrinsicList";
+import Tabs from 'common/components/Tabs';
+import AccountExtrinsicList from './AccountExtrinsicList';
 
 type Props = {
   extrinsics: Extrinsic[];
@@ -12,7 +12,7 @@ type Props = {
 const AccountDetailsTabs: FC<Props> = ({ extrinsics }) => {
   const tabs = [
     {
-      title: "Extrinsics",
+      title: 'Extrinsics',
       content: <AccountExtrinsicList extrinsics={extrinsics} />,
     },
   ];

@@ -16,27 +16,29 @@ const BlockDetailsEventList: FC<Props> = ({ events }) => {
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
-      title: "Event Id",
-      cells: events.map(({ block, pos }, index) => (
-        <div>{`${block?.height || index}-${pos}`}</div>
+      title: 'Event Id',
+      cells: events.map(({ block, pos, id }, index) => (
+        <div key={`${id}-block-event-id`}>{`${block?.height || index}-${pos}`}</div>
       )),
     },
     {
       title: 'Extrinsic Id',
-      cells: events.map(({ extrinsic }) => (
-        <div key={extrinsic?.id}>
+      cells: events.map(({ extrinsic, id }) => (
+        <div key={`${id}-block-event-extrinsic`}>
           {extrinsic ? `${extrinsic.block.height}-${extrinsic.pos}` : ''}
         </div>
       )),
     },
     {
       title: 'Action',
-      cells: events.map(({ name }) => <div key={name}>{name.split('.')[1]}</div>),
+      cells: events.map(({ name, id }) => (
+        <div key={`${id}-block-event-action`}>{name.split('.')[1]}</div>
+      )),
     },
     {
       title: 'Type',
-      cells: events.map(({ phase }) => {
-        return <div key={phase}>{phase}</div>
+      cells: events.map(({ phase, id }) => {
+        return <div key={`${id}-block-event-phase`}>{phase}</div>
       }),
     },
   ]

@@ -1,15 +1,15 @@
-import { FC, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { FC, useState } from 'react';
+import { useQuery } from '@apollo/client';
 
 // account
-import AccountTable from "Account/components/AccountTable";
-import { QUERY_ACCOUNT_CONNECTION_LIST } from "Account/query";
+import AccountTable from 'Account/components/AccountTable';
+import { QUERY_ACCOUNT_CONNECTION_LIST } from 'Account/query';
 
 // common
-import Spinner from "common/components/Spinner";
-import ErrorFallback from "common/components/ErrorFallback";
-import SearchBar from "common/components/SearchBar";
-import Pagination from "common/components/Pagination";
+import Spinner from 'common/components/Spinner';
+import ErrorFallback from 'common/components/ErrorFallback';
+import SearchBar from 'common/components/SearchBar';
+import Pagination from 'common/components/Pagination';
 
 const AccountList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);

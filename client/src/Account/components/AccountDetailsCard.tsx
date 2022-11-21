@@ -1,9 +1,9 @@
-import Accordion from "common/components/Accordion";
-import { List, ListItem, StyledListItem } from "common/components/List";
-import { bigNumberToNumber } from "common/helpers";
-import { Account } from "gql/graphql";
-import { FC } from "react";
-import AccountBalanceStats from "./AccountBalanceStats";
+import Accordion from 'common/components/Accordion';
+import { List, ListItem, StyledListItem } from 'common/components/List';
+import { bigNumberToNumber } from 'common/helpers';
+import { Account } from 'gql/graphql';
+import { FC } from 'react';
+import AccountBalanceStats from './AccountBalanceStats';
 
 type Props = {
   account: Account;

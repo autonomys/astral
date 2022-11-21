@@ -23,32 +23,36 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
     {
       title: 'ID',
       cells: extrinsics.map(({ block, pos, id }) => (
-        <Link key={id} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+        <Link key={`${id}-home-extrinsic-id`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
           <div>{`${pos}.${block.height}`}</div>
         </Link>
       )),
     },
     {
       title: 'Block',
-      cells: extrinsics.map(({ block }) => <div key={block.height}>{block.height}</div>),
+      cells: extrinsics.map(({ block, id }) => (
+        <div key={`${id}-home-extrinsic-block`}>{block.height}</div>
+      )),
     },
     {
       title: 'Time',
-      cells: extrinsics.map(({ block }) => {
+      cells: extrinsics.map(({ block, id }) => {
         const blockDate = dayjs(block.timestamp).fromNow(true)
 
-        return <div key={blockDate}>{blockDate}</div>
+        return <div key={`${id}-home-extrinsic-time`}>{blockDate}</div>
       }),
     },
     {
       title: 'Action',
       cells: extrinsics.map(({ name, id }) => (
-        <div key={`${id}-home-action`}>{name.split('.')[1].toUpperCase()}</div>
+        <div key={`${id}-home-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
       )),
     },
     {
       title: 'Block hash',
-      cells: extrinsics.map(({ hash }) => <div key={hash}>{shortString(hash)}</div>),
+      cells: extrinsics.map(({ hash, id }) => (
+        <div key={`${id}-home-extrinsic-hash`}>{shortString(hash)}</div>
+      )),
     },
   ]
 

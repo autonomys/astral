@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
 // common
-import Spinner from "common/components/Spinner";
+import Spinner from 'common/components/Spinner';
 
 // block
 import { QUERY_BLOCK_BY_ID } from 'Block/query'

@@ -13,9 +13,9 @@ import HomeExtrinsicList from 'Home/components/HomeExtrinsicList'
 import HomeChainInfo from 'Home/components/HomeChainInfo'
 
 // common
-import ErrorFallback from "common/components/ErrorFallback";
-import SearchBar from "common/components/SearchBar";
-import Spinner from "common/components/Spinner";
+import ErrorFallback from 'common/components/ErrorFallback';
+import SearchBar from 'common/components/SearchBar';
+import Spinner from 'common/components/Spinner';
 
 const Home: FC = () => {
   const PAGE_SIZE = 10

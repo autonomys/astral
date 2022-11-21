@@ -2,14 +2,14 @@ import { useState, FC } from 'react'
 import { useQuery } from '@apollo/client'
 
 // ExtrinsicList
-import ExtrinsicTable from "Extrinsic/components/ExtrinsicTable";
-import { QUERY_EXTRINSIC_LIST_CONNECTION } from "Extrinsic/query";
+import ExtrinsicTable from 'Extrinsic/components/ExtrinsicTable';
+import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query';
 
 // common
-import Spinner from "common/components/Spinner";
-import ErrorFallback from "common/components/ErrorFallback";
-import SearchBar from "common/components/SearchBar";
-import Pagination from "common/components/Pagination";
+import Spinner from 'common/components/Spinner';
+import ErrorFallback from 'common/components/ErrorFallback';
+import SearchBar from 'common/components/SearchBar';
+import Pagination from 'common/components/Pagination';
 
 const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
