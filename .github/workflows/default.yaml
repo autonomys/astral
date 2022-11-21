@@ -31,6 +31,6 @@ jobs:
       - name: Run linter 🔍
         run: |
           yarn install --frozen-lockfile
-          yarn lint
+          yarn lint:fix
       - name: Build project 🔧
         run: yarn build
