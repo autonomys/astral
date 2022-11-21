@@ -1,7 +1,6 @@
 {
   "name": "blockexplorer",
   "version": "0.1.0",
-  "homepage": "https://subspace.github.io/blockexplorer",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.7.0",
@@ -42,7 +41,6 @@
     "lint": "eslint . -c .eslintrc --ext ts,tsx",
     "lint:fix": "yarn lint --fix",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
-    
   },
   "eslintConfig": {
     "extends": [
