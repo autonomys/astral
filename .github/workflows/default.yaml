@@ -29,6 +29,8 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Run linter 🔍
-        run: yarn lint
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint
       - name: Build project 🔧
         run: yarn build
