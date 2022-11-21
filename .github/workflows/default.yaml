@@ -34,3 +34,5 @@ jobs:
           yarn lint:fix
       - name: Build project 🔧
         run: yarn build
+        env:
+          REACT_APP_GRAPHQL_API_URL: ${{secrets.REACT_APP_GRAPHQL_API_URL}}
