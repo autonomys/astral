@@ -1,23 +1,34 @@
-import { FC } from 'react'
+import { FC } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Block } from "gql/graphql";
 
 // common/icons
-import BlockIcon from 'common/icons/BlockIcon'
-import DocIcon from 'common/icons/DocIcon'
-import WalletIcon from 'common/icons/WalletIcon'
-import PieChartIcon from 'common/icons/PieChartIcon'
-import MaximizeIcon from 'common/icons/MaximizeIcon'
-import ClosedWalletIcon from 'common/icons/ClosedWalletIcon'
-import CoinIcon from 'common/icons/CoinIcon'
+import BlockIcon from "common/icons/BlockIcon";
+import DocIcon from "common/icons/DocIcon";
+import WalletIcon from "common/icons/WalletIcon";
+import PieChartIcon from "common/icons/PieChartIcon";
 
 // home
-import HomeInfoCard from 'Home/components/HomeInfoCard'
+import HomeInfoCard from "Home/components/HomeInfoCard";
+import { formatSpacePledged } from "common/helpers";
 
-const HomeChainInfo: FC = () => {
+interface Props {
+  blocks: Block[];
+}
+
+const HomeChainInfo: FC<Props> = ({ blocks }) => {
+  const [block] = blocks;
+  const archivedBlock = block.height - 100;
+  const spacePledgedVal = Number(block.spacePledged);
+  const spacePledged = formatSpacePledged(spacePledgedVal);
+  const historySizeVal = Number(block.blockchainSize);
+  const historySize = formatSpacePledged(historySizeVal);
+
   const listOfCards = [
     {
-      title: 'Archived Blocks',
+      title: "Archived Block",
       icon: <BlockIcon />,
-      value: '788.687',
+      value: archivedBlock,
     },
     {
       title: 'Signed Extrinsics',
@@ -32,56 +43,44 @@ const HomeChainInfo: FC = () => {
     {
       title: 'Total Space Pledged',
       icon: <PieChartIcon />,
-      value: '487.64 TB',
+      value: spacePledged,
     },
     {
       title: 'Best Block',
       icon: <BlockIcon />,
-      value: '713.256',
+      value: block.height,
     },
     {
-      title: 'Total Rewards Unlocked',
-      icon: <CoinIcon />,
-      value: '8.687M',
+      title: "Total Rewards Unlocked",
+      icon: <BlockIcon />,
+      value: "8.687M",
     },
     {
-      title: 'Total Reward Addresses',
-      icon: <ClosedWalletIcon />,
-      value: '88.687',
+      title: "Total Reward Addresses",
+      icon: <PieChartIcon />,
+      value: "88.687",
     },
     {
-      title: 'Blockchain History Size',
-      icon: <MaximizeIcon />,
-      value: '87.87 GB',
+      title: "Blockchain History Size",
+      icon: <WalletIcon />,
+      value: historySize,
     },
   ]
 
-  const half = Math.ceil(listOfCards.length / 2)
-
   return (
-    <div className="w-full">
-      <div className="flex pb-6">
-        {listOfCards.slice(0, half).map(({ title, value, icon }, index) => (
-          <HomeInfoCard
-            key={`${title}-${index}`}
-            additionalClass={index !== half - 1 ? 'pr-4' : ''}
-            icon={icon}
-            title={title}
-            value={value}
-          />
+    <div className="w-full flex mb-12 items-center justify-center">
+      <Swiper spaceBetween={4} slidesPerView={5.5}>
+        {listOfCards.map(({ title, value, icon }, index) => (
+          <SwiperSlide key={`${title}-${value}`}>
+            <HomeInfoCard
+              key={`${title}-${index}`}
+              title={title}
+              value={value}
+              icon={icon}
+            />
+          </SwiperSlide>
         ))}
-      </div>
-      <div className="flex pb-6">
-        {listOfCards.slice(half).map(({ title, value, icon }, index) => (
-          <HomeInfoCard
-            key={`${title}-${index}`}
-            additionalClass={index !== half - 1 ? 'pr-4' : ''}
-            icon={icon}
-            title={title}
-            value={value}
-          />
-        ))}
-      </div>
+      </Swiper>
     </div>
   )
 }

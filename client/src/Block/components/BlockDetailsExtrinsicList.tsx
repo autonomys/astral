@@ -31,9 +31,9 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
       cells: extrinsics.map(({ hash }) => <div key={hash}>{shortString(hash)}</div>),
     },
     {
-      title: 'Action',
-      cells: extrinsics.map(({ call }) => (
-        <div key={call.id}>{call.name.split('.')[1].toUpperCase()}</div>
+      title: "Action",
+      cells: extrinsics.map(({ name }) => (
+        <div>{name.split(".")[1].toUpperCase()}</div>
       )),
     },
     {

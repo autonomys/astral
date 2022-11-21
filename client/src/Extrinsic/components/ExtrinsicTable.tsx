@@ -7,21 +7,17 @@ import { Link } from 'react-router-dom'
 import { Extrinsic } from 'gql/graphql'
 
 // common
-import { shortString } from 'common/helpers'
-import Table, { Column } from 'common/components/Table'
-import Pagination from 'common/components/Pagination'
-import { INTERNAL_ROUTES } from 'common/routes'
+import { shortString } from "common/helpers";
+import Table, { Column } from "common/components/Table";
+import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime)
 
-type Props = {
-  extrinsics: Extrinsic[]
-  nextPage: () => void
-  previousPage: () => void
-  page: number
+interface Props {
+  extrinsics: Extrinsic[];
 }
 
-const ExtrinsicTable: FC<Props> = ({ extrinsics, page, nextPage, previousPage }) => {
+const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -45,9 +41,9 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, page, nextPage, previousPage })
       cells: extrinsics.map(() => <></>),
     },
     {
-      title: 'Action',
-      cells: extrinsics.map(({ call, id }) => (
-        <div key={`${id}-extrinsic-action`}>{call.name.split('.')[1].toUpperCase()}</div>
+      title: "Action",
+      cells: extrinsics.map(({ name }) => (
+        <div>{name.split(".")[1].toUpperCase()}</div>
       )),
     },
     {
@@ -70,11 +66,10 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, page, nextPage, previousPage })
       <div className='rounded my-6'>
         <Table
           columns={columns}
-          emptyMessage='There are no extrinsics to show'
-          footer={<Pagination nextPage={nextPage} page={page} previousPage={previousPage} />}
-          id='latest-extrinsics'
-          tableHeaderProps='bg-gray-200'
-          tableProps='shadow-md'
+          emptyMessage="There are no extrinsics to show"
+          id="latest-extrinsics"
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
         />
       </div>
     </div>

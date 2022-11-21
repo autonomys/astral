@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 // common
-import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
+import Spinner from "common/components/Spinner";
 
 // extrinsic
 import ExtrinsicDetailsCard from 'Extrinsic/components/ExtrinsicDetailsCard'
@@ -19,7 +19,7 @@ const Extrinsic: FC = () => {
   })
 
   if (loading) {
-    return <TableLoadingSkeleton withPagination />
+    return <Spinner />;
   }
 
   if (error || !data) {

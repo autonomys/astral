@@ -16,8 +16,10 @@ const BlockDetailsEventList: FC<Props> = ({ events }) => {
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
-      title: 'Event Id',
-      cells: events.map(({ block, pos }) => <div key={pos}>{`${block.height}-${pos}`}</div>),
+      title: "Event Id",
+      cells: events.map(({ block, pos }, index) => (
+        <div>{`${block?.height || index}-${pos}`}</div>
+      )),
     },
     {
       title: 'Extrinsic Id',

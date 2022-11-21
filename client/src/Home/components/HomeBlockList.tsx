@@ -56,14 +56,29 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
   const columns = generateColumns(blocks)
 
   return (
-    <div className='flex-col p-4 lg:w-1/2 md:w-full border border-gray-200 rounded-lg mr-2'>
-      <div className='w-full inline-flex justify-between align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+    <div className="flex-col p-4 lg:w-1/2 md:w-full border border-gray-200 rounded-lg mr-2 bg-white">
+      <div className="w-full inline-flex justify-between items-center align-middle mb-6">
+        <div className="text-gray-600 uppercase text-md leading-normal">
+          Latest Blocks
+        </div>
         <Link
-          className='px-2 py-2 rounded-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150'
           to={INTERNAL_ROUTES.blocks.list}
+          className="px-2 py-2 transition ease-in-out duration-150"
         >
-          View all
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="#DE67E4"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+            />
+          </svg>
         </Link>
       </div>
       <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />

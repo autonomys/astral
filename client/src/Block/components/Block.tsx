@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
 // common
-import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
+import Spinner from "common/components/Spinner";
 
 // block
 import { QUERY_BLOCK_BY_ID } from 'Block/query'
@@ -18,7 +18,7 @@ const Block: FC = () => {
   })
 
   if (loading) {
-    return <TableLoadingSkeleton withPagination />
+    return <Spinner />;
   }
 
   if (error || !data) {

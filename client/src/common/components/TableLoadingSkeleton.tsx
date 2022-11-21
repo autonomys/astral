@@ -5,6 +5,7 @@ type Props = {
   withPagination?: boolean
 }
 
+// TODO: fix to new design
 const TableLoadingSkeleton: FC<Props> = ({
   additionClass = '',
   withPagination = false,

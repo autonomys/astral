@@ -16,33 +16,36 @@ type Props = {
 const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-10">
-        <h3 className="font-semibold leading-none text-gray-900 text-2xl">
-          Extrinsic #{extrinsic.block.height}-{extrinsic.pos}
-        </h3>
-      </div>
       <div className="flex">
         <div className="border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6 w-full">
-          <div className="flow-root">
-            <List>
-              <StyledListItem
-                title="Timestamp"
-                value={dayjs(extrinsic.block.timestamp).format(
-                  'DD MMM YYYY | HH:mm:ss(Z)',
-                )}
-              />
-              <StyledListItem
-                title="Block Time"
-                value={dayjs(extrinsic.block.timestamp).fromNow(true)}
-              />
-              <StyledListItem title="Hash" value={extrinsic.hash} />
-              <StyledListItem title="Module" value={extrinsic.call.name} />
-              <StyledListItem title="Call" value={extrinsic.call.name} />
-            </List>
+          <div className="flex items-center justify-between mb-10">
+            <h3 className="font-semibold leading-none text-gray-900 text-2xl">
+              Extrinsic #{extrinsic.block.height}-{extrinsic.pos}
+            </h3>
+            <div className="bg-[#241235] text-xs font-semibold px-5 py-3 rounded-full block leading-normal text-white">
+              #{extrinsic.block.height}
+            </div>
           </div>
-        </div>
-        <div className="border border-slate-100 bg-white shadow rounded-lg ml-4 mb-4 p-4 sm:p-6 w-full">
-          <ReactJson iconStyle="circle" src={{}} />
+          <div className="flex w-full">
+            <div className="w-full flex-1">
+              <List>
+                <StyledListItem title="Timestamp">
+                  {dayjs(extrinsic.block.timestamp).format(
+                    "DD MMM YYYY | HH:mm:ss(Z)"
+                  )}
+                </StyledListItem>
+                <StyledListItem title="Block Time">
+                  {dayjs(extrinsic.block.timestamp).fromNow(true)}
+                </StyledListItem>
+                <StyledListItem title="Hash">{extrinsic.hash}</StyledListItem>
+                <StyledListItem title="Module">{extrinsic.name}</StyledListItem>
+                <StyledListItem title="Call">{extrinsic.name}</StyledListItem>
+              </List>
+            </div>
+            <div className="w-full max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg ml-4 mb-4 p-4 sm:p-6">
+              <ReactJson src={{}} iconStyle="circle" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

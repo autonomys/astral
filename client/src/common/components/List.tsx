@@ -12,11 +12,14 @@ export const ListItem: FC<Props> = ({ children }) => {
 }
 
 type StyledListItemProps = {
-  title: string
-  value: string
-}
+  title: string;
+  children: React.ReactNode;
+};
 
-export const StyledListItem: FC<StyledListItemProps> = ({ title, value }) => {
+export const StyledListItem: FC<StyledListItemProps> = ({
+  title,
+  children,
+}) => {
   return (
     <ListItem>
       <div className="flex space-x-4 justify-between">
@@ -24,7 +27,7 @@ export const StyledListItem: FC<StyledListItemProps> = ({ title, value }) => {
           <p className="text-md font-light text-gray-900 truncate">{title}</p>
         </div>
         <div className="inline-flex text-base font-normal text-gray-600 items-end">
-          {value}
+          {children}
         </div>
       </div>
     </ListItem>

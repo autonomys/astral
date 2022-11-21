@@ -7,21 +7,17 @@ import { Link } from 'react-router-dom'
 import { Block } from 'gql/graphql'
 
 // common
-import { shortString } from 'common/helpers'
-import Table, { Column } from 'common/components/Table'
-import Pagination from 'common/components/Pagination'
-import { INTERNAL_ROUTES } from 'common/routes'
+import { shortString } from "common/helpers";
+import Table, { Column } from "common/components/Table";
+import { INTERNAL_ROUTES } from "common/routes";
 
 dayjs.extend(relativeTime)
 
-type Props = {
-  blocks: Block[]
-  nextPage: () => void
-  previousPage: () => void
-  page: number
+interface Props {
+  blocks: Block[];
 }
 
-const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
+const BlockList: FC<Props> = ({ blocks }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -55,13 +51,7 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
       cells: blocks.map(({ events, id }) => <div key={`${id}-block-events`}>{events?.length}</div>),
     },
     {
-      title: 'Validator',
-      cells: blocks.map(({ validator, id }) => (
-        <div key={`${id}-block-validator`}>{validator}</div>
-      )),
-    },
-    {
-      title: 'Block hash',
+      title: "Block hash",
       cells: blocks.map(({ hash, id }) => <div key={`${id}-block-hash`}>{shortString(hash)}</div>),
     },
   ]
@@ -74,11 +64,10 @@ const BlockList: FC<Props> = ({ blocks, nextPage, previousPage, page }) => {
       <div className='rounded my-6'>
         <Table
           columns={columns}
-          emptyMessage='There are no blocks to show'
-          footer={<Pagination nextPage={nextPage} page={page} previousPage={previousPage} />}
-          id='latest-blocks'
-          tableHeaderProps='bg-gray-200'
-          tableProps='shadow-md'
+          emptyMessage="There are no blocks to show"
+          tableProps="bg-white rounded-md"
+          tableHeaderProps="border-b border-gray-200"
+          id="latest-blocks"
         />
       </div>
     </div>
