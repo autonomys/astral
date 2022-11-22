@@ -8,13 +8,17 @@ import {
 import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
 import config from './config'
 import { getErrorMessage } from './utils'
-import { processBalances } from './balances'
-import { processBlocks } from './blocks'
+import { processBalancesFactory, createProcessBalancesDependencies } from './balances';
+import { processBlocksFactory, createProcessBlocksDependencies } from './blocks';
 
 export type Item = BatchProcessorItem<typeof processor>
-export type EventItem = BatchProcessorEventItem<typeof processor>
-export type CallItem = BatchProcessorCallItem<typeof processor>
 export type Context = BatchContext<Store, Item>
+// workaround for types: 
+// original call and event items have `name: '*'` instead of `name: string`
+type ProcessorCallItem = BatchProcessorCallItem<typeof processor>
+type ProcessorEventItem = BatchProcessorEventItem<typeof processor>
+export type CallItem = Omit<ProcessorCallItem, 'name'> & { name: string };
+export type EventItem = Omit<ProcessorEventItem, 'name'> & { name: string };
 
 const processor = new SubstrateBatchProcessor()
     .setBatchSize(config.batchSize || 500)
@@ -28,6 +32,10 @@ processor.run(new TypeormDatabase(), processChain)
 
 async function processChain(ctx: Context): Promise<void> {
     try {
+        const processBlocksDependencies = createProcessBlocksDependencies(ctx);
+        const processBalancesDependencies = createProcessBalancesDependencies(ctx);
+        const processBlocks = processBlocksFactory(processBlocksDependencies);
+        const processBalances = processBalancesFactory(processBalancesDependencies);
         await processBlocks(ctx);
         await processBalances(ctx);
         // TODO: add other things to process here (history size, space pledged, etc.)
