@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const QUERY_EXTRINSIC_LIST = gql`
   query Extrinsics($limit: Int!, $offset: Int!) {
@@ -8,21 +8,18 @@ export const QUERY_EXTRINSIC_LIST = gql`
       success
       pos
       block {
+        id
         height
         timestamp
       }
       name
     }
   }
-`;
+`
 
 export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
   query ExtrinsicsConnection($first: Int!, $after: String) {
-    extrinsicsConnection(
-      orderBy: block_height_DESC
-      first: $first
-      after: $after
-    ) {
+    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after) {
       edges {
         cursor
         node {
@@ -31,6 +28,7 @@ export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
           id
           success
           block {
+            id
             timestamp
             height
           }
@@ -47,7 +45,7 @@ export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
       totalCount
     }
   }
-`;
+`
 
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
@@ -71,6 +69,7 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
             id
           }
           extrinsic {
+            id
             pos
             block {
               height
@@ -83,4 +82,4 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       name
     }
   }
-`;
+`

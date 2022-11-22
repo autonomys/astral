@@ -1,16 +1,16 @@
-import { FC } from "react";
-import { Block } from "gql/graphql";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import { FC } from 'react'
+import { Block } from 'gql/graphql'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { List, StyledListItem } from "common/components/List";
+import { List, StyledListItem } from 'common/components/List'
 
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 
 type Props = {
-  block: Block;
-};
+  block: Block
+}
 
 const BlockDetailsCard: FC<Props> = ({ block }) => {
   return (
@@ -28,7 +28,7 @@ const BlockDetailsCard: FC<Props> = ({ block }) => {
         <div className="flow-root">
           <List>
             <StyledListItem title="Timestamp">
-              {dayjs(block.timestamp).format("DD MMM YYYY | HH:mm:ss(Z)")}
+              {dayjs(block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
             </StyledListItem>
             <StyledListItem title="Block Time">
               {dayjs(block.timestamp).fromNow(true)}
@@ -41,13 +41,13 @@ const BlockDetailsCard: FC<Props> = ({ block }) => {
               {block?.extrinsicRoot}
             </StyledListItem>
             <StyledListItem title="Spec Version">
-              {block.specId?.toString() || ""}
+              {block.specId?.toString() || ''}
             </StyledListItem>
           </List>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BlockDetailsCard;
+export default BlockDetailsCard

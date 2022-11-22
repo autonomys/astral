@@ -1,9 +1,9 @@
-import { FC } from "react";
-import { ApolloError } from "@apollo/client";
+import { FC } from 'react'
+import { ApolloError } from '@apollo/client'
 
 type Props = {
-  error?: ApolloError;
-};
+  error?: ApolloError
+}
 
 const ErrorFallback: FC<Props> = ({ error }) => {
   return (
@@ -13,8 +13,8 @@ const ErrorFallback: FC<Props> = ({ error }) => {
           <div className="rounded-full stroke-red-600 bg-red-200 p-4">
             <svg
               className="w-16 h-16"
-              viewBox="0 0 28 28"
               fill="none"
+              viewBox="0 0 28 28"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
@@ -41,7 +41,7 @@ const ErrorFallback: FC<Props> = ({ error }) => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ErrorFallback;
+export default ErrorFallback

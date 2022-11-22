@@ -1,12 +1,12 @@
-import { FC } from "react";
-import { Account } from "gql/graphql";
+import { FC } from 'react';
+import { Account } from 'gql/graphql';
 
 // common
-import StatItem from "common/components/StatItem";
+import StatItem from 'common/components/StatItem';
 
 // account
-import AccountBalancePieChart from "./AccountBalancePieChart";
-import { bigNumberToNumber } from "common/helpers";
+import AccountBalancePieChart from './AccountBalancePieChart';
+import { bigNumberToNumber } from 'common/helpers';
 
 type Props = {
   account: Account;
@@ -30,7 +30,7 @@ const AccountBalanceStats: FC<Props> = ({ account }) => {
           </div>
           <div className="flex">
             <div className="mr-4 w-1 bg-[#D9F0FC] h-10" />
-            <StatItem title="Other" value={`0 tSSC`} />
+            <StatItem title="Other" value={'0 tSSC'} />
           </div>
         </div>
         <div className="mx-10 w-0.5 bg-[#D9F0FC]" />

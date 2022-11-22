@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState } from 'react';
 
 type Props = {
   title: React.ReactNode;
@@ -6,7 +6,7 @@ type Props = {
   value?: string;
 };
 
-const Accordion: FC<Props> = ({ title, children, value = "" }) => {
+const Accordion: FC<Props> = ({ title, children, value = '' }) => {
   const [isActive, setIsActive] = useState(true);
   return (
     <div id="accordion-open" data-accordion="open">
@@ -26,8 +26,8 @@ const Accordion: FC<Props> = ({ title, children, value = "" }) => {
               data-accordion-icon=""
               className={
                 isActive
-                  ? "w-6 h-6 shrink-0 ml-2 rotate-180"
-                  : "w-6 h-6 shrink-0 ml-2"
+                  ? 'w-6 h-6 shrink-0 ml-2 rotate-180'
+                  : 'w-6 h-6 shrink-0 ml-2'
               }
               fill="#DE67E4"
               viewBox="0 0 20 20"
@@ -43,7 +43,7 @@ const Accordion: FC<Props> = ({ title, children, value = "" }) => {
         </button>
       </h2>
       <div
-        className={isActive ? "block" : "hidden"}
+        className={isActive ? 'block' : 'hidden'}
         id="accordion-open-body-1"
         aria-labelledby="accordion-open-heading-1"
       >

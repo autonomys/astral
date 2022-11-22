@@ -1,12 +1,12 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 const MaximizeIcon: FC = () => {
   return (
     <svg
-      width="28"
+      fill="none"
       height="28"
       viewBox="0 0 20 20"
-      fill="none"
+      width="28"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -28,7 +28,7 @@ const MaximizeIcon: FC = () => {
         strokeWidth="0.2"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default MaximizeIcon;
+export default MaximizeIcon

@@ -18,6 +18,7 @@
     "@types/react-dom": "^18.0.6",
     "bn.js": "^5.2.1",
     "dayjs": "^1.11.6",
+    "eslint": "^8.0.1",
     "graphql": "^16.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -35,7 +36,11 @@
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.ts",
     "prestart": "yarn codegen",
-    "prebuild": "yarn codegen"
+    "predev": "yarn codegen",
+    "prebuild": "yarn codegen",
+    "lint": "eslint . -c .eslintrc --ext ts,tsx",
+    "lint:fix": "yarn lint --fix",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
   },
   "eslintConfig": {
     "extends": [
@@ -58,9 +63,19 @@
   "devDependencies": {
     "@graphql-codegen/cli": "2.13.7",
     "@graphql-codegen/client-preset": "1.0.7",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
     "autoprefixer": "^10.4.12",
     "dotenv": "^16.0.3",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.18",
+    "prettier": "^2.7.1",
     "tailwindcss": "^3.2.1"
   }
 }

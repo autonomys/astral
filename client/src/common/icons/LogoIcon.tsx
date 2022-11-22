@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { FC } from 'react';
 
 type Props = {
   fillColor?: string;
 };
 
-const LogoIcon: FC<Props> = ({ fillColor = "white" }) => {
+const LogoIcon: FC<Props> = ({ fillColor = 'white' }) => {
   return (
     <svg
       width="138"

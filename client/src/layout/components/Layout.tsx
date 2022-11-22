@@ -1,7 +1,7 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react'
 
-interface Props {
-  children?: ReactNode;
+type Props = {
+  children?: ReactNode
 }
 
 const MainLayout: FC<Props> = ({ children }) => {
@@ -12,4 +12,4 @@ const MainLayout: FC<Props> = ({ children }) => {
   );
 };
 
-export default MainLayout;
+export default MainLayout

@@ -1,14 +1,14 @@
-import { FC, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { FC, useState } from 'react';
+import { useQuery } from '@apollo/client';
 
 // common
-import ErrorFallback from "common/components/ErrorFallback";
-import Spinner from "common/components/Spinner";
-//event
-import { QUERY_EVENT_CONNECTION_LIST } from "Event/query";
-import EventTable from "Event/components/EventTable";
-import SearchBar from "common/components/SearchBar";
-import Pagination from "common/components/Pagination";
+import ErrorFallback from 'common/components/ErrorFallback';
+import Spinner from 'common/components/Spinner';
+// event
+import { QUERY_EVENT_CONNECTION_LIST } from 'Event/query';
+import EventTable from 'Event/components/EventTable';
+import SearchBar from 'common/components/SearchBar';
+import Pagination from 'common/components/Pagination';
 
 const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
