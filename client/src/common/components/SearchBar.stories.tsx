@@ -1,10 +1,10 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import SearchBar from "./SearchBar";
+import SearchBar from './SearchBar';
 
 export default {
-  title: "Common/SearchBar",
+  title: 'Common/SearchBar',
   component: SearchBar,
 } as ComponentMeta<typeof SearchBar>;
 

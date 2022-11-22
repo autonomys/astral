@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { useState } from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Pagination from "./Pagination";
+import Pagination from './Pagination';
 
 export default {
-  title: "Common/Pagination",
+  title: 'Common/Pagination',
   component: Pagination,
 } as ComponentMeta<typeof Pagination>;
 

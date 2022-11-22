@@ -1,10 +1,10 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Dropdown from "./Dropdown";
+import Dropdown from './Dropdown';
 
 export default {
-  title: "Common/Dropdown",
+  title: 'Common/Dropdown',
   component: Dropdown,
 } as ComponentMeta<typeof Dropdown>;
 

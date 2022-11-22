@@ -1,10 +1,10 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import { StyledListItem, List, ListItem } from "./List";
+import { StyledListItem, List, ListItem } from './List';
 
 export default {
-  title: "Common/List",
+  title: 'Common/List',
   component: StyledListItem,
 } as ComponentMeta<typeof StyledListItem>;
 
@@ -17,6 +17,6 @@ const Template: ComponentStory<typeof StyledListItem> = (args) => (
 
 export const Primary = Template.bind({});
 Primary.args = {
-  title: "Sample list",
-  children: "sample body",
+  title: 'Sample list',
+  children: 'sample body',
 };

@@ -1,10 +1,10 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import ErrorFallback from "./ErrorFallback";
+import ErrorFallback from './ErrorFallback';
 
 export default {
-  title: "Common/ErrorFallback",
+  title: 'Common/ErrorFallback',
   component: ErrorFallback,
 } as ComponentMeta<typeof ErrorFallback>;
 
