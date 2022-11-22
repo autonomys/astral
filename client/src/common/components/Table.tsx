@@ -1,9 +1,9 @@
-import { FC, ReactElement, useMemo } from "react";
+import { FC, ReactNode, useMemo } from "react";
 import { generateArrayOfNumbers } from "../helpers";
 
 export type Column = {
   title: string;
-  cells: ReactElement[];
+  cells: ReactNode[];
   isNumeric?: boolean;
   centerTitle?: boolean;
 };
@@ -11,8 +11,8 @@ export type Column = {
 type Props = {
   id: string;
   columns: Column[];
-  footer?: ReactElement;
   emptyMessage: string;
+  footer?: ReactNode;
   tableRowProps?: string;
   tableHeaderProps?: string;
   tableProps?: string;
@@ -30,7 +30,7 @@ const Table: FC<Props> = ({
   const cellsCount = useMemo(() => columns?.[0]?.cells?.length ?? 0, [columns]);
   const rows = useMemo(
     () =>
-      generateArrayOfNumbers(cellsCount)?.reduce<ReactElement[][]>(
+      generateArrayOfNumbers(cellsCount)?.reduce<ReactNode[][]>(
         (acc, _, index) => {
           const row = columns.map((column) => column.cells[index]);
 
