@@ -2,6 +2,8 @@ import { decodeHex } from '@subsquid/substrate-processor';
 import { Context } from '../processor';
 import { ProcessBalancesDependencies } from './types';
 
+// save period for updating accounts (performance reasons), copied from the example repo
+// TODO: investigate if it affects performance in our case and consider removing or changing value
 const SAVE_PERIOD = 12 * 60 * 60 * 1000;
 let lastStateTimestamp: null | number = null;
 
