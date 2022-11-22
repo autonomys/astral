@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const QUERY_ACCOUNT_LIST = gql`
   query Account($limit: Int!, $offset: Int!) {
@@ -13,7 +13,7 @@ export const QUERY_ACCOUNT_LIST = gql`
       }
     }
   }
-`;
+`
 
 export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
   query AccountsConnection($first: Int!, $after: String) {
@@ -40,7 +40,7 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
       }
     }
   }
-`;
+`
 
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
@@ -54,6 +54,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
         hash
         id
         block {
+          id
           height
         }
         pos
@@ -64,4 +65,4 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       }
     }
   }
-`;
+`

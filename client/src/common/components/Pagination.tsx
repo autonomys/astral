@@ -1,8 +1,8 @@
-import { FC } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
+import { FC } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
 
 //
-import { DOTS, usePagination } from "common/hooks/usePagination";
+import { DOTS, usePagination } from 'common/hooks/usePagination';
 
 type Props = {
   nextPage: () => void;
@@ -75,8 +75,8 @@ const Pagination: FC<Props> = ({
                   aria-current="page"
                   className={
                     page === currentPage
-                      ? "h-10 min-w-10 relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20 rounded-full mx-1"
-                      : "h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1"
+                      ? 'h-10 min-w-10 relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20 rounded-full mx-1'
+                      : 'h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1'
                   }
                 >
                   {page}
@@ -98,4 +98,4 @@ const Pagination: FC<Props> = ({
   );
 };
 
-export default Pagination;
+export default Pagination

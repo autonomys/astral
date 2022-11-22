@@ -1,17 +1,17 @@
-import { FC } from "react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { Link } from "react-router-dom";
+import { FC } from 'react'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { Link } from 'react-router-dom'
 
 // gql
-import { Block } from "gql/graphql";
+import { Block } from 'gql/graphql'
 
 // common
-import { shortString } from "common/helpers";
-import Table, { Column } from "common/components/Table";
-import { INTERNAL_ROUTES } from "common/routes";
+import { shortString } from 'common/helpers';
+import Table, { Column } from 'common/components/Table';
+import { INTERNAL_ROUTES } from 'common/routes';
 
-dayjs.extend(relativeTime);
+dayjs.extend(relativeTime)
 
 interface Props {
   blocks: Block[];
@@ -21,44 +21,47 @@ const BlockList: FC<Props> = ({ blocks }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
-      title: "Block",
-      cells: blocks.map(({ height }) => (
-        <Link to={INTERNAL_ROUTES.blocks.id.page(height)}>
+      title: 'Block',
+      cells: blocks.map(({ height, id }) => (
+        <Link key={`${id}-block-height`} to={INTERNAL_ROUTES.blocks.id.page(height)}>
           <div>{height}</div>
         </Link>
       )),
     },
     {
-      title: "Time",
-      cells: blocks.map(({ timestamp }) => {
-        const blockDate = dayjs(timestamp).fromNow(true);
-        return <div>{blockDate}</div>;
+      title: 'Time',
+      cells: blocks.map(({ timestamp, id }) => {
+        const blockDate = dayjs(timestamp).fromNow(true)
+
+        return <div key={`${id}-block-time`}>{blockDate}</div>
       }),
     },
     {
-      title: "Status",
-      cells: blocks.map(() => <div></div>),
+      title: 'Status',
+      cells: blocks.map(() => <></>),
     },
     {
-      title: "Extrinsics",
-      cells: blocks.map(({ extrinsics }) => <div>{extrinsics?.length}</div>),
+      title: 'Extrinsics',
+      cells: blocks.map(({ extrinsics, id }) => (
+        <div key={`${id}-block-extrinsics`}>{extrinsics?.length}</div>
+      )),
     },
     {
-      title: "Events",
-      cells: blocks.map(({ events }) => <div>{events?.length}</div>),
+      title: 'Events',
+      cells: blocks.map(({ events, id }) => <div key={`${id}-block-events`}>{events?.length}</div>),
     },
     {
-      title: "Block hash",
-      cells: blocks.map(({ hash }) => <div>{shortString(hash)}</div>),
+      title: 'Block hash',
+      cells: blocks.map(({ hash, id }) => <div key={`${id}-block-hash`}>{shortString(hash)}</div>),
     },
-  ];
+  ]
 
   // constants
-  const columns = generateColumns(blocks);
+  const columns = generateColumns(blocks)
 
   return (
-    <div className="w-full">
-      <div className="rounded my-6">
+    <div className='w-full'>
+      <div className='rounded my-6'>
         <Table
           columns={columns}
           emptyMessage="There are no blocks to show"
@@ -68,7 +71,7 @@ const BlockList: FC<Props> = ({ blocks }) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BlockList;
+export default BlockList

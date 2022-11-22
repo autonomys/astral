@@ -1,34 +1,34 @@
 // TODO: Update routes for forum and docs
 export const EXTERNAL_ROUTES = {
-  subspace: "https://subspace.network/",
-  forum: "https://subspace.network/",
-  docs: "https://subspace.network/",
-};
+  subspace: 'https://subspace.network/',
+  forum: 'https://subspace.network/',
+  docs: 'https://subspace.network/',
+}
 
 export const INTERNAL_ROUTES = {
-  home: "/",
+  home: '/',
   blocks: {
     id: {
-      path: ":blockId",
+      path: ':blockId',
       page: (blockId: number): string => `/blocks/${blockId}`,
     },
-    list: "blocks",
+    list: 'blocks',
   },
   accounts: {
-    list: "accounts",
+    list: 'accounts',
     id: {
-      path: ":accountId",
+      path: ':accountId',
       page: (accountId: string): string => `/accounts/${accountId}`,
     },
   },
   events: {
-    list: "events",
+    list: 'events',
   },
   extrinsics: {
     id: {
-      path: ":extrinsicId",
+      path: ':extrinsicId',
       page: (extrinsicId: string): string => `/extrinsics/${extrinsicId}`,
     },
-    list: "extrinsics",
+    list: 'extrinsics',
   },
-};
+}

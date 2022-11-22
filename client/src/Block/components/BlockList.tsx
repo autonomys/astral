@@ -1,15 +1,15 @@
-import { FC, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { FC, useState } from 'react'
+import { useQuery } from '@apollo/client'
 
 // block
-import BlockTable from "Block/components/BlockTable";
-import { QUERY_BLOCK_LIST_CONNECTION } from "Block/query";
+import BlockTable from 'Block/components/BlockTable';
+import { QUERY_BLOCK_LIST_CONNECTION } from 'Block/query';
 
 // common
-import Spinner from "common/components/Spinner";
-import ErrorFallback from "common/components/ErrorFallback";
-import SearchBar from "common/components/SearchBar";
-import Pagination from "common/components/Pagination";
+import Spinner from 'common/components/Spinner';
+import ErrorFallback from 'common/components/ErrorFallback';
+import SearchBar from 'common/components/SearchBar';
+import Pagination from 'common/components/Pagination';
 
 const BlockList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -68,4 +68,4 @@ const BlockList: FC = () => {
   );
 };
 
-export default BlockList;
+export default BlockList

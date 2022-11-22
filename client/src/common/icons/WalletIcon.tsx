@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 const WalletIcon: FC = () => {
   return (
@@ -140,7 +140,7 @@ const WalletIcon: FC = () => {
         </linearGradient>
       </defs>
     </svg>
-  );
-};
+  )
+}
 
-export default WalletIcon;
+export default WalletIcon

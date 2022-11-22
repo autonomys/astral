@@ -1,16 +1,16 @@
-import { Fragment, useState, FC } from "react";
-import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/20/solid";
+import { Fragment, useState, FC } from 'react';
+import { Listbox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 
 // common
-import SubspaceSymbol from "common/icons/SubspaceSymbol";
+import SubspaceSymbol from 'common/icons/SubspaceSymbol';
 
 const chains = [
-  { id: 1, name: "Gemini", unavailable: false },
-  { id: 2, name: "Kenton", unavailable: false },
-  { id: 3, name: "Therese", unavailable: false },
-  { id: 4, name: "Benedict", unavailable: true },
-  { id: 5, name: "Katelyn", unavailable: false },
+  { id: 1, name: 'Gemini', unavailable: false },
+  { id: 2, name: 'Kenton', unavailable: false },
+  { id: 3, name: 'Therese', unavailable: false },
+  { id: 4, name: 'Benedict', unavailable: true },
+  { id: 5, name: 'Katelyn', unavailable: false },
 ];
 
 const HeaderChainDropdown: FC = () => {
@@ -42,7 +42,7 @@ const HeaderChainDropdown: FC = () => {
                 key={chainIdx}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                    active ? "bg-amber-100 text-amber-900" : "text-gray-900"
+                    active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                   }`
                 }
                 value={chain}
@@ -51,7 +51,7 @@ const HeaderChainDropdown: FC = () => {
                   <>
                     <span
                       className={`block truncate ${
-                        selected ? "font-medium" : "font-normal"
+                        selected ? 'font-medium' : 'font-normal'
                       }`}
                     >
                       {chain.name}

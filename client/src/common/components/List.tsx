@@ -1,15 +1,15 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 type Props = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 export const List: FC<Props> = ({ children }) => {
-  return <ul className="divide-y divide-gray-200">{children}</ul>;
-};
+  return <ul className="divide-y divide-gray-200">{children}</ul>
+}
 
 export const ListItem: FC<Props> = ({ children }) => {
-  return <li className="py-3 sm:py-4">{children}</li>;
-};
+  return <li className="py-3 sm:py-4">{children}</li>
+}
 
 type StyledListItemProps = {
   title: string;
@@ -31,5 +31,5 @@ export const StyledListItem: FC<StyledListItemProps> = ({
         </div>
       </div>
     </ListItem>
-  );
-};
+  )
+}

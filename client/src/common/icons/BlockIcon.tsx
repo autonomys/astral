@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 const BlockIcon: FC = () => {
   return (
@@ -78,7 +78,7 @@ const BlockIcon: FC = () => {
         </linearGradient>
       </defs>
     </svg>
-  );
-};
+  )
+}
 
-export default BlockIcon;
+export default BlockIcon

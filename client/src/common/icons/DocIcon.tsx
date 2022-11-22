@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC } from 'react'
 
 const DocIcon: FC = () => {
   return (
@@ -145,7 +145,7 @@ const DocIcon: FC = () => {
         </linearGradient>
       </defs>
     </svg>
-  );
-};
+  )
+}
 
-export default DocIcon;
+export default DocIcon
