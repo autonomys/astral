@@ -2,6 +2,7 @@
 import { Chain } from "@subsquid/substrate-processor/lib/chain";
 import { Logger } from "@subsquid/logger";
 import { Store } from "@subsquid/typeorm-store";
+import { decodeHex } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from '../processor';
 import BlockHeaderMock from './BlockHeader.json';
 import { SubspaceRecordsRootStorage, SubspaceSolutionRangesStorage } from '../types/storage';
@@ -112,7 +113,7 @@ export const eventItemWithExtrinsic = {
       pos: 1,
     }
   }
-}
+} as unknown as EventItem;
 
 const chainMock = {
   getEventHash(): string {
@@ -185,3 +186,5 @@ export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'r
 export const blockMock = createBlock(BlockHeaderMock, BigInt(1), BigInt(2));
 export const extrinsicMock = createExtrinsic(parentCallItem as CallItem, blockMock);
 export const parentCallMock = createCall(parentCallItem as CallItem, blockMock, extrinsicMock, null);
+
+export const accountIdU8 = decodeHex('0x14682f9dea76a4dd47172a118eb29b9cf9976df7ade12f95709a7cd2e3d81d6c');
