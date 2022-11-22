@@ -1,15 +1,15 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react'
 
-interface Props {
-  children?: ReactNode;
+type Props = {
+  children?: ReactNode
 }
 
 const Container: FC<Props> = ({ children }) => {
   return (
-    <div className="flex  min-h-screen justify-center container px-5 py-24 mx-auto">
+    <div className="flex min-h-screen justify-center container mx-auto font-['Montserrat'] z-0">
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default Container;
+export default Container

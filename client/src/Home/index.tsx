@@ -1,30 +1,31 @@
-import { FC } from "react";
-import { useQuery } from "@apollo/client";
+import { FC } from 'react'
+import { useQuery } from '@apollo/client'
 
 // blockList
-import { QUERY_BLOCK_LIST } from "Block/query";
+import { QUERY_BLOCK_LIST } from 'Block/query'
 
 // extrinsicList
-import { QUERY_EXTRINSIC_LIST } from "Extrinsic/query";
+import { QUERY_EXTRINSIC_LIST } from 'Extrinsic/query'
 
 // home
-import HomeBlockList from "Home/components/HomeBlockList";
-import HomeExtrinsicList from "Home/components/HomeExtrinsicList";
-import HomeChainInfo from "Home/components/HomeChainInfo";
+import HomeBlockList from 'Home/components/HomeBlockList'
+import HomeExtrinsicList from 'Home/components/HomeExtrinsicList'
+import HomeChainInfo from 'Home/components/HomeChainInfo'
 
 // common
-import TableLoadingSkeleton from "common/components/TableLoadingSkeleton";
-import ErrorFallback from "common/components/ErrorFallback";
+import ErrorFallback from 'common/components/ErrorFallback';
+import SearchBar from 'common/components/SearchBar';
+import Spinner from 'common/components/Spinner';
 
 const Home: FC = () => {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 10
   const {
     data: blocksData,
     error: blocksError,
     loading: blocksLoading,
   } = useQuery(QUERY_BLOCK_LIST, {
     variables: { limit: PAGE_SIZE, offset: 0 },
-  });
+  })
 
   const {
     data: extrinsicsData,
@@ -32,33 +33,26 @@ const Home: FC = () => {
     loading: extrinsicsLoading,
   } = useQuery(QUERY_EXTRINSIC_LIST, {
     variables: { limit: PAGE_SIZE, offset: 0 },
-  });
+  })
 
   if (blocksLoading || extrinsicsLoading) {
-    return (
-      <div className="w-full flex flex-col align-middle">
-        <HomeChainInfo />
-        <div className="flex w-full">
-          <TableLoadingSkeleton additionClass="pr-4 py-4 lg:w-1/2 md:w-full" />
-          <TableLoadingSkeleton additionClass="p-4 lg:w-1/2 md:w-full" />
-        </div>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (blocksError || !blocksData || extrinsicsError || !extrinsicsData) {
-    return <ErrorFallback error={blocksError || extrinsicsError} />;
+    return <ErrorFallback error={blocksError || extrinsicsError} />
   }
 
   return (
     <div className="w-full flex flex-col align-middle">
-      <HomeChainInfo />
+      <SearchBar />
+      <HomeChainInfo blocks={blocksData.blocks} />
       <div className="flex w-full">
         <HomeBlockList blocks={blocksData.blocks} />
         <HomeExtrinsicList extrinsics={extrinsicsData.extrinsics} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

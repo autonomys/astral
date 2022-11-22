@@ -3,7 +3,7 @@ name: Default
 on: [push, pull_request]
 
 jobs:
-  ts-lint-and-build:
+  ts-lint-and-build-squid:
     runs-on: ubuntu-latest
     name: Run eslint, check typescript and run tests
     steps:
@@ -19,3 +19,20 @@ jobs:
         working-directory: squid-blockexplorer
       - run: npm run build
         working-directory: squid-blockexplorer
+  ts-lint-and-build-client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
+    name: Run eslint and code style check
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+      - name: Run linter 🔍
+        run: |
+          yarn install --frozen-lockfile
+          yarn lint:fix
+      - name: Build project 🔧
+        run: yarn build
+        env:
+          REACT_APP_GRAPHQL_API_URL: ${{secrets.REACT_APP_GRAPHQL_API_URL}}
