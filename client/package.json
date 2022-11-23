@@ -1,6 +1,6 @@
 {
   "name": "blockexplorer",
-  "homepage": "https://subspace.github.io/blockexplorer",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -39,6 +39,8 @@
     "prestart": "yarn codegen",
     "predev": "yarn codegen",
     "prebuild": "yarn codegen",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "lint": "eslint . -c .eslintrc --ext ts,tsx",
