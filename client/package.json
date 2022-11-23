@@ -1,5 +1,6 @@
 {
   "name": "blockexplorer",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -38,6 +39,8 @@
     "prestart": "yarn codegen",
     "predev": "yarn codegen",
     "prebuild": "yarn codegen",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
     "lint": "eslint . -c .eslintrc --ext ts,tsx",
@@ -97,6 +100,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-react": "^7.31.11",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "gh-pages": "^4.0.0",
     "postcss": "^8.4.18",
     "prop-types": "^15.8.1",
     "tsconfig-paths-webpack-plugin": "^4.0.0",
