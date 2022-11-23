@@ -1,5 +1,3 @@
-![build](https://github.com/subspace/blockexplorer/actions/workflows/build.yaml/badge.svg)
-
 # Subspace block explorer squid
 
 Squid used to process and transform data for Subspace block explorer, based on [Squid template](https://github.com/subsquid/squid-template).
