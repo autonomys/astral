@@ -11,20 +11,20 @@ import ExtrinsicList from 'Extrinsic/components/ExtrinsicList'
 // layout
 import { Layout, Container, Footer, Header } from 'layout/components'
 // home
-import Home from 'Home';
+import Home from 'Home'
 // account
-import AccountList from 'Account/components/AccountList';
-import Account from 'Account/components/Account';
+import AccountList from 'Account/components/AccountList'
+import Account from 'Account/components/Account'
 // event
-import EventList from 'Event/components/EventList';
-import HeaderBackground from 'layout/components/HeaderBackground';
+import EventList from 'Event/components/EventList'
+import HeaderBackground from 'layout/components/HeaderBackground'
 
 // Import Swiper styles
-import 'swiper/css';
+import 'swiper/css'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={`${process.env.PUBLIC_URL}`}>
       <Layout>
         <Header />
         <Container>
@@ -33,24 +33,15 @@ function App() {
             <Route element={<Home />} path={INTERNAL_ROUTES.home} />
             <Route path={INTERNAL_ROUTES.blocks.list}>
               <Route index element={<BlockList />} />
-              <Route
-                element={<Block />}
-                path={INTERNAL_ROUTES.blocks.id.path}
-              />
+              <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
             </Route>
             <Route path={INTERNAL_ROUTES.extrinsics.list}>
               <Route index element={<ExtrinsicList />} />
-              <Route
-                path={INTERNAL_ROUTES.extrinsics.id.path}
-                element={<Extrinsic />}
-              />
+              <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
             </Route>
             <Route path={INTERNAL_ROUTES.accounts.list}>
               <Route index element={<AccountList />} />
-              <Route
-                path={INTERNAL_ROUTES.accounts.id.path}
-                element={<Account />}
-              />
+              <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
             </Route>
             <Route path={INTERNAL_ROUTES.events.list}>
               <Route index element={<EventList />} />
