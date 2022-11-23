@@ -1,25 +1,5 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_BLOCK_LIST = gql`
-  query Blocks($limit: Int!, $offset: Int!) {
-    blocks(limit: $limit, offset: $offset, orderBy: height_DESC) {
-      id
-      hash
-      height
-      timestamp
-      stateRoot
-      blockchainSize
-      spacePledged
-      events(limit: 100) {
-        id
-      }
-      extrinsics(limit: 100) {
-        id
-      }
-    }
-  }
-`
-
 export const QUERY_BLOCK_LIST_CONNECTION = gql`
   query BlocksConnection($first: Int!, $after: String) {
     blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
