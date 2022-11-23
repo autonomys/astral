@@ -15,7 +15,7 @@ const httpLink = new HttpLink({
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://blockexplorer.subspace.network/graphql',
+    url: process.env.REACT_APP_GRAPHQL_API_WS,
   }),
 )
 
