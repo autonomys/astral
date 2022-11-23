@@ -1,8 +1,8 @@
-import { FC, ReactElement, useState } from 'react'
+import { FC, ReactNode, useState } from 'react'
 
 type Tab = {
   title: string
-  content: string | ReactElement
+  content: ReactNode
 }
 
 type Props = {
