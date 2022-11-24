@@ -2,39 +2,46 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
+import { useSubscription } from '@apollo/client'
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 
 // common
 import Table, { Column } from 'common/components/Table'
-import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
 import { Block } from 'gql/graphql'
+import { QUERY_BLOCK_LISTS } from 'Home/query'
+import ErrorFallback from 'common/components/ErrorFallback'
+import StatusIcon from 'common/components/StatusIcon'
+import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 
 dayjs.extend(relativeTime)
 
-type Props = {
-  blocks: Block[]
-}
+const HomeBlockList: FC = () => {
+  const PAGE_SIZE = 10
 
-const HomeBlockList: FC<Props> = ({ blocks }) => {
+  const { data, error, loading } = useSubscription(QUERY_BLOCK_LISTS, {
+    variables: { limit: PAGE_SIZE, offset: 0 },
+  })
+
+  if (loading) {
+    return <TableLoadingSkeleton additionClass='lg:w-1/2 mr-5' />
+  }
+
+  if (error || !data) {
+    return <ErrorFallback error={error} />
+  }
+
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
-      title: 'Block',
+      title: 'Height',
       cells: blocks.map(({ height, id }) => (
         <Link key={`${id}-home-block-height`} to={INTERNAL_ROUTES.blocks.id.page(height)}>
-          <div>{height}</div>
+          <div>#{height}</div>
         </Link>
       )),
-    },
-    {
-      title: 'Time',
-      cells: blocks.map(({ timestamp, id }) => {
-        const blockDate = dayjs(timestamp).fromNow(true)
-
-        return <div key={`${id}-home-block-time`}>{blockDate}</div>
-      }),
     },
     {
       title: 'Extrinsics',
@@ -49,14 +56,25 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
       )),
     },
     {
-      title: 'Block hash',
-      cells: blocks.map(({ hash, id }) => (
-        <div key={`${id}-home-block-hash`}>{shortString(hash)}</div>
+      title: 'Time',
+      cells: blocks.map(({ timestamp, id }) => {
+        const blockDate = dayjs(timestamp).fromNow(true)
+
+        return <div key={`${id}-home-block-time`}>{blockDate} ago</div>
+      }),
+    },
+    {
+      title: 'Status',
+      cells: blocks.map(({ id, extrinsics }) => (
+        <div className='flex items-center justify-center' key={`${id}-home-block-status`}>
+          <StatusIcon status={extrinsics[0].success} />
+        </div>
       )),
     },
   ]
 
   // constants
+  const blocks = data.blocks
   const columns = generateColumns(blocks)
 
   return (
@@ -67,20 +85,7 @@ const HomeBlockList: FC<Props> = ({ blocks }) => {
           to={INTERNAL_ROUTES.blocks.list}
           className='px-2 py-2 transition ease-in-out duration-150'
         >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth={1.5}
-            stroke='#DE67E4'
-            className='w-6 h-6'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3'
-            />
-          </svg>
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
         </Link>
       </div>
       <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />
