@@ -1,3 +1,5 @@
+![build](https://github.com/subspace/blockexplorer/actions/workflows/build.yaml/badge.svg)
+
 # Subspace block explorer
 
 > Work in progress
