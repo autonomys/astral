@@ -16,7 +16,7 @@ export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Conte
     const storage = storageFactory(ctx, header);
     const solutionRange = (await storage.getAsV3()).current;
     return calcSpacePledged(solutionRange);
-  }
+  };
 }
 
 export function getHistorySizeFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceRecordsRootStorage) {
@@ -24,5 +24,5 @@ export function getHistorySizeFactory(ctx: Context, storageFactory: (ctx: Contex
     const storage = storageFactory(ctx, header);
     const segmentsCount = (await storage.getAllAsV3()).length;
     return calcHistorySize(segmentsCount);
-  }
+  };
 }

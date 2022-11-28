@@ -18,11 +18,11 @@ export function partitionItems<Item = CallItem | EventItem>(
   const partitioned: Item[][] = [[], []];
 
   for (const item of items) {
-    const partitionIndex: 0 | 1 = predicate(item) ? 0 : 1
-    partitioned[partitionIndex].push(item)
+    const partitionIndex: 0 | 1 = predicate(item) ? 0 : 1;
+    partitioned[partitionIndex].push(item);
   }
 
-  return partitioned
+  return partitioned;
 }
 
 
@@ -55,7 +55,7 @@ export function createExtrinsic(
     signature,
     block,
     timestamp: block.timestamp,
-  })
+  });
 }
 
 export function createCall(
@@ -70,7 +70,7 @@ export function createCall(
     block,
     extrinsic,
     parent,
-  })
+  });
 }
 
 export function calcSpacePledged(solutionRange: bigint): bigint {

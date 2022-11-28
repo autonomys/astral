@@ -8,4 +8,4 @@ export const BALANCE_EVENTS = {
   Slashed: 'Balances.Slashed',
   Transfer: 'Balances.Transfer',
   ReserveRepatriated: 'Balances.ReserveRepatriated',
-}
+};

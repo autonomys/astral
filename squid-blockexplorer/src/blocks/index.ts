@@ -1,4 +1,4 @@
-import { Context } from '../processor'
+import { Context } from '../processor';
 import { ProcessBlocksDependencies } from './types';
 import {
   getHistorySizeFactory,
@@ -22,5 +22,5 @@ export function createProcessBlocksDependencies(ctx: Context): ProcessBlocksDepe
     processExtrinsics,
     processCalls,
     processEvents,
-  }
+  };
 }

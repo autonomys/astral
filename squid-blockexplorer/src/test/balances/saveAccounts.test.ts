@@ -10,7 +10,7 @@ const balanceStorageMock = {
     return Promise.resolve({
       free: BigInt(10),
       reserved: BigInt(11),
-    })
+    });
   }
 } as unknown as BalanceStorage;
 

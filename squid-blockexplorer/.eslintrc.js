@@ -27,6 +27,7 @@ module.exports = {
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
+    "semi": 1,
     "@typescript-eslint/prefer-readonly": [
       1,
       {

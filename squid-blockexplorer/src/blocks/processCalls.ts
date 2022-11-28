@@ -19,7 +19,7 @@ export function processExtrinsicsFactory(getOrCreateAccount: (blockHeight: bigin
       extrinsicsMap.set(extrinsic.id, extrinsic);
       callsMap.set(call.id, call);
     }
-  }
+  };
 }
 
 export async function processCalls(extrinsicsMap: ExtrinsicsMap, callsMap: CallsMap, calls: CallItem[], block: Block) {
@@ -41,11 +41,11 @@ export function getOrCreateAccountFactory(ctx: Context) {
       account = new Account({
         id: accountId,
         updatedAt: blockHeight,
-      })
+      });
 
-      await ctx.store.insert(account)
+      await ctx.store.insert(account);
     }
 
-    return account
-  }
+    return account;
+  };
 }

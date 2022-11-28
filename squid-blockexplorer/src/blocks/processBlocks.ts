@@ -47,6 +47,6 @@ export function processBlocksFactory({
       ${callsMap.size} calls, 
       ${events.length} events
     `);
-  }
+  };
 }
 

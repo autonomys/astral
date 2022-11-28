@@ -45,5 +45,5 @@ export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
     ctx.log
       .child('accounts')
       .info(`updated: ${accounts.length}`);
-  }
+  };
 }

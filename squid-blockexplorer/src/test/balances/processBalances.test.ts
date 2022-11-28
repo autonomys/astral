@@ -11,7 +11,7 @@ tap.test('processBalances should process balance-related items and save accounts
     processCall,
     processEvent: () => null,
     saveAccounts: () => Promise.resolve(),
-  }
+  };
   const saveAccountsSpy = sinon.spy(dependencies, 'saveAccounts');
   const processCallSpy = sinon.spy(dependencies, 'processCall');
   const processEvent = sinon.spy(dependencies, 'processEvent');
@@ -30,7 +30,7 @@ tap.test('processBalances should process balance-related items and save accounts
       height: 10,
     },
     items,
-  }]
+  }];
 
   const context = { ...contextMock, blocks } as Context;
 
