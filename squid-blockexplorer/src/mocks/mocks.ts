@@ -24,7 +24,7 @@ const callData = {
   },
   success: true,
   error: undefined,
-}
+};
 
 const extrinsicData = {
   id: 'parent call extrinsic id',
@@ -34,7 +34,7 @@ const extrinsicData = {
   hash: 'random extrinsic hash',
   pos: 1,
   call: callData,
-}
+};
 
 export const callItemWithSignature = {
   call: callData,

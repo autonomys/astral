@@ -42,5 +42,5 @@ export function processBalancesFactory({
     const accountIdsU8 = [...accountIdsHex].map((id) => decodeHex(id));
 
     await saveAccounts(block.header, accountIdsU8);
-  }
+  };
 }

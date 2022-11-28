@@ -39,7 +39,7 @@ tap.test('processBlocks should process blocks and items from the Context and sav
         parentCallItem,
       ]
     }
-  ]
+  ];
 
   const context = {
     ...contextMock,

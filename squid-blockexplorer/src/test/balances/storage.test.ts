@@ -8,7 +8,7 @@ import { Balance } from '../../balances/types';
 const systemAccountBalance: Balance = {
   free: BigInt(60),
   reserved: BigInt(30),
-}
+};
 
 const defaultStorageDependencies = {
   ctx: contextMock,
@@ -20,7 +20,7 @@ const defaultStorageDependencies = {
     isExists: false,
     getAsV3: () => Promise.resolve(undefined),
   } as unknown as BalancesAccountStorage),
-}
+};
 
 tap.test('getBalance should return balance for given account id from SystemAccountStorage if storage exists', async (t) => {
   const dependencies = {
@@ -29,7 +29,7 @@ tap.test('getBalance should return balance for given account id from SystemAccou
       isExists: true,
       getAsV3: () => Promise.resolve({ data: systemAccountBalance }),
     } as unknown as SystemAccountStorage),
-  }
+  };
 
   const storage = new BalanceStorage(dependencies);
 
@@ -51,7 +51,7 @@ tap.test('getBalance should return balance for given account id from BalancesAcc
       isExists: true,
       getAsV3: () => Promise.resolve(systemAccountBalance),
     } as unknown as BalancesAccountStorage),
-  }
+  };
 
   const storage = new BalanceStorage(dependencies);
 

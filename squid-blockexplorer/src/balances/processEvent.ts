@@ -77,7 +77,7 @@ const eventTypes = {
   [BALANCE_EVENTS.Unreserved]: BalancesUnreservedEvent,
   [BALANCE_EVENTS.Withdraw]: BalancesWithdrawEvent,
   [BALANCE_EVENTS.Slashed]: BalancesSlashedEvent,
-}
+};
 
 export function processEventFactory(balanceEventHandler: BalanceEventHandler) {
   return function processEvent(item: EventItem, accountIdsHex: Set<string>) {
@@ -110,5 +110,5 @@ export function processEventFactory(balanceEventHandler: BalanceEventHandler) {
         break;
       }
     }
-  }
+  };
 }

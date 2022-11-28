@@ -21,7 +21,7 @@ tap.test('createBlock should create instance of a Block', (t) => {
     stateRoot: BlockHeaderMock.stateRoot,
     spacePledged,
     blockchainSize,
-  })
+  });
   t.end();
 });
 
@@ -53,7 +53,7 @@ tap.test('createExtrinsic should create instance of Extrinsic without signature'
     success: callItemWithSignature.extrinsic.success,
     block,
     pos: callItemWithSignature.extrinsic.pos,
-  })
+  });
   t.end();
 });
 

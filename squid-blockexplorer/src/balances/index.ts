@@ -16,5 +16,5 @@ export function createProcessBalancesDependencies(ctx: Context): ProcessBalances
     processCall,
     processEvent,
     saveAccounts,
-  }
+  };
 }

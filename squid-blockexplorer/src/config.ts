@@ -1,4 +1,4 @@
-import { SubstrateProcessor } from '@subsquid/substrate-processor'
+import { SubstrateProcessor } from '@subsquid/substrate-processor';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
@@ -33,6 +33,6 @@ const config: ProcessorConfig = {
     },
     typesBundle: 'gemini-2a',
     batchSize: parseInt(process.env.BATCH_SIZE as string, 10),
-}
+};
 
 export default config;
