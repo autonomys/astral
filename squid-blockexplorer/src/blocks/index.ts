@@ -4,7 +4,6 @@ import {
   getHistorySizeFactory,
   getSpacePledgedFactory,
   solutionRangesStorageFactory,
-  historySizeStorageFactory,
 } from './storage';
 import { getOrCreateAccountFactory, processCalls, processExtrinsicsFactory } from './processCalls';
 import { processEvents, } from './processEvents';
@@ -12,7 +11,7 @@ export { processBlocksFactory } from "./processBlocks";
 
 export function createProcessBlocksDependencies(ctx: Context): ProcessBlocksDependencies {
   const getSpacePledged = getSpacePledgedFactory(ctx, solutionRangesStorageFactory);
-  const getHistorySize = getHistorySizeFactory(ctx, historySizeStorageFactory);
+  const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
   const processExtrinsics = processExtrinsicsFactory(getOrCreateAccount);
 

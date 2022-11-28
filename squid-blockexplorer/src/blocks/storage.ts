@@ -1,7 +1,7 @@
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { Context } from '../processor';
 import { SubspaceRecordsRootStorage, SubspaceSolutionRangesStorage } from '../types/storage';
-import { calcHistorySize, calcSpacePledged } from './utils';
+import { calcHistorySize, calcSpacePledged, getStorageHash } from './utils';
 
 export function solutionRangesStorageFactory(ctx: Context, header: SubstrateBlock) {
   return new SubspaceSolutionRangesStorage(ctx, header);
@@ -19,10 +19,14 @@ export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Conte
   };
 }
 
-export function getHistorySizeFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceRecordsRootStorage) {
+export function getHistorySizeFactory(ctx: Context) {
   return async function getHistorySize(header: SubstrateBlock) {
-    const storage = storageFactory(ctx, header);
-    const segmentsCount = (await storage.getAllAsV3()).length;
+    const storageHash = getStorageHash('Subspace', 'RecordsRoot');
+    // SubspaceRecordsRoot is a hash map and we need a count of items (segments)
+    // SubspaceRecordsRootStorage generated type unfortunately does not provide method to get count, 
+    // it has getAllAsV3 method, which returns all items and is too expensive,
+    // instead we're querying state using client.call API
+    const segmentsCount = (await ctx._chain.client.call('state_getKeys', [storageHash, header.hash])).length;
     return calcHistorySize(segmentsCount);
   };
 }

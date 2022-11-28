@@ -1,3 +1,5 @@
+import { HexSink } from "@subsquid/scale-codec";
+import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { Block, Extrinsic, Call, Account } from '../model';
 import { CallItem, EventItem } from "../processor";
@@ -93,4 +95,27 @@ export function calcHistorySize(segmentsCount: number): bigint {
   const SEGMENT_SIZE = RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE * PIECE_SIZE * 2;
 
   return BigInt(segmentsCount * SEGMENT_SIZE);
+}
+
+/**
+ * Converts string into Scale-encoded hash
+ * @param {string} name
+ * @return {string} - hex result
+ */
+function getNameHash(name: string): string {
+  const digest = xxhash128().update(name).digest();
+  const sink = new HexSink();
+  sink.u128(digest);
+  const hash = sink.toHex();
+  return hash;
+}
+
+/**
+ * Converts prefix and name into Scale-encoded hash, useful for querying storage
+ * @param {string} prefix - pallet name (i.e "Subspace")
+ * @param {string} name - storage name (i.e. "RecordsRoot")
+ * @return {string} - hex result
+ */
+export function getStorageHash(prefix: string, name: string) {
+  return getNameHash(prefix) + getNameHash(name).slice(2);
 }

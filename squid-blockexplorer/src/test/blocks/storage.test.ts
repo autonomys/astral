@@ -5,7 +5,6 @@ import { calcSpacePledged, calcHistorySize } from '../../blocks/utils';
 import {
   contextMock,
   solutionRangesStorageFactoryMock,
-  historySizeStorageFactoryMock,
   SOLUTION_RANGES,
   SEGMENTS_COUNT,
 } from '../../mocks/mocks';
@@ -40,7 +39,7 @@ tap.test('getSpacePledgedFactory should create getSpacePledged method, which ret
 });
 
 tap.test('getHistorySizeFactory should create getHistorySize method, which returns history size (bigint)', async (t) => {
-  const getHistorySize = getHistorySizeFactory(contextMock, historySizeStorageFactoryMock);
+  const getHistorySize = getHistorySizeFactory(contextMock);
 
   const result = await getHistorySize(BlockHeaderMock);
   const expected = calcHistorySize(SEGMENTS_COUNT);
