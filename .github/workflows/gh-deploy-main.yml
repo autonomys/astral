@@ -23,6 +23,7 @@ jobs:
         env:
           REACT_APP_GRAPHQL_API_URL: ${{secrets.REACT_APP_GRAPHQL_API_URL}}
           REACT_APP_PUBLIC_URL: ${{secrets.REACT_APP_PUBLIC_URL}}
+          REACT_APP_GRAPHQL_API_WS: ${{secrets.REACT_APP_GRAPHQL_API_WS}}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4

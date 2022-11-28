@@ -2,22 +2,37 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
+import { useSubscription } from '@apollo/client'
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 
 // common
 import Table, { Column } from 'common/components/Table'
-import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
 import { Extrinsic } from 'gql/graphql'
+import { QUERY_EXTRINSIC_LISTS } from 'Home/query'
+import ErrorFallback from 'common/components/ErrorFallback'
+import StatusIcon from 'common/components/StatusIcon'
+import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 
 dayjs.extend(relativeTime)
 
-type Props = {
-  extrinsics: Extrinsic[]
-}
+const HomeExtrinsicList: FC = () => {
+  const PAGE_SIZE = 10
 
-const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
+  const { data, error, loading } = useSubscription(QUERY_EXTRINSIC_LISTS, {
+    variables: { limit: PAGE_SIZE, offset: 0 },
+  })
+
+  if (loading) {
+    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
+  }
+
+  if (error || !data) {
+    return <ErrorFallback error={error} />
+  }
+
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -35,28 +50,31 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
       )),
     },
     {
-      title: 'Time',
-      cells: extrinsics.map(({ block, id }) => {
-        const blockDate = dayjs(block.timestamp).fromNow(true)
-
-        return <div key={`${id}-home-extrinsic-time`}>{blockDate}</div>
-      }),
-    },
-    {
-      title: 'Action',
+      title: 'Call',
       cells: extrinsics.map(({ name, id }) => (
         <div key={`${id}-home-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
       )),
     },
     {
-      title: 'Block hash',
-      cells: extrinsics.map(({ hash, id }) => (
-        <div key={`${id}-home-extrinsic-hash`}>{shortString(hash)}</div>
+      title: 'Time',
+      cells: extrinsics.map(({ block, id }) => {
+        const blockDate = dayjs(block.timestamp).fromNow(true)
+
+        return <div key={`${id}-home-extrinsic-time`}>{blockDate} ago</div>
+      }),
+    },
+    {
+      title: 'Status',
+      cells: extrinsics.map(({ id, success }) => (
+        <div className='flex items-center justify-center' key={`${id}-home-extrinsic-status`}>
+          <StatusIcon status={success} />
+        </div>
       )),
     },
   ]
 
   // constants
+  const extrinsics = data.extrinsics
   const columns = generateColumns(extrinsics)
 
   return (
@@ -67,20 +85,7 @@ const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
           to={INTERNAL_ROUTES.extrinsics.list}
           className='px-2 py-2 transition ease-in-out duration-150'
         >
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth={1.5}
-            stroke='#DE67E4'
-            className='w-6 h-6'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              d='M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3'
-            />
-          </svg>
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
         </Link>
       </div>
       <Table

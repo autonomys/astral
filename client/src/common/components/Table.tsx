@@ -42,10 +42,10 @@ const Table: FC<Props> = ({
   return (
     <div className='w-full'>
       <>
-        <table className={`min-w-max w-full table-auto ${tableProps}`}>
+        <table className={`min-w-max w-full table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className={`text-[#857EC2] text-sm ${tableHeaderProps}`}>
+              <tr className={`text-[#857EC2] text-sm font-light ${tableHeaderProps}`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
                   <th key={`table-header-${id}-${index}`}>
                     {isNumeric ? (
