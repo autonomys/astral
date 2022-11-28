@@ -142,6 +142,12 @@ const chainMock = {
   },
   getConstant(): any {
     return;
+  },
+  // at the moment we only use client.call to query segments count at blocks/storage.ts
+  client: {
+    call() {
+      return new Array(SEGMENTS_COUNT);
+    }
   }
 } as unknown as Chain;
 
