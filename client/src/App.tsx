@@ -24,7 +24,7 @@ import 'swiper/css'
 
 function App() {
   return (
-    <HashRouter basename={`${process.env.REACT_APP_PUBLIC_URL}`}>
+    <HashRouter>
       <Layout>
         <Header />
         <Container>
