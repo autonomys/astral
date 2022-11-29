@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -24,7 +24,7 @@ import 'swiper/css'
 
 function App() {
   return (
-    <BrowserRouter basename={`${process.env.REACT_APP_PUBLIC_URL}`}>
+    <HashRouter basename={`${process.env.REACT_APP_PUBLIC_URL}`}>
       <Layout>
         <Header />
         <Container>
@@ -50,7 +50,7 @@ function App() {
         </Container>
         <Footer />
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
