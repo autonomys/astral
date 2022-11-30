@@ -14,7 +14,7 @@ function decodeLog(value: null | Uint8Array | Uint8Array[]) {
     };
   }
 
-  return toHex(value);
+  return { data: toHex(value) };
 }
 
 export function getLogsFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SystemDigestStorage) {
