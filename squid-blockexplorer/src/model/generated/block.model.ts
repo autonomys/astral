@@ -3,6 +3,7 @@ import * as marshal from "./marshal"
 import {Extrinsic} from "./extrinsic.model"
 import {Event} from "./event.model"
 import {Call} from "./call.model"
+import {Log} from "./log.model"
 
 @Entity_()
 export class Block {
@@ -42,6 +43,9 @@ export class Block {
 
   @OneToMany_(() => Call, e => e.block)
   calls!: Call[]
+
+  @OneToMany_(() => Log, e => e.block)
+  logs!: Log[]
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   spacePledged!: bigint

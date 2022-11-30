@@ -19,6 +19,7 @@ type Block @entity {
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
   events: [Event!]! @derivedFrom(field: "block")
   calls: [Call!]! @derivedFrom(field: "block")
+  logs: [Log!]! @derivedFrom(field: "block")
   spacePledged: BigInt!
   blockchainSize: BigInt!
 }
