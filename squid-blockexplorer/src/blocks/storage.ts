@@ -1,14 +1,14 @@
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { Context } from '../processor';
-import { SubspaceRecordsRootStorage, SubspaceSolutionRangesStorage } from '../types/storage';
+import { SystemDigestStorage, SubspaceSolutionRangesStorage,  } from '../types/storage';
 import { calcHistorySize, calcSpacePledged, getStorageHash } from './utils';
 
 export function solutionRangesStorageFactory(ctx: Context, header: SubstrateBlock) {
   return new SubspaceSolutionRangesStorage(ctx, header);
 }
 
-export function historySizeStorageFactory(ctx: Context, header: SubstrateBlock) {
-  return new SubspaceRecordsRootStorage(ctx, header);
+export function digestStorageFactory(ctx: Context, header: SubstrateBlock) {
+  return new SystemDigestStorage(ctx, header);
 }
 
 export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {

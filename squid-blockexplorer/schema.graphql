@@ -70,3 +70,9 @@ type Call @entity {
   calls: [Call] @derivedFrom(field: "parent")
   pos: Int
 }
+
+type Log @entity {
+  kind: String!
+  value: JSON
+  block: Block!
+}
