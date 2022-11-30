@@ -4,7 +4,7 @@ import { Block, Log } from "../model";
 import { Context } from "../processor";
 import { SystemDigestStorage } from '../types/storage';
 
-function decodeLog(value: null | Uint8Array | Uint8Array[]) {
+export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
   if (!value) return null;
 
   if (Array.isArray(value)) {

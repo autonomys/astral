@@ -10,7 +10,7 @@ import {
 } from '../../mocks/mocks';
 import { getEvents } from '../../blocks/getEvents';
 
-tap.test('getEvents should create instances of Event and push into events list', async (t) => {
+tap.test('getEvents should return list of Events', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
 
