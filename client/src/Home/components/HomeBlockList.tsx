@@ -11,7 +11,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
 import { Block } from 'gql/graphql'
-import { QUERY_BLOCK_LISTS } from 'Home/query'
+import { QUERY_BLOCK_LISTS, QUERY_HOME_LISTS } from 'Home/query'
 import ErrorFallback from 'common/components/ErrorFallback'
 import StatusIcon from 'common/components/StatusIcon'
 import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
@@ -23,6 +23,11 @@ const HomeBlockList: FC = () => {
 
   const { data, error, loading } = useSubscription(QUERY_BLOCK_LISTS, {
     variables: { limit: PAGE_SIZE, offset: 0 },
+    onData({ client }) {
+      client.refetchQueries({
+        include: [QUERY_HOME_LISTS],
+      })
+    },
   })
 
   if (loading) {
