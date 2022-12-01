@@ -16,7 +16,8 @@ tap.test('processBlocks should process blocks and items from the Context and sav
     getHistorySize: () => Promise.resolve(BigInt(2)),
     processExtrinsics: () => Promise.resolve(),
     processCalls: () => Promise.resolve(),
-    processEvents: () => Promise.resolve(),
+    getEvents: () => Promise.resolve([]),
+    getLogs: () => Promise.resolve([]),
   });
 
   const blocks = [
@@ -50,8 +51,8 @@ tap.test('processBlocks should process blocks and items from the Context and sav
 
   await processBlocks(context);
 
-  // expect store.save method calls: blocks, extrinsics, calls, events
-  t.equal(saveSpy.callCount, blocks[0].items.length + blocks[1].items.length); // 4
+  // expect store.save method calls: blocks, extrinsics, calls, events, logs
+  t.equal(saveSpy.callCount, 5);
 
   // check stored block ids against block ids in the context
   const storedBlocks = saveSpy.firstCall.firstArg;

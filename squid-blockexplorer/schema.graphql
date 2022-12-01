@@ -19,6 +19,7 @@ type Block @entity {
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
   events: [Event!]! @derivedFrom(field: "block")
   calls: [Call!]! @derivedFrom(field: "block")
+  logs: [Log!]! @derivedFrom(field: "block")
   spacePledged: BigInt!
   blockchainSize: BigInt!
 }
@@ -69,4 +70,10 @@ type Call @entity {
   parent: Call
   calls: [Call] @derivedFrom(field: "parent")
   pos: Int
+}
+
+type Log @entity {
+  kind: String!
+  value: JSON
+  block: Block!
 }

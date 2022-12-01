@@ -4,9 +4,11 @@ import {
   getHistorySizeFactory,
   getSpacePledgedFactory,
   solutionRangesStorageFactory,
+  digestStorageFactory,
 } from './storage';
 import { getOrCreateAccountFactory, processCalls, processExtrinsicsFactory } from './processCalls';
-import { processEvents, } from './processEvents';
+import { getEvents } from './getEvents';
+import { getLogsFactory } from './getLogs';
 export { processBlocksFactory } from "./processBlocks";
 
 export function createProcessBlocksDependencies(ctx: Context): ProcessBlocksDependencies {
@@ -14,12 +16,14 @@ export function createProcessBlocksDependencies(ctx: Context): ProcessBlocksDepe
   const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
   const processExtrinsics = processExtrinsicsFactory(getOrCreateAccount);
+  const getLogs = getLogsFactory(ctx, digestStorageFactory);
 
   return {
     getSpacePledged,
     getHistorySize,
     processExtrinsics,
     processCalls,
-    processEvents,
+    getEvents,
+    getLogs,
   };
 }
