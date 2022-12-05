@@ -10,6 +10,8 @@ import { Block } from 'gql/graphql'
 import { shortString } from 'common/helpers'
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// block
 import BlockListCard from './BlockListCard'
 
 dayjs.extend(relativeTime)

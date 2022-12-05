@@ -3,10 +3,10 @@ import { Event } from 'gql/graphql'
 
 // common
 import Tabs from 'common/components/Tabs'
+import MobileCard from 'common/components/MobileCard'
 
 // extrinsic
 import ExtrinsicDetailsEventList from 'Extrinsic/components/ExtrinsicDetailsEventList'
-import MobileCard from 'common/components/MobileCard'
 
 type Props = {
   events: Event[]

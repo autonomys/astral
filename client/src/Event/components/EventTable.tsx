@@ -1,12 +1,16 @@
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { Event } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+
+// gql
+import { Event } from 'gql/graphql'
 
 // common
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// event
 import EventListCard from './EventListCard'
 
 dayjs.extend(relativeTime)

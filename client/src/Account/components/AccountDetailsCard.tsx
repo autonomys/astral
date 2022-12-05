@@ -1,8 +1,14 @@
+import { FC } from 'react'
+
+// gql
+import { Account } from 'gql/graphql'
+
+// common
 import Accordion from 'common/components/Accordion'
 import { List, ListItem, StyledListItem } from 'common/components/List'
 import { bigNumberToNumber, shortString } from 'common/helpers'
-import { Account } from 'gql/graphql'
-import { FC } from 'react'
+
+// account
 import AccountBalanceStats from './AccountBalanceStats'
 
 type Props = {

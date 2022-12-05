@@ -5,6 +5,8 @@ import BN from 'bn.js'
 
 // common
 import ErrorFallback from 'common/components/ErrorFallback'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import { formatSpacePledged } from 'common/helpers'
 
 // common/icons
 import BlockIcon from 'common/icons/BlockIcon'
@@ -14,10 +16,9 @@ import PieChartIcon from 'common/icons/PieChartIcon'
 
 // home
 import HomeInfoCard from 'Home/components/HomeInfoCard'
-import { formatSpacePledged } from 'common/helpers'
+
 import { QUERY_HOME_LISTS } from 'Home/query'
-import HomeChainInfoSkeleton from './HomeChainInfoSkeleton'
-import useMediaQuery from 'common/hooks/useMediaQuery'
+import HomeChainInfoSkeleton from 'Home/components//HomeChainInfoSkeleton'
 
 const HomeChainInfo: FC = () => {
   const ACCOUNT_MIN_VAL = new BN(0.3)

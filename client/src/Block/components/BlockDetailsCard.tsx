@@ -1,7 +1,9 @@
 import { FC } from 'react'
-import { Block } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+
+// gql
+import { Block } from 'gql/graphql'
 
 // common
 import { List, StyledListItem } from 'common/components/List'

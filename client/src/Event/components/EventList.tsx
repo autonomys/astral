@@ -7,11 +7,11 @@ import Spinner from 'common/components/Spinner'
 import SearchBar from 'common/components/SearchBar'
 import Pagination from 'common/components/Pagination'
 import { numberWithCommas } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // event
 import { QUERY_EVENT_CONNECTION_LIST } from 'Event/query'
 import EventTable from 'Event/components/EventTable'
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)

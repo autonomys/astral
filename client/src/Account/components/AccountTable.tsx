@@ -10,8 +10,10 @@ import { Account } from 'gql/graphql'
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { bigNumberToNumber, shortString } from 'common/helpers'
-import AccountListCard from './AccountListCard'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+
+// account
+import AccountListCard from './AccountListCard'
 
 dayjs.extend(relativeTime)
 

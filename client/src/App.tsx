@@ -18,11 +18,12 @@ import Account from 'Account/components/Account'
 // event
 import EventList from 'Event/components/EventList'
 import HeaderBackground from 'layout/components/HeaderBackground'
+// log
+import LogList from 'Log/components/LogList'
+import Log from 'Log/components/Log'
 
 // Import Swiper styles
 import 'swiper/css'
-import LogList from 'Log/components/LogList'
-import Log from 'Log/components/Log'
 
 function App() {
   return (

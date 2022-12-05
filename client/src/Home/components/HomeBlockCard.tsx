@@ -1,12 +1,14 @@
 import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // gql
 import { Block } from 'gql/graphql'
+
+// common
 import StatusIcon from 'common/components/StatusIcon'
 import MobileCard from 'common/components/MobileCard'
-import { Link } from 'react-router-dom'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
