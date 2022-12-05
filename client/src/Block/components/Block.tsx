@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/client'
 // common
 import Spinner from 'common/components/Spinner'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import ErrorFallback from 'common/components/ErrorFallback'
 
 // block
 import { QUERY_BLOCK_BY_ID } from 'Block/query'
@@ -25,7 +26,7 @@ const Block: FC = () => {
   }
 
   if (error || !data) {
-    return <div>ERROR</div>
+    return <ErrorFallback error={error} />
   }
 
   const [block] = data.blocks

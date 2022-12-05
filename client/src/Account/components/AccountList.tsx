@@ -17,29 +17,23 @@ const AccountList: FC = () => {
   const [lastCursor, setLastCursor] = useState(undefined)
   const PAGE_SIZE = 10
 
-  const {
-    data: connectionData,
-    error: connectionError,
-    loading: connectionLoading,
-  } = useQuery(QUERY_ACCOUNT_CONNECTION_LIST, {
+  const { data, error, loading } = useQuery(QUERY_ACCOUNT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
-  if (connectionLoading) {
+  if (loading) {
     return <Spinner />
   }
 
-  if (connectionError || !connectionData) {
-    return <ErrorFallback error={connectionError} />
+  if (error || !data) {
+    return <ErrorFallback error={error} />
   }
 
-  const accountsConnection = connectionData.accountsConnection.edges.map(
-    (extrinsic) => extrinsic.node,
-  )
-  const totalCount = connectionData.accountsConnection.totalCount
+  const accountsConnection = data.accountsConnection.edges.map((extrinsic) => extrinsic.node)
+  const totalCount = data.accountsConnection.totalCount
   const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = connectionData.accountsConnection.pageInfo
+  const pageInfo = data.accountsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)

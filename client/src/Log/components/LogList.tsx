@@ -20,27 +20,23 @@ const LogList: FC = () => {
 
   const PAGE_SIZE = 10
 
-  const {
-    data: connectionData,
-    error: connectionError,
-    loading: connectionLoading,
-  } = useQuery(QUERY_LOG_CONNECTION_LIST, {
+  const { data, error, loading } = useQuery(QUERY_LOG_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
-  if (connectionLoading) {
+  if (loading) {
     return <Spinner />
   }
 
-  if (connectionError || !connectionData) {
-    return <ErrorFallback error={connectionError} />
+  if (error || !data) {
+    return <ErrorFallback error={error} />
   }
 
-  const logsConnection = connectionData.logsConnection.edges.map((log) => log.node)
-  const totalCount = connectionData.logsConnection.totalCount
+  const logsConnection = data.logsConnection.edges.map((log) => log.node)
+  const totalCount = data.logsConnection.totalCount
   const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = connectionData.logsConnection.pageInfo
+  const pageInfo = data.logsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
