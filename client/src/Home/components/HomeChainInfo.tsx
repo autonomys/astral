@@ -41,7 +41,8 @@ const HomeChainInfo: FC = () => {
   }
 
   const [block] = data.blocks
-  const archivedBlock = block.height - 100
+  // won't have any archived blocks if there are less than 100 blocks
+  const archivedBlock = block.height > 100 ? block.height - 100 : 0
   const spacePledgedVal = Number(block.spacePledged)
   const spacePledged = formatSpacePledged(spacePledgedVal)
   const historySizeVal = Number(block.blockchainSize)

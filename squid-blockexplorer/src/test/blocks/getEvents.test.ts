@@ -1,5 +1,5 @@
 import tap from 'tap';
-import { Extrinsic, Call, Event } from '../../model';
+import { Extrinsic, Call } from '../../model';
 import {
   parentCallItem,
   eventItemWithoutExtrinsic,
@@ -8,10 +8,9 @@ import {
   extrinsicMock,
   parentCallMock,
 } from '../../mocks/mocks';
-import { processEvents } from '../../blocks/processEvents';
+import { getEvents } from '../../blocks/getEvents';
 
-tap.test('processEvents should create instances of Event and push into events list', async (t) => {
-  const eventsStored: Event[] = [];
+tap.test('getEvents should return list of Events', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
 
@@ -19,17 +18,14 @@ tap.test('processEvents should create instances of Event and push into events li
     eventItemWithoutExtrinsic,
   ];
 
-  t.equal(eventsStored.length, 0);
+  const events = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
 
-  await processEvents(extrinsicsMap, callsMap, eventsStored, eventItems, blockMock);
-
-  t.equal(eventsStored.length, eventItems.length);
+  t.equal(events.length, eventItems.length);
 
   t.end();
 });
 
-tap.test('processEvents should map Event to a Block', async (t) => {
-  const eventsStored: Event[] = [];
+tap.test('getEvents should map Event to a Block', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
 
@@ -37,15 +33,14 @@ tap.test('processEvents should map Event to a Block', async (t) => {
     eventItemWithoutExtrinsic,
   ];
 
-  await processEvents(extrinsicsMap, callsMap, eventsStored, eventItems, blockMock);
+  const eventsStored = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
 
   t.equal(eventsStored[0].block, blockMock);
 
   t.end();
 });
 
-tap.test('processEvents should map Event to Call and Extrinsic', async (t) => {
-  const eventsStored: Event[] = [];
+tap.test('getEvents should map Event to Call and Extrinsic', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
 
@@ -56,7 +51,7 @@ tap.test('processEvents should map Event to Call and Extrinsic', async (t) => {
     eventItemWithExtrinsic,
   ];
 
-  await processEvents(extrinsicsMap, callsMap, eventsStored, eventItems, blockMock);
+  const eventsStored = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
 
   const savedExtrinsic = extrinsicsMap.get(extrinsicMock.id);
 

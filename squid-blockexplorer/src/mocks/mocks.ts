@@ -5,7 +5,7 @@ import { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from '../processor';
 import BlockHeaderMock from './BlockHeader.json';
-import { SubspaceRecordsRootStorage, SubspaceSolutionRangesStorage } from '../types/storage';
+import { SystemDigestStorage, SubspaceSolutionRangesStorage } from '../types/storage';
 import { Account } from '../model';
 import { createBlock, createCall, createExtrinsic } from '../blocks/utils';
 
@@ -183,9 +183,15 @@ export const solutionRangesStorageFactoryMock = () => ({
   getAsV3: () => ({ current: SOLUTION_RANGES })
 } as unknown as SubspaceSolutionRangesStorage);
 
-export const historySizeStorageFactoryMock = () => ({
-  getAllAsV3: () => new Array(SEGMENTS_COUNT),
-} as unknown as SubspaceRecordsRootStorage);
+export const digestLogs = [
+  { __kind: 'Consensus' }, { __kind: 'PreRuntime' },
+];
+
+export const digestStorageFactoryMock = () => ({
+  getAsV3: () => ({
+    logs: digestLogs,
+  }),
+} as unknown as SystemDigestStorage);
 
 export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'random account id' }));
 

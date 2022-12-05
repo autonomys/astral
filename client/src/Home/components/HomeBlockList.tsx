@@ -17,8 +17,8 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 import { Block } from 'gql/graphql'
 
 // home
-import { QUERY_BLOCK_LISTS } from 'Home/query'
 import { HomeBlockCard } from './HomeBlockCard'
+import { QUERY_BLOCK_LISTS, QUERY_HOME_LISTS } from 'Home/query'
 
 dayjs.extend(relativeTime)
 
@@ -27,6 +27,11 @@ const HomeBlockList: FC = () => {
   const PAGE_SIZE = isDesktop ? 10 : 3
   const { data, error, loading } = useSubscription(QUERY_BLOCK_LISTS, {
     variables: { limit: PAGE_SIZE, offset: 0 },
+    onData({ client }) {
+      client.refetchQueries({
+        include: [QUERY_HOME_LISTS],
+      })
+    },
   })
 
   if (loading) {

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -26,7 +26,7 @@ import Log from 'Log/components/Log'
 
 function App() {
   return (
-    <BrowserRouter basename={`${process.env.REACT_APP_PUBLIC_URL}`}>
+    <HashRouter>
       <Layout>
         <Header />
         <Container>
@@ -56,7 +56,7 @@ function App() {
         </Container>
         <Footer />
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

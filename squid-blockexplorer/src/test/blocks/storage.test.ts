@@ -1,5 +1,5 @@
 import tap from 'tap';
-import { SubspaceRecordsRootStorage, SubspaceSolutionRangesStorage } from '../../types/storage';
+import { SubspaceSolutionRangesStorage } from '../../types/storage';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
 import { calcSpacePledged, calcHistorySize } from '../../blocks/utils';
 import {
@@ -8,20 +8,12 @@ import {
   SOLUTION_RANGES,
   SEGMENTS_COUNT,
 } from '../../mocks/mocks';
-import { solutionRangesStorageFactory, historySizeStorageFactory, getSpacePledgedFactory, getHistorySizeFactory } from '../../blocks/storage';
+import { solutionRangesStorageFactory, getSpacePledgedFactory, getHistorySizeFactory } from '../../blocks/storage';
 
 tap.test('solutionRangesStorageFactory should create instance of SubspaceSolutionRangesStorage', (t) => {
   const result = solutionRangesStorageFactory(contextMock, BlockHeaderMock);
 
   t.type(result, SubspaceSolutionRangesStorage);
-
-  t.end();
-});
-
-tap.test('historySizeStorageFactory should create instance of SubspaceRecordsRootStorage', (t) => {
-  const result = historySizeStorageFactory(contextMock, BlockHeaderMock);
-
-  t.type(result, SubspaceRecordsRootStorage);
 
   t.end();
 });

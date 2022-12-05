@@ -2,14 +2,13 @@ import { EventItem } from '../processor';
 import { Block, Event } from '../model';
 import { ExtrinsicsMap, CallsMap } from './types';
 
-export async function processEvents(
+export async function getEvents(
   extrinsicsMap: ExtrinsicsMap, 
   callsMap: CallsMap, 
-  events: Event[], 
   eventItems: EventItem[], 
   block: Block,
 ) {
-  for (const item of eventItems) {
+  return eventItems.map(item => {
     // some events may not have associated extrinsic / call 
     // i.e. TransactionFees.StorageFeesEscrowChange
     let extrinsic = null;
@@ -20,14 +19,12 @@ export async function processEvents(
       call = callsMap.get(item.event.extrinsic.call.id);
     }
 
-    const event = new Event({
+    return new Event({
       ...item.event,
       block,
       extrinsic,
       call,
       timestamp: block.timestamp,
     });
-
-    events.push(event);
-  }
+  });
 }
