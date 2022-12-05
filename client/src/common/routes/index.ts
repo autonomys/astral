@@ -31,4 +31,11 @@ export const INTERNAL_ROUTES = {
     },
     list: 'extrinsics',
   },
+  logs: {
+    id: {
+      path: ':logId',
+      page: (logId: string): string => `/logs/${logId}`,
+    },
+    list: 'logs',
+  },
 }

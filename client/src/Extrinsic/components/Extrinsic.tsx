@@ -3,7 +3,8 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 // common
-import Spinner from 'common/components/Spinner';
+import Spinner from 'common/components/Spinner'
+import ErrorFallback from 'common/components/ErrorFallback'
 
 // extrinsic
 import ExtrinsicDetailsCard from 'Extrinsic/components/ExtrinsicDetailsCard'
@@ -19,17 +20,17 @@ const Extrinsic: FC = () => {
   })
 
   if (loading) {
-    return <Spinner />;
+    return <Spinner />
   }
 
   if (error || !data) {
-    return <div>ERROR</div>
+    return <ErrorFallback error={error} />
   }
 
   const extrinsic = data.extrinsicById
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <ExtrinsicDetailsCard extrinsic={extrinsic} />
       <ExtrinsicDetailsTab events={extrinsic.block.events} />
     </div>

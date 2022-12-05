@@ -1,38 +1,39 @@
-import { FC } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
+import { FC } from 'react'
+import { useParams } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
 
 // account
-import { QUERY_ACCOUNT_BY_ID } from 'Account/query';
-import AccountDetailsCard from './AccountDetailsCard';
-import AccountDetailsTabs from './AccountDetailsTabs';
+import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
+import AccountDetailsCard from './AccountDetailsCard'
+import AccountDetailsTabs from './AccountDetailsTabs'
 
 // common
-import Spinner from 'common/components/Spinner';
+import Spinner from 'common/components/Spinner'
+import ErrorFallback from 'common/components/ErrorFallback'
 
 const Account: FC = () => {
-  const { accountId } = useParams();
+  const { accountId } = useParams()
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
     variables: { accountId: accountId },
-  });
+  })
 
   if (loading) {
-    return <Spinner />;
+    return <Spinner />
   }
 
   if (error || !data) {
-    return <div>ERROR</div>;
+    return <ErrorFallback error={error} />
   }
 
-  const account = data.accountById;
+  const account = data.accountById
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <AccountDetailsCard account={account} />
       <AccountDetailsTabs extrinsics={account.extrinsics} />
     </div>
-  );
-};
+  )
+}
 
-export default Account;
+export default Account

@@ -17,29 +17,23 @@ const ExtrinsicList: FC = () => {
   const [lastCursor, setLastCursor] = useState(undefined)
   const PAGE_SIZE = 10
 
-  const {
-    data: connectionData,
-    error: connectionError,
-    loading: connectionLoading,
-  } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
+  const { data, error, loading } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
-  if (connectionLoading) {
+  if (loading) {
     return <Spinner />
   }
 
-  if (connectionError || !connectionData) {
-    return <ErrorFallback error={connectionError} />
+  if (error || !data) {
+    return <ErrorFallback error={error} />
   }
 
-  const extrinsicsConnection = connectionData.extrinsicsConnection.edges.map(
-    (extrinsic) => extrinsic.node,
-  )
-  const totalCount = connectionData.extrinsicsConnection.totalCount
+  const extrinsicsConnection = data.extrinsicsConnection.edges.map((extrinsic) => extrinsic.node)
+  const totalCount = data.extrinsicsConnection.totalCount
   const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = connectionData.extrinsicsConnection.pageInfo
+  const pageInfo = data.extrinsicsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
