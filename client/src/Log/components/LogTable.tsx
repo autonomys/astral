@@ -9,14 +9,16 @@ import { Log } from 'gql/graphql'
 // common
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
+import LogListCard from './LogListCard'
 
 dayjs.extend(relativeTime)
 
 interface Props {
   logs: Log[]
+  isDesktop?: boolean
 }
 
-const LogTable: FC<Props> = ({ logs }) => {
+const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
   // methods
   const generateColumns = (logs: Log[]): Column[] => [
     {
@@ -48,7 +50,7 @@ const LogTable: FC<Props> = ({ logs }) => {
   // constants
   const columns = generateColumns(logs)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
@@ -59,6 +61,12 @@ const LogTable: FC<Props> = ({ logs }) => {
           id='latest-blocks'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {logs.map((log) => (
+        <LogListCard log={log} key={`log-list-card-${log.id}`} />
+      ))}
     </div>
   )
 }

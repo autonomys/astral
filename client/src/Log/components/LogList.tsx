@@ -11,10 +11,13 @@ import { numberWithCommas } from 'common/helpers'
 // log
 import { QUERY_LOG_CONNECTION_LIST } from 'Log/query'
 import LogTable from './LogTable'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const LogList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState(undefined)
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+
   const PAGE_SIZE = 10
 
   const {
@@ -58,7 +61,7 @@ const LogList: FC = () => {
         <div className='text-[#282929] text-base'>{`Logs (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
-        <LogTable logs={logsConnection} />
+        <LogTable logs={logsConnection} isDesktop={isDesktop} />
         <Pagination
           nextPage={handleNextPage}
           previousPage={handlePreviousPage}
