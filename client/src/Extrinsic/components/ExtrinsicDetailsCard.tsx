@@ -40,7 +40,7 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic }) => {
                 <StyledListItem title='Call'>{extrinsic.name}</StyledListItem>
               </List>
             </div>
-            <div className='w-full max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg ml-4 mb-4 p-4 sm:p-6'>
+            <div className='w-full max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg ml-4 mb-4 p-4 sm:p-6 break-all'>
               <ReactJson src={extrinsic.args || {}} iconStyle='circle' />
             </div>
           </div>
