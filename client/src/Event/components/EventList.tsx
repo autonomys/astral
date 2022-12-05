@@ -17,27 +17,23 @@ const EventList: FC = () => {
   const [lastCursor, setLastCursor] = useState(undefined)
   const PAGE_SIZE = 10
 
-  const {
-    data: connectionData,
-    error: connectionError,
-    loading: connectionLoading,
-  } = useQuery(QUERY_EVENT_CONNECTION_LIST, {
+  const { data, error, loading } = useQuery(QUERY_EVENT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
-  if (connectionLoading) {
+  if (loading) {
     return <Spinner />
   }
 
-  if (connectionError || !connectionData) {
-    return <ErrorFallback error={connectionError} />
+  if (error || !data) {
+    return <ErrorFallback error={error} />
   }
 
-  const eventsConnection = connectionData.eventsConnection.edges.map((event) => event.node)
-  const totalCount = connectionData.eventsConnection.totalCount
+  const eventsConnection = data.eventsConnection.edges.map((event) => event.node)
+  const totalCount = data.eventsConnection.totalCount
   const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = connectionData.eventsConnection.pageInfo
+  const pageInfo = data.eventsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)

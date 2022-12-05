@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
 // common
-import Spinner from 'common/components/Spinner';
+import Spinner from 'common/components/Spinner'
+import ErrorFallback from 'common/components/ErrorFallback'
 
 // block
 import { QUERY_BLOCK_BY_ID } from 'Block/query'
@@ -18,17 +19,17 @@ const Block: FC = () => {
   })
 
   if (loading) {
-    return <Spinner />;
+    return <Spinner />
   }
 
   if (error || !data) {
-    return <div>ERROR</div>
+    return <ErrorFallback error={error} />
   }
 
   const [block] = data.blocks
 
   return (
-    <div className="w-full">
+    <div className='w-full'>
       <BlockDetailsCard block={block} />
       <BlockDetailsTabs events={block.events} extrinsics={block.extrinsics} />
     </div>

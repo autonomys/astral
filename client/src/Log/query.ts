@@ -35,8 +35,9 @@ export const QUERY_LOG_BY_ID = gql`
         id
         height
         timestamp
-        events(limit: 10) {
+        events(limit: 10, orderBy: id_DESC) {
           id
+          args
           name
           phase
           pos

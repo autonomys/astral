@@ -39,6 +39,7 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       signature
       success
       tip
+      args
       block {
         height
         id

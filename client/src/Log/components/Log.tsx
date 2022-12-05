@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 
 // common
 import Spinner from 'common/components/Spinner'
+import ErrorFallback from 'common/components/ErrorFallback'
 
 // log
 import { QUERY_LOG_BY_ID } from 'Log/query'
@@ -23,7 +24,7 @@ const Log: FC = () => {
   }
 
   if (error || !data) {
-    return <div>ERROR</div>
+    return <ErrorFallback error={error} />
   }
 
   const log = data.logById
