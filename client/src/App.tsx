@@ -21,6 +21,8 @@ import HeaderBackground from 'layout/components/HeaderBackground'
 
 // Import Swiper styles
 import 'swiper/css'
+import LogList from 'Log/components/LogList'
+import Log from 'Log/components/Log'
 
 function App() {
   return (
@@ -45,6 +47,10 @@ function App() {
             </Route>
             <Route path={INTERNAL_ROUTES.events.list}>
               <Route index element={<EventList />} />
+            </Route>
+            <Route path={INTERNAL_ROUTES.logs.list}>
+              <Route index element={<LogList />} />
+              <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
             </Route>
           </Routes>
         </Container>
