@@ -1,9 +1,13 @@
-import { MoonIcon } from '@heroicons/react/20/solid'
-import LogoIcon from 'common/icons/LogoIcon'
-import { INTERNAL_ROUTES } from 'common/routes'
 import { FC, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import HeaderBackground from './HeaderBackground'
+import { MoonIcon } from '@heroicons/react/20/solid'
+
+// common
+import LogoIcon from 'common/icons/LogoIcon'
+import { INTERNAL_ROUTES } from 'common/routes'
+
+// layout
+import HeaderBackground from 'layout/components/HeaderBackground'
 
 type Props = {
   children?: ReactNode
