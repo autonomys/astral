@@ -10,6 +10,7 @@ import ErrorFallback from 'common/components/ErrorFallback'
 import ExtrinsicDetailsCard from 'Extrinsic/components/ExtrinsicDetailsCard'
 import ExtrinsicDetailsTab from 'Extrinsic/components/ExtrinsicDetailsTab'
 import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const Extrinsic: FC = () => {
   const { extrinsicId } = useParams()
@@ -18,6 +19,8 @@ const Extrinsic: FC = () => {
       extrinsicId: extrinsicId,
     },
   })
+  const isDesktop = useMediaQuery('(min-width: 1440px)')
+  const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
 
   if (loading) {
     return <Spinner />
@@ -31,8 +34,8 @@ const Extrinsic: FC = () => {
 
   return (
     <div className='w-full'>
-      <ExtrinsicDetailsCard extrinsic={extrinsic} />
-      <ExtrinsicDetailsTab events={extrinsic.block.events} />
+      <ExtrinsicDetailsCard extrinsic={extrinsic} isDesktop={isLargeDesktop} />
+      <ExtrinsicDetailsTab events={extrinsic.block.events} isDesktop={isDesktop} />
     </div>
   )
 }

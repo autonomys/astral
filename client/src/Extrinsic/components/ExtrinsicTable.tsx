@@ -11,13 +11,17 @@ import { shortString } from 'common/helpers'
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
 
+// extrinsic
+import ExtrinsicListCard from './ExtrinsicListCard'
+
 dayjs.extend(relativeTime)
 
 interface Props {
   extrinsics: Extrinsic[]
+  isDesktop?: boolean
 }
 
-const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
+const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -61,7 +65,7 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
   // constants
   const columns = generateColumns(extrinsics)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
@@ -72,6 +76,12 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
           tableHeaderProps='border-b border-gray-200'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {extrinsics.map((extrinsic) => (
+        <ExtrinsicListCard extrinsic={extrinsic} key={`extrinsic-list-card-${extrinsic.id}`} />
+      ))}
     </div>
   )
 }

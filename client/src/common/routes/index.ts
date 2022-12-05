@@ -1,8 +1,18 @@
-// TODO: Update routes for forum and docs
 export const EXTERNAL_ROUTES = {
   subspace: 'https://subspace.network/',
-  forum: 'https://subspace.network/',
-  docs: 'https://subspace.network/',
+  forum: 'https://forum.subspace.network/',
+  docs: 'https://docs.subspace.network/',
+  social: {
+    twitter: 'https://twitter.com/NetworkSubspace',
+    discord: 'https://discord.gg/subspace-network',
+    telegram: 'https://t.me/subspace_network',
+    github: 'https://github.com/subspace',
+    reddit: 'https://www.reddit.com/r/sub',
+    medium: 'https://medium.com/subspace-network',
+    youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',
+    linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
+    subSocial: 'https://app.subsocial.network/@NetworkSubspace',
+  },
 }
 
 export const INTERNAL_ROUTES = {

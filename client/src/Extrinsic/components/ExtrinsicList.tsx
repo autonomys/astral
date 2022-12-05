@@ -11,10 +11,13 @@ import ErrorFallback from 'common/components/ErrorFallback'
 import SearchBar from 'common/components/SearchBar'
 import Pagination from 'common/components/Pagination'
 import { numberWithCommas } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState(undefined)
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+
   const PAGE_SIZE = 10
 
   const { data, error, loading } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
@@ -47,14 +50,14 @@ const ExtrinsicList: FC = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='grid grid-cols-2'>
+      <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base'>{`Extrinsics (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col'>
-        <ExtrinsicTable extrinsics={extrinsicsConnection} />
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+        <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />
         <Pagination
           nextPage={handleNextPage}
           previousPage={handlePreviousPage}

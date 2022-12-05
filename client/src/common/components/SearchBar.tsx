@@ -82,12 +82,12 @@ const SearchBar: FC = () => {
               type='search'
               id='default-search'
               className='block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
-              placeholder='Search for Block / Extrinsics / Account'
+              placeholder='Search for Block / Account ...'
               required
             />
             <button
               type='submit'
-              className='absolute right-2.5 bottom-0.5 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 '
+              className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 '
             >
               <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
             </button>

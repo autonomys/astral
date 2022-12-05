@@ -47,13 +47,13 @@ const AccountList: FC = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='grid grid-cols-2'>
+      <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base'>{`Holders (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col'>
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <AccountTable accounts={accountsConnection} />
         <Pagination
           nextPage={handleNextPage}

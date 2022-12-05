@@ -9,7 +9,11 @@ import { Account } from 'gql/graphql'
 // common
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { bigNumberToNumber } from 'common/helpers'
+import { bigNumberToNumber, shortString } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+
+// account
+import AccountListCard from './AccountListCard'
 
 dayjs.extend(relativeTime)
 
@@ -18,6 +22,10 @@ interface Props {
 }
 
 const AccountTable: FC<Props> = ({ accounts }) => {
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+
+  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+
   // methods
   const generateColumns = (accounts: Account[]): Column[] => [
     {
@@ -28,7 +36,7 @@ const AccountTable: FC<Props> = ({ accounts }) => {
       title: 'Account',
       cells: accounts.map(({ id }) => (
         <Link key={`${id}-account-id`} to={INTERNAL_ROUTES.accounts.id.page(id)}>
-          <div>{id}</div>
+          <div>{isLargeLaptop ? id : shortString(id)}</div>
         </Link>
       )),
     },
@@ -41,13 +49,13 @@ const AccountTable: FC<Props> = ({ accounts }) => {
     {
       title: 'Locked (TSSC)',
       cells: accounts.map(({ reserved, id }) => (
-        <div key={`${id}-account-locked`}>{bigNumberToNumber(reserved || 0, 18)}</div>
+        <div key={`${id}-account-locked`}>{reserved ? bigNumberToNumber(reserved, 18) : 0}</div>
       )),
     },
     {
       title: 'Balance (TSSC)',
       cells: accounts.map(({ total, id }) => (
-        <div key={`${id}-account-balance`}>{bigNumberToNumber(total || 0, 18)}</div>
+        <div key={`${id}-account-balance`}>{total ? bigNumberToNumber(total, 18) : 0}</div>
       )),
     },
   ]
@@ -55,7 +63,7 @@ const AccountTable: FC<Props> = ({ accounts }) => {
   // constants
   const columns = generateColumns(accounts)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
@@ -66,6 +74,12 @@ const AccountTable: FC<Props> = ({ accounts }) => {
           id='accounts-list'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {accounts.map((account, index) => (
+        <AccountListCard index={index} account={account} key={`account-list-card-${account.id}`} />
+      ))}
     </div>
   )
 }

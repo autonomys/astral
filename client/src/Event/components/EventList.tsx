@@ -7,6 +7,7 @@ import Spinner from 'common/components/Spinner'
 import SearchBar from 'common/components/SearchBar'
 import Pagination from 'common/components/Pagination'
 import { numberWithCommas } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // event
 import { QUERY_EVENT_CONNECTION_LIST } from 'Event/query'
@@ -16,6 +17,7 @@ const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState(undefined)
   const PAGE_SIZE = 10
+  const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const { data, error, loading } = useQuery(QUERY_EVENT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
@@ -47,14 +49,14 @@ const EventList: FC = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='grid grid-cols-2'>
+      <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base'>{`Events (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col'>
-        <EventTable events={eventsConnection} />
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+        <EventTable events={eventsConnection} isDesktop={isDesktop} />
         <Pagination
           nextPage={handleNextPage}
           previousPage={handlePreviousPage}

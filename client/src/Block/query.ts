@@ -73,6 +73,14 @@ export const QUERY_BLOCK_BY_ID = gql`
           }
         }
       }
+      logs(limit: 10, orderBy: block_height_DESC) {
+        block {
+          height
+          timestamp
+        }
+        kind
+        id
+      }
     }
   }
 `

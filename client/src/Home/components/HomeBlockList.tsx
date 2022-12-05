@@ -8,19 +8,23 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 // common
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
-
-// gql
-import { Block } from 'gql/graphql'
-import { QUERY_BLOCK_LISTS, QUERY_HOME_LISTS } from 'Home/query'
 import ErrorFallback from 'common/components/ErrorFallback'
 import StatusIcon from 'common/components/StatusIcon'
 import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+
+// gql
+import { Block } from 'gql/graphql'
+
+// home
+import { HomeBlockCard } from './HomeBlockCard'
+import { QUERY_BLOCK_LISTS, QUERY_HOME_LISTS } from 'Home/query'
 
 dayjs.extend(relativeTime)
 
 const HomeBlockList: FC = () => {
-  const PAGE_SIZE = 10
-
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const PAGE_SIZE = isDesktop ? 10 : 3
   const { data, error, loading } = useSubscription(QUERY_BLOCK_LISTS, {
     variables: { limit: PAGE_SIZE, offset: 0 },
     onData({ client }) {
@@ -31,7 +35,7 @@ const HomeBlockList: FC = () => {
   })
 
   if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2 mr-5' />
+    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
   }
 
   if (error || !data) {
@@ -82,8 +86,8 @@ const HomeBlockList: FC = () => {
   const blocks = data.blocks
   const columns = generateColumns(blocks)
 
-  return (
-    <div className='flex-col p-4 lg:w-1/2 md:w-full border border-gray-200 rounded-lg mr-2 bg-white'>
+  return isDesktop ? (
+    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
         <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
         <Link
@@ -94,6 +98,21 @@ const HomeBlockList: FC = () => {
         </Link>
       </div>
       <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />
+    </div>
+  ) : (
+    <div className='w-full'>
+      <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
+        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        <Link
+          to={INTERNAL_ROUTES.blocks.list}
+          className='px-2 py-2 transition ease-in-out duration-150'
+        >
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+        </Link>
+      </div>
+      {blocks.map((block) => (
+        <HomeBlockCard block={block} key={`home-block-card-${block.id}`} />
+      ))}
     </div>
   )
 }

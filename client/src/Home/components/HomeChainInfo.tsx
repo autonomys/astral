@@ -5,6 +5,8 @@ import BN from 'bn.js'
 
 // common
 import ErrorFallback from 'common/components/ErrorFallback'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import { formatSpacePledged } from 'common/helpers'
 
 // common/icons
 import BlockIcon from 'common/icons/BlockIcon'
@@ -14,9 +16,9 @@ import PieChartIcon from 'common/icons/PieChartIcon'
 
 // home
 import HomeInfoCard from 'Home/components/HomeInfoCard'
-import { formatSpacePledged } from 'common/helpers'
+
 import { QUERY_HOME_LISTS } from 'Home/query'
-import HomeChainInfoSkeleton from './HomeChainInfoSkeleton'
+import HomeChainInfoSkeleton from 'Home/components//HomeChainInfoSkeleton'
 
 const HomeChainInfo: FC = () => {
   const ACCOUNT_MIN_VAL = new BN(0.3)
@@ -24,6 +26,12 @@ const HomeChainInfo: FC = () => {
   const { data, error, loading } = useQuery(QUERY_HOME_LISTS, {
     variables: { accountTotal: ACCOUNT_MIN_VAL },
   })
+
+  const isXlDesktop = useMediaQuery('(min-width: 1536px)')
+
+  const isMediumDesktop = useMediaQuery('(min-width: 960px)')
+
+  const isSmallDesktop = useMediaQuery('(min-width: 640px)')
 
   if (loading) {
     return <HomeChainInfoSkeleton />
@@ -76,9 +84,11 @@ const HomeChainInfo: FC = () => {
     },
   ]
 
+  const slidesPerScreenSize = isXlDesktop ? 5.5 : isMediumDesktop ? 3.5 : isSmallDesktop ? 2.5 : 1.3
+
   return (
     <div className='w-full flex mb-12 items-center justify-center'>
-      <Swiper spaceBetween={4} slidesPerView={5.5}>
+      <Swiper spaceBetween={4} slidesPerView={slidesPerScreenSize}>
         {listOfCards.map(({ title, value, icon }, index) => (
           <SwiperSlide key={`${title}-${value}`}>
             <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} />
