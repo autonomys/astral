@@ -26,7 +26,7 @@ const HeaderBackground: FC = () => {
       </div>
       {isListView && (
         <img
-          className='hidden top-[-140px] md:left-[47.2%] lg:left-[49%] xl:left-[59.4%] 2xl:left-[59.7%] -z-10 md:absolute'
+          className='hidden top-[-140px] md:left-[33%] lg:left-[49%] xl:left-[58.3%] 2xl:left-[59.7%] -z-10 md:block absolute '
           src={planet}
           alt='planet'
         />
