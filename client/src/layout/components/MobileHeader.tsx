@@ -16,11 +16,7 @@ type Props = {
 }
 
 const MobileHeader: FC<Props> = ({ isOpen, setIsOpen }) => {
-  return (
-    <>
-      <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
-    </>
-  )
+  return <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
 }
 
 export default MobileHeader

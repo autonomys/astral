@@ -31,12 +31,10 @@ const ExtrinsicListCard: FC<Props> = ({ extrinsic }) => {
     <MobileCard
       id='extrinsic-list-extrinsic-mobile'
       header={
-        <>
-          <Link className='flex gap-2' to={INTERNAL_ROUTES.extrinsics.id.page(extrinsic.id)}>
-            <StatusIcon status={extrinsic.success} />
-            <h3 className='font-medium text-[#241235] text-sm'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
-          </Link>
-        </>
+        <Link className='flex gap-2' to={INTERNAL_ROUTES.extrinsics.id.page(extrinsic.id)}>
+          <StatusIcon status={extrinsic.success} />
+          <h3 className='font-medium text-[#241235] text-sm'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
+        </Link>
       }
       body={body}
     />
