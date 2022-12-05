@@ -7,17 +7,19 @@ import { Link } from 'react-router-dom'
 import { Block } from 'gql/graphql'
 
 // common
-import { shortString } from 'common/helpers';
-import Table, { Column } from 'common/components/Table';
-import { INTERNAL_ROUTES } from 'common/routes';
+import { shortString } from 'common/helpers'
+import Table, { Column } from 'common/components/Table'
+import { INTERNAL_ROUTES } from 'common/routes'
+import BlockListCard from './BlockListCard'
 
 dayjs.extend(relativeTime)
 
 interface Props {
-  blocks: Block[];
+  blocks: Block[]
+  isDesktop?: boolean
 }
 
-const BlockList: FC<Props> = ({ blocks }) => {
+const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -59,17 +61,23 @@ const BlockList: FC<Props> = ({ blocks }) => {
   // constants
   const columns = generateColumns(blocks)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
           columns={columns}
-          emptyMessage="There are no blocks to show"
-          tableProps="bg-white rounded-md"
-          tableHeaderProps="border-b border-gray-200"
-          id="latest-blocks"
+          emptyMessage='There are no blocks to show'
+          tableProps='bg-white rounded-md'
+          tableHeaderProps='border-b border-gray-200'
+          id='latest-blocks'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {blocks.map((block) => (
+        <BlockListCard block={block} key={`home-block-card-${block.id}`} />
+      ))}
     </div>
   )
 }

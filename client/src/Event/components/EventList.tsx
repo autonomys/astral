@@ -11,11 +11,13 @@ import { numberWithCommas } from 'common/helpers'
 // event
 import { QUERY_EVENT_CONNECTION_LIST } from 'Event/query'
 import EventTable from 'Event/components/EventTable'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState(undefined)
   const PAGE_SIZE = 10
+  const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const {
     data: connectionData,
@@ -51,14 +53,14 @@ const EventList: FC = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='grid grid-cols-2'>
+      <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base'>{`Events (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col'>
-        <EventTable events={eventsConnection} />
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+        <EventTable events={eventsConnection} isDesktop={isDesktop} />
         <Pagination
           nextPage={handleNextPage}
           previousPage={handlePreviousPage}

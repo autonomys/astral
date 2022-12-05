@@ -7,14 +7,16 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 // common
 import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
+import EventListCard from './EventListCard'
 
 dayjs.extend(relativeTime)
 
 interface Props {
   events: Event[]
+  isDesktop?: boolean
 }
 
-const EventTable: FC<Props> = ({ events }) => {
+const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
@@ -53,7 +55,7 @@ const EventTable: FC<Props> = ({ events }) => {
   // constants
   const columns = generateColumns(events)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
@@ -64,6 +66,12 @@ const EventTable: FC<Props> = ({ events }) => {
           id='latest-events'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {events.map((event) => (
+        <EventListCard event={event} key={`event-list-card-${event.id}`} />
+      ))}
     </div>
   )
 }

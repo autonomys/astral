@@ -11,11 +11,13 @@ import ErrorFallback from 'common/components/ErrorFallback'
 import SearchBar from 'common/components/SearchBar'
 import Pagination from 'common/components/Pagination'
 import { numberWithCommas } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const BlockList: FC = () => {
+  const isDesktop = useMediaQuery('(min-width: 640px)')
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState(undefined)
-  const PAGE_SIZE = 10
+  const PAGE_SIZE = isDesktop ? 10 : 5
 
   const {
     data: connectionData,
@@ -51,14 +53,14 @@ const BlockList: FC = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='grid grid-cols-2'>
+      <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base'>{`Blocks (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col'>
-        <BlockTable blocks={blocksConnection} />
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+        <BlockTable blocks={blocksConnection} isDesktop={isDesktop} />
         <Pagination
           nextPage={handleNextPage}
           previousPage={handlePreviousPage}

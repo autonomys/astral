@@ -1,13 +1,15 @@
-import { FC } from 'react';
-import { ResponsivePie } from '@nivo/pie';
-import { Account } from 'gql/graphql';
-import { bigNumberToNumber } from 'common/helpers';
+import { FC } from 'react'
+import { ResponsivePie } from '@nivo/pie'
+import { Account } from 'gql/graphql'
+import { bigNumberToNumber } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 type Props = {
-  account: Account;
-};
+  account: Account
+}
 
 const AccountBalancePieChart: FC<Props> = ({ account }) => {
+  const isDesktop = useMediaQuery('(min-width: 640px)')
   const data = [
     {
       id: 'other',
@@ -27,10 +29,10 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
       value: bigNumberToNumber(account.reserved, 18),
       color: '#9179EC',
     },
-  ];
+  ]
 
   return (
-    <div className="h-80 w-2/4">
+    <div className={isDesktop ? 'h-80 w-2/4' : 'h-60 w-full'}>
       <ResponsivePie
         data={data}
         margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
@@ -44,7 +46,7 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
         enableArcLinkLabels={false}
       />
     </div>
-  );
-};
+  )
+}
 
-export default AccountBalancePieChart;
+export default AccountBalancePieChart

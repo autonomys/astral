@@ -13,7 +13,7 @@ const Home: FC = () => {
     <div className='w-full flex flex-col align-middle'>
       <SearchBar />
       <HomeChainInfo />
-      <div className='flex w-full'>
+      <div className='flex flex-col xl:flex-row w-full items-center gap-5'>
         <HomeBlockList />
         <HomeExtrinsicList />
       </div>

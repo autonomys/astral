@@ -50,7 +50,7 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
     <Table
       columns={columns}
       emptyMessage='There are no events to show'
-      id='block-details-event-list'
+      id='extrinsic-details-event-list'
     />
   )
 }
