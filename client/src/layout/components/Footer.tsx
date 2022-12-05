@@ -10,7 +10,7 @@ const Footer: FC = () => {
   return (
     <footer className="container font-['Montserrat'] mb-[50px] px-4 xl:px-0 sm:mx-auto">
       <div className='text-white body-font rounded-xl bg-[#241235] p-10'>
-        <div className='md:flex md:justify-between'>
+        <div className='md:grid md:grid-cols-2'>
           <div className='flex mb-20 md:mb-0 justify-center md:justify-start'>
             <div className='flex flex-col md:justify-between'>
               <div className='flex-shrink-0 md:mx-0 text-center md:text-left'>

@@ -1,19 +1,25 @@
-import React from 'react'
+import { FC } from 'react'
 
-const HomeChainInfoSkeleton = () => {
+const HomeChainInfoSkeleton: FC = () => {
   return (
     <div className='w-full flex mb-12 items-center justify-center'>
       <ChainInfoCardSkeleton />
       <ChainInfoCardSkeleton />
-      <ChainInfoCardSkeleton />
-      <ChainInfoCardSkeleton />
-      <ChainInfoCardSkeleton />
+      <ChainInfoCardSkeleton additionalClass='hidden lg:flex' />
+      <ChainInfoCardSkeleton additionalClass='hidden xl:flex' />
+      <ChainInfoCardSkeleton additionalClass='hidden xl:flex' />
     </div>
   )
 }
 
-const ChainInfoCardSkeleton = () => (
-  <div className='w-[250px] h-[246.5px] flex rounded-lg sm:flex-row bg-white mr-8 align-middle justify-center items-center'>
+type Props = {
+  additionalClass?: string
+}
+
+const ChainInfoCardSkeleton: FC<Props> = ({ additionalClass = '' }) => (
+  <div
+    className={`w-[250px] h-[246.5px] flex rounded-lg sm:flex-row bg-white mr-8 align-middle justify-center items-center ${additionalClass}`}
+  >
     <div role='status' className='flex flex-col w-full items-center justify-center'>
       <div className='flex items-center justify-center bg-gray-300 rounded dark:bg-gray-700 h-[94px] w-[90px]'>
         <svg
