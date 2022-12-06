@@ -46,3 +46,41 @@ export const QUERY_EVENT_CONNECTION_LIST = gql`
     }
   }
 `
+
+export const QUERY_EVENT_BY_ID = gql`
+  query EventById($eventId: String!) {
+    eventById(id: $eventId) {
+      args
+      id
+      indexInBlock
+      name
+      phase
+      pos
+      timestamp
+      call {
+        args
+        name
+        success
+        timestamp
+        id
+      }
+      extrinsic {
+        args
+        success
+        tip
+        fee
+        id
+        signer {
+          id
+        }
+      }
+      block {
+        height
+        id
+        timestamp
+        specId
+        hash
+      }
+    }
+  }
+`

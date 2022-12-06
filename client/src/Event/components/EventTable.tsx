@@ -24,19 +24,20 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
-      title: 'Block',
-      cells: events.map(({ block, id }) => (
-        <Link key={`${id}-event-block`} to={INTERNAL_ROUTES.blocks.id.page(block?.height || 0)}>
-          {block?.height}
+      title: 'Event Id',
+      cells: events.map(({ id }) => (
+        <Link key={`${id}-event-id`} to={INTERNAL_ROUTES.events.id.page(id)}>
+          {id}
         </Link>
       )),
     },
     {
-      title: 'Time',
-      cells: events.map(({ block, id }) => {
-        const blockDate = dayjs(block?.timestamp).fromNow(true)
-        return <div key={`${id}-event-time`}>{blockDate}</div>
-      }),
+      title: 'Block',
+      cells: events.map(({ block, id }) => (
+        <Link key={`${id}-event-block`} to={INTERNAL_ROUTES.events.id.page(id)}>
+          {block?.height}
+        </Link>
+      )),
     },
     {
       title: 'Action',
@@ -49,10 +50,11 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
       cells: events.map(({ phase, id }) => <div key={`${id}-event-phase`}>{phase}</div>),
     },
     {
-      title: 'Index in block',
-      cells: events.map(({ indexInBlock, id }) => (
-        <div key={`${id}-event-index`}>{indexInBlock}</div>
-      )),
+      title: 'Time',
+      cells: events.map(({ block, id }) => {
+        const blockDate = dayjs(block?.timestamp).fromNow(true)
+        return <div key={`${id}-event-time`}>{blockDate}</div>
+      }),
     },
   ]
 
