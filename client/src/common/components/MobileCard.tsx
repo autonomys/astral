@@ -4,6 +4,7 @@ type Props = {
   header: ReactNode
   body: Row[]
   id: string
+  children?: ReactNode
 }
 
 type Row = {
@@ -11,7 +12,7 @@ type Row = {
   value: string | number
 }
 
-const MobileCard: FC<Props> = ({ header, body, id }) => {
+const MobileCard: FC<Props> = ({ header, body, id, children }) => {
   return (
     <div className="w-full bg-white rounded-lg py-7 px-4 font-['Montserrat'] mb-6">
       <div className='flex gap-2 items-center mb-2'>{header}</div>
@@ -23,6 +24,7 @@ const MobileCard: FC<Props> = ({ header, body, id }) => {
           </div>
         ))}
       </div>
+      {children}
     </div>
   )
 }

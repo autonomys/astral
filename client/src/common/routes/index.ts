@@ -32,6 +32,10 @@ export const INTERNAL_ROUTES = {
     },
   },
   events: {
+    id: {
+      path: ':eventId',
+      page: (eventId: string): string => `/events/${eventId}`,
+    },
     list: 'events',
   },
   extrinsics: {

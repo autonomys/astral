@@ -24,6 +24,7 @@ import Log from 'Log/components/Log'
 
 // Import Swiper styles
 import 'swiper/css'
+import Event from 'Event/components/Event'
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
             </Route>
             <Route path={INTERNAL_ROUTES.events.list}>
               <Route index element={<EventList />} />
+              <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
             </Route>
             <Route path={INTERNAL_ROUTES.logs.list}>
               <Route index element={<LogList />} />
