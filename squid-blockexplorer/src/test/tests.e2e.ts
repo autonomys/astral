@@ -1,4 +1,3 @@
-// blocks
 // extrinsics
 // calls
 // events
@@ -31,6 +30,9 @@ const queryBlocks = gql`
       spacePledged
       specId
       stateRoot
+      logs(limit: 100) {
+        kind
+      }
     }
   }
 `;
@@ -64,7 +66,12 @@ tap.test('compare block headers', async (t) => {
     t.equal(block.hash, refBlockHeader.hash.toString());
     t.equal(block.height, refBlockHeader.number.toString());
     t.equal(block.stateRoot, refBlockHeader.stateRoot.toString());
-    // TODO: check logs
+    // Comparing digest log items:
+    // squid retrieves blocks from the storage, but 'Seal' log is not stored in the storage, because it is not part of the runtime:
+    // https://github.com/paritytech/substrate/blob/0ba251c9388452c879bfcca425ada66f1f9bc802/primitives/runtime/src/generic/digest.rs#L96
+    // therefore we expect 1 log item difference
+    // TODO: find a way to query 'Seal' log items if it's critical for us
+    t.equal(block.logs.length + 1, refBlockHeader.digest.logs.length);
   });
 
   t.end();
