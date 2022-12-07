@@ -20,7 +20,6 @@ export type CallItem = Omit<ProcessorCallItem, 'name'> & { name: string };
 export type EventItem = Omit<ProcessorEventItem, 'name'> & { name: string };
 
 const processor = new SubstrateBatchProcessor()
-    .setBatchSize(config.batchSize || 500)
     .setDataSource(config.dataSource)
     .setBlockRange(config.blockRange || { from: 0 })
     .addEvent('*') // process all events
