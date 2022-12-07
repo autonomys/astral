@@ -14,7 +14,7 @@ export function digestStorageFactory(ctx: Context, header: SubstrateBlock) {
 export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {
   return async function getSpacePledged(header: SubstrateBlock) {
     const storage = storageFactory(ctx, header);
-    const solutionRange = (await storage.getAsV3()).current;
+    const solutionRange = (await storage.asV3.get()).current;
     return calcSpacePledged(solutionRange);
   };
 }
