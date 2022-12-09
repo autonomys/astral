@@ -2,14 +2,14 @@ type Account @entity {
   id: ID!
   free: BigInt
   reserved: BigInt
-  total: BigInt
+  total: BigInt @index
   updatedAt: BigInt
   extrinsics: [Extrinsic!]! @derivedFrom(field: "signer")
 }
 
 type Block @entity {
   id: ID!
-  height: BigInt!
+  height: BigInt! @index
   timestamp: DateTime!
   hash: String!
   parentHash: String!
@@ -26,12 +26,12 @@ type Block @entity {
 
 type Extrinsic @entity {
   id: ID!
-  hash: String!
+  hash: String! @unique
   indexInBlock: Int!
   nonce: BigInt
   name: String!
   signer: Account
-  signature: String
+  signature: String @index
   error: JSON
   tip: BigInt
   fee: BigInt
