@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Extrinsic} from "./extrinsic.model"
 
@@ -17,6 +17,7 @@ export class Account {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     reserved!: bigint | undefined | null
 
+    @Index_()
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     total!: bigint | undefined | null
 
