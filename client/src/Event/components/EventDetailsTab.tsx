@@ -4,7 +4,7 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 
 // common
-import Tabs from 'common/components/Tabs'
+import { Tabs, Tab } from 'common/components/Tabs'
 import MobileCard from 'common/components/MobileCard'
 import { shortString } from 'common/helpers'
 
@@ -17,24 +17,15 @@ type Props = {
 }
 
 const EventDetailsTab: FC<Props> = ({ event, isDesktop = false }) => {
-  const tabs = [
-    {
-      title: 'Events',
-      content: isDesktop ? (
-        <EventTabDescription event={event} />
-      ) : (
-        <EventDetailsCard event={event} />
-      ),
-    },
-  ]
-
   return (
     <Tabs
-      id='block-details-tab'
-      tabs={tabs}
       tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={isDesktop ? '' : 'bg-white rounded-full mb-5 px-5'}
-    />
+      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
+    >
+      <Tab title='Events'>
+        {isDesktop ? <EventTabDescription event={event} /> : <EventDetailsCard event={event} />}
+      </Tab>
+    </Tabs>
   )
 }
 

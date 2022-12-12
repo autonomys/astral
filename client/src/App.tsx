@@ -1,6 +1,11 @@
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, split } from '@apollo/client'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { getMainDefinition } from '@apollo/client/utilities'
+import { createClient } from 'graphql-ws'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 
 // common
+import { useDomain } from 'common/providers/DomainProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
 // block
 import BlockList from 'Block/components/BlockList'
@@ -10,6 +15,7 @@ import Extrinsic from 'Extrinsic/components/Extrinsic'
 import ExtrinsicList from 'Extrinsic/components/ExtrinsicList'
 // layout
 import { Layout, Container, Footer, Header } from 'layout/components'
+import DomainHeader from 'layout/components/DomainHeader'
 // home
 import Home from 'Home'
 // account
@@ -18,48 +24,77 @@ import Account from 'Account/components/Account'
 // event
 import EventList from 'Event/components/EventList'
 import HeaderBackground from 'layout/components/HeaderBackground'
+import Event from 'Event/components/Event'
 // log
 import LogList from 'Log/components/LogList'
 import Log from 'Log/components/Log'
 
 // Import Swiper styles
 import 'swiper/css'
-import Event from 'Event/components/Event'
 
 function App() {
+  const { domainApiAddress, domainWSAddress } = useDomain()
+
+  const httpLink = new HttpLink({
+    uri: domainApiAddress,
+  })
+
+  const wsLink = new GraphQLWsLink(
+    createClient({
+      url: domainWSAddress,
+    }),
+  )
+
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
+      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+    },
+    wsLink,
+    httpLink,
+  )
+
+  const client = new ApolloClient({
+    link: splitLink,
+    cache: new InMemoryCache(),
+  })
+
   return (
-    <HashRouter>
-      <Layout>
-        <Header />
-        <Container>
-          <HeaderBackground />
-          <Routes>
-            <Route element={<Home />} path={INTERNAL_ROUTES.home} />
-            <Route path={INTERNAL_ROUTES.blocks.list}>
-              <Route index element={<BlockList />} />
-              <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
-            </Route>
-            <Route path={INTERNAL_ROUTES.extrinsics.list}>
-              <Route index element={<ExtrinsicList />} />
-              <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
-            </Route>
-            <Route path={INTERNAL_ROUTES.accounts.list}>
-              <Route index element={<AccountList />} />
-              <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
-            </Route>
-            <Route path={INTERNAL_ROUTES.events.list}>
-              <Route index element={<EventList />} />
-              <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
-            </Route>
-            <Route path={INTERNAL_ROUTES.logs.list}>
-              <Route index element={<LogList />} />
-              <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-            </Route>
-          </Routes>
-        </Container>
-        <Footer />
-      </Layout>
-    </HashRouter>
+    <ApolloProvider client={client}>
+      <HashRouter>
+        <Layout>
+          <DomainHeader />
+          <Header />
+          <Container>
+            <HeaderBackground />
+            <Routes>
+              <Route element={<Home />} path={INTERNAL_ROUTES.home} />
+              <Route path={INTERNAL_ROUTES.blocks.list}>
+                <Route index element={<BlockList />} />
+                <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
+              </Route>
+              <Route path={INTERNAL_ROUTES.extrinsics.list}>
+                <Route index element={<ExtrinsicList />} />
+                <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
+              </Route>
+              <Route path={INTERNAL_ROUTES.accounts.list}>
+                <Route index element={<AccountList />} />
+                <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+              </Route>
+              <Route path={INTERNAL_ROUTES.events.list}>
+                <Route index element={<EventList />} />
+                <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
+              </Route>
+              <Route path={INTERNAL_ROUTES.logs.list}>
+                <Route index element={<LogList />} />
+                <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
+              </Route>
+            </Routes>
+          </Container>
+          <Footer />
+        </Layout>
+      </HashRouter>
+    </ApolloProvider>
   )
 }
 

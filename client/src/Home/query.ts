@@ -10,10 +10,10 @@ export const QUERY_BLOCK_LISTS = gql`
       stateRoot
       blockchainSize
       spacePledged
-      events(limit: 100) {
+      events(limit: 300) {
         id
       }
-      extrinsics(limit: 100) {
+      extrinsics(limit: 300) {
         id
       }
     }

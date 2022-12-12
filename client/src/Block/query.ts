@@ -16,10 +16,10 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
           specId
           stateRoot
           timestamp
-          events(limit: 300) {
+          events(limit: 10) {
             id
           }
-          extrinsics(limit: 300) {
+          extrinsics(limit: 10) {
             id
           }
         }

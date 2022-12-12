@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 
 // common
-import Tabs from 'common/components/Tabs'
+import { Tabs, Tab } from 'common/components/Tabs'
 import MobileCard from 'common/components/MobileCard'
 
 // extrinsic
@@ -14,31 +14,26 @@ type Props = {
 }
 
 const ExtrinsicDetailsTab: FC<Props> = ({ events, isDesktop = false }) => {
-  const tabs = [
-    {
-      title: 'Events',
-      content: isDesktop ? (
-        <ExtrinsicDetailsEventList events={events} />
-      ) : (
-        <div className='flex flex-col'>
-          {events.map((event) => (
-            <ExtrinsicDetailsEventCard
-              key={`extrinsic-details-event-card-${event.id}`}
-              event={event}
-            />
-          ))}
-        </div>
-      ),
-    },
-  ]
-
   return (
     <Tabs
-      id='block-details-tab'
-      tabs={tabs}
       tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={isDesktop ? '' : 'bg-white rounded-full mb-5 px-5'}
-    />
+      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
+    >
+      <Tab title='Events'>
+        {isDesktop ? (
+          <ExtrinsicDetailsEventList events={events} />
+        ) : (
+          <div className='flex flex-col'>
+            {events.map((event) => (
+              <ExtrinsicDetailsEventCard
+                key={`extrinsic-details-event-card-${event.id}`}
+                event={event}
+              />
+            ))}
+          </div>
+        )}
+      </Tab>
+    </Tabs>
   )
 }
 
