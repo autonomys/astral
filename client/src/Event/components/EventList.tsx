@@ -15,7 +15,7 @@ import EventTable from 'Event/components/EventTable'
 
 const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [lastCursor, setLastCursor] = useState(undefined)
+  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = 10
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
@@ -47,6 +47,12 @@ const EventList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
+  const handleGetPage = (page: string | number) => {
+    setCurrentPage(Number(page))
+    const endCursor = PAGE_SIZE * Number(page)
+    setLastCursor(endCursor.toString())
+  }
+
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full grid lg:grid-cols-2'>
@@ -65,6 +71,7 @@ const EventList: FC = () => {
           totalCount={totalCount}
           hasNextPage={pageInfo.hasNextPage}
           hasPreviousPage={pageInfo.hasPreviousPage}
+          handleGetPage={handleGetPage}
         />
       </div>
     </div>
