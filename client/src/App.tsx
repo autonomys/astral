@@ -1,11 +1,6 @@
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, split } from '@apollo/client'
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
-import { getMainDefinition } from '@apollo/client/utilities'
-import { createClient } from 'graphql-ws'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 
 // common
-import { useDomain } from 'common/providers/DomainProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
 // block
 import BlockList from 'Block/components/BlockList'
@@ -33,68 +28,40 @@ import Log from 'Log/components/Log'
 import 'swiper/css'
 
 function App() {
-  const { domainApiAddress, domainWSAddress } = useDomain()
-
-  const httpLink = new HttpLink({
-    uri: domainApiAddress,
-  })
-
-  const wsLink = new GraphQLWsLink(
-    createClient({
-      url: domainWSAddress,
-    }),
-  )
-
-  const splitLink = split(
-    ({ query }) => {
-      const definition = getMainDefinition(query)
-      return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
-    },
-    wsLink,
-    httpLink,
-  )
-
-  const client = new ApolloClient({
-    link: splitLink,
-    cache: new InMemoryCache(),
-  })
-
   return (
-    <ApolloProvider client={client}>
-      <HashRouter>
-        <Layout>
-          <DomainHeader />
-          <Header />
-          <Container>
-            <HeaderBackground />
-            <Routes>
-              <Route element={<Home />} path={INTERNAL_ROUTES.home} />
-              <Route path={INTERNAL_ROUTES.blocks.list}>
-                <Route index element={<BlockList />} />
-                <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.extrinsics.list}>
-                <Route index element={<ExtrinsicList />} />
-                <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.accounts.list}>
-                <Route index element={<AccountList />} />
-                <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.events.list}>
-                <Route index element={<EventList />} />
-                <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.logs.list}>
-                <Route index element={<LogList />} />
-                <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-              </Route>
-            </Routes>
-          </Container>
-          <Footer />
-        </Layout>
-      </HashRouter>
-    </ApolloProvider>
+    <HashRouter>
+      <Layout>
+        <DomainHeader />
+        <Header />
+        <Container>
+          <HeaderBackground />
+          <Routes>
+            <Route element={<Home />} path={INTERNAL_ROUTES.home} />
+            <Route path={INTERNAL_ROUTES.blocks.list}>
+              <Route index element={<BlockList />} />
+              <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
+            </Route>
+            <Route path={INTERNAL_ROUTES.extrinsics.list}>
+              <Route index element={<ExtrinsicList />} />
+              <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
+            </Route>
+            <Route path={INTERNAL_ROUTES.accounts.list}>
+              <Route index element={<AccountList />} />
+              <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+            </Route>
+            <Route path={INTERNAL_ROUTES.events.list}>
+              <Route index element={<EventList />} />
+              <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
+            </Route>
+            <Route path={INTERNAL_ROUTES.logs.list}>
+              <Route index element={<LogList />} />
+              <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
+            </Route>
+          </Routes>
+        </Container>
+        <Footer />
+      </Layout>
+    </HashRouter>
   )
 }
 

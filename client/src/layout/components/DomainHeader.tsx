@@ -6,12 +6,13 @@ import { useDomain } from 'common/providers/DomainProvider'
 
 const DomainHeader: FC = () => {
   const { updateDomainAddress } = useDomain()
+
+  // TODO: remove hardcoded title
   const tabs = [
     {
       title: 'Gemini II',
       urls: {
         api: process.env.REACT_APP_GRAPHQL_API_URL,
-        ws: process.env.REACT_APP_GRAPHQL_API_WS,
       },
     },
   ]
@@ -27,7 +28,7 @@ const DomainHeader: FC = () => {
           <Tab
             key={`${item.title}-${index}`}
             title={item.title}
-            onClick={() => updateDomainAddress(item.urls.api, item.urls.ws)}
+            onClick={() => updateDomainAddress(item.urls.api)}
           ></Tab>
         ))}
       </Tabs>

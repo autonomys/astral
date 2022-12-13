@@ -1,9 +1,8 @@
 import { FC, useState, createContext, useContext, ReactNode } from 'react'
-
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 type Value = {
   domainApiAddress: string
-  domainWSAddress: string
-  updateDomainAddress: (apiAddress: string, wsAddress: string) => void
+  updateDomainAddress: (apiAddress: string) => void
 }
 
 const DomainContext = createContext<Value>(
@@ -17,11 +16,14 @@ type Props = {
 
 export const DomainProvider: FC<Props> = ({ children }) => {
   const [domainApiAddress, setDomainApiAddress] = useState(process.env.REACT_APP_GRAPHQL_API_URL)
-  const [domainWSAddress, setDomainWSAddress] = useState(process.env.REACT_APP_GRAPHQL_API_WS)
 
-  const updateDomainAddress = (apiAddress: string, wsAddress: string) => {
+  const client = new ApolloClient({
+    uri: domainApiAddress,
+    cache: new InMemoryCache(),
+  })
+
+  const updateDomainAddress = (apiAddress: string) => {
     setDomainApiAddress(apiAddress)
-    setDomainWSAddress(wsAddress)
   }
 
   return (
@@ -29,10 +31,9 @@ export const DomainProvider: FC<Props> = ({ children }) => {
       value={{
         updateDomainAddress: updateDomainAddress,
         domainApiAddress: domainApiAddress,
-        domainWSAddress: domainWSAddress,
       }}
     >
-      {children}
+      <ApolloProvider client={client}>{children}</ApolloProvider>
     </DomainContext.Provider>
   )
 }
