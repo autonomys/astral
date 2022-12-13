@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { useQuery } from '@apollo/client'
-import BN from 'bn.js'
+import { ApolloError } from '@apollo/client'
 
 // common
 import ErrorFallback from 'common/components/ErrorFallback'
@@ -16,17 +15,16 @@ import PieChartIcon from 'common/icons/PieChartIcon'
 
 // home
 import HomeInfoCard from 'Home/components/HomeInfoCard'
-
-import { QUERY_HOME_LISTS } from 'Home/query'
 import HomeChainInfoSkeleton from 'Home/components//HomeChainInfoSkeleton'
 
-const HomeChainInfo: FC = () => {
-  const ACCOUNT_MIN_VAL = new BN(0.3)
+interface HomeChainInfo {
+  loading: boolean
+  error?: ApolloError | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+}
 
-  const { data, error, loading } = useQuery(QUERY_HOME_LISTS, {
-    variables: { accountTotal: ACCOUNT_MIN_VAL },
-  })
-
+const HomeChainInfo: FC<HomeChainInfo> = ({ data, error, loading }) => {
   const isXlDesktop = useMediaQuery('(min-width: 1536px)')
 
   const isMediumDesktop = useMediaQuery('(min-width: 960px)')

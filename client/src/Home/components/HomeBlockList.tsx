@@ -2,8 +2,8 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
-import { useSubscription } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { ApolloError } from '@apollo/client'
 
 // common
 import Table, { Column } from 'common/components/Table'
@@ -11,29 +11,24 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import ErrorFallback from 'common/components/ErrorFallback'
 import StatusIcon from 'common/components/StatusIcon'
 import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // gql
 import { Block } from 'gql/graphql'
 
 // home
 import { HomeBlockCard } from './HomeBlockCard'
-import { QUERY_BLOCK_LISTS, QUERY_HOME_LISTS } from 'Home/query'
 
 dayjs.extend(relativeTime)
 
-const HomeBlockList: FC = () => {
-  const isDesktop = useMediaQuery('(min-width: 640px)')
-  const PAGE_SIZE = isDesktop ? 10 : 3
-  const { data, error, loading } = useSubscription(QUERY_BLOCK_LISTS, {
-    variables: { limit: PAGE_SIZE, offset: 0 },
-    onData({ client }) {
-      client.refetchQueries({
-        include: [QUERY_HOME_LISTS],
-      })
-    },
-  })
+interface HomeBlockListProps {
+  loading: boolean
+  error?: ApolloError | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+  isDesktop: boolean
+}
 
+const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop }) => {
   if (loading) {
     return <TableLoadingSkeleton additionClass='lg:w-1/2' />
   }
