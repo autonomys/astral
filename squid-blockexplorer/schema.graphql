@@ -1,0 +1,79 @@
+type Account @entity {
+  id: ID!
+  free: BigInt
+  reserved: BigInt
+  total: BigInt @index
+  updatedAt: BigInt
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer")
+}
+
+type Block @entity {
+  id: ID!
+  height: BigInt! @index
+  timestamp: DateTime!
+  hash: String!
+  parentHash: String!
+  specId: String!
+  stateRoot: String!
+  extrinsicRoot: String
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
+  events: [Event!]! @derivedFrom(field: "block")
+  calls: [Call!]! @derivedFrom(field: "block")
+  logs: [Log!]! @derivedFrom(field: "block")
+  spacePledged: BigInt!
+  blockchainSize: BigInt!
+}
+
+type Extrinsic @entity {
+  id: ID!
+  hash: String! @unique
+  indexInBlock: Int!
+  nonce: BigInt
+  name: String!
+  signer: Account
+  signature: String @index
+  error: JSON
+  tip: BigInt
+  fee: BigInt
+  success: Boolean!
+  block: Block!
+  pos: Int
+  timestamp: DateTime!
+  args: JSON
+  events: [Event] @derivedFrom(field: "extrinsic")
+  calls: [Call!] @derivedFrom(field: "extrinsic")
+}
+
+type Event @entity {
+  id: ID!
+  indexInBlock: Int!
+  name: String!
+  timestamp: DateTime!
+  phase: String!
+  pos: Int
+  args: JSON
+  block: Block
+  extrinsic: Extrinsic
+  call: Call
+}
+
+type Call @entity {
+  id: ID!
+  name: String!
+  timestamp: DateTime!
+  success: Boolean!
+  args: JSON
+  block: Block!
+  extrinsic: Extrinsic!
+  error: JSON
+  signer: String
+  parent: Call
+  calls: [Call] @derivedFrom(field: "parent")
+  pos: Int
+}
+
+type Log @entity {
+  kind: String!
+  value: JSON
+  block: Block!
+}

@@ -1,22 +1,22 @@
-import { FC, ReactElement, useMemo } from "react";
-import { generateArrayOfNumbers } from "../helpers";
+import { FC, ReactNode, useMemo } from 'react'
+import { generateArrayOfNumbers } from '../helpers'
 
 export type Column = {
-  title: string;
-  cells: ReactElement[];
-  isNumeric?: boolean;
-  centerTitle?: boolean;
-};
+  title: string
+  cells: ReactNode[]
+  isNumeric?: boolean
+  centerTitle?: boolean
+}
 
 type Props = {
-  id: string;
-  columns: Column[];
-  footer?: ReactElement;
-  emptyMessage: string;
-  tableRowProps?: string;
-  tableHeaderProps?: string;
-  tableProps?: string;
-};
+  id: string
+  columns: Column[]
+  emptyMessage: string
+  footer?: ReactNode
+  tableRowProps?: string
+  tableHeaderProps?: string
+  tableProps?: string
+}
 
 const Table: FC<Props> = ({
   id,
@@ -27,53 +27,40 @@ const Table: FC<Props> = ({
   tableRowProps,
   tableProps,
 }) => {
-  const cellsCount = useMemo(() => columns?.[0]?.cells?.length ?? 0, [columns]);
+  const cellsCount = useMemo(() => columns?.[0]?.cells?.length ?? 0, [columns])
   const rows = useMemo(
     () =>
-      generateArrayOfNumbers(cellsCount)?.reduce<ReactElement[][]>(
-        (acc, _, index) => {
-          const row = columns.map((column) => column.cells[index]);
+      generateArrayOfNumbers(cellsCount)?.reduce<ReactNode[][]>((acc, _, index) => {
+        const row = columns.map((column) => column.cells[index])
 
-          return [...acc, row];
-        },
-        []
-      ),
-    [cellsCount, columns]
-  );
-  const hasRows = Boolean(rows.length);
+        return [...acc, row]
+      }, []),
+    [cellsCount, columns],
+  )
+  const hasRows = Boolean(rows.length)
 
   return (
-    <div className="w-full">
-      <div className="rounded my-6">
-        <table
-          className={`min-w-max w-full table-auto shadow-md ${tableProps}`}
-        >
+    <div className='w-full'>
+      <>
+        <table className={`min-w-max w-full table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                {columns?.map(
-                  (
-                    { title, isNumeric = false, centerTitle = false },
-                    index
-                  ) => (
-                    <th
-                      key={`table-header-${id}-${index}`}
-                      className={`${tableHeaderProps}`}
-                    >
-                      {isNumeric ? (
-                        <div className="py-3 px-6 text-right">{title}</div>
-                      ) : centerTitle ? (
-                        <div className="py-3 px-6 text-center">{title}</div>
-                      ) : (
-                        <div className="py-3 px-6 text-left">{title}</div>
-                      )}
-                    </th>
-                  )
-                )}
+              <tr className={`text-[#857EC2] text-sm font-light ${tableHeaderProps}`}>
+                {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
+                  <th key={`table-header-${id}-${index}`}>
+                    {isNumeric ? (
+                      <div className='py-3 px-6 text-right'>{title}</div>
+                    ) : centerTitle ? (
+                      <div className='py-3 px-6 text-center'>{title}</div>
+                    ) : (
+                      <div className='py-3 px-6 text-left'>{title}</div>
+                    )}
+                  </th>
+                ))}
               </tr>
             </thead>
           ) : null}
-          <tbody className="text-gray-600 text-sm font-light">
+          <tbody className='text-gray-600 text-sm font-light'>
             {rows?.map((row, index) => (
               <tr
                 key={`table-row-${id}-${index}`}
@@ -83,34 +70,29 @@ const Table: FC<Props> = ({
                   index === 1 ? (
                     <td
                       key={`table-cell-${id}-${index}`}
-                      className="py-3 px-6 text-left whitespace-nowrap"
+                      className='py-3 px-6 text-left whitespace-nowrap'
                     >
                       {content}
                     </td>
                   ) : (
-                    <td
-                      key={`table-cell-${id}-${index}`}
-                      className="py-3 px-6 text-left"
-                    >
+                    <td key={`table-cell-${id}-${index}`} className='py-3 px-6 text-left'>
                       {content}
                     </td>
-                  )
+                  ),
                 )}
               </tr>
             ))}
           </tbody>
         </table>
         {!hasRows ? (
-          <div className="flex align-middle justify-center">
-            <p className="text-gray-600 text-md font-medium">{emptyMessage}</p>
+          <div className='flex align-middle justify-center'>
+            <p className='text-gray-600 text-md font-medium'>{emptyMessage}</p>
           </div>
         ) : null}
-      </div>
-      {hasRows && footer != null ? (
-        <div className="flex justify-end">{footer}</div>
-      ) : null}
+      </>
+      {hasRows && footer != null ? <div className='flex justify-end mt-6'>{footer}</div> : null}
     </div>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table

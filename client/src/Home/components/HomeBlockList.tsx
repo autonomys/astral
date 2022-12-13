@@ -1,73 +1,115 @@
-import { FC } from "react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { Link } from "react-router-dom";
+import { FC } from 'react'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { Link } from 'react-router-dom'
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { ApolloError } from '@apollo/client'
 
 // common
-import Table, { Column } from "common/components/Table";
-import { shortString } from "common/helpers";
-import { INTERNAL_ROUTES } from "common/routes";
+import Table, { Column } from 'common/components/Table'
+import { INTERNAL_ROUTES } from 'common/routes'
+import ErrorFallback from 'common/components/ErrorFallback'
+import StatusIcon from 'common/components/StatusIcon'
+import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 
-//gql
-import { Block } from "gql/graphql";
+// gql
+import { Block } from 'gql/graphql'
 
-dayjs.extend(relativeTime);
+// home
+import { HomeBlockCard } from './HomeBlockCard'
 
-interface Props {
-  blocks: Block[];
+dayjs.extend(relativeTime)
+
+interface HomeBlockListProps {
+  loading: boolean
+  error?: ApolloError | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+  isDesktop: boolean
 }
 
-const HomeBlockList: FC<Props> = ({ blocks }) => {
+const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop }) => {
+  if (loading) {
+    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
+  }
+
+  if (error || !data) {
+    return <ErrorFallback error={error} />
+  }
+
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
-      title: "Block",
-      cells: blocks.map(({ height }) => <div>{height}</div>),
+      title: 'Height',
+      cells: blocks.map(({ height, id }) => (
+        <Link key={`${id}-home-block-height`} to={INTERNAL_ROUTES.blocks.id.page(height)}>
+          <div>#{height}</div>
+        </Link>
+      )),
     },
     {
-      title: "Time",
-      cells: blocks.map(({ timestamp }) => {
-        const blockDate = dayjs(timestamp).fromNow(true);
-        return <div>{blockDate}</div>;
+      title: 'Extrinsics',
+      cells: blocks.map(({ extrinsics, id }) => (
+        <div key={`${id}-home-block-extrinsics`}>{extrinsics?.length}</div>
+      )),
+    },
+    {
+      title: 'Events',
+      cells: blocks.map(({ events, id }) => (
+        <div key={`${id}-home-block-events`}>{events?.length}</div>
+      )),
+    },
+    {
+      title: 'Time',
+      cells: blocks.map(({ timestamp, id }) => {
+        const blockDate = dayjs(timestamp).fromNow(true)
+
+        return <div key={`${id}-home-block-time`}>{blockDate} ago</div>
       }),
     },
     {
-      title: "Extrinsics",
-      cells: blocks.map(({ extrinsics }) => <div>{extrinsics?.length}</div>),
+      title: 'Status',
+      cells: blocks.map(({ id, extrinsics }) => (
+        <div className='flex items-center justify-center' key={`${id}-home-block-status`}>
+          <StatusIcon status={extrinsics[0].success} />
+        </div>
+      )),
     },
-    {
-      title: "Events",
-      cells: blocks.map(({ events }) => <div>{events?.length}</div>),
-    },
-    {
-      title: "Block hash",
-      cells: blocks.map(({ hash }) => <div>{shortString(hash)}</div>),
-    },
-  ];
+  ]
 
   // constants
-  const columns = generateColumns(blocks);
+  const blocks = data.blocks
+  const columns = generateColumns(blocks)
 
-  return (
-    <div className="pr-4 py-4 lg:w-1/2 md:w-full">
-      <div className="w-full inline-flex justify-between align-middle">
-        <div className="text-gray-600 uppercase text-md leading-normal">
-          Latest Blocks
-        </div>
+  return isDesktop ? (
+    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+      <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
+        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
         <Link
-          to={INTERNAL_ROUTES.blocks}
-          className="px-2 py-2 rounded-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
+          to={INTERNAL_ROUTES.blocks.list}
+          className='px-2 py-2 transition ease-in-out duration-150'
         >
-          View all
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
         </Link>
       </div>
-      <Table
-        columns={columns}
-        emptyMessage="There are no blocks to show"
-        id="home-latest-blocks"
-      />
+      <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />
     </div>
-  );
-};
+  ) : (
+    <div className='w-full'>
+      <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
+        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        <Link
+          to={INTERNAL_ROUTES.blocks.list}
+          className='px-2 py-2 transition ease-in-out duration-150'
+        >
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+        </Link>
+      </div>
+      {blocks.map((block) => (
+        <HomeBlockCard block={block} key={`home-block-card-${block.id}`} />
+      ))}
+    </div>
+  )
+}
 
-export default HomeBlockList;
+export default HomeBlockList

@@ -1,27 +1,35 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement } from 'react'
 
-interface Props {
-  title: string;
-  value: string;
-  icon: ReactElement;
+type Props = {
+  title: string
+  value: string
+  icon: ReactElement
+  additionalClass?: string
 }
 
-const HomeInfoCard: FC<Props> = ({ title, icon, value }) => {
+const HomeInfoCard: FC<Props> = ({
+  title,
+  icon,
+  value,
+  additionalClass = '',
+}) => {
   return (
-    <div className="pr-4 lg:w-1/2 md:w-full">
-      <div className="flex border-2 rounded-lg border-gray-200 border-opacity-50 p-6 sm:flex-row flex-col">
-        <div className="flex-grow">
-          <h2 className="text-gray-900 text-md title-font font-medium mb-3">
+    <div className={`w-[250px] font-['Montserrat'] ${additionalClass}`}>
+      <div className="flex-col rounded-lg sm:flex-row bg-white px-4 pt-11 pb-6">
+        <div className="mb-6 w-full flex items-center justify-center align-middle">
+          {icon}
+        </div>
+        <div className="w-full flex flex-col  align-middle items-center justify-center">
+          <h2 className="text-gray-900 mb-3 font-normal text-center text-xs">
             {title}
           </h2>
-          <p className="leading-relaxed text-base">{value}</p>
-        </div>
-        <div className="w-16 h-16 sm:mr-8 sm:mb-0 mb-4 inline-flex items-center flex-shrink-0 justify-end">
-          {icon}
+          <p className="leading-relaxed text-xl font-medium text-center">
+            {value}
+          </p>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default HomeInfoCard;
+export default HomeInfoCard

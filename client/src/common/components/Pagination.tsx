@@ -1,43 +1,101 @@
-import { FC } from "react";
+import { FC } from 'react'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 
-interface Props {
-  nextPage?: () => void;
-  previousPage?: () => void;
-  page: number;
+//
+import { DOTS, usePagination } from 'common/hooks/usePagination'
+
+type Props = {
+  nextPage: () => void
+  previousPage: () => void
+  currentPage: number
+  pageSize: number
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+  totalCount: number
+  handleGetPage: (page: string | number) => void
 }
 
-const Pagination: FC<Props> = ({ nextPage, previousPage, page }) => {
-  return (
-    <nav className="relative z-0 inline-flex shadow-sm">
-      <button
-        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-        aria-label="Previous"
-        disabled={!page}
-        onClick={previousPage}
-      >
-        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fillRule="evenodd"
-            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-      <button
-        className="-ml-px relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-        aria-label="Next"
-        onClick={nextPage}
-      >
-        <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fillRule="evenodd"
-            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-    </nav>
-  );
-};
+const Pagination: FC<Props> = ({
+  previousPage,
+  nextPage,
+  currentPage,
+  pageSize,
+  totalCount,
+  hasNextPage,
+  hasPreviousPage,
+  handleGetPage,
+}) => {
+  const paginationRange = usePagination({ totalCount, pageSize, currentPage })
 
-export default Pagination;
+  return (
+    <div className='w-full flex items-center justify-between'>
+      <div className='flex flex-1 justify-between sm:hidden'>
+        <button
+          onClick={previousPage}
+          disabled={!hasPreviousPage}
+          className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
+        >
+          Previous
+        </button>
+        <button
+          onClick={nextPage}
+          disabled={!hasNextPage}
+          className='rounded-full relative ml-3 inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
+        >
+          Next
+        </button>
+      </div>
+      <div className='hidden sm:flex sm:flex-1 sm:items-center sm:justify-end'>
+        <div>
+          <nav className='isolate inline-flex rounded-md' aria-label='Pagination'>
+            <button
+              onClick={previousPage}
+              disabled={!hasPreviousPage}
+              className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 mr-[14px]'
+            >
+              <span className='sr-only'>Previous</span>
+              <ChevronLeftIcon className='h-5 w-5' aria-hidden='true' />
+            </button>
+            {paginationRange.map((page, index) => {
+              if (page === DOTS) {
+                return (
+                  <span
+                    key={`${page}-${index}`}
+                    className='relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 rounded-full mx-1'
+                  >
+                    ...
+                  </span>
+                )
+              }
+
+              return (
+                <button
+                  key={page}
+                  aria-current='page'
+                  onClick={() => handleGetPage(page)}
+                  className={
+                    page === currentPage
+                      ? 'h-10 min-w-10 relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20 rounded-full mx-1'
+                      : 'h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1'
+                  }
+                >
+                  {page}
+                </button>
+              )
+            })}
+            <button
+              onClick={nextPage}
+              disabled={!hasNextPage}
+              className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 ml-[14px]'
+            >
+              <span className='sr-only'>Next</span>
+              <ChevronRightIcon className='h-5 w-5' aria-hidden='true' />
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Pagination

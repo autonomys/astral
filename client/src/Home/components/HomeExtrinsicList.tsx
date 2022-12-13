@@ -1,77 +1,119 @@
-import { FC } from "react";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import { Link } from "react-router-dom";
+import { FC } from 'react'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { Link } from 'react-router-dom'
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { ApolloError } from '@apollo/client'
 
 // common
-import Table, { Column } from "common/components/Table";
-import { shortString } from "common/helpers";
-import { INTERNAL_ROUTES } from "common/routes";
+import Table, { Column } from 'common/components/Table'
+import { INTERNAL_ROUTES } from 'common/routes'
+import ErrorFallback from 'common/components/ErrorFallback'
+import StatusIcon from 'common/components/StatusIcon'
+import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
+import { shortString } from 'common/helpers'
 
-//gql
-import { Extrinsic } from "gql/graphql";
+// gql
+import { Extrinsic } from 'gql/graphql'
 
-dayjs.extend(relativeTime);
+import HomeExtrinsicCard from './HomeExtrinsicCard'
 
-interface Props {
-  extrinsics: Extrinsic[];
+dayjs.extend(relativeTime)
+
+interface HomeExtrinsicListProps {
+  loading: boolean
+  error?: ApolloError | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+  isDesktop: boolean
 }
 
-const HomeExtrinsicList: FC<Props> = ({ extrinsics }) => {
+const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, error, loading, isDesktop }) => {
+  if (loading) {
+    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
+  }
+
+  if (error || !data) {
+    return <ErrorFallback error={error} />
+  }
+
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
-      title: "ID",
-      cells: extrinsics.map(({ block, pos }) => (
-        <div>{`${pos}.${block.height}`}</div>
+      title: 'Hash',
+      cells: extrinsics.map(({ id, hash }) => (
+        <Link key={`${id}-home-extrinsic-hash`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+          <div>{shortString(hash)}</div>
+        </Link>
       )),
     },
     {
-      title: "Block",
-      cells: extrinsics.map(({ block }) => <div>{block.height}</div>),
+      title: 'Block',
+      cells: extrinsics.map(({ block, id }) => (
+        <div key={`${id}-home-extrinsic-block`}>{block.height}</div>
+      )),
     },
     {
-      title: "Time",
-      cells: extrinsics.map(({ block }) => {
-        const blockDate = dayjs(block.timestamp).fromNow(true);
-        return <div>{blockDate}</div>;
+      title: 'Call',
+      cells: extrinsics.map(({ name, id }) => (
+        <div key={`${id}-home-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
+      )),
+    },
+    {
+      title: 'Time',
+      cells: extrinsics.map(({ block, id }) => {
+        const blockDate = dayjs(block.timestamp).fromNow(true)
+
+        return <div key={`${id}-home-extrinsic-time`}>{blockDate} ago</div>
       }),
     },
     {
-      title: "Action",
-      cells: extrinsics.map(({ call }) => (
-        <div>{call.name.split(".")[1].toUpperCase()}</div>
+      title: 'Status',
+      cells: extrinsics.map(({ id, success }) => (
+        <div className='flex items-center justify-center' key={`${id}-home-extrinsic-status`}>
+          <StatusIcon status={success} />
+        </div>
       )),
     },
-    {
-      title: "Block hash",
-      cells: extrinsics.map(({ hash }) => <div>{shortString(hash)}</div>),
-    },
-  ];
+  ]
 
   // constants
-  const columns = generateColumns(extrinsics);
+  const extrinsics = data.extrinsics
+  const columns = generateColumns(extrinsics)
 
-  return (
-    <div className="p-4 lg:w-1/2 md:w-full">
-      <div className="inline-flex justify-between align-middle w-full">
-        <div className="text-gray-600 uppercase text-md leading-normal">
-          Latest Extrinsics
-        </div>
+  return isDesktop ? (
+    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+      <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
+        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
         <Link
-          to={INTERNAL_ROUTES.extrinsics}
-          className="px-2 py-2 rounded-md border border-gray-300 bg-white text-sm leading-5 font-medium text-gray-500 hover:text-gray-400 focus:z-10 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
+          to={INTERNAL_ROUTES.extrinsics.list}
+          className='px-2 py-2 transition ease-in-out duration-150'
         >
-          View all
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
         </Link>
       </div>
       <Table
         columns={columns}
-        emptyMessage="There are no extrinsics to show"
-        id="home-latest-extrinsics"
+        emptyMessage='There are no extrinsics to show'
+        id='home-latest-extrinsics'
       />
     </div>
-  );
-};
+  ) : (
+    <div className='w-full'>
+      <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
+        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        <Link
+          to={INTERNAL_ROUTES.extrinsics.list}
+          className='px-2 py-2 transition ease-in-out duration-150'
+        >
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+        </Link>
+      </div>
+      {extrinsics.map((extrinsic) => (
+        <HomeExtrinsicCard extrinsic={extrinsic} key={`home-extrinsic-card-${extrinsic.id}`} />
+      ))}
+    </div>
+  )
+}
 
-export default HomeExtrinsicList;
+export default HomeExtrinsicList
