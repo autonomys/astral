@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)

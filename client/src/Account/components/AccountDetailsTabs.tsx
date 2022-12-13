@@ -6,12 +6,10 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
 
 // common
-import { Tabs, Tab } from 'common/components/Tabs'
-import MobileCard from 'common/components/MobileCard'
-import StatusIcon from 'common/components/StatusIcon'
+import { MobileCard, StatusIcon, Tabs, Tab } from 'common/components'
 
 // account
-import AccountExtrinsicList from './AccountExtrinsicList'
+import { AccountExtrinsicList } from 'Account/components'
 
 dayjs.extend(relativeTime)
 

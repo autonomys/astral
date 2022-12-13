@@ -3,14 +3,15 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
+import { Spinner, ErrorFallback } from 'common/components'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+
+// layout
+import { NotFound } from 'layout/components'
 
 // extrinsic
-import ExtrinsicDetailsCard from 'Extrinsic/components/ExtrinsicDetailsCard'
-import ExtrinsicDetailsTab from 'Extrinsic/components/ExtrinsicDetailsTab'
+import { ExtrinsicDetailsCard, ExtrinsicDetailsTab } from 'Extrinsic/components'
 import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const Extrinsic: FC = () => {
   const { extrinsicId } = useParams()
@@ -28,6 +29,10 @@ const Extrinsic: FC = () => {
 
   if (error || !data) {
     return <ErrorFallback error={error} />
+  }
+
+  if (!data.extrinsicById) {
+    return <NotFound />
   }
 
   const extrinsic = data.extrinsicById

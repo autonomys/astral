@@ -2,11 +2,10 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 
 // common
-import { Tabs, Tab } from 'common/components/Tabs'
-import MobileCard from 'common/components/MobileCard'
+import { MobileCard, Tabs, Tab } from 'common/components'
 
 // extrinsic
-import ExtrinsicDetailsEventList from 'Extrinsic/components/ExtrinsicDetailsEventList'
+import { ExtrinsicDetailsEventList } from 'Extrinsic/components'
 
 type Props = {
   events: Event[]

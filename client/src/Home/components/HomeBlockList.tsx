@@ -6,17 +6,14 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, TableLoadingSkeleton, StatusIcon, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import ErrorFallback from 'common/components/ErrorFallback'
-import StatusIcon from 'common/components/StatusIcon'
-import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 
 // gql
 import { Block } from 'gql/graphql'
 
 // home
-import { HomeBlockCard } from './HomeBlockCard'
+import { HomeBlockCard } from 'Home/components'
 
 dayjs.extend(relativeTime)
 
@@ -34,7 +31,18 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
   }
 
   if (error || !data) {
-    return <ErrorFallback error={error} />
+    return (
+      <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+        <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
+          <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        </div>
+        <Table
+          columns={[]}
+          emptyMessage='There was an error getting this information'
+          id='home-latest-blocks'
+        />
+      </div>
+    )
   }
 
   // methods

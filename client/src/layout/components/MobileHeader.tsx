@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { MoonIcon } from '@heroicons/react/20/solid'
 
 // common
-import LogoIcon from 'common/icons/LogoIcon'
+import { LogoIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // layout
-import HeaderBackground from 'layout/components/HeaderBackground'
+import { HeaderBackground } from 'layout/components'
 
 type Props = {
   children?: ReactNode

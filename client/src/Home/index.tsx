@@ -3,16 +3,12 @@ import { useQuery } from '@apollo/client'
 import BN from 'bn.js'
 
 // home
-import HomeBlockList from 'Home/components/HomeBlockList'
-import HomeExtrinsicList from 'Home/components/HomeExtrinsicList'
-import HomeChainInfo from 'Home/components/HomeChainInfo'
+import { HomeBlockList, HomeExtrinsicList, HomeChainInfo } from 'Home/components'
+import { QUERY_HOME } from 'Home/query'
 
 // common
-import SearchBar from 'common/components/SearchBar'
-
+import { SearchBar } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-
-import { QUERY_HOME } from 'Home/query'
 
 const ACCOUNT_MIN_VAL = new BN(0.3)
 

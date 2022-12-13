@@ -2,8 +2,8 @@ import { Fragment, useState, FC } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 
-// common
-import SubspaceSymbol from 'common/icons/SubspaceSymbol'
+// common/icons
+import { SubspaceSymbol } from 'common/icons'
 
 const chains = [
   { id: 1, name: 'Gemini', unavailable: false },

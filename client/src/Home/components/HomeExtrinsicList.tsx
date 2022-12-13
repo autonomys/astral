@@ -6,17 +6,15 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column, StatusIcon, TableLoadingSkeleton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import ErrorFallback from 'common/components/ErrorFallback'
-import StatusIcon from 'common/components/StatusIcon'
-import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 import { shortString } from 'common/helpers'
 
 // gql
 import { Extrinsic } from 'gql/graphql'
 
-import HomeExtrinsicCard from './HomeExtrinsicCard'
+// home
+import { HomeExtrinsicCard } from 'Home/components'
 
 dayjs.extend(relativeTime)
 
@@ -34,7 +32,18 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, error, loading, i
   }
 
   if (error || !data) {
-    return <ErrorFallback error={error} />
+    return (
+      <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+        <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
+          <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        </div>
+        <Table
+          columns={[]}
+          emptyMessage='There was an error getting this information'
+          id='home-latest-extrinsics'
+        />
+      </div>
+    )
   }
 
   // methods

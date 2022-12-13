@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
 

@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import ReactJson from 'react-json-view'
 
 // common
-import { List, StyledListItem } from 'common/components/List'
+import { List, StyledListItem } from 'common/components'
 import { shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)
