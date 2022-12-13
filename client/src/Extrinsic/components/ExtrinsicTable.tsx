@@ -25,7 +25,7 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
-      title: 'Block',
+      title: 'Extrinsic Id',
       cells: extrinsics.map(({ block, pos, id }) => (
         <Link key={`${id}-extrinsic-block`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
           <div>{`${block.height}-${pos}`}</div>

@@ -11,6 +11,7 @@ import ExtrinsicList from 'Extrinsic/components/ExtrinsicList'
 // layout
 import { Layout, Container, Footer, Header } from 'layout/components'
 import DomainHeader from 'layout/components/DomainHeader'
+import NotFound from 'layout/components/NotFound'
 // home
 import Home from 'Home'
 // account
@@ -57,6 +58,7 @@ function App() {
               <Route index element={<LogList />} />
               <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
             </Route>
+            <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
           </Routes>
         </Container>
         <Footer />

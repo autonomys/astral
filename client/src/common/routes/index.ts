@@ -52,4 +52,5 @@ export const INTERNAL_ROUTES = {
     },
     list: 'logs',
   },
+  notFound: '/404',
 }
