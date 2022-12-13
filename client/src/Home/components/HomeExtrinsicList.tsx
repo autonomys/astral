@@ -2,8 +2,8 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
-import { useSubscription } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { ApolloError } from '@apollo/client'
 
 // common
 import Table, { Column } from 'common/components/Table'
@@ -11,25 +11,23 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import ErrorFallback from 'common/components/ErrorFallback'
 import StatusIcon from 'common/components/StatusIcon'
 import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // gql
 import { Extrinsic } from 'gql/graphql'
-// home
-import { QUERY_EXTRINSIC_LISTS } from 'Home/query'
+
 import HomeExtrinsicCard from './HomeExtrinsicCard'
 
 dayjs.extend(relativeTime)
 
-const HomeExtrinsicList: FC = () => {
-  const isDesktop = useMediaQuery('(min-width: 640px)')
+interface HomeExtrinsicListProps {
+  loading: boolean
+  error?: ApolloError | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+  isDesktop: boolean
+}
 
-  const PAGE_SIZE = isDesktop ? 10 : 3
-
-  const { data, error, loading } = useSubscription(QUERY_EXTRINSIC_LISTS, {
-    variables: { limit: PAGE_SIZE, offset: 0 },
-  })
-
+const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, error, loading, isDesktop }) => {
   if (loading) {
     return <TableLoadingSkeleton additionClass='lg:w-1/2' />
   }
