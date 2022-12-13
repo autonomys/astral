@@ -13,7 +13,7 @@ import { bigNumberToNumber, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // account
-import AccountListCard from './AccountListCard'
+import AccountListCard from 'Account/components/AccountListCard'
 
 dayjs.extend(relativeTime)
 

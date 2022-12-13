@@ -11,7 +11,7 @@ import MobileCard from 'common/components/MobileCard'
 import StatusIcon from 'common/components/StatusIcon'
 
 // account
-import AccountExtrinsicList from './AccountExtrinsicList'
+import AccountExtrinsicList from 'Account/components/AccountExtrinsicList'
 
 dayjs.extend(relativeTime)
 

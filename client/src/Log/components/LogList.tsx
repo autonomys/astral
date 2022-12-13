@@ -7,11 +7,11 @@ import ErrorFallback from 'common/components/ErrorFallback'
 import SearchBar from 'common/components/SearchBar'
 import Pagination from 'common/components/Pagination'
 import { numberWithCommas } from 'common/helpers'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // log
 import { QUERY_LOG_CONNECTION_LIST } from 'Log/query'
-import LogTable from './LogTable'
-import useMediaQuery from 'common/hooks/useMediaQuery'
+import LogTable from 'Log/components/LogTable'
 
 const LogList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)

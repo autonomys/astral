@@ -9,7 +9,7 @@ import MobileCard from 'common/components/MobileCard'
 import { shortString } from 'common/helpers'
 
 // event
-import EventTabDescription from './EventTabDescription'
+import EventTabDescription from 'Event/components/EventTabDescription'
 
 type Props = {
   event: Event

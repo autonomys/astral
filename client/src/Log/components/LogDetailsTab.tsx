@@ -7,7 +7,7 @@ import MobileCard from 'common/components/MobileCard'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // log
-import LogDetailsEventList from './LogDetailsEventList'
+import LogDetailsEventList from 'Log/components/LogDetailsEventList'
 
 type Props = {
   events: Event[]

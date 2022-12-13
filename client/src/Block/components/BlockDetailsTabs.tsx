@@ -5,13 +5,13 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
 import { Tabs, Tab } from 'common/components/Tabs'
+import StatusIcon from 'common/components/StatusIcon'
+import MobileCard from 'common/components/MobileCard'
 
 // block
 import BlockDetailsExtrinsicList from 'Block/components/BlockDetailsExtrinsicList'
 import BlockDetailsEventList from 'Block/components/BlockDetailsEventList'
-import StatusIcon from 'common/components/StatusIcon'
-import MobileCard from 'common/components/MobileCard'
-import BlockDetailsLogList from './BlockDetailsLogList'
+import BlockDetailsLogList from 'Block/components/BlockDetailsLogList'
 
 dayjs.extend(relativeTime)
 

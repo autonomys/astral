@@ -1,7 +1,7 @@
 import { useState, FC } from 'react'
 import { useQuery } from '@apollo/client'
 
-// ExtrinsicList
+// extrinsic
 import ExtrinsicTable from 'Extrinsic/components/ExtrinsicTable'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 

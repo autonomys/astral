@@ -22,13 +22,13 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
     {
       id: 'transferable',
       label: 'Transferable',
-      value: bigNumberToNumber(account.free, 18),
+      value: account.free ? bigNumberToNumber(account.free, 18) : 0,
       color: '#E970F8',
     },
     {
       id: 'staking',
       label: 'Staking',
-      value: bigNumberToNumber(account.reserved, 18),
+      value: account.reserved ? bigNumberToNumber(account.reserved, 18) : 0,
       color: '#9179EC',
     },
   ]
