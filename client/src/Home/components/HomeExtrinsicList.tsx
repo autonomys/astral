@@ -8,6 +8,7 @@ import { ApolloError } from '@apollo/client'
 // common
 import { Table, Column, StatusIcon, TableLoadingSkeleton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { shortString } from 'common/helpers'
 
 // gql
 import { Extrinsic } from 'gql/graphql'
@@ -48,10 +49,10 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, error, loading, i
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
-      title: 'ID',
-      cells: extrinsics.map(({ block, pos, id }) => (
-        <Link key={`${id}-home-extrinsic-id`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
-          <div>{`${pos}.${block.height}`}</div>
+      title: 'Hash',
+      cells: extrinsics.map(({ id, hash }) => (
+        <Link key={`${id}-home-extrinsic-hash`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+          <div>{shortString(hash)}</div>
         </Link>
       )),
     },
