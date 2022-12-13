@@ -7,9 +7,6 @@ import { INTERNAL_ROUTES } from 'common/routes'
 const NotFound: FC = () => {
   const navigate = useNavigate()
 
-  const handleNavigate = (url: string) => {
-    navigate(url)
-  }
   return (
     <section className='flex items-center h-full p-16 dark:bg-gray-900 dark:text-gray-100'>
       <div className='container flex flex-col items-center justify-center px-5 mx-auto my-8'>
@@ -24,7 +21,7 @@ const NotFound: FC = () => {
             But dont worry, you can find plenty of other things on our homepage.
           </p>
           <button
-            onClick={() => handleNavigate(INTERNAL_ROUTES.home)}
+            onClick={() => navigate(INTERNAL_ROUTES.home)}
             className='px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900'
           >
             Back to homepage

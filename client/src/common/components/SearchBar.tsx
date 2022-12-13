@@ -44,7 +44,6 @@ const SearchBar: FC = () => {
       initialValues={initialValues}
       validationSchema={searchValidationSchema}
       onSubmit={(values) => {
-        console.log(values)
         handleSearch(values.searchTerm, values.searchType.id)
       }}
     >
@@ -112,7 +111,11 @@ const SearchBar: FC = () => {
               <div className='relative'>
                 <input
                   id='searchTerm'
-                  className='block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
+                  className={
+                    errors.searchTerm && touched.searchTerm
+                      ? 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg border border-red-300'
+                      : 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
+                  }
                   placeholder='Search for Block / Account ...'
                   name='searchTerm'
                   onChange={handleChange}
@@ -124,9 +127,11 @@ const SearchBar: FC = () => {
                   <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
                 </button>
               </div>
-              {errors.searchTerm && touched.searchTerm ? <div>{errors.searchTerm}</div> : null}
             </div>
           </div>
+          {errors.searchTerm && touched.searchTerm ? (
+            <div className='text-red-500 text-md mt-2'>{errors.searchTerm}</div>
+          ) : null}
         </Form>
       )}
     </Formik>
