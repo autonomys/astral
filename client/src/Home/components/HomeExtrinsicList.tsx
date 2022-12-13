@@ -6,15 +6,14 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column, StatusIcon, TableLoadingSkeleton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import StatusIcon from 'common/components/StatusIcon'
-import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 
 // gql
 import { Extrinsic } from 'gql/graphql'
 
-import HomeExtrinsicCard from './HomeExtrinsicCard'
+// home
+import { HomeExtrinsicCard } from 'Home/components'
 
 dayjs.extend(relativeTime)
 

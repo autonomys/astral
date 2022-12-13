@@ -8,7 +8,7 @@ import { Account } from 'gql/graphql'
 
 // common
 import { bigNumberToNumber } from 'common/helpers'
-import MobileCard from 'common/components/MobileCard'
+import { MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)

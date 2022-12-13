@@ -1,7 +1,7 @@
 import { FC } from 'react'
 
 // common
-import { Tabs, Tab } from 'common/components/Tabs'
+import { Tabs, Tab } from 'common/components'
 import { useDomain } from 'common/providers/DomainProvider'
 
 const DomainHeader: FC = () => {

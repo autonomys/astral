@@ -3,16 +3,14 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
+import { Spinner, ErrorFallback } from 'common/components'
 
 // layout
-import NotFound from 'layout/components/NotFound'
+import { NotFound } from 'layout/components'
 
 // log
 import { QUERY_LOG_BY_ID } from 'Log/query'
-import LogDetailsCard from 'Log/components/LogDetailsCard'
-import LogDetailsTab from 'Log/components/LogDetailsTab'
+import { LogDetailsCard, LogDetailsTab } from 'Log/components'
 
 const Log: FC = () => {
   const { logId } = useParams()

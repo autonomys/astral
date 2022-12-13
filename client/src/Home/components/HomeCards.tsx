@@ -5,13 +5,10 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // common/icons
-import BlockIcon from 'common/icons/BlockIcon'
-import DocIcon from 'common/icons/DocIcon'
-import WalletIcon from 'common/icons/WalletIcon'
-import PieChartIcon from 'common/icons/PieChartIcon'
+import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
 
 // home
-import HomeInfoCard from 'Home/components/HomeInfoCard'
+import { HomeInfoCard } from 'Home/components'
 
 type Props = {
   archivedBlock?: string

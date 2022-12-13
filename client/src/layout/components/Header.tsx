@@ -4,11 +4,11 @@ import { MoonIcon, Bars3BottomRightIcon } from '@heroicons/react/24/outline'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
-import LogoIcon from 'common/icons/LogoIcon'
-import HeaderDropdownMenu from './HeaderDropdownMenu'
-import HeaderChainDropdown from './HeaderChainDropdown'
+import { LogoIcon } from 'common/icons'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import MobileHeader from './MobileHeader'
+
+// layout
+import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 const Header: FC = () => {
   const location = useLocation()

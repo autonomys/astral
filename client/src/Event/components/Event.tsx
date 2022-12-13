@@ -3,16 +3,14 @@ import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
+import { Spinner, ErrorFallback } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // layout
-import NotFound from 'layout/components/NotFound'
+import { NotFound } from 'layout/components'
 
 // event
-import EventDetailsCard from 'Event/components/EventDetailsCard'
-import EventDetailsTab from 'Event/components/EventDetailsTab'
+import { EventDetailsCard, EventDetailsTab } from 'Event/components'
 import { QUERY_EVENT_BY_ID } from 'Event/query'
 
 const Event: FC = () => {

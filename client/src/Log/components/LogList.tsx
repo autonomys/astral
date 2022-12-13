@@ -2,16 +2,13 @@ import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
-import SearchBar from 'common/components/SearchBar'
-import Pagination from 'common/components/Pagination'
+import { Pagination, SearchBar, Spinner, ErrorFallback } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // log
 import { QUERY_LOG_CONNECTION_LIST } from 'Log/query'
-import LogTable from 'Log/components/LogTable'
+import { LogTable } from 'Log/components'
 
 const LogList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
