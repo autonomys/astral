@@ -8,7 +8,7 @@ type Props = {
 const TableLoadingSkeleton: FC<Props> = ({ additionClass = '', withPagination = false }) => {
   return (
     <div className={`w-full ${additionClass}`}>
-      <div className='w-full  border  border-gray-200 rounded-lg ml-2 bg-white'>
+      <div className='w-full border border-gray-200 rounded-lg bg-white'>
         <div className='animate-pulse'>
           <div className='h-10 bg-gray-200 mb-6' />
           <div className='py-3 px-6'>

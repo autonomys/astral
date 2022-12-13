@@ -10,6 +10,8 @@ import Extrinsic from 'Extrinsic/components/Extrinsic'
 import ExtrinsicList from 'Extrinsic/components/ExtrinsicList'
 // layout
 import { Layout, Container, Footer, Header } from 'layout/components'
+import DomainHeader from 'layout/components/DomainHeader'
+import NotFound from 'layout/components/NotFound'
 // home
 import Home from 'Home'
 // account
@@ -18,19 +20,19 @@ import Account from 'Account/components/Account'
 // event
 import EventList from 'Event/components/EventList'
 import HeaderBackground from 'layout/components/HeaderBackground'
+import Event from 'Event/components/Event'
 // log
 import LogList from 'Log/components/LogList'
 import Log from 'Log/components/Log'
 
 // Import Swiper styles
 import 'swiper/css'
-import Event from 'Event/components/Event'
-import NotFound from 'layout/components/NotFound'
 
 function App() {
   return (
     <HashRouter>
       <Layout>
+        <DomainHeader />
         <Header />
         <Container>
           <HeaderBackground />

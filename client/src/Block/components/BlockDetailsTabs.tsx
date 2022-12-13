@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import Tabs from 'common/components/Tabs'
+import { Tabs, Tab } from 'common/components/Tabs'
 
 // block
 import BlockDetailsExtrinsicList from 'Block/components/BlockDetailsExtrinsicList'
@@ -23,55 +23,48 @@ type Props = {
 }
 
 const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
-  const tabs = [
-    {
-      title: 'Extrinsics',
-      content: isDesktop ? (
-        <BlockDetailsExtrinsicList extrinsics={extrinsics} />
-      ) : (
-        <div className='flex flex-col'>
-          {extrinsics.map((extrinsic) => (
-            <BlockDetailsExtrinsicCard
-              key={`block-details-extrinsic-card-${extrinsic.id}`}
-              extrinsic={extrinsic}
-            />
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: 'Events',
-      content: isDesktop ? (
-        <BlockDetailsEventList events={events} />
-      ) : (
-        <div className='flex flex-col'>
-          {events.map((event) => (
-            <BlockDetailsEventCard key={`block-details-event-card-${event.id}`} event={event} />
-          ))}
-        </div>
-      ),
-    },
-    {
-      title: 'Logs',
-      content: isDesktop ? (
-        <BlockDetailsLogList logs={logs} />
-      ) : (
-        <div className='flex flex-col'>
-          {logs.map((log) => (
-            <BlockDetailsLogCard key={`block-details-log-card-${log.id}`} log={log} />
-          ))}
-        </div>
-      ),
-    },
-  ]
-
   return (
     <Tabs
-      id='block-details-tab'
-      tabs={tabs}
       tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={isDesktop ? '' : 'bg-white rounded-full mb-5 px-5'}
-    />
+      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
+    >
+      <Tab title='Extrinsics'>
+        {isDesktop ? (
+          <BlockDetailsExtrinsicList extrinsics={extrinsics} />
+        ) : (
+          <div className='flex flex-col'>
+            {extrinsics.map((extrinsic) => (
+              <BlockDetailsExtrinsicCard
+                key={`block-details-extrinsic-card-${extrinsic.id}`}
+                extrinsic={extrinsic}
+              />
+            ))}
+          </div>
+        )}
+      </Tab>
+      <Tab title='Events'>
+        {isDesktop ? (
+          <BlockDetailsEventList events={events} />
+        ) : (
+          <div className='flex flex-col'>
+            {events.map((event) => (
+              <BlockDetailsEventCard key={`block-details-event-card-${event.id}`} event={event} />
+            ))}
+          </div>
+        )}
+      </Tab>
+      <Tab title='Logs'>
+        {isDesktop ? (
+          <BlockDetailsLogList logs={logs} />
+        ) : (
+          <div className='flex flex-col'>
+            {logs.map((log) => (
+              <BlockDetailsLogCard key={`block-details-log-card-${log.id}`} log={log} />
+            ))}
+          </div>
+        )}
+      </Tab>
+    </Tabs>
   )
 }
 

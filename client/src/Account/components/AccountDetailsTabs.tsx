@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
 
 // common
-import Tabs from 'common/components/Tabs'
+import { Tabs, Tab } from 'common/components/Tabs'
 import MobileCard from 'common/components/MobileCard'
 import StatusIcon from 'common/components/StatusIcon'
 
@@ -21,25 +21,24 @@ type Props = {
 }
 
 const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
-  const tabs = [
-    {
-      title: 'Extrinsics',
-      content: isDesktop ? (
-        <AccountExtrinsicList extrinsics={extrinsics} />
-      ) : (
-        <div className='flex flex-col'>
-          {extrinsics.map((extrinsic) => (
-            <AccountDetailsExtrinsicCard
-              key={`block-details-extrinsic-card-${extrinsic.id}`}
-              extrinsic={extrinsic}
-            />
-          ))}
-        </div>
-      ),
-    },
-  ]
-
-  return <Tabs id='block-details-tab' tabs={tabs} />
+  return (
+    <Tabs>
+      <Tab title='Extrinsics'>
+        {isDesktop ? (
+          <AccountExtrinsicList extrinsics={extrinsics} />
+        ) : (
+          <div className='flex flex-col'>
+            {extrinsics.map((extrinsic) => (
+              <AccountDetailsExtrinsicCard
+                key={`block-details-extrinsic-card-${extrinsic.id}`}
+                extrinsic={extrinsic}
+              />
+            ))}
+          </div>
+        )}
+      </Tab>
+    </Tabs>
+  )
 }
 
 export default AccountDetailsTabs
