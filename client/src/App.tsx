@@ -25,6 +25,7 @@ import Log from 'Log/components/Log'
 // Import Swiper styles
 import 'swiper/css'
 import Event from 'Event/components/Event'
+import NotFound from 'layout/components/NotFound'
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
               <Route index element={<LogList />} />
               <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
             </Route>
+            <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
           </Routes>
         </Container>
         <Footer />

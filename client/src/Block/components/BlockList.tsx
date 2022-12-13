@@ -16,7 +16,7 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 const BlockList: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const [currentPage, setCurrentPage] = useState(1)
-  const [lastCursor, setLastCursor] = useState(undefined)
+  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = isDesktop ? 10 : 5
 
   const { data, error, loading } = useQuery(QUERY_BLOCK_LIST_CONNECTION, {
@@ -47,6 +47,12 @@ const BlockList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
+  const handleGetPage = (page: string | number) => {
+    setCurrentPage(Number(page))
+    const endCursor = PAGE_SIZE * Number(page)
+    setLastCursor(endCursor.toString())
+  }
+
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full grid lg:grid-cols-2'>
@@ -65,6 +71,7 @@ const BlockList: FC = () => {
           totalCount={totalCount}
           hasNextPage={pageInfo.hasNextPage}
           hasPreviousPage={pageInfo.hasPreviousPage}
+          handleGetPage={handleGetPage}
         />
       </div>
     </div>
