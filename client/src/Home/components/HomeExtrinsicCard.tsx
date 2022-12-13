@@ -7,8 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
 
 // common
-import StatusIcon from 'common/components/StatusIcon'
-import MobileCard from 'common/components/MobileCard'
+import { StatusIcon, MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)

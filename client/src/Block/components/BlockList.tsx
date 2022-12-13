@@ -2,14 +2,11 @@ import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
 
 // block
-import BlockTable from 'Block/components/BlockTable'
+import { BlockTable } from 'Block/components'
 import { QUERY_BLOCK_LIST_CONNECTION } from 'Block/query'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
-import SearchBar from 'common/components/SearchBar'
-import Pagination from 'common/components/Pagination'
+import { Pagination, Spinner, ErrorFallback, SearchBar } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 

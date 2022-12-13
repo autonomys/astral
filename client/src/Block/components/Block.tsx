@@ -3,17 +3,15 @@ import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 
 // common
-import Spinner from 'common/components/Spinner'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import ErrorFallback from 'common/components/ErrorFallback'
+import { ErrorFallback, Spinner } from 'common/components'
 
 // layout
-import NotFound from 'layout/components/NotFound'
+import { NotFound } from 'layout/components'
 
 // block
 import { QUERY_BLOCK_BY_ID } from 'Block/query'
-import BlockDetailsCard from 'Block/components/BlockDetailsCard'
-import BlockDetailsTabs from 'Block/components/BlockDetailsTabs'
+import { BlockDetailsCard, BlockDetailsTabs } from 'Block/components'
 
 const Block: FC = () => {
   const { blockId } = useParams()

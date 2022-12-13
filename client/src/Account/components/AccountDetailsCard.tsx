@@ -4,12 +4,11 @@ import { FC } from 'react'
 import { Account } from 'gql/graphql'
 
 // common
-import Accordion from 'common/components/Accordion'
-import { List, ListItem, StyledListItem } from 'common/components/List'
+import { Accordion, List, ListItem, StyledListItem } from 'common/components'
 import { bigNumberToNumber, shortString } from 'common/helpers'
 
 // account
-import AccountBalanceStats from './AccountBalanceStats'
+import { AccountBalanceStats } from 'Account/components'
 
 type Props = {
   account: Account

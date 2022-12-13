@@ -7,11 +7,11 @@ import { Link } from 'react-router-dom'
 import { Log } from 'gql/graphql'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // log
-import LogListCard from 'Log/components/LogListCard'
+import { LogListCard } from 'Log/components'
 
 dayjs.extend(relativeTime)
 

@@ -2,10 +2,10 @@ import { FC } from 'react'
 import { Account } from 'gql/graphql'
 
 // common
-import StatItem from 'common/components/StatItem'
+import { StatItem } from 'common/components'
 
 // account
-import AccountBalancePieChart from 'Account/components/AccountBalancePieChart'
+import { AccountBalancePieChart } from 'Account/components'
 import { bigNumberToNumber } from 'common/helpers'
 
 type Props = {

@@ -2,12 +2,11 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 
 // common
-import { Tabs, Tab } from 'common/components/Tabs'
-import MobileCard from 'common/components/MobileCard'
+import { MobileCard, Tabs, Tab } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // log
-import LogDetailsEventList from 'Log/components/LogDetailsEventList'
+import { LogDetailsEventList } from 'Log/components'
 
 type Props = {
   events: Event[]

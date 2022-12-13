@@ -8,11 +8,11 @@ import { Block } from 'gql/graphql'
 
 // common
 import { shortString } from 'common/helpers'
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // block
-import BlockListCard from './BlockListCard'
+import { BlockListCard } from 'Block/components'
 
 dayjs.extend(relativeTime)
 

@@ -7,11 +7,11 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event } from 'gql/graphql'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // event
-import EventListCard from 'Event/components/EventListCard'
+import { EventListCard } from 'Event/components'
 
 dayjs.extend(relativeTime)
 

@@ -8,11 +8,11 @@ import { Extrinsic } from 'gql/graphql'
 
 // common
 import { shortString } from 'common/helpers'
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
-import ExtrinsicListCard from 'Extrinsic/components/ExtrinsicListCard'
+import { ExtrinsicListCard } from 'Extrinsic/components'
 
 dayjs.extend(relativeTime)
 

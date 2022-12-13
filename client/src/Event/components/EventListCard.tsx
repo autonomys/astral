@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event } from 'gql/graphql'
 
 // common
-import MobileCard from 'common/components/MobileCard'
+import { MobileCard } from 'common/components'
 
 dayjs.extend(relativeTime)
 
