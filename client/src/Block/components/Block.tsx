@@ -7,10 +7,13 @@ import Spinner from 'common/components/Spinner'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import ErrorFallback from 'common/components/ErrorFallback'
 
+// layout
+import NotFound from 'layout/components/NotFound'
+
 // block
 import { QUERY_BLOCK_BY_ID } from 'Block/query'
-import BlockDetailsCard from './BlockDetailsCard'
-import BlockDetailsTabs from './BlockDetailsTabs'
+import BlockDetailsCard from 'Block/components/BlockDetailsCard'
+import BlockDetailsTabs from 'Block/components/BlockDetailsTabs'
 
 const Block: FC = () => {
   const { blockId } = useParams()
@@ -27,6 +30,10 @@ const Block: FC = () => {
 
   if (error || !data) {
     return <ErrorFallback error={error} />
+  }
+
+  if (!data.blocks.length) {
+    return <NotFound />
   }
 
   const [block] = data.blocks

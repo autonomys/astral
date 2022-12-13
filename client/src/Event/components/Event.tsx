@@ -7,10 +7,13 @@ import Spinner from 'common/components/Spinner'
 import ErrorFallback from 'common/components/ErrorFallback'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
+// layout
+import NotFound from 'layout/components/NotFound'
+
 // event
-import EventDetailsCard from './EventDetailsCard'
+import EventDetailsCard from 'Event/components/EventDetailsCard'
+import EventDetailsTab from 'Event/components/EventDetailsTab'
 import { QUERY_EVENT_BY_ID } from 'Event/query'
-import EventDetailsTab from './EventDetailsTab'
 
 const Event: FC = () => {
   const { eventId } = useParams()
@@ -28,6 +31,10 @@ const Event: FC = () => {
 
   if (error || !data) {
     return <ErrorFallback error={error} />
+  }
+
+  if (!data.eventById) {
+    return <NotFound />
   }
 
   const event = data.eventById

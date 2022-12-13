@@ -12,7 +12,7 @@ import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
-import ExtrinsicListCard from './ExtrinsicListCard'
+import ExtrinsicListCard from 'Extrinsic/components/ExtrinsicListCard'
 
 dayjs.extend(relativeTime)
 

@@ -6,13 +6,11 @@ import BN from 'bn.js'
 import HomeBlockList from 'Home/components/HomeBlockList'
 import HomeExtrinsicList from 'Home/components/HomeExtrinsicList'
 import HomeChainInfo from 'Home/components/HomeChainInfo'
+import { QUERY_HOME } from 'Home/query'
 
 // common
 import SearchBar from 'common/components/SearchBar'
-
 import useMediaQuery from 'common/hooks/useMediaQuery'
-
-import { QUERY_HOME } from 'Home/query'
 
 const ACCOUNT_MIN_VAL = new BN(0.3)
 

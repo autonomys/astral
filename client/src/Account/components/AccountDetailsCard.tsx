@@ -16,7 +16,7 @@ type Props = {
 }
 
 const AccountDetailsCard: FC<Props> = ({ account }) => {
-  const accountTotal = bigNumberToNumber(account.total || 0, 18)
+  const accountTotal = account.total ? bigNumberToNumber(account.total, 18) : 0
   return (
     <div className='border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6'>
       <div className='flex items-center justify-between mb-10'>

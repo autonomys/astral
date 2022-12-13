@@ -11,7 +11,7 @@ import Table, { Column } from 'common/components/Table'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // event
-import EventListCard from './EventListCard'
+import EventListCard from 'Event/components/EventListCard'
 
 dayjs.extend(relativeTime)
 

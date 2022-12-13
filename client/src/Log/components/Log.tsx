@@ -6,10 +6,13 @@ import { useParams } from 'react-router-dom'
 import Spinner from 'common/components/Spinner'
 import ErrorFallback from 'common/components/ErrorFallback'
 
+// layout
+import NotFound from 'layout/components/NotFound'
+
 // log
 import { QUERY_LOG_BY_ID } from 'Log/query'
-import LogDetailsCard from './LogDetailsCard'
-import LogDetailsTab from './LogDetailsTab'
+import LogDetailsCard from 'Log/components/LogDetailsCard'
+import LogDetailsTab from 'Log/components/LogDetailsTab'
 
 const Log: FC = () => {
   const { logId } = useParams()
@@ -25,6 +28,10 @@ const Log: FC = () => {
 
   if (error || !data) {
     return <ErrorFallback error={error} />
+  }
+
+  if (!data.logById) {
+    return <NotFound />
   }
 
   const log = data.logById

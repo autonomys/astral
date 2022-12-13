@@ -5,7 +5,7 @@ import { Account } from 'gql/graphql'
 import StatItem from 'common/components/StatItem'
 
 // account
-import AccountBalancePieChart from './AccountBalancePieChart'
+import AccountBalancePieChart from 'Account/components/AccountBalancePieChart'
 import { bigNumberToNumber } from 'common/helpers'
 
 type Props = {
