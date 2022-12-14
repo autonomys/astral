@@ -1,5 +1,5 @@
-module.exports = class Data1671002659446 {
-    name = 'Data1671002659446'
+module.exports = class Data1671003885652 {
+    name = 'Data1671003885652'
 
     async up(db) {
         await db.query(`CREATE TABLE "call" ("id" character varying NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "success" boolean NOT NULL, "args" jsonb, "error" jsonb, "signer" text, "pos" integer, "block_id" character varying, "extrinsic_id" character varying, "parent_id" character varying, CONSTRAINT "PK_2098af0169792a34f9cfdd39c47" PRIMARY KEY ("id"))`)
@@ -19,6 +19,7 @@ module.exports = class Data1671002659446 {
         await db.query(`CREATE INDEX "IDX_886be421c92f221ac8234c6624" ON "extrinsic" ("signer_id") `)
         await db.query(`CREATE INDEX "IDX_29ac1ee135f61e5f2e476d3e22" ON "extrinsic" ("signature") `)
         await db.query(`CREATE INDEX "IDX_a3b99daba1259dab0dd040d4f7" ON "extrinsic" ("block_id") `)
+        await db.query(`CREATE INDEX "IDX_6e232918078798b1fade21dcf8" ON "extrinsic" ("timestamp") `)
         await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "free" numeric, "reserved" numeric, "total" numeric, "updated_at" numeric, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_3756b99a2c20a91a19196cbc11" ON "account" ("total") `)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_bd3f11fd4110d60ac8b96cd62f3" FOREIGN KEY ("block_id") REFERENCES "block"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -50,6 +51,7 @@ module.exports = class Data1671002659446 {
         await db.query(`DROP INDEX "public"."IDX_886be421c92f221ac8234c6624"`)
         await db.query(`DROP INDEX "public"."IDX_29ac1ee135f61e5f2e476d3e22"`)
         await db.query(`DROP INDEX "public"."IDX_a3b99daba1259dab0dd040d4f7"`)
+        await db.query(`DROP INDEX "public"."IDX_6e232918078798b1fade21dcf8"`)
         await db.query(`DROP TABLE "account"`)
         await db.query(`DROP INDEX "public"."IDX_3756b99a2c20a91a19196cbc11"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_bd3f11fd4110d60ac8b96cd62f3"`)
