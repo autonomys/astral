@@ -7,8 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block } from 'gql/graphql'
 
 // common
-import StatusIcon from 'common/components/StatusIcon'
-import MobileCard from 'common/components/MobileCard'
+import { StatusIcon, MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
@@ -17,7 +16,7 @@ type Props = {
   block: Block
 }
 
-export const HomeBlockCard: FC<Props> = ({ block }) => {
+const HomeBlockCard: FC<Props> = ({ block }) => {
   const blockDate = dayjs(block.timestamp).fromNow(true)
   const body = [
     { name: 'Extrinsics', value: block.extrinsics.length },
@@ -37,3 +36,5 @@ export const HomeBlockCard: FC<Props> = ({ block }) => {
     />
   )
 }
+
+export default HomeBlockCard

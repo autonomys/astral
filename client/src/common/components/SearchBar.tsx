@@ -6,7 +6,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 
 // common
-import SubspaceSymbol from 'common/icons/SubspaceSymbol'
+import { SubspaceSymbol } from 'common/icons'
 import useSearch from 'common/hooks/useSearch'
 
 type SearchType = {

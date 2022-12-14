@@ -2,28 +2,35 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
+
 // block
-import BlockList from 'Block/components/BlockList'
-import Block from 'Block/components/Block'
+import { Block, BlockList } from 'Block/components'
+
 // extrinsic
-import Extrinsic from 'Extrinsic/components/Extrinsic'
-import ExtrinsicList from 'Extrinsic/components/ExtrinsicList'
+import { Extrinsic, ExtrinsicList } from 'Extrinsic/components'
+
 // layout
-import { Layout, Container, Footer, Header } from 'layout/components'
-import DomainHeader from 'layout/components/DomainHeader'
-import NotFound from 'layout/components/NotFound'
+import {
+  Layout,
+  Container,
+  Footer,
+  Header,
+  DomainHeader,
+  NotFound,
+  HeaderBackground,
+} from 'layout/components'
+
 // home
 import Home from 'Home'
+
 // account
-import AccountList from 'Account/components/AccountList'
-import Account from 'Account/components/Account'
+import { AccountList, Account } from 'Account/components'
+
 // event
-import EventList from 'Event/components/EventList'
-import HeaderBackground from 'layout/components/HeaderBackground'
-import Event from 'Event/components/Event'
+import { Event, EventList } from 'Event/components'
+
 // log
-import LogList from 'Log/components/LogList'
-import Log from 'Log/components/Log'
+import { Log, LogList } from 'Log/components'
 
 // Import Swiper styles
 import 'swiper/css'

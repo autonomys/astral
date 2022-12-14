@@ -1,15 +1,12 @@
 import { useState, FC } from 'react'
 import { useQuery } from '@apollo/client'
 
-// ExtrinsicList
-import ExtrinsicTable from 'Extrinsic/components/ExtrinsicTable'
+// extrinsic
+import { ExtrinsicTable } from 'Extrinsic/components'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
-import SearchBar from 'common/components/SearchBar'
-import Pagination from 'common/components/Pagination'
+import { Pagination, SearchBar, ErrorFallback, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 

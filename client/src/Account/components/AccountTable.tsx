@@ -7,13 +7,13 @@ import { Link } from 'react-router-dom'
 import { Account } from 'gql/graphql'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { bigNumberToNumber, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // account
-import AccountListCard from './AccountListCard'
+import { AccountListCard } from 'Account/components'
 
 dayjs.extend(relativeTime)
 

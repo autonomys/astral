@@ -2,14 +2,11 @@ import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
 
 // account
-import AccountTable from 'Account/components/AccountTable'
+import { AccountTable } from 'Account/components'
 import { QUERY_ACCOUNT_CONNECTION_LIST } from 'Account/query'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
-import SearchBar from 'common/components/SearchBar'
-import Pagination from 'common/components/Pagination'
+import { SearchBar, Pagination, ErrorFallback, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 
 const AccountList: FC = () => {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 // common
 import { EXTERNAL_ROUTES } from 'common/routes'
-import LogoIcon from 'common/icons/LogoIcon'
+import { LogoIcon } from 'common/icons'
 
 const Footer: FC = () => {
   return (

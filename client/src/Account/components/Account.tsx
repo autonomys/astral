@@ -4,12 +4,13 @@ import { useQuery } from '@apollo/client'
 
 // account
 import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
-import AccountDetailsCard from './AccountDetailsCard'
-import AccountDetailsTabs from './AccountDetailsTabs'
+import { AccountDetailsCard, AccountDetailsTabs } from 'Account/components'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
+import { Spinner, ErrorFallback } from 'common/components'
+
+// layout
+import { NotFound } from 'layout/components'
 
 const Account: FC = () => {
   const { accountId } = useParams()
@@ -24,6 +25,10 @@ const Account: FC = () => {
 
   if (error || !data) {
     return <ErrorFallback error={error} />
+  }
+
+  if (!data.accountById) {
+    return <NotFound />
   }
 
   const account = data.accountById
