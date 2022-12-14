@@ -50,7 +50,11 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
     {
       title: 'Height',
       cells: blocks.map(({ height, id }) => (
-        <Link key={`${id}-home-block-height`} to={INTERNAL_ROUTES.blocks.id.page(height)}>
+        <Link
+          className='flex gap-2'
+          key={`${id}-home-block-height`}
+          to={INTERNAL_ROUTES.blocks.id.page(height)}
+        >
           <div>#{height}</div>
         </Link>
       )),

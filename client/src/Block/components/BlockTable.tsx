@@ -8,7 +8,7 @@ import { Block } from 'gql/graphql'
 
 // common
 import { shortString } from 'common/helpers'
-import { Table, Column } from 'common/components'
+import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // block
@@ -56,7 +56,13 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
     },
     {
       title: 'Block hash',
-      cells: blocks.map(({ hash, id }) => <div key={`${id}-block-hash`}>{shortString(hash)}</div>),
+      cells: blocks.map(({ hash, id }) => (
+        <div key={`${id}-block-hash`}>
+          <CopyButton value={hash} message='Hash copied'>
+            {shortString(hash)}
+          </CopyButton>
+        </div>
+      )),
     },
   ]
 

@@ -8,7 +8,7 @@ import { Extrinsic } from 'gql/graphql'
 
 // common
 import { shortString } from 'common/helpers'
-import { Table, Column } from 'common/components'
+import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
@@ -57,7 +57,11 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
     {
       title: 'Block hash',
       cells: extrinsics.map(({ hash, id }) => (
-        <div key={`${id}-extrinsic-hash`}>{shortString(hash)}</div>
+        <div key={`${id}-extrinsic-hash`}>
+          <CopyButton value={hash} message='Hash copied'>
+            {shortString(hash)}
+          </CopyButton>
+        </div>
       )),
     },
   ]

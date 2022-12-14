@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -69,6 +70,7 @@ function App() {
           </Routes>
         </Container>
         <Footer />
+        <Toaster />
       </Layout>
     </HashRouter>
   )

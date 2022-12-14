@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { Log } from 'gql/graphql'
 
 // common
-import { Table, Column } from 'common/components'
+import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // log
@@ -26,9 +26,12 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
     {
       title: 'Log Index',
       cells: logs.map(({ id }) => (
-        <Link key={`${id}-log-index`} to={INTERNAL_ROUTES.logs.id.page(id)}>
-          <div>{id}</div>
-        </Link>
+        <div className='w-full flex' key={`${id}-log-index`}>
+          <Link className='w-full' to={INTERNAL_ROUTES.logs.id.page(id)}>
+            <div>{id}</div>
+          </Link>
+          <CopyButton value={id} message='Id copied' />
+        </div>
       )),
     },
     {

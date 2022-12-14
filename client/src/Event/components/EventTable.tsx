@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event } from 'gql/graphql'
 
 // common
-import { Table, Column } from 'common/components'
+import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // event
@@ -26,9 +26,12 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
     {
       title: 'Event Id',
       cells: events.map(({ id }) => (
-        <Link key={`${id}-event-id`} to={INTERNAL_ROUTES.events.id.page(id)}>
-          {id}
-        </Link>
+        <div className='w-full flex gap-1' key={`${id}-event-id`}>
+          <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(id)}>
+            {id}
+          </Link>
+          <CopyButton value={id} message='Id copied' />
+        </div>
       )),
     },
     {

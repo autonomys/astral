@@ -10,6 +10,7 @@ import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
 import Table, { Column } from 'common/components/Table'
 import { List, ListItem, StyledListItem } from 'common/components/List'
 import { Tabs, Tab } from 'common/components/Tabs'
+import CopyButton from 'common/components/CopyButton'
 
 export {
   Spinner,
@@ -27,6 +28,7 @@ export {
   StyledListItem,
   Tab,
   Tabs,
+  CopyButton,
 }
 
 export type { Column }
