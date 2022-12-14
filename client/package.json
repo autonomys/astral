@@ -18,6 +18,7 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "bn.js": "^5.2.1",
+    "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.6",
     "eslint": "^8.0.1",
     "formik": "^2.2.9",
