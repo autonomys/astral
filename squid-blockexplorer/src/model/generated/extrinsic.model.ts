@@ -54,6 +54,7 @@ export class Extrinsic {
     @Column_("int4", {nullable: true})
     pos!: number | undefined | null
 
+    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 

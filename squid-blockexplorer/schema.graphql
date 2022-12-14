@@ -38,7 +38,7 @@ type Extrinsic @entity {
   success: Boolean!
   block: Block!
   pos: Int
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   args: JSON
   events: [Event] @derivedFrom(field: "extrinsic")
   calls: [Call!] @derivedFrom(field: "extrinsic")

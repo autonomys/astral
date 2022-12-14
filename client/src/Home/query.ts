@@ -18,7 +18,7 @@ export const QUERY_HOME = gql`
         id
       }
     }
-    extrinsics(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
+    extrinsics(limit: $limit, offset: $offset, orderBy: timestamp_DESC) {
       hash
       id
       success
@@ -26,7 +26,6 @@ export const QUERY_HOME = gql`
       block {
         id
         height
-        timestamp
       }
       name
     }
