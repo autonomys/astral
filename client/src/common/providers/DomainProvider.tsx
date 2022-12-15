@@ -1,5 +1,6 @@
 import { FC, useState, createContext, useContext, ReactNode } from 'react'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+
 type Value = {
   domainApiAddress: string
   updateDomainAddress: (apiAddress: string) => void

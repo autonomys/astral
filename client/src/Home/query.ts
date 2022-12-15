@@ -10,15 +10,15 @@ export const QUERY_HOME = gql`
       stateRoot
       blockchainSize
       spacePledged
-      # some blocks have more than 100 events
+      # TODO: these limits are based on the current testnet blocks, consider updating later
       events(limit: 200) {
         id
       }
-      extrinsics(limit: 30) {
+      extrinsics(limit: 100) {
         id
       }
     }
-    extrinsics(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
+    extrinsics(limit: $limit, offset: $offset, orderBy: timestamp_DESC) {
       hash
       id
       success
@@ -26,7 +26,6 @@ export const QUERY_HOME = gql`
       block {
         id
         height
-        timestamp
       }
       name
     }

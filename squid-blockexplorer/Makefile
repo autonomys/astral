@@ -14,7 +14,7 @@ build-query-node-image:
 build-images: build-processor-image build-query-node-image
 
 serve:
-	@npx squid-graphql-server --subscriptions
+	@npx squid-graphql-server --max-root-fields 10 --max-response-size 3000
 
 
 migrate:
