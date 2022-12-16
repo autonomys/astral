@@ -41,11 +41,11 @@ export function processBlocksFactory({
     }
 
     // saving results
-    await ctx.store.save(blocks);
-    await ctx.store.save([...extrinsicsMap.values()]);
-    await ctx.store.save([...callsMap.values()]);
-    await ctx.store.save(events);
-    await ctx.store.save(logs);
+    await ctx.store.insert(blocks);
+    await ctx.store.insert([...extrinsicsMap.values()]);
+    await ctx.store.insert([...callsMap.values()]);
+    await ctx.store.insert(events);
+    await ctx.store.insert(logs);
 
     ctx.log
       .child('blocks')
