@@ -47,11 +47,11 @@ tap.test('processBlocks should process blocks and items from the Context and sav
     blocks,
   } as Context;
 
-  const saveSpy = sinon.spy(context.store, 'save');
+  const saveSpy = sinon.spy(context.store, 'insert');
 
   await processBlocks(context);
 
-  // expect store.save method calls: blocks, extrinsics, calls, events, logs
+  // expect store.insert method calls: blocks, extrinsics, calls, events, logs
   t.equal(saveSpy.callCount, 5);
 
   // check stored block ids against block ids in the context
