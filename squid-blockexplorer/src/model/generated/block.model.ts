@@ -53,4 +53,10 @@ export class Block {
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
     blockchainSize!: bigint
+
+    @Column_("int4", {nullable: false})
+    extrinsicsCount!: number
+
+    @Column_("int4", {nullable: false})
+    eventsCount!: number
 }

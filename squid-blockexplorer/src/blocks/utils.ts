@@ -27,18 +27,29 @@ export function partitionItems<Item = CallItem | EventItem>(
   return partitioned;
 }
 
+interface CreateBlockParams {
+  header: SubstrateBlock;
+  spacePledged: bigint;
+  blockchainSize: bigint;
+  extrinsicsCount: number;
+  eventsCount: number;
+}
 
-export function createBlock(
-  header: SubstrateBlock,
-  spacePledged: bigint,
-  blockchainSize: bigint
-) {
+export function createBlock({
+  header,
+  spacePledged,
+  blockchainSize,
+  extrinsicsCount,
+  eventsCount,
+}: CreateBlockParams) {
   return new Block({
     ...header,
     height: BigInt(header.height),
     timestamp: new Date(header.timestamp),
     spacePledged,
     blockchainSize,
+    extrinsicsCount,
+    eventsCount,
   });
 }
 

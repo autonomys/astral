@@ -8,7 +8,13 @@ const spacePledged = BigInt(1);
 const blockchainSize = BigInt(2);
 
 tap.test('createBlock should create instance of a Block', (t) => {
-  const result = createBlock(BlockHeaderMock, spacePledged, blockchainSize);
+  const result = createBlock({
+    header: BlockHeaderMock, 
+    spacePledged, 
+    blockchainSize,
+    extrinsicsCount: 2,
+    eventsCount: 5,
+  });
 
   t.type(result, Block);
   t.has(result, {
@@ -26,7 +32,13 @@ tap.test('createBlock should create instance of a Block', (t) => {
 });
 
 tap.test('createCall should create instance of Call without parent Call', (t) => {
-  const block = createBlock(BlockHeaderMock, spacePledged, blockchainSize);
+  const block = createBlock({
+    header: BlockHeaderMock, 
+    spacePledged, 
+    blockchainSize,
+    extrinsicsCount: 2,
+    eventsCount: 5,
+  });
   const extrinsic = createExtrinsic(callItemWithSignature, block, null, null);
   const result = createCall(callItemWithSignature, block, extrinsic, null);
   t.type(result, Call);
@@ -36,7 +48,13 @@ tap.test('createCall should create instance of Call without parent Call', (t) =>
 tap.todo('createCall should create instance of Call with parent Call');
 
 tap.test('createExtrinsic should create instance of Extrinsic without signature', (t) => {
-  const block = createBlock(BlockHeaderMock, spacePledged, blockchainSize);
+  const block = createBlock({
+    header: BlockHeaderMock, 
+    spacePledged, 
+    blockchainSize,
+    extrinsicsCount: 2,
+    eventsCount: 5,
+  });
   const result = createExtrinsic(callItemWithSignature, block, null, null);
 
   t.type(result, Extrinsic);

@@ -22,6 +22,8 @@ type Block @entity {
   logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   spacePledged: BigInt!
   blockchainSize: BigInt!
+  extrinsicsCount: Int!
+  eventsCount: Int!
 }
 
 type Extrinsic @entity {
