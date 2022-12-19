@@ -22,20 +22,27 @@ export function processBlocksFactory({
       // creating block
       const spacePledged = await getSpacePledged(header);
       const blockchainSize = await getHistorySize(header);
-      const block = createBlock(header, spacePledged, blockchainSize);
-      blocks.push(block);
-
-      // processing block items: calls and events
+      // get block items: calls and events
       const [callItems, eventItems] = partitionItems(({ kind }: CallItem | EventItem) => kind === "call", items);
       // some extrinsics (i.e. Utility.batch_all) have parent call and child calls
       // in that case we need to process parent calls first
       const [parentCalls, childCalls] = partitionItems(({ call }) => !call.parent, (callItems as CallItem[]));
+
+      const block = createBlock({
+        header,
+        spacePledged,
+        blockchainSize,
+        extrinsicsCount: parentCalls.length,
+        eventsCount: eventItems.length,
+      });
+      blocks.push(block);
+
       await processExtrinsics(extrinsicsMap, callsMap, parentCalls, block);
       await processCalls(extrinsicsMap, callsMap, childCalls, block);
-      
+
       const blockEvents = await getEvents(extrinsicsMap, callsMap, eventItems as EventItem[], block);
       events.push(...blockEvents);
-      
+
       const blockLogs = await getLogs(header, block);
       logs.push(...blockLogs);
     }
