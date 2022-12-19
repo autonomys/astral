@@ -130,8 +130,10 @@ export type Block = {
   blockchainSize: Scalars['BigInt'];
   calls: Array<Call>;
   events: Array<Event>;
+  eventsCount: Scalars['Int'];
   extrinsicRoot?: Maybe<Scalars['String']>;
   extrinsics: Array<Extrinsic>;
+  extrinsicsCount: Scalars['Int'];
   hash: Scalars['String'];
   height: Scalars['BigInt'];
   id: Scalars['String'];
@@ -184,8 +186,12 @@ export type BlockEdge = {
 export enum BlockOrderByInput {
   BlockchainSizeAsc = 'blockchainSize_ASC',
   BlockchainSizeDesc = 'blockchainSize_DESC',
+  EventsCountAsc = 'eventsCount_ASC',
+  EventsCountDesc = 'eventsCount_DESC',
   ExtrinsicRootAsc = 'extrinsicRoot_ASC',
   ExtrinsicRootDesc = 'extrinsicRoot_DESC',
+  ExtrinsicsCountAsc = 'extrinsicsCount_ASC',
+  ExtrinsicsCountDesc = 'extrinsicsCount_DESC',
   HashAsc = 'hash_ASC',
   HashDesc = 'hash_DESC',
   HeightAsc = 'height_ASC',
@@ -219,6 +225,15 @@ export type BlockWhereInput = {
   calls_every?: InputMaybe<CallWhereInput>;
   calls_none?: InputMaybe<CallWhereInput>;
   calls_some?: InputMaybe<CallWhereInput>;
+  eventsCount_eq?: InputMaybe<Scalars['Int']>;
+  eventsCount_gt?: InputMaybe<Scalars['Int']>;
+  eventsCount_gte?: InputMaybe<Scalars['Int']>;
+  eventsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  eventsCount_isNull?: InputMaybe<Scalars['Boolean']>;
+  eventsCount_lt?: InputMaybe<Scalars['Int']>;
+  eventsCount_lte?: InputMaybe<Scalars['Int']>;
+  eventsCount_not_eq?: InputMaybe<Scalars['Int']>;
+  eventsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   events_every?: InputMaybe<EventWhereInput>;
   events_none?: InputMaybe<EventWhereInput>;
   events_some?: InputMaybe<EventWhereInput>;
@@ -239,6 +254,15 @@ export type BlockWhereInput = {
   extrinsicRoot_not_in?: InputMaybe<Array<Scalars['String']>>;
   extrinsicRoot_not_startsWith?: InputMaybe<Scalars['String']>;
   extrinsicRoot_startsWith?: InputMaybe<Scalars['String']>;
+  extrinsicsCount_eq?: InputMaybe<Scalars['Int']>;
+  extrinsicsCount_gt?: InputMaybe<Scalars['Int']>;
+  extrinsicsCount_gte?: InputMaybe<Scalars['Int']>;
+  extrinsicsCount_in?: InputMaybe<Array<Scalars['Int']>>;
+  extrinsicsCount_isNull?: InputMaybe<Scalars['Boolean']>;
+  extrinsicsCount_lt?: InputMaybe<Scalars['Int']>;
+  extrinsicsCount_lte?: InputMaybe<Scalars['Int']>;
+  extrinsicsCount_not_eq?: InputMaybe<Scalars['Int']>;
+  extrinsicsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
   extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
   extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
   extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
@@ -399,8 +423,12 @@ export type CallEdge = {
 export enum CallOrderByInput {
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
   BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
   BlockExtrinsicRootAsc = 'block_extrinsicRoot_ASC',
   BlockExtrinsicRootDesc = 'block_extrinsicRoot_DESC',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
   BlockHashAsc = 'block_hash_ASC',
   BlockHashDesc = 'block_hash_DESC',
   BlockHeightAsc = 'block_height_ASC',
@@ -591,8 +619,12 @@ export type EventEdge = {
 export enum EventOrderByInput {
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
   BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
   BlockExtrinsicRootAsc = 'block_extrinsicRoot_ASC',
   BlockExtrinsicRootDesc = 'block_extrinsicRoot_DESC',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
   BlockHashAsc = 'block_hash_ASC',
   BlockHashDesc = 'block_hash_DESC',
   BlockHeightAsc = 'block_height_ASC',
@@ -804,8 +836,12 @@ export type ExtrinsicEdge = {
 export enum ExtrinsicOrderByInput {
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
   BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
   BlockExtrinsicRootAsc = 'block_extrinsicRoot_ASC',
   BlockExtrinsicRootDesc = 'block_extrinsicRoot_DESC',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
   BlockHashAsc = 'block_hash_ASC',
   BlockHashDesc = 'block_hash_DESC',
   BlockHeightAsc = 'block_height_ASC',
@@ -1030,8 +1066,12 @@ export type LogEdge = {
 export enum LogOrderByInput {
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
   BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
+  BlockEventsCountAsc = 'block_eventsCount_ASC',
+  BlockEventsCountDesc = 'block_eventsCount_DESC',
   BlockExtrinsicRootAsc = 'block_extrinsicRoot_ASC',
   BlockExtrinsicRootDesc = 'block_extrinsicRoot_DESC',
+  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
+  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
   BlockHashAsc = 'block_hash_ASC',
   BlockHashDesc = 'block_hash_DESC',
   BlockHeightAsc = 'block_height_ASC',
@@ -1310,100 +1350,6 @@ export type SquidStatus = {
   __typename?: 'SquidStatus';
   /** The height of the processed part of the chain */
   height?: Maybe<Scalars['Int']>;
-};
-
-export type Subscription = {
-  __typename?: 'Subscription';
-  accountById?: Maybe<Account>;
-  accounts: Array<Account>;
-  blockById?: Maybe<Block>;
-  blocks: Array<Block>;
-  callById?: Maybe<Call>;
-  calls: Array<Call>;
-  eventById?: Maybe<Event>;
-  events: Array<Event>;
-  extrinsicById?: Maybe<Extrinsic>;
-  extrinsics: Array<Extrinsic>;
-  logById?: Maybe<Log>;
-  logs: Array<Log>;
-};
-
-
-export type SubscriptionAccountByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type SubscriptionAccountsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<AccountOrderByInput>>;
-  where?: InputMaybe<AccountWhereInput>;
-};
-
-
-export type SubscriptionBlockByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type SubscriptionBlocksArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
-  where?: InputMaybe<BlockWhereInput>;
-};
-
-
-export type SubscriptionCallByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type SubscriptionCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-
-export type SubscriptionEventByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type SubscriptionEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-
-export type SubscriptionExtrinsicByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type SubscriptionExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-
-export type SubscriptionLogByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type SubscriptionLogsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<LogOrderByInput>>;
-  where?: InputMaybe<LogWhereInput>;
 };
 
 export type WhereIdInput = {

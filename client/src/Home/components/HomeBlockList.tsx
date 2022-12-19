@@ -61,14 +61,14 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
     },
     {
       title: 'Extrinsics',
-      cells: blocks.map(({ extrinsics, id }) => (
-        <div key={`${id}-home-block-extrinsics`}>{extrinsics?.length}</div>
+      cells: blocks.map(({ extrinsicsCount, id }) => (
+        <div key={`${id}-home-block-extrinsics`}>{extrinsicsCount}</div>
       )),
     },
     {
       title: 'Events',
-      cells: blocks.map(({ events, id }) => (
-        <div key={`${id}-home-block-events`}>{events?.length}</div>
+      cells: blocks.map(({ eventsCount, id }) => (
+        <div key={`${id}-home-block-events`}>{eventsCount}</div>
       )),
     },
     {
@@ -79,11 +79,12 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
         return <div key={`${id}-home-block-time`}>{blockDate} ago</div>
       }),
     },
+    // TODO: Not sure we need this column, since Status for latest blocks will always be non-archived. Clarify
     {
       title: 'Status',
-      cells: blocks.map(({ id, extrinsics }) => (
+      cells: blocks.map(({ id }) => (
         <div className='flex items-center justify-center' key={`${id}-home-block-status`}>
-          <StatusIcon status={extrinsics[0].success} />
+          <StatusIcon status={false} />
         </div>
       )),
     },
