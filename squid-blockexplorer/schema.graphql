@@ -28,7 +28,7 @@ type Block @entity {
 
 type Extrinsic @entity {
   id: ID!
-  hash: String! @unique
+  hash: String!
   indexInBlock: Int!
   nonce: BigInt
   name: String!

@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://gemini-2a-testnet.archive.subsquid.io/graphql",
+  "specVersions": "http://68.183.67.157:8888/graphql",
   "constants": true,
   "events": true,
   "calls": true,
