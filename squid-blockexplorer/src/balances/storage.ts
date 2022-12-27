@@ -38,7 +38,7 @@ export class BalanceStorage {
     const storage = this.createSystemAccountStorage(this.ctx, header);
     if (!storage.isExists) return undefined;
     // TODO: consider converting account to Buffer within this func
-    const balance = await storage.asV3.get(accountId);
+    const balance = await storage.asV0.get(accountId);
     const { free, reserved } = balance.data;
     return { free, reserved };
   }
@@ -47,7 +47,7 @@ export class BalanceStorage {
     const storage = this.createBalanceAccountStorage(this.ctx, header);
     if (!storage.isExists) return undefined;
     // TODO: consider converting account to Buffer within this func
-    const balance = await storage.asV3.get(accountId);
+    const balance = await storage.asV0.get(accountId);
     const { free, reserved } = balance;
     return { free, reserved };
   }
