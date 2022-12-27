@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Gemini II",
+    "urls": {
+      "api": "https://blockexplorer.subspace.network/graphql"
+    }
+  },
+  {
+    "title": "Gemini III",
+    "urls": {
+      "api": "http://134.209.235.71:4350/graphql"
+    }
+  }
+]
