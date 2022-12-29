@@ -4,18 +4,11 @@ import { FC } from 'react'
 import { Tabs, Tab } from 'common/components'
 import { useDomain } from 'common/providers/DomainProvider'
 
+// domain
+import domains from 'layout/config/domain.json'
+
 const DomainHeader: FC = () => {
   const { updateDomainAddress } = useDomain()
-
-  // TODO: remove hardcoded title
-  const tabs = [
-    {
-      title: 'Gemini II',
-      urls: {
-        api: process.env.REACT_APP_GRAPHQL_API_URL,
-      },
-    },
-  ]
 
   return (
     <div className='px-4 xl:px-0 z-10'>
@@ -24,7 +17,7 @@ const DomainHeader: FC = () => {
         pillStyle='bg-[#241235] text-white'
         activePillStyle='bg-[#DE67E4] text-white'
       >
-        {tabs.map((item, index) => (
+        {domains.map((item, index) => (
           <Tab
             key={`${item.title}-${index}`}
             title={item.title}
