@@ -2,7 +2,7 @@
   {
     "title": "Gemini II",
     "urls": {
-      "api": "https://blockexplorer.subspace.network/graphql"
+      "api": "https://squid.gemini-2a.subspace.network/graphql"
     }
   },
   {
