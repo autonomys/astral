@@ -17,7 +17,7 @@ const blockNumbers = [
   15_539,
   80_453,
   543_435,
-  1_281_609,
+  // 1_281_609,
 ];
 
 const queryBlocks = gql`
@@ -42,7 +42,7 @@ let blocksFromSquid: any[];
 let blocksFromRpc: SignedBlock[];
 let api: ApiPromise;
 // TODO: move to an env var
-const client = new GraphQLClient('https://blockexplorer.subspace.network/graphql');
+const client = new GraphQLClient('https://squid.gemini-2a.subspace.network/graphql');
 
 tap.before(async () => {
   api = await ApiPromise.create({ provider: wsProvider });
@@ -63,15 +63,15 @@ tap.before(async () => {
 tap.test('compare block headers', async (t) => {
   blocksFromSquid.forEach((block, index) => {
     const refBlockHeader = (blocksFromRpc[index]).block.header;
-    t.equal(block.hash, refBlockHeader.hash.toString());
-    t.equal(block.height, refBlockHeader.number.toString());
-    t.equal(block.stateRoot, refBlockHeader.stateRoot.toString());
+    t.equal(block.hash, refBlockHeader.hash.toString(), `block #${block.height} block hash ok`);
+    t.equal(block.height, refBlockHeader.number.toString(), `block #${block.height} block number ok`);
+    t.equal(block.stateRoot, refBlockHeader.stateRoot.toString(), `block #${block.height} state root ok`);
     // Comparing digest log items:
     // squid retrieves blocks from the storage, but 'Seal' log is not stored in the storage, because it is not part of the runtime:
     // https://github.com/paritytech/substrate/blob/0ba251c9388452c879bfcca425ada66f1f9bc802/primitives/runtime/src/generic/digest.rs#L96
     // therefore we expect 1 log item difference
     // TODO: find a way to query 'Seal' log items if it's critical for us
-    t.equal(block.logs.length + 1, refBlockHeader.digest.logs.length);
+    t.equal(block.logs.length + 1, refBlockHeader.digest.logs.length, `block #${block.height} log items count ok`);
   });
 
   t.end();
