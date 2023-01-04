@@ -20,7 +20,7 @@ export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
 export function getLogsFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SystemDigestStorage) {
   return async function getLogs(header: SubstrateBlock, block: Block) {
     const storage = storageFactory(ctx, header);
-    const digest = await storage.getAsV3();
+    const digest = await storage.asV0.get();
 
     return digest.logs.map((log, index) => new Log({
       id: `${block.id}-${index}`,

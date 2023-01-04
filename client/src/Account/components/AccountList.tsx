@@ -2,44 +2,35 @@ import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
 
 // account
-import AccountTable from 'Account/components/AccountTable'
+import { AccountTable } from 'Account/components'
 import { QUERY_ACCOUNT_CONNECTION_LIST } from 'Account/query'
 
 // common
-import Spinner from 'common/components/Spinner'
-import ErrorFallback from 'common/components/ErrorFallback'
-import SearchBar from 'common/components/SearchBar'
-import Pagination from 'common/components/Pagination'
+import { SearchBar, Pagination, ErrorFallback, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 
 const AccountList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [lastCursor, setLastCursor] = useState(undefined)
+  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = 10
 
-  const {
-    data: connectionData,
-    error: connectionError,
-    loading: connectionLoading,
-  } = useQuery(QUERY_ACCOUNT_CONNECTION_LIST, {
+  const { data, error, loading } = useQuery(QUERY_ACCOUNT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
-  if (connectionLoading) {
+  if (loading) {
     return <Spinner />
   }
 
-  if (connectionError || !connectionData) {
-    return <ErrorFallback error={connectionError} />
+  if (error || !data) {
+    return <ErrorFallback error={error} />
   }
 
-  const accountsConnection = connectionData.accountsConnection.edges.map(
-    (extrinsic) => extrinsic.node,
-  )
-  const totalCount = connectionData.accountsConnection.totalCount
+  const accountsConnection = data.accountsConnection.edges.map((extrinsic) => extrinsic.node)
+  const totalCount = data.accountsConnection.totalCount
   const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = connectionData.accountsConnection.pageInfo
+  const pageInfo = data.accountsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -51,15 +42,21 @@ const AccountList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
+  const handleGetPage = (page: string | number) => {
+    setCurrentPage(Number(page))
+    const endCursor = PAGE_SIZE * Number(page)
+    setLastCursor(endCursor.toString())
+  }
+
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='grid grid-cols-2'>
+      <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base'>{`Holders (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col'>
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <AccountTable accounts={accountsConnection} />
         <Pagination
           nextPage={handleNextPage}
@@ -69,6 +66,7 @@ const AccountList: FC = () => {
           totalCount={totalCount}
           hasNextPage={pageInfo.hasNextPage}
           hasPreviousPage={pageInfo.hasPreviousPage}
+          handleGetPage={handleGetPage}
         />
       </div>
     </div>

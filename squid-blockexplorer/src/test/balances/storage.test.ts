@@ -14,11 +14,18 @@ const defaultStorageDependencies = {
   ctx: contextMock,
   createSystemAccountStorage: () => ({
     isExists: false,
-    getAsV3: () => Promise.resolve(undefined),
+    asV3: {
+      get: () => Promise.resolve(undefined),
+    }
   } as unknown as SystemAccountStorage),
   createBalanceAccountStorage: () => ({
     isExists: false,
-    getAsV3: () => Promise.resolve(undefined),
+    asV3: {
+      get: () => Promise.resolve(undefined),
+    },
+    asV0: {
+      get: () => Promise.resolve(undefined),
+    }
   } as unknown as BalancesAccountStorage),
 };
 
@@ -27,7 +34,12 @@ tap.test('getBalance should return balance for given account id from SystemAccou
     ...defaultStorageDependencies,
     createSystemAccountStorage: () => ({
       isExists: true,
-      getAsV3: () => Promise.resolve({ data: systemAccountBalance }),
+      asV3: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      },
+      asV0: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      }
     } as unknown as SystemAccountStorage),
   };
 
@@ -45,11 +57,21 @@ tap.test('getBalance should return balance for given account id from BalancesAcc
     ...defaultStorageDependencies,
     createSystemAccountStorage: () => ({
       isExists: false,
-      getAsV3: () => Promise.resolve(undefined),
+      asV3: {
+        get: () => Promise.resolve(undefined),
+      },
+      asV0: {
+        get: () => Promise.resolve(undefined),
+      }
     } as unknown as SystemAccountStorage),
     createBalanceAccountStorage: () => ({
       isExists: true,
-      getAsV3: () => Promise.resolve(systemAccountBalance),
+      asV3: {
+        get: () => Promise.resolve(systemAccountBalance),
+      },
+      asV0: {
+        get: () => Promise.resolve(systemAccountBalance),
+      }
     } as unknown as BalancesAccountStorage),
   };
 

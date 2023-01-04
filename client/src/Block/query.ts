@@ -16,10 +16,10 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
           specId
           stateRoot
           timestamp
-          events(limit: 300) {
+          events(limit: 10) {
             id
           }
-          extrinsics(limit: 300) {
+          extrinsics(limit: 10) {
             id
           }
         }
@@ -72,6 +72,14 @@ export const QUERY_BLOCK_BY_ID = gql`
             id
           }
         }
+      }
+      logs(limit: 10, orderBy: block_height_DESC) {
+        block {
+          height
+          timestamp
+        }
+        kind
+        id
       }
     }
   }

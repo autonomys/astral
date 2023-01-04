@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
 
 dayjs.extend(relativeTime)
 
@@ -50,7 +50,7 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
     <Table
       columns={columns}
       emptyMessage='There are no events to show'
-      id='block-details-event-list'
+      id='extrinsic-details-event-list'
     />
   )
 }

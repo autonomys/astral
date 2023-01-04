@@ -1,11 +1,15 @@
-import { FC } from 'react';
-import { ResponsivePie } from '@nivo/pie';
-import { Account } from 'gql/graphql';
-import { bigNumberToNumber } from 'common/helpers';
+import { FC } from 'react'
+import { ResponsivePie } from '@nivo/pie'
+
+// gql
+import { Account } from 'gql/graphql'
+
+// common
+import { bigNumberToNumber } from 'common/helpers'
 
 type Props = {
-  account: Account;
-};
+  account: Account
+}
 
 const AccountBalancePieChart: FC<Props> = ({ account }) => {
   const data = [
@@ -18,19 +22,19 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
     {
       id: 'transferable',
       label: 'Transferable',
-      value: bigNumberToNumber(account.free, 18),
+      value: account.free ? bigNumberToNumber(account.free, 18) : 0,
       color: '#E970F8',
     },
     {
       id: 'staking',
       label: 'Staking',
-      value: bigNumberToNumber(account.reserved, 18),
+      value: account.reserved ? bigNumberToNumber(account.reserved, 18) : 0,
       color: '#9179EC',
     },
-  ];
+  ]
 
   return (
-    <div className="h-80 w-2/4">
+    <div className={'sm:h-80 sm:w-2/4 h-60 w-full'}>
       <ResponsivePie
         data={data}
         margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
@@ -44,7 +48,7 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
         enableArcLinkLabels={false}
       />
     </div>
-  );
-};
+  )
+}
 
-export default AccountBalancePieChart;
+export default AccountBalancePieChart

@@ -8,20 +8,24 @@ import { Extrinsic } from 'gql/graphql'
 
 // common
 import { shortString } from 'common/helpers'
-import Table, { Column } from 'common/components/Table'
+import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// extrinsic
+import { ExtrinsicListCard } from 'Extrinsic/components'
 
 dayjs.extend(relativeTime)
 
 interface Props {
   extrinsics: Extrinsic[]
+  isDesktop?: boolean
 }
 
-const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
+const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
-      title: 'Block',
+      title: 'Extrinsic Id',
       cells: extrinsics.map(({ block, pos, id }) => (
         <Link key={`${id}-extrinsic-block`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
           <div>{`${block.height}-${pos}`}</div>
@@ -53,7 +57,11 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
     {
       title: 'Block hash',
       cells: extrinsics.map(({ hash, id }) => (
-        <div key={`${id}-extrinsic-hash`}>{shortString(hash)}</div>
+        <div key={`${id}-extrinsic-hash`}>
+          <CopyButton value={hash} message='Hash copied'>
+            {shortString(hash)}
+          </CopyButton>
+        </div>
       )),
     },
   ]
@@ -61,7 +69,7 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
   // constants
   const columns = generateColumns(extrinsics)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
@@ -72,6 +80,12 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
           tableHeaderProps='border-b border-gray-200'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {extrinsics.map((extrinsic) => (
+        <ExtrinsicListCard extrinsic={extrinsic} key={`extrinsic-list-card-${extrinsic.id}`} />
+      ))}
     </div>
   )
 }

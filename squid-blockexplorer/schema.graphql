@@ -2,26 +2,28 @@ type Account @entity {
   id: ID!
   free: BigInt
   reserved: BigInt
-  total: BigInt
+  total: BigInt @index
   updatedAt: BigInt
-  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer")
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer") @cardinality(value: 10)
 }
 
 type Block @entity {
   id: ID!
-  height: BigInt!
+  height: BigInt! @index
   timestamp: DateTime!
   hash: String!
   parentHash: String!
   specId: String!
   stateRoot: String!
   extrinsicRoot: String
-  extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
-  events: [Event!]! @derivedFrom(field: "block")
-  calls: [Call!]! @derivedFrom(field: "block")
-  logs: [Log!]! @derivedFrom(field: "block")
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   spacePledged: BigInt!
   blockchainSize: BigInt!
+  extrinsicsCount: Int!
+  eventsCount: Int!
 }
 
 type Extrinsic @entity {
@@ -31,17 +33,17 @@ type Extrinsic @entity {
   nonce: BigInt
   name: String!
   signer: Account
-  signature: String
+  signature: String @index
   error: JSON
   tip: BigInt
   fee: BigInt
   success: Boolean!
   block: Block!
   pos: Int
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   args: JSON
-  events: [Event] @derivedFrom(field: "extrinsic")
-  calls: [Call!] @derivedFrom(field: "extrinsic")
+  events: [Event] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+  calls: [Call!] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
 }
 
 type Event @entity {
@@ -68,7 +70,7 @@ type Call @entity {
   error: JSON
   signer: String
   parent: Call
-  calls: [Call] @derivedFrom(field: "parent")
+  calls: [Call] @derivedFrom(field: "parent") @cardinality(value: 10)
   pos: Int
 }
 

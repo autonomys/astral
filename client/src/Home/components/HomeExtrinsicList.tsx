@@ -2,44 +2,57 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
-import { useSubscription } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { ApolloError } from '@apollo/client'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column, StatusIcon, TableLoadingSkeleton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { shortString } from 'common/helpers'
 
 // gql
 import { Extrinsic } from 'gql/graphql'
-import { QUERY_EXTRINSIC_LISTS } from 'Home/query'
-import ErrorFallback from 'common/components/ErrorFallback'
-import StatusIcon from 'common/components/StatusIcon'
-import TableLoadingSkeleton from 'common/components/TableLoadingSkeleton'
+
+// home
+import { HomeExtrinsicCard } from 'Home/components'
 
 dayjs.extend(relativeTime)
 
-const HomeExtrinsicList: FC = () => {
-  const PAGE_SIZE = 10
+interface HomeExtrinsicListProps {
+  loading: boolean
+  error?: ApolloError | undefined
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+  isDesktop: boolean
+}
 
-  const { data, error, loading } = useSubscription(QUERY_EXTRINSIC_LISTS, {
-    variables: { limit: PAGE_SIZE, offset: 0 },
-  })
-
+const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, error, loading, isDesktop }) => {
   if (loading) {
     return <TableLoadingSkeleton additionClass='lg:w-1/2' />
   }
 
   if (error || !data) {
-    return <ErrorFallback error={error} />
+    return (
+      <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+        <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
+          <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        </div>
+        <Table
+          columns={[]}
+          emptyMessage='There was an error getting this information'
+          id='home-latest-extrinsics'
+        />
+      </div>
+    )
   }
 
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
-      title: 'ID',
-      cells: extrinsics.map(({ block, pos, id }) => (
-        <Link key={`${id}-home-extrinsic-id`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
-          <div>{`${pos}.${block.height}`}</div>
+      title: 'Hash',
+      cells: extrinsics.map(({ id, hash }) => (
+        <Link key={`${id}-home-extrinsic-hash`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+          <div>{shortString(hash)}</div>
         </Link>
       )),
     },
@@ -77,8 +90,8 @@ const HomeExtrinsicList: FC = () => {
   const extrinsics = data.extrinsics
   const columns = generateColumns(extrinsics)
 
-  return (
-    <div className='flex-col p-4 lg:w-1/2 md:w-full border border-gray-200 rounded-lg ml-2 bg-white'>
+  return isDesktop ? (
+    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
       <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
         <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
         <Link
@@ -93,6 +106,21 @@ const HomeExtrinsicList: FC = () => {
         emptyMessage='There are no extrinsics to show'
         id='home-latest-extrinsics'
       />
+    </div>
+  ) : (
+    <div className='w-full'>
+      <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
+        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        <Link
+          to={INTERNAL_ROUTES.extrinsics.list}
+          className='px-2 py-2 transition ease-in-out duration-150'
+        >
+          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+        </Link>
+      </div>
+      {extrinsics.map((extrinsic) => (
+        <HomeExtrinsicCard extrinsic={extrinsic} key={`home-extrinsic-card-${extrinsic.id}`} />
+      ))}
     </div>
   )
 }

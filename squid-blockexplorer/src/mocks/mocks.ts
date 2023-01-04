@@ -180,7 +180,12 @@ export const SOLUTION_RANGES = BigInt(123);
 export const SEGMENTS_COUNT = 123;
 
 export const solutionRangesStorageFactoryMock = () => ({
-  getAsV3: () => ({ current: SOLUTION_RANGES })
+  asV3: {
+    get: () => ({ current: SOLUTION_RANGES })
+  },
+  asV0: {
+    get: () => ({ current: SOLUTION_RANGES })
+  }
 } as unknown as SubspaceSolutionRangesStorage);
 
 export const digestLogs = [
@@ -188,14 +193,27 @@ export const digestLogs = [
 ];
 
 export const digestStorageFactoryMock = () => ({
-  getAsV3: () => ({
-    logs: digestLogs,
-  }),
+  asV3: {
+    get: () => ({
+      logs: digestLogs,
+    }),
+  },
+  asV0: {
+    get: () => ({
+      logs: digestLogs,
+    }),
+  }
 } as unknown as SystemDigestStorage);
 
 export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'random account id' }));
 
-export const blockMock = createBlock(BlockHeaderMock, BigInt(1), BigInt(2));
+export const blockMock = createBlock({
+  header: BlockHeaderMock, 
+  spacePledged: BigInt(1), 
+  blockchainSize: BigInt(2),
+  extrinsicsCount: 2,
+  eventsCount: 5,
+});
 export const extrinsicMock = createExtrinsic(parentCallItem as CallItem, blockMock);
 export const parentCallMock = createCall(parentCallItem as CallItem, blockMock, extrinsicMock, null);
 

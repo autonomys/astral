@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://archive.subspace.network/api",
+  "specVersions": "http://68.183.67.157:8888/graphql",
   "constants": true,
   "events": true,
   "calls": true,

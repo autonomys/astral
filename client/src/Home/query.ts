@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
-// $accountTotal: BigInt!
-export const QUERY_BLOCK_LISTS = gql`
-  subscription BlockQuery($limit: Int!, $offset: Int!) {
+
+export const QUERY_HOME = gql`
+  query HomeQuery($limit: Int!, $offset: Int!, $accountTotal: BigInt!) {
     blocks(limit: $limit, offset: $offset, orderBy: height_DESC) {
       id
       hash
@@ -10,19 +10,10 @@ export const QUERY_BLOCK_LISTS = gql`
       stateRoot
       blockchainSize
       spacePledged
-      events(limit: 100) {
-        id
-      }
-      extrinsics(limit: 100) {
-        id
-      }
+      extrinsicsCount
+      eventsCount
     }
-  }
-`
-
-export const QUERY_EXTRINSIC_LISTS = gql`
-  subscription ExtrinsicQuery($limit: Int!, $offset: Int!) {
-    extrinsics(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
+    extrinsics(limit: $limit, offset: $offset, orderBy: timestamp_DESC) {
       hash
       id
       success
@@ -30,23 +21,8 @@ export const QUERY_EXTRINSIC_LISTS = gql`
       block {
         id
         height
-        timestamp
       }
       name
-    }
-  }
-`
-
-export const QUERY_HOME_LISTS = gql`
-  query HomeQuery($accountTotal: BigInt!) {
-    blocks(limit: 1, offset: 0, orderBy: height_DESC) {
-      id
-      hash
-      height
-      timestamp
-      stateRoot
-      blockchainSize
-      spacePledged
     }
     accountsConnection(orderBy: id_ASC, where: { total_gt: $accountTotal }) {
       totalCount

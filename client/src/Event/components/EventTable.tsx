@@ -1,36 +1,46 @@
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { Event } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
+// gql
+import { Event } from 'gql/graphql'
+
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// event
+import { EventListCard } from 'Event/components'
 
 dayjs.extend(relativeTime)
 
 interface Props {
   events: Event[]
+  isDesktop?: boolean
 }
 
-const EventTable: FC<Props> = ({ events }) => {
+const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
-      title: 'Block',
-      cells: events.map(({ block, id }) => (
-        <Link key={`${id}-event-block`} to={INTERNAL_ROUTES.blocks.id.page(block?.height || 0)}>
-          {block?.height}
-        </Link>
+      title: 'Event Id',
+      cells: events.map(({ id }) => (
+        <div className='w-full flex gap-1' key={`${id}-event-id`}>
+          <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(id)}>
+            {id}
+          </Link>
+          <CopyButton value={id} message='Id copied' />
+        </div>
       )),
     },
     {
-      title: 'Time',
-      cells: events.map(({ block, id }) => {
-        const blockDate = dayjs(block?.timestamp).fromNow(true)
-        return <div key={`${id}-event-time`}>{blockDate}</div>
-      }),
+      title: 'Block',
+      cells: events.map(({ block, id }) => (
+        <Link key={`${id}-event-block`} to={INTERNAL_ROUTES.events.id.page(id)}>
+          {block?.height}
+        </Link>
+      )),
     },
     {
       title: 'Action',
@@ -43,17 +53,18 @@ const EventTable: FC<Props> = ({ events }) => {
       cells: events.map(({ phase, id }) => <div key={`${id}-event-phase`}>{phase}</div>),
     },
     {
-      title: 'Index in block',
-      cells: events.map(({ indexInBlock, id }) => (
-        <div key={`${id}-event-index`}>{indexInBlock}</div>
-      )),
+      title: 'Time',
+      cells: events.map(({ block, id }) => {
+        const blockDate = dayjs(block?.timestamp).fromNow(true)
+        return <div key={`${id}-event-time`}>{blockDate}</div>
+      }),
     },
   ]
 
   // constants
   const columns = generateColumns(events)
 
-  return (
+  return isDesktop ? (
     <div className='w-full'>
       <div className='rounded my-6'>
         <Table
@@ -64,6 +75,12 @@ const EventTable: FC<Props> = ({ events }) => {
           id='latest-events'
         />
       </div>
+    </div>
+  ) : (
+    <div className='w-full'>
+      {events.map((event) => (
+        <EventListCard event={event} key={`event-list-card-${event.id}`} />
+      ))}
     </div>
   )
 }
