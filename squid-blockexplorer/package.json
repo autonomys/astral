@@ -7,6 +7,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "test": "nyc tap --ts",
+    "test:e2e": "tap --ts src/e2e/*.e2e.ts",
     "build": "rm -rf lib && tsc",
     "db:migrate": "npx squid-typeorm-migration apply",
     "processor:start": "node lib/processor.js",
