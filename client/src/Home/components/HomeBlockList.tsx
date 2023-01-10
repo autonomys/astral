@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, TableLoadingSkeleton, StatusIcon, Column } from 'common/components'
+import { Table, TableLoadingSkeleton, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
@@ -78,15 +78,6 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
 
         return <div key={`${id}-home-block-time`}>{blockDate} ago</div>
       }),
-    },
-    // TODO: Not sure we need this column, since Status for latest blocks will always be non-archived. Clarify
-    {
-      title: 'Status',
-      cells: blocks.map(({ id }) => (
-        <div className='flex items-center justify-center' key={`${id}-home-block-status`}>
-          <StatusIcon status={false} />
-        </div>
-      )),
     },
   ]
 
