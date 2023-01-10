@@ -41,3 +41,14 @@ export const querySquidHeight = gql`
     }
   }
 `;
+
+export const queryBalance = gql`
+  query Balance($id: String!) {
+    accountById(id: $id) {
+      total
+      free
+      reserved
+      updatedAt
+    }
+  }
+`;

@@ -8,7 +8,7 @@ import type { EventRecord } from "@polkadot/types/interfaces/system";
 import { snakeToCamel } from './utils';
 import { queryBlocks, queryEvents, queryExtrinsics, querySquidHeight } from './queries';
 
-dotenv.config();
+dotenv.config({ path: '.env.e2e' });
 
 const wsProvider = new WsProvider(process.env.CHAIN_RPC_ENDPOINT as string);
 const squidClient = new GraphQLClient(process.env.SQUID_GRAPHQL_ENDPOINT as string);
