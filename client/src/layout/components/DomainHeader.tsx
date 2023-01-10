@@ -2,13 +2,10 @@ import { FC } from 'react'
 
 // common
 import { Tabs, Tab } from 'common/components'
-import { useDomain } from 'common/providers/DomainProvider'
-
-// domain
-import domains from 'layout/config/domain.json'
+import { useDomains } from 'common/providers/DomainProvider'
 
 const DomainHeader: FC = () => {
-  const { updateDomainAddress } = useDomain()
+  const { updateDomainAddress, domains } = useDomains()
 
   return (
     <div className='px-4 xl:px-0 z-10'>
