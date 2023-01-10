@@ -1,11 +1,14 @@
 import * as dotenv from 'dotenv'
 import type { CodegenConfig } from '@graphql-codegen/cli'
 
+// domains
+import domains from './src/layout/config/domain.json'
+
 dotenv.config()
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.REACT_APP_GRAPHQL_API_URL,
+  schema: domains[0].urls.api,
   documents: './src/**/*.{ts,tsx}',
   generates: {
     './src/gql/': {

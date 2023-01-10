@@ -1,9 +1,18 @@
 import { FC, useState, createContext, useContext, ReactNode } from 'react'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
+// domains
+import domains from 'layout/config/domain.json'
+
 type Value = {
   domainApiAddress: string
   updateDomainAddress: (apiAddress: string) => void
+  domains: {
+    title: string
+    urls: {
+      api: string
+    }
+  }[]
 }
 
 const DomainContext = createContext<Value>(
@@ -16,7 +25,7 @@ type Props = {
 }
 
 export const DomainProvider: FC<Props> = ({ children }) => {
-  const [domainApiAddress, setDomainApiAddress] = useState(process.env.REACT_APP_GRAPHQL_API_URL)
+  const [domainApiAddress, setDomainApiAddress] = useState(domains[0].urls.api)
 
   const client = new ApolloClient({
     uri: domainApiAddress,
@@ -32,6 +41,7 @@ export const DomainProvider: FC<Props> = ({ children }) => {
       value={{
         updateDomainAddress: updateDomainAddress,
         domainApiAddress: domainApiAddress,
+        domains,
       }}
     >
       <ApolloProvider client={client}>{children}</ApolloProvider>
@@ -39,7 +49,7 @@ export const DomainProvider: FC<Props> = ({ children }) => {
   )
 }
 
-export const useDomain = (): Value => {
+export const useDomains = (): Value => {
   const context = useContext(DomainContext)
 
   if (!context) throw new Error('DomainContext must be used within DomainProvider')

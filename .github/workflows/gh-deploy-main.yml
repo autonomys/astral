@@ -21,7 +21,6 @@ jobs:
           yarn install --frozen-lockfile
           yarn build
         env:
-          REACT_APP_GRAPHQL_API_URL: ${{secrets.REACT_APP_GRAPHQL_API_URL}}
           REACT_APP_PUBLIC_URL: ${{secrets.REACT_APP_PUBLIC_URL}}
 
       - name: Deploy 🚀
