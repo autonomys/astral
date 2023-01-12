@@ -8,7 +8,7 @@ import type { EventRecord } from "@polkadot/types/interfaces/system";
 import { snakeToCamel } from './utils';
 import { queryBlocks, queryEvents, queryExtrinsics, querySquidHeight } from './queries';
 
-dotenv.config({ path: '.env.e2e' });
+dotenv.config();
 
 const wsProvider = new WsProvider(process.env.CHAIN_RPC_ENDPOINT as string);
 const squidClient = new GraphQLClient(process.env.SQUID_GRAPHQL_ENDPOINT as string);
@@ -19,6 +19,10 @@ const blockNumbers: number[] = [];
 let blocksFromSquid: any[];
 let blocksFromRpc: SignedBlock[];
 let rpcApi: ApiPromise;
+
+tap.teardown(async () => {
+  await rpcApi.disconnect();
+});
 
 tap.before(async () => {
   rpcApi = await ApiPromise.create({ provider: wsProvider });
@@ -43,10 +47,6 @@ tap.before(async () => {
     const response = await squidClient.request(queryBlocks, { height });
     return response.blocks[0];
   }));
-});
-
-tap.teardown(async () => {
-  await rpcApi.disconnect();
 });
 
 tap.test('compare block headers', async (t) => {
@@ -97,7 +97,7 @@ tap.test('compare block events', async (t) => {
 
     t.equal(squidEvents.length, rpcEvents.length, `block #${height} events count ok`);
 
-    // compare rpcEvents and squidEvents names
+    // compare event names from Squid and RPC
     const rpcEventNames = rpcEvents.map(({ event }) => `${event.section.toString()}.${event.method.toString()}`.toLowerCase()).sort();
     const squidEventNames = squidEvents.map((event: { name: string }) => event.name.toLowerCase()).sort();
     t.same(rpcEventNames, squidEventNames, `block #${height} events names ok`);
