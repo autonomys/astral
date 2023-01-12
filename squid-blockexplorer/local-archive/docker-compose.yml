@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:14
+    container_name: local_archive_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: squid-archive
+
+  ingest:
+    depends_on:
+      - db
+    restart: on-failure
+    image: subsquid/substrate-ingest:firesquid
+    command: [
+      # assuming local RPC node is running on localhost:9944 
+      "-e", "ws://host.docker.internal:9944",
+      "-c", "10",
+      "--prom-port", "9090",
+      "--out", "postgres://postgres:postgres@db:5432/squid-archive"
+    ]
+
+  gateway:
+    depends_on:
+      - db
+    image: subsquid/substrate-gateway:firesquid
+    environment:
+      RUST_LOG: "substrate_gateway=info,actix_server=info"
+    command: [
+       "--database-url", "postgres://postgres:postgres@db:5432/squid-archive",
+       "--database-max-connections", "3", # max number of concurrent database connections
+       "--scan-start-value", "20", # works as batch size but for a whole archive, default is 100
+    ]
+    ports:
+      - "8888:8000"
+
+  # Explorer service is optional.
+  # It provides rich GraphQL API for querying archived data.
+  # Many developers find it very useful for exploration and debugging.
+  explorer:
+    image: subsquid/substrate-explorer:firesquid
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: "squid-archive"
+      DB_USER: "postgres"
+      DB_PASS: "postgres"
+    ports:
+      - "4444:3000"

@@ -36,5 +36,10 @@ up:
 down:
 	@docker-compose down
 
+make local-archive-up:
+	@docker-compose -f local-archive/docker-compose.yml up -d 
+
+make local-archive-down:
+	@docker-compose -f local-archive/docker-compose.yml down
 
 .PHONY: build serve process migrate codegen typegen up down
