@@ -14,11 +14,7 @@ interface HomeChainInfo {
   data: any
 }
 
-const HomeChainInfo: FC<HomeChainInfo> = ({ data, loading }) => {
-  if (loading) {
-    return <HomeChainInfoSkeleton />
-  }
-
+const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   const [block] = data.blocks
   // won't have any archived blocks if there are less than 100 blocks
   const archivedBlock = block.height > 100 ? block.height - 100 : 0

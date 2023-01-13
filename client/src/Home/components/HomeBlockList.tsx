@@ -25,11 +25,7 @@ interface HomeBlockListProps {
   isDesktop: boolean
 }
 
-const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
-
+const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {

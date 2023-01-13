@@ -26,11 +26,7 @@ interface HomeExtrinsicListProps {
   isDesktop: boolean
 }
 
-const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, loading, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
-
+const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
