@@ -62,8 +62,8 @@ const HomeCards: FC<Props> = ({
       <Swiper
         spaceBetween={4}
         breakpoints={{
-          480: {
-            width: 480,
+          425: {
+            width: 425,
             slidesPerView: 1.5,
           },
           640: {
@@ -80,7 +80,11 @@ const HomeCards: FC<Props> = ({
           },
           1024: {
             width: 1024,
-            slidesPerView: 4,
+            slidesPerView: 3.5,
+          },
+          1440: {
+            width: 1440,
+            slidesPerView: 5,
           },
         }}
       >
