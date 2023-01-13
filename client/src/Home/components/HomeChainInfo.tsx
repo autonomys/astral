@@ -14,13 +14,9 @@ interface HomeChainInfo {
   data: any
 }
 
-const HomeChainInfo: FC<HomeChainInfo> = ({ data, error, loading }) => {
+const HomeChainInfo: FC<HomeChainInfo> = ({ data, loading }) => {
   if (loading) {
     return <HomeChainInfoSkeleton />
-  }
-
-  if (error || !data) {
-    return <HomeCards />
   }
 
   const [block] = data.blocks
