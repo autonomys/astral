@@ -7,7 +7,7 @@ import { HomeBlockList, HomeExtrinsicList, HomeChainInfo } from 'Home/components
 import { QUERY_HOME } from 'Home/query'
 
 // common
-import { ErrorFallback, SearchBar } from 'common/components'
+import { ErrorFallback, SearchBar, Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const ACCOUNT_MIN_VAL = new BN(0.3)
@@ -19,6 +19,10 @@ const Home: FC = () => {
     variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
     pollInterval: 6000,
   })
+
+  if (homeQueryResult.loading) {
+    return <Spinner />
+  }
 
   if (homeQueryResult.error || !homeQueryResult.data) {
     return <ErrorFallback error={homeQueryResult.error} />

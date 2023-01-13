@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, Column, StatusIcon, TableLoadingSkeleton } from 'common/components'
+import { Table, Column, StatusIcon } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { shortString } from 'common/helpers'
 
@@ -26,11 +26,7 @@ interface HomeExtrinsicListProps {
   isDesktop: boolean
 }
 
-const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, loading, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
-
+const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {

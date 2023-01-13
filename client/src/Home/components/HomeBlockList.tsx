@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, TableLoadingSkeleton, Column } from 'common/components'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
@@ -25,11 +25,7 @@ interface HomeBlockListProps {
   isDesktop: boolean
 }
 
-const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
-
+const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
