@@ -4,3 +4,31 @@
 .background-gradient {
   background: linear-gradient(180deg, #f1f7f8 0%, #effdff 100%);
 }
+
+.swiper-container {
+  width: 480px;
+}
+
+@media screen and (min-width: 640px) {
+  .swiper-container {
+    width: 640px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .swiper-container {
+    width: 768px;
+  }
+}
+
+@media screen and (min-width: 960px) {
+  .swiper-container {
+    width: 960px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .swiper-container {
+    width: 1024px;
+  }
+}
