@@ -5,7 +5,7 @@ import { ApolloError } from '@apollo/client'
 import { formatSpacePledged } from 'common/helpers'
 
 // home
-import { HomeChainInfoSkeleton, HomeCards } from 'Home/components'
+import { HomeCards } from 'Home/components'
 
 interface HomeChainInfo {
   loading: boolean

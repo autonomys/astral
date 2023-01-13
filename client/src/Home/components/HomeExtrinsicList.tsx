@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, Column, StatusIcon, TableLoadingSkeleton } from 'common/components'
+import { Table, Column, StatusIcon } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { shortString } from 'common/helpers'
 
