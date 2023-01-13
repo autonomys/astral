@@ -54,8 +54,8 @@ tap.before(async () => {
 
 tap.test('account balances should update after transfer', async (t) => {
   // get initial account balances from the squid
-  const { free: initAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address })).accountById;
-  const { free: initBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address })).accountById;
+  const { total: initAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address })).accountById;
+  const { total: initBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address })).accountById;
 
   // send a transfer from Alice to Bob
   const blockHash = await submitTxAndWaitForBlockHash(rpcApi, ALICE!, BOB!.address, AMOUNT);
@@ -71,8 +71,8 @@ tap.test('account balances should update after transfer', async (t) => {
   }
 
   // get updated account balances from the squid
-  const { free: postAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address })).accountById;
-  const { free: postBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address })).accountById;
+  const { total: postAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address })).accountById;
+  const { total: postBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address })).accountById;
 
   // check that the balances are updated correctly
   t.equal(BigInt(initAliceBalance - postAliceBalance), AMOUNT);

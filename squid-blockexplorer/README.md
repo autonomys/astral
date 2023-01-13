@@ -36,4 +36,4 @@ This repository utilizes GitHub workflow to build Docker images and push them to
 
 Guide on setting up the environment, including sample `docker-compose.yml` and Nginx config can be found [here](https://github.com/subspace/infra/tree/main/_docs/8_BlockExplorerSquid)
 
-Please refer to [e2e_testing.md](e2e_testing.md) on how to setup and run end-to-end tests.
+Please, refer to [e2e_testing.md](e2e_testing.md) on how to setup and run end-to-end tests.
