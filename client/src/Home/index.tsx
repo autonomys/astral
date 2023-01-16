@@ -1,16 +1,14 @@
 import { FC } from 'react'
 import { useQuery } from '@apollo/client'
-import BN from 'bn.js'
 
 // home
 import { HomeBlockList, HomeExtrinsicList, HomeChainInfo } from 'Home/components'
 import { QUERY_HOME } from 'Home/query'
+import { ACCOUNT_MIN_VAL } from 'Home/constants'
 
 // common
 import { ErrorFallback, SearchBar, Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-
-const ACCOUNT_MIN_VAL = new BN(0.3)
 
 const Home: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')

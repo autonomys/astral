@@ -78,6 +78,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
         <Link
           to={INTERNAL_ROUTES.extrinsics.list}
           className='px-2 py-2 transition ease-in-out duration-150'
+          data-testid='testLinkExtrinsics'
         >
           <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
         </Link>

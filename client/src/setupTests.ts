@@ -3,3 +3,21 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom'
+
+window.matchMedia =
+  window.matchMedia ||
+  function () {
+    return {
+      matches: true,
+      addListener: function () {},
+      removeListener: function () {},
+    }
+  }
+
+window.ResizeObserver =
+  window.ResizeObserver ||
+  class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }

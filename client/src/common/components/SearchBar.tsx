@@ -47,7 +47,7 @@ const SearchBar: FC = () => {
       }}
     >
       {({ errors, touched, values, handleSubmit, handleChange, setFieldValue }) => (
-        <Form className='w-full my-8' onSubmit={handleSubmit}>
+        <Form className='w-full my-8' onSubmit={handleSubmit} data-testid='testSearchForm'>
           <div className='flex w-full items-center'>
             <Listbox
               value={values['searchType']}
@@ -121,6 +121,7 @@ const SearchBar: FC = () => {
                 <button
                   type='submit'
                   className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 '
+                  data-testid='testSearchSubmit'
                 >
                   <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
                 </button>
@@ -128,7 +129,9 @@ const SearchBar: FC = () => {
             </div>
           </div>
           {errors.searchTerm && touched.searchTerm ? (
-            <div className='text-red-500 text-md mt-2'>{errors.searchTerm}</div>
+            <div className='text-red-500 text-md mt-2' data-testid='errorMessage'>
+              {errors.searchTerm}
+            </div>
           ) : null}
         </Form>
       )}

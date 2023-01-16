@@ -40,8 +40,12 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     },
     {
       title: 'Account',
-      cells: accounts.map(({ id }) => (
-        <Link key={`${id}-account-id`} to={INTERNAL_ROUTES.accounts.id.page(id)}>
+      cells: accounts.map(({ id }, index) => (
+        <Link
+          data-testid={`testAccountLink-${index}`}
+          key={`${id}-account-id`}
+          to={INTERNAL_ROUTES.accounts.id.page(id)}
+        >
           <div>{isLargeLaptop ? id : shortString(id)}</div>
         </Link>
       )),
