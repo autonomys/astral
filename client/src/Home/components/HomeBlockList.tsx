@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, TableLoadingSkeleton, StatusIcon, Column } from 'common/components'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
@@ -25,26 +25,7 @@ interface HomeBlockListProps {
   isDesktop: boolean
 }
 
-const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
-
-  if (error || !data) {
-    return (
-      <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
-        <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-          <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
-        </div>
-        <Table
-          columns={[]}
-          emptyMessage='There was an error getting this information'
-          id='home-latest-blocks'
-        />
-      </div>
-    )
-  }
-
+const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -78,15 +59,6 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
 
         return <div key={`${id}-home-block-time`}>{blockDate} ago</div>
       }),
-    },
-    // TODO: Not sure we need this column, since Status for latest blocks will always be non-archived. Clarify
-    {
-      title: 'Status',
-      cells: blocks.map(({ id }) => (
-        <div className='flex items-center justify-center' key={`${id}-home-block-status`}>
-          <StatusIcon status={false} />
-        </div>
-      )),
     },
   ]
 

@@ -182,6 +182,9 @@ export const SEGMENTS_COUNT = 123;
 export const solutionRangesStorageFactoryMock = () => ({
   asV3: {
     get: () => ({ current: SOLUTION_RANGES })
+  },
+  asV0: {
+    get: () => ({ current: SOLUTION_RANGES })
   }
 } as unknown as SubspaceSolutionRangesStorage);
 
@@ -191,6 +194,11 @@ export const digestLogs = [
 
 export const digestStorageFactoryMock = () => ({
   asV3: {
+    get: () => ({
+      logs: digestLogs,
+    }),
+  },
+  asV0: {
     get: () => ({
       logs: digestLogs,
     }),

@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {Block} from "./block.model"
@@ -14,7 +14,6 @@ export class Extrinsic {
     @PrimaryColumn_()
     id!: string
 
-    @Index_({unique: true})
     @Column_("text", {nullable: false})
     hash!: string
 

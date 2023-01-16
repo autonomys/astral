@@ -5,7 +5,7 @@ import { ApolloError } from '@apollo/client'
 import { formatSpacePledged } from 'common/helpers'
 
 // home
-import { HomeChainInfoSkeleton, HomeCards } from 'Home/components'
+import { HomeCards } from 'Home/components'
 
 interface HomeChainInfo {
   loading: boolean
@@ -14,15 +14,7 @@ interface HomeChainInfo {
   data: any
 }
 
-const HomeChainInfo: FC<HomeChainInfo> = ({ data, error, loading }) => {
-  if (loading) {
-    return <HomeChainInfoSkeleton />
-  }
-
-  if (error || !data) {
-    return <HomeCards />
-  }
-
+const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   const [block] = data.blocks
   // won't have any archived blocks if there are less than 100 blocks
   const archivedBlock = block.height > 100 ? block.height - 100 : 0

@@ -1,6 +1,6 @@
 import assert from 'assert'
 import {Block, Chain, ChainContext, BlockContext, Result, Option} from './support'
-import * as v3 from './v3'
+import * as v0 from './v0'
 
 export class BalancesExistentialDepositConstant {
     private readonly _chain: Chain
@@ -12,15 +12,15 @@ export class BalancesExistentialDepositConstant {
     /**
      *  The minimum amount required to keep an account open.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Balances', 'ExistentialDeposit') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
     /**
      *  The minimum amount required to keep an account open.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Balances', 'ExistentialDeposit')
     }
 
@@ -43,7 +43,7 @@ export class BalancesMaxLocksConstant {
      *  The maximum number of locks that should exist on an account.
      *  Not strictly enforced, but used for weight estimation.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Balances', 'MaxLocks') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
@@ -51,8 +51,8 @@ export class BalancesMaxLocksConstant {
      *  The maximum number of locks that should exist on an account.
      *  Not strictly enforced, but used for weight estimation.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Balances', 'MaxLocks')
     }
 
@@ -74,15 +74,15 @@ export class BalancesMaxReservesConstant {
     /**
      *  The maximum number of named reserves that can exist on an account.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Balances', 'MaxReserves') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
     /**
      *  The maximum number of named reserves that can exist on an account.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Balances', 'MaxReserves')
     }
 
@@ -94,7 +94,45 @@ export class BalancesMaxReservesConstant {
     }
 }
 
-export class ExecutorReceiptsPruningDepthConstant {
+export class DomainsMaximumReceiptDriftConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  Maximum execution receipt drift.
+     * 
+     *  If the primary number of an execution receipt plus the maximum drift is bigger than the
+     *  best execution chain number, this receipt will be rejected as being too far in the
+     *  future.
+     */
+    get isV0() {
+        return this._chain.getConstantTypeHash('Domains', 'MaximumReceiptDrift') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
+    }
+
+    /**
+     *  Maximum execution receipt drift.
+     * 
+     *  If the primary number of an execution receipt plus the maximum drift is bigger than the
+     *  best execution chain number, this receipt will be rejected as being too far in the
+     *  future.
+     */
+    get asV0(): number {
+        assert(this.isV0)
+        return this._chain.getConstant('Domains', 'MaximumReceiptDrift')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Domains', 'MaximumReceiptDrift') != null
+    }
+}
+
+export class DomainsReceiptsPruningDepthConstant {
     private readonly _chain: Chain
 
     constructor(ctx: ChainContext) {
@@ -104,23 +142,23 @@ export class ExecutorReceiptsPruningDepthConstant {
     /**
      *  Number of execution receipts kept in the state.
      */
-    get isV3() {
-        return this._chain.getConstantTypeHash('Executor', 'ReceiptsPruningDepth') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
+    get isV0() {
+        return this._chain.getConstantTypeHash('Domains', 'ReceiptsPruningDepth') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
     /**
      *  Number of execution receipts kept in the state.
      */
-    get asV3(): number {
-        assert(this.isV3)
-        return this._chain.getConstant('Executor', 'ReceiptsPruningDepth')
+    get asV0(): number {
+        assert(this.isV0)
+        return this._chain.getConstant('Domains', 'ReceiptsPruningDepth')
     }
 
     /**
      * Checks whether the constant is defined for the current chain version.
      */
     get isExists(): boolean {
-        return this._chain.getConstantTypeHash('Executor', 'ReceiptsPruningDepth') != null
+        return this._chain.getConstantTypeHash('Domains', 'ReceiptsPruningDepth') != null
     }
 }
 
@@ -131,12 +169,12 @@ export class FeedsMaxFeedsConstant {
         this._chain = ctx._chain
     }
 
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Feeds', 'MaxFeeds') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Feeds', 'MaxFeeds')
     }
 
@@ -158,15 +196,15 @@ export class RewardsBlockRewardConstant {
     /**
      *  Fixed reward for block producer.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Rewards', 'BlockReward') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
     /**
      *  Fixed reward for block producer.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Rewards', 'BlockReward')
     }
 
@@ -188,15 +226,15 @@ export class RewardsVoteRewardConstant {
     /**
      *  Fixed reward for voter.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Rewards', 'VoteReward') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
     /**
      *  Fixed reward for voter.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Rewards', 'VoteReward')
     }
 
@@ -219,7 +257,7 @@ export class SubspaceConfirmationDepthKConstant {
      *  Depth `K` after which a block enters the recorded history (a global constant, as opposed
      *  to the client-dependent transaction confirmation depth `k`).
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'ConfirmationDepthK') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
@@ -227,8 +265,8 @@ export class SubspaceConfirmationDepthKConstant {
      *  Depth `K` after which a block enters the recorded history (a global constant, as opposed
      *  to the client-dependent transaction confirmation depth `k`).
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'ConfirmationDepthK')
     }
 
@@ -237,78 +275,6 @@ export class SubspaceConfirmationDepthKConstant {
      */
     get isExists(): boolean {
         return this._chain.getConstantTypeHash('Subspace', 'ConfirmationDepthK') != null
-    }
-}
-
-export class SubspaceEonDurationConstant {
-    private readonly _chain: Chain
-
-    constructor(ctx: ChainContext) {
-        this._chain = ctx._chain
-    }
-
-    /**
-     *  The amount of time, in slots, that each eon should last.
-     *  NOTE: Currently it is not possible to change the eon duration after
-     *  the chain has started. Attempting to do so will brick block production.
-     */
-    get isV3() {
-        return this._chain.getConstantTypeHash('Subspace', 'EonDuration') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
-    }
-
-    /**
-     *  The amount of time, in slots, that each eon should last.
-     *  NOTE: Currently it is not possible to change the eon duration after
-     *  the chain has started. Attempting to do so will brick block production.
-     */
-    get asV3(): bigint {
-        assert(this.isV3)
-        return this._chain.getConstant('Subspace', 'EonDuration')
-    }
-
-    /**
-     * Checks whether the constant is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getConstantTypeHash('Subspace', 'EonDuration') != null
-    }
-}
-
-export class SubspaceEonNextSaltRevealConstant {
-    private readonly _chain: Chain
-
-    constructor(ctx: ChainContext) {
-        this._chain = ctx._chain
-    }
-
-    /**
-     *  The amount of time within eon, in slots, after which next eon salt should be revealed.
-     * 
-     *  The purpose of this is to allow to start tag recommitment a bit upfront, but not too
-     *  soon. For instance, if eon duration is 7 days, this parameter may be set to 6 days worth
-     *  of timeslots.
-     */
-    get isV3() {
-        return this._chain.getConstantTypeHash('Subspace', 'EonNextSaltReveal') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
-    }
-
-    /**
-     *  The amount of time within eon, in slots, after which next eon salt should be revealed.
-     * 
-     *  The purpose of this is to allow to start tag recommitment a bit upfront, but not too
-     *  soon. For instance, if eon duration is 7 days, this parameter may be set to 6 days worth
-     *  of timeslots.
-     */
-    get asV3(): bigint {
-        assert(this.isV3)
-        return this._chain.getConstant('Subspace', 'EonNextSaltReveal')
-    }
-
-    /**
-     * Checks whether the constant is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getConstantTypeHash('Subspace', 'EonNextSaltReveal') != null
     }
 }
 
@@ -324,7 +290,7 @@ export class SubspaceEraDurationConstant {
      *  NOTE: Currently it is not possible to change the era duration after
      *  the chain has started. Attempting to do so will brick block production.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'EraDuration') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
@@ -333,8 +299,8 @@ export class SubspaceEraDurationConstant {
      *  NOTE: Currently it is not possible to change the era duration after
      *  the chain has started. Attempting to do so will brick block production.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'EraDuration')
     }
 
@@ -359,7 +325,7 @@ export class SubspaceExpectedBlockTimeConstant {
      *  block time should be based on the slot duration and the security parameter `c` (where
      *  `1 - c` represents the probability of a slot being empty).
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'ExpectedBlockTime') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
     }
 
@@ -369,8 +335,8 @@ export class SubspaceExpectedBlockTimeConstant {
      *  block time should be based on the slot duration and the security parameter `c` (where
      *  `1 - c` represents the probability of a slot being empty).
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'ExpectedBlockTime')
     }
 
@@ -394,7 +360,7 @@ export class SubspaceExpectedVotesPerBlockConstant {
      * 
      *  This impacts solution range for votes in consensus.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'ExpectedVotesPerBlock') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
@@ -403,8 +369,8 @@ export class SubspaceExpectedVotesPerBlockConstant {
      * 
      *  This impacts solution range for votes in consensus.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'ExpectedVotesPerBlock')
     }
 
@@ -426,15 +392,15 @@ export class SubspaceGlobalRandomnessUpdateIntervalConstant {
     /**
      *  The amount of time, in blocks, between updates of global randomness.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'GlobalRandomnessUpdateInterval') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
     /**
      *  The amount of time, in blocks, between updates of global randomness.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'GlobalRandomnessUpdateInterval')
     }
 
@@ -456,15 +422,15 @@ export class SubspaceInitialSolutionRangeConstant {
     /**
      *  Initial solution range used for challenges during the very first era.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'InitialSolutionRange') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
     }
 
     /**
      *  Initial solution range used for challenges during the very first era.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'InitialSolutionRange')
     }
 
@@ -490,7 +456,7 @@ export class SubspaceSlotProbabilityConstant {
      *  numerator and the second is the denominator. The rational should
      *  represent a value between 0 and 1.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Subspace', 'SlotProbability') === 'ef51d55268ea048d2630ef91aec23cd3a982e0efd12a9169a7d12285ca9c59f4'
     }
 
@@ -501,8 +467,8 @@ export class SubspaceSlotProbabilityConstant {
      *  numerator and the second is the denominator. The rational should
      *  represent a value between 0 and 1.
      */
-    get asV3(): [bigint, bigint] {
-        assert(this.isV3)
+    get asV0(): [bigint, bigint] {
+        assert(this.isV0)
         return this._chain.getConstant('Subspace', 'SlotProbability')
     }
 
@@ -524,15 +490,15 @@ export class SystemBlockHashCountConstant {
     /**
      *  Maximum number of block number to block hash mappings to keep (oldest pruned first).
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('System', 'BlockHashCount') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
     /**
      *  Maximum number of block number to block hash mappings to keep (oldest pruned first).
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('System', 'BlockHashCount')
     }
 
@@ -554,15 +520,15 @@ export class SystemBlockLengthConstant {
     /**
      *  The maximum length of a block (in bytes).
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('System', 'BlockLength') === '9aacf667c67dbae172e6d30e5f4026086c8a56d9ebfe50dfdcca3fe40a9f55ca'
     }
 
     /**
      *  The maximum length of a block (in bytes).
      */
-    get asV3(): v3.BlockLength {
-        assert(this.isV3)
+    get asV0(): v0.BlockLength {
+        assert(this.isV0)
         return this._chain.getConstant('System', 'BlockLength')
     }
 
@@ -584,15 +550,15 @@ export class SystemBlockWeightsConstant {
     /**
      *  Block & extrinsics weights: base values and limits.
      */
-    get isV3() {
-        return this._chain.getConstantTypeHash('System', 'BlockWeights') === 'd29c2183888a350ee5f1702b52be3920c60d1d8dd2937c2870d4ec0d78845224'
+    get isV0() {
+        return this._chain.getConstantTypeHash('System', 'BlockWeights') === 'fa5692d9032f25a42ae01892fea053f75130751d1302a6b4db45a7a98a9d0760'
     }
 
     /**
      *  Block & extrinsics weights: base values and limits.
      */
-    get asV3(): v3.BlockWeights {
-        assert(this.isV3)
+    get asV0(): v0.BlockWeights {
+        assert(this.isV0)
         return this._chain.getConstant('System', 'BlockWeights')
     }
 
@@ -614,15 +580,15 @@ export class SystemDbWeightConstant {
     /**
      *  The weight of runtime database operations the runtime can invoke.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('System', 'DbWeight') === 'f2b1a28b00823bafa34a2cd3123e2e54de1b56f53266976a0fa1bbffc1833341'
     }
 
     /**
      *  The weight of runtime database operations the runtime can invoke.
      */
-    get asV3(): v3.RuntimeDbWeight {
-        assert(this.isV3)
+    get asV0(): v0.RuntimeDbWeight {
+        assert(this.isV0)
         return this._chain.getConstant('System', 'DbWeight')
     }
 
@@ -642,25 +608,25 @@ export class SystemSS58PrefixConstant {
     }
 
     /**
-     *  The designated SS85 prefix of this chain.
+     *  The designated SS58 prefix of this chain.
      * 
      *  This replaces the "ss58Format" property declared in the chain spec. Reason is
      *  that the runtime should know about the prefix in order to make use of it as
      *  an identifier of the chain.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('System', 'SS58Prefix') === '32def12560ecd411fe2fc796552e97d0d5ee0ea10e059b3d8918c9e94dfdb334'
     }
 
     /**
-     *  The designated SS85 prefix of this chain.
+     *  The designated SS58 prefix of this chain.
      * 
      *  This replaces the "ss58Format" property declared in the chain spec. Reason is
      *  that the runtime should know about the prefix in order to make use of it as
      *  an identifier of the chain.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('System', 'SS58Prefix')
     }
 
@@ -682,15 +648,15 @@ export class SystemVersionConstant {
     /**
      *  Get the chain's current version.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('System', 'Version') === 'f6a7df964a5f6d420bccc7ccc38bd9265b00dc71b74c91dc5848badeeaf0cbb8'
     }
 
     /**
      *  Get the chain's current version.
      */
-    get asV3(): v3.RuntimeVersion {
-        assert(this.isV3)
+    get asV0(): v0.RuntimeVersion {
+        assert(this.isV0)
         return this._chain.getConstant('System', 'Version')
     }
 
@@ -715,7 +681,7 @@ export class TimestampMinimumPeriodConstant {
      *  generally work with this to determine a sensible block time. e.g. For Aura, it will be
      *  double this period on default settings.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Timestamp', 'MinimumPeriod') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
     }
 
@@ -725,8 +691,8 @@ export class TimestampMinimumPeriodConstant {
      *  generally work with this to determine a sensible block time. e.g. For Aura, it will be
      *  double this period on default settings.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Timestamp', 'MinimumPeriod')
     }
 
@@ -749,7 +715,7 @@ export class TransactionFeesBlockchainHistorySizeConstant {
      *  How big is the history of the blockchain in archived state (thus includes erasure
      *  coding, but not replication).
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionFees', 'BlockchainHistorySize') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
@@ -757,8 +723,8 @@ export class TransactionFeesBlockchainHistorySizeConstant {
      *  How big is the history of the blockchain in archived state (thus includes erasure
      *  coding, but not replication).
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionFees', 'BlockchainHistorySize')
     }
 
@@ -780,15 +746,15 @@ export class TransactionFeesCreditSupplyConstant {
     /**
      *  How many credits there is in circulation.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionFees', 'CreditSupply') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
     /**
      *  How many credits there is in circulation.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionFees', 'CreditSupply')
     }
 
@@ -811,7 +777,7 @@ export class TransactionFeesMinReplicationFactorConstant {
      *  Minimum desired number of replicas of the blockchain to be stored by the network,
      *  impacts storage fees.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionFees', 'MinReplicationFactor') === '32def12560ecd411fe2fc796552e97d0d5ee0ea10e059b3d8918c9e94dfdb334'
     }
 
@@ -819,8 +785,8 @@ export class TransactionFeesMinReplicationFactorConstant {
      *  Minimum desired number of replicas of the blockchain to be stored by the network,
      *  impacts storage fees.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionFees', 'MinReplicationFactor')
     }
 
@@ -843,7 +809,7 @@ export class TransactionFeesStorageFeesEscrowBlockRewardConstant {
      *  How much (ratio) of storage fees escrow should be given to farmer each block as a
      *  reward.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionFees', 'StorageFeesEscrowBlockReward') === 'ef51d55268ea048d2630ef91aec23cd3a982e0efd12a9169a7d12285ca9c59f4'
     }
 
@@ -851,8 +817,8 @@ export class TransactionFeesStorageFeesEscrowBlockRewardConstant {
      *  How much (ratio) of storage fees escrow should be given to farmer each block as a
      *  reward.
      */
-    get asV3(): [bigint, bigint] {
-        assert(this.isV3)
+    get asV0(): [bigint, bigint] {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionFees', 'StorageFeesEscrowBlockReward')
     }
 
@@ -875,7 +841,7 @@ export class TransactionFeesStorageFeesEscrowBlockTaxConstant {
      *  How much (ratio) of storage fees collected in a block should be put into storage fees
      *  escrow (with remaining issued to farmer immediately).
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionFees', 'StorageFeesEscrowBlockTax') === 'ef51d55268ea048d2630ef91aec23cd3a982e0efd12a9169a7d12285ca9c59f4'
     }
 
@@ -883,8 +849,8 @@ export class TransactionFeesStorageFeesEscrowBlockTaxConstant {
      *  How much (ratio) of storage fees collected in a block should be put into storage fees
      *  escrow (with remaining issued to farmer immediately).
      */
-    get asV3(): [bigint, bigint] {
-        assert(this.isV3)
+    get asV0(): [bigint, bigint] {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionFees', 'StorageFeesEscrowBlockTax')
     }
 
@@ -906,15 +872,15 @@ export class TransactionFeesTotalSpacePledgedConstant {
     /**
      *  How much space there is on the network.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionFees', 'TotalSpacePledged') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
     /**
      *  How much space there is on the network.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionFees', 'TotalSpacePledged')
     }
 
@@ -956,7 +922,7 @@ export class TransactionPaymentOperationalFeeMultiplierConstant {
      *  on the `inclusion_fee`, but we also amplify the impact of tips applied to `Operational`
      *  transactions.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('TransactionPayment', 'OperationalFeeMultiplier') === 'afecacff3b029831d50a478055aa405254e6579585f9617d2a2f34743b4aff83'
     }
 
@@ -983,8 +949,8 @@ export class TransactionPaymentOperationalFeeMultiplierConstant {
      *  on the `inclusion_fee`, but we also amplify the impact of tips applied to `Operational`
      *  transactions.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('TransactionPayment', 'OperationalFeeMultiplier')
     }
 
@@ -1006,15 +972,15 @@ export class Utilitybatched_calls_limitConstant {
     /**
      *  The limit on the number of batched calls.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Utility', 'batched_calls_limit') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
     }
 
     /**
      *  The limit on the number of batched calls.
      */
-    get asV3(): number {
-        assert(this.isV3)
+    get asV0(): number {
+        assert(this.isV0)
         return this._chain.getConstant('Utility', 'batched_calls_limit')
     }
 
@@ -1036,15 +1002,15 @@ export class VestingMinVestedTransferConstant {
     /**
      *  The minimum amount transferred to call `vested_transfer`.
      */
-    get isV3() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Vesting', 'MinVestedTransfer') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
     }
 
     /**
      *  The minimum amount transferred to call `vested_transfer`.
      */
-    get asV3(): bigint {
-        assert(this.isV3)
+    get asV0(): bigint {
+        assert(this.isV0)
         return this._chain.getConstant('Vesting', 'MinVestedTransfer')
     }
 
