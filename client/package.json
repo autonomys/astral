@@ -39,6 +39,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!swiper)/'",
     "test:coverage": "CI=true yarn test -- --env=jsdom --coverage",
+    "test:e2e": "yarn playwright test",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.ts",
     "prestart": "yarn codegen",
