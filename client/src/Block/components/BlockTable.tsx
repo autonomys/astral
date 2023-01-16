@@ -56,9 +56,9 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
     },
     {
       title: 'Block hash',
-      cells: blocks.map(({ hash, id }) => (
+      cells: blocks.map(({ hash, id }, index) => (
         <div key={`${id}-block-hash`}>
-          <CopyButton value={hash} message='Hash copied'>
+          <CopyButton data-testid={`testCopy-${index}`} value={hash} message='Hash copied'>
             {shortString(hash)}
           </CopyButton>
         </div>

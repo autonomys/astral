@@ -41,7 +41,10 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
                 <StyledListItem title='Result'>{event.call?.success}</StyledListItem>
               </List>
             </div>
-            <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all'>
+            <div
+              data-testid='testJsonDisplay'
+              className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all'
+            >
               <ReactJson src={event.args || {}} iconStyle='circle' />
             </div>
           </div>

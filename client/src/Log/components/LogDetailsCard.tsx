@@ -32,7 +32,10 @@ const LogDetailsCard: FC<Props> = ({ log }) => {
                 <StyledListItem title='Data'>-</StyledListItem>
               </List>
             </div>
-            <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all'>
+            <div
+              data-testid='testJsonDisplay'
+              className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all'
+            >
               <ReactJson src={log.block.events[0].args || {}} iconStyle='circle' />
             </div>
           </div>

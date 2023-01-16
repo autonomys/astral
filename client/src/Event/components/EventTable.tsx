@@ -25,12 +25,12 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ id }) => (
+      cells: events.map(({ id }, index) => (
         <div className='w-full flex gap-1' key={`${id}-event-id`}>
           <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(id)}>
             {id}
           </Link>
-          <CopyButton value={id} message='Id copied' />
+          <CopyButton data-testid={`testCopyButton-${index}`} value={id} message='Id copied' />
         </div>
       )),
     },

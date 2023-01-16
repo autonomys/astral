@@ -69,10 +69,13 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   return isDesktop ? (
     <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        <div role='contentinfo' className='text-gray-600 uppercase text-md leading-normal'>
+          Latest Blocks
+        </div>
         <Link
           to={INTERNAL_ROUTES.blocks.list}
           className='px-2 py-2 transition ease-in-out duration-150'
+          data-testid='testLinkBlocks'
         >
           <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
         </Link>
@@ -82,7 +85,9 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   ) : (
     <div className='w-full'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        <div role='contentinfo' className='text-gray-600 uppercase text-md leading-normal'>
+          Latest Blocks
+        </div>
         <Link
           to={INTERNAL_ROUTES.blocks.list}
           className='px-2 py-2 transition ease-in-out duration-150'
