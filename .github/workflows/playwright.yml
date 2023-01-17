@@ -18,12 +18,10 @@ jobs:
         node-version: 16
     - name: Install dependencies
       run: yarn install --frozen-lockfile
-      env:
-        REACT_APP_PUBLIC_URL: ${{secrets.REACT_APP_PUBLIC_URL}}
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: yarn playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test
+      run: yarn playwright test
     - uses: actions/upload-artifact@v3
       if: always()
       with:
