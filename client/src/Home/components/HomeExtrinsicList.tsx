@@ -71,10 +71,11 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   const extrinsics = data.extrinsics
   const columns = generateColumns(extrinsics)
 
+  // TODO: add proper linear gradient
   return isDesktop ? (
-    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
+    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white dark:bg-[#4141B2]'>
       <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        <div className='text-gray-600 dark:text-white uppercase text-md leading-normal'>Latest Extrinsics</div>
         <Link
           to={INTERNAL_ROUTES.extrinsics.list}
           className='px-2 py-2 transition ease-in-out duration-150'
@@ -91,7 +92,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   ) : (
     <div className='w-full'>
       <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        <div className='text-gray-600 dark:text-white uppercase text-md leading-normal'>Latest Extrinsics</div>
         <Link
           to={INTERNAL_ROUTES.extrinsics.list}
           className='px-2 py-2 transition ease-in-out duration-150'

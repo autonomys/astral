@@ -60,11 +60,11 @@ const Table: FC<Props> = ({
               </tr>
             </thead>
           ) : null}
-          <tbody className='text-gray-600 text-sm font-light'>
+          <tbody className='text-gray-600 text-sm font-light dark:text-white'>
             {rows?.map((row, index) => (
               <tr
                 key={`table-row-${id}-${index}`}
-                className={`border-b border-gray-200 hover:bg-gray-100 ${tableRowProps}`}
+                className={`border-b border-gray-200 hover:bg-gray-100 ${tableRowProps} dark:hover:bg-transparent/10`}
               >
                 {row.map((content, index) =>
                   index === 1 ? (
@@ -86,7 +86,7 @@ const Table: FC<Props> = ({
         </table>
         {!hasRows ? (
           <div className='flex align-middle justify-center'>
-            <p className='text-gray-600 text-md font-medium'>{emptyMessage}</p>
+            <p className='text-gray-600 text-md font-medium dark:text-white'>{emptyMessage}</p>
           </div>
         ) : null}
       </>

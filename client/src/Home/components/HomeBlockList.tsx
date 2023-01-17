@@ -66,10 +66,11 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   const blocks = data.blocks
   const columns = generateColumns(blocks)
 
+  // TODO: add proper linear gradient
   return isDesktop ? (
-    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
+    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white dark:bg-[#4141B2]'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        <div className='text-gray-600 uppercase text-md leading-normal dark:text-white'>Latest Blocks</div>
         <Link
           to={INTERNAL_ROUTES.blocks.list}
           className='px-2 py-2 transition ease-in-out duration-150'
@@ -82,7 +83,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   ) : (
     <div className='w-full'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
+        <div className='text-gray-600 uppercase text-md leading-normal dark:text-white'>Latest Blocks</div>
         <Link
           to={INTERNAL_ROUTES.blocks.list}
           className='px-2 py-2 transition ease-in-out duration-150'
