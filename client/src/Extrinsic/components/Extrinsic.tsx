@@ -40,7 +40,7 @@ const Extrinsic: FC = () => {
   return (
     <div className='w-full'>
       <ExtrinsicDetailsCard extrinsic={extrinsic} isDesktop={isLargeDesktop} />
-      <ExtrinsicDetailsTab events={extrinsic.block.events} isDesktop={isDesktop} />
+      <ExtrinsicDetailsTab events={extrinsic.events} isDesktop={isDesktop} />
     </div>
   )
 }
