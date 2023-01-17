@@ -6,11 +6,13 @@ import { MoonIcon, Bars3BottomRightIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { LogoIcon } from 'common/icons'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import { useTheme } from 'common/providers/ThemeProvider'
 
 // layout
 import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 const Header: FC = () => {
+  const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const pathName = location.pathname
   const isDesktop = useMediaQuery('(min-width: 768px)')
@@ -44,7 +46,9 @@ const Header: FC = () => {
           </nav>
           <div className='flex justify-center'>
             <HeaderChainDropdown />
-            <button className='ml-4 inline-flex items-center bg-[#241235] py-2 px-2 focus:outline-none hover:bg-gray-200 text-base rounded-full'>
+            <button 
+              onClick={toggleTheme}
+              className='ml-4 inline-flex items-center bg-[#241235] py-2 px-2 focus:outline-none hover:bg-gray-200 text-base rounded-full'>
               <MoonIcon
                 viewBox='0 0 24 24'
                 strokeWidth={1}

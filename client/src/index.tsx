@@ -7,13 +7,16 @@ import reportWebVitals from './reportWebVitals'
 
 // common
 import { DomainProvider } from 'common/providers/DomainProvider'
+import { ThemeProvider } from 'common/providers/ThemeProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
     <DomainProvider>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </DomainProvider>
   </React.StrictMode>,
 )
