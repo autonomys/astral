@@ -9,9 +9,6 @@ import { SubspaceSymbol } from 'common/icons'
 const chains = [
   { id: 1, name: 'Gemini II', unavailable: false },
   { id: 2, name: 'Gemini III', unavailable: false },
-  // { id: 3, name: 'Therese', unavailable: false },
-  // { id: 4, name: 'Benedict', unavailable: true },
-  // { id: 5, name: 'Katelyn', unavailable: false },
 ]
 
 const HeaderChainDropdown: FC = () => {
