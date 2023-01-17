@@ -20,7 +20,10 @@ type Props = {
 
 const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   return (
-    <Tabs>
+    <Tabs
+      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
+      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
+    >
       <Tab title='Extrinsics'>
         {isDesktop ? (
           <AccountExtrinsicList extrinsics={extrinsics} />

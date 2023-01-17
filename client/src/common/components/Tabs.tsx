@@ -100,7 +100,7 @@ export const Tabs: React.FC<TabsProps> = ({
             />
           )}
         </ul>
-        {children[selectedTab]}
+        {Array.isArray(children) ? children[selectedTab] : children}
       </div>
     </div>
   )

@@ -33,9 +33,6 @@ import { Event, EventList } from 'Event/components'
 // log
 import { Log, LogList } from 'Log/components'
 
-// Import Swiper styles
-import 'swiper/css'
-
 function App() {
   return (
     <HashRouter>

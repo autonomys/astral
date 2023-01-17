@@ -67,7 +67,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   const columns = generateColumns(blocks)
 
   return isDesktop ? (
-    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
         <div role='contentinfo' className='text-gray-600 uppercase text-md leading-normal'>
           Latest Blocks
