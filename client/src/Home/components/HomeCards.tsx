@@ -1,5 +1,4 @@
 import { FC } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
 
 // common/icons
 import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
@@ -58,42 +57,10 @@ const HomeCards: FC<Props> = ({
   ]
 
   return (
-    <div className='w-full flex mb-12 items-center justify-center'>
-      <Swiper
-        spaceBetween={4}
-        breakpoints={{
-          425: {
-            width: 425,
-            slidesPerView: 1.5,
-          },
-          640: {
-            width: 640,
-            slidesPerView: 2,
-          },
-          768: {
-            width: 768,
-            slidesPerView: 2.5,
-          },
-          960: {
-            width: 960,
-            slidesPerView: 3,
-          },
-          1024: {
-            width: 1024,
-            slidesPerView: 3.5,
-          },
-          1440: {
-            width: 1440,
-            slidesPerView: 5,
-          },
-        }}
-      >
-        {listOfCards.map(({ title, value, icon }, index) => (
-          <SwiperSlide key={`${title}-${value}`}>
-            <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className='w-full flex mb-12 items-center overflow-x-auto gap-5'>
+      {listOfCards.map(({ title, value, icon }, index) => (
+        <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} />
+      ))}
     </div>
   )
 }
