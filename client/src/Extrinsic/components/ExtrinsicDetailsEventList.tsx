@@ -23,10 +23,8 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
     },
     {
       title: 'Extrinsic Id',
-      cells: events.map(({ extrinsic, id }) => (
-        <div key={`${id}-extrinsic-event-extrinsic`}>
-          {extrinsic ? `${extrinsic.block.height}-${extrinsic.pos}` : ''}
-        </div>
+      cells: events.map(({ block, id, pos }) => (
+        <div key={`${id}-extrinsic-event-extrinsic`}>{`${block?.height}-${pos}`}</div>
       )),
     },
     {

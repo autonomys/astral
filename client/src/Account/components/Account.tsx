@@ -11,9 +11,12 @@ import { Spinner, ErrorFallback } from 'common/components'
 
 // layout
 import { NotFound } from 'layout/components'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const Account: FC = () => {
   const { accountId } = useParams()
+
+  const isDesktop = useMediaQuery('(min-width: 1440px)')
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
     variables: { accountId: accountId },
@@ -36,7 +39,7 @@ const Account: FC = () => {
   return (
     <div className='w-full'>
       <AccountDetailsCard account={account} />
-      <AccountDetailsTabs extrinsics={account.extrinsics} />
+      <AccountDetailsTabs extrinsics={account.extrinsics} isDesktop={isDesktop} />
     </div>
   )
 }

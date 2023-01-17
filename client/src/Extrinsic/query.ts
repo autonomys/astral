@@ -43,25 +43,19 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       block {
         height
         id
-        events(limit: 10) {
-          id
-          name
-          phase
-          pos
-          block {
-            height
-            id
-          }
-          extrinsic {
-            id
-            pos
-            block {
-              height
-              id
-            }
-          }
-        }
         timestamp
+      }
+      events(limit: 10) {
+        id
+        indexInBlock
+        phase
+        pos
+        timestamp
+        name
+        args
+        block {
+          height
+        }
       }
       name
     }
