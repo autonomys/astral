@@ -34,9 +34,7 @@ const SearchBar: FC = () => {
   const handleSearch = useSearch()
 
   const searchValidationSchema = Yup.object().shape({
-    searchTerm: Yup.string()
-      .min(2, 'Search term is too Short!')
-      .required('Search term is required'),
+    searchTerm: Yup.string().required('Search term is required'),
   })
 
   return (
