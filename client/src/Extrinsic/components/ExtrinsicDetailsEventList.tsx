@@ -2,9 +2,11 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { Link } from 'react-router-dom'
 
 // common
 import { Table, Column } from 'common/components'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
 
@@ -18,7 +20,13 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
     {
       title: 'Event Id',
       cells: events.map(({ block, pos, id }, index) => (
-        <div key={`${id}-extrinsic-event-id`}>{`${block?.height || index}-${pos}`}</div>
+        <Link
+          key={`${id}-extrinsic-event-id`}
+          className='w-full'
+          to={INTERNAL_ROUTES.events.id.page(id)}
+        >
+          <div>{`${block?.height || index}-${pos}`}</div>
+        </Link>
       )),
     },
     {
