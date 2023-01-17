@@ -91,7 +91,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, error, loading, i
   const columns = generateColumns(extrinsics)
 
   return isDesktop ? (
-    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
       <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
         <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
         <Link
