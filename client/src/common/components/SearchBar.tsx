@@ -57,7 +57,7 @@ const SearchBar: FC = () => {
               name='searchType'
             >
               <div className='relative w-36'>
-                <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'>
+                <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
                   <div className='flex'>
                     <span className='ml-2 block truncate'>{values['searchType'].name}</span>
                     <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
@@ -79,7 +79,7 @@ const SearchBar: FC = () => {
                       <Listbox.Option
                         key={personIdx}
                         className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-4 md:pl-10 pr-4 ${
+                          `relative cursor-default select-none py-2 pl-4 md:pl-10 pr-4 dark:bg-[#1E254E] dark:text-white ${
                             active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                           }`
                         }
@@ -111,11 +111,10 @@ const SearchBar: FC = () => {
               <div className='relative'>
                 <input
                   id='searchTerm'
-                  className={
-                    errors.searchTerm && touched.searchTerm
-                      ? 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg border border-red-300'
-                      : 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
-                  }
+                  className={`
+                    dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg
+                    ${errors.searchTerm && touched.searchTerm && 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'} 
+                  `}
                   placeholder={isDesktop ? 'Search for Block / Account ...' : 'Search...'}
                   name='searchTerm'
                   onChange={handleChange}
