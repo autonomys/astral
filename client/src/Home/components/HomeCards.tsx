@@ -1,8 +1,4 @@
 import { FC } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-
-// common
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // common/icons
 import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
@@ -27,14 +23,6 @@ const HomeCards: FC<Props> = ({
   bestBlock = '0',
   historySize = '0',
 }) => {
-  const isXlDesktop = useMediaQuery('(min-width: 1536px)')
-
-  const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
-
-  const isMediumDesktop = useMediaQuery('(min-width: 960px)')
-
-  const isSmallDesktop = useMediaQuery('(min-width: 640px)')
-
   const listOfCards = [
     {
       title: 'Archived Block',
@@ -68,25 +56,11 @@ const HomeCards: FC<Props> = ({
     },
   ]
 
-  const slidesPerScreenSize = isXlDesktop
-    ? 5.5
-    : isLargeDesktop
-    ? 4.5
-    : isMediumDesktop
-    ? 3.5
-    : isSmallDesktop
-    ? 2.5
-    : 1.3
-
   return (
-    <div className='w-full flex mb-12 items-center justify-center'>
-      <Swiper spaceBetween={4} slidesPerView={slidesPerScreenSize}>
-        {listOfCards.map(({ title, value, icon }, index) => (
-          <SwiperSlide key={`${title}-${value}`}>
-            <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className='w-full flex mb-12 items-center overflow-x-auto gap-5'>
+      {listOfCards.map(({ title, value, icon }, index) => (
+        <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} />
+      ))}
     </div>
   )
 }

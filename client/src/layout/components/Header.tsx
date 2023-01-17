@@ -13,7 +13,7 @@ import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/co
 const Header: FC = () => {
   const location = useLocation()
   const pathName = location.pathname
-  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const isDesktop = useMediaQuery('(min-width: 768px)')
   const [isOpen, setIsOpen] = useState(false)
 
   const isHomeActive = pathName === '/'

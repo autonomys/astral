@@ -49,11 +49,11 @@ const Table: FC<Props> = ({
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
                   <th key={`table-header-${id}-${index}`}>
                     {isNumeric ? (
-                      <div className='py-3 px-6 text-right'>{title}</div>
+                      <div className='py-3 px-5 text-right'>{title}</div>
                     ) : centerTitle ? (
-                      <div className='py-3 px-6 text-center'>{title}</div>
+                      <div className='py-3 px-5 text-center'>{title}</div>
                     ) : (
-                      <div className='py-3 px-6 text-left'>{title}</div>
+                      <div className='py-3 px-5 text-left'>{title}</div>
                     )}
                   </th>
                 ))}
@@ -70,12 +70,12 @@ const Table: FC<Props> = ({
                   index === 1 ? (
                     <td
                       key={`table-cell-${id}-${index}`}
-                      className='py-3 px-6 text-left whitespace-nowrap'
+                      className='py-3 px-5 text-left whitespace-nowrap'
                     >
                       {content}
                     </td>
                   ) : (
-                    <td key={`table-cell-${id}-${index}`} className='py-3 px-6 text-left'>
+                    <td key={`table-cell-${id}-${index}`} className='py-3 px-5 text-left'>
                       {content}
                     </td>
                   ),

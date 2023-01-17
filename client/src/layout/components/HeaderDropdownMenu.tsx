@@ -42,7 +42,7 @@ const HeaderDropdownMenu: FC = () => {
             >
               Extrinsics
             </Link>
-            <Link to={INTERNAL_ROUTES.events.list} className='text-[#282929] font-medium py-1'>
+            <Link to={INTERNAL_ROUTES.events.list} className='text-[#282929] font-medium border-b py-1 border-b-[#E4ECF3]'>
               Events
             </Link>
             <Link to={INTERNAL_ROUTES.logs.list} className='text-[#282929] font-medium py-1'>
