@@ -27,8 +27,8 @@ const Header: FC = () => {
             to={INTERNAL_ROUTES.home}
             className='flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0'
           >
-            <span className='text-xl'>
-              <LogoIcon fillColor='#282929' />
+            <span className='text-xl text-[#282929] dark:text-white'>
+              <LogoIcon fillColor='currentColor' />
             </span>
           </Link>
           <nav className='md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center'>
@@ -74,9 +74,9 @@ const Header: FC = () => {
         <div className='flex flex-row justify-between items-center'>
           <Link
             to={INTERNAL_ROUTES.home}
-            className='flex title-font font-medium items-center text-gray-900'
+            className='flex title-font font-medium items-center text-gray-900 dark:text-white'
           >
-            <LogoIcon fillColor='#282929' />
+            <LogoIcon fillColor='currentColor' />
           </Link>
           <div className='flex gap-4 items-center'>
             <HeaderChainDropdown />

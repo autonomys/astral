@@ -16,7 +16,7 @@ const HeaderChainDropdown: FC = () => {
   return (
     <Listbox value={selected} onChange={setSelected}>
       <div className='relative'>
-        <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'>
+        <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white dark:bg-[#1E254E] dark:text-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'>
           <div className='flex'>
             <SubspaceSymbol />
             <span className='hidden sm:block ml-2 truncate w-5 md:w-full'>{selected.name}</span>
@@ -34,13 +34,13 @@ const HeaderChainDropdown: FC = () => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+          <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-md bg-white dark:bg-[#1E254E] dark:text-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
             {chains.map((chain, chainIdx) => (
               <Listbox.Option
                 key={chainIdx}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-4 md:pl-10 pr-4 ${
-                    active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                    active ? 'bg-amber-100 text-amber-900' : 'text-gray-900 dark:text-white'
                   }`
                 }
                 value={chain}
