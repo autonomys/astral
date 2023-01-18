@@ -45,9 +45,9 @@ const Table: FC<Props> = ({
         <table className={`min-w-max w-full table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className={`text-[#857EC2] text-sm font-light ${tableHeaderProps}`}>
+              <tr className={`text-[#857EC2] text-sm font-light ${tableHeaderProps} dark:text-white/75`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
-                  <th key={`table-header-${id}-${index}`}>
+                  <th key={`table-header-${id}-${index}`} className="font-normal">
                     {isNumeric ? (
                       <div className='py-3 px-5 text-right'>{title}</div>
                     ) : centerTitle ? (
