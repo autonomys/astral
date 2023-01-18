@@ -1,10 +1,23 @@
 name: Playwright Tests
+env:
+  NETLIFY_SITE_NAME: "precious-crostata-1376e8"
+  GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}
 on:
   push:
     branches: [ main, staging ]
   pull_request:
     branches: [ main, staging ]
 jobs:
+  e2e-test-prepare:
+    name: Wait for deployment on Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Waiting for Netlify Preview
+        uses: josephduffy/wait-for-netlify-action@v1
+        id: wait-for-netflify-preview
+        with:
+          site_name: env.NETLIFY_SITE_NAME
+          max_timeout: 60
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
