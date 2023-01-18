@@ -23,7 +23,7 @@ jobs:
     - name: Run Playwright tests
       run: yarn playwright test
       env:
-        PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+        PLAYWRIGHT_TEST_BASE_URL: "https://deploy-preview-${{env.GITHUB_PR_NUMBER}}--${{env.NETLIFY_SITE_NAME}}.netlify.app"
     - uses: actions/upload-artifact@v3
       if: always()
       with:
