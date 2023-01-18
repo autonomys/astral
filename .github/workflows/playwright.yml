@@ -36,10 +36,10 @@ jobs:
     - name: Run Playwright tests
       run: yarn playwright test
       env:
-        PLAYWRIGHT_TEST_BASE_URL: "https://deploy-preview-${{env.GITHUB_PR_NUMBER}}--${{env.NETLIFY_SITE_NAME}}.netlify.app"
+        PLAYWRIGHT_TEST_BASE_URL: ${{ steps.wait-for-netflify-preview.outputs.url }}
     - uses: actions/upload-artifact@v3
-      if: always()
+      if: failure()
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
+        retention-days: 5
