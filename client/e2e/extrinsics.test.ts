@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
 test('test', async ({ page }) => {
-  await page.goto('http://localhost:3000/#/extrinsics')
+  await page.goto('/#/extrinsics')
   await expect(page.getByText('Extrinsic Id')).toBeVisible()
   await expect(page.getByText('Time')).toBeVisible()
   await expect(page.getByText('Status')).toBeVisible()

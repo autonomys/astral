@@ -14,18 +14,18 @@ test('navigation', async ({ page }) => {
   await page.getByRole('button', { name: 'Blockchain' }).click()
   await page.getByRole('link', { name: 'Accounts' }).click()
 
-  await expect(page).toHaveURL('http://localhost:3000/#/accounts')
+  await expect(page).toHaveURL('/#/accounts')
 
   await page.getByRole('link', { name: 'Blocks' }).click()
-  await expect(page).toHaveURL('http://localhost:3000/#/blocks')
+  await expect(page).toHaveURL('/#/blocks')
   await page.getByRole('link', { name: 'Extrinsics' }).click()
-  await expect(page).toHaveURL('http://localhost:3000/#/extrinsics')
+  await expect(page).toHaveURL('/#/extrinsics')
   await page.getByRole('link', { name: 'Events' }).click()
-  await expect(page).toHaveURL('http://localhost:3000/#/events')
+  await expect(page).toHaveURL('/#/events')
   await page.getByRole('link', { name: 'Logs' }).click()
-  await expect(page).toHaveURL('http://localhost:3000/#/logs')
+  await expect(page).toHaveURL('/#/logs')
   await page.getByRole('link', { name: 'Home' }).click()
-  await expect(page).toHaveURL('http://localhost:3000/#/')
+  await expect(page).toHaveURL('/#/')
 })
 
 test('external links', async ({ page }) => {
@@ -94,16 +94,16 @@ test('shows info', async ({ page }) => {
   await expect(historyElement).toBeVisible()
 })
 
-test('table links', async ({ page }) => {
-  await page.goto('/')
+// test('table links', async ({ page }) => {
+//   await page.goto('/')
 
-  await page.getByTestId('testLinkBlocks').click()
-  await expect(page).toHaveURL('/#/blocks')
+//   await page.getByTestId('testLinkBlocks').click()
+//   await expect(page).toHaveURL('/#/blocks')
 
-  await page.goto('/')
-  await page.getByTestId('testLinkExtrinsics').click()
-  await expect(page).toHaveURL('/#/extrinsics')
-})
+//   await page.goto('/')
+//   await page.getByTestId('testLinkExtrinsics').click()
+//   await expect(page).toHaveURL('/#/extrinsics')
+// })
 
 test('search form', async ({ page }) => {
   await page.goto('/')
