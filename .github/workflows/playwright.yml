@@ -32,7 +32,7 @@ jobs:
     - name: Install dependencies
       run: yarn install
     - name: Install Playwright Browsers
-      run: yarn playwright install --with-deps chromium
+      run: yarn playwright install --with-deps
     - name: Run Playwright tests
       run: yarn playwright test
       env:
