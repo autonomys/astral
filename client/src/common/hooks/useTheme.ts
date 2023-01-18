@@ -39,12 +39,9 @@ function usePrefersDarkMode() {
 
 export default function useTheme() {
   const prefersDarkMode = usePrefersDarkMode()
-  const [
-    isEnabled,
-    setIsEnabled] = useSafeLocalStorage('dark-mode', undefined)
+  const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', undefined)
 
-  const enabled =
-    isEnabled === undefined ? prefersDarkMode : isEnabled
+  const enabled = isEnabled === undefined ? prefersDarkMode : isEnabled
 
   useEffect(() => {
     if (window === undefined) return
