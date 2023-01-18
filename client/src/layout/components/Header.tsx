@@ -81,10 +81,10 @@ const Header: FC = () => {
           <div className='flex gap-4 items-center'>
             <HeaderChainDropdown />
             <button
-              className='bg-[#241235] text-white p-3 items-center rounded-full'
+              className='bg-[#241235] text-white p-3 items-center rounded-full dark:bg-white dark:text-[#1E254E]'
               onClick={() => setIsOpen(true)}
             >
-              <Bars3BottomRightIcon className='w-4 h-4' fill='white' stroke='white' />
+              <Bars3BottomRightIcon className='w-4 h-4' fill='currentColor' stroke='currentColor' />
             </button>
           </div>
           <MobileHeader isOpen={isOpen} setIsOpen={setIsOpen} />
