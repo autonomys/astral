@@ -28,7 +28,7 @@ const HomeBlockCard: FC<Props> = ({ block }) => {
       id='home-block-list-mobile'
       header={
         <Link className='flex gap-1' to={INTERNAL_ROUTES.blocks.id.page(block.height)}>
-          <h3 className='font-medium text-[#241235] text-sm'>#{block.height}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>#{block.height}</h3>
         </Link>
       }
       body={body}

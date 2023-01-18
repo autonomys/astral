@@ -29,7 +29,7 @@ const HomeExtrinsicCard: FC<Props> = ({ extrinsic }) => {
       header={
         <Link className='flex gap-1' to={INTERNAL_ROUTES.extrinsics.id.page(extrinsic.id)}>
           <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
         </Link>
       }
       body={body}
