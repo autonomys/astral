@@ -39,7 +39,7 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
     >
       <section
         className={
-          ' w-screen max-w-lg right-0 absolute background-gradient h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
+          ' w-screen max-w-lg right-0 absolute bg-light h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
           (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
         }
       >
