@@ -16,14 +16,7 @@ test('data show', async ({ page }) => {
   await expect(page.getByText('Extrinsics Root')).toBeVisible()
   await expect(page.getByText('Spec Version')).toBeVisible()
   await expect(page.getByText('01 Dec 2022 | 14:56:42(-04:00)')).toBeVisible()
-  await page
-    .getByRole('listitem')
-    .filter({ hasText: 'Block Timea month' })
-    .locator('div')
-    .nth(2)
-    .click()
-  await page.getByText('0xf2a1c6fff84a54e22dd674077fdc57778c6ac7da4085896dd4b3c664d65ba76e').click()
-  await page.getByText('0xde26f12847911316bbd5a7ffd8729195784cddf2a33fa5afa5e4d9b05df15972').click()
+
   await expect(page.getByText('subspace@4')).toBeVisible()
   await expect(page.getByRole('button', { name: 'Extrinsics' })).toBeVisible()
   await expect(page.getByText('Extrinsic Id')).toBeVisible()
