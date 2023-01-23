@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { MoonIcon } from '@heroicons/react/20/solid'
+import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
 
 // common
 import { LogoIcon } from 'common/icons'
@@ -8,6 +8,9 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // layout
 import { HeaderBackground } from 'layout/components'
+
+// hooks
+import useTheme from 'common/hooks/useTheme'
 
 type Props = {
   children?: ReactNode
@@ -23,6 +26,7 @@ export default MobileHeader
 
 const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
   const navigate = useNavigate()
+  const [isDark, toggleTheme] = useTheme()
 
   const handleNavigate = (url: string) => {
     setIsOpen(false)
@@ -39,7 +43,7 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
     >
       <section
         className={
-          ' w-screen max-w-lg right-0 absolute bg-light h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
+          ' w-screen max-w-lg right-0 absolute bg-light dark:bg-dark h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform  ' +
           (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
         }
       >
@@ -48,16 +52,35 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
           <div className='flex items-center align-middle justify-between p-5'>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.home)}
-              className='flex title-font font-medium items-center text-gray-900'
+              className='flex title-font font-medium items-center text-gray-900 text-[#282929] dark:text-white'
             >
-              <LogoIcon fillColor='#282929' />
+              <LogoIcon fillColor='currentColor' />
             </button>
             <div className='flex gap-3 items-center'>
-              <button className='items-center bg-[#241235] p-3 focus:outline-none hover:bg-gray-200 rounded-full'>
-                <MoonIcon viewBox='0 0 24 24' fill='white' stroke='white' className='w-4 h-4' />
+              <button
+                onClick={toggleTheme}
+                className='items-center bg-[#241235] p-2 focus:outline-none hover:bg-gray-200 rounded-full dark:bg-[#FFFFFF]'
+              >
+                {isDark ? (
+                  <SunIcon
+                    viewBox='0 0 20 20'
+                    strokeWidth={1}
+                    fill='black'
+                    stroke='black'
+                    className='w-6 h-6'
+                  />
+                ) : (
+                  <MoonIcon
+                    viewBox='0 0 20 20'
+                    strokeWidth={1}
+                    fill='white'
+                    stroke='white'
+                    className='w-6 h-6'
+                  />
+                )}
               </button>
               <button
-                className='bg-white px-4 py-2 items-center rounded-full'
+                className='bg-white px-4 py-2 items-center rounded-full dark:bg-[#1E254E] dark:text-white'
                 onClick={() => setIsOpen(false)}
               >
                 x
@@ -67,37 +90,37 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
           <div className='flex flex-col justify-center items-center gap-12'>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.home)}
-              className='flex title-font font-medium items-center text-[#282929] text-xl'
+              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Home
             </button>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.blocks.list)}
-              className='flex title-font font-medium items-center text-[#282929] text-xl'
+              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Blocks
             </button>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.extrinsics.list)}
-              className='flex title-font font-medium items-center text-[#282929] text-xl'
+              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Extrinsics
             </button>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.accounts.list)}
-              className='flex title-font font-medium items-center text-[#282929] text-xl'
+              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Accounts
             </button>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.events.list)}
-              className='flex title-font font-medium items-center text-[#282929] text-xl'
+              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Events
             </button>
             <button
               onClick={() => handleNavigate(INTERNAL_ROUTES.logs.list)}
-              className='flex title-font font-medium items-center text-[#282929] text-xl'
+              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Logs
             </button>
