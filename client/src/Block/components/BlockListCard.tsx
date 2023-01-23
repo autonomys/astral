@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block } from 'gql/graphql'
 
 // common
-import { StatusIcon, MobileCard } from 'common/components'
+import { MobileCard } from 'common/components'
 import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
 
