@@ -37,7 +37,7 @@ const Header: FC = () => {
               className={
                 isHomeActive
                   ? 'text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] dark:bg-[#DE67E4]'
-                  : 'text-[#282929] font-semibold mr-5 hover:text-gray-900'
+                  : 'text-[#282929] font-semibold mr-5 hover:text-gray-900 dark:text-white'
               }
             >
               Home

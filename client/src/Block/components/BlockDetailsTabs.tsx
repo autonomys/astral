@@ -25,8 +25,10 @@ type Props = {
 const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
   return (
     <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
+      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none' : ''}
+      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5 dark:bg-[#1E254E]' : ''}
+      pillStyle = {!isDesktop ? 'dark:bg-transparent dark:text-white' : undefined}
+      activePillStyle = {!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : undefined}
     >
       <Tab title='Extrinsics'>
         {isDesktop ? (
@@ -88,7 +90,7 @@ const BlockDetailsExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic }) => {
       header={
         <>
           <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
         </>
       }
       body={body}
