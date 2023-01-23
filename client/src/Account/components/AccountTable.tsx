@@ -69,7 +69,7 @@ const AccountTable: FC<Props> = ({ accounts }) => {
         <Table
           columns={columns}
           emptyMessage='There are no accounts to show'
-          tableProps='bg-white rounded-lg'
+          tableProps='bg-white rounded-md dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
           tableHeaderProps='border-b border-gray-200'
           id='accounts-list'
         />

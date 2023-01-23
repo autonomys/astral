@@ -30,7 +30,7 @@ const AccountListCard: FC<Props> = ({ account, index }) => {
       id='account-list-mobile'
       header={
         <Link key={`${account.id}-account-id`} to={INTERNAL_ROUTES.accounts.id.page(account.id)}>
-          <p className='font-medium text-[#241235] text-sm break-all'>{account.id}</p>
+          <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>{account.id}</p>
         </Link>
       }
       body={body}

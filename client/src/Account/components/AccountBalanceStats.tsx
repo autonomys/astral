@@ -16,7 +16,7 @@ const AccountBalanceStats: FC<Props> = ({ account }) => {
   const accountFree = bigNumberToNumber(account.free || 0, 18)
   const accountReserved = bigNumberToNumber(account.reserved || 0, 18)
   return (
-    <div className='w-full flex items-center justify-center md:justify-start flex-col md:gap-5 md:px-5 md:items-start md:flex-row bg-[#F3FBFF] rounded-md p-4'>
+    <div className='w-full flex items-center justify-center md:justify-start flex-col md:gap-5 md:px-5 md:items-start md:flex-row bg-[#F3FBFF] rounded-md p-4 dark:bg-white/10'>
       <AccountBalancePieChart account={account} />
       <div className='flex w-full md:py-10 items-center md:gap-5'>
         <div className='flex flex-auto md:flex-none md:flex-col gap-8 justify-center'>
