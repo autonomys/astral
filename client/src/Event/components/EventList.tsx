@@ -56,7 +56,7 @@ const EventList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base'>{`Events (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base dark:text-white'>{`Events (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <EventTable events={eventsConnection} isDesktop={isDesktop} />

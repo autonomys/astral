@@ -25,7 +25,7 @@ const EventListCard: FC<Props> = ({ event }) => {
     <MobileCard
       id='event-list-mobile'
       header={
-        <h3 className='font-medium text-[#241235] text-sm'>{`${event.block?.height}-${event.pos}`}</h3>
+        <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${event.block?.height}-${event.pos}`}</h3>
       }
       body={body}
     />
