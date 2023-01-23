@@ -4,7 +4,7 @@ type Props = {
   children: React.ReactNode
 }
 export const List: FC<Props> = ({ children }) => {
-  return <ul className='divide-y divide-gray-200'>{children}</ul>
+  return <ul className='divide-y divide-gray-200 dark:divide-white/20'>{children}</ul>
 }
 
 export const ListItem: FC<Props> = ({ children }) => {
