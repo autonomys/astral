@@ -58,7 +58,9 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
                   {isDesktop ? extrinsic.signer?.id : shortString(extrinsic.signer?.id || '')}
                 </StyledListItem>
                 <StyledListItem title='Signature'>
-                  {isDesktop ? extrinsic.signature : shortString(extrinsic.signature || '')}
+                  {isDesktop
+                    ? shortString(extrinsic.signature || '', 10, 80)
+                    : shortString(extrinsic.signature || '')}
                 </StyledListItem>
               </List>
             </div>
