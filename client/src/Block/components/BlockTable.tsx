@@ -41,10 +41,6 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
       }),
     },
     {
-      title: 'Status',
-      cells: blocks.map(() => <></>),
-    },
-    {
       title: 'Extrinsics',
       cells: blocks.map(({ extrinsics, id }) => (
         <div key={`${id}-block-extrinsics`}>{extrinsics?.length}</div>

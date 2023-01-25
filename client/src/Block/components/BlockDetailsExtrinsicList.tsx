@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
 
 // common
-import { Table, Column } from 'common/components'
+import { Table, Column, StatusIcon } from 'common/components'
 import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
 
@@ -48,7 +48,14 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
     },
     {
       title: 'Status',
-      cells: extrinsics.map(() => <></>),
+      cells: extrinsics.map(({ id, success }) => (
+        <div
+          className='md:flex md:items-center md:justify-start md:pl-5'
+          key={`${id}-home-extrinsic-status`}
+        >
+          <StatusIcon status={success} />
+        </div>
+      )),
     },
   ]
 
