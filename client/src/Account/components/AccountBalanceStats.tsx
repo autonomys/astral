@@ -26,7 +26,7 @@ const AccountBalanceStats: FC<Props> = ({ account }) => {
           </div>
           <div className='flex items-center'>
             <div className='mr-4 w-1 bg-[#9179EC] h-[30px]' />
-            <StatItem title='Stacking' value={`${accountReserved} tSSC`} />
+            <StatItem title='Staking' value={`${accountReserved} tSSC`} />
           </div>
           <div className='hidden md:flex items-center'>
             <div className='mr-4 w-1 bg-[#D9F0FC] h-[30px]' />

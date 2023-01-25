@@ -2,10 +2,9 @@ import { FC } from 'react'
 import { Extrinsic } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import ReactJson from 'react-json-view'
 
 // common
-import { List, StyledListItem } from 'common/components'
+import { List, StyledListItem, Arguments } from 'common/components'
 import { shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)
@@ -45,7 +44,7 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
               </List>
             </div>
             <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all dark:bg-white/10 dark:border-none'>
-              <ReactJson src={extrinsic.args || {}} iconStyle='circle' />
+              <Arguments args={extrinsic.args} />
             </div>
           </div>
         </div>

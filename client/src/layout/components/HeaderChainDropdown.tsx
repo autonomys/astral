@@ -22,7 +22,7 @@ const HeaderChainDropdown: FC = () => {
             <span className='hidden sm:block ml-2 truncate w-5 md:w-full'>{selected.name}</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
-                className='h-5 w-5 text-gray-400 ui-open:rotate-180 ui-open:transform'
+                className='h-5 w-5 text-gray-400 ui-open:rotate-180 ui-open:transform dark:text-[#DE67E4]'
                 aria-hidden='true'
               />
             </span>

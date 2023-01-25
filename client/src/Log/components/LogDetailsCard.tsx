@@ -2,10 +2,9 @@ import { FC } from 'react'
 import { Log } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import ReactJson from 'react-json-view'
 
 // common
-import { List, StyledListItem } from 'common/components'
+import { Arguments, List, StyledListItem } from 'common/components'
 
 dayjs.extend(relativeTime)
 
@@ -33,7 +32,7 @@ const LogDetailsCard: FC<Props> = ({ log }) => {
               </List>
             </div>
             <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all'>
-              <ReactJson src={log.block.events[0].args || {}} iconStyle='circle' />
+              <Arguments args={log.block.events[0].args} />
             </div>
           </div>
         </div>

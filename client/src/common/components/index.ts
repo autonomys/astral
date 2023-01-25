@@ -11,6 +11,7 @@ import Table, { Column } from 'common/components/Table'
 import { List, ListItem, StyledListItem } from 'common/components/List'
 import { Tabs, Tab } from 'common/components/Tabs'
 import CopyButton from 'common/components/CopyButton'
+import Arguments from 'common/components/Arguments'
 
 export {
   Spinner,
@@ -29,6 +30,7 @@ export {
   Tab,
   Tabs,
   CopyButton,
+  Arguments,
 }
 
 export type { Column }
