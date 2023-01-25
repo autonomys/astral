@@ -56,7 +56,7 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
       header={
         <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(event.id)}>
           <h3 className='font-medium text-[#241235] text-sm'>
-            <div>{`$${event.block?.height}-${event.pos}`}</div>
+            <div>{`${event.block?.height}-${event.pos}`}</div>
           </h3>
         </Link>
       }
