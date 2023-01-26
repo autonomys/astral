@@ -29,10 +29,6 @@ const AccountTable: FC<Props> = ({ accounts }) => {
   // methods
   const generateColumns = (accounts: Account[]): Column[] => [
     {
-      title: 'Rank',
-      cells: accounts.map((id, index) => <div key={`${id}-account-index`}>{index + 1}</div>),
-    },
-    {
       title: 'Account',
       cells: accounts.map(({ id }) => (
         <Link key={`${id}-account-id`} to={INTERNAL_ROUTES.accounts.id.page(id)}>

@@ -44,7 +44,8 @@ const AccountList: FC = () => {
 
   const handleGetPage = (page: string | number) => {
     setCurrentPage(Number(page))
-    const endCursor = PAGE_SIZE * Number(page)
+    const newCount = PAGE_SIZE * Number(page)
+    const endCursor = newCount - PAGE_SIZE
     setLastCursor(endCursor.toString())
   }
 
