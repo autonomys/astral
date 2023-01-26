@@ -8,11 +8,11 @@ import { QUERY_ACCOUNT_CONNECTION_LIST } from 'Account/query'
 // common
 import { SearchBar, Pagination, ErrorFallback, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
+import { PAGE_SIZE } from 'common/constants'
 
 const AccountList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const PAGE_SIZE = 10
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
@@ -44,7 +44,11 @@ const AccountList: FC = () => {
 
   const handleGetPage = (page: string | number) => {
     setCurrentPage(Number(page))
-    const endCursor = PAGE_SIZE * Number(page)
+    const newCount = PAGE_SIZE * Number(page)
+    const endCursor = newCount - PAGE_SIZE
+    if (endCursor === 0) {
+      return setLastCursor(undefined)
+    }
     setLastCursor(endCursor.toString())
   }
 
@@ -57,7 +61,7 @@ const AccountList: FC = () => {
         <div className='text-[#282929] text-base'>{`Holders (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
-        <AccountTable accounts={accountsConnection} />
+        <AccountTable accounts={accountsConnection} page={currentPage} />
         <Pagination
           nextPage={handleNextPage}
           previousPage={handlePreviousPage}
