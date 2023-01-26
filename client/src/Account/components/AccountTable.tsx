@@ -35,7 +35,7 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     {
       title: 'Rank',
       cells: accounts.map((id, index) => (
-        <div key={`${id}-account-index`}>{page > 1 ? newCount + index : index}</div>
+        <div key={`${id}-account-index`}>{page > 1 ? newCount + index + 1 : index + 1}</div>
       )),
     },
     {
