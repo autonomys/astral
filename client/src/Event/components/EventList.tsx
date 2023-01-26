@@ -48,6 +48,9 @@ const EventList: FC = () => {
     setCurrentPage(Number(page))
     const newCount = PAGE_SIZE * Number(page)
     const endCursor = newCount - PAGE_SIZE
+    if (endCursor === 0) {
+      return setLastCursor(undefined)
+    }
     setLastCursor(endCursor.toString())
   }
 
