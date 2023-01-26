@@ -46,7 +46,6 @@ const AccountList: FC = () => {
     setCurrentPage(Number(page))
     const newCount = PAGE_SIZE * Number(page)
     const endCursor = newCount - PAGE_SIZE
-    console.log('🚀 ~ file: AccountList.tsx:49 ~ handleGetPage ~ endCursor', endCursor)
     if (endCursor === 0) {
       return setLastCursor(undefined)
     }
