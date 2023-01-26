@@ -8,7 +8,7 @@ import { Extrinsic } from 'gql/graphql'
 
 // common
 import { shortString } from 'common/helpers'
-import { Table, Column, CopyButton } from 'common/components'
+import { Table, Column, CopyButton, StatusIcon } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
@@ -52,7 +52,14 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
     },
     {
       title: 'Success',
-      cells: extrinsics.map(() => <></>),
+      cells: extrinsics.map(({ success, id }) => (
+        <div
+          className='md:flex md:items-center md:justify-start md:pl-5'
+          key={`${id}-home-extrinsic-status`}
+        >
+          <StatusIcon status={success} />
+        </div>
+      )),
     },
     {
       title: 'Block hash',

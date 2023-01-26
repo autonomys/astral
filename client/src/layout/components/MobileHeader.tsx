@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MoonIcon } from '@heroicons/react/20/solid'
+import dayjs from 'dayjs'
 
 // common
 import { LogoIcon } from 'common/icons'
@@ -103,6 +104,13 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
             </button>
           </div>
           {children}
+          <div className='flex'>
+            <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
+              <p className='text-gray text-sm text-center sm:text-left'>
+                © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+              </p>
+            </div>
+          </div>
         </article>
       </section>
     </nav>

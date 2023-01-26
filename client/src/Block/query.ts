@@ -50,6 +50,7 @@ export const QUERY_BLOCK_BY_ID = gql`
         id
         hash
         name
+        success
         block {
           height
           timestamp

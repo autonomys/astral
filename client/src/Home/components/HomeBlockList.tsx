@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, TableLoadingSkeleton, Column } from 'common/components'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
@@ -25,11 +25,7 @@ interface HomeBlockListProps {
   isDesktop: boolean
 }
 
-const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
-
+const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -71,7 +67,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, isDesktop }) => 
   const columns = generateColumns(blocks)
 
   return isDesktop ? (
-    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
+    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
       <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
         <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
         <Link

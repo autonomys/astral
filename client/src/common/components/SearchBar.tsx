@@ -6,8 +6,8 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 
 // common
-import { SubspaceSymbol } from 'common/icons'
 import useSearch from 'common/hooks/useSearch'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 
 type SearchType = {
   id: number
@@ -32,11 +32,10 @@ const SearchBar: FC = () => {
   const initialValues: FormValues = { searchTerm: '', searchType: searchTypes[0] }
 
   const handleSearch = useSearch()
+  const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const searchValidationSchema = Yup.object().shape({
-    searchTerm: Yup.string()
-      .min(2, 'Search term is too Short!')
-      .required('Search term is required'),
+    searchTerm: Yup.string().required('Search term is required'),
   })
 
   return (
@@ -58,7 +57,6 @@ const SearchBar: FC = () => {
               <div className='relative w-36'>
                 <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'>
                   <div className='flex'>
-                    <SubspaceSymbol />
                     <span className='ml-2 block truncate'>{values['searchType'].name}</span>
                     <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                       <ChevronDownIcon
@@ -74,12 +72,12 @@ const SearchBar: FC = () => {
                   leaveFrom='opacity-100'
                   leaveTo='opacity-0'
                 >
-                  <Listbox.Options className='absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20'>
+                  <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-20'>
                     {searchTypes.map((term, personIdx) => (
                       <Listbox.Option
                         key={personIdx}
                         className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          `relative cursor-default select-none py-2 pl-4 md:pl-10 pr-4 ${
                             active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
                           }`
                         }
@@ -96,7 +94,7 @@ const SearchBar: FC = () => {
                             </span>
                             {selected ? (
                               <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600'>
-                                <CheckIcon className='h-5 w-5' aria-hidden='true' />
+                                <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
                               </span>
                             ) : null}
                           </>
@@ -116,7 +114,7 @@ const SearchBar: FC = () => {
                       ? 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg border border-red-300'
                       : 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
                   }
-                  placeholder='Search for Block / Account ...'
+                  placeholder={isDesktop ? 'Search for Block / Account ...' : 'Search...'}
                   name='searchTerm'
                   onChange={handleChange}
                 />
