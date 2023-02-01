@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
 
 // common
-import { MobileCard, Tabs, Tab, ExtrinsicHeader } from 'common/components'
+import { Tabs, Tab, ExtrinsicCard } from 'common/components'
 
 // account
 import { AccountExtrinsicList } from 'Account/components'
@@ -36,9 +36,10 @@ const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
         ) : (
           <div className='flex flex-col'>
             {extrinsics.map((extrinsic) => (
-              <AccountDetailsExtrinsicCard
+              <ExtrinsicCard
                 key={`block-details-extrinsic-card-${extrinsic.id}`}
                 extrinsic={extrinsic}
+                id='account-details-extrinsic-mobile'
               />
             ))}
           </div>
@@ -49,24 +50,3 @@ const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
 }
 
 export default AccountDetailsTabs
-
-type ExtrinsicCardProps = {
-  extrinsic: Extrinsic
-}
-
-const AccountDetailsExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic }) => {
-  const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
-
-  const body = [
-    { name: 'Block', value: extrinsic.block.height },
-    { name: 'Call', value: extrinsic.name.split('.')[1].toUpperCase() },
-    { name: 'Time', value: `${blockDate} ago` },
-  ]
-  return (
-    <MobileCard
-      id='account-details-extrinsic-mobile'
-      header={<ExtrinsicHeader extrinsic={extrinsic} />}
-      body={body}
-    />
-  )
-}

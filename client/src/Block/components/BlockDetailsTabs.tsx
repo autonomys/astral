@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { ExtrinsicHeader, MobileCard, Tabs, Tab } from 'common/components'
+import { MobileCard, Tabs, Tab, ExtrinsicCard } from 'common/components'
 
 // block
 import {
@@ -25,10 +25,14 @@ type Props = {
 const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
   return (
     <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none' : ''}
+      tabStyle={
+        isDesktop
+          ? 'bg-white border border-slate-100 shadow rounded-lg p-4 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+          : ''
+      }
       tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5 dark:bg-[#1E254E]' : ''}
-      pillStyle = {!isDesktop ? 'dark:bg-transparent dark:text-white' : undefined}
-      activePillStyle = {!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : undefined}
+      pillStyle={!isDesktop ? 'dark:bg-transparent dark:text-white' : undefined}
+      activePillStyle={!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : undefined}
     >
       <Tab title='Extrinsics'>
         {isDesktop ? (
@@ -36,7 +40,8 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
         ) : (
           <div className='flex flex-col'>
             {extrinsics.map((extrinsic) => (
-              <BlockDetailsExtrinsicCard
+              <ExtrinsicCard
+                id='block-details-extrinsic-mobile'
                 key={`block-details-extrinsic-card-${extrinsic.id}`}
                 extrinsic={extrinsic}
               />
@@ -71,29 +76,6 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
 }
 
 export default BlockDetailsTabs
-
-type ExtrinsicCardProps = {
-  extrinsic: Extrinsic
-}
-
-const BlockDetailsExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic }) => {
-  const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
-
-  const body = [
-    { name: 'Block', value: extrinsic.block.height },
-    { name: 'Call', value: extrinsic.name.split('.')[1].toUpperCase() },
-    { name: 'Time', value: `${blockDate} ago` },
-  ]
-  return (
-    <MobileCard
-      id='block-details-extrinsic-mobile'
-      header={
-        <ExtrinsicHeader extrinsic={extrinsic} />
-      }
-      body={body}
-    />
-  )
-}
 
 type EventCardProps = {
   event: Event

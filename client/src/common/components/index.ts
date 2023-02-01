@@ -13,7 +13,7 @@ import { Tabs, Tab } from 'common/components/Tabs'
 import CopyButton from 'common/components/CopyButton'
 import Arguments from 'common/components/Arguments'
 import HeaderBlockLink from 'common/components/HeaderBlockLink'
-import ExtrinsicHeader from 'common/components/ExtrinsicHeader'
+import ExtrinsicCard from 'common/components/ExtrinsicCard'
 
 export {
   Spinner,
@@ -34,7 +34,7 @@ export {
   CopyButton,
   Arguments,
   HeaderBlockLink,
-  ExtrinsicHeader,
+  ExtrinsicCard,
 }
 
 export type { Column }
