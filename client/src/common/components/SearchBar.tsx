@@ -8,20 +8,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 // common
 import useSearch from 'common/hooks/useSearch'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-
-type SearchType = {
-  id: number
-  name: string
-  unavailable: boolean
-}
-
-const searchTypes: SearchType[] = [
-  { id: 1, name: 'All', unavailable: false },
-  { id: 2, name: 'Block', unavailable: false },
-  { id: 3, name: 'Extrinsic', unavailable: false },
-  { id: 4, name: 'Account', unavailable: true },
-  { id: 5, name: 'Event', unavailable: false },
-]
+import { SearchType, searchTypes } from 'common/constants'
 
 interface FormValues {
   searchTerm: string
