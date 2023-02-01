@@ -34,7 +34,7 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
   ]
 
   return (
-    <div className={'sm:h-80 sm:w-2/4 h-60 w-full'}>
+    <div className="sm:h-80 sm:w-2/4 h-60 w-full">
       <ResponsivePie
         data={data}
         margin={{ top: 20, right: 0, bottom: 40, left: 0 }}

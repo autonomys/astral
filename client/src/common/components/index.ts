@@ -12,6 +12,7 @@ import { List, ListItem, StyledListItem } from 'common/components/List'
 import { Tabs, Tab } from 'common/components/Tabs'
 import CopyButton from 'common/components/CopyButton'
 import Arguments from 'common/components/Arguments'
+import HeaderBlockLink from 'common/components/HeaderBlockLink'
 
 export {
   Spinner,
@@ -31,6 +32,7 @@ export {
   Tabs,
   CopyButton,
   Arguments,
+  HeaderBlockLink,
 }
 
 export type { Column }
