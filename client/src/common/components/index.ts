@@ -14,6 +14,7 @@ import CopyButton from 'common/components/CopyButton'
 import Arguments from 'common/components/Arguments'
 import HeaderBlockLink from 'common/components/HeaderBlockLink'
 import ExtrinsicCard from 'common/components/ExtrinsicCard'
+import EventCard from 'common/components/EventCard'
 
 export {
   Spinner,
@@ -35,6 +36,7 @@ export {
   Arguments,
   HeaderBlockLink,
   ExtrinsicCard,
+  EventCard,
 }
 
 export type { Column }

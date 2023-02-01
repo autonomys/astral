@@ -28,6 +28,8 @@ const BlockDetailsEventList: FC<Props> = ({ events }) => {
       )),
     },
     {
+      // Log/components/LogDetailsEventList.tsx has similar columns, but there is extrinsic hash instead of ID
+      // TODO: consider merging
       title: 'Extrinsic Id',
       cells: events.map(({ extrinsic, id }) => (
         <div key={`${id}-block-event-extrinsic`}>

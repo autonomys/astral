@@ -2,7 +2,7 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 
 // common
-import { MobileCard, Tabs, Tab } from 'common/components'
+import { EventCard, Tabs, Tab } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // log
@@ -32,7 +32,11 @@ const LogDetailsTab: FC<Props> = ({ events }) => {
         ) : (
           <div className='flex flex-col'>
             {events.map((event) => (
-              <LogDetailsEventCard key={`extrinsic-details-event-card-${event.id}`} event={event} />
+              <EventCard
+                key={`extrinsic-details-event-card-${event.id}`}
+                event={event}
+                id='extrinsic-details-event-mobile'
+              />
             ))}
           </div>
         )}
@@ -42,24 +46,3 @@ const LogDetailsTab: FC<Props> = ({ events }) => {
 }
 
 export default LogDetailsTab
-
-type EventCardProps = {
-  event: Event
-}
-
-const LogDetailsEventCard: FC<EventCardProps> = ({ event }) => {
-  const body = [
-    { name: 'Action', value: event.name.split('.')[1] },
-    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.pos}` },
-    { name: 'Type', value: event.phase },
-  ]
-  return (
-    <MobileCard
-      id='extrinsic-details-event-mobile'
-      header={
-        <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`$${event.block?.height}-${event.pos}`}</h3>
-      }
-      body={body}
-    />
-  )
-}

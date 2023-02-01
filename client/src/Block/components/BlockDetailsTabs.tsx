@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { MobileCard, Tabs, Tab, ExtrinsicCard } from 'common/components'
+import { EventCard, MobileCard, Tabs, Tab, ExtrinsicCard } from 'common/components'
 
 // block
 import {
@@ -55,7 +55,11 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
         ) : (
           <div className='flex flex-col'>
             {events.map((event) => (
-              <BlockDetailsEventCard key={`block-details-event-card-${event.id}`} event={event} />
+              <EventCard 
+                key={`block-details-event-card-${event.id}`} 
+                event={event} 
+                id='block-details-event-mobile'
+              />
             ))}
           </div>
         )}
@@ -76,27 +80,6 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
 }
 
 export default BlockDetailsTabs
-
-type EventCardProps = {
-  event: Event
-}
-
-const BlockDetailsEventCard: FC<EventCardProps> = ({ event }) => {
-  const body = [
-    { name: 'Action', value: event.name.split('.')[1] },
-    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.pos}` },
-    { name: 'Type', value: event.phase },
-  ]
-  return (
-    <MobileCard
-      id='block-details-event-mobile'
-      header={
-        <h3 className='font-medium text-[#241235] text-sm'>{`$${event.block?.height}-${event.pos}`}</h3>
-      }
-      body={body}
-    />
-  )
-}
 
 type LogCardProps = {
   log: Log
