@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { StatusIcon, MobileCard, Tabs, Tab } from 'common/components'
+import { ExtrinsicHeader, MobileCard, Tabs, Tab } from 'common/components'
 
 // block
 import {
@@ -88,10 +88,7 @@ const BlockDetailsExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic }) => {
     <MobileCard
       id='block-details-extrinsic-mobile'
       header={
-        <>
-          <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
-        </>
+        <ExtrinsicHeader extrinsic={extrinsic} />
       }
       body={body}
     />
