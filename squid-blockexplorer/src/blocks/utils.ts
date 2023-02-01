@@ -1,7 +1,7 @@
 import { HexSink } from "@subsquid/scale-codec";
 import { xxhash128 } from "@subsquid/util-xxhash";
-import { SubstrateBlock } from '@subsquid/substrate-processor';
-import { Block, Extrinsic, Call, Account } from '../model';
+import { SubstrateBlock } from "@subsquid/substrate-processor";
+import { Block, Extrinsic, Call, Account } from "../model";
 import { CallItem, EventItem } from "../processor";
 
 /**
@@ -15,7 +15,7 @@ import { CallItem, EventItem } from "../processor";
  */
 export function partitionItems<Item = CallItem | EventItem>(
   predicate: (item: Item) => boolean,
-  items: Item[],
+  items: Item[]
 ): Item[][] {
   const partitioned: Item[][] = [[], []];
 
@@ -54,7 +54,7 @@ export function createBlock({
 }
 
 export function createExtrinsic(
-  { name, extrinsic }: CallItem,
+  { name, extrinsic, call }: CallItem,
   block: Block,
   signature: string | null = null,
   signer: Account | null = null
@@ -68,6 +68,7 @@ export function createExtrinsic(
     signature,
     block,
     timestamp: block.timestamp,
+    args: call.args,
   });
 }
 
@@ -75,7 +76,7 @@ export function createCall(
   { call }: CallItem,
   block: Block,
   extrinsic: Extrinsic,
-  parent: Call | null,
+  parent: Call | null
 ) {
   return new Call({
     ...call,
@@ -87,12 +88,13 @@ export function createCall(
 }
 
 export function calcSpacePledged(solutionRange: bigint): bigint {
-  const MAX_U64 = (2n ** 64n) - 1n;
+  const MAX_U64 = 2n ** 64n - 1n;
   const SLOT_PROBABILITY = [1n, 6n];
   const PIECE_SIZE = 4096n;
 
   return BigInt(
-    MAX_U64 * SLOT_PROBABILITY[0] / SLOT_PROBABILITY[1] / solutionRange * PIECE_SIZE
+    ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
+      PIECE_SIZE
   );
 }
 
@@ -102,8 +104,9 @@ export function calcHistorySize(segmentsCount: number): bigint {
   const PIECE_SIZE = 32 * 1024;
   const PIECES_IN_SEGMENT = 256;
   const RECORD_SIZE = PIECE_SIZE - WITNESS_SIZE;
-  const RECORDED_HISTORY_SEGMENT_SIZE = RECORD_SIZE * PIECES_IN_SEGMENT / 2;
-  const SEGMENT_SIZE = RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE * PIECE_SIZE * 2;
+  const RECORDED_HISTORY_SEGMENT_SIZE = (RECORD_SIZE * PIECES_IN_SEGMENT) / 2;
+  const SEGMENT_SIZE =
+    (RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE) * PIECE_SIZE * 2;
 
   return BigInt(segmentsCount * SEGMENT_SIZE);
 }

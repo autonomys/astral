@@ -14,23 +14,29 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // account
 import { AccountListCard } from 'Account/components'
+import { PAGE_SIZE } from 'common/constants'
 
 dayjs.extend(relativeTime)
 
 interface Props {
   accounts: Account[]
+  page: number
 }
 
-const AccountTable: FC<Props> = ({ accounts }) => {
+const AccountTable: FC<Props> = ({ accounts, page }) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+
+  const newCount = PAGE_SIZE * Number(page) - 10
 
   // methods
   const generateColumns = (accounts: Account[]): Column[] => [
     {
       title: 'Rank',
-      cells: accounts.map((id, index) => <div key={`${id}-account-index`}>{index + 1}</div>),
+      cells: accounts.map((id, index) => (
+        <div key={`${id}-account-index`}>{page > 1 ? newCount + index + 1 : index + 1}</div>
+      )),
     },
     {
       title: 'Account',

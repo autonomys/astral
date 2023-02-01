@@ -30,7 +30,7 @@ const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
       pillStyle={!isDesktop ? 'dark:bg-transparent dark:text-white' : undefined}
       activePillStyle={!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : undefined}
     >
-      <Tab title='Extrinsics'>
+      <Tab title={`Extrinsics (${extrinsics.length})`}>
         {isDesktop ? (
           <AccountExtrinsicList extrinsics={extrinsics} />
         ) : (

@@ -34,7 +34,7 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
       pillStyle={!isDesktop ? 'dark:bg-transparent dark:text-white' : undefined}
       activePillStyle={!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : undefined}
     >
-      <Tab title='Extrinsics'>
+      <Tab title={`Extrinsics (${extrinsics.length})`}>
         {isDesktop ? (
           <BlockDetailsExtrinsicList extrinsics={extrinsics} />
         ) : (
@@ -49,7 +49,7 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
           </div>
         )}
       </Tab>
-      <Tab title='Events'>
+      <Tab title={`Events (${events.length})`}>
         {isDesktop ? (
           <BlockDetailsEventList events={events} />
         ) : (
@@ -60,7 +60,7 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
           </div>
         )}
       </Tab>
-      <Tab title='Logs'>
+      <Tab title={`Logs (${logs.length})`}>
         {isDesktop ? (
           <BlockDetailsLogList logs={logs} />
         ) : (

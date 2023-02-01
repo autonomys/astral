@@ -1,11 +1,13 @@
 import { FC } from 'react'
 import { Event } from 'gql/graphql'
+import { Link } from 'react-router-dom'
 
 // common
 import { MobileCard, Tabs, Tab } from 'common/components'
 
 // extrinsic
 import { ExtrinsicDetailsEventList } from 'Extrinsic/components'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 type Props = {
   events: Event[]
@@ -24,7 +26,7 @@ const ExtrinsicDetailsTab: FC<Props> = ({ events, isDesktop = false }) => {
       pillStyle={!isDesktop ? 'dark:bg-transparent dark:text-white' : undefined}
       activePillStyle={!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : undefined}
     >
-      <Tab title='Events'>
+      <Tab title={`Events (${events.length})`}>
         {isDesktop ? (
           <ExtrinsicDetailsEventList events={events} />
         ) : (
@@ -58,7 +60,11 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
     <MobileCard
       id='extrinsic-details-event-mobile'
       header={
-        <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`$${event.block?.height}-${event.pos}`}</h3>
+        <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(event.id)}>
+          <h3 className='font-medium text-[#241235] text-sm'>
+            <div>{`${event.block?.height}-${event.pos}`}</div>
+          </h3>
+        </Link>
       }
       body={body}
     />
