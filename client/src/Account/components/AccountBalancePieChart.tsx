@@ -38,39 +38,24 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
     },
   ]
 
-  const emptyState = [{ id: 'No value to show', label: '', value: true, color: '#e5e7eb' }]
+  const emptyState = [{ id: 'No value to show', label: '', value: 0, color: '#e5e7eb' }]
 
   const isEmpty = other === 0 && staking === 0 && transferable === 0
 
   return (
     <div className={'sm:h-80 sm:w-2/4 h-60 w-full'}>
-      {isEmpty ? (
-        <ResponsivePie
-          data={emptyState}
-          margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-          innerRadius={0.5}
-          padAngle={0}
-          cornerRadius={3}
-          activeOuterRadiusOffset={8}
-          colors={{ datum: 'data.color' }}
-          enableArcLabels={false}
-          sortByValue={true}
-          enableArcLinkLabels={true}
-        />
-      ) : (
-        <ResponsivePie
-          data={data}
-          margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-          innerRadius={0.5}
-          padAngle={0}
-          cornerRadius={3}
-          activeOuterRadiusOffset={8}
-          colors={{ datum: 'data.color' }}
-          enableArcLabels={false}
-          sortByValue={true}
-          enableArcLinkLabels={false}
-        />
-      )}
+      <ResponsivePie
+        data={isEmpty ? emptyState : data}
+        enableArcLinkLabels={isEmpty}
+        margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
+        innerRadius={0.5}
+        padAngle={0}
+        cornerRadius={3}
+        activeOuterRadiusOffset={8}
+        colors={{ datum: 'data.color' }}
+        enableArcLabels={false}
+        sortByValue={true}
+      />
     </div>
   )
 }
