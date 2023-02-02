@@ -15,6 +15,7 @@ dayjs.extend(relativeTime)
 type Props = {
   extrinsic: Extrinsic
 }
+// TODO: similar to ExtrinsicListCard, consider refactoring
 const HomeExtrinsicCard: FC<Props> = ({ extrinsic }) => {
   const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
 

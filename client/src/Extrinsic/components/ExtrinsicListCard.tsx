@@ -17,6 +17,7 @@ type Props = {
   extrinsic: Extrinsic
 }
 
+// TODO: similar to HomeExtrinsicCard, consider refactoring
 const ExtrinsicListCard: FC<Props> = ({ extrinsic }) => {
   const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
 
