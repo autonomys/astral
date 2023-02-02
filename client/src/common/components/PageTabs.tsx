@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC, ReactElement } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -8,7 +8,7 @@ import { Tabs } from 'common/components'
 dayjs.extend(relativeTime)
 
 type Props = {
-  children: any
+  children: ReactElement[] | ReactElement
   isDesktop?: boolean
 }
 
