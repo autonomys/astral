@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 
-// common - table
+// common - searchBar
 import { SearchBar } from 'common/components'
 import { MockedProvider } from '@apollo/client/testing'
 import userEvent from '@testing-library/user-event'
