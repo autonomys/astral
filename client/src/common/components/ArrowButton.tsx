@@ -9,7 +9,7 @@ type Props = {
 const ArrowButton: FC<Props> = ({ children, ...rest }) => (
   <button
     {...rest}
-    className='text-xs font-semibold px-5 py-3 rounded-full leading-normal text-white bg-[#241235]'
+    className='text-xs font-light px-5 py-3 rounded-full leading-normal text-white bg-[#241235]'
   >
     <div className='flex items-center gap-x-5'>
       {children}

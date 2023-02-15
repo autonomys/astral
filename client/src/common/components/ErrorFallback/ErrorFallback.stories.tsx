@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import ErrorFallback from './ErrorFallback';
+import ErrorFallback from '.';
 
 export default {
   title: 'Common/ErrorFallback',
