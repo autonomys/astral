@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
-
-import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { ArrowButton } from 'common/components'
 
 import NotFoundImage from './NotFoundImage'
 
@@ -19,15 +18,7 @@ const NotFound: FC = () => {
           <h2 className='mt-8 mb-8 text-[#282929] text-xl'>
             The page you are looking for could not be found.
           </h2>
-          <button
-            onClick={() => navigate(INTERNAL_ROUTES.home)}
-            className='text-xs font-semibold px-5 py-3 rounded-full leading-normal text-white bg-[#241235]'
-          >
-            <div className='flex items-center gap-x-5'>
-              Take Me Home
-              <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
-            </div>
-          </button>
+          <ArrowButton onClick={() => navigate(INTERNAL_ROUTES.home)}>Take Me Home</ArrowButton>
         </div>
       </div>
     </section>
