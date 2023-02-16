@@ -23,7 +23,9 @@ const AccountList: FC = () => {
   }
 
   if (error || !data) {
-    return <ErrorFallback error={error} />
+    // TODO: consider adding error monitoring
+    console.error(error)
+    return <ErrorFallback />
   }
 
   const accountsConnection = data.accountsConnection.edges.map((extrinsic) => extrinsic.node)

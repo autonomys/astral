@@ -25,7 +25,9 @@ const Home: FC = () => {
   }
 
   if (homeQueryResult.error || !homeQueryResult.data) {
-    return <ErrorFallback error={homeQueryResult.error} />
+    // TODO: consider adding error monitoring
+    console.error(homeQueryResult.error)
+    return <ErrorFallback />
   }
 
   return (

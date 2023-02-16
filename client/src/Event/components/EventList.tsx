@@ -25,7 +25,9 @@ const EventList: FC = () => {
   }
 
   if (error || !data) {
-    return <ErrorFallback error={error} />
+    // TODO: consider adding error monitoring
+    console.error(error)
+    return <ErrorFallback />
   }
 
   const eventsConnection = data.eventsConnection.edges.map((event) => event.node)

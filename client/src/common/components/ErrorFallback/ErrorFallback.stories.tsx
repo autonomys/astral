@@ -8,8 +8,8 @@ export default {
   component: ErrorFallback,
 } as ComponentMeta<typeof ErrorFallback>;
 
-const Template: ComponentStory<typeof ErrorFallback> = (args) => (
-  <ErrorFallback {...args} />
+const Template: ComponentStory<typeof ErrorFallback> = () => (
+  <ErrorFallback />
 );
 
 export const Primary = Template.bind({});

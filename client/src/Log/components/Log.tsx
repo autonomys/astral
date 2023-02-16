@@ -25,7 +25,9 @@ const Log: FC = () => {
   }
 
   if (error || !data) {
-    return <ErrorFallback error={error} />
+    // TODO: consider adding error monitoring
+    console.error(error)
+    return <ErrorFallback />
   }
 
   if (!data.logById) {
