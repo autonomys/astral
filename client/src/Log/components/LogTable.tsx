@@ -27,7 +27,7 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
       title: 'Log Index',
       cells: logs.map(({ id }) => (
         <div className='w-full flex' key={`${id}-log-index`}>
-          <Link className='w-full' to={INTERNAL_ROUTES.logs.id.page(id)}>
+          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.logs.id.page(id)}>
             <div>{id}</div>
           </Link>
           <CopyButton value={id} message='Id copied' />

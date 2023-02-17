@@ -41,7 +41,11 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     {
       title: 'Account',
       cells: accounts.map(({ id }) => (
-        <Link key={`${id}-account-id`} to={INTERNAL_ROUTES.accounts.id.page(id)}>
+        <Link
+          key={`${id}-account-id`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.accounts.id.page(id)}
+        >
           <div>{isLargeLaptop ? id : shortString(id)}</div>
         </Link>
       )),
@@ -75,7 +79,7 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
         <Table
           columns={columns}
           emptyMessage='There are no accounts to show'
-          tableProps='bg-white rounded-lg'
+          tableProps='bg-white rounded-[20px]'
           tableHeaderProps='border-b border-gray-200'
           id='accounts-list'
         />

@@ -40,7 +40,6 @@ function App() {
         <DomainHeader />
         <Header />
         <Container>
-          <HeaderBackground />
           <Routes>
             <Route element={<Home />} path={INTERNAL_ROUTES.home} />
             <Route path={INTERNAL_ROUTES.blocks.list}>
@@ -65,6 +64,7 @@ function App() {
             </Route>
             <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
           </Routes>
+          <HeaderBackground />
         </Container>
         <Footer />
         <Toaster />
