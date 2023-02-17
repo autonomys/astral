@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import Identicon from '@polkadot/react-identicon'
 
 // gql
 import { Account } from 'gql/graphql'
@@ -18,7 +19,8 @@ const AccountDetailsCard: FC<Props> = ({ account }) => {
   const accountTotal = account.total ? bigNumberToNumber(account.total, 18) : 0
   return (
     <div className='border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6'>
-      <div className='flex items-center justify-between mb-10'>
+      <div className='flex items-center mb-10 gap-3'>
+        <Identicon value={account.id} size={42} />
         <h3 className='font-medium leading-none text-[#282929] text-sm break-all'>{account.id}</h3>
       </div>
       <div className='flow-root'>
