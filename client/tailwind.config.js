@@ -6,22 +6,23 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: true,
   theme: {
-    theme: {
+    fontFamily: {
+      montserrat: ['Montserrat'],
+    },
+    extend: {
       fontFamily: {
-        montserrat: ['Montserrat'],
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },
-      extend: {
-        fontFamily: {
-          sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
-        },
-        spacing: {
-          13: '3.125rem',
-          128: '32rem',
-          144: '36rem',
-        },
-        borderRadius: {
-          '4xl': '2rem',
-        },
+      fontSize: {
+        xs: ['13px', '16px'],
+      },
+      spacing: {
+        13: '3.125rem',
+        128: '32rem',
+        144: '36rem',
+      },
+      borderRadius: {
+        '4xl': '2rem',
       },
     },
   },

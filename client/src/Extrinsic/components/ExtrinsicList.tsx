@@ -57,7 +57,7 @@ const ExtrinsicList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base'>{`Extrinsics (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base font-medium'>{`Extrinsics (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />

@@ -19,7 +19,7 @@ type Props = {
 const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
   return (
     <div className='w-full'>
-      <div className='border border-slate-100 bg-white shadow rounded-xl mb-4 py-4 px-3 sm:p-6 w-full'>
+      <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 py-4 px-3 sm:p-6 w-full'>
         <div className='flex items-center justify-between mb-10'>
           <h3 className='font-semibold leading-none text-gray-900 text-sm lg:text-2xl'>
             Block #{block.height}

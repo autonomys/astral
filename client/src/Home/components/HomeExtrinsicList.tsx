@@ -32,7 +32,11 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
     {
       title: 'Hash',
       cells: extrinsics.map(({ id, hash }) => (
-        <Link key={`${id}-home-extrinsic-hash`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+        <Link
+          className='hover:text-[#DE67E4]'
+          key={`${id}-home-extrinsic-hash`}
+          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        >
           <div>{shortString(hash)}</div>
         </Link>
       )),
@@ -72,9 +76,9 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   const columns = generateColumns(extrinsics)
 
   return isDesktop ? (
-    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
+    <div className='flex-col p-4 w-full border border-gray-200 rounded-[20px] bg-white'>
       <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        <div className='text-gray-600 font-medium text-md leading-normal'>Latest Extrinsics</div>
         <Link
           to={INTERNAL_ROUTES.extrinsics.list}
           className='px-2 py-2 transition ease-in-out duration-150'
@@ -91,7 +95,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   ) : (
     <div className='w-full'>
       <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
+        <div className='text-gray-600 font-medium text-md leading-normal'>Latest Extrinsics</div>
         <Link
           to={INTERNAL_ROUTES.extrinsics.list}
           className='px-2 py-2 transition ease-in-out duration-150'

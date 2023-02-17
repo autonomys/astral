@@ -45,15 +45,15 @@ const Table: FC<Props> = ({
         <table className={`min-w-max w-full table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className={`text-[#857EC2] text-sm font-light ${tableHeaderProps}`}>
+              <tr className={`text-[#857EC2] text-sm ${tableHeaderProps}`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
                   <th key={`table-header-${id}-${index}`}>
                     {isNumeric ? (
-                      <div className='py-3 px-5 text-right'>{title}</div>
+                      <div className='py-3 px-5 text-right font-normal'>{title}</div>
                     ) : centerTitle ? (
-                      <div className='py-3 px-5 text-center'>{title}</div>
+                      <div className='py-3 px-5 text-center font-normal'>{title}</div>
                     ) : (
-                      <div className='py-3 px-5 text-left'>{title}</div>
+                      <div className='py-3 px-5 text-left font-normal'>{title}</div>
                     )}
                   </th>
                 ))}
@@ -64,7 +64,9 @@ const Table: FC<Props> = ({
             {rows?.map((row, index) => (
               <tr
                 key={`table-row-${id}-${index}`}
-                className={`border-b border-gray-200 hover:bg-gray-100 ${tableRowProps}`}
+                className={`hover:bg-gray-100 ${
+                  index !== rows.length - 1 && 'border-y border-gray-200'
+                } ${tableRowProps}`}
               >
                 {row.map((content, index) =>
                   index === 1 ? (

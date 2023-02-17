@@ -29,13 +29,13 @@ const Header: FC = () => {
               <LogoIcon fillColor='#282929' />
             </span>
           </Link>
-          <nav className='md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center'>
+          <nav className='md:ml-auto md:mr-auto flex flex-wrap items-center text-sm justify-center'>
             <Link
               to={INTERNAL_ROUTES.home}
               className={
                 isHomeActive
-                  ? 'text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] '
-                  : 'text-[#282929] font-semibold mr-5 hover:text-gray-900'
+                  ? 'text-white font-semibold mr-5 text-sm px-5 py-3 rounded-full block bg-[#241235] '
+                  : 'text-[#282929] text-sm font-semibold mr-5 hover:text-gray-900'
               }
             >
               Home

@@ -57,7 +57,7 @@ const LogList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base'>{`Logs (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base font-medium'>{`Logs (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <LogTable logs={logsConnection} isDesktop={isDesktop} />
