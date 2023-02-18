@@ -20,7 +20,7 @@ const AccountDetailsCard: FC<Props> = ({ account }) => {
   return (
     <div className='border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6'>
       <div className='flex items-center mb-10 gap-3'>
-        <Identicon value={account.id} size={42} />
+        <Identicon value={account.id} size={42} theme='beachball' />
         <h3 className='font-medium leading-none text-[#282929] text-sm break-all'>{account.id}</h3>
       </div>
       <div className='flow-root'>

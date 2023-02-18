@@ -43,7 +43,7 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
       title: 'Account',
       cells: accounts.map(({ id }) => (
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
-          <Identicon value={id} size={26} />
+          <Identicon value={id} size={26} theme='beachball' />
           <Link to={INTERNAL_ROUTES.accounts.id.page(id)}>
             <div>{isLargeLaptop ? id : shortString(id)}</div>
           </Link>
