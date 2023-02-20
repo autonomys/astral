@@ -9,16 +9,16 @@ const ErrorFallback = () => {
         <AstronautImage />
         <h2 className='mt-5 text-[#282929] text-xl  font-medium'>Something went wrong</h2>
         <p className='text-slate-600 mt-4 mb-8 lg:text-lg w-1/2'>
-          We apologize for the inconvenience. Please visit our{' '}
+          If the problem persists, visit our{' '}
           <a
             className='font-medium text-[#9179EC]'
             href='https://status.subspace.network/status'
             target='_blank'
             rel='noreferrer'
           >
-            status page
-          </a>{' '}
-          for updates and more information
+            Services Status Page
+          </a>
+          . Thank you for being so patient while we are fixing this issue.
         </p>
         <ArrowButton onClick={() => window.location.reload()}>Refresh</ArrowButton>
       </div>
