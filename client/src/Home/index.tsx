@@ -1,13 +1,14 @@
 import { FC } from 'react'
 import { useQuery } from '@apollo/client'
 import BN from 'bn.js'
+import { useErrorHandler } from 'react-error-boundary'
 
 // home
 import { HomeBlockList, HomeExtrinsicList, HomeChainInfo } from 'Home/components'
 import { QUERY_HOME } from 'Home/query'
 
 // common
-import { ErrorFallback, SearchBar, Spinner } from 'common/components'
+import { SearchBar, Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 const ACCOUNT_MIN_VAL = new BN(0.3)
@@ -19,13 +20,10 @@ const Home: FC = () => {
     variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
     pollInterval: 6000,
   })
+  useErrorHandler(homeQueryResult.error)
 
   if (homeQueryResult.loading) {
     return <Spinner />
-  }
-
-  if (homeQueryResult.error || !homeQueryResult.data) {
-    return <ErrorFallback error={homeQueryResult.error} />
   }
 
   return (
