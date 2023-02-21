@@ -21,7 +21,11 @@ const AccountExtrinsicList: FC<Props> = ({ extrinsics }) => {
     {
       title: 'Extrinsic Id',
       cells: extrinsics.map(({ block, pos, id }) => (
-        <Link key={`${id}-account-extrinsic-id`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+        <Link
+          key={`${id}-account-extrinsic-id`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        >
           <div>{`${block.height}-${pos}`}</div>
         </Link>
       )),

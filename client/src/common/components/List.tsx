@@ -21,9 +21,9 @@ export const StyledListItem: FC<StyledListItemProps> = ({ title, children }) => 
     <ListItem>
       <div className='flex space-x-4 justify-between'>
         <div className='min-w-0'>
-          <p className='text-md font-light text-gray-900 truncate break-all'>{title}</p>
+          <p className='text-xs md:text-sm font-light text-gray-900 truncate break-all'>{title}</p>
         </div>
-        <div className='inline-flex text-base font-normal text-gray-600 items-end break-all'>
+        <div className='inline-flex text-xs md:text-sm font-normal text-gray-600 items-end break-all'>
           {children}
         </div>
       </div>

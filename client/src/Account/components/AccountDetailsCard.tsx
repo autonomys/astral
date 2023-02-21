@@ -18,7 +18,7 @@ type Props = {
 const AccountDetailsCard: FC<Props> = ({ account }) => {
   const accountTotal = account.total ? bigNumberToNumber(account.total, 18) : 0
   return (
-    <div className='border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6'>
+    <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 p-4 sm:p-6'>
       <div className='flex items-center mb-10 gap-3'>
         <Identicon value={account.id} size={48} theme='beachball' />
         <h3 className='font-medium leading-none text-[#282929] text-sm break-all'>{account.id}</h3>

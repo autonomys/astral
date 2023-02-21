@@ -20,8 +20,12 @@ const BlockDetailsLogList: FC<Props> = ({ logs }) => {
     {
       title: 'Log Index',
       cells: logs.map(({ id }) => (
-        <Link key={`${id}-block-log-id`} to={INTERNAL_ROUTES.logs.id.page(id)}>
-          <div>{id}</div>
+        <Link
+          key={`${id}-block-log-id`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.logs.id.page(id)}
+        >
+          {id}
         </Link>
       )),
     },

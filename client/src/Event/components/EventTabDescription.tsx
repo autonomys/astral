@@ -14,7 +14,7 @@ type Props = {
 const EventTabDescription: FC<Props> = ({ event }) => {
   const [isActive, setIsActive] = useState(true)
   return (
-    <div className='text-xs bg-white rounded-lg sm:bg-inherit p-4'>
+    <div className='text-xs bg-white rounded-[20px] sm:bg-inherit p-4'>
       <div className='grid sm:grid-cols-4 mb-2 text-[#857EC2]'>
         <div>Event Id</div>
         <div>Hash</div>
