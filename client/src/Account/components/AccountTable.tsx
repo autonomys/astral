@@ -2,6 +2,7 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
+import Identicon from '@polkadot/react-identicon'
 
 // gql
 import { Account } from 'gql/graphql'
@@ -41,13 +42,12 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     {
       title: 'Account',
       cells: accounts.map(({ id }) => (
-        <Link
-          key={`${id}-account-id`}
-          className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.accounts.id.page(id)}
-        >
-          <div>{isLargeLaptop ? id : shortString(id)}</div>
-        </Link>
+        <div key={`${id}-account-id`} className='flex row items-center gap-3'>
+          <Identicon value={id} size={26} theme='beachball' />
+          <Link to={INTERNAL_ROUTES.accounts.id.page(id)} className='hover:text-[#DE67E4]'>
+            <div>{isLargeLaptop ? id : shortString(id)}</div>
+          </Link>
+        </div>
       )),
     },
     {
