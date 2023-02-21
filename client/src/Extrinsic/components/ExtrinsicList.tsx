@@ -1,12 +1,13 @@
 import { useState, FC } from 'react'
 import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
 
 // extrinsic
 import { ExtrinsicTable } from 'Extrinsic/components'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 
 // common
-import { Pagination, SearchBar, ErrorFallback, Spinner } from 'common/components'
+import { Pagination, SearchBar, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
@@ -21,12 +22,10 @@ const ExtrinsicList: FC = () => {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    return <ErrorFallback error={error} />
   }
 
   const extrinsicsConnection = data.extrinsicsConnection.edges.map((extrinsic) => extrinsic.node)
@@ -61,7 +60,7 @@ const ExtrinsicList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base dark:text-white'>{`Extrinsics (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Extrinsics (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />

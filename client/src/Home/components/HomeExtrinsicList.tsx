@@ -46,7 +46,11 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
     {
       title: 'Hash',
       cells: extrinsics.map(({ id, hash }) => (
-        <Link key={`${id}-home-extrinsic-hash`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+        <Link
+          className='hover:text-[#DE67E4]'
+          key={`${id}-home-extrinsic-hash`}
+          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        >
           <div>{shortString(hash)}</div>
         </Link>
       )),
@@ -86,7 +90,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   const columns = generateColumns(extrinsics)
 
   return isDesktop ? (
-    <div className='flex-col p-4 w-full border border-gray-200 dark:border-none rounded-lg bg-white dark:bg-gradient-to-r dark:from-[#3A2D85] dark:to-[#678CD5]'>
+    <div className='flex-col p-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#3A2D85] dark:to-[#678CD5]'>
       <HomeExtrinsicListHeader />
       <Table
         columns={columns}

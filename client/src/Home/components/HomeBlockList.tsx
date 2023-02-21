@@ -46,7 +46,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
       title: 'Height',
       cells: blocks.map(({ height, id }) => (
         <Link
-          className='flex gap-2'
+          className='flex gap-2 hover:text-[#DE67E4]'
           key={`${id}-home-block-height`}
           to={INTERNAL_ROUTES.blocks.id.page(height)}
         >
@@ -81,7 +81,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   const columns = generateColumns(blocks)
 
   return isDesktop ? (
-    <div className='flex-col p-4 w-full border border-gray-200 dark:border-none rounded-lg bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+    <div className='flex-col p-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
       <HomeBlockListHeader />
       <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />
     </div>

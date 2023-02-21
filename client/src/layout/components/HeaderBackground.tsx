@@ -15,7 +15,7 @@ const HeaderBackground: FC = () => {
     pathName === '/extrinsics'
 
   return (
-    <div className='w-full absolute'>
+    <div className='w-full absolute -z-10 top-36 '>
       <div
         className='w-full absolute -z-10 h-[472px] blur-[120px] mx-auto inset-x-0 left-1/2 -translate-x-1/2'
         style={{ background: 'rgba(255, 255, 255, 0.02)' }}
@@ -25,11 +25,12 @@ const HeaderBackground: FC = () => {
         <div className='rounded-full absolute left-[20%] top-[-340px] bg-[#ABCFEF] w-12 lg:w-[510px] h-[510px] dark:bg-transparent' />
       </div>
       {isListView && (
-        <img
-          className='hidden top-[-140px] md:left-[33%] lg:left-[49%] xl:left-[58.3%] 2xl:left-[59.7%] -z-10 md:block absolute dark:invisible'
-          src={planet}
-          alt='planet'
-        />
+        <div className='w-full flex container mx-auto px-5 xl:px-0'>
+          <div
+            className='w-full hidden -z-10 md:flex h-96 bg-no-repeat bg-right'
+            style={{ backgroundImage: `url(${planet})` }}
+          />
+        </div>
       )}
     </div>
   )

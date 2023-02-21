@@ -1,12 +1,13 @@
 import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
 
 // account
 import { AccountTable } from 'Account/components'
 import { QUERY_ACCOUNT_CONNECTION_LIST } from 'Account/query'
 
 // common
-import { SearchBar, Pagination, ErrorFallback, Spinner } from 'common/components'
+import { SearchBar, Pagination, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import { PAGE_SIZE } from 'common/constants'
 
@@ -18,12 +19,10 @@ const AccountList: FC = () => {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    return <ErrorFallback error={error} />
   }
 
   const accountsConnection = data.accountsConnection.edges.map((extrinsic) => extrinsic.node)
@@ -58,7 +57,7 @@ const AccountList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base dark:text-white'>{`Holders (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Holders (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <AccountTable accounts={accountsConnection} page={currentPage} />

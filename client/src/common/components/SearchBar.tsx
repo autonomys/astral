@@ -42,7 +42,7 @@ const SearchBar: FC = () => {
               name='searchType'
             >
               <div className='relative w-36'>
-                <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
+                <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
                   <div className='flex'>
                     <span className='ml-2 block truncate'>{values['searchType'].name}</span>
                     <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
@@ -65,7 +65,7 @@ const SearchBar: FC = () => {
                         key={personIdx}
                         className={({ active }) =>
                           `relative cursor-default select-none py-2 pl-4 md:pl-10 pr-4 dark:bg-[#1E254E] dark:text-white ${
-                            active ? 'bg-amber-100 text-amber-900' : 'text-gray-900'
+                            active ? 'bg-gray-100 text-amber-900' : 'text-gray-900'
                           }`
                         }
                         value={term}
@@ -80,7 +80,7 @@ const SearchBar: FC = () => {
                               {term.name}
                             </span>
                             {selected ? (
-                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600'>
+                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
                                 <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
                               </span>
                             ) : null}
@@ -106,7 +106,7 @@ const SearchBar: FC = () => {
                 />
                 <button
                   type='submit'
-                  className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-4 py-2 '
+                  className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-full text-sm px-4 py-2 '
                 >
                   <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
                 </button>

@@ -8,8 +8,8 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 const HeaderDropdownMenu: FC = () => {
   return (
-    <Popover className="relative font-['Montserrat']">
-      <Popover.Button className='flex justify-center items-center text-[#282929] dark:text-white font-semibold'>
+    <Popover className='relative'>
+      <Popover.Button className='flex font-["Montserrat"] justify-center items-center text-[#282929] text-sm font-semibold dark:text-white'>
         Blockchain
         <ChevronDownIcon className='ml-1 ui-open:rotate-180 ui-open:transform w-5 h-5' />
       </Popover.Button>
@@ -42,7 +42,10 @@ const HeaderDropdownMenu: FC = () => {
             >
               Extrinsics
             </Link>
-            <Link to={INTERNAL_ROUTES.events.list} className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'>
+            <Link
+              to={INTERNAL_ROUTES.events.list}
+              className='text-[#282929] font-medium border-b py-1 border-b-[#E4ECF3] dark:text-white'
+            >
               Events
             </Link>
             <Link to={INTERNAL_ROUTES.logs.list} className='text-[#282929] dark:text-white font-medium py-1'>

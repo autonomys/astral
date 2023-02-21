@@ -16,6 +16,7 @@ import HeaderBlockLink from 'common/components/HeaderBlockLink'
 import ExtrinsicCard from 'common/components/ExtrinsicCard'
 import EventCard from 'common/components/EventCard'
 import PageTabs from 'common/components/PageTabs'
+import ArrowButton from 'common/components/ArrowButton'
 
 export {
   Spinner,
@@ -39,6 +40,7 @@ export {
   ExtrinsicCard,
   EventCard,
   PageTabs,
+  ArrowButton,
 }
 
 export type { Column }

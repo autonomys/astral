@@ -19,7 +19,7 @@ const Footer: FC = () => {
                 </Link>
               </div>
               <div className='container mx-auto pt-20 pb-1 pr-5 sm:flex flex-wrap hidden flex-col sm:flex-row'>
-                <p className='text-white text-sm text-center sm:text-left'>
+                <p className='text-[#ffffffb3] text-xs text-center sm:text-left'>
                   © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
                 </p>
               </div>
@@ -27,13 +27,13 @@ const Footer: FC = () => {
           </div>
           <div className='grid grid-cols-1 gap-8 sm:gap-6 sm:grid-cols-2'>
             <div>
-              <h2 className='mb-6 title-font uppercase font-semibold text-white text-sm'>Links:</h2>
-              <ul className='text-gray-600 dark:text-gray-400'>
+              <h2 className='mb-6 title-font uppercase font-semibold text-white text-xs'>Links:</h2>
+              <ul className='text-[##ffffffb3] dark:text-gray-400'>
                 <li className='mb-4'>
                   <a
                     href={EXTERNAL_ROUTES.forum}
                     target='_blank'
-                    className='text-[#ffffffb3] hover:text-gray-800'
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                     rel='noreferrer'
                   >
                     Forum
@@ -43,7 +43,7 @@ const Footer: FC = () => {
                   <a
                     href={EXTERNAL_ROUTES.docs}
                     target='_blank'
-                    className='text-[#ffffffb3] hover:text-gray-800'
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                     rel='noreferrer'
                   >
                     Docs
@@ -53,7 +53,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.subspace}
-                    className='text-[#ffffffb3] hover:text-gray-800'
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                     rel='noreferrer'
                   >
                     Website
@@ -63,7 +63,7 @@ const Footer: FC = () => {
             </div>
             <div className='grid grid-cols-2 gap-6'>
               <div>
-                <h2 className='mb-6 title-font uppercase font-semibold text-white text-sm'>
+                <h2 className='mb-6 title-font uppercase font-semibold text-white text-xs'>
                   Social:
                 </h2>
                 <ul className='text-gray-600 dark:text-gray-400'>
@@ -71,7 +71,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.twitter}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Twitter
@@ -81,7 +81,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.discord}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Discord
@@ -91,7 +91,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.telegram}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Telegram
@@ -101,7 +101,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.github}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Github
@@ -115,7 +115,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.reddit}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Reddit
@@ -125,7 +125,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.medium}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Medium
@@ -135,7 +135,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.youtube}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       Youtube
@@ -145,7 +145,7 @@ const Footer: FC = () => {
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.linkedin}
-                      className='text-[#ffffffb3] hover:text-gray-800'
+                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
                       rel='noreferrer'
                     >
                       LinkedIn
@@ -157,7 +157,7 @@ const Footer: FC = () => {
           </div>
         </div>
         <div className='container mx-auto pt-20 pb-1 pr-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
-          <p className='text-white text-sm text-center sm:text-left'>
+          <p className='text-[#ffffffb3] text-sm text-center sm:text-left'>
             © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
           </p>
         </div>

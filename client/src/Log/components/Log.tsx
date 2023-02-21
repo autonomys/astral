@@ -1,9 +1,10 @@
 import { FC } from 'react'
 import { useQuery } from '@apollo/client'
 import { useParams } from 'react-router-dom'
+import { useErrorHandler } from 'react-error-boundary'
 
 // common
-import { Spinner, ErrorFallback } from 'common/components'
+import { Spinner } from 'common/components'
 
 // layout
 import { NotFound } from 'layout/components'
@@ -20,12 +21,10 @@ const Log: FC = () => {
     },
   })
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    return <ErrorFallback error={error} />
   }
 
   if (!data.logById) {

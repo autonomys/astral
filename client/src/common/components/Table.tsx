@@ -45,15 +45,15 @@ const Table: FC<Props> = ({
         <table className={`min-w-max w-full table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className={`text-[#857EC2] text-sm font-light ${tableHeaderProps} dark:text-white/75`}>
+              <tr className={`text-[#857EC2] text-sm dark:text-white/75 ${tableHeaderProps}`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
                   <th key={`table-header-${id}-${index}`} className="font-normal">
                     {isNumeric ? (
-                      <div className='py-3 px-5 text-right'>{title}</div>
+                      <div className='py-3 px-5 text-right font-normal'>{title}</div>
                     ) : centerTitle ? (
-                      <div className='py-3 px-5 text-center'>{title}</div>
+                      <div className='py-3 px-5 text-center font-normal'>{title}</div>
                     ) : (
-                      <div className='py-3 px-5 text-left'>{title}</div>
+                      <div className='py-3 px-5 text-left font-normal'>{title}</div>
                     )}
                   </th>
                 ))}
@@ -64,7 +64,9 @@ const Table: FC<Props> = ({
             {rows?.map((row, index) => (
               <tr
                 key={`table-row-${id}-${index}`}
-                className={`border-b border-gray-200 hover:bg-gray-100 ${tableRowProps} dark:hover:bg-transparent/10`}
+                className={`hover:bg-gray-100 dark:hover:bg-transparent/10 ${
+                  index !== rows.length - 1 && 'border-y border-gray-200'
+                } ${tableRowProps}`}
               >
                 {row.map((content, index) =>
                   index === 1 ? (

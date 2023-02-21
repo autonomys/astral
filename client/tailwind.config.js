@@ -15,22 +15,23 @@ module.exports = {
         light: 'linear-gradient(180deg, #f1f7f8 0%, #effdff 100%)',
       },
     },
+    fontFamily: {
+      montserrat: ['Montserrat'],
+    },
     theme: {
       fontFamily: {
-        montserrat: ['Montserrat'],
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },
-      extend: {
-        fontFamily: {
-          sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
-        },
-        spacing: {
-          13: '3.125rem',
-          128: '32rem',
-          144: '36rem',
-        },
-        borderRadius: {
-          '4xl': '2rem',
-        },
+      fontSize: {
+        xs: ['13px', '16px'],
+      },
+      spacing: {
+        13: '3.125rem',
+        128: '32rem',
+        144: '36rem',
+      },
+      borderRadius: {
+        '4xl': '2rem',
       },
     },
   },

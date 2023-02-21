@@ -12,7 +12,11 @@ export const generateExtrinsicColumns = (extrinsics: Extrinsic[]): Column[] => [
   {
     title: 'Extrinsic Id',
     cells: extrinsics.map(({ block, pos, id }) => (
-      <Link key={`${id}-account-extrinsic-id`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+      <Link
+        key={`${id}-account-extrinsic-id`}
+        to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        className='hover:text-[#DE67E4]'
+      >
         <div>{`${block.height}-${pos}`}</div>
       </Link>
     )),
