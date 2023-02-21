@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import Identicon from '@polkadot/react-identicon'
 
 // gql
 import { Account } from 'gql/graphql'
@@ -29,9 +30,12 @@ const AccountListCard: FC<Props> = ({ account, index }) => {
     <MobileCard
       id='account-list-mobile'
       header={
-        <Link key={`${account.id}-account-id`} to={INTERNAL_ROUTES.accounts.id.page(account.id)}>
-          <p className='font-medium text-[#241235] text-sm break-all'>{account.id}</p>
-        </Link>
+        <div key={`${account.id}-account-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
+          <Identicon value={account.id} size={49} theme='beachball' />
+          <Link to={INTERNAL_ROUTES.accounts.id.page(account.id)}>
+            <p className='font-medium text-[#241235] text-sm break-all'>{account.id}</p>
+          </Link>
+        </div>
       }
       body={body}
     />
