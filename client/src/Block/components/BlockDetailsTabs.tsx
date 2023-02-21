@@ -25,7 +25,7 @@ type Props = {
 const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
   return (
     <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
+      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4' : ''}
       tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
     >
       <Tab title={`Extrinsics (${extrinsics.length})`}>
