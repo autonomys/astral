@@ -1,16 +1,15 @@
-import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { ComponentStory, ComponentMeta } from '@storybook/react'
 
-import ErrorFallback from '.';
+import ErrorFallback from '.'
 
 export default {
   title: 'Common/ErrorFallback',
   component: ErrorFallback,
-} as ComponentMeta<typeof ErrorFallback>;
+} as ComponentMeta<typeof ErrorFallback>
 
 const Template: ComponentStory<typeof ErrorFallback> = () => (
-  <ErrorFallback />
-);
+  <ErrorFallback resetErrorBoundary={() => null} />
+)
 
-export const Primary = Template.bind({});
-Primary.args = {};
+export const Primary = Template.bind({})
+Primary.args = {}

@@ -1,12 +1,13 @@
 import { useState, FC } from 'react'
 import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
 
 // extrinsic
 import { ExtrinsicTable } from 'Extrinsic/components'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 
 // common
-import { Pagination, SearchBar, ErrorFallback, Spinner } from 'common/components'
+import { Pagination, SearchBar, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
@@ -21,14 +22,10 @@ const ExtrinsicList: FC = () => {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    // TODO: consider adding error monitoring
-    console.error(error)
-    return <ErrorFallback />
   }
 
   const extrinsicsConnection = data.extrinsicsConnection.edges.map((extrinsic) => extrinsic.node)

@@ -2,7 +2,11 @@ import { ArrowButton } from 'common/components'
 
 import AstronautImage from './AstronautImage'
 
-const ErrorFallback = () => {
+interface Props {
+  resetErrorBoundary: () => void
+}
+
+const ErrorFallback = ({ resetErrorBoundary }: Props) => {
   return (
     <div className='flex items-center justify-center p-5 w-full'>
       <div className='text-center container flex flex-col items-center justify-center'>
@@ -20,7 +24,7 @@ const ErrorFallback = () => {
           </a>
           . Thank you for being so patient while we are fixing this issue.
         </p>
-        <ArrowButton onClick={() => window.location.reload()}>Refresh</ArrowButton>
+        <ArrowButton onClick={resetErrorBoundary}>Refresh</ArrowButton>
       </div>
     </div>
   )

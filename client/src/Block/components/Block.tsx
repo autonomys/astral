@@ -1,10 +1,11 @@
 import { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
 
 // common
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import { ErrorFallback, Spinner } from 'common/components'
+import { Spinner } from 'common/components'
 
 // layout
 import { NotFound } from 'layout/components'
@@ -22,14 +23,10 @@ const Block: FC = () => {
 
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    // TODO: consider adding error monitoring
-    console.error(error)
-    return <ErrorFallback />
   }
 
   if (!data.blocks.length) {
