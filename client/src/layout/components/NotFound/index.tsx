@@ -11,11 +11,11 @@ const NotFound: FC = () => {
   const navigate = useNavigate()
 
   return (
-    <section className='flex items-center h-full p-16 dark:bg-gray-900 dark:text-gray-100'>
+    <section className='flex items-center h-full p-16'>
       <div className='container flex flex-col items-center justify-center px-5 mx-auto my-8'>
         <NotFoundImage />
         <div className='max-w-md text-center'>
-          <h2 className='mt-8 mb-8 text-[#282929] text-xl'>
+          <h2 className='mt-8 mb-8 text-[#282929] text-xl dark:text-white'>
             The page you are looking for could not be found.
           </h2>
           <ArrowButton onClick={() => navigate(INTERNAL_ROUTES.home)}>Take Me Home</ArrowButton>
