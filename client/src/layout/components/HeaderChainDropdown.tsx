@@ -42,7 +42,7 @@ const HeaderChainDropdown: FC = () => {
                 key={chainIdx}
                 className={({ active }) =>
                   `relative cursor-default select-none py-2 pl-4 text-gray-900 md:pl-10 pr-4 dark:text-white ${
-                    active && 'bg-gray-100'
+                    active && 'bg-gray-100 dark:bg-[#2A345E]'
                   }`
                 }
                 value={chain}
