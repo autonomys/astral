@@ -1,4 +1,5 @@
-import { HashRouter, Routes, Route } from 'react-router-dom'
+import { useLayoutEffect } from 'react'
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { ErrorBoundary } from 'react-error-boundary'
 
@@ -35,49 +36,60 @@ import { Event, EventList } from 'Event/components'
 // log
 import { Log, LogList } from 'Log/components'
 
+// force page scroll to top on route change
+function ScrollToTopWrapper({ children }) {
+  const location = useLocation()
+  useLayoutEffect(() => {
+    document.documentElement.scrollTo(0, 0)
+  }, [location.pathname])
+  return children
+}
+
 function App() {
   return (
     <HashRouter>
-      <Layout>
-        <DomainHeader />
-        <Header />
-        <ErrorBoundary
-          fallbackRender={ErrorFallback}
-          onReset={() => window.location.reload()}
-          // TODO: consider adding error monitoring
-          onError={(error) => console.error(error)}
-        >
-          <Container>
-            <HeaderBackground />
-            <Routes>
-              <Route element={<Home />} path={INTERNAL_ROUTES.home} />
-              <Route path={INTERNAL_ROUTES.blocks.list}>
-                <Route index element={<BlockList />} />
-                <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.extrinsics.list}>
-                <Route index element={<ExtrinsicList />} />
-                <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.accounts.list}>
-                <Route index element={<AccountList />} />
-                <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.events.list}>
-                <Route index element={<EventList />} />
-                <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
-              </Route>
-              <Route path={INTERNAL_ROUTES.logs.list}>
-                <Route index element={<LogList />} />
-                <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-              </Route>
-              <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
-            </Routes>
-          </Container>
-        </ErrorBoundary>
-        <Footer />
-        <Toaster />
-      </Layout>
+      <ScrollToTopWrapper>
+        <Layout>
+          <DomainHeader />
+          <Header />
+          <ErrorBoundary
+            fallbackRender={ErrorFallback}
+            onReset={() => window.location.reload()}
+            // TODO: consider adding error monitoring
+            onError={(error) => console.error(error)}
+          >
+            <Container>
+              <HeaderBackground />
+              <Routes>
+                <Route element={<Home />} path={INTERNAL_ROUTES.home} />
+                <Route path={INTERNAL_ROUTES.blocks.list}>
+                  <Route index element={<BlockList />} />
+                  <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
+                </Route>
+                <Route path={INTERNAL_ROUTES.extrinsics.list}>
+                  <Route index element={<ExtrinsicList />} />
+                  <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
+                </Route>
+                <Route path={INTERNAL_ROUTES.accounts.list}>
+                  <Route index element={<AccountList />} />
+                  <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+                </Route>
+                <Route path={INTERNAL_ROUTES.events.list}>
+                  <Route index element={<EventList />} />
+                  <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
+                </Route>
+                <Route path={INTERNAL_ROUTES.logs.list}>
+                  <Route index element={<LogList />} />
+                  <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
+                </Route>
+                <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
+              </Routes>
+            </Container>
+          </ErrorBoundary>
+          <Footer />
+          <Toaster />
+        </Layout>
+      </ScrollToTopWrapper>
     </HashRouter>
   )
 }
