@@ -10,8 +10,8 @@ const DomainHeader: FC = () => {
   return (
     <div className='px-4 xl:px-0 z-10'>
       <Tabs
-        tabStyle='bg-[#241235] rounded-full mt-5 px-4 container mx-auto'
-        pillStyle='bg-[#241235] text-white'
+        tabStyle='bg-[#241235] rounded-full mt-5 px-4 container mx-auto dark:bg-[#1E254E]'
+        pillStyle='bg-[#241235] text-white dark:bg-[#1E254E]'
         activePillStyle='bg-[#DE67E4] text-white'
       >
         {domains.map((item, index) => (

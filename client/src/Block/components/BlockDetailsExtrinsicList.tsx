@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom'
 
 // common
 import { Table, Column, StatusIcon } from 'common/components'
-import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)
 

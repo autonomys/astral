@@ -4,7 +4,7 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 
 // common
-import { MobileCard, Tabs, Tab } from 'common/components'
+import { MobileCard, Tab, PageTabs } from 'common/components'
 import { shortString } from 'common/helpers'
 
 // event
@@ -17,14 +17,11 @@ type Props = {
 
 const EventDetailsTab: FC<Props> = ({ event, isDesktop = false }) => {
   return (
-    <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4' : ''}
-      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
-    >
+    <PageTabs isDesktop={isDesktop}>
       <Tab title='Events'>
         {isDesktop ? <EventTabDescription event={event} /> : <EventDetailsCard event={event} />}
       </Tab>
-    </Tabs>
+    </PageTabs>
   )
 }
 
@@ -40,12 +37,12 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
     <MobileCard
       id='extrinsic-details-event-mobile'
       header={
-        <h3 className='font-medium text-[#241235] text-sm'>{`$${event.block?.height}-${event.pos}`}</h3>
+        <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`$${event.block?.height}-${event.pos}`}</h3>
       }
       body={body}
     >
-      <div className='block bg-[#F3FBFF] rounded-lg px-5 py-8 mt-5'>
-        <div className='w-full divide-y divide-gray-200 text-[#282929] text-xs'>
+      <div className='block bg-[#F3FBFF] rounded-lg px-5 py-8 mt-5 dark:bg-white/10'>
+        <div className='w-full divide-y divide-gray-200 text-[#282929] text-xs dark:text-white dark:divide-white/20'>
           <div className='flex justify-between  py-2'>
             <div>Signer</div>
             <div>{event.extrinsic?.signer?.id || '-'}</div>

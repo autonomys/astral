@@ -33,7 +33,7 @@ const AccountListCard: FC<Props> = ({ account, index }) => {
         <div key={`${account.id}-account-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
           <Identicon value={account.id} size={49} theme='beachball' />
           <Link to={INTERNAL_ROUTES.accounts.id.page(account.id)}>
-            <p className='font-medium text-[#241235] text-sm break-all'>{account.id}</p>
+            <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>{account.id}</p>
           </Link>
         </div>
       }

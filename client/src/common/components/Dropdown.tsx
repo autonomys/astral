@@ -3,18 +3,11 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 
 // common
-import SubspaceSymbol from 'common/icons/SubspaceSymbol'
-
-const searchTerms = [
-  { id: 1, name: 'All', unavailable: false },
-  { id: 2, name: 'Block', unavailable: false },
-  { id: 3, name: 'Extrinsic', unavailable: false },
-  { id: 4, name: 'Account', unavailable: true },
-  { id: 5, name: 'Event', unavailable: false },
-]
+import SubspaceSymbol from 'common/icons/SubspaceSymbol';
+import { searchTypes } from 'common/constants'
 
 const Dropdown: FC = () => {
-  const [selected, setSelected] = useState(searchTerms[0])
+  const [selected, setSelected] = useState(searchTypes[0]);
   return (
     <Listbox value={selected} onChange={setSelected}>
       <div className='relative mt-1 w-36'>
@@ -36,8 +29,8 @@ const Dropdown: FC = () => {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
-            {searchTerms.map((term, personIdx) => (
+          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+            {searchTypes.map((term, personIdx) => (
               <Listbox.Option
                 key={personIdx}
                 className={({ active }) =>

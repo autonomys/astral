@@ -4,12 +4,21 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: true,
+  darkMode: 'class',
+  variants: {
+    extend: { backgroundImage: ['dark'] },
+  },
   theme: {
+    extend: {
+      backgroundImage: {
+        dark: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
+        light: 'linear-gradient(180deg, #f1f7f8 0%, #effdff 100%)',
+      },
+    },
     fontFamily: {
       montserrat: ['Montserrat'],
     },
-    extend: {
+    theme: {
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
       },

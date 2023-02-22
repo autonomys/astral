@@ -45,9 +45,9 @@ const Table: FC<Props> = ({
         <table className={`min-w-max w-full table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className={`text-[#857EC2] text-sm ${tableHeaderProps}`}>
+              <tr className={`text-[#857EC2] text-sm dark:text-white/75 ${tableHeaderProps}`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
-                  <th key={`table-header-${id}-${index}`}>
+                  <th key={`table-header-${id}-${index}`} className="font-normal">
                     {isNumeric ? (
                       <div className='py-3 px-5 text-right font-normal'>{title}</div>
                     ) : centerTitle ? (
@@ -60,11 +60,11 @@ const Table: FC<Props> = ({
               </tr>
             </thead>
           ) : null}
-          <tbody className='text-gray-600 text-sm font-light'>
+          <tbody className='text-gray-600 text-sm font-light dark:text-white'>
             {rows?.map((row, index) => (
               <tr
                 key={`table-row-${id}-${index}`}
-                className={`hover:bg-gray-100 ${
+                className={`hover:bg-gray-100 dark:hover:bg-transparent/10 ${
                   index !== rows.length - 1 && 'border-y border-gray-200'
                 } ${tableRowProps}`}
               >
@@ -88,7 +88,7 @@ const Table: FC<Props> = ({
         </table>
         {!hasRows ? (
           <div className='flex align-middle justify-center'>
-            <p className='text-gray-600 text-md font-medium'>{emptyMessage}</p>
+            <p className='text-gray-600 text-md font-medium dark:text-white'>{emptyMessage}</p>
           </div>
         ) : null}
       </>

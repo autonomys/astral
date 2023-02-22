@@ -28,7 +28,7 @@ const EventListCard: FC<Props> = ({ event }) => {
       id='event-list-mobile'
       header={
         <Link className='flex gap-2' to={INTERNAL_ROUTES.events.id.page(event.id)}>
-          <h3 className='font-medium text-[#241235] text-sm'>{`${event.block?.height}-${event.pos}`}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${event.block?.height}-${event.pos}`}</h3>
         </Link>
       }
       body={body}
