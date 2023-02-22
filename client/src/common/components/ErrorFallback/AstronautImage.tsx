@@ -6,7 +6,7 @@ const AstronautImage = () => (
     fill='none'
     xmlns='http://www.w3.org/2000/svg'
   >
-    <ellipse cx='82.5' cy='175' rx='73.5' ry='10' fill='#D3DEF5' />
+    <ellipse cx='82.5' cy='175' rx='73.5' ry='10' fill='currentColor' />
     <mask
       id='path-2-outside-1_799_12141'
       maskUnits='userSpaceOnUse'
