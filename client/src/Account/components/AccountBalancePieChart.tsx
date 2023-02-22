@@ -6,12 +6,14 @@ import { Account } from 'gql/graphql'
 
 // common
 import { bigNumberToNumber } from 'common/helpers'
+import useTheme from 'common/hooks/useTheme'
 
 type Props = {
   account: Account
 }
 
 const AccountBalancePieChart: FC<Props> = ({ account }) => {
+  const [isDark] = useTheme()
   const otherNumber = Number(account.total) - Number(account.free) - Number(account.reserved)
   const transferable = account.free ? bigNumberToNumber(account.free, 18) : 0
   const staking = account.reserved ? bigNumberToNumber(account.reserved, 18) : 0
@@ -38,7 +40,14 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
     },
   ]
 
-  const emptyState = [{ id: 'No value to show', label: '', value: 0, color: '#e5e7eb' }]
+  const emptyState = [
+    {
+      id: 'No value to show',
+      label: '',
+      value: 1,
+      color: isDark ? '#D9F0FC' : '#e5e7eb',
+    },
+  ]
 
   const isEmpty = other === 0 && staking === 0 && transferable === 0
 
@@ -55,6 +64,8 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
         colors={{ datum: 'data.color' }}
         enableArcLabels={false}
         sortByValue={true}
+        // do not render tooltip if there is no data
+        tooltip={isEmpty ? () => null : undefined}
       />
     </div>
   )
