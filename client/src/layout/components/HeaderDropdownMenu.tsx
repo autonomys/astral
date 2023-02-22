@@ -23,7 +23,7 @@ const HeaderDropdownMenu: FC = () => {
         leaveTo='opacity-0 translate-y-1'
       >
         <Popover.Panel className='absolute'>
-          <div className='flex flex-col bg-white dark:bg-[#1E254E] w-44 rounded-md p-6 z-50'>
+          <div className='flex flex-col bg-white dark:bg-[#1E254E] w-44 rounded-md p-6 z-50 shadow-md'>
             <Link
               to={INTERNAL_ROUTES.accounts.list}
               className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
