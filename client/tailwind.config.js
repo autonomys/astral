@@ -11,7 +11,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        dark: 'url("./images/dark-bg.jpg")',
+        dark: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
         light: 'linear-gradient(180deg, #f1f7f8 0%, #effdff 100%)',
       },
     },
