@@ -16,7 +16,7 @@ const LogDetailsTab: FC<Props> = ({ events }) => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
 
   return (
-    <PageTabs>
+    <PageTabs isDesktop={isDesktop}>
       <Tab title='Events'>
         {isDesktop ? (
           <LogDetailsEventList events={events} />

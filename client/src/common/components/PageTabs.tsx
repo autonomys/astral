@@ -21,8 +21,10 @@ const PageTabs: FC<Props> = ({ children, isDesktop = false }) => {
           : ''
       }
       tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5 dark:bg-[#1E254E]' : ''}
-      pillStyle={!isDesktop ? 'dark:bg-transparent dark:text-white' : ''}
-      activePillStyle={!isDesktop ? 'dark:bg-[#DE67E4] dark:text-white' : ''}
+      pillStyle={`dark:text-white ${isDesktop && 'dark:bg-transparent'}`}
+      activePillStyle={`dark:text-white text-white bg-[#241235] ${
+        isDesktop ? 'dark:bg-[#1E254E]' : 'dark:bg-[#DE67E4]'
+      }`}
     >
       {children}
     </Tabs>

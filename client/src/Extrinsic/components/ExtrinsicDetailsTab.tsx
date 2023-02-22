@@ -16,7 +16,7 @@ type Props = {
 
 const ExtrinsicDetailsTab: FC<Props> = ({ events, isDesktop = false }) => {
   return (
-    <PageTabs>
+    <PageTabs isDesktop={isDesktop}>
       <Tab title={`Events (${events.length})`}>
         {isDesktop ? (
           <ExtrinsicDetailsEventList events={events} />

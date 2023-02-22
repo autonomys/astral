@@ -24,7 +24,7 @@ type Props = {
 
 const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
   return (
-    <PageTabs>
+    <PageTabs isDesktop={isDesktop}>
       <Tab title={`Extrinsics (${extrinsics.length})`}>
         {isDesktop ? (
           <BlockDetailsExtrinsicList extrinsics={extrinsics} />
@@ -90,7 +90,7 @@ const BlockDetailsLogCard: FC<LogCardProps> = ({ log }) => {
   return (
     <MobileCard
       id='block-details-log-mobile'
-      header={<h3 className='font-medium text-[#241235] text-sm'>{log.id}</h3>}
+      header={<h3 className='font-medium text-[#241235] dark:text-white text-sm'>{log.id}</h3>}
       body={body}
     />
   )

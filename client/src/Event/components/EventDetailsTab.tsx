@@ -17,7 +17,7 @@ type Props = {
 
 const EventDetailsTab: FC<Props> = ({ event, isDesktop = false }) => {
   return (
-    <PageTabs>
+    <PageTabs isDesktop={isDesktop}>
       <Tab title='Events'>
         {isDesktop ? <EventTabDescription event={event} /> : <EventDetailsCard event={event} />}
       </Tab>

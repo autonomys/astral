@@ -27,7 +27,7 @@ const HeaderBackground: FC = () => {
       {isListView && (
         <div className='w-full flex container mx-auto px-5 xl:px-0'>
           <div
-            className='w-full hidden -z-10 md:flex h-96 bg-no-repeat bg-right'
+            className='w-full hidden -z-10 md:flex h-96 bg-no-repeat bg-right dark:hidden'
             style={{ backgroundImage: `url(${planet})` }}
           />
         </div>
