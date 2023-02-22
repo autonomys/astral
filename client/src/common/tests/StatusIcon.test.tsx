@@ -1,13 +1,18 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 // common - statusIcon
 import { StatusIcon } from 'common/components'
 
 describe('statusIcon', () => {
-  it('renders properly', async () => {
-    render(<StatusIcon status={true} />)
-    // const element = await screen.findByText('Oops something went wrong')
+  it('renders check icon', async () => {
+    const { asFragment } = render(<StatusIcon status={true} />)
 
-    // expect(element).toBeInTheDocument()
+    expect(asFragment()).toMatchSnapshot()
+  })
+
+  it('renders clock icon', async () => {
+    const { asFragment } = render(<StatusIcon status={false} />)
+
+    expect(asFragment()).toMatchSnapshot()
   })
 })

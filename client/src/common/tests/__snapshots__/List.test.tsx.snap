@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`List renders properly 1`] = `
+<DocumentFragment>
+  <ul
+    class="divide-y divide-gray-200"
+  >
+    <li
+      class="py-3 sm:py-4"
+    >
+      Sample item
+    </li>
+  </ul>
+</DocumentFragment>
+`;

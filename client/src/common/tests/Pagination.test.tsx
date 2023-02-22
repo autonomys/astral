@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 // common - pagination
 import { Pagination } from 'common/components'
 
 describe('pagination', () => {
   it('renders properly', async () => {
-    render(
+    const { asFragment } = render(
       <Pagination
         totalCount={100}
         pageSize={10}
@@ -17,8 +17,7 @@ describe('pagination', () => {
         handleGetPage={() => 0}
       />,
     )
-    // const element = await screen.findByText('Oops something went wrong')
 
-    // expect(element).toBeInTheDocument()
+    expect(asFragment()).toMatchSnapshot()
   })
 })

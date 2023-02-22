@@ -5,9 +5,8 @@ import { CopyButton } from 'common/components'
 
 describe('copyButton', () => {
   it('renders properly', async () => {
-    render(<CopyButton value='Value to by copied' />)
-    // const element = await screen.findByText('My accordion')
+    const { asFragment } = render(<CopyButton value='Value to by copied' />)
 
-    // expect(element).toBeInTheDocument()
+    expect(asFragment()).toMatchSnapshot()
   })
 })

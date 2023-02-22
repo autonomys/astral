@@ -1,17 +1,16 @@
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 
 // common - Tabs
 import { Tabs, Tab } from 'common/components'
 
 describe('Tabs', () => {
   it('renders properly', async () => {
-    render(
+    const { asFragment } = render(
       <Tabs>
         <Tab title='Tab title'>Sample content</Tab>
       </Tabs>,
     )
-    // const element = await screen.findByText('Oops something went wrong')
 
-    // expect(element).toBeInTheDocument()
+    expect(asFragment()).toMatchSnapshot()
   })
 })

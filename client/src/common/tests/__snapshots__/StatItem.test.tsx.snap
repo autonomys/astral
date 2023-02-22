@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`statItem renders properly 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-col"
+  >
+    <span
+      class="text-[#857EC2] font-normal text-xs"
+    >
+      sample title
+    </span>
+    <span
+      class="font-medium text-[#282929] text-sm"
+    >
+      value
+    </span>
+  </div>
+</DocumentFragment>
+`;

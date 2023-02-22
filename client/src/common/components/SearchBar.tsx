@@ -12,15 +12,14 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 type SearchType = {
   id: number
   name: string
-  unavailable: boolean
 }
 
 const searchTypes: SearchType[] = [
-  { id: 1, name: 'All', unavailable: false },
-  { id: 2, name: 'Block', unavailable: false },
-  { id: 3, name: 'Extrinsic', unavailable: false },
-  { id: 4, name: 'Account', unavailable: true },
-  { id: 5, name: 'Event', unavailable: false },
+  { id: 1, name: 'All' },
+  { id: 2, name: 'Block' },
+  { id: 3, name: 'Extrinsic' },
+  { id: 4, name: 'Account' },
+  { id: 5, name: 'Event' },
 ]
 
 interface FormValues {
@@ -50,9 +49,10 @@ const SearchBar: FC = () => {
         <Form className='w-full my-8' onSubmit={handleSubmit} data-testid='testSearchForm'>
           <div className='flex w-full items-center'>
             <Listbox
-              value={values['searchType']}
+              value={values.searchType}
               onChange={(val) => setFieldValue('searchType', val)}
               name='searchType'
+              data-testid='search-type-list'
             >
               <div className='relative w-36'>
                 <Listbox.Button className='relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm'>
@@ -108,6 +108,7 @@ const SearchBar: FC = () => {
             <div className='ml-4 w-full'>
               <div className='relative'>
                 <input
+                  data-testid='search-term-input'
                   id='searchTerm'
                   className={
                     errors.searchTerm && touched.searchTerm
@@ -116,6 +117,7 @@ const SearchBar: FC = () => {
                   }
                   placeholder={isDesktop ? 'Search for Block / Account ...' : 'Search...'}
                   name='searchTerm'
+                  value={values.searchTerm}
                   onChange={handleChange}
                 />
                 <button

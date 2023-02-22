@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Common table test table display 1`] = `
+<DocumentFragment>
+  <div
+    class="w-full"
+  >
+    <table
+      class="min-w-max w-full table-auto font-['Montserrat'] undefined"
+    >
+      <thead>
+        <tr
+          class="text-[#857EC2] text-sm font-light undefined"
+        >
+          <th>
+            <div
+              class="py-3 px-5 text-left"
+            >
+              Colum 1
+            </div>
+          </th>
+          <th>
+            <div
+              class="py-3 px-5 text-left"
+            >
+              Colum 2
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody
+        class="text-gray-600 text-sm font-light"
+      >
+        <tr
+          class="border-b border-gray-200 hover:bg-gray-100 undefined"
+        >
+          <td
+            class="py-3 px-5 text-left"
+          >
+            Info 1
+          </td>
+          <td
+            class="py-3 px-5 text-left whitespace-nowrap"
+          >
+            Info 2
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</DocumentFragment>
+`;

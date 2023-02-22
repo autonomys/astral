@@ -23,12 +23,10 @@ describe('Common table', () => {
       },
     ]
 
-    render(<Table columns={columns} emptyMessage='no info to show' id='sample-id' />)
-    const table = screen.getByRole('table')
+    const { asFragment } = render(
+      <Table columns={columns} emptyMessage='no info to show' id='sample-id' />,
+    )
 
-    const colums = screen.getAllByRole('columnheader')
-    expect(colums.length).toBe(2)
-
-    expect(table).toBeInTheDocument()
+    expect(asFragment()).toMatchSnapshot()
   })
 })

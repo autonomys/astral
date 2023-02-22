@@ -5,9 +5,8 @@ import { Dropdown } from 'common/components'
 
 describe('Dropdown', () => {
   it('renders properly', async () => {
-    render(<Dropdown />)
-    // const element = await screen.findByText('My accordion')
+    const { asFragment } = render(<Dropdown />)
 
-    // expect(element).toBeInTheDocument()
+    expect(asFragment()).toMatchSnapshot()
   })
 })
