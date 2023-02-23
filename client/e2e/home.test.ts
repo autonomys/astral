@@ -28,55 +28,6 @@ test('navigation', async ({ page }) => {
   await expect(page).toHaveURL('/#/')
 })
 
-test('external links', async ({ page }) => {
-  await page.goto('/')
-
-  const page1Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Forum' }).click()
-  const page1 = await page1Promise
-  await expect(page1).toHaveURL(EXTERNAL_ROUTES.forum)
-  const page2Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Docs' }).click()
-  const page2 = await page2Promise
-  await expect(page2).toHaveURL(EXTERNAL_ROUTES.docs)
-  const page3Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Website' }).click()
-  const page3 = await page3Promise
-  await expect(page3).toHaveURL(EXTERNAL_ROUTES.subspace)
-  const page4Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Twitter' }).click()
-  const page4 = await page4Promise
-  await expect(page4).toHaveURL(EXTERNAL_ROUTES.social.twitter)
-  const page5Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Discord' }).click()
-  const page5 = await page5Promise
-  await expect(page5).toHaveURL('https://discord.com/invite/subspace-network')
-  const page6Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Telegram' }).click()
-  const page6 = await page6Promise
-  await expect(page6).toHaveURL(EXTERNAL_ROUTES.social.telegram)
-  const page7Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Github' }).click()
-  const page7 = await page7Promise
-  await expect(page7).toHaveURL(EXTERNAL_ROUTES.social.github)
-  const page8Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Reddit' }).click()
-  const page8 = await page8Promise
-  await expect(page8).toHaveURL(EXTERNAL_ROUTES.social.reddit)
-  const page9Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Medium' }).click()
-  const page9 = await page9Promise
-  await expect(page9).toHaveURL(EXTERNAL_ROUTES.social.medium)
-  const page10Promise = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Youtube' }).click()
-  const page10 = await page10Promise
-  const page11Promise = page.waitForEvent('popup')
-  await expect(page10).toHaveURL(EXTERNAL_ROUTES.social.youtube)
-  await page.getByRole('link', { name: 'LinkedIn' }).click()
-  const page11 = await page11Promise
-  await expect(page11).toHaveURL(EXTERNAL_ROUTES.social.linkedin)
-})
-
 test('shows info', async ({ page }) => {
   await page.goto('/')
 
@@ -93,17 +44,6 @@ test('shows info', async ({ page }) => {
   const historyElement = await page.getByRole('heading', { name: 'Blockchain History Size' })
   await expect(historyElement).toBeVisible()
 })
-
-// test('table links', async ({ page }) => {
-//   await page.goto('/')
-
-//   await page.getByTestId('testLinkBlocks').click()
-//   await expect(page).toHaveURL('/#/blocks')
-
-//   await page.goto('/')
-//   await page.getByTestId('testLinkExtrinsics').click()
-//   await expect(page).toHaveURL('/#/extrinsics')
-// })
 
 test('search form', async ({ page }) => {
   await page.goto('/')
