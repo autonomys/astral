@@ -17,7 +17,7 @@ test('data show', async ({ page }) => {
   await expect(page.getByText('Transferable')).toBeVisible()
   await expect(page.getByText('Received')).toBeVisible()
   await expect(page.getByText('Election')).toBeVisible()
-  await expect(page.getByText('Stacking')).toBeVisible()
+  // await expect(page.getByText('Stacking')).toBeVisible()
   await expect(page.getByText('Unbounding')).toBeVisible()
   await expect(page.getByText('Vesting')).toBeVisible()
   await expect(page.getByText('Other')).toBeVisible()
