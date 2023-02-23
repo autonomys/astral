@@ -33,14 +33,14 @@ const Pagination: FC<Props> = ({
         <button
           onClick={previousPage}
           disabled={!hasPreviousPage}
-          className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
+          className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-white dark:bg-[#1E254E] dark:border-none'
         >
           Previous
         </button>
         <button
           onClick={nextPage}
           disabled={!hasNextPage}
-          className='rounded-full relative ml-3 inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50'
+          className='rounded-full relative ml-3 inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-white dark:bg-[#1E254E] dark:border-none'
         >
           Next
         </button>
@@ -51,7 +51,7 @@ const Pagination: FC<Props> = ({
             <button
               onClick={previousPage}
               disabled={!hasPreviousPage}
-              className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 mr-[14px]'
+              className='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-[#1E254E] dark:border-none'
             >
               <span className='sr-only'>Previous</span>
               <ChevronLeftIcon className='h-5 w-5' aria-hidden='true' />
@@ -61,7 +61,7 @@ const Pagination: FC<Props> = ({
                 return (
                   <span
                     key={`${page}-${index}`}
-                    className='relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 rounded-full mx-1'
+                    className='relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-gray-700 rounded-full mx-1 dark:text-white dark:bg-[#1E254E] dark:border-none'
                   >
                     ...
                   </span>
@@ -75,8 +75,8 @@ const Pagination: FC<Props> = ({
                   onClick={() => handleGetPage(page)}
                   className={
                     page === currentPage
-                      ? 'h-10 min-w-10 relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20 rounded-full mx-1'
-                      : 'h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1'
+                      ? 'h-10 min-w-10 relative z-10 inline-flex items-center  bg-black px-4 py-2 text-sm font-medium text-white focus:z-20 rounded-full mx-1 dark:text-white dark:bg-[#DE67E4] dark:border-none'
+                      : 'h-10 min-w-10 relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-[#282929] hover:bg-gray-50 focus:z-20 rounded-full mx-1 dark:text-white dark:bg-[#1E254E] dark:border-none'
                   }
                 >
                   {page}
@@ -86,7 +86,7 @@ const Pagination: FC<Props> = ({
             <button
               onClick={nextPage}
               disabled={!hasNextPage}
-              className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 ml-[14px]'
+              className='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 ml-[14px] dark:text-white dark:bg-[#1E254E] dark:border-none'
             >
               <span className='sr-only'>Next</span>
               <ChevronRightIcon className='h-5 w-5' aria-hidden='true' />

@@ -6,7 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
 
 // common
-import { MobileCard, StatusIcon, Tabs, Tab } from 'common/components'
+import { Tab, ExtrinsicCard, PageTabs } from 'common/components'
 
 // account
 import { AccountExtrinsicList } from 'Account/components'
@@ -20,52 +20,24 @@ type Props = {
 
 const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   return (
-    <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
-    >
-      <Tab title='Extrinsics'>
+    <PageTabs isDesktop={isDesktop}>
+      <Tab title={`Extrinsics (${extrinsics.length})`}>
         {isDesktop ? (
           <AccountExtrinsicList extrinsics={extrinsics} />
         ) : (
           <div className='flex flex-col'>
             {extrinsics.map((extrinsic) => (
-              <AccountDetailsExtrinsicCard
+              <ExtrinsicCard
                 key={`block-details-extrinsic-card-${extrinsic.id}`}
                 extrinsic={extrinsic}
+                id='account-details-extrinsic-mobile'
               />
             ))}
           </div>
         )}
       </Tab>
-    </Tabs>
+    </PageTabs>
   )
 }
 
 export default AccountDetailsTabs
-
-type ExtrinsicCardProps = {
-  extrinsic: Extrinsic
-}
-
-const AccountDetailsExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic }) => {
-  const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
-
-  const body = [
-    { name: 'Block', value: extrinsic.block.height },
-    { name: 'Call', value: extrinsic.name.split('.')[1].toUpperCase() },
-    { name: 'Time', value: `${blockDate} ago` },
-  ]
-  return (
-    <MobileCard
-      id='account-details-extrinsic-mobile'
-      header={
-        <>
-          <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
-        </>
-      }
-      body={body}
-    />
-  )
-}

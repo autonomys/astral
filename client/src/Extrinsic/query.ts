@@ -45,6 +45,9 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
         id
         timestamp
       }
+      signer {
+        id
+      }
       events(limit: 10) {
         id
         indexInBlock
@@ -55,6 +58,13 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
         args
         block {
           height
+        }
+        extrinsic {
+          id
+          pos
+          block {
+            height
+          }
         }
       }
       name

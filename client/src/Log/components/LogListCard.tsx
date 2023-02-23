@@ -25,7 +25,7 @@ const LogListCard: FC<Props> = ({ log }) => {
       id='extrinsic-list-extrinsic-mobile'
       header={
         <Link className='flex gap-2' to={INTERNAL_ROUTES.logs.id.page(log.id)}>
-          <h3 className='font-medium text-[#241235] text-sm'>{log.id}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{log.id}</h3>
         </Link>
       }
       body={body}

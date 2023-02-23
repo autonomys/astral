@@ -22,7 +22,7 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
       cells: events.map(({ block, pos, id }, index) => (
         <Link
           key={`${id}-extrinsic-event-id`}
-          className='w-full'
+          className='w-full hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.events.id.page(id)}
         >
           <div>{`${block?.height || index}-${pos}`}</div>

@@ -25,9 +25,9 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ id }, index) => (
-        <div className='w-full flex gap-1' key={`${id}-event-id`}>
-          <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(id)}>
+      cells: events.map(({ id, pos }, index) => (
+        <div className='w-full flex gap-1' key={`${id}-${pos}-event-id`}>
+          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.events.id.page(id)}>
             {id}
           </Link>
           <CopyButton data-testid={`testCopyButton-${index}`} value={id} message='Id copied' />
@@ -36,27 +36,33 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
     },
     {
       title: 'Block',
-      cells: events.map(({ block, id }) => (
-        <Link key={`${id}-event-block`} to={INTERNAL_ROUTES.events.id.page(id)}>
+      cells: events.map(({ block, id, pos }) => (
+        <Link
+          key={`${id}-${pos}-event-block`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.events.id.page(id)}
+        >
           {block?.height}
         </Link>
       )),
     },
     {
       title: 'Action',
-      cells: events.map(({ name, id }) => (
-        <div key={`${id}-event-action`}>{name.split('.')[1]}</div>
+      cells: events.map(({ name, id, pos }) => (
+        <div key={`${id}-${pos}-event-action`}>{name.split('.')[1]}</div>
       )),
     },
     {
       title: 'Type',
-      cells: events.map(({ phase, id }) => <div key={`${id}-event-phase`}>{phase}</div>),
+      cells: events.map(({ phase, id, pos }) => (
+        <div key={`${id}-${pos}-event-phase`}>{phase}</div>
+      )),
     },
     {
       title: 'Time',
-      cells: events.map(({ block, id }) => {
+      cells: events.map(({ block, id, pos }) => {
         const blockDate = dayjs(block?.timestamp).fromNow(true)
-        return <div key={`${id}-event-time`}>{blockDate}</div>
+        return <div key={`${id}-${pos}-event-time`}>{blockDate}</div>
       }),
     },
   ]
@@ -70,7 +76,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         <Table
           columns={columns}
           emptyMessage='There are no blocks to show'
-          tableProps='bg-white rounded-md'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
           tableHeaderProps='border-b border-gray-200'
           id='latest-events'
         />
@@ -79,7 +85,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   ) : (
     <div className='w-full'>
       {events.map((event) => (
-        <EventListCard event={event} key={`event-list-card-${event.id}`} />
+        <EventListCard event={event} key={`event-list-card-${event.id}-${event.pos}`} />
       ))}
     </div>
   )
