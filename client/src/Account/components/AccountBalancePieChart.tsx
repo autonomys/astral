@@ -6,12 +6,14 @@ import { Account } from 'gql/graphql'
 
 // common
 import { bigNumberToNumber } from 'common/helpers'
+import useTheme from 'common/hooks/useTheme'
 
 type Props = {
   account: Account
 }
 
 const AccountBalancePieChart: FC<Props> = ({ account }) => {
+  const [isDark] = useTheme()
   const otherNumber = Number(account.total) - Number(account.free) - Number(account.reserved)
   const transferable = account.free ? bigNumberToNumber(account.free, 18) : 0
   const staking = account.reserved ? bigNumberToNumber(account.reserved, 18) : 0
@@ -38,39 +40,33 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
     },
   ]
 
-  const emptyState = [{ id: 'No value to show', label: '', value: true, color: '#e5e7eb' }]
+  const emptyState = [
+    {
+      id: 'No value to show',
+      label: '',
+      value: 1,
+      color: isDark ? '#D9F0FC' : '#e5e7eb',
+    },
+  ]
 
   const isEmpty = other === 0 && staking === 0 && transferable === 0
 
   return (
-    <div className={'sm:h-80 sm:w-2/4 h-60 w-full'}>
-      {isEmpty ? (
-        <ResponsivePie
-          data={emptyState}
-          margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-          innerRadius={0.5}
-          padAngle={0}
-          cornerRadius={3}
-          activeOuterRadiusOffset={8}
-          colors={{ datum: 'data.color' }}
-          enableArcLabels={false}
-          sortByValue={true}
-          enableArcLinkLabels={true}
-        />
-      ) : (
-        <ResponsivePie
-          data={data}
-          margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-          innerRadius={0.5}
-          padAngle={0}
-          cornerRadius={3}
-          activeOuterRadiusOffset={8}
-          colors={{ datum: 'data.color' }}
-          enableArcLabels={false}
-          sortByValue={true}
-          enableArcLinkLabels={false}
-        />
-      )}
+    <div className='sm:h-80 sm:w-2/4 h-60 w-full'>
+      <ResponsivePie
+        data={isEmpty ? emptyState : data}
+        enableArcLinkLabels={isEmpty}
+        margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
+        innerRadius={0.5}
+        padAngle={0}
+        cornerRadius={3}
+        activeOuterRadiusOffset={8}
+        colors={{ datum: 'data.color' }}
+        enableArcLabels={false}
+        sortByValue={true}
+        // do not render tooltip if there is no data
+        tooltip={isEmpty ? () => null : undefined}
+      />
     </div>
   )
 }

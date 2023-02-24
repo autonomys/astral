@@ -1,12 +1,13 @@
 import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
 
 // block
 import { BlockTable } from 'Block/components'
 import { QUERY_BLOCK_LIST_CONNECTION } from 'Block/query'
 
 // common
-import { Pagination, Spinner, ErrorFallback, SearchBar } from 'common/components'
+import { Pagination, Spinner, SearchBar } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
@@ -20,12 +21,10 @@ const BlockList: FC = () => {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    return <ErrorFallback error={error} />
   }
 
   const blocksConnection = data.blocksConnection.edges.map((block) => block.node)
@@ -60,7 +59,7 @@ const BlockList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base'>{`Blocks (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Blocks (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <BlockTable blocks={blocksConnection} isDesktop={isDesktop} />

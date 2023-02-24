@@ -26,13 +26,32 @@ interface HomeExtrinsicListProps {
   isDesktop: boolean
 }
 
+const HomeExtrinsicListHeader = () => (
+  <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
+    <div className='text-gray-600 dark:text-white uppercase text-md leading-normal'>
+      Latest Extrinsics
+    </div>
+    <Link
+      data-testid='testLinkExtrinsics'
+      to={INTERNAL_ROUTES.extrinsics.list}
+      className='px-2 py-2 transition ease-in-out duration-150'
+    >
+      <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+    </Link>
+  </div>
+)
+
 const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: 'Hash',
       cells: extrinsics.map(({ id, hash }) => (
-        <Link key={`${id}-home-extrinsic-hash`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+        <Link
+          className='hover:text-[#DE67E4]'
+          key={`${id}-home-extrinsic-hash`}
+          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        >
           <div>{shortString(hash)}</div>
         </Link>
       )),
@@ -72,17 +91,8 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
   const columns = generateColumns(extrinsics)
 
   return isDesktop ? (
-    <div className='flex-col p-4 w-full border border-gray-200 rounded-lg bg-white'>
-      <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
-        <Link
-          to={INTERNAL_ROUTES.extrinsics.list}
-          className='px-2 py-2 transition ease-in-out duration-150'
-          data-testid='testLinkExtrinsics'
-        >
-          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
-        </Link>
-      </div>
+    <div className='flex-col p-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#3A2D85] dark:to-[#678CD5]'>
+      <HomeExtrinsicListHeader />
       <Table
         columns={columns}
         emptyMessage='There are no extrinsics to show'
@@ -91,15 +101,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
     </div>
   ) : (
     <div className='w-full'>
-      <div className='inline-flex justify-between items-center align-middle w-full mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Extrinsics</div>
-        <Link
-          to={INTERNAL_ROUTES.extrinsics.list}
-          className='px-2 py-2 transition ease-in-out duration-150'
-        >
-          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
-        </Link>
-      </div>
+      <HomeExtrinsicListHeader />
       {extrinsics.map((extrinsic) => (
         <HomeExtrinsicCard extrinsic={extrinsic} key={`home-extrinsic-card-${extrinsic.id}`} />
       ))}

@@ -6,8 +6,8 @@ import { Link } from 'react-router-dom'
 
 // common
 import { Table, Column, StatusIcon } from 'common/components'
-import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)
 
@@ -21,8 +21,12 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
     {
       title: 'Extrinsic Id',
       cells: extrinsics.map(({ block, pos, id }) => (
-        <Link key={`${id}-block-extrinsic-id`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
-          <div>{`${block.height}-${pos}`}</div>
+        <Link
+          key={`${id}-block-extrinsic-id`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        >
+          {`${block.height}-${pos}`}
         </Link>
       )),
     },

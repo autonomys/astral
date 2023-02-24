@@ -2,6 +2,7 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link } from 'react-router-dom'
+import Identicon from '@polkadot/react-identicon'
 
 // gql
 import { Account } from 'gql/graphql'
@@ -40,14 +41,17 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     },
     {
       title: 'Account',
-      cells: accounts.map(({ id }, index) => (
-        <Link
-          data-testid={`testAccountLink-${index}`}
-          key={`${id}-account-id`}
-          to={INTERNAL_ROUTES.accounts.id.page(id)}
-        >
-          <div>{isLargeLaptop ? id : shortString(id)}</div>
-        </Link>
+      cells: accounts.map(({ id }) => (
+        <div key={`${id}-account-id`} className='flex row items-center gap-3'>
+          <Identicon value={id} size={26} theme='beachball' />
+          <Link
+            data-testid={`testAccountLink-${index}`}
+            to={INTERNAL_ROUTES.accounts.id.page(id)}
+            className='hover:text-[#DE67E4]'
+          >
+            <div>{isLargeLaptop ? id : shortString(id)}</div>
+          </Link>
+        </div>
       )),
     },
     {
@@ -79,7 +83,7 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
         <Table
           columns={columns}
           emptyMessage='There are no accounts to show'
-          tableProps='bg-white rounded-lg'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
           tableHeaderProps='border-b border-gray-200'
           id='accounts-list'
         />

@@ -21,13 +21,15 @@ const BlockDetailsEventList: FC<Props> = ({ events }) => {
       title: 'Event Id',
       cells: events.map(({ block, pos, id }, index) => (
         <div className='w-full flex gap-1' key={`${id}-block-event-id`}>
-          <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(id)}>
+          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.events.id.page(id)}>
             {`${block?.height || index}-${pos}`}
           </Link>
         </div>
       )),
     },
     {
+      // Log/components/LogDetailsEventList.tsx has similar columns, but there is extrinsic hash instead of ID
+      // TODO: consider merging
       title: 'Extrinsic Id',
       cells: events.map(({ extrinsic, id }) => (
         <div key={`${id}-block-event-extrinsic`}>

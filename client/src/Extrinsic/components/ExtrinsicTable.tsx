@@ -27,7 +27,11 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
     {
       title: 'Extrinsic Id',
       cells: extrinsics.map(({ block, pos, id }) => (
-        <Link key={`${id}-extrinsic-block`} to={INTERNAL_ROUTES.extrinsics.id.page(id)}>
+        <Link
+          key={`${id}-extrinsic-block`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        >
           <div>{`${block.height}-${pos}`}</div>
         </Link>
       )),
@@ -83,7 +87,7 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
           columns={columns}
           emptyMessage='There are no extrinsics to show'
           id='latest-extrinsics'
-          tableProps='bg-white rounded-md'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
           tableHeaderProps='border-b border-gray-200'
         />
       </div>

@@ -3,7 +3,7 @@ import { Event } from 'gql/graphql'
 import { Link } from 'react-router-dom'
 
 // common
-import { MobileCard, Tabs, Tab } from 'common/components'
+import { MobileCard, Tab, PageTabs } from 'common/components'
 
 // extrinsic
 import { ExtrinsicDetailsEventList } from 'Extrinsic/components'
@@ -16,10 +16,7 @@ type Props = {
 
 const ExtrinsicDetailsTab: FC<Props> = ({ events, isDesktop = false }) => {
   return (
-    <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
-    >
+    <PageTabs isDesktop={isDesktop}>
       <Tab title={`Events (${events.length})`}>
         {isDesktop ? (
           <ExtrinsicDetailsEventList events={events} />
@@ -34,7 +31,7 @@ const ExtrinsicDetailsTab: FC<Props> = ({ events, isDesktop = false }) => {
           </div>
         )}
       </Tab>
-    </Tabs>
+    </PageTabs>
   )
 }
 
@@ -44,6 +41,7 @@ type EventCardProps = {
   event: Event
 }
 
+// TODO: similar to EventCard, consider refactoring
 const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
   const body = [
     { name: 'Action', value: event.name.split('.')[1] },

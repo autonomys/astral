@@ -1,8 +1,9 @@
 import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
 
 // common
-import { Pagination, SearchBar, Spinner, ErrorFallback } from 'common/components'
+import { Pagination, SearchBar, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
@@ -21,12 +22,10 @@ const LogList: FC = () => {
     variables: { first: PAGE_SIZE, after: lastCursor },
   })
 
+  useErrorHandler(error)
+
   if (loading) {
     return <Spinner />
-  }
-
-  if (error || !data) {
-    return <ErrorFallback error={error} />
   }
 
   const logsConnection = data.logsConnection.edges.map((log) => log.node)
@@ -61,7 +60,7 @@ const LogList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base'>{`Logs (${totalLabel})`}</div>
+        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Logs (${totalLabel})`}</div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <LogTable logs={logsConnection} isDesktop={isDesktop} />
