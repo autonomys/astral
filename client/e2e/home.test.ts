@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test'
-import { EXTERNAL_ROUTES } from 'common/routes'
 
 test('has title', async ({ page }) => {
   await page.goto('/')
