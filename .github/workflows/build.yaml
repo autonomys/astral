@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "16"
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
         working-directory: squid-blockexplorer
       - run: npm test
         working-directory: squid-blockexplorer
