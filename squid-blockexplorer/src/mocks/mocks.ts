@@ -174,6 +174,7 @@ export const contextMock: Context = {
   log: loggerMock,
   store: storeMock,
   blocks: [],
+  isHead: true,
 };
 
 export const SOLUTION_RANGES = BigInt(123);
