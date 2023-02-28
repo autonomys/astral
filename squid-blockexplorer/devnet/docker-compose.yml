@@ -1,4 +1,9 @@
 version: "3.7"
+networks:
+  mynetwork:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
 services:
   node:
     platform: linux/x86_64
@@ -8,6 +13,10 @@ services:
     ports:
       - "0.0.0.0:30333:30333"
       - "0.0.0.0:30433:30433"
+      - "0.0.0.0:9944:9944"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.6
     restart: unless-stopped
     command: [
       # using `--chain dev` for e2e tests setup
@@ -17,12 +26,14 @@ services:
       "--blocks-pruning", "archive",
       "--state-pruning", "archive",
       "--port", "30333",
-      "--dsn-listen-on", "/ip4/0.0.0.0/tcp/30433",
+      "--dsn-listen-on", "/ip4/172.20.0.6/tcp/30433",
       "--rpc-cors", "all",
       "--rpc-methods", "safe",
       "--unsafe-ws-external",
       "--validator",
-      "--name", "LOCAL_SUBSPACE_TESNET_NODE"
+      "--name", "LOCAL_SUBSPACE_TESNET_NODE",
+      "--force-authoring",
+      "--force-synced"
     ]
     healthcheck:
       timeout: 5s
@@ -39,13 +50,16 @@ services:
       - ./farmer-data:/var/subspace:rw
     ports:
       - "0.0.0.0:30533:30533"
+    networks:
+      mynetwork:
+        ipv4_address: 172.20.0.7
     restart: unless-stopped
     command: [
       "--base-path", "/var/subspace",
       "farm",
       "--node-rpc-url", "ws://node:9944",
       "--listen-on", "/ip4/0.0.0.0/tcp/30533",
-      "--reward-address", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      "--reward-address", "JHsf5YvwXqatWnMjYqWNuWNqgNrEMZJAqp25P6LQ5SAmtRM",
       "--plot-size", "10G"
     ]
 volumes:
