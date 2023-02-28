@@ -16,7 +16,7 @@ FROM node-with-gyp AS deps
 WORKDIR /squid
 ADD package.json .
 ADD package-lock.json .
-RUN npm ci --production
+RUN npm ci --production --legacy-peer-deps
 
 FROM node AS squid
 WORKDIR /squid
