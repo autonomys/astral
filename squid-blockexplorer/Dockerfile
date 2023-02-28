@@ -7,7 +7,7 @@ FROM node-with-gyp AS builder
 WORKDIR /squid
 ADD package.json .
 ADD package-lock.json .
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 ADD tsconfig.json .
 ADD src src
 RUN npm run build
