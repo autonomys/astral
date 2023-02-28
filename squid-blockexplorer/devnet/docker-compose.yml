@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+  node:
+    platform: linux/x86_64
+    image: ghcr.io/subspace/node:gemini-3c-2023-feb-26-aarch64
+    volumes:
+      - ./node-data:/var/subspace:rw
+    ports:
+      - "0.0.0.0:30333:30333"
+      - "0.0.0.0:30433:30433"
+    restart: unless-stopped
+    command: [
+      # using `--chain dev` for e2e tests setup
+      "--chain", "dev",
+      "--base-path", "/var/subspace",
+      "--execution", "wasm",
+      "--blocks-pruning", "archive",
+      "--state-pruning", "archive",
+      "--port", "30333",
+      "--dsn-listen-on", "/ip4/0.0.0.0/tcp/30433",
+      "--rpc-cors", "all",
+      "--rpc-methods", "safe",
+      "--unsafe-ws-external",
+      "--validator",
+      "--name", "LOCAL_SUBSPACE_TESNET_NODE"
+    ]
+    healthcheck:
+      timeout: 5s
+      interval: 30s
+      retries: 5
+
+  farmer:
+    platform: linux/x86_64
+    depends_on:
+      node:
+        condition: service_healthy
+    image: ghcr.io/subspace/farmer:gemini-3c-2023-feb-26-aarch64
+    volumes:
+      - ./farmer-data:/var/subspace:rw
+    ports:
+      - "0.0.0.0:30533:30533"
+    restart: unless-stopped
+    command: [
+      "--base-path", "/var/subspace",
+      "farm",
+      "--node-rpc-url", "ws://node:9944",
+      "--listen-on", "/ip4/0.0.0.0/tcp/30533",
+      "--reward-address", "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      "--plot-size", "10G"
+    ]
+volumes:
+  node-data:
+  farmer-data:
