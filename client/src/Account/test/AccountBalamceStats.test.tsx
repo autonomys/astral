@@ -3,17 +3,19 @@ import { render, screen } from '@testing-library/react'
 // account
 import { AccountBalanceStats } from 'Account/components'
 
-it('renders without error', async () => {
-  const account = {
-    extrinsics: [],
-    free: 0,
-    id: 'stA7utHHfvdmxo9s9smXVzpyMHQzzstS9b86UzJja91SLqvsQ',
-    reserved: 0,
-    total: 0,
-    updatedAt: 1008639,
-  }
+describe('first', () => {
+  it('renders without error', async () => {
+    const account = {
+      extrinsics: [],
+      free: 0,
+      id: 'stA7utHHfvdmxo9s9smXVzpyMHQzzstS9b86UzJja91SLqvsQ',
+      reserved: 0,
+      total: 0,
+      updatedAt: 1008639,
+    }
 
-  render(<AccountBalanceStats account={account} />)
+    render(<AccountBalanceStats account={account} />)
 
-  expect(await screen.findByText(/transferable/i)).toBeInTheDocument()
+    expect(await screen.findByText(/transferable/i)).toBeInTheDocument()
+  })
 })

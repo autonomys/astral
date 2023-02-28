@@ -5,7 +5,9 @@ import { ErrorFallback } from 'common/components'
 
 describe('errorFallback', () => {
   it('renders properly', async () => {
-    const { asFragment } = render(<ErrorFallback />)
+    const { asFragment } = render(
+      <ErrorFallback resetErrorBoundary={() => window.location.reload()} />,
+    )
 
     expect(asFragment()).toMatchSnapshot()
   })

@@ -9,14 +9,14 @@ exports[`Tabs renders properly 1`] = `
       class="w-full"
     >
       <ul
-        class="flex list-none flex-wrap pt-3 pb-4 flex-row "
+        class="flex w-full list-none flex-wrap pt-3 pb-4 flex-row "
         role="tablist"
       >
         <li
-          class="-mb-px mr-2 last:mr-0 text-center"
+          class="-mb-px last:mr-0 text-center"
         >
           <button
-            class="text-xs font-semibold px-5 py-3 rounded-full block leading-normal text-white bg-[#241235]"
+            class="text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal text-white bg-[#241235] dark:bg-[#1E254E]"
           >
             Tab title
           </button>

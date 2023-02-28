@@ -3,7 +3,7 @@
 exports[`List renders properly 1`] = `
 <DocumentFragment>
   <ul
-    class="divide-y divide-gray-200"
+    class="divide-y divide-gray-200 dark:divide-white/20"
   >
     <li
       class="py-3 sm:py-4"

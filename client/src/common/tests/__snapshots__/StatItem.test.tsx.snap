@@ -6,12 +6,12 @@ exports[`statItem renders properly 1`] = `
     class="flex flex-col"
   >
     <span
-      class="text-[#857EC2] font-normal text-xs"
+      class="text-[#857EC2] font-normal text-xs dark:text-white/75"
     >
       sample title
     </span>
     <span
-      class="font-medium text-[#282929] text-sm"
+      class="font-medium text-[#282929] text-sm dark:text-white"
     >
       value
     </span>

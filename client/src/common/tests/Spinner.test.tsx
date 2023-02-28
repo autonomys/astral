@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 // common - table
 import { Spinner } from 'common/components'
 
-describe('Search bar', () => {
+describe('Spinner component', () => {
   it('renders properly', async () => {
     const { asFragment } = render(<Spinner />)
 

@@ -9,13 +9,13 @@ exports[`pagination renders properly 1`] = `
       class="flex flex-1 justify-between sm:hidden"
     >
       <button
-        class="relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        class="relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-white dark:bg-[#1E254E] dark:border-none"
         disabled=""
       >
         Previous
       </button>
       <button
-        class="rounded-full relative ml-3 inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        class="rounded-full relative ml-3 inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:text-white dark:bg-[#1E254E] dark:border-none"
       >
         Next
       </button>
@@ -29,7 +29,7 @@ exports[`pagination renders properly 1`] = `
           class="isolate inline-flex rounded-md"
         >
           <button
-            class="relative inline-flex items-center rounded-full border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 mr-[14px]"
+            class="relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-[#1E254E] dark:border-none"
             disabled=""
           >
             <span
@@ -53,35 +53,35 @@ exports[`pagination renders properly 1`] = `
           </button>
           <button
             aria-current="page"
-            class="h-10 min-w-10 relative z-10 inline-flex items-center border border-indigo-500 bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600 focus:z-20 rounded-full mx-1"
+            class="h-10 min-w-10 relative z-10 inline-flex items-center  bg-black px-4 py-2 text-sm font-medium text-white focus:z-20 rounded-full mx-1 dark:text-white dark:bg-[#DE67E4] dark:border-none"
           >
             1
           </button>
           <button
             aria-current="page"
-            class="h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1"
+            class="h-10 min-w-10 relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-[#282929] hover:bg-gray-50 focus:z-20 rounded-full mx-1 dark:text-white dark:bg-[#1E254E] dark:border-none"
           >
             2
           </button>
           <button
             aria-current="page"
-            class="h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1"
+            class="h-10 min-w-10 relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-[#282929] hover:bg-gray-50 focus:z-20 rounded-full mx-1 dark:text-white dark:bg-[#1E254E] dark:border-none"
           >
             3
           </button>
           <span
-            class="relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 rounded-full mx-1"
+            class="relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-gray-700 rounded-full mx-1 dark:text-white dark:bg-[#1E254E] dark:border-none"
           >
             ...
           </span>
           <button
             aria-current="page"
-            class="h-10 min-w-10 relative inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 rounded-full mx-1"
+            class="h-10 min-w-10 relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-[#282929] hover:bg-gray-50 focus:z-20 rounded-full mx-1 dark:text-white dark:bg-[#1E254E] dark:border-none"
           >
             10
           </button>
           <button
-            class="relative inline-flex items-center rounded-full border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20 ml-[14px]"
+            class="relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 ml-[14px] dark:text-white dark:bg-[#1E254E] dark:border-none"
           >
             <span
               class="sr-only"

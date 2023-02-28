@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
+import userEvent from '@testing-library/user-event'
 
 // common - searchBar
 import { SearchBar } from 'common/components'
 import { MockedProvider } from '@apollo/client/testing'
-import userEvent from '@testing-library/user-event'
 
 describe('Search bar', () => {
   it('renders properly', async () => {
@@ -26,8 +26,8 @@ describe('Search bar', () => {
       { wrapper: BrowserRouter },
     )
 
-    expect(getByTestId('search-term-input').value).toBe('')
-    expect(getByTestId('search-type-list').value).toBe(undefined)
+    expect(getByTestId('search-term-input').innerText).toBe(undefined)
+    expect(getByTestId('search-type-list').innerText).toBe(undefined)
   })
 
   it('should show error message when all the fields are not entered', async () => {
@@ -38,8 +38,11 @@ describe('Search bar', () => {
       { wrapper: BrowserRouter },
     )
 
+    // setup user actions
+    const user = userEvent.setup()
+
     const submitBtn = await screen.findByTestId('testSearchSubmit')
-    userEvent.click(submitBtn)
+    user.click(submitBtn)
 
     const element = await screen.findByTestId('errorMessage')
 

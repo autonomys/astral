@@ -6,12 +6,10 @@ import { AccountTable } from 'Account/components'
 
 describe('Account table', () => {
   it('test empty state', async () => {
-    render(<AccountTable accounts={[]} />)
+    render(<AccountTable page={1} accounts={[]} />)
     const element = await screen.findByText(/there are no accounts to show/i)
-
     expect(element).toBeInTheDocument()
   })
-
   it('test table display', async () => {
     const accounts = [
       {
@@ -23,12 +21,9 @@ describe('Account table', () => {
         updatedAt: 1008639,
       },
     ]
-
-    render(<AccountTable accounts={accounts} />, { wrapper: BrowserRouter })
+    render(<AccountTable page={1} accounts={accounts} />, { wrapper: BrowserRouter })
     const table = screen.getByRole('table')
-
     expect(table).toBeInTheDocument()
-
     accounts.forEach(({ id }) => {
       const row = screen.getByText(id).closest('tr')
       if (row) {
@@ -38,5 +33,6 @@ describe('Account table', () => {
         // highlight-end
       }
     })
+    // })
   })
 })

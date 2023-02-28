@@ -1,6 +1,5 @@
 import { FC } from 'react'
 import { useQuery } from '@apollo/client'
-import BN from 'bn.js'
 import { useErrorHandler } from 'react-error-boundary'
 
 // home

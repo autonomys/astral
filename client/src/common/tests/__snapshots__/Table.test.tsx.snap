@@ -10,18 +10,22 @@ exports[`Common table test table display 1`] = `
     >
       <thead>
         <tr
-          class="text-[#857EC2] text-sm font-light undefined"
+          class="text-[#857EC2] text-sm dark:text-white/75 undefined"
         >
-          <th>
+          <th
+            class="font-normal"
+          >
             <div
-              class="py-3 px-5 text-left"
+              class="py-3 px-5 text-left font-normal"
             >
               Colum 1
             </div>
           </th>
-          <th>
+          <th
+            class="font-normal"
+          >
             <div
-              class="py-3 px-5 text-left"
+              class="py-3 px-5 text-left font-normal"
             >
               Colum 2
             </div>
@@ -29,10 +33,11 @@ exports[`Common table test table display 1`] = `
         </tr>
       </thead>
       <tbody
-        class="text-gray-600 text-sm font-light"
+        class="text-gray-600 text-sm font-light dark:text-white"
       >
         <tr
-          class="border-b border-gray-200 hover:bg-gray-100 undefined"
+          class="hover:bg-gray-100 dark:hover:bg-transparent/10 false undefined"
+          data-testid="sample-id-0"
         >
           <td
             class="py-3 px-5 text-left"
