@@ -19,7 +19,6 @@ import {
   Container,
   Footer,
   Header,
-  DomainHeader,
   NotFound,
   HeaderBackground,
 } from 'layout/components'
@@ -50,7 +49,7 @@ function App() {
     <HashRouter>
       <ScrollToTopWrapper>
         <Layout>
-          <DomainHeader />
+          {/* TODO: add DomainHeader once we have support for domains */}
           <Header />
           <ErrorBoundary
             fallbackRender={ErrorFallback}
