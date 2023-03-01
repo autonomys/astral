@@ -2,7 +2,8 @@
   "name": "blockexplorer",
   "homepage": ".",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
+  "license": "Apache-2.0",
   "dependencies": {
     "@apollo/client": "^3.7.0",
     "@headlessui/react": "^1.7.4",
