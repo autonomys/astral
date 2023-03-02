@@ -29,7 +29,7 @@ const processor = new SubstrateBatchProcessor()
 processor.run(new TypeormDatabase(), processChain);
 
 async function processChain(ctx: Context): Promise<void> {
-    const processBlocksDependencies = createProcessBlocksDependencies(ctx);
+    const processBlocksDependencies = await createProcessBlocksDependencies(ctx);
     const processBalancesDependencies = createProcessBalancesDependencies(ctx);
     const processBlocks = processBlocksFactory(processBlocksDependencies);
     const processBalances = processBalancesFactory(processBalancesDependencies);
