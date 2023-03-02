@@ -206,6 +206,7 @@ export const blockMock = createBlock({
   blockchainSize: BigInt(2),
   extrinsicsCount: 2,
   eventsCount: 5,
+  author: new Account({ id: 'random account id' }),
 });
 export const extrinsicMock = createExtrinsic(parentCallItem as CallItem, blockMock);
 export const parentCallMock = createCall(parentCallItem as CallItem, blockMock, extrinsicMock, null);

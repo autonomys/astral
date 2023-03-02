@@ -1,6 +1,6 @@
 import tap from 'tap';
 import { createBlock, createCall, createExtrinsic } from '../../blocks/utils';
-import { Block, Call, Extrinsic } from '../../model';
+import { Account, Block, Call, Extrinsic } from '../../model';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
 import { callItemWithSignature } from '../../mocks/mocks';
 
@@ -14,6 +14,7 @@ tap.test('createBlock should create instance of a Block', (t) => {
     blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
+    author: new Account({ id: 'author' }),
   });
 
   t.type(result, Block);
@@ -38,6 +39,7 @@ tap.test('createCall should create instance of Call without parent Call', (t) =>
     blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
+    author: new Account({ id: 'author' }),
   });
   const extrinsic = createExtrinsic(callItemWithSignature, block, null, null);
   const result = createCall(callItemWithSignature, block, extrinsic, null);
@@ -54,6 +56,7 @@ tap.test('createExtrinsic should create instance of Extrinsic without signature'
     blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
+    author: new Account({ id: 'author' }),
   });
   const result = createExtrinsic(callItemWithSignature, block, null, null);
 
