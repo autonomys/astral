@@ -24,6 +24,7 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
+  author: Account
 }
 
 type Extrinsic @entity {
