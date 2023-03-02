@@ -266,14 +266,6 @@ export interface ReserveData {
     amount: bigint
 }
 
-export interface ExecutionReceipt {
-    primaryNumber: number
-    primaryHash: Uint8Array
-    domainHash: Uint8Array
-    trace: Uint8Array[]
-    traceRoot: Uint8Array
-}
-
 export interface FeedConfig {
     active: boolean
     feedProcessorId: FeedProcessorKind
@@ -292,6 +284,14 @@ export interface AuthoritySet {
 
 export interface OffenceDetails {
     offender: Uint8Array
+}
+
+export interface ExecutionReceipt {
+    primaryNumber: number
+    primaryHash: Uint8Array
+    domainHash: Uint8Array
+    trace: Uint8Array[]
+    traceRoot: Uint8Array
 }
 
 export interface GlobalRandomnesses {
@@ -384,13 +384,13 @@ export interface Releases_V2 {
 }
 
 export interface BlockLength {
-    max: Type_74
+    max: Type_75
 }
 
 export interface BlockWeights {
     baseBlock: Weight
     maxBlock: Weight
-    perClass: Type_70
+    perClass: Type_71
 }
 
 export interface RuntimeDbWeight {
@@ -1245,7 +1245,7 @@ export interface DigestItem_RuntimeEnvironmentUpdated {
     __kind: 'RuntimeEnvironmentUpdated'
 }
 
-export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Domains | Event_Vesting | Event_Sudo
+export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Receipts | Event_Domains | Event_Vesting | Event_Sudo
 
 export interface Event_System {
     __kind: 'System'
@@ -1297,6 +1297,11 @@ export interface Event_ObjectStore {
     value: ObjectStoreEvent
 }
 
+export interface Event_Receipts {
+    __kind: 'Receipts'
+    value: ReceiptsEvent
+}
+
 export interface Event_Domains {
     __kind: 'Domains'
     value: DomainsEvent
@@ -1312,13 +1317,13 @@ export interface Event_Sudo {
     value: SudoEvent
 }
 
-export interface Type_74 {
+export interface Type_75 {
     normal: number
     operational: number
     mandatory: number
 }
 
-export interface Type_70 {
+export interface Type_71 {
     normal: WeightsPerClass
     operational: WeightsPerClass
     mandatory: WeightsPerClass
@@ -1803,17 +1808,35 @@ export interface ObjectStoreEvent_ObjectSubmitted {
 			by this pallet.
 			
  */
-export type DomainsEvent = DomainsEvent_NewSystemDomainReceipt | DomainsEvent_BundleStored | DomainsEvent_FraudProofProcessed | DomainsEvent_BundleEquivocationProofProcessed | DomainsEvent_InvalidTransactionProofProcessed
+export type ReceiptsEvent = ReceiptsEvent_NewDomainReceipt | ReceiptsEvent_FraudProofProcessed
 
 /**
- * A new system domain receipt was backed.
+ * A new domain receipt.
  */
-export interface DomainsEvent_NewSystemDomainReceipt {
-    __kind: 'NewSystemDomainReceipt'
+export interface ReceiptsEvent_NewDomainReceipt {
+    __kind: 'NewDomainReceipt'
     domainId: number
     primaryNumber: number
     primaryHash: Uint8Array
 }
+
+/**
+ * A fraud proof was processed.
+ */
+export interface ReceiptsEvent_FraudProofProcessed {
+    __kind: 'FraudProofProcessed'
+    domainId: number
+    newBestNumber: number
+    newBestHash: Uint8Array
+}
+
+/**
+ * 
+			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
+			by this pallet.
+			
+ */
+export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_BundleEquivocationProofProcessed | DomainsEvent_InvalidTransactionProofProcessed
 
 /**
  * A domain bundle was included.
@@ -1823,13 +1846,6 @@ export interface DomainsEvent_BundleStored {
     domainId: number
     bundleHash: Uint8Array
     bundleAuthor: Uint8Array
-}
-
-/**
- * A fraud proof was processed.
- */
-export interface DomainsEvent_FraudProofProcessed {
-    __kind: 'FraudProofProcessed'
 }
 
 /**
