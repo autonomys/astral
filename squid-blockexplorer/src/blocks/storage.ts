@@ -1,7 +1,12 @@
 import { SubstrateBlock } from '@subsquid/substrate-processor';
+import { ApiPromise } from "@polkadot/api";
+
 import { Context } from '../processor';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage,  } from '../types/storage';
-import { calcHistorySize, calcSpacePledged, getStorageHash } from './utils';
+import { SystemDigestStorage, SubspaceSolutionRangesStorage, } from '../types/storage';
+import { calcHistorySize, calcSpacePledged, getStorageHash, decodeLog } from './utils';
+import { Account } from '../model';
+import { SubPreDigest } from './types';
+import { DigestItem_PreRuntime } from '../types/v0';
 
 export function solutionRangesStorageFactory(ctx: Context, header: SubstrateBlock) {
   return new SubspaceSolutionRangesStorage(ctx, header);
@@ -28,5 +33,18 @@ export function getHistorySizeFactory(ctx: Context) {
     // instead we're querying state using client.call API
     const segmentsCount = (await ctx._chain.client.call('state_getKeys', [storageHash, header.hash])).length;
     return calcHistorySize(segmentsCount);
+  };
+}
+
+export function getBlockAuthorFactory(ctx: Context, api: ApiPromise) {
+  return async function getBlockAuthor(header: SubstrateBlock): Promise<Account | undefined> {
+    if (header.height === 0) return; // genesis block does not have logs
+    const storage = digestStorageFactory(ctx, header);
+    const digest = await storage.asV0.get();
+    const preRuntimeRaw = digest.logs.find((digestItem) => digestItem.__kind === 'PreRuntime');
+    const value = decodeLog((preRuntimeRaw as DigestItem_PreRuntime).value);
+    const type: SubPreDigest = api.registry.createType('SubPreDigest', value?.data);
+    const rewardAddress = type.solution.reward_address.toString();
+    return new Account({ id: rewardAddress });
   };
 }
