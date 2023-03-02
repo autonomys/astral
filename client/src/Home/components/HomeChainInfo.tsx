@@ -16,23 +16,20 @@ interface HomeChainInfo {
 
 const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   const [block] = data.blocks
-  // won't have any archived blocks if there are less than 100 blocks
-  const archivedBlock = block.height > 100 ? numberWithCommas(block.height - 100) : 0
   const spacePledgedVal = Number(block.spacePledged)
   const spacePledged = formatSpacePledged(spacePledgedVal)
   const historySizeVal = Number(block.blockchainSize)
   const historySize = formatSpacePledged(historySizeVal)
   const rewardAddresses = numberWithCommas(Number(data.accountsConnection.totalCount))
   const signedExtrinsics = numberWithCommas(Number(data.extrinsicsConnection.totalCount))
-  const bestBlock = numberWithCommas(Number(block.height))
+  const blocksCount = numberWithCommas(Number(block.height))
 
   return (
     <HomeCards
-      archivedBlock={archivedBlock.toString()}
       signedExtrinsics={signedExtrinsics}
       rewardAddresses={rewardAddresses}
       spacePledged={spacePledged}
-      bestBlock={bestBlock}
+      blocksCount={blocksCount}
       historySize={historySize}
     />
   )

@@ -16,7 +16,7 @@ const HomeInfoCard: FC<Props> = ({
   additionalClass = '',
 }) => {
   return (
-    <div className={`h-[216px] min-w-[200px] md:min-w-[228px] font-['Montserrat'] ${additionalClass}`}>
+    <div className={`h-[216px] min-w-[200px] md:min-w-[228px] grow w-1/5 font-['Montserrat'] ${additionalClass}`}>
       <div className={`h-full flex justify-center flex-col rounded-[20px] bg-white ${darkBgClass}`}>
         <div className="mb-6 w-full flex items-center justify-center align-middle">
           {icon}
