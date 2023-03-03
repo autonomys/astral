@@ -13,6 +13,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
 import { ExtrinsicListCard } from 'Extrinsic/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -30,7 +32,7 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
         <Link
           key={`${id}-extrinsic-block`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
         >
           <div>{`${block.height}-${pos}`}</div>
         </Link>

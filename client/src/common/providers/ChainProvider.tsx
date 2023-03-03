@@ -4,10 +4,11 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 // chains
 import chains from 'layout/config/chains.json'
 
-type Chain = {
+export type Chain = {
   title: string
   urls: {
     api: string
+    page: string
   }
 }
 

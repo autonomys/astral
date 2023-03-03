@@ -6,6 +6,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 // common
 import { Table } from 'common/components'
 import { generateExtrinsicColumns } from 'common/helpers/generateColumns'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -14,7 +15,8 @@ interface Props {
 }
 
 const AccountExtrinsicList: FC<Props> = ({ extrinsics }) => {
-  const columns = generateExtrinsicColumns(extrinsics)
+  const { selectedChain } = useDomains()
+  const columns = generateExtrinsicColumns(selectedChain.urls.page, extrinsics)
 
   return (
     <Table

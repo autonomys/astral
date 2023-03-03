@@ -7,6 +7,7 @@ import { Block } from 'gql/graphql'
 
 // common
 import { MobileCard, HeaderBlockLink } from 'common/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -15,6 +16,7 @@ type Props = {
 }
 
 const HomeBlockCard: FC<Props> = ({ block }) => {
+  const { selectedChain } = useDomains()
   const blockDate = dayjs(block.timestamp).fromNow(true)
   const body = [
     { name: 'Extrinsics', value: block.extrinsics?.length || 0 },
@@ -24,7 +26,7 @@ const HomeBlockCard: FC<Props> = ({ block }) => {
   return (
     <MobileCard
       id='home-block-list-mobile'
-      header={<HeaderBlockLink height={block.height} />}
+      header={<HeaderBlockLink chain={selectedChain.urls.page} height={block.height} />}
       body={body}
     />
   )

@@ -10,6 +10,7 @@ import useTheme from 'common/hooks/useTheme'
 
 // layout
 import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 const Header: FC = () => {
   const [isDark, toggleTheme] = useTheme()
@@ -17,14 +18,16 @@ const Header: FC = () => {
   const pathName = location.pathname
   const isDesktop = useMediaQuery('(min-width: 768px)')
   const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain } = useDomains()
 
-  const isHomeActive = pathName === '/'
+  const isHomeActive = pathName === `/${selectedChain.urls.page}`
+
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] mx-5 md:mx-[50px] z-10">
       {isDesktop ? (
         <div className='container mx-auto flex flex-wrap py-5 flex-col md:flex-row items-center'>
           <Link
-            to={INTERNAL_ROUTES.home}
+            to={`/${selectedChain.urls.page}`}
             className='flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0'
           >
             <span className='text-xl text-[#282929] dark:text-white'>
@@ -33,7 +36,7 @@ const Header: FC = () => {
           </Link>
           <nav className='md:ml-auto md:mr-auto flex flex-wrap items-center text-sm justify-center'>
             <Link
-              to={INTERNAL_ROUTES.home}
+              to={`/${selectedChain.urls.page}`}
               className={
                 isHomeActive
                   ? 'text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] dark:bg-[#DE67E4]'
@@ -58,7 +61,7 @@ const Header: FC = () => {
                   stroke='black'
                   className='w-6 h-6'
                 />
-                ) : (
+              ) : (
                 <MoonIcon
                   viewBox='0 0 24 24'
                   strokeWidth={1}

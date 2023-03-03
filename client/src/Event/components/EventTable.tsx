@@ -12,6 +12,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // event
 import { EventListCard } from 'Event/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -21,13 +22,17 @@ interface Props {
 }
 
 const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
       cells: events.map(({ id, pos }) => (
         <div className='w-full flex gap-1' key={`${id}-${pos}-event-id`}>
-          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.events.id.page(id)}>
+          <Link
+            className='w-full hover:text-[#DE67E4]'
+            to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+          >
             {id}
           </Link>
           <CopyButton value={id} message='Id copied' />
@@ -40,7 +45,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         <Link
           key={`${id}-${pos}-event-block`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.events.id.page(id)}
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
         >
           {block?.height}
         </Link>

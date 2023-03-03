@@ -1,14 +1,16 @@
 [
   {
-    "title": "Gemini II",
+    "title": "Gemini III",
     "urls": {
-      "api": "https://squid.gemini-2a.subspace.network/graphql"
+      "api": "https://squid.gemini-3b.subspace.network/graphql",
+      "page": "gemini-3b"
     }
   },
   {
-    "title": "Gemini III",
+    "title": "Gemini II",
     "urls": {
-      "api": "https://squid.gemini-3b.subspace.network/graphql"
+      "api": "https://squid.gemini-2a.subspace.network/graphql",
+      "page": "gemini-2a"
     }
   }
 ]
