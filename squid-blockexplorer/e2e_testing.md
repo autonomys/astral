@@ -1,18 +1,23 @@
 ## End-to-end testing
 In order to run end-to-end tests it is required to run Subpace Node and Farmer locally, as well as Subsquid Archive and Blockeplorer squid:
 
-### 1. Start local Subspace Node and Farmer
-- Clone Subspace [monorepo](https://github.com/subspace/subspace)
-- Change `CONFIRMATION_DEPTH_K` variable to `1` [here](https://github.com/subspace/subspace/blob/cb385c5221/crates/subspace-runtime-primitives/src/lib.rs#L27), otherwise you'll have to wait 100 blocks until your blocks are processed by the Subsquid Archive and the Squid.
-- Build and run Node:
+### 1. Start local Subspace devnet
+To start local devnet (node and farmer) run:
 ```
-cargo run --release --bin subspace-node -- --dev --blocks-pruning archive --state-pruning archive
+make devnet-up
 ```
-- Start Farmer:
+
+You can verify that devnet is producing blocks by:
+- checking [Polkadot/app](https://polkadot.js.org/apps/?rpc=ws%3A%2F%2F127.0.0.1%3A9944#/explorer) connecting to a local node RPC at `ws://127.0.0.1:9944`.
+- alternatively, you can check Docker logs:
 ```
-cargo run --release --bin subspace-farmer farm --reward-address REWARD-ADDRESS --plot-size PLOT-SIZE
-``` 
-For more details on how build and start Node and Farmer, please refer to [this](https://github.com/subspace/subspace/blob/main/docs/development.md).
+make devnet-logs
+```
+
+In order to stop local devnet:
+```
+make devnet-down
+```
 
 ### 2. Running local Subsquid Archive
 To start Subsquid Archive run:
