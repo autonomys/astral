@@ -7,6 +7,7 @@ import type { EventRecord } from "@polkadot/types/interfaces/system";
 
 import { snakeToCamel } from './utils';
 import { queryBlocks, queryEvents, queryExtrinsics, querySquidHeight } from './queries';
+import { SquidStatusResponse, BlocksResponse, ExtrinsicsResponse, EventsResponse } from './types';
 
 dotenv.config();
 
@@ -28,7 +29,7 @@ tap.before(async () => {
   rpcApi = await ApiPromise.create({ provider: wsProvider });
 
   // get current squid status height (latest block height)
-  const { height: squidHeight } = (await squidClient.request(querySquidHeight)).squidStatus;
+  const { height: squidHeight } = (await squidClient.request(querySquidHeight) as SquidStatusResponse).squidStatus;
 
   // generate 5 random block numbers within range of squid height
   for (let i = 0; i < 5; i++) {
@@ -44,7 +45,7 @@ tap.before(async () => {
 
   // fetch blocks from squid
   blocksFromSquid = await Promise.all(blockNumbers.map(async height => {
-    const response = await squidClient.request(queryBlocks, { height });
+    const response: BlocksResponse = await squidClient.request(queryBlocks, { height });
     return response.blocks[0];
   }));
 });
@@ -66,7 +67,7 @@ tap.test('compare block headers', async (t) => {
 
 tap.test('compare block extrinsics', async (t) => {
   await Promise.all(blockNumbers.map(async (height, index) => {
-    const { extrinsics: squidExtrinsics } = await squidClient.request(queryExtrinsics, { height });
+    const { extrinsics: squidExtrinsics }: ExtrinsicsResponse = await squidClient.request(queryExtrinsics, { height });
     const { extrinsics: rpcExtrinsics } = (blocksFromRpc[index]).block;
 
     squidExtrinsics.forEach((extrinsic: { hash: string, name: string }, index: number) => {
@@ -90,7 +91,8 @@ tap.test('compare block extrinsics', async (t) => {
 
 tap.test('compare block events', async (t) => {
   await Promise.all(blockNumbers.map(async (height) => {
-    const { events: squidEvents } = await squidClient.request(queryEvents, { height });
+    const { events: squidEvents }: EventsResponse = await squidClient.request(queryEvents, { height });
+
     const blockHash = await rpcApi.rpc.chain.getBlockHash(height);
     const blockApi = await rpcApi.at(blockHash);
     const rpcEvents = (await blockApi.query.system.events()) as unknown as EventRecord[];

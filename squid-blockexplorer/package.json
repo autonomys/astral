@@ -1,6 +1,7 @@
 {
-  "name": "subspace-balances",
-  "private": true,
+  "name": "subspace-blockchain-explorer",
+  "private": false,
+  "license": "Apache-2.0",
   "engines": {
     "node": ">=16"
   },

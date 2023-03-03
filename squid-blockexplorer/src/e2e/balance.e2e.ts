@@ -7,6 +7,7 @@ import type { KeyringPair } from '@polkadot/keyring/types';
 
 import { queryBalance, querySquidHeight } from './queries';
 import { submitTxAndWaitForBlockHash, wait } from './utils';
+import { AccountBalance, SquidStatusResponse, AccountBalanceResponse } from './types';
 
 dotenv.config();
 
@@ -18,13 +19,6 @@ let rpcApi: ApiPromise;
 let ALICE: KeyringPair | undefined;
 let BOB: KeyringPair | undefined;
 const AMOUNT = 10n ** 18n;
-
-interface AccountBalance {
-  total: number;
-  free: number;
-  reserved: number;
-  updatedAt: number;
-}
 
 tap.teardown(async () => {
   await rpcApi.disconnect();
@@ -45,7 +39,7 @@ tap.before(async () => {
   // wait for the block to be processed by the squid
   for (; ;) {
     // get current squid status height (latest block height)
-    const { height: squidHeight } = (await squidClient.request(querySquidHeight)).squidStatus;
+    const { height: squidHeight } = (await squidClient.request(querySquidHeight) as SquidStatusResponse).squidStatus;
     console.log(`Waiting for the squid to catch up... ${squidHeight}/${txBlockNumber}`);
     if (squidHeight >= txBlockNumber) break;
     await wait(1000);
@@ -54,8 +48,8 @@ tap.before(async () => {
 
 tap.test('account balances should update after transfer', async (t) => {
   // get initial account balances from the squid
-  const { total: initAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address })).accountById;
-  const { total: initBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address })).accountById;
+  const { total: initAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address }) as AccountBalanceResponse).accountById;
+  const { total: initBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address }) as AccountBalanceResponse).accountById;
 
   // send a transfer from Alice to Bob
   const blockHash = await submitTxAndWaitForBlockHash(rpcApi, ALICE!, BOB!.address, AMOUNT);
@@ -64,15 +58,15 @@ tap.test('account balances should update after transfer', async (t) => {
   // wait for the block to be processed by the squid
   for (; ;) {
     // get current squid status height (latest block height)
-    const { height: squidHeight } = (await squidClient.request(querySquidHeight)).squidStatus;
+    const { height: squidHeight } = (await squidClient.request(querySquidHeight) as SquidStatusResponse).squidStatus;
     console.log(`Waiting for the squid to catch up... ${squidHeight}/${txBlockNumber}`);
     if (squidHeight >= txBlockNumber) break;
     await wait(1000);
   }
 
   // get updated account balances from the squid
-  const { total: postAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address })).accountById;
-  const { total: postBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address })).accountById;
+  const { total: postAliceBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: ALICE!.address }) as AccountBalanceResponse).accountById;
+  const { total: postBobBalance }: AccountBalance = (await squidClient.request(queryBalance, { id: BOB!.address }) as AccountBalanceResponse).accountById;
 
   // check that the balances are updated correctly
   t.equal(BigInt(initAliceBalance - postAliceBalance), AMOUNT);
