@@ -1,10 +1,12 @@
 import { FC } from 'react'
 import { Event } from 'gql/graphql'
+import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
 import { Table, Column } from 'common/components'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
 
@@ -18,10 +20,16 @@ const BlockDetailsEventList: FC<Props> = ({ events }) => {
     {
       title: 'Event Id',
       cells: events.map(({ block, pos, id }, index) => (
-        <div key={`${id}-block-event-id`}>{`${block?.height || index}-${pos}`}</div>
+        <div className='w-full flex gap-1' key={`${id}-block-event-id`}>
+          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.events.id.page(id)}>
+            {`${block?.height || index}-${pos}`}
+          </Link>
+        </div>
       )),
     },
     {
+      // Log/components/LogDetailsEventList.tsx has similar columns, but there is extrinsic hash instead of ID
+      // TODO: consider merging
       title: 'Extrinsic Id',
       cells: events.map(({ extrinsic, id }) => (
         <div key={`${id}-block-event-extrinsic`}>

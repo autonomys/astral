@@ -6,15 +6,15 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 
 // common
-import { DomainProvider } from 'common/providers/DomainProvider'
+import { ChainProvider } from 'common/providers/ChainProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
-    <DomainProvider>
+    <ChainProvider>
       <App />
-    </DomainProvider>
+    </ChainProvider>
   </React.StrictMode>,
 )
 

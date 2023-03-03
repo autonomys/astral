@@ -6,7 +6,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { ApolloError } from '@apollo/client'
 
 // common
-import { Table, TableLoadingSkeleton, StatusIcon, Column } from 'common/components'
+import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // gql
@@ -25,33 +25,28 @@ interface HomeBlockListProps {
   isDesktop: boolean
 }
 
-const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop }) => {
-  if (loading) {
-    return <TableLoadingSkeleton additionClass='lg:w-1/2' />
-  }
+const HomeBlockListHeader = () => (
+  <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
+    <div className='text-gray-600 uppercase text-md leading-normal dark:text-white'>
+      Latest Blocks
+    </div>
+    <Link
+      to={INTERNAL_ROUTES.blocks.list}
+      className='px-2 py-2 transition ease-in-out duration-150'
+    >
+      <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+    </Link>
+  </div>
+)
 
-  if (error || !data) {
-    return (
-      <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
-        <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-          <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
-        </div>
-        <Table
-          columns={[]}
-          emptyMessage='There was an error getting this information'
-          id='home-latest-blocks'
-        />
-      </div>
-    )
-  }
-
+const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
       title: 'Height',
       cells: blocks.map(({ height, id }) => (
         <Link
-          className='flex gap-2'
+          className='flex gap-2 hover:text-[#DE67E4]'
           key={`${id}-home-block-height`}
           to={INTERNAL_ROUTES.blocks.id.page(height)}
         >
@@ -79,15 +74,6 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
         return <div key={`${id}-home-block-time`}>{blockDate} ago</div>
       }),
     },
-    // TODO: Not sure we need this column, since Status for latest blocks will always be non-archived. Clarify
-    {
-      title: 'Status',
-      cells: blocks.map(({ id }) => (
-        <div className='flex items-center justify-center' key={`${id}-home-block-status`}>
-          <StatusIcon status={false} />
-        </div>
-      )),
-    },
   ]
 
   // constants
@@ -95,29 +81,13 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ loading, data, error, isDesktop
   const columns = generateColumns(blocks)
 
   return isDesktop ? (
-    <div className='flex-col p-4 md:w-full border border-gray-200 rounded-lg bg-white'>
-      <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
-        <Link
-          to={INTERNAL_ROUTES.blocks.list}
-          className='px-2 py-2 transition ease-in-out duration-150'
-        >
-          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
-        </Link>
-      </div>
+    <div className='flex-col p-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+      <HomeBlockListHeader />
       <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />
     </div>
   ) : (
     <div className='w-full'>
-      <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
-        <div className='text-gray-600 uppercase text-md leading-normal'>Latest Blocks</div>
-        <Link
-          to={INTERNAL_ROUTES.blocks.list}
-          className='px-2 py-2 transition ease-in-out duration-150'
-        >
-          <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
-        </Link>
-      </div>
+      <HomeBlockListHeader />
       {blocks.map((block) => (
         <HomeBlockCard block={block} key={`home-block-card-${block.id}`} />
       ))}

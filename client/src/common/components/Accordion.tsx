@@ -14,7 +14,7 @@ const Accordion: FC<Props> = ({ title, children, value = '' }) => {
       <h2 id='accordion-open-heading-1'>
         <button
           type='button'
-          className='flex items-center justify-between w-full pb-5 text-md font-light text-gray-900 truncate text-left'
+          className='flex items-center justify-between w-full pb-5 text-md font-light text-gray-900 truncate text-left dark:text-white/75'
           data-accordion-target='#accordion-open-body-1'
           aria-expanded='true'
           aria-controls='accordion-open-body-1'

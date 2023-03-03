@@ -1,10 +1,12 @@
 import { FC } from 'react'
 import { Log } from 'gql/graphql'
 import dayjs from 'dayjs'
+import { Link } from 'react-router-dom'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
 import { Table, Column } from 'common/components'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
 
@@ -17,7 +19,15 @@ const BlockDetailsLogList: FC<Props> = ({ logs }) => {
   const generateColumns = (logs: Log[]): Column[] => [
     {
       title: 'Log Index',
-      cells: logs.map(({ id }) => <div key={`${id}-block-log-id`}>{id}</div>),
+      cells: logs.map(({ id }) => (
+        <Link
+          key={`${id}-block-log-id`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.logs.id.page(id)}
+        >
+          {id}
+        </Link>
+      )),
     },
     {
       title: 'Block',

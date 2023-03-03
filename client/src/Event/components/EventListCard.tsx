@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -7,6 +8,7 @@ import { Event } from 'gql/graphql'
 
 // common
 import { MobileCard } from 'common/components'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
 
@@ -25,7 +27,9 @@ const EventListCard: FC<Props> = ({ event }) => {
     <MobileCard
       id='event-list-mobile'
       header={
-        <h3 className='font-medium text-[#241235] text-sm'>{`${event.block?.height}-${event.pos}`}</h3>
+        <Link className='flex gap-2' to={INTERNAL_ROUTES.events.id.page(event.id)}>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${event.block?.height}-${event.pos}`}</h3>
+        </Link>
       }
       body={body}
     />

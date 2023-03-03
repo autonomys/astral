@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "16"
-      - run: npm ci
+      - run: npm ci --legacy-peer-deps
         working-directory: squid-blockexplorer
       - run: npm test
         working-directory: squid-blockexplorer
@@ -34,5 +34,3 @@ jobs:
           yarn lint:fix
       - name: Build project 🔧
         run: yarn build
-        env:
-          REACT_APP_GRAPHQL_API_URL: ${{secrets.REACT_APP_GRAPHQL_API_URL}}

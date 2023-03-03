@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { StatusIcon, MobileCard, Tabs, Tab } from 'common/components'
+import { EventCard, MobileCard, PageTabs, Tab, ExtrinsicCard } from 'common/components'
 
 // block
 import {
@@ -24,17 +24,15 @@ type Props = {
 
 const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
   return (
-    <Tabs
-      tabStyle={isDesktop ? 'bg-white border border-slate-100 shadow rounded-lg p-4' : ''}
-      tabTitleStyle={!isDesktop ? 'bg-white rounded-full mb-5 px-5' : ''}
-    >
-      <Tab title='Extrinsics'>
+    <PageTabs isDesktop={isDesktop}>
+      <Tab title={`Extrinsics (${extrinsics.length})`}>
         {isDesktop ? (
           <BlockDetailsExtrinsicList extrinsics={extrinsics} />
         ) : (
           <div className='flex flex-col'>
             {extrinsics.map((extrinsic) => (
-              <BlockDetailsExtrinsicCard
+              <ExtrinsicCard
+                id='block-details-extrinsic-mobile'
                 key={`block-details-extrinsic-card-${extrinsic.id}`}
                 extrinsic={extrinsic}
               />
@@ -42,18 +40,22 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
           </div>
         )}
       </Tab>
-      <Tab title='Events'>
+      <Tab title={`Events (${events.length})`}>
         {isDesktop ? (
           <BlockDetailsEventList events={events} />
         ) : (
           <div className='flex flex-col'>
             {events.map((event) => (
-              <BlockDetailsEventCard key={`block-details-event-card-${event.id}`} event={event} />
+              <EventCard 
+                key={`block-details-event-card-${event.id}`} 
+                event={event} 
+                id='block-details-event-mobile'
+              />
             ))}
           </div>
         )}
       </Tab>
-      <Tab title='Logs'>
+      <Tab title={`Logs (${logs.length})`}>
         {isDesktop ? (
           <BlockDetailsLogList logs={logs} />
         ) : (
@@ -64,58 +66,11 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
           </div>
         )}
       </Tab>
-    </Tabs>
+    </PageTabs>
   )
 }
 
 export default BlockDetailsTabs
-
-type ExtrinsicCardProps = {
-  extrinsic: Extrinsic
-}
-
-const BlockDetailsExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic }) => {
-  const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
-
-  const body = [
-    { name: 'Block', value: extrinsic.block.height },
-    { name: 'Call', value: extrinsic.name.split('.')[1].toUpperCase() },
-    { name: 'Time', value: `${blockDate} ago` },
-  ]
-  return (
-    <MobileCard
-      id='block-details-extrinsic-mobile'
-      header={
-        <>
-          <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
-        </>
-      }
-      body={body}
-    />
-  )
-}
-
-type EventCardProps = {
-  event: Event
-}
-
-const BlockDetailsEventCard: FC<EventCardProps> = ({ event }) => {
-  const body = [
-    { name: 'Action', value: event.name.split('.')[1] },
-    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.pos}` },
-    { name: 'Type', value: event.phase },
-  ]
-  return (
-    <MobileCard
-      id='block-details-event-mobile'
-      header={
-        <h3 className='font-medium text-[#241235] text-sm'>{`$${event.block?.height}-${event.pos}`}</h3>
-      }
-      body={body}
-    />
-  )
-}
 
 type LogCardProps = {
   log: Log
@@ -135,7 +90,7 @@ const BlockDetailsLogCard: FC<LogCardProps> = ({ log }) => {
   return (
     <MobileCard
       id='block-details-log-mobile'
-      header={<h3 className='font-medium text-[#241235] text-sm'>{log.id}</h3>}
+      header={<h3 className='font-medium text-[#241235] dark:text-white text-sm'>{log.id}</h3>}
       body={body}
     />
   )

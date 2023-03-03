@@ -1,8 +1,4 @@
 import { FC } from 'react'
-import { Swiper, SwiperSlide } from 'swiper/react'
-
-// common
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // common/icons
 import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
@@ -11,82 +7,65 @@ import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
 import { HomeInfoCard } from 'Home/components'
 
 type Props = {
-  archivedBlock?: string
   signedExtrinsics?: string
   rewardAddresses?: string
   spacePledged?: string
-  bestBlock?: string
+  blocksCount?: string
   historySize?: string
 }
 
 const HomeCards: FC<Props> = ({
-  archivedBlock = '0',
   signedExtrinsics = '0',
   rewardAddresses = '0',
   spacePledged = '0',
-  bestBlock = '0',
+  blocksCount = '0',
   historySize = '0',
 }) => {
-  const isXlDesktop = useMediaQuery('(min-width: 1536px)')
-
-  const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
-
-  const isMediumDesktop = useMediaQuery('(min-width: 960px)')
-
-  const isSmallDesktop = useMediaQuery('(min-width: 640px)')
-
   const listOfCards = [
     {
-      title: 'Archived Block',
+      title: 'Processed Blocks',
       icon: <BlockIcon />,
-      value: archivedBlock,
+      value: blocksCount,
+      darkBgClass: 'dark:bg-gradient-to-b dark:from-[#6E6ECD] dark:via-[#A196E1] dark:to-[#C2B0EE]',
     },
     {
       title: 'Signed Extrinsics',
       icon: <DocIcon />,
       value: signedExtrinsics,
+      darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
     },
     {
       title: 'Qualified Reward Addresses',
       icon: <WalletIcon />,
       value: rewardAddresses,
+      darkBgClass: 'dark:bg-gradient-to-b dark:from-[#AC70E1] dark:to-[#E6ADDC]',
     },
     {
       title: 'Total Space Pledged',
       icon: <PieChartIcon />,
       value: spacePledged,
+      darkBgClass: 'dark:bg-gradient-to-b dark:from-[#6E6ECD] dark:via-[#A196E1] dark:to-[#C2B0EE]',
     },
-    {
-      title: 'Best Block',
-      icon: <BlockIcon />,
-      value: bestBlock,
-    },
+    // TODO: uncomment when we have support for best blocks, currently all blocks are archived
+    // {
+    //   title: 'Best Block',
+    //   icon: <BlockIcon />,
+    //   value: bestBlock,
+    //   darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
+    // },
     {
       title: 'Blockchain History Size',
       icon: <WalletIcon />,
       value: historySize,
+      darkBgClass: 'dark:bg-gradient-to-b dark:from-[#AC70E1] dark:to-[#E6ADDC]',
     },
   ]
 
-  const slidesPerScreenSize = isXlDesktop
-    ? 5.5
-    : isLargeDesktop
-    ? 4.5
-    : isMediumDesktop
-    ? 3.5
-    : isSmallDesktop
-    ? 2.5
-    : 1.3
-
   return (
-    <div className='w-full flex mb-12 items-center justify-center'>
-      <Swiper spaceBetween={4} slidesPerView={slidesPerScreenSize}>
-        {listOfCards.map(({ title, value, icon }, index) => (
-          <SwiperSlide key={`${title}-${value}`}>
-            <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className='w-full flex mb-12 items-center overflow-x-auto gap-5'>
+      {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
+        <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} darkBgClass={darkBgClass} />
+      ))}
     </div>
   )
 }

@@ -36,10 +36,10 @@ export const TabTitle: React.FC<TabTitleProps> = ({
     }
   }
   return (
-    <li className='-mb-px mr-2 last:mr-0 text-center'>
+    <li className='-mb-px last:mr-0 text-center'>
       <button
         className={
-          'text-xs font-semibold px-5 py-3 rounded-full block leading-normal ' +
+          'text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal ' +
           (isSelected ? `${activePillStyle}` : `${pillStyle}`)
         }
         onClick={handleOnClick}
@@ -63,8 +63,8 @@ export const Tabs: React.FC<TabsProps> = ({
   children,
   tabStyle = 'bg-white border border-slate-100 shadow rounded-lg p-4',
   tabTitleStyle = '',
-  pillStyle = 'text-gray-600 bg-white',
-  activePillStyle = 'text-white bg-[#241235]',
+  pillStyle = 'text-gray-600 bg-white dark:bg-transparent dark:text-white',
+  activePillStyle = 'text-white bg-[#241235] dark:bg-[#1E254E]',
 }) => {
   const [selectedTab, setSelectedTab] = useState(0)
 
@@ -72,7 +72,7 @@ export const Tabs: React.FC<TabsProps> = ({
     <div className={`flex flex-wrap ${tabStyle}`}>
       <div className='w-full'>
         <ul
-          className={`flex list-none flex-wrap pt-3 pb-4 flex-row ${tabTitleStyle}`}
+          className={`flex w-full list-none flex-wrap pt-3 pb-4 flex-row ${tabTitleStyle}`}
           role='tablist'
         >
           {Array.isArray(children) ? (
@@ -100,7 +100,7 @@ export const Tabs: React.FC<TabsProps> = ({
             />
           )}
         </ul>
-        {children[selectedTab]}
+        {Array.isArray(children) ? children[selectedTab] : children}
       </div>
     </div>
   )
