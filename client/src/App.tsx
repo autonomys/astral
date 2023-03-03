@@ -38,7 +38,8 @@ function ScrollToTopWrapper({ children }) {
   return children
 }
 
-// force page scroll to top on route change
+// force to refresh url on browser refresh
+// TODO: this is a temporary solution, we should use a better solution
 function UpdateURLOnRefresh({ children }) {
   const location = useLocation()
   const navigate = useNavigate()
