@@ -42,4 +42,13 @@ make local-archive-up:
 make local-archive-down:
 	@docker-compose -f local-archive/docker-compose.yml down
 
+make devnet-up:
+	@docker-compose -f devnet/docker-compose.yml up -d
+
+make devnet-down:
+	@docker-compose -f devnet/docker-compose.yml down
+
+make devnet-logs:
+	@docker-compose -f devnet/docker-compose.yml logs -f
+
 .PHONY: build serve process migrate codegen typegen up down
