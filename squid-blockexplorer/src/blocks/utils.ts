@@ -1,6 +1,7 @@
 import { HexSink } from "@subsquid/scale-codec";
 import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
+import { toHex } from '@subsquid/util-internal-hex';
 import { Block, Extrinsic, Call, Account } from "../model";
 import { CallItem, EventItem } from "../processor";
 
@@ -33,6 +34,7 @@ interface CreateBlockParams {
   blockchainSize: bigint;
   extrinsicsCount: number;
   eventsCount: number;
+  author: Account | undefined;
 }
 
 export function createBlock({
@@ -41,6 +43,7 @@ export function createBlock({
   blockchainSize,
   extrinsicsCount,
   eventsCount,
+  author,
 }: CreateBlockParams) {
   return new Block({
     ...header,
@@ -50,6 +53,7 @@ export function createBlock({
     blockchainSize,
     extrinsicsCount,
     eventsCount,
+    author,
   });
 }
 
@@ -132,4 +136,17 @@ function getNameHash(name: string): string {
  */
 export function getStorageHash(prefix: string, name: string) {
   return getNameHash(prefix) + getNameHash(name).slice(2);
+}
+
+export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
+  if (!value) return null;
+
+  if (Array.isArray(value)) {
+    return {
+      engine: value[0].toString(),
+      data: toHex(value[1]),
+    };
+  }
+
+  return { data: toHex(value) };
 }
