@@ -16,6 +16,7 @@
     "update": "npx npm-check-updates --filter /subsquid/ --upgrade && npm i -f"
   },
   "dependencies": {
+    "@polkadot/api": "^9.14.2",
     "@subsquid/archive-registry": "2.1.6",
     "@subsquid/graphql-server": "3.3.2",
     "@subsquid/ss58": "0.1.4",
