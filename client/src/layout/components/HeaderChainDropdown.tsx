@@ -9,7 +9,6 @@ import { SubspaceSymbol } from 'common/icons'
 
 const HeaderChainDropdown: FC = () => {
   const { setSelectedChain, chains, selectedChain } = useDomains()
-
   const navigate = useNavigate()
 
   const handleChainChange = (chain: Chain) => {
