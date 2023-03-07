@@ -5,3 +5,5 @@
 /**Versions.jsonl
 .nyc_output
 coverage
+devnet/node-data
+devnet/farmer-data
