@@ -42,6 +42,11 @@ function ScrollToTopWrapper({ children }) {
 // Legacy gemini 2 routing support
 // TODO: remove when possible
 const LegacyGemini2Redirect: FC<{ path: string }> = ({ path }) => {
+  const { setSelectedChain } = useDomains()
+
+  // Set selected chain to gemini 2
+  setSelectedChain(chains[1])
+
   const gemini2Chain = chains[1].urls.page
 
   const params = useParams()
