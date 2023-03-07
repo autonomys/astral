@@ -53,11 +53,12 @@ tap.test('processBlocks should process blocks and items from the Context and sav
 
   await processBlocks(context);
 
-  // expect store.save method calls: blocks, extrinsics, calls, events, logs
-  t.equal(saveSpy.callCount, 5);
+  // expect store.save method calls: authors, blocks, extrinsics, calls, events, logs
+  t.equal(saveSpy.callCount, 7);
 
   // check stored block ids against block ids in the context
-  const storedBlocks = saveSpy.firstCall.firstArg;
+  // first two calls are for authors
+  const storedBlocks = saveSpy.thirdCall.firstArg;
   t.equal(storedBlocks[0].id, blocks[0].header.id);
   t.equal(storedBlocks[1].id, blocks[1].header.id);
 
