@@ -38,22 +38,6 @@ function ScrollToTopWrapper({ children }) {
   return children
 }
 
-// force to refresh url on browser refresh
-// TODO: this is a temporary solution, we should use a better solution
-// function UpdateURLOnRefresh({ children }) {
-//   const location = useLocation()
-//   const navigate = useNavigate()
-//   const { selectedChain } = useDomains()
-
-//   useEffect(() => {
-//     if (location.pathname !== selectedChain.urls.page) {
-//       navigate(selectedChain.urls.page)
-//     }
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [selectedChain])
-//   return children
-// }
-
 function App() {
   const { selectedChain } = useDomains()
 
