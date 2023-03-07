@@ -1,12 +1,14 @@
 {
-  "name": "subspace-balances",
-  "private": true,
+  "name": "subspace-blockchain-explorer",
+  "private": false,
+  "license": "Apache-2.0",
   "engines": {
     "node": ">=16"
   },
   "scripts": {
     "lint": "eslint . --ext .ts",
     "test": "nyc tap --ts",
+    "test:e2e": "tap --ts src/e2e/*.e2e.ts",
     "build": "rm -rf lib && tsc",
     "db:migrate": "npx squid-typeorm-migration apply",
     "processor:start": "node lib/processor.js",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
+    "@polkadot/api": "^9.10.1",
     "@subsquid/substrate-metadata-explorer": "1.1.2",
     "@subsquid/substrate-typegen": "2.2.1",
     "@subsquid/typeorm-codegen": "0.3.3",
@@ -37,6 +40,7 @@
     "@typescript-eslint/parser": "^5.42.1",
     "eslint": "^8.27.0",
     "eslint-plugin-eslint-plugin": "^5.0.6",
+    "graphql-request": "^5.0.0",
     "nyc": "^15.1.0",
     "sinon": "^14.0.2",
     "source-map-support": "^0.5.21",
