@@ -8,6 +8,7 @@ import { MobileCard, Tab, PageTabs } from 'common/components'
 // extrinsic
 import { ExtrinsicDetailsEventList } from 'Extrinsic/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 type Props = {
   events: Event[]
@@ -43,6 +44,7 @@ type EventCardProps = {
 
 // TODO: similar to EventCard, consider refactoring
 const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
+  const { selectedChain } = useDomains()
   const body = [
     { name: 'Action', value: event.name.split('.')[1] },
     { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.pos}` },
@@ -52,7 +54,10 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
     <MobileCard
       id='extrinsic-details-event-mobile'
       header={
-        <Link className='w-full' to={INTERNAL_ROUTES.events.id.page(event.id)}>
+        <Link
+          className='w-full'
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, event.id)}
+        >
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>
             <div>{`${event.block?.height}-${event.pos}`}</div>
           </h3>

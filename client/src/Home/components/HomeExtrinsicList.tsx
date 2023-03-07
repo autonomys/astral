@@ -15,6 +15,7 @@ import { Extrinsic } from 'gql/graphql'
 
 // home
 import { HomeExtrinsicCard } from 'Home/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -41,6 +42,7 @@ const HomeExtrinsicListHeader = () => (
 )
 
 const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -49,7 +51,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
         <Link
           className='hover:text-[#DE67E4]'
           key={`${id}-home-extrinsic-hash`}
-          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
         >
           <div>{shortString(hash)}</div>
         </Link>

@@ -9,6 +9,7 @@ import { Extrinsic } from 'gql/graphql'
 // common
 import { StatusIcon, MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -17,6 +18,7 @@ type Props = {
 }
 // TODO: similar to ExtrinsicListCard, consider refactoring
 const HomeExtrinsicCard: FC<Props> = ({ extrinsic }) => {
+  const { selectedChain } = useDomains()
   const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
 
   const body = [
@@ -28,7 +30,10 @@ const HomeExtrinsicCard: FC<Props> = ({ extrinsic }) => {
     <MobileCard
       id='home-extrinsic-list-mobile'
       header={
-        <Link className='flex gap-1' to={INTERNAL_ROUTES.extrinsics.id.page(extrinsic.id)}>
+        <Link
+          className='flex gap-1'
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id)}
+        >
           <StatusIcon status={extrinsic.success} />
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
         </Link>

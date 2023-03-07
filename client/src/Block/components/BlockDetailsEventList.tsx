@@ -7,6 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 // common
 import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -15,13 +16,17 @@ type Props = {
 }
 
 const BlockDetailsEventList: FC<Props> = ({ events }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
       cells: events.map(({ block, pos, id }, index) => (
         <div className='w-full flex gap-1' key={`${id}-block-event-id`}>
-          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.events.id.page(id)}>
+          <Link
+            className='w-full hover:text-[#DE67E4]'
+            to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+          >
             {`${block?.height || index}-${pos}`}
           </Link>
         </div>

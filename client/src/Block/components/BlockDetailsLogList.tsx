@@ -7,6 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 // common
 import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -15,6 +16,7 @@ type Props = {
 }
 
 const BlockDetailsLogList: FC<Props> = ({ logs }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (logs: Log[]): Column[] => [
     {
@@ -23,7 +25,7 @@ const BlockDetailsLogList: FC<Props> = ({ logs }) => {
         <Link
           key={`${id}-block-log-id`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.logs.id.page(id)}
+          to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, id)}
         >
           {id}
         </Link>

@@ -1,13 +1,15 @@
-import { FC, useState, createContext, useContext, ReactNode } from 'react'
+import { FC, createContext, useContext, ReactNode } from 'react'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
 // chains
 import chains from 'layout/config/chains.json'
+import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
 
-type Chain = {
+export type Chain = {
   title: string
   urls: {
     api: string
+    page: string
   }
 }
 
@@ -27,7 +29,7 @@ type Props = {
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
+  const [selectedChain, setSelectedChain] = useSafeLocalStorage('selected-chain', chains[0])
 
   const client = new ApolloClient({
     uri: selectedChain.urls.api,

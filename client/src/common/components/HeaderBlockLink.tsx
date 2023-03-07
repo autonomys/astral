@@ -6,11 +6,12 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import { Scalars } from 'gql/graphql'
 
 type Props = {
-  height: Scalars['BigInt'];
+  height: Scalars['BigInt']
+  chain: string
 }
 
-const HeaderBlockLink: FC<Props> = ({ height }) => (
-  <Link className='flex gap-1' to={INTERNAL_ROUTES.blocks.id.page(height)}>
+const HeaderBlockLink: FC<Props> = ({ height, chain }) => (
+  <Link className='flex gap-1' to={INTERNAL_ROUTES.blocks.id.page(chain, height)}>
     <h3 className='font-medium text-[#241235] text-sm dark:text-white'>#{height}</h3>
   </Link>
 )
