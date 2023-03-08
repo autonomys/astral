@@ -7,27 +7,25 @@ import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
 import { HomeInfoCard } from 'Home/components'
 
 type Props = {
-  archivedBlock?: string
   signedExtrinsics?: string
   rewardAddresses?: string
   spacePledged?: string
-  bestBlock?: string
+  blocksCount?: string
   historySize?: string
 }
 
 const HomeCards: FC<Props> = ({
-  archivedBlock = '0',
   signedExtrinsics = '0',
   rewardAddresses = '0',
   spacePledged = '0',
-  bestBlock = '0',
+  blocksCount = '0',
   historySize = '0',
 }) => {
   const listOfCards = [
     {
-      title: 'Archived Block',
+      title: 'Processed Blocks',
       icon: <BlockIcon />,
-      value: archivedBlock,
+      value: blocksCount,
       darkBgClass: 'dark:bg-gradient-to-b dark:from-[#6E6ECD] dark:via-[#A196E1] dark:to-[#C2B0EE]',
     },
     {
@@ -48,12 +46,13 @@ const HomeCards: FC<Props> = ({
       value: spacePledged,
       darkBgClass: 'dark:bg-gradient-to-b dark:from-[#6E6ECD] dark:via-[#A196E1] dark:to-[#C2B0EE]',
     },
-    {
-      title: 'Best Block',
-      icon: <BlockIcon />,
-      value: bestBlock,
-      darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
-    },
+    // TODO: uncomment when we have support for best blocks, currently all blocks are archived
+    // {
+    //   title: 'Best Block',
+    //   icon: <BlockIcon />,
+    //   value: bestBlock,
+    //   darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
+    // },
     {
       title: 'Blockchain History Size',
       icon: <WalletIcon />,

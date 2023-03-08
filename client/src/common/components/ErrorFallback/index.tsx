@@ -16,7 +16,7 @@ const ErrorFallback = ({ resetErrorBoundary }: Props) => {
           If the problem persists, visit our{' '}
           <a
             className='font-medium text-[#9179EC] dark:text-[#DE67E4]'
-            href='https://status.subspace.network/status'
+            href='https://status.subspace.network'
             target='_blank'
             rel='noreferrer'
           >

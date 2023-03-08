@@ -20,7 +20,7 @@ export const INTERNAL_ROUTES = {
   blocks: {
     id: {
       path: ':blockId',
-      page: (blockId: number): string => `/blocks/${blockId}`,
+      page: (chain: string, blockId: number): string => `/${chain}/blocks/${blockId}`,
     },
     list: 'blocks',
   },
@@ -28,27 +28,27 @@ export const INTERNAL_ROUTES = {
     list: 'accounts',
     id: {
       path: ':accountId',
-      page: (accountId: string): string => `/accounts/${accountId}`,
+      page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}`,
     },
   },
   events: {
     id: {
       path: ':eventId',
-      page: (eventId: string): string => `/events/${eventId}`,
+      page: (chain: string, eventId: string): string => `/${chain}/events/${eventId}`,
     },
     list: 'events',
   },
   extrinsics: {
     id: {
       path: ':extrinsicId',
-      page: (extrinsicId: string): string => `/extrinsics/${extrinsicId}`,
+      page: (chain: string, extrinsicId: string): string => `/${chain}/extrinsics/${extrinsicId}`,
     },
     list: 'extrinsics',
   },
   logs: {
     id: {
       path: ':logId',
-      page: (logId: string): string => `/logs/${logId}`,
+      page: (chain: string, logId: string): string => `/${chain}/logs/${logId}`,
     },
     list: 'logs',
   },

@@ -94,74 +94,6 @@ export class BalancesMaxReservesConstant {
     }
 }
 
-export class DomainsMaximumReceiptDriftConstant {
-    private readonly _chain: Chain
-
-    constructor(ctx: ChainContext) {
-        this._chain = ctx._chain
-    }
-
-    /**
-     *  Maximum execution receipt drift.
-     * 
-     *  If the primary number of an execution receipt plus the maximum drift is bigger than the
-     *  best execution chain number, this receipt will be rejected as being too far in the
-     *  future.
-     */
-    get isV0() {
-        return this._chain.getConstantTypeHash('Domains', 'MaximumReceiptDrift') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
-    }
-
-    /**
-     *  Maximum execution receipt drift.
-     * 
-     *  If the primary number of an execution receipt plus the maximum drift is bigger than the
-     *  best execution chain number, this receipt will be rejected as being too far in the
-     *  future.
-     */
-    get asV0(): number {
-        assert(this.isV0)
-        return this._chain.getConstant('Domains', 'MaximumReceiptDrift')
-    }
-
-    /**
-     * Checks whether the constant is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getConstantTypeHash('Domains', 'MaximumReceiptDrift') != null
-    }
-}
-
-export class DomainsReceiptsPruningDepthConstant {
-    private readonly _chain: Chain
-
-    constructor(ctx: ChainContext) {
-        this._chain = ctx._chain
-    }
-
-    /**
-     *  Number of execution receipts kept in the state.
-     */
-    get isV0() {
-        return this._chain.getConstantTypeHash('Domains', 'ReceiptsPruningDepth') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
-    }
-
-    /**
-     *  Number of execution receipts kept in the state.
-     */
-    get asV0(): number {
-        assert(this.isV0)
-        return this._chain.getConstant('Domains', 'ReceiptsPruningDepth')
-    }
-
-    /**
-     * Checks whether the constant is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getConstantTypeHash('Domains', 'ReceiptsPruningDepth') != null
-    }
-}
-
 export class FeedsMaxFeedsConstant {
     private readonly _chain: Chain
 
@@ -183,6 +115,74 @@ export class FeedsMaxFeedsConstant {
      */
     get isExists(): boolean {
         return this._chain.getConstantTypeHash('Feeds', 'MaxFeeds') != null
+    }
+}
+
+export class ReceiptsMaximumReceiptDriftConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  Maximum execution receipt drift.
+     * 
+     *  If the primary number of an execution receipt plus the maximum drift is bigger than the
+     *  best execution chain number, this receipt will be rejected as being too far in the
+     *  future.
+     */
+    get isV0() {
+        return this._chain.getConstantTypeHash('Receipts', 'MaximumReceiptDrift') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
+    }
+
+    /**
+     *  Maximum execution receipt drift.
+     * 
+     *  If the primary number of an execution receipt plus the maximum drift is bigger than the
+     *  best execution chain number, this receipt will be rejected as being too far in the
+     *  future.
+     */
+    get asV0(): number {
+        assert(this.isV0)
+        return this._chain.getConstant('Receipts', 'MaximumReceiptDrift')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Receipts', 'MaximumReceiptDrift') != null
+    }
+}
+
+export class ReceiptsReceiptsPruningDepthConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  Number of execution receipts kept in the state.
+     */
+    get isV0() {
+        return this._chain.getConstantTypeHash('Receipts', 'ReceiptsPruningDepth') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
+    }
+
+    /**
+     *  Number of execution receipts kept in the state.
+     */
+    get asV0(): number {
+        assert(this.isV0)
+        return this._chain.getConstant('Receipts', 'ReceiptsPruningDepth')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Receipts', 'ReceiptsPruningDepth') != null
     }
 }
 

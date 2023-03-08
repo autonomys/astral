@@ -14,6 +14,7 @@ import { Block } from 'gql/graphql'
 
 // home
 import { HomeBlockCard } from 'Home/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -25,7 +26,7 @@ interface HomeBlockListProps {
   isDesktop: boolean
 }
 
-const HomeBlockListHeader = () => (
+const HomeBlockListHeader: FC = () => (
   <div className='w-full inline-flex justify-between items-center align-middle mb-6'>
     <div className='text-gray-600 uppercase text-md leading-normal dark:text-white'>
       Latest Blocks
@@ -41,6 +42,7 @@ const HomeBlockListHeader = () => (
 )
 
 const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -49,7 +51,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
         <Link
           className='flex gap-2 hover:text-[#DE67E4]'
           key={`${id}-home-block-height`}
-          to={INTERNAL_ROUTES.blocks.id.page(height)}
+          to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, height)}
         >
           <div>#{height}</div>
         </Link>

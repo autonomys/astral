@@ -5,8 +5,11 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 const HeaderDropdownMenu: FC = () => {
+  const { selectedChain } = useDomains()
+
   return (
     <Popover className='relative'>
       <Popover.Button className='flex font-["Montserrat"] justify-center items-center text-[#282929] text-sm font-semibold dark:text-white'>
@@ -25,30 +28,33 @@ const HeaderDropdownMenu: FC = () => {
         <Popover.Panel className='absolute'>
           <div className='flex flex-col bg-white dark:bg-[#1E254E] w-44 rounded-md p-6 z-50 shadow-md'>
             <Link
-              to={INTERNAL_ROUTES.accounts.list}
+              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.accounts.list}`}
               className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
             >
               Accounts
             </Link>
             <Link
-              to={INTERNAL_ROUTES.blocks.list}
+              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.blocks.list}`}
               className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
             >
               Blocks
             </Link>
             <Link
-              to={INTERNAL_ROUTES.extrinsics.list}
+              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.extrinsics.list}`}
               className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
             >
               Extrinsics
             </Link>
             <Link
-              to={INTERNAL_ROUTES.events.list}
+              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.events.list}`}
               className='text-[#282929] font-medium border-b py-1 border-b-[#E4ECF3] dark:text-white'
             >
               Events
             </Link>
-            <Link to={INTERNAL_ROUTES.logs.list} className='text-[#282929] dark:text-white font-medium py-1'>
+            <Link
+              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.logs.list}`}
+              className='text-[#282929] dark:text-white font-medium py-1'
+            >
               Logs
             </Link>
           </div>

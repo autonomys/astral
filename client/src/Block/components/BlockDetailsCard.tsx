@@ -24,9 +24,10 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
           <h3 className='font-semibold leading-none text-gray-900 text-sm lg:text-2xl dark:text-white'>
             Block #{block.height}
           </h3>
+          {/* TODO: uncomment when we have support for best blocks, currently all blocks are archived
           <div className='bg-[#241235] text-xs font-medium  px-5 py-3 rounded-full block leading-normal text-white'>
             Best Block
-          </div>
+          </div> */}
         </div>
 
         <div className='flow-root'>

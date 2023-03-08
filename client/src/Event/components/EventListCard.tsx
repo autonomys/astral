@@ -9,6 +9,7 @@ import { Event } from 'gql/graphql'
 // common
 import { MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -17,6 +18,7 @@ type Props = {
 }
 
 const EventListCard: FC<Props> = ({ event }) => {
+  const { selectedChain } = useDomains()
   const body = [
     { name: 'Block', value: event.block?.height },
     { name: 'Action', value: event.name.split('.')[1] },
@@ -27,7 +29,10 @@ const EventListCard: FC<Props> = ({ event }) => {
     <MobileCard
       id='event-list-mobile'
       header={
-        <Link className='flex gap-2' to={INTERNAL_ROUTES.events.id.page(event.id)}>
+        <Link
+          className='flex gap-2'
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, event.id)}
+        >
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${event.block?.height}-${event.pos}`}</h3>
         </Link>
       }

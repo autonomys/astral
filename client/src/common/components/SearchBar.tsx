@@ -9,6 +9,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import useSearch from 'common/hooks/useSearch'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { SearchType, searchTypes } from 'common/constants'
+import { useDomains } from 'common/providers/ChainProvider'
 
 interface FormValues {
   searchTerm: string
@@ -16,6 +17,7 @@ interface FormValues {
 }
 
 const SearchBar: FC = () => {
+  const { selectedChain } = useDomains()
   const initialValues: FormValues = { searchTerm: '', searchType: searchTypes[0] }
 
   const handleSearch = useSearch()
@@ -98,9 +100,17 @@ const SearchBar: FC = () => {
                   id='searchTerm'
                   className={`
                     dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg
-                    ${errors.searchTerm && touched.searchTerm && 'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'} 
+                    ${
+                      errors.searchTerm &&
+                      touched.searchTerm &&
+                      'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
+                    } 
                   `}
-                  placeholder={isDesktop ? 'Search for Block / Account ...' : 'Search...'}
+                  placeholder={
+                    isDesktop
+                      ? `Search for Block / Account in ${selectedChain.urls.page} ...`
+                      : 'Search...'
+                  }
                   name='searchTerm'
                   onChange={handleChange}
                 />

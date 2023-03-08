@@ -1,3 +1,4 @@
+import { ApiPromise } from "@polkadot/api";
 import { Context } from '../processor';
 import { ProcessBlocksDependencies } from './types';
 import {
@@ -5,13 +6,15 @@ import {
   getSpacePledgedFactory,
   solutionRangesStorageFactory,
   digestStorageFactory,
+  getBlockAuthorFactory,
 } from './storage';
 import { getOrCreateAccountFactory, processCalls, processExtrinsicsFactory } from './processCalls';
 import { getEvents } from './getEvents';
 import { getLogsFactory } from './getLogs';
 export { processBlocksFactory } from "./processBlocks";
 
-export function createProcessBlocksDependencies(ctx: Context): ProcessBlocksDependencies {
+export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): ProcessBlocksDependencies {
+  const getBlockAuthor = getBlockAuthorFactory(ctx, api);
   const getSpacePledged = getSpacePledgedFactory(ctx, solutionRangesStorageFactory);
   const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
@@ -25,5 +28,6 @@ export function createProcessBlocksDependencies(ctx: Context): ProcessBlocksDepe
     processCalls,
     getEvents,
     getLogs,
+    getBlockAuthor
   };
 }

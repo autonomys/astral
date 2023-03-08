@@ -13,6 +13,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // block
 import { BlockListCard } from 'Block/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -22,6 +23,8 @@ interface Props {
 }
 
 const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
+  const { selectedChain } = useDomains()
+
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -30,7 +33,7 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
         <Link
           key={`${id}-block-height`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.blocks.id.page(height)}
+          to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, height)}
         >
           <div>{height}</div>
         </Link>

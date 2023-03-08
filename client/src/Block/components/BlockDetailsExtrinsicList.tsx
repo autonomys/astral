@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { Table, Column, StatusIcon } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { shortString } from 'common/helpers'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -16,6 +17,7 @@ type Props = {
 }
 
 const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -24,7 +26,7 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ extrinsics }) => {
         <Link
           key={`${id}-block-extrinsic-id`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
         >
           {`${block.height}-${pos}`}
         </Link>

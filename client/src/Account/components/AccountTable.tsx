@@ -16,6 +16,7 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 // account
 import { AccountListCard } from 'Account/components'
 import { PAGE_SIZE } from 'common/constants'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -25,6 +26,7 @@ interface Props {
 }
 
 const AccountTable: FC<Props> = ({ accounts, page }) => {
+  const { selectedChain } = useDomains()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
@@ -45,8 +47,7 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
           <Identicon value={id} size={26} theme='beachball' />
           <Link
-            data-testid={`testAccountLink-${index}`}
-            to={INTERNAL_ROUTES.accounts.id.page(id)}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? id : shortString(id)}</div>
