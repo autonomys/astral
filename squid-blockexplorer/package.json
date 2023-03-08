@@ -16,7 +16,7 @@
     "update": "npx npm-check-updates --filter /subsquid/ --upgrade && npm i -f"
   },
   "dependencies": {
-    "@polkadot/api": "^9.14.2",
+    "@polkadot/api": "^10.0.1",
     "@subsquid/archive-registry": "2.1.6",
     "@subsquid/graphql-server": "3.3.2",
     "@subsquid/ss58": "0.1.4",
@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
-    "@polkadot/api": "^9.10.1",
     "@subsquid/substrate-metadata-explorer": "1.1.2",
     "@subsquid/substrate-typegen": "2.2.1",
     "@subsquid/typeorm-codegen": "0.3.3",
