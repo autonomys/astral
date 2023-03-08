@@ -15,23 +15,23 @@ export type RootBlock = RootBlock_V0
 export interface RootBlock_V0 {
     __kind: 'V0'
     segmentIndex: bigint
-    recordsRoot: Commitment
+    recordsRoot: Uint8Array
     prevRootBlockHash: Uint8Array
     lastArchivedBlock: LastArchivedBlock
 }
 
-export type Type_45 = Type_45_Ok | Type_45_Err
+export type Type_41 = Type_41_Ok | Type_41_Err
 
-export interface Type_45_Ok {
+export interface Type_41_Ok {
     __kind: 'Ok'
 }
 
-export interface Type_45_Err {
+export interface Type_41_Err {
     __kind: 'Err'
     value: DispatchError
 }
 
-export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional | DispatchError_Exhausted | DispatchError_Corruption | DispatchError_Unavailable
+export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional
 
 export interface DispatchError_Other {
     __kind: 'Other'
@@ -77,20 +77,8 @@ export interface DispatchError_Transactional {
     value: TransactionalError
 }
 
-export interface DispatchError_Exhausted {
-    __kind: 'Exhausted'
-}
-
-export interface DispatchError_Corruption {
-    __kind: 'Corruption'
-}
-
-export interface DispatchError_Unavailable {
-    __kind: 'Unavailable'
-}
-
 export interface DispatchInfo {
-    weight: Weight
+    weight: bigint
     class: DispatchClass
     paysFee: Pays
 }
@@ -129,12 +117,6 @@ export interface MultiAddress_Address20 {
     value: Uint8Array
 }
 
-export interface SignedBundle {
-    bundle: Bundle
-    bundleSolution: BundleSolution
-    signature: Uint8Array
-}
-
 export interface BundleEquivocationProof {
     offender: Uint8Array
     slot: bigint
@@ -142,15 +124,26 @@ export interface BundleEquivocationProof {
     secondHeader: BundleHeader
 }
 
+export interface SignedExecutionReceipt {
+    executionReceipt: ExecutionReceipt
+    signature: Uint8Array
+    signer: Uint8Array
+}
+
 export interface FraudProof {
-    domainId: number
-    badSignedBundleHash: Uint8Array
+    badSignedReceiptHash: Uint8Array
     parentNumber: number
     parentHash: Uint8Array
     preStateRoot: Uint8Array
     postStateRoot: Uint8Array
     proof: StorageProof
     executionPhase: ExecutionPhase
+}
+
+export interface SignedOpaqueBundle {
+    opaqueBundle: OpaqueBundle
+    signature: Uint8Array
+    signer: Uint8Array
 }
 
 export type FeedProcessorKind = FeedProcessorKind_ContentAddressable | FeedProcessorKind_PolkadotLike | FeedProcessorKind_ParachainLike
@@ -179,7 +172,7 @@ export interface SignedVote {
     signature: Uint8Array
 }
 
-export type Call = Call_System | Call_Timestamp | Call_Subspace | Call_Balances | Call_Utility | Call_Feeds | Call_ObjectStore | Call_Domains | Call_Vesting | Call_Sudo
+export type Call = Call_System | Call_Timestamp | Call_Subspace | Call_Balances | Call_Utility | Call_Feeds | Call_ObjectStore | Call_Executor | Call_Vesting | Call_Sudo
 
 export interface Call_System {
     __kind: 'System'
@@ -216,9 +209,9 @@ export interface Call_ObjectStore {
     value: ObjectStoreCall
 }
 
-export interface Call_Domains {
-    __kind: 'Domains'
-    value: DomainsCall
+export interface Call_Executor {
+    __kind: 'Executor'
+    value: ExecutorCall
 }
 
 export interface Call_Vesting {
@@ -229,11 +222,6 @@ export interface Call_Vesting {
 export interface Call_Sudo {
     __kind: 'Sudo'
     value: SudoCall
-}
-
-export interface Weight {
-    refTime: bigint
-    proofSize: bigint
 }
 
 export type OriginCaller = OriginCaller_system | OriginCaller_Void
@@ -266,6 +254,24 @@ export interface ReserveData {
     amount: bigint
 }
 
+export type Releases = Releases_V1_0_0 | Releases_V2_0_0
+
+export interface Releases_V1_0_0 {
+    __kind: 'V1_0_0'
+}
+
+export interface Releases_V2_0_0 {
+    __kind: 'V2_0_0'
+}
+
+export interface ExecutionReceipt {
+    primaryNumber: number
+    primaryHash: Uint8Array
+    secondaryHash: Uint8Array
+    trace: Uint8Array[]
+    traceRoot: Uint8Array
+}
+
 export interface FeedConfig {
     active: boolean
     feedProcessorId: FeedProcessorKind
@@ -286,14 +292,6 @@ export interface OffenceDetails {
     offender: Uint8Array
 }
 
-export interface ExecutionReceipt {
-    primaryNumber: number
-    primaryHash: Uint8Array
-    domainHash: Uint8Array
-    trace: Uint8Array[]
-    traceRoot: Uint8Array
-}
-
 export interface GlobalRandomnesses {
     current: Uint8Array
     next: (Uint8Array | undefined)
@@ -307,13 +305,19 @@ export interface SolutionRangeOverride {
 export interface VoteVerificationData {
     globalRandomness: Uint8Array
     solutionRange: bigint
-    piecesInSegment: number
+    salt: Uint8Array
+    recordSize: number
+    recordedHistorySegmentSize: number
+    maxPlotSize: bigint
+    totalPieces: bigint
     currentSlot: bigint
     parentSlot: bigint
 }
 
-export interface Commitment {
-    inner: Uint8Array
+export interface Salts {
+    current: Uint8Array
+    next: (Uint8Array | undefined)
+    switchNextBlock: boolean
 }
 
 export interface SolutionRanges {
@@ -332,9 +336,9 @@ export interface AccountInfo {
 }
 
 export interface PerDispatchClass {
-    normal: Weight
-    operational: Weight
-    mandatory: Weight
+    normal: bigint
+    operational: bigint
+    mandatory: bigint
 }
 
 export interface Digest {
@@ -373,24 +377,24 @@ export interface CollectedFees {
     tips: bigint
 }
 
-export type Releases = Releases_V1Ancient | Releases_V2
+export type Type_128 = Type_128_V1Ancient | Type_128_V2
 
-export interface Releases_V1Ancient {
+export interface Type_128_V1Ancient {
     __kind: 'V1Ancient'
 }
 
-export interface Releases_V2 {
+export interface Type_128_V2 {
     __kind: 'V2'
 }
 
 export interface BlockLength {
-    max: Type_75
+    max: Type_69
 }
 
 export interface BlockWeights {
-    baseBlock: Weight
-    maxBlock: Weight
-    perClass: Type_71
+    baseBlock: bigint
+    maxBlock: bigint
+    perClass: Type_65
 }
 
 export interface RuntimeDbWeight {
@@ -497,27 +501,6 @@ export interface Pays_No {
     __kind: 'No'
 }
 
-export interface Bundle {
-    header: BundleHeader
-    receipts: ExecutionReceipt[]
-    extrinsics: Uint8Array[]
-}
-
-export type BundleSolution = BundleSolution_System | BundleSolution_Core
-
-export interface BundleSolution_System {
-    __kind: 'System'
-    value: ProofOfElection
-}
-
-export interface BundleSolution_Core {
-    __kind: 'Core'
-    proofOfElection: ProofOfElection
-    coreBlockNumber: number
-    coreBlockHash: Uint8Array
-    coreStateRoot: Uint8Array
-}
-
 export interface BundleHeader {
     primaryHash: Uint8Array
     slotNumber: bigint
@@ -544,6 +527,11 @@ export interface ExecutionPhase_FinalizeBlock {
     __kind: 'FinalizeBlock'
 }
 
+export interface OpaqueBundle {
+    header: BundleHeader
+    opaqueExtrinsics: Uint8Array[]
+}
+
 export interface Header {
     parentHash: Uint8Array
     number: number
@@ -565,7 +553,15 @@ export interface Vote_V0 {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event
+export type SystemCall = SystemCall_fill_block | SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event
+
+/**
+ * A dispatch that will fill the block weight up to the given ratio.
+ */
+export interface SystemCall_fill_block {
+    __kind: 'fill_block'
+    ratio: number
+}
 
 /**
  * Make some on-chain remark.
@@ -876,18 +872,18 @@ export interface BalancesCall_force_unreserve {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative | UtilityCall_batch_all | UtilityCall_dispatch_as | UtilityCall_force_batch | UtilityCall_with_weight
+export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative | UtilityCall_batch_all | UtilityCall_dispatch_as | UtilityCall_force_batch
 
 /**
  * Send a batch of dispatch calls.
  * 
- * May be called from any origin except `None`.
+ * May be called from any origin.
  * 
  * - `calls`: The calls to be dispatched from the same origin. The number of call must not
  *   exceed the constant: `batched_calls_limit` (available in constant metadata).
  * 
- * If origin is root then the calls are dispatched without checking origin filter. (This
- * includes bypassing `frame_system::Config::BaseCallFilter`).
+ * If origin is root then call are dispatch without checking origin filter. (This includes
+ * bypassing `frame_system::Config::BaseCallFilter`).
  * 
  * # <weight>
  * - Complexity: O(C) where C is the number of calls to be batched.
@@ -929,13 +925,13 @@ export interface UtilityCall_as_derivative {
  * Send a batch of dispatch calls and atomically execute them.
  * The whole transaction will rollback and fail if any of the calls failed.
  * 
- * May be called from any origin except `None`.
+ * May be called from any origin.
  * 
  * - `calls`: The calls to be dispatched from the same origin. The number of call must not
  *   exceed the constant: `batched_calls_limit` (available in constant metadata).
  * 
- * If origin is root then the calls are dispatched without checking origin filter. (This
- * includes bypassing `frame_system::Config::BaseCallFilter`).
+ * If origin is root then call are dispatch without checking origin filter. (This includes
+ * bypassing `frame_system::Config::BaseCallFilter`).
  * 
  * # <weight>
  * - Complexity: O(C) where C is the number of calls to be batched.
@@ -968,13 +964,13 @@ export interface UtilityCall_dispatch_as {
  * Send a batch of dispatch calls.
  * Unlike `batch`, it allows errors and won't interrupt.
  * 
- * May be called from any origin except `None`.
+ * May be called from any origin.
  * 
  * - `calls`: The calls to be dispatched from the same origin. The number of call must not
  *   exceed the constant: `batched_calls_limit` (available in constant metadata).
  * 
- * If origin is root then the calls are dispatch without checking origin filter. (This
- * includes bypassing `frame_system::Config::BaseCallFilter`).
+ * If origin is root then call are dispatch without checking origin filter. (This includes
+ * bypassing `frame_system::Config::BaseCallFilter`).
  * 
  * # <weight>
  * - Complexity: O(C) where C is the number of calls to be batched.
@@ -983,20 +979,6 @@ export interface UtilityCall_dispatch_as {
 export interface UtilityCall_force_batch {
     __kind: 'force_batch'
     calls: Call[]
-}
-
-/**
- * Dispatch a function call with a specified weight.
- * 
- * This function does not check the weight of the call, and instead allows the
- * Root origin to specify the weight of the call.
- * 
- * The dispatch origin for this call must be _Root_.
- */
-export interface UtilityCall_with_weight {
-    __kind: 'with_weight'
-    call: Call
-    weight: Weight
 }
 
 /**
@@ -1065,24 +1047,29 @@ export interface ObjectStoreCall_put {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_submit_bundle_equivocation_proof | DomainsCall_submit_invalid_transaction_proof
+export type ExecutorCall = ExecutorCall_submit_execution_receipt | ExecutorCall_submit_transaction_bundle | ExecutorCall_submit_fraud_proof | ExecutorCall_submit_bundle_equivocation_proof | ExecutorCall_submit_invalid_transaction_proof
 
-export interface DomainsCall_submit_bundle {
-    __kind: 'submit_bundle'
-    signedOpaqueBundle: SignedBundle
+export interface ExecutorCall_submit_execution_receipt {
+    __kind: 'submit_execution_receipt'
+    signedExecutionReceipt: SignedExecutionReceipt
 }
 
-export interface DomainsCall_submit_fraud_proof {
+export interface ExecutorCall_submit_transaction_bundle {
+    __kind: 'submit_transaction_bundle'
+    signedOpaqueBundle: SignedOpaqueBundle
+}
+
+export interface ExecutorCall_submit_fraud_proof {
     __kind: 'submit_fraud_proof'
     fraudProof: FraudProof
 }
 
-export interface DomainsCall_submit_bundle_equivocation_proof {
+export interface ExecutorCall_submit_bundle_equivocation_proof {
     __kind: 'submit_bundle_equivocation_proof'
     bundleEquivocationProof: BundleEquivocationProof
 }
 
-export interface DomainsCall_submit_invalid_transaction_proof {
+export interface ExecutorCall_submit_invalid_transaction_proof {
     __kind: 'submit_invalid_transaction_proof'
 }
 
@@ -1149,7 +1136,7 @@ export interface SudoCall_sudo {
 export interface SudoCall_sudo_unchecked_weight {
     __kind: 'sudo_unchecked_weight'
     call: Call
-    weight: Weight
+    weight: bigint
 }
 
 /**
@@ -1245,7 +1232,7 @@ export interface DigestItem_RuntimeEnvironmentUpdated {
     __kind: 'RuntimeEnvironmentUpdated'
 }
 
-export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Receipts | Event_Domains | Event_Vesting | Event_Sudo
+export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Executor | Event_Vesting | Event_Sudo
 
 export interface Event_System {
     __kind: 'System'
@@ -1297,14 +1284,9 @@ export interface Event_ObjectStore {
     value: ObjectStoreEvent
 }
 
-export interface Event_Receipts {
-    __kind: 'Receipts'
-    value: ReceiptsEvent
-}
-
-export interface Event_Domains {
-    __kind: 'Domains'
-    value: DomainsEvent
+export interface Event_Executor {
+    __kind: 'Executor'
+    value: ExecutorEvent
 }
 
 export interface Event_Vesting {
@@ -1317,13 +1299,13 @@ export interface Event_Sudo {
     value: SudoEvent
 }
 
-export interface Type_75 {
+export interface Type_69 {
     normal: number
     operational: number
     mandatory: number
 }
 
-export interface Type_71 {
+export interface Type_65 {
     normal: WeightsPerClass
     operational: WeightsPerClass
     mandatory: WeightsPerClass
@@ -1340,29 +1322,14 @@ export interface ArchivedBlockProgress_Partial {
     value: number
 }
 
-export interface ProofOfElection {
-    domainId: number
-    vrfOutput: Uint8Array
-    vrfProof: Uint8Array
-    executorPublicKey: Uint8Array
-    globalChallenge: Uint8Array
-    stateRoot: Uint8Array
-    storageProof: StorageProof
-    blockNumber: number
-    blockHash: Uint8Array
-}
-
 export interface Solution {
     publicKey: Uint8Array
     rewardAddress: Uint8Array
-    sectorIndex: bigint
-    totalPieces: bigint
-    pieceOffset: bigint
-    pieceRecordHash: Uint8Array
-    pieceWitness: Witness
-    chunkOffset: number
-    chunk: Scalar
-    chunkSignature: ChunkSignature
+    pieceIndex: bigint
+    encoding: Uint8Array
+    tagSignature: TagSignature
+    localChallenge: LocalChallenge
+    tag: Uint8Array
 }
 
 /**
@@ -1722,7 +1689,7 @@ export interface UtilityEvent_ItemFailed {
  */
 export interface UtilityEvent_DispatchedAs {
     __kind: 'DispatchedAs'
-    result: Type_45
+    result: Type_41
 }
 
 /**
@@ -1808,57 +1775,43 @@ export interface ObjectStoreEvent_ObjectSubmitted {
 			by this pallet.
 			
  */
-export type ReceiptsEvent = ReceiptsEvent_NewDomainReceipt | ReceiptsEvent_FraudProofProcessed
+export type ExecutorEvent = ExecutorEvent_NewExecutionReceipt | ExecutorEvent_TransactionBundleStored | ExecutorEvent_FraudProofProcessed | ExecutorEvent_BundleEquivocationProofProcessed | ExecutorEvent_InvalidTransactionProofProcessed
 
 /**
- * A new domain receipt.
+ * A new execution receipt was backed.
  */
-export interface ReceiptsEvent_NewDomainReceipt {
-    __kind: 'NewDomainReceipt'
-    domainId: number
+export interface ExecutorEvent_NewExecutionReceipt {
+    __kind: 'NewExecutionReceipt'
     primaryNumber: number
     primaryHash: Uint8Array
 }
 
 /**
- * A fraud proof was processed.
+ * A transaction bundle was included.
  */
-export interface ReceiptsEvent_FraudProofProcessed {
-    __kind: 'FraudProofProcessed'
-    domainId: number
-    newBestNumber: number
-    newBestHash: Uint8Array
+export interface ExecutorEvent_TransactionBundleStored {
+    __kind: 'TransactionBundleStored'
+    bundleHash: Uint8Array
 }
 
 /**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * A fraud proof was processed.
  */
-export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_BundleEquivocationProofProcessed | DomainsEvent_InvalidTransactionProofProcessed
-
-/**
- * A domain bundle was included.
- */
-export interface DomainsEvent_BundleStored {
-    __kind: 'BundleStored'
-    domainId: number
-    bundleHash: Uint8Array
-    bundleAuthor: Uint8Array
+export interface ExecutorEvent_FraudProofProcessed {
+    __kind: 'FraudProofProcessed'
 }
 
 /**
  * A bundle equivocation proof was processed.
  */
-export interface DomainsEvent_BundleEquivocationProofProcessed {
+export interface ExecutorEvent_BundleEquivocationProofProcessed {
     __kind: 'BundleEquivocationProofProcessed'
 }
 
 /**
  * An invalid transaction proof was processed.
  */
-export interface DomainsEvent_InvalidTransactionProofProcessed {
+export interface ExecutorEvent_InvalidTransactionProofProcessed {
     __kind: 'InvalidTransactionProofProcessed'
 }
 
@@ -1910,7 +1863,7 @@ export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoA
  */
 export interface SudoEvent_Sudid {
     __kind: 'Sudid'
-    sudoResult: Type_45
+    sudoResult: Type_41
 }
 
 /**
@@ -1926,25 +1879,22 @@ export interface SudoEvent_KeyChanged {
  */
 export interface SudoEvent_SudoAsDone {
     __kind: 'SudoAsDone'
-    sudoResult: Type_45
+    sudoResult: Type_41
 }
 
 export interface WeightsPerClass {
-    baseExtrinsic: Weight
-    maxExtrinsic: (Weight | undefined)
-    maxTotal: (Weight | undefined)
-    reserved: (Weight | undefined)
+    baseExtrinsic: bigint
+    maxExtrinsic: (bigint | undefined)
+    maxTotal: (bigint | undefined)
+    reserved: (bigint | undefined)
 }
 
-export interface Witness {
-    inner: Uint8Array
+export interface TagSignature {
+    output: Uint8Array
+    proof: Uint8Array
 }
 
-export interface Scalar {
-    inner: Uint8Array
-}
-
-export interface ChunkSignature {
+export interface LocalChallenge {
     output: Uint8Array
     proof: Uint8Array
 }

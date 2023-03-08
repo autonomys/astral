@@ -1,6 +1,6 @@
 import assert from 'assert'
 import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
-import * as v0 from './v0'
+import * as v3 from './v3'
 
 export class BalancesForceTransferCall {
     private readonly _chain: Chain
@@ -23,7 +23,7 @@ export class BalancesForceTransferCall {
      *   assumed to be in the overlay.
      * # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Balances.force_transfer') === 'e5944fbe8224a17fe49f9c1d1d01efaf87fb1778fd39618512af54c9ba6f9dff'
     }
 
@@ -35,8 +35,8 @@ export class BalancesForceTransferCall {
      *   assumed to be in the overlay.
      * # </weight>
      */
-    get asV0(): {source: v0.MultiAddress, dest: v0.MultiAddress, value: bigint} {
-        assert(this.isV0)
+    get asV3(): {source: v3.MultiAddress, dest: v3.MultiAddress, value: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -59,7 +59,7 @@ export class BalancesForceUnreserveCall {
      * 
      * Can only be called by ROOT.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Balances.force_unreserve') === '30bc48977e2a7ad3fc8ac014948ded50fc54886bad9a1f65b02bb64f27d8a6be'
     }
 
@@ -68,8 +68,8 @@ export class BalancesForceUnreserveCall {
      * 
      * Can only be called by ROOT.
      */
-    get asV0(): {who: v0.MultiAddress, amount: bigint} {
-        assert(this.isV0)
+    get asV3(): {who: v3.MultiAddress, amount: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -97,7 +97,7 @@ export class BalancesSetBalanceCall {
      * 
      * The dispatch origin for this call is `root`.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Balances.set_balance') === 'beb82909d38c015bc075ff8b107e47a02f8772bf5cf681d6cd84ef685e448a8f'
     }
 
@@ -111,8 +111,8 @@ export class BalancesSetBalanceCall {
      * 
      * The dispatch origin for this call is `root`.
      */
-    get asV0(): {who: v0.MultiAddress, newFree: bigint, newReserved: bigint} {
-        assert(this.isV0)
+    get asV3(): {who: v3.MultiAddress, newFree: bigint, newReserved: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -157,7 +157,7 @@ export class BalancesTransferCall {
      * - Origin account is already in memory, so no DB operations for them.
      * # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Balances.transfer') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
     }
 
@@ -188,8 +188,8 @@ export class BalancesTransferCall {
      * - Origin account is already in memory, so no DB operations for them.
      * # </weight>
      */
-    get asV0(): {dest: v0.MultiAddress, value: bigint} {
-        assert(this.isV0)
+    get asV3(): {dest: v3.MultiAddress, value: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -226,7 +226,7 @@ export class BalancesTransferAllCall {
      * - O(1). Just like transfer, but reading the user's transferable balance first.
      *   #</weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Balances.transfer_all') === '9c94c2ca9979f6551af6e123fb6b6ba14d026f862f9a023706f8f88c556b355f'
     }
 
@@ -249,8 +249,8 @@ export class BalancesTransferAllCall {
      * - O(1). Just like transfer, but reading the user's transferable balance first.
      *   #</weight>
      */
-    get asV0(): {dest: v0.MultiAddress, keepAlive: boolean} {
-        assert(this.isV0)
+    get asV3(): {dest: v3.MultiAddress, keepAlive: boolean} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -276,7 +276,7 @@ export class BalancesTransferKeepAliveCall {
      * 
      * [`transfer`]: struct.Pallet.html#method.transfer
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Balances.transfer_keep_alive') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
     }
 
@@ -288,13 +288,13 @@ export class BalancesTransferKeepAliveCall {
      * 
      * [`transfer`]: struct.Pallet.html#method.transfer
      */
-    get asV0(): {dest: v0.MultiAddress, value: bigint} {
-        assert(this.isV0)
+    get asV3(): {dest: v3.MultiAddress, value: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class DomainsSubmitBundleCall {
+export class ExecutorSubmitBundleEquivocationProofCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -302,22 +302,22 @@ export class DomainsSubmitBundleCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Domains.submit_bundle')
+        assert(call.name === 'Executor.submit_bundle_equivocation_proof')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV0(): boolean {
-        return this._chain.getCallHash('Domains.submit_bundle') === '5c78efd5ac9a13a0eb381538dbda5c995eb592993deb52d182d07327c7ab78e6'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Executor.submit_bundle_equivocation_proof') === '2f91d58280c126a19b10801910b9810717cb7cfab69a8164cf8d5ff949c95ddb'
     }
 
-    get asV0(): {signedOpaqueBundle: v0.SignedBundle} {
-        assert(this.isV0)
+    get asV3(): {bundleEquivocationProof: v3.BundleEquivocationProof} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class DomainsSubmitBundleEquivocationProofCall {
+export class ExecutorSubmitExecutionReceiptCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -325,22 +325,22 @@ export class DomainsSubmitBundleEquivocationProofCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Domains.submit_bundle_equivocation_proof')
+        assert(call.name === 'Executor.submit_execution_receipt')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV0(): boolean {
-        return this._chain.getCallHash('Domains.submit_bundle_equivocation_proof') === '2f91d58280c126a19b10801910b9810717cb7cfab69a8164cf8d5ff949c95ddb'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Executor.submit_execution_receipt') === 'ae8802eeb2a476dd1498b5bf193dd1d8ff1f5d5a9fbd5c52d1ae6923a0bd1c82'
     }
 
-    get asV0(): {bundleEquivocationProof: v0.BundleEquivocationProof} {
-        assert(this.isV0)
+    get asV3(): {signedExecutionReceipt: v3.SignedExecutionReceipt} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class DomainsSubmitFraudProofCall {
+export class ExecutorSubmitFraudProofCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -348,22 +348,22 @@ export class DomainsSubmitFraudProofCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Domains.submit_fraud_proof')
+        assert(call.name === 'Executor.submit_fraud_proof')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV0(): boolean {
-        return this._chain.getCallHash('Domains.submit_fraud_proof') === 'c3eadea085ceff04fd06dc6bfcb8ef17419904a86278622241f864c44297121c'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Executor.submit_fraud_proof') === 'df466a56a29e331f5f8a6bef0a9ce64bced9aba6b9672dcd9ea92bbc754a23f6'
     }
 
-    get asV0(): {fraudProof: v0.FraudProof} {
-        assert(this.isV0)
+    get asV3(): {fraudProof: v3.FraudProof} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
 
-export class DomainsSubmitInvalidTransactionProofCall {
+export class ExecutorSubmitInvalidTransactionProofCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -371,17 +371,40 @@ export class DomainsSubmitInvalidTransactionProofCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Domains.submit_invalid_transaction_proof')
+        assert(call.name === 'Executor.submit_invalid_transaction_proof')
         this._chain = ctx._chain
         this.call = call
     }
 
-    get isV0(): boolean {
-        return this._chain.getCallHash('Domains.submit_invalid_transaction_proof') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Executor.submit_invalid_transaction_proof') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
-    get asV0(): null {
-        assert(this.isV0)
+    get asV3(): null {
+        assert(this.isV3)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class ExecutorSubmitTransactionBundleCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Executor.submit_transaction_bundle')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    get isV3(): boolean {
+        return this._chain.getCallHash('Executor.submit_transaction_bundle') === '681c2a1c54a7960489178cd1718f0b44afc2b6012fa5ec49473389903c45a56e'
+    }
+
+    get asV3(): {signedOpaqueBundle: v3.SignedOpaqueBundle} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -402,15 +425,15 @@ export class FeedsCloseCall {
     /**
      * Closes the feed and stops accepting new feed.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Feeds.close') === '215745b2763961a0f0dd6ee97e822fbabd09557e006da37ed1d2d580fbb0e209'
     }
 
     /**
      * Closes the feed and stops accepting new feed.
      */
-    get asV0(): {feedId: bigint} {
-        assert(this.isV0)
+    get asV3(): {feedId: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -431,15 +454,15 @@ export class FeedsCreateCall {
     /**
      * Create a new feed
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Feeds.create') === '66c965d9a88f038143b233616e89f9c8ae80b322d24d4937d7d311ec2a2b6347'
     }
 
     /**
      * Create a new feed
      */
-    get asV0(): {feedProcessorId: v0.FeedProcessorKind, initData: (Uint8Array | undefined)} {
-        assert(this.isV0)
+    get asV3(): {feedProcessorId: v3.FeedProcessorKind, initData: (Uint8Array | undefined)} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -460,15 +483,15 @@ export class FeedsPutCall {
     /**
      * Put a new object into a feed
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Feeds.put') === 'e38c212433ff4faa0fb098d7a66d9af9a81e760527a4fcbcef9f88e764e7a784'
     }
 
     /**
      * Put a new object into a feed
      */
-    get asV0(): {feedId: bigint, object: Uint8Array} {
-        assert(this.isV0)
+    get asV3(): {feedId: bigint, object: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -489,15 +512,15 @@ export class FeedsTransferCall {
     /**
      * Transfers feed from current owner to new owner
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Feeds.transfer') === '3328c86a3211eb2f91fc3a8d321503b5fa4fbafe3b37514cc70787fd332becb2'
     }
 
     /**
      * Transfers feed from current owner to new owner
      */
-    get asV0(): {feedId: bigint, newOwner: v0.MultiAddress} {
-        assert(this.isV0)
+    get asV3(): {feedId: bigint, newOwner: v3.MultiAddress} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -518,15 +541,15 @@ export class FeedsUpdateCall {
     /**
      * Updates the feed with init data provided.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Feeds.update') === '74416376cca34f04132f5d713868526654c3ce9bbe110edbfa9c70ece8bbd84e'
     }
 
     /**
      * Updates the feed with init data provided.
      */
-    get asV0(): {feedId: bigint, feedProcessorId: v0.FeedProcessorKind, initData: (Uint8Array | undefined)} {
-        assert(this.isV0)
+    get asV3(): {feedId: bigint, feedProcessorId: v3.FeedProcessorKind, initData: (Uint8Array | undefined)} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -547,15 +570,15 @@ export class ObjectStorePutCall {
     /**
      * Put a new object into a feed
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('ObjectStore.put') === 'db1b3cc100eb94c9fc90e677c8e1837278395ece67b068bc0462ae353315387d'
     }
 
     /**
      * Put a new object into a feed
      */
-    get asV0(): {object: Uint8Array} {
-        assert(this.isV0)
+    get asV3(): {object: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -576,15 +599,15 @@ export class SubspaceEnableAuthoringByAnyoneCall {
     /**
      * Enable storage access for all users.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Subspace.enable_authoring_by_anyone') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
      * Enable storage access for all users.
      */
-    get asV0(): null {
-        assert(this.isV0)
+    get asV3(): null {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -605,15 +628,15 @@ export class SubspaceEnableRewardsCall {
     /**
      * Enable rewards for blocks and votes at specified block height.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Subspace.enable_rewards') === '1bdaf75fb5be86cd00e96445c81877b4da02821f453e6b767650c5299dd02b65'
     }
 
     /**
      * Enable rewards for blocks and votes at specified block height.
      */
-    get asV0(): {height: (number | undefined)} {
-        assert(this.isV0)
+    get asV3(): {height: (number | undefined)} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -635,7 +658,7 @@ export class SubspaceEnableSolutionRangeAdjustmentCall {
      * Enable solution range adjustment after every era.
      * Note: No effect on the solution range for the current era
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Subspace.enable_solution_range_adjustment') === 'b8131d894f8e6b026073d301af2b9294a27af5e9b08c38e806f1987577845094'
     }
 
@@ -643,8 +666,8 @@ export class SubspaceEnableSolutionRangeAdjustmentCall {
      * Enable solution range adjustment after every era.
      * Note: No effect on the solution range for the current era
      */
-    get asV0(): {solutionRangeOverride: (bigint | undefined), votingSolutionRangeOverride: (bigint | undefined)} {
-        assert(this.isV0)
+    get asV3(): {solutionRangeOverride: (bigint | undefined), votingSolutionRangeOverride: (bigint | undefined)} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -665,15 +688,15 @@ export class SubspaceEnableStorageAccessCall {
     /**
      * Enable storage access for all users.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Subspace.enable_storage_access') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
     /**
      * Enable storage access for all users.
      */
-    get asV0(): null {
-        assert(this.isV0)
+    get asV3(): null {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -699,7 +722,7 @@ export class SubspaceReportEquivocationCall {
      * call it (validated in `ValidateUnsigned`), as such if the block author is defined it
      * will be defined as the equivocation reporter.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Subspace.report_equivocation') === '3b4dd8eb1272754b8223d410185edb75c6fa1763cb0899691848da9838d75c43'
     }
 
@@ -711,8 +734,8 @@ export class SubspaceReportEquivocationCall {
      * call it (validated in `ValidateUnsigned`), as such if the block author is defined it
      * will be defined as the equivocation reporter.
      */
-    get asV0(): {equivocationProof: v0.EquivocationProof} {
-        assert(this.isV0)
+    get asV3(): {equivocationProof: v3.EquivocationProof} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -734,16 +757,16 @@ export class SubspaceStoreRootBlocksCall {
      * Submit new root block to the blockchain. This is an inherent extrinsic and part of the
      * Subspace consensus logic.
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Subspace.store_root_blocks') === 'c66d7129cd80b47ef08a2f301119d8fc6e57052860900be27bacca2911103387'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Subspace.store_root_blocks') === 'c5c81ff35d616954f5702c893b63d1eac613fac431c3818a1fb0dfec3ed618b6'
     }
 
     /**
      * Submit new root block to the blockchain. This is an inherent extrinsic and part of the
      * Subspace consensus logic.
      */
-    get asV0(): {rootBlocks: v0.RootBlock[]} {
-        assert(this.isV0)
+    get asV3(): {rootBlocks: v3.RootBlock[]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -764,15 +787,15 @@ export class SubspaceVoteCall {
     /**
      * Farmer vote, currently only used for extra rewards to farmers.
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Subspace.vote') === 'b44210a357ba786e58fbe595638c09bb160455966b099afa9db7614534af6f8a'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Subspace.vote') === '56732c8efb7c10d3238676297c0b0e7a1ed8d0818cd00851b095715141aaa85a'
     }
 
     /**
      * Farmer vote, currently only used for extra rewards to farmers.
      */
-    get asV0(): {signedVote: v0.SignedVote} {
-        assert(this.isV0)
+    get asV3(): {signedVote: v3.SignedVote} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -802,7 +825,7 @@ export class SudoSetKeyCall {
      * - One DB change.
      * # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Sudo.set_key') === 'e634aac3331d47a56ff572c52ad90a648769dfbf2c00d7bd44498b4ee41f6ac7'
     }
 
@@ -818,8 +841,8 @@ export class SudoSetKeyCall {
      * - One DB change.
      * # </weight>
      */
-    get asV0(): {new: v0.MultiAddress} {
-        assert(this.isV0)
+    get asV3(): {new: v3.MultiAddress} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -849,8 +872,8 @@ export class SudoSudoCall {
      * - Weight of derivative `call` execution + 10,000.
      * # </weight>
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === 'f52a2d1fab42d8b633482b1a0a0f3da30a017da43b06cde02274b32b8b9b0efc'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === 'a37e194eae9ea849cce453937a9d5ca22aabd7e799d44fc1449212378b01567c'
     }
 
     /**
@@ -865,8 +888,8 @@ export class SudoSudoCall {
      * - Weight of derivative `call` execution + 10,000.
      * # </weight>
      */
-    get asV0(): {call: v0.Call} {
-        assert(this.isV0)
+    get asV3(): {call: v3.Call} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -897,8 +920,8 @@ export class SudoSudoAsCall {
      * - Weight of derivative `call` execution + 10,000.
      * # </weight>
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === '66666c5a543205f3d78a36efa82bfb90b78d4a065c78958cfe4e342b35b92a93'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === 'c4f2b0b2e21803cf525f56ade1349f5a963f0750e64a4fbfc52939ffb3a58b62'
     }
 
     /**
@@ -914,8 +937,8 @@ export class SudoSudoAsCall {
      * - Weight of derivative `call` execution + 10,000.
      * # </weight>
      */
-    get asV0(): {who: v0.MultiAddress, call: v0.Call} {
-        assert(this.isV0)
+    get asV3(): {who: v3.MultiAddress, call: v3.Call} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -945,8 +968,8 @@ export class SudoSudoUncheckedWeightCall {
      * - The weight of this call is defined by the caller.
      * # </weight>
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'e5c3a5402249e0db758b0417d1c97f37befe7832a352f7c7aa0b4851dce53cd3'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '95f880bf058a720c0666ac9b7de2c7cef205160717bb218b158068ad427cbd1f'
     }
 
     /**
@@ -961,8 +984,37 @@ export class SudoSudoUncheckedWeightCall {
      * - The weight of this call is defined by the caller.
      * # </weight>
      */
-    get asV0(): {call: v0.Call, weight: v0.Weight} {
-        assert(this.isV0)
+    get asV3(): {call: v3.Call, weight: bigint} {
+        assert(this.isV3)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemFillBlockCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.fill_block')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * A dispatch that will fill the block weight up to the given ratio.
+     */
+    get isV3(): boolean {
+        return this._chain.getCallHash('System.fill_block') === '41c1841312db092642508be699e4a3f54d52efe2dcaa8101ca9518398fb70c49'
+    }
+
+    /**
+     * A dispatch that will fill the block weight up to the given ratio.
+     */
+    get asV3(): {ratio: number} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -986,7 +1038,7 @@ export class SystemKillPrefixCall {
      * **NOTE:** We rely on the Root origin to provide us the number of subkeys under
      * the prefix we are removing to accurately calculate the weight of this function.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.kill_prefix') === 'dfbadd42bee8b18fc81cf78683511061181cffbf7a8ebfd3e5719c389b373d93'
     }
 
@@ -996,8 +1048,8 @@ export class SystemKillPrefixCall {
      * **NOTE:** We rely on the Root origin to provide us the number of subkeys under
      * the prefix we are removing to accurately calculate the weight of this function.
      */
-    get asV0(): {prefix: Uint8Array, subkeys: number} {
-        assert(this.isV0)
+    get asV3(): {prefix: Uint8Array, subkeys: number} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1018,15 +1070,15 @@ export class SystemKillStorageCall {
     /**
      * Kill some items from storage.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.kill_storage') === 'eac21dc14e927c003d9c634fb019d04128f71f8529d2914b10a56b85289c2c11'
     }
 
     /**
      * Kill some items from storage.
      */
-    get asV0(): {keys: Uint8Array[]} {
-        assert(this.isV0)
+    get asV3(): {keys: Uint8Array[]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1051,7 +1103,7 @@ export class SystemRemarkCall {
      * - `O(1)`
      * # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.remark') === 'f4e9b5b7572eeae92978087ece9b4f57cb5cab4f16baf5625bb9ec4a432bad63'
     }
 
@@ -1062,8 +1114,8 @@ export class SystemRemarkCall {
      * - `O(1)`
      * # </weight>
      */
-    get asV0(): {remark: Uint8Array} {
-        assert(this.isV0)
+    get asV3(): {remark: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1084,15 +1136,15 @@ export class SystemRemarkWithEventCall {
     /**
      * Make some on-chain remark and emit event.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.remark_with_event') === 'f4e9b5b7572eeae92978087ece9b4f57cb5cab4f16baf5625bb9ec4a432bad63'
     }
 
     /**
      * Make some on-chain remark and emit event.
      */
-    get asV0(): {remark: Uint8Array} {
-        assert(this.isV0)
+    get asV3(): {remark: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1124,7 +1176,7 @@ export class SystemSetCodeCall {
      * expensive. We will treat this as a full block.
      * # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.set_code') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
     }
 
@@ -1142,8 +1194,8 @@ export class SystemSetCodeCall {
      * expensive. We will treat this as a full block.
      * # </weight>
      */
-    get asV0(): {code: Uint8Array} {
-        assert(this.isV0)
+    get asV3(): {code: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1172,7 +1224,7 @@ export class SystemSetCodeWithoutChecksCall {
      * The weight of this function is dependent on the runtime. We will treat this as a full
      * block. # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.set_code_without_checks') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
     }
 
@@ -1187,8 +1239,8 @@ export class SystemSetCodeWithoutChecksCall {
      * The weight of this function is dependent on the runtime. We will treat this as a full
      * block. # </weight>
      */
-    get asV0(): {code: Uint8Array} {
-        assert(this.isV0)
+    get asV3(): {code: Uint8Array} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1209,15 +1261,15 @@ export class SystemSetHeapPagesCall {
     /**
      * Set the number of pages in the WebAssembly environment's heap.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.set_heap_pages') === '130172e47c5e517627712b4d084768b98489d920284223ea8ef9c462339b5808'
     }
 
     /**
      * Set the number of pages in the WebAssembly environment's heap.
      */
-    get asV0(): {pages: bigint} {
-        assert(this.isV0)
+    get asV3(): {pages: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1238,15 +1290,15 @@ export class SystemSetStorageCall {
     /**
      * Set some items of storage.
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('System.set_storage') === 'a4fb507615d69849afb1b2ee654006f9be48bb6e960a4674624d6e46e4382083'
     }
 
     /**
      * Set some items of storage.
      */
-    get asV0(): {items: [Uint8Array, Uint8Array][]} {
-        assert(this.isV0)
+    get asV3(): {items: [Uint8Array, Uint8Array][]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1282,7 +1334,7 @@ export class TimestampSetCall {
      * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
      * # </weight>
      */
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Timestamp.set') === '6a8b8ba2be107f0853b674eec0026cc440b314db44d0e2c59b36e353355aed14'
     }
 
@@ -1304,8 +1356,8 @@ export class TimestampSetCall {
      * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
      * # </weight>
      */
-    get asV0(): {now: bigint} {
-        assert(this.isV0)
+    get asV3(): {now: bigint} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1338,8 +1390,8 @@ export class UtilityAsDerivativeCall {
      * 
      * The dispatch origin for this call must be _Signed_.
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Utility.as_derivative') === '970fd034609961a1cb300b116e0015a70ff9c6a6a54a4d48598275e60f5f4012'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === '62fb5ac861235695c68881e40a955fa41d29d7f730d12189fa46ec32911086d0'
     }
 
     /**
@@ -1357,8 +1409,8 @@ export class UtilityAsDerivativeCall {
      * 
      * The dispatch origin for this call must be _Signed_.
      */
-    get asV0(): {index: number, call: v0.Call} {
-        assert(this.isV0)
+    get asV3(): {index: number, call: v3.Call} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1379,13 +1431,13 @@ export class UtilityBatchCall {
     /**
      * Send a batch of dispatch calls.
      * 
-     * May be called from any origin except `None`.
+     * May be called from any origin.
      * 
      * - `calls`: The calls to be dispatched from the same origin. The number of call must not
      *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     * If origin is root then the calls are dispatched without checking origin filter. (This
-     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
      * # <weight>
      * - Complexity: O(C) where C is the number of calls to be batched.
@@ -1397,20 +1449,20 @@ export class UtilityBatchCall {
      * and the error of the failed call. If all were successful, then the `BatchCompleted`
      * event is deposited.
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Utility.batch') === 'e3f370b64f6aa20b943bb3cc9e9fd004e656304d3c616bc0e6b435325b70196c'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '8786264c3d677eee37bf5722dfd5ecdd9c293359f29f9ce8e0b7fc10046785ea'
     }
 
     /**
      * Send a batch of dispatch calls.
      * 
-     * May be called from any origin except `None`.
+     * May be called from any origin.
      * 
      * - `calls`: The calls to be dispatched from the same origin. The number of call must not
      *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     * If origin is root then the calls are dispatched without checking origin filter. (This
-     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
      * # <weight>
      * - Complexity: O(C) where C is the number of calls to be batched.
@@ -1422,8 +1474,8 @@ export class UtilityBatchCall {
      * and the error of the failed call. If all were successful, then the `BatchCompleted`
      * event is deposited.
      */
-    get asV0(): {calls: v0.Call[]} {
-        assert(this.isV0)
+    get asV3(): {calls: v3.Call[]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1445,40 +1497,40 @@ export class UtilityBatchAllCall {
      * Send a batch of dispatch calls and atomically execute them.
      * The whole transaction will rollback and fail if any of the calls failed.
      * 
-     * May be called from any origin except `None`.
+     * May be called from any origin.
      * 
      * - `calls`: The calls to be dispatched from the same origin. The number of call must not
      *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     * If origin is root then the calls are dispatched without checking origin filter. (This
-     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
      * # <weight>
      * - Complexity: O(C) where C is the number of calls to be batched.
      * # </weight>
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Utility.batch_all') === 'e3f370b64f6aa20b943bb3cc9e9fd004e656304d3c616bc0e6b435325b70196c'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '8786264c3d677eee37bf5722dfd5ecdd9c293359f29f9ce8e0b7fc10046785ea'
     }
 
     /**
      * Send a batch of dispatch calls and atomically execute them.
      * The whole transaction will rollback and fail if any of the calls failed.
      * 
-     * May be called from any origin except `None`.
+     * May be called from any origin.
      * 
      * - `calls`: The calls to be dispatched from the same origin. The number of call must not
      *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     * If origin is root then the calls are dispatched without checking origin filter. (This
-     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
      * # <weight>
      * - Complexity: O(C) where C is the number of calls to be batched.
      * # </weight>
      */
-    get asV0(): {calls: v0.Call[]} {
-        assert(this.isV0)
+    get asV3(): {calls: v3.Call[]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1508,8 +1560,8 @@ export class UtilityDispatchAsCall {
      * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
      * # </weight>
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Utility.dispatch_as') === 'edb938d1a20828246d3065ab683d8c90ce57bdcec7e5ed1ec95ce2d11dc5ccf3'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === '195fabd21f414c918c19977cfca439429c6a6a9b2a6e2b08b0b6193ff41db822'
     }
 
     /**
@@ -1524,8 +1576,8 @@ export class UtilityDispatchAsCall {
      * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
      * # </weight>
      */
-    get asV0(): {asOrigin: v0.OriginCaller, call: v0.Call} {
-        assert(this.isV0)
+    get asV3(): {asOrigin: v3.OriginCaller, call: v3.Call} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1547,79 +1599,40 @@ export class UtilityForceBatchCall {
      * Send a batch of dispatch calls.
      * Unlike `batch`, it allows errors and won't interrupt.
      * 
-     * May be called from any origin except `None`.
+     * May be called from any origin.
      * 
      * - `calls`: The calls to be dispatched from the same origin. The number of call must not
      *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     * If origin is root then the calls are dispatch without checking origin filter. (This
-     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
      * # <weight>
      * - Complexity: O(C) where C is the number of calls to be batched.
      * # </weight>
      */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Utility.force_batch') === 'e3f370b64f6aa20b943bb3cc9e9fd004e656304d3c616bc0e6b435325b70196c'
+    get isV3(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '8786264c3d677eee37bf5722dfd5ecdd9c293359f29f9ce8e0b7fc10046785ea'
     }
 
     /**
      * Send a batch of dispatch calls.
      * Unlike `batch`, it allows errors and won't interrupt.
      * 
-     * May be called from any origin except `None`.
+     * May be called from any origin.
      * 
      * - `calls`: The calls to be dispatched from the same origin. The number of call must not
      *   exceed the constant: `batched_calls_limit` (available in constant metadata).
      * 
-     * If origin is root then the calls are dispatch without checking origin filter. (This
-     * includes bypassing `frame_system::Config::BaseCallFilter`).
+     * If origin is root then call are dispatch without checking origin filter. (This includes
+     * bypassing `frame_system::Config::BaseCallFilter`).
      * 
      * # <weight>
      * - Complexity: O(C) where C is the number of calls to be batched.
      * # </weight>
      */
-    get asV0(): {calls: v0.Call[]} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class UtilityWithWeightCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Utility.with_weight')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * Dispatch a function call with a specified weight.
-     * 
-     * This function does not check the weight of the call, and instead allows the
-     * Root origin to specify the weight of the call.
-     * 
-     * The dispatch origin for this call must be _Root_.
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Utility.with_weight') === 'e5c3a5402249e0db758b0417d1c97f37befe7832a352f7c7aa0b4851dce53cd3'
-    }
-
-    /**
-     * Dispatch a function call with a specified weight.
-     * 
-     * This function does not check the weight of the call, and instead allows the
-     * Root origin to specify the weight of the call.
-     * 
-     * The dispatch origin for this call must be _Root_.
-     */
-    get asV0(): {call: v0.Call, weight: v0.Weight} {
-        assert(this.isV0)
+    get asV3(): {calls: v3.Call[]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1637,12 +1650,12 @@ export class VestingClaimCall {
         this.call = call
     }
 
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Vesting.claim') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
     }
 
-    get asV0(): null {
-        assert(this.isV0)
+    get asV3(): null {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1660,12 +1673,12 @@ export class VestingClaimForCall {
         this.call = call
     }
 
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Vesting.claim_for') === 'b1b9d2bb9f2a27d3dfcb795f19a6625638978d1474d5d4dd34d918f46415e1e9'
     }
 
-    get asV0(): {dest: v0.MultiAddress} {
-        assert(this.isV0)
+    get asV3(): {dest: v3.MultiAddress} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1683,12 +1696,12 @@ export class VestingUpdateVestingSchedulesCall {
         this.call = call
     }
 
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Vesting.update_vesting_schedules') === '5cf5b6a09a9387300d4c3c69374c4045d3ca2a2794fa169a86fec9d8e1f3920c'
     }
 
-    get asV0(): {who: v0.MultiAddress, vestingSchedules: v0.VestingSchedule[]} {
-        assert(this.isV0)
+    get asV3(): {who: v3.MultiAddress, vestingSchedules: v3.VestingSchedule[]} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1706,12 +1719,12 @@ export class VestingVestedTransferCall {
         this.call = call
     }
 
-    get isV0(): boolean {
+    get isV3(): boolean {
         return this._chain.getCallHash('Vesting.vested_transfer') === 'f1e312a24c806adf72eb68877c2620386cbfc53664014b14338b9491e044cb0d'
     }
 
-    get asV0(): {dest: v0.MultiAddress, schedule: v0.VestingSchedule} {
-        assert(this.isV0)
+    get asV3(): {dest: v3.MultiAddress, schedule: v3.VestingSchedule} {
+        assert(this.isV3)
         return this._chain.decodeCall(this.call)
     }
 }
