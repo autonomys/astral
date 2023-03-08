@@ -26,12 +26,33 @@ export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Conte
 
 export function getHistorySizeFactory(ctx: Context) {
   return async function getHistorySize(header: SubstrateBlock) {
+    const { client } = ctx._chain;
+    // SubspaceRecordsRoot is a hash map and in order to get count of items (segments)
+    // we need to get size of the map and size of the item in the map
+    // and then calculate count of items
     const storageHash = getStorageHash('Subspace', 'RecordsRoot');
-    // SubspaceRecordsRoot is a hash map and we need a count of items (segments)
-    // SubspaceRecordsRootStorage generated type unfortunately does not provide method to get count, 
-    // it has getAllAsV3 method, which returns all items and is too expensive,
-    // instead we're querying state using client.call API
-    const segmentsCount = (await ctx._chain.client.call('state_getKeys', [storageHash, header.hash])).length;
+
+    const totalSize = (await client.call('state_getStorageSizeAt', [
+      storageHash,
+      header.hash
+    ])) as number;
+
+    if (totalSize === 0 || !totalSize) return BigInt(0);
+
+    const keys = (await client.call('state_getKeysPagedAt', [
+      storageHash,
+      1,
+      null,
+      header.hash
+    ])) as string[];
+
+    const keySize = (await client.call('state_getStorageSizeAt', [
+      keys[0],
+      header.hash
+    ])) as number;
+
+    const segmentsCount = totalSize / keySize;
+
     return calcHistorySize(segmentsCount);
   };
 }
