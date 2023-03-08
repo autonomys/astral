@@ -143,11 +143,11 @@ const chainMock = {
   getConstant(): any {
     return;
   },
-  // at the moment we only use client.call to query segments count at blocks/storage.ts
+  // TODO: this will require more sophisticated mocking for state_getKeysPagedAt and state_getStorageSizeAt methods
   client: {
     call() {
-      return new Array(SEGMENTS_COUNT);
-    }
+      return 0;
+    },
   }
 } as unknown as Chain;
 
@@ -209,8 +209,8 @@ export const digestStorageFactoryMock = () => ({
 export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'random account id' }));
 
 export const blockMock = createBlock({
-  header: BlockHeaderMock, 
-  spacePledged: BigInt(1), 
+  header: BlockHeaderMock,
+  spacePledged: BigInt(1),
   blockchainSize: BigInt(2),
   extrinsicsCount: 2,
   eventsCount: 5,

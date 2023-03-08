@@ -1,4 +1,4 @@
-import { ApiPromise, WsProvider } from "@polkadot/api";
+import { ApiPromise } from "@polkadot/api";
 import { Context } from '../processor';
 import { ProcessBlocksDependencies } from './types';
 import {
@@ -13,20 +13,7 @@ import { getEvents } from './getEvents';
 import { getLogsFactory } from './getLogs';
 export { processBlocksFactory } from "./processBlocks";
 
-export async function createProcessBlocksDependencies(ctx: Context): Promise<ProcessBlocksDependencies> {
-  const types = {
-    Solution: {
-      public_key: 'AccountId32',
-      reward_address: 'AccountId32',
-    },
-    SubPreDigest: {
-      slot: 'u64',
-      solution: 'Solution',
-    }
-  };
-
-  const provider = new WsProvider(process.env.CHAIN_RPC_ENDPOINT);
-  const api = await ApiPromise.create({ provider, types });
+export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): ProcessBlocksDependencies {
   const getBlockAuthor = getBlockAuthorFactory(ctx, api);
   const getSpacePledged = getSpacePledgedFactory(ctx, solutionRangesStorageFactory);
   const getHistorySize = getHistorySizeFactory(ctx);
