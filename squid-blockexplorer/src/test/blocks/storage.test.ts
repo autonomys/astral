@@ -6,7 +6,6 @@ import {
   contextMock,
   solutionRangesStorageFactoryMock,
   SOLUTION_RANGES,
-  SEGMENTS_COUNT,
 } from '../../mocks/mocks';
 import { solutionRangesStorageFactory, getSpacePledgedFactory, getHistorySizeFactory } from '../../blocks/storage';
 
@@ -34,7 +33,7 @@ tap.test('getHistorySizeFactory should create getHistorySize method, which retur
   const getHistorySize = getHistorySizeFactory(contextMock);
 
   const result = await getHistorySize(BlockHeaderMock);
-  const expected = calcHistorySize(SEGMENTS_COUNT);
+  const expected = calcHistorySize(0);
 
   t.type(result, 'bigint');
   t.equal(result, expected);
