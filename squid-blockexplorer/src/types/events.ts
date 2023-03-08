@@ -354,35 +354,6 @@ export class DomainsBundleStoredEvent {
     }
 }
 
-export class DomainsFraudProofProcessedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Domains.FraudProofProcessed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * A fraud proof was processed.
-     */
-    get isV0(): boolean {
-        return this._chain.getEventHash('Domains.FraudProofProcessed') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     * A fraud proof was processed.
-     */
-    get asV0(): null {
-        assert(this.isV0)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
 export class DomainsInvalidTransactionProofProcessedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -407,35 +378,6 @@ export class DomainsInvalidTransactionProofProcessedEvent {
      * An invalid transaction proof was processed.
      */
     get asV0(): null {
-        assert(this.isV0)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class DomainsNewSystemDomainReceiptEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Domains.NewSystemDomainReceipt')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * A new system domain receipt was backed.
-     */
-    get isV0(): boolean {
-        return this._chain.getEventHash('Domains.NewSystemDomainReceipt') === 'cb94a4a0e596547a66c63a881a36583ab36c6a882b721350ee3f5d6895045fba'
-    }
-
-    /**
-     * A new system domain receipt was backed.
-     */
-    get asV0(): {domainId: number, primaryNumber: number, primaryHash: Uint8Array} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -672,6 +614,64 @@ export class OffencesSubspaceOffenceEvent {
      * \[kind, timeslot\].
      */
     get asV0(): {kind: Uint8Array, timeslot: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReceiptsFraudProofProcessedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Receipts.FraudProofProcessed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A fraud proof was processed.
+     */
+    get isV0(): boolean {
+        return this._chain.getEventHash('Receipts.FraudProofProcessed') === 'a562970cc8703adfcd6b50763bc389e03a0154122533c163c0032f60030ca223'
+    }
+
+    /**
+     * A fraud proof was processed.
+     */
+    get asV0(): {domainId: number, newBestNumber: number, newBestHash: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class ReceiptsNewDomainReceiptEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Receipts.NewDomainReceipt')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * A new domain receipt.
+     */
+    get isV0(): boolean {
+        return this._chain.getEventHash('Receipts.NewDomainReceipt') === 'cb94a4a0e596547a66c63a881a36583ab36c6a882b721350ee3f5d6895045fba'
+    }
+
+    /**
+     * A new domain receipt.
+     */
+    get asV0(): {domainId: number, primaryNumber: number, primaryHash: Uint8Array} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }

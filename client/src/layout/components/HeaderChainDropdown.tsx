@@ -1,26 +1,29 @@
-import { Fragment, useState, FC } from 'react'
+import { Fragment, FC } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useNavigate } from 'react-router-dom'
 
-// common/icons
+// common
+import { Chain, useDomains } from 'common/providers/ChainProvider'
 import { SubspaceSymbol } from 'common/icons'
 
-// TODO: implement switching between Gemini-II and Gemini-III
-const chains = [
-  { id: 1, name: 'Gemini II', unavailable: false },
-  { id: 2, name: 'Gemini III', unavailable: false },
-]
-
 const HeaderChainDropdown: FC = () => {
-  const [selected, setSelected] = useState(chains[0])
+  const { setSelectedChain, chains, selectedChain } = useDomains()
+  const navigate = useNavigate()
+
+  const handleChainChange = (chain: Chain) => {
+    setSelectedChain(chain)
+    navigate(`/${chain.urls.page}`)
+  }
+
   return (
-    <Listbox value={selected} onChange={setSelected}>
+    <Listbox value={selectedChain} onChange={handleChainChange}>
       <div className='relative'>
         <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
           <div className='flex items-center justify-center'>
             <SubspaceSymbol />
             <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full '>
-              {selected.name}
+              {selectedChain.title}
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
@@ -50,7 +53,7 @@ const HeaderChainDropdown: FC = () => {
                 {({ selected }) => (
                   <>
                     <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {chain.name}
+                      {chain.title}
                     </span>
                     {selected ? (
                       <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>

@@ -6,12 +6,13 @@ import { Link } from 'react-router-dom'
 // gql
 import { Log } from 'gql/graphql'
 
+// log
+import { LogListCard } from 'Log/components'
+
 // common
 import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-
-// log
-import { LogListCard } from 'Log/components'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -21,13 +22,17 @@ interface Props {
 }
 
 const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (logs: Log[]): Column[] => [
     {
       title: 'Log Index',
       cells: logs.map(({ id }) => (
         <div className='w-full flex' key={`${id}-log-index`}>
-          <Link className='w-full hover:text-[#DE67E4]' to={INTERNAL_ROUTES.logs.id.page(id)}>
+          <Link
+            className='w-full hover:text-[#DE67E4]'
+            to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, id)}
+          >
             <div>{id}</div>
           </Link>
           <CopyButton value={id} message='Id copied' />

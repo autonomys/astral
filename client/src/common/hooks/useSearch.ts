@@ -16,15 +16,17 @@ import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
 
 // event
 import { QUERY_EVENT_BY_ID } from 'Event/query'
+import { useDomains } from 'common/providers/ChainProvider'
 
 const useSearch = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const navigate = useNavigate()
+  const { selectedChain } = useDomains()
 
   const [getEvent] = useLazyQuery(QUERY_EVENT_BY_ID, {
     onCompleted: (data) => {
       if (data.eventById) {
-        navigate(INTERNAL_ROUTES.events.id.page(searchTerm))
+        navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, searchTerm))
       } else {
         navigate(INTERNAL_ROUTES.notFound)
       }
@@ -34,7 +36,7 @@ const useSearch = () => {
   const [getExtrinsic] = useLazyQuery(QUERY_EXTRINSIC_BY_ID, {
     onCompleted: (data) => {
       if (data.extrinsicById) {
-        navigate(INTERNAL_ROUTES.extrinsics.id.page(searchTerm))
+        navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, searchTerm))
       } else {
         getEvent({ variables: { eventId: searchTerm } })
       }
@@ -45,7 +47,7 @@ const useSearch = () => {
     onCompleted: (data) => {
       if (data.blocks[0] && data.blocks[0].height > 0) {
         const blockId = Number(searchTerm)
-        navigate(INTERNAL_ROUTES.blocks.id.page(blockId))
+        navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, blockId))
       } else {
         getExtrinsic({ variables: { extrinsicId: searchTerm } })
       }
@@ -55,7 +57,7 @@ const useSearch = () => {
   const [getAccount] = useLazyQuery(QUERY_ACCOUNT_BY_ID, {
     onCompleted: (data) => {
       if (data.accountById) {
-        navigate(INTERNAL_ROUTES.accounts.id.page(searchTerm))
+        navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, searchTerm))
       } else {
         const blockId = Number(searchTerm)
         if (isNaN(blockId)) {
@@ -80,15 +82,15 @@ const useSearch = () => {
         if (isNaN(blockId)) {
           return navigate(INTERNAL_ROUTES.notFound)
         }
-        navigate(INTERNAL_ROUTES.blocks.id.page(Number(term)))
+        navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, Number(term)))
         break
       }
       case 3:
-        return navigate(INTERNAL_ROUTES.extrinsics.id.page(term))
+        return navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
       case 4:
-        return navigate(INTERNAL_ROUTES.accounts.id.page(term))
+        return navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
       case 5:
-        return navigate(INTERNAL_ROUTES.events.id.page(term))
+        return navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, term))
       default:
         return navigate(INTERNAL_ROUTES.notFound)
     }

@@ -8,13 +8,13 @@ import { shortString } from 'common/helpers'
 
 import { Extrinsic } from 'gql/graphql'
 
-export const generateExtrinsicColumns = (extrinsics: Extrinsic[]): Column[] => [
+export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[]): Column[] => [
   {
     title: 'Extrinsic Id',
     cells: extrinsics.map(({ block, pos, id }) => (
       <Link
         key={`${id}-account-extrinsic-id`}
-        to={INTERNAL_ROUTES.extrinsics.id.page(id)}
+        to={INTERNAL_ROUTES.extrinsics.id.page(chain, id)}
         className='hover:text-[#DE67E4]'
       >
         <div>{`${block.height}-${pos}`}</div>

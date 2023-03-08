@@ -10,6 +10,7 @@ export function processBlocksFactory({
   processCalls,
   getEvents,
   getLogs,
+  getBlockAuthor,
 }: ProcessBlocksDependencies) {
   return async function processBlocks(ctx: Context) {
     const extrinsicsMap: ExtrinsicsMap = new Map();
@@ -22,6 +23,9 @@ export function processBlocksFactory({
       // creating block
       const spacePledged = await getSpacePledged(header);
       const blockchainSize = await getHistorySize(header);
+      const author = await getBlockAuthor(header);
+      // save block author to avoid foreign key constraint violation
+      author && await ctx.store.save(author);
       // get block items: calls and events
       const [callItems, eventItems] = partitionItems(({ kind }: CallItem | EventItem) => kind === "call", items);
       // some extrinsics (i.e. Utility.batch_all) have parent call and child calls
@@ -29,6 +33,7 @@ export function processBlocksFactory({
       const [parentCalls, childCalls] = partitionItems(({ call }) => !call.parent, (callItems as CallItem[]));
 
       const block = createBlock({
+        author,
         header,
         spacePledged,
         blockchainSize,

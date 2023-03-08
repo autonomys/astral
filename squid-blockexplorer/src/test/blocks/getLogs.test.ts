@@ -1,9 +1,10 @@
 import tap from 'tap';
-import { getLogsFactory, decodeLog } from '../../blocks/getLogs';
+import { getLogsFactory } from '../../blocks/getLogs';
 import { digestStorageFactoryMock, contextMock, blockMock, digestLogs } from '../../mocks/mocks';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
 import { Log } from '../../model';
 import { toHex } from '@subsquid/substrate-processor';
+import { decodeLog } from '../../blocks/utils';
 
 tap.test('getLogs should return list of Logs', async (t) => {
   const getLogs = getLogsFactory(contextMock, digestStorageFactoryMock);

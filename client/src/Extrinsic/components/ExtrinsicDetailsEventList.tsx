@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 // common
 import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -15,6 +16,7 @@ type Props = {
 }
 
 const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
+  const { selectedChain } = useDomains()
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
@@ -23,7 +25,7 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
         <Link
           key={`${id}-extrinsic-event-id`}
           className='w-full hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.events.id.page(id)}
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
         >
           <div>{`${block?.height || index}-${pos}`}</div>
         </Link>

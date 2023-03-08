@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import { CopyButton, List, StatusIcon, StyledListItem, Arguments } from 'common/components'
 import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { useDomains } from 'common/providers/ChainProvider'
 
 dayjs.extend(relativeTime)
 
@@ -17,6 +18,8 @@ type Props = {
 }
 
 const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
+
   return (
     <div className='w-full'>
       <div className='flex'>
@@ -39,7 +42,12 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
                   {dayjs(extrinsic.block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
                 </StyledListItem>
                 <StyledListItem title='Block Number'>
-                  <Link to={INTERNAL_ROUTES.blocks.id.page(extrinsic.block.height)}>
+                  <Link
+                    to={INTERNAL_ROUTES.blocks.id.page(
+                      selectedChain.urls.page,
+                      extrinsic.block.height,
+                    )}
+                  >
                     <div> {extrinsic.block.height}</div>
                   </Link>
                 </StyledListItem>
