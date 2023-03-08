@@ -30,13 +30,13 @@ up:
 down:
 	@docker-compose down
 
-make devnet-up:
+devnet-up:
 	@docker-compose -f devnet/docker-compose.yml up -d
 
-make devnet-down:
+devnet-down:
 	@docker-compose -f devnet/docker-compose.yml down && rm -rf devnet/node-data/* && rm -rf devnet/farmer-data/*
 
-make devnet-logs:
+devnet-logs:
 	@docker-compose -f devnet/docker-compose.yml logs -f
 
-.PHONY: build serve process migrate codegen typegen up down
+.PHONY: build serve process migrate codegen typegen up down devnet-up devnet-down devnet-logs
