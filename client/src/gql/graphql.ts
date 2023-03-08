@@ -127,6 +127,7 @@ export type AccountsConnection = {
 
 export type Block = {
   __typename?: 'Block';
+  author?: Maybe<Account>;
   blockchainSize: Scalars['BigInt'];
   calls: Array<Call>;
   events: Array<Event>;
@@ -184,6 +185,16 @@ export type BlockEdge = {
 };
 
 export enum BlockOrderByInput {
+  AuthorFreeAsc = 'author_free_ASC',
+  AuthorFreeDesc = 'author_free_DESC',
+  AuthorIdAsc = 'author_id_ASC',
+  AuthorIdDesc = 'author_id_DESC',
+  AuthorReservedAsc = 'author_reserved_ASC',
+  AuthorReservedDesc = 'author_reserved_DESC',
+  AuthorTotalAsc = 'author_total_ASC',
+  AuthorTotalDesc = 'author_total_DESC',
+  AuthorUpdatedAtAsc = 'author_updatedAt_ASC',
+  AuthorUpdatedAtDesc = 'author_updatedAt_DESC',
   BlockchainSizeAsc = 'blockchainSize_ASC',
   BlockchainSizeDesc = 'blockchainSize_DESC',
   EventsCountAsc = 'eventsCount_ASC',
@@ -213,6 +224,8 @@ export enum BlockOrderByInput {
 export type BlockWhereInput = {
   AND?: InputMaybe<Array<BlockWhereInput>>;
   OR?: InputMaybe<Array<BlockWhereInput>>;
+  author?: InputMaybe<AccountWhereInput>;
+  author_isNull?: InputMaybe<Scalars['Boolean']>;
   blockchainSize_eq?: InputMaybe<Scalars['BigInt']>;
   blockchainSize_gt?: InputMaybe<Scalars['BigInt']>;
   blockchainSize_gte?: InputMaybe<Scalars['BigInt']>;
