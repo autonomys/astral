@@ -3,11 +3,11 @@ name: Update container image
 on:   
   push:
     branches:
-      - main
+      - gemini-2-main
 
 env:
-  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-processor:latest
-  API_SERVER_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-api-server:latest
+  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-processor:gemini-2
+  API_SERVER_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-api-server:gemini-2
 
 jobs:
   push:
