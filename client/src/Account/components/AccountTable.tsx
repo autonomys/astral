@@ -43,7 +43,7 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     },
     {
       title: 'Account',
-      cells: accounts.map(({ id }, index) => (
+      cells: accounts.map(({ id }) => (
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
           <Identicon value={id} size={26} theme='beachball' />
           <Link
