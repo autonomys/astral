@@ -1,5 +1,5 @@
 import { FC, createContext, useContext, ReactNode } from 'react'
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 
 // chains
@@ -33,7 +33,7 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   const [selectedChain, setSelectedChain] = useSafeLocalStorage('selected-chain', chains[0])
 
   const client = new ApolloClient({
-    link: new HttpLink({ uri: selectedChain.urls.api }).concat(new RetryLink()),
+    link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
     cache: new InMemoryCache(),
   })
 
