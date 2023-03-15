@@ -93,8 +93,8 @@ services:
       RUST_LOG: "substrate_gateway=info,actix_server=info"
     command: [
        "--database-url", "postgres://postgres:postgres@db:5432/squid-archive",
-       "--database-max-connections", "3", # max number of concurrent database connections
-       "--scan-start-value", "20", # works as batch size but for a whole archive, default is 100
+       "--database-max-connections", "2", # max number of concurrent database connections
+       "--scan-start-value", "10", # works as batch size but for a whole archive, default is 100
     ]
     ports:
       - "8888:8000"
