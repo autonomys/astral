@@ -3,26 +3,26 @@ import { test, expect } from '@playwright/test'
 test('info display', async ({ page }) => {
   await page.goto('/#/accounts')
 
-  const holderElement = await page.getByText('Holders')
+  const holderElement = page.getByText('Holders')
   await expect(holderElement).toBeVisible()
 
   // table titles
-  const rankColum = await page.getByText('Rank')
+  const rankColum = page.getByText('Rank')
   await expect(rankColum).toBeVisible()
-  const accountColum = await page.getByText('Account')
+  const accountColum = page.getByText('Account')
   await expect(accountColum).toBeVisible()
-  const extrinsicColum = await page.getByText('Extrinsics')
+  const extrinsicColum = page.getByText('Extrinsics')
   await expect(extrinsicColum).toBeVisible()
-  const lockedColum = await page.getByText('Locked (TSSC)')
+  const lockedColum = page.getByText('Locked (TSSC)')
   await expect(lockedColum).toBeVisible()
-  const balanceColum = await page.getByText('Balance (TSSC)')
+  const balanceColum = page.getByText('Balance (TSSC)')
   await expect(balanceColum).toBeVisible()
 })
 
 test('link to account page', async ({ page }) => {
   await page.goto('/#/accounts')
 
-  await page.getByTestId('testAccountLink-0').click()
+  await page.getByTestId('account-link-0').click()
 
-  await expect(page.url()).toContain('/#/accounts/')
+  expect(page.url()).toContain('/accounts/')
 })

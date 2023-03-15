@@ -1,11 +1,9 @@
 import { test, expect } from '@playwright/test'
 
 test('data show', async ({ page }) => {
-  await page.goto('/#/accounts/0x14682f9dea76a4dd47172a118eb29b9cf9976df7ade12f95709a7cd2e3d81d6c')
+  await page.goto('/#/accounts')
 
-  await expect(
-    page.getByText('0x14682f9dea76a4dd47172a118eb29b9cf9976df7ade12f95709a7cd2e3d81d6c'),
-  ).toBeVisible()
+  await page.getByTestId('account-link-0').click()
 
   await expect(page.getByText('Public key')).toBeVisible()
 

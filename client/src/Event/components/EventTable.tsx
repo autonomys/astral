@@ -32,6 +32,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
           <Link
             className='w-full hover:text-[#DE67E4]'
             to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+            data-testid={`event-link-${index}`}
           >
             {id}
           </Link>

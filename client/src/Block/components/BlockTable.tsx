@@ -29,9 +29,10 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
   const generateColumns = (blocks: Block[]): Column[] => [
     {
       title: 'Block',
-      cells: blocks.map(({ height, id }) => (
+      cells: blocks.map(({ height, id }, index) => (
         <Link
           key={`${id}-block-height`}
+          data-testid={`block-link-${index}`}
           className='hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, height)}
         >

@@ -43,10 +43,11 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     },
     {
       title: 'Account',
-      cells: accounts.map(({ id }) => (
+      cells: accounts.map(({ id }, index) => (
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
           <Identicon value={id} size={26} theme='beachball' />
           <Link
+            data-testid={`account-link-${index}`}
             to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
             className='hover:text-[#DE67E4]'
           >
