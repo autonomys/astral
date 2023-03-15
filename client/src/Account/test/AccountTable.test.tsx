@@ -33,6 +33,5 @@ describe('Account table', () => {
         // highlight-end
       }
     })
-    // })
   })
 })

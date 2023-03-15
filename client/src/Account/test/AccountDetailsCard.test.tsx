@@ -16,9 +16,6 @@ describe('first', () => {
 
     render(<AccountDetailsCard account={account} />)
 
-    // const role = screen.getByRole('contentinfo')
-    // expect(role).toHaveTextContent(account.id)
-
     const listItems = screen.getAllByRole('listitem')
 
     expect(listItems[0]).toHaveTextContent(/stA7ut...qvsQ/i)
