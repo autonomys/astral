@@ -1,7 +1,7 @@
 import { HexSink } from "@subsquid/scale-codec";
 import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
-import { toHex } from '@subsquid/util-internal-hex';
+import { toHex } from "@subsquid/util-internal-hex";
 import { Block, Extrinsic, Call, Account } from "../model";
 import { CallItem, EventItem } from "../processor";
 
@@ -94,7 +94,7 @@ export function createCall(
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = 2n ** 64n - 1n;
   const SLOT_PROBABILITY = [1n, 6n];
-  const PIECE_SIZE = 4096n;
+  const PIECE_SIZE = 31744n;
 
   return BigInt(
     ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
