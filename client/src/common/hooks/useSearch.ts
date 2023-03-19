@@ -17,6 +17,7 @@ import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
 // event
 import { QUERY_EVENT_BY_ID } from 'Event/query'
 import { useDomains } from 'common/providers/ChainProvider'
+import { accountConverter } from 'common/helpers/accountConverter'
 
 const useSearch = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -74,7 +75,10 @@ const useSearch = () => {
 
     switch (searchType) {
       case 1: {
-        getAccount({ variables: { accountId: term } })
+        const address = accountConverter(term)
+
+        getAccount({ variables: { accountId: address } })
+
         break
       }
       case 2: {

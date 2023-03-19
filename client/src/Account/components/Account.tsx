@@ -13,14 +13,17 @@ import { Spinner } from 'common/components'
 // layout
 import { NotFound } from 'layout/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import { accountConverter } from 'common/helpers/accountConverter'
 
 const Account: FC = () => {
   const { accountId } = useParams()
 
+  const address = accountConverter(accountId || '')
+
   const isDesktop = useMediaQuery('(min-width: 1440px)')
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
-    variables: { accountId: accountId },
+    variables: { accountId: address },
   })
 
   useErrorHandler(error)
@@ -37,7 +40,7 @@ const Account: FC = () => {
 
   return (
     <div className='w-full'>
-      <AccountDetailsCard account={account} />
+      <AccountDetailsCard account={account} accountAddress={address} />
       <AccountDetailsTabs extrinsics={account.extrinsics} isDesktop={isDesktop} />
     </div>
   )
