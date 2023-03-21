@@ -17,7 +17,8 @@ import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
 // event
 import { QUERY_EVENT_BY_ID } from 'Event/query'
 import { useDomains } from 'common/providers/ChainProvider'
-import { accountConverter } from 'common/helpers/accountConverter'
+import { formatAddress } from 'common/helpers/formatAddress'
+import { isAddress } from '@polkadot/util-crypto'
 
 const useSearch = () => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -75,9 +76,9 @@ const useSearch = () => {
 
     switch (searchType) {
       case 1: {
-        const address = accountConverter(term)
+        const address = formatAddress(term)
 
-        getAccount({ variables: { accountId: address } })
+        getAccount({ variables: { accountId: address || searchTerm } })
 
         break
       }
@@ -92,6 +93,9 @@ const useSearch = () => {
       case 3:
         return navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
       case 4:
+        if (!isAddress(term)) {
+          return navigate(INTERNAL_ROUTES.notFound)
+        }
         return navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
       case 5:
         return navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, term))
