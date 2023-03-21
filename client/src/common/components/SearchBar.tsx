@@ -24,7 +24,7 @@ const SearchBar: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const searchValidationSchema = Yup.object().shape({
-    searchTerm: Yup.string().required('Search term is required'),
+    searchTerm: Yup.string().trim().required('Search term is required'),
   })
 
   return (
