@@ -12,19 +12,10 @@ type Props = {
 }
 
 const BlockAuthor: FC<Props> = ({ author, isDesktop, chain }) => {
-  const hasBlockAuthor = author !== undefined && author !== null
-  const blockAuthor = author || 'Unknown'
-
-  return hasBlockAuthor ? (
-    isDesktop ? (
-      <Link className='flex gap-1' to={INTERNAL_ROUTES.accounts.id.page(chain, blockAuthor)}>
-        {blockAuthor}
-      </Link>
-    ) : (
-      <Link className='flex gap-1' to={INTERNAL_ROUTES.accounts.id.page(chain, blockAuthor)}>
-        {shortString(blockAuthor)}
-      </Link>
-    )
+  return author !== undefined ? (
+    <Link className='flex gap-1' to={INTERNAL_ROUTES.accounts.id.page(chain, author)}>
+      {isDesktop ? author : shortString(author)}
+    </Link>
   ) : (
     <div>Unknown</div>
   )
