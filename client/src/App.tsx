@@ -59,6 +59,27 @@ const LegacyGemini2Redirect: FC<{ path: string }> = ({ path }) => {
   return <Navigate replace to={to} />
 }
 
+const UpdateSelectedChainByPath: FC = () => {
+  const { setSelectedChain, selectedChain, chains } = useDomains()
+
+  const location = useLocation()
+
+  const regex = new RegExp('^/([^/]+)')
+
+  const match = location.pathname.match(regex)
+
+  if (match && match[1] !== selectedChain.urls.page) {
+    const urlSelectedPage = match[1]
+    const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
+
+    if (newChain) {
+      setSelectedChain(newChain)
+    }
+  }
+
+  return null
+}
+
 function App() {
   const { selectedChain } = useDomains()
 
@@ -68,6 +89,7 @@ function App() {
         <Layout>
           {/* TODO: add DomainHeader once we have support for domains */}
           <Header />
+          <UpdateSelectedChainByPath />
           <ErrorBoundary
             fallbackRender={ErrorFallback}
             onReset={() => window.location.reload()}
