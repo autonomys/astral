@@ -1,4 +1,4 @@
-import { FC, useLayoutEffect } from 'react'
+import { FC, ReactNode, useEffect, useLayoutEffect } from 'react'
 import { HashRouter, Routes, Route, useLocation, Navigate, useParams } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -59,25 +59,33 @@ const LegacyGemini2Redirect: FC<{ path: string }> = ({ path }) => {
   return <Navigate replace to={to} />
 }
 
-const UpdateSelectedChainByPath: FC = () => {
+type Props = {
+  children: ReactNode
+}
+
+const UpdateSelectedChainByPath = ({ children }: Props) => {
   const { setSelectedChain, selectedChain, chains } = useDomains()
 
   const location = useLocation()
 
-  const regex = new RegExp('^/([^/]+)')
+  useEffect(() => {
+    const regex = new RegExp('^/([^/]+)')
 
-  const match = location.pathname.match(regex)
+    const match = location.pathname.match(regex)
 
-  if (match && match[1] !== selectedChain.urls.page) {
-    const urlSelectedPage = match[1]
-    const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
+    if (match && match[1] !== selectedChain.urls.page) {
+      const urlSelectedPage = match[1]
+      const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
 
-    if (newChain) {
-      setSelectedChain(newChain)
+      if (newChain) {
+        setSelectedChain(newChain)
+      }
     }
-  }
 
-  return null
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
+
+  return <>{children}</>
 }
 
 function App() {
@@ -88,89 +96,90 @@ function App() {
       <ScrollToTopWrapper>
         <Layout>
           {/* TODO: add DomainHeader once we have support for domains */}
-          <Header />
-          <UpdateSelectedChainByPath />
-          <ErrorBoundary
-            fallbackRender={ErrorFallback}
-            onReset={() => window.location.reload()}
-            // TODO: consider adding error monitoring
-            onError={(error) => console.error(error)}
-          >
-            <Container>
-              <HeaderBackground />
-              <Routes>
-                <Route
-                  path={INTERNAL_ROUTES.home}
-                  element={<Navigate to={selectedChain.urls.page} />}
-                />
-                {/* Start: Legacy routing support */}
-                {/* TODO: remove when possible */}
-                <Route path={INTERNAL_ROUTES.home}>
-                  <Route path={INTERNAL_ROUTES.blocks.list}>
-                    <Route index element={<LegacyGemini2Redirect path='blocks' />} />
-                    <Route
-                      path={INTERNAL_ROUTES.blocks.id.path}
-                      element={<LegacyGemini2Redirect path='blocks' />}
-                    />
+          <UpdateSelectedChainByPath>
+            <Header />
+            <ErrorBoundary
+              fallbackRender={ErrorFallback}
+              onReset={() => window.location.reload()}
+              // TODO: consider adding error monitoring
+              onError={(error) => console.error(error)}
+            >
+              <Container>
+                <HeaderBackground />
+                <Routes>
+                  <Route
+                    path={INTERNAL_ROUTES.home}
+                    element={<Navigate to={selectedChain.urls.page} />}
+                  />
+                  {/* Start: Legacy routing support */}
+                  {/* TODO: remove when possible */}
+                  <Route path={INTERNAL_ROUTES.home}>
+                    <Route path={INTERNAL_ROUTES.blocks.list}>
+                      <Route index element={<LegacyGemini2Redirect path='blocks' />} />
+                      <Route
+                        path={INTERNAL_ROUTES.blocks.id.path}
+                        element={<LegacyGemini2Redirect path='blocks' />}
+                      />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.extrinsics.list}>
+                      <Route index element={<LegacyGemini2Redirect path='extrinsics' />} />
+                      <Route
+                        path={INTERNAL_ROUTES.extrinsics.id.path}
+                        element={<LegacyGemini2Redirect path='extrinsics' />}
+                      />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.accounts.list}>
+                      <Route index element={<LegacyGemini2Redirect path='accounts' />} />
+                      <Route
+                        path={INTERNAL_ROUTES.accounts.id.path}
+                        element={<LegacyGemini2Redirect path='accounts' />}
+                      />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.events.list}>
+                      <Route index element={<LegacyGemini2Redirect path='events' />} />
+                      <Route
+                        path={INTERNAL_ROUTES.events.id.path}
+                        element={<LegacyGemini2Redirect path='events' />}
+                      />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.logs.list}>
+                      <Route index element={<LegacyGemini2Redirect path='logs' />} />
+                      <Route
+                        path={INTERNAL_ROUTES.logs.id.path}
+                        element={<LegacyGemini2Redirect path='logs' />}
+                      />
+                    </Route>
                   </Route>
-                  <Route path={INTERNAL_ROUTES.extrinsics.list}>
-                    <Route index element={<LegacyGemini2Redirect path='extrinsics' />} />
-                    <Route
-                      path={INTERNAL_ROUTES.extrinsics.id.path}
-                      element={<LegacyGemini2Redirect path='extrinsics' />}
-                    />
+                  {/* End: Legacy routing support */}
+                  <Route path={':network'}>
+                    <Route index element={<Home />} />
+                    <Route path={INTERNAL_ROUTES.blocks.list}>
+                      <Route index element={<BlockList />} />
+                      <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.extrinsics.list}>
+                      <Route index element={<ExtrinsicList />} />
+                      <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.accounts.list}>
+                      <Route index element={<AccountList />} />
+                      <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.events.list}>
+                      <Route index element={<EventList />} />
+                      <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.logs.list}>
+                      <Route index element={<LogList />} />
+                      <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
+                    </Route>
                   </Route>
-                  <Route path={INTERNAL_ROUTES.accounts.list}>
-                    <Route index element={<LegacyGemini2Redirect path='accounts' />} />
-                    <Route
-                      path={INTERNAL_ROUTES.accounts.id.path}
-                      element={<LegacyGemini2Redirect path='accounts' />}
-                    />
-                  </Route>
-                  <Route path={INTERNAL_ROUTES.events.list}>
-                    <Route index element={<LegacyGemini2Redirect path='events' />} />
-                    <Route
-                      path={INTERNAL_ROUTES.events.id.path}
-                      element={<LegacyGemini2Redirect path='events' />}
-                    />
-                  </Route>
-                  <Route path={INTERNAL_ROUTES.logs.list}>
-                    <Route index element={<LegacyGemini2Redirect path='logs' />} />
-                    <Route
-                      path={INTERNAL_ROUTES.logs.id.path}
-                      element={<LegacyGemini2Redirect path='logs' />}
-                    />
-                  </Route>
-                </Route>
-                {/* End: Legacy routing support */}
-                <Route path={':network'}>
-                  <Route index element={<Home />} />
-                  <Route path={INTERNAL_ROUTES.blocks.list}>
-                    <Route index element={<BlockList />} />
-                    <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
-                  </Route>
-                  <Route path={INTERNAL_ROUTES.extrinsics.list}>
-                    <Route index element={<ExtrinsicList />} />
-                    <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
-                  </Route>
-                  <Route path={INTERNAL_ROUTES.accounts.list}>
-                    <Route index element={<AccountList />} />
-                    <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
-                  </Route>
-                  <Route path={INTERNAL_ROUTES.events.list}>
-                    <Route index element={<EventList />} />
-                    <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
-                  </Route>
-                  <Route path={INTERNAL_ROUTES.logs.list}>
-                    <Route index element={<LogList />} />
-                    <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-                  </Route>
-                </Route>
 
-                <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
-              </Routes>
-            </Container>
-          </ErrorBoundary>
+                  <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
+                </Routes>
+              </Container>
+            </ErrorBoundary>
+          </UpdateSelectedChainByPath>
           <Footer />
           <Toaster />
         </Layout>
