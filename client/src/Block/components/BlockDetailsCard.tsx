@@ -8,6 +8,9 @@ import { Block } from 'gql/graphql'
 // common
 import { List, StyledListItem } from 'common/components'
 import { shortString } from 'common/helpers'
+import { useDomains } from 'common/providers/ChainProvider'
+// block
+import BlockAuthor from './BlockAuthor'
 
 dayjs.extend(relativeTime)
 
@@ -17,6 +20,9 @@ type Props = {
 }
 
 const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
+  const chain = selectedChain.urls.page
+
   return (
     <div className='w-full'>
       <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 py-4 px-3 sm:p-6 w-full dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
@@ -32,6 +38,9 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
 
         <div className='flow-root'>
           <List>
+            <StyledListItem title='Author'>
+              {<BlockAuthor chain={chain} author={block.author?.id} isDesktop={isDesktop} />}
+            </StyledListItem>
             <StyledListItem title='Timestamp'>
               {dayjs(block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
             </StyledListItem>

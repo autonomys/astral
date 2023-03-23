@@ -20,6 +20,7 @@ const BlockListCard: FC<Props> = ({ block }) => {
   const { selectedChain } = useDomains()
   const blockDate = dayjs(block.timestamp).fromNow(true)
   const body = [
+    { name: 'Author', value: block.author?.id ? shortString(block.author?.id) : 'Uknown' },
     { name: 'Extrinsics', value: block.extrinsics.length },
     { name: 'Events', value: block.events.length },
     { name: 'Block hash', value: shortString(block.hash) },

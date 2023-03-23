@@ -14,6 +14,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 // block
 import { BlockListCard } from 'Block/components'
 import { useDomains } from 'common/providers/ChainProvider'
+import BlockAuthor from './BlockAuthor'
 
 dayjs.extend(relativeTime)
 
@@ -25,6 +26,8 @@ interface Props {
 const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
   const { selectedChain } = useDomains()
 
+  const chain = selectedChain.urls.page
+
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -33,7 +36,7 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
         <Link
           key={`${id}-block-height`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, height)}
+          to={INTERNAL_ROUTES.blocks.id.page(chain, height)}
         >
           <div>{height}</div>
         </Link>
@@ -63,6 +66,16 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
         <div key={`${id}-block-hash`}>
           <CopyButton value={hash} message='Hash copied'>
             {shortString(hash)}
+          </CopyButton>
+        </div>
+      )),
+    },
+    {
+      title: 'Block Author',
+      cells: blocks.map(({ author, id }) => (
+        <div key={`${id}-block-author`}>
+          <CopyButton value={author?.id || 'Unkown'} message='Author account copied'>
+            <BlockAuthor chain={chain} author={author?.id} isDesktop={false} />
           </CopyButton>
         </div>
       )),
