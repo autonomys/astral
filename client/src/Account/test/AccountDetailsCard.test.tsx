@@ -14,7 +14,7 @@ describe('first', () => {
       updatedAt: 1008639,
     }
 
-    render(<AccountDetailsCard account={account} />)
+    render(<AccountDetailsCard account={account} accountAddress={account.id} />)
 
     const listItems = screen.getAllByRole('listitem')
 

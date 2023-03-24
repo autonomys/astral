@@ -1,4 +1,4 @@
-import { FC, createContext, useContext, ReactNode } from 'react'
+import { FC, createContext, ReactNode } from 'react'
 import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 
@@ -14,13 +14,13 @@ export type Chain = {
   }
 }
 
-type Value = {
+export type ChainContextValue = {
   selectedChain: Chain
   setSelectedChain: (children: Chain) => void
   chains: Chain[]
 }
 
-const ChainContext = createContext<Value>(
+export const ChainContext = createContext<ChainContextValue>(
   // @ts-expect-error It's a good practice not to give a default value even though the linter tells you so
   {},
 )
@@ -48,12 +48,4 @@ export const ChainProvider: FC<Props> = ({ children }) => {
       <ApolloProvider client={client}>{children}</ApolloProvider>
     </ChainContext.Provider>
   )
-}
-
-export const useDomains = (): Value => {
-  const context = useContext(ChainContext)
-
-  if (!context) throw new Error('ChainContext must be used within ChainProvider')
-
-  return context
 }

@@ -28,7 +28,7 @@ import { Event, EventList } from 'Event/components'
 
 // log
 import { Log, LogList } from 'Log/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 // force page scroll to top on route change
 function ScrollToTopWrapper({ children }) {

@@ -9,7 +9,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import useSearch from 'common/hooks/useSearch'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { SearchType, searchTypes } from 'common/constants'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 interface FormValues {
   searchTerm: string

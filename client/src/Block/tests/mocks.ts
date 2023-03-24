@@ -32,6 +32,9 @@ export const SUCCESS_MOCK_DESKTOP = {
                   id: '0001275904-000000-68478',
                 },
               ],
+              author: {
+                id: '0x684782ad5eb50f85dfbff551caac6389e514c958',
+              },
             },
           },
         ],
@@ -79,6 +82,9 @@ export const SUCCESS_MOCK_MOBILE = {
                   id: '0001275904-000000-68478',
                 },
               ],
+              author: {
+                id: '0x684782ad5eb50f85dfbff551caac6389e514c958',
+              },
             },
           },
         ],

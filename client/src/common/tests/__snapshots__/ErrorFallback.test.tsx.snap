@@ -519,7 +519,7 @@ exports[`errorFallback renders properly 1`] = `
         If the problem persists, visit our 
         <a
           class="font-medium text-[#9179EC] dark:text-[#DE67E4]"
-          href="https://status.subspace.network/status"
+          href="https://status.subspace.network"
           rel="noreferrer"
           target="_blank"
         >

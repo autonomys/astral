@@ -5,13 +5,28 @@ import userEvent from '@testing-library/user-event'
 // common - searchBar
 import { SearchBar } from 'common/components'
 import { MockedProvider } from '@apollo/client/testing'
+import { ChainProvider } from 'common/providers/ChainProvider'
+
+const mockUseDomains = () => ({
+  selectedChain: {
+    urls: {
+      page: 'gemini-3c',
+    },
+  },
+  setSelectedChain: jest.fn(),
+})
 
 describe('Search bar', () => {
+  beforeEach(() => {
+    jest.mock('common/hooks/useDomains', () => mockUseDomains)
+  })
   it('renders properly', async () => {
     const { getByTestId } = render(
-      <MockedProvider mocks={[]} addTypename={false}>
-        <SearchBar />
-      </MockedProvider>,
+      <ChainProvider>
+        <MockedProvider mocks={[]} addTypename={false}>
+          <SearchBar />
+        </MockedProvider>
+      </ChainProvider>,
       { wrapper: BrowserRouter },
     )
 
@@ -20,9 +35,11 @@ describe('Search bar', () => {
 
   it('validate initial values of search form', async () => {
     const { getByTestId } = render(
-      <MockedProvider mocks={[]} addTypename={false}>
-        <SearchBar />
-      </MockedProvider>,
+      <ChainProvider>
+        <MockedProvider mocks={[]} addTypename={false}>
+          <SearchBar />
+        </MockedProvider>
+      </ChainProvider>,
       { wrapper: BrowserRouter },
     )
 
@@ -32,9 +49,11 @@ describe('Search bar', () => {
 
   it('should show error message when all the fields are not entered', async () => {
     render(
-      <MockedProvider mocks={[]} addTypename={false}>
-        <SearchBar />
-      </MockedProvider>,
+      <ChainProvider>
+        <MockedProvider mocks={[]} addTypename={false}>
+          <SearchBar />
+        </MockedProvider>
+      </ChainProvider>,
       { wrapper: BrowserRouter },
     )
 

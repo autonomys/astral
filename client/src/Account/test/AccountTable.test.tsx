@@ -3,10 +3,28 @@ import { BrowserRouter } from 'react-router-dom'
 
 // account
 import { AccountTable } from 'Account/components'
+import { ChainProvider } from 'common/providers/ChainProvider'
+
+const mockUseDomains = () => ({
+  selectedChain: {
+    urls: {
+      page: 'gemini-3c',
+    },
+  },
+  setSelectedChain: jest.fn(),
+})
 
 describe('Account table', () => {
+  beforeEach(() => {
+    jest.mock('common/hooks/useDomains', () => mockUseDomains)
+  })
+
   it('test empty state', async () => {
-    render(<AccountTable page={1} accounts={[]} />)
+    render(
+      <ChainProvider>
+        <AccountTable page={1} accounts={[]} />
+      </ChainProvider>,
+    )
     const element = await screen.findByText(/there are no accounts to show/i)
     expect(element).toBeInTheDocument()
   })
@@ -21,7 +39,12 @@ describe('Account table', () => {
         updatedAt: 1008639,
       },
     ]
-    render(<AccountTable page={1} accounts={accounts} />, { wrapper: BrowserRouter })
+    render(
+      <ChainProvider>
+        <AccountTable page={1} accounts={accounts} />
+      </ChainProvider>,
+      { wrapper: BrowserRouter },
+    )
     const table = screen.getByRole('table')
     expect(table).toBeInTheDocument()
     accounts.forEach(({ id }) => {

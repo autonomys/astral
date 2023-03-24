@@ -15,7 +15,7 @@ import { Extrinsic } from 'gql/graphql'
 
 // home
 import { HomeExtrinsicCard } from 'Home/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
