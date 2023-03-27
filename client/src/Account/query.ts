@@ -53,15 +53,15 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       extrinsics(limit: 10) {
         hash
         id
-        block {
-          id
-          height
-        }
         pos
         name
         success
         timestamp
         tip
+        block {
+          id
+          height
+        }
       }
     }
   }

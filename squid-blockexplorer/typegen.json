@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "http://68.183.67.157:8888/graphql",
+  "specVersions": "https://archive.gemini-3b.subspace.network/api",
   "constants": true,
   "events": true,
   "calls": true,

@@ -15,7 +15,7 @@ import { Extrinsic } from 'gql/graphql'
 
 // home
 import { HomeExtrinsicCard } from 'Home/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -33,6 +33,7 @@ const HomeExtrinsicListHeader = () => (
       Latest Extrinsics
     </div>
     <Link
+      data-testid='testLinkExtrinsics'
       to={INTERNAL_ROUTES.extrinsics.list}
       className='px-2 py-2 transition ease-in-out duration-150'
     >

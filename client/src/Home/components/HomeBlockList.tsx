@@ -14,7 +14,7 @@ import { Block } from 'gql/graphql'
 
 // home
 import { HomeBlockCard } from 'Home/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

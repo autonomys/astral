@@ -22,6 +22,9 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
           extrinsics(limit: 10) {
             id
           }
+          author {
+            id
+          }
         }
       }
       totalCount
@@ -80,6 +83,9 @@ export const QUERY_BLOCK_BY_ID = gql`
           timestamp
         }
         kind
+        id
+      }
+      author {
         id
       }
     }

@@ -11,6 +11,7 @@ import Table, { Column } from 'common/components/Table'
 import { List, ListItem, StyledListItem } from 'common/components/List'
 import { Tabs, Tab } from 'common/components/Tabs'
 import CopyButton from 'common/components/CopyButton'
+import Dropdown from 'common/components/Dropdown'
 import Arguments from 'common/components/Arguments'
 import HeaderBlockLink from 'common/components/HeaderBlockLink'
 import ExtrinsicCard from 'common/components/ExtrinsicCard'
@@ -35,6 +36,7 @@ export {
   Tab,
   Tabs,
   CopyButton,
+  Dropdown,
   Arguments,
   HeaderBlockLink,
   ExtrinsicCard,

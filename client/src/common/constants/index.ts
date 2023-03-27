@@ -13,3 +13,5 @@ export const searchTypes: SearchType[] = [
   { id: 4, name: 'Account', unavailable: true },
   { id: 5, name: 'Event', unavailable: false },
 ]
+
+export const SUBSPACE_ACC_PREFIX = 2254

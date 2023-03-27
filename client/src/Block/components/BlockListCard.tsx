@@ -8,7 +8,7 @@ import { Block } from 'gql/graphql'
 // common
 import { MobileCard, HeaderBlockLink } from 'common/components'
 import { shortString } from 'common/helpers'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -20,6 +20,7 @@ const BlockListCard: FC<Props> = ({ block }) => {
   const { selectedChain } = useDomains()
   const blockDate = dayjs(block.timestamp).fromNow(true)
   const body = [
+    { name: 'Author', value: block.author?.id ? shortString(block.author?.id) : 'Uknown' },
     { name: 'Extrinsics', value: block.extrinsics.length },
     { name: 'Events', value: block.events.length },
     { name: 'Block hash', value: shortString(block.hash) },

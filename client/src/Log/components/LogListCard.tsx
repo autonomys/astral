@@ -7,7 +7,7 @@ import { Log } from 'gql/graphql'
 // common
 import { MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 type Props = {
   log: Log

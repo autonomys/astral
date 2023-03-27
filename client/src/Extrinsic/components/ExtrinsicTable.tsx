@@ -13,7 +13,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
 import { ExtrinsicListCard } from 'Extrinsic/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

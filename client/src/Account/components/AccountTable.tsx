@@ -16,7 +16,7 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 // account
 import { AccountListCard } from 'Account/components'
 import { PAGE_SIZE } from 'common/constants'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

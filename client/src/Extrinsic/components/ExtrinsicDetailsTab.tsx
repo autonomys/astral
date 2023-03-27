@@ -8,7 +8,7 @@ import { MobileCard, Tab, PageTabs } from 'common/components'
 // extrinsic
 import { ExtrinsicDetailsEventList } from 'Extrinsic/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 type Props = {
   events: Event[]

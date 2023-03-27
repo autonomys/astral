@@ -12,7 +12,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // event
 import { EventListCard } from 'Event/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
