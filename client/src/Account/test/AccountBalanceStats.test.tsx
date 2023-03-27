@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 // account
 import { AccountBalanceStats } from 'Account/components'
 
-describe('first', () => {
+describe('Account balance stats', () => {
   it('renders without error', async () => {
     const account = {
       extrinsics: [],

@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 // account
 import { AccountDetailsCard } from 'Account/components'
 
-describe('first', () => {
+describe('Account details card', () => {
   it('renders without error', async () => {
     const account = {
       extrinsics: [],
