@@ -27,7 +27,7 @@ const theme = {
 
 const Arguments: FC<Props> = ({ args }) => {
   return (
-    <div className='dark:text-white text-[#282929]'>
+    <div data-testid='testJsonDisplay' className='dark:text-white text-[#282929]'>
       <ReactJson src={args || {}} iconStyle='circle' theme={theme} />
     </div>
   )

@@ -16,7 +16,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
-    "@types/jest": "^27.5.2",
+    "@types/jest": "^29.2.4",
     "@types/node": "^16.11.68",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
@@ -41,6 +41,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "test:coverage": "CI=true yarn test -- --env=jsdom --coverage",
+    "test:e2e": "yarn playwright test",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!@polkadot/keyring)/'",
     "eject": "react-scripts eject",
     "codegen": "graphql-codegen --config codegen.ts",
@@ -86,6 +88,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "2.13.7",
     "@graphql-codegen/client-preset": "1.0.7",
+    "@playwright/test": "^1.29.2",
     "@storybook/addon-actions": "^6.5.13",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-interactions": "^6.5.13",

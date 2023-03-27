@@ -33,6 +33,7 @@ const HomeBlockListHeader: FC = () => (
     </div>
     <Link
       to={INTERNAL_ROUTES.blocks.list}
+      data-testid='testLinkBlocks'
       className='px-2 py-2 transition ease-in-out duration-150'
     >
       <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />

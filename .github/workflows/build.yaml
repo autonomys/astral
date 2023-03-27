@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Run linter 🔍
         run: |
-          yarn install --frozen-lockfile
+          yarn install
           yarn lint:fix
           yarn test
       - name: Build project 🔧

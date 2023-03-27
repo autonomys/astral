@@ -27,10 +27,11 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
   const generateColumns = (logs: Log[]): Column[] => [
     {
       title: 'Log Index',
-      cells: logs.map(({ id }) => (
+      cells: logs.map(({ id }, index) => (
         <div className='w-full flex' key={`${id}-log-index`}>
           <Link
             className='w-full hover:text-[#DE67E4]'
+            data-testid={`log-link-${index}`}
             to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, id)}
           >
             <div>{id}</div>
