@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('info display', async ({ page }) => {
+test('accounts info displayed', async ({ page }) => {
   await page.goto('/#/accounts')
 
   const holderElement = page.getByText('Holders')

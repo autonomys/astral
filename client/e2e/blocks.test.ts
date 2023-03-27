@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('data show', async ({ page }) => {
+test('blocks table data show', async ({ page }) => {
   await page.goto('/#/blocks')
 
   await expect(page.getByText('Blocks')).toBeVisible()

@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test'
 
-test('has title', async ({ page }) => {
+test('home page has title', async ({ page }) => {
   await page.goto('/')
 
   // Expect a title "to contain" a substring.
   await expect(page).toHaveTitle(/subspace explorer/i)
 })
 
-test('navigation', async ({ page }) => {
+test('home page navigation', async ({ page }) => {
   await page.goto('/')
 
   await page.getByRole('button', { name: 'Blockchain' }).click()
@@ -27,7 +27,7 @@ test('navigation', async ({ page }) => {
   expect(page.url()).toContain('/#/')
 })
 
-test('shows info', async ({ page }) => {
+test('home page info displayed', async ({ page }) => {
   await page.goto('/')
 
   const extrinsicsElement = await page.getByRole('heading', { name: 'Signed Extrinsics' })
@@ -42,7 +42,7 @@ test('shows info', async ({ page }) => {
   await expect(historyElement).toBeVisible()
 })
 
-test('search form', async ({ page }) => {
+test('home page search form', async ({ page }) => {
   await page.goto('/')
 
   await page.getByPlaceholder('Search for Block / Account in gemini-3c ...').click()

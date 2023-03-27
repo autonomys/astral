@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('test', async ({ page }) => {
+test('single log data displayed', async ({ page }) => {
   await page.goto('/#/logs')
 
   await page.getByTestId('log-link-0').click()
