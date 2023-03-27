@@ -47,7 +47,7 @@ const Table: FC<Props> = ({
             <thead>
               <tr className={`text-[#857EC2] text-sm dark:text-white/75 ${tableHeaderProps}`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
-                  <th key={`table-header-${id}-${index}`} className="font-normal">
+                  <th key={`table-header-${id}-${index}`} className='font-normal'>
                     {isNumeric ? (
                       <div className='py-3 px-5 text-right font-normal'>{title}</div>
                     ) : centerTitle ? (
@@ -64,6 +64,7 @@ const Table: FC<Props> = ({
             {rows?.map((row, index) => (
               <tr
                 key={`table-row-${id}-${index}`}
+                data-testid={`${id}-${index}`}
                 className={`hover:bg-gray-100 dark:hover:bg-transparent/10 ${
                   index !== rows.length - 1 && 'border-y border-gray-200'
                 } ${tableRowProps}`}

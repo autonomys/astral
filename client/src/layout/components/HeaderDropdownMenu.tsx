@@ -5,7 +5,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 const HeaderDropdownMenu: FC = () => {
   const { selectedChain } = useDomains()

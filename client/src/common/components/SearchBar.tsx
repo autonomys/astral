@@ -9,7 +9,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import useSearch from 'common/hooks/useSearch'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { SearchType, searchTypes } from 'common/constants'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 interface FormValues {
   searchTerm: string
@@ -36,12 +36,13 @@ const SearchBar: FC = () => {
       }}
     >
       {({ errors, touched, values, handleSubmit, handleChange, setFieldValue }) => (
-        <Form className='w-full my-8' onSubmit={handleSubmit}>
+        <Form className='w-full my-8' onSubmit={handleSubmit} data-testid='testSearchForm'>
           <div className='flex w-full items-center'>
             <Listbox
-              value={values['searchType']}
+              value={values.searchType}
               onChange={(val) => setFieldValue('searchType', val)}
               name='searchType'
+              data-testid='search-type-list'
             >
               <div className='relative w-36'>
                 <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
@@ -97,6 +98,7 @@ const SearchBar: FC = () => {
             <div className='ml-4 w-full'>
               <div className='relative'>
                 <input
+                  data-testid='search-term-input'
                   id='searchTerm'
                   className={`
                     dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg
@@ -112,10 +114,12 @@ const SearchBar: FC = () => {
                       : 'Search...'
                   }
                   name='searchTerm'
+                  value={values.searchTerm}
                   onChange={handleChange}
                 />
                 <button
                   type='submit'
+                  data-testid='testSearchSubmit'
                   className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-full text-sm px-4 py-2 '
                 >
                   <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
@@ -124,7 +128,9 @@ const SearchBar: FC = () => {
             </div>
           </div>
           {errors.searchTerm && touched.searchTerm ? (
-            <div className='text-red-500 text-md mt-2'>{errors.searchTerm}</div>
+            <div className='text-red-500 text-md mt-2' data-testid='errorMessage'>
+              {errors.searchTerm}
+            </div>
           ) : null}
         </Form>
       )}

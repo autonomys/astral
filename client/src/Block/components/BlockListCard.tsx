@@ -8,7 +8,7 @@ import { Block } from 'gql/graphql'
 // common
 import { MobileCard, HeaderBlockLink } from 'common/components'
 import { shortString } from 'common/helpers'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

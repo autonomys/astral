@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tabs renders properly 1`] = `
+<DocumentFragment>
+  <div
+    class="flex flex-wrap bg-white border border-slate-100 shadow rounded-lg p-4"
+  >
+    <div
+      class="w-full"
+    >
+      <ul
+        class="flex w-full list-none flex-wrap pt-3 pb-4 flex-row "
+        role="tablist"
+      >
+        <li
+          class="-mb-px last:mr-0 text-center"
+        >
+          <button
+            class="text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal text-white bg-[#241235] dark:bg-[#1E254E]"
+          >
+            Tab title
+          </button>
+        </li>
+      </ul>
+      <div>
+        Sample content
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;

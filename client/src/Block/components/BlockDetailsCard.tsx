@@ -8,7 +8,7 @@ import { Block } from 'gql/graphql'
 // common
 import { List, StyledListItem } from 'common/components'
 import { shortString } from 'common/helpers'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 // block
 import BlockAuthor from './BlockAuthor'
 

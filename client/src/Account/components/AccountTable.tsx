@@ -16,7 +16,7 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 // account
 import { AccountListCard } from 'Account/components'
 import { PAGE_SIZE } from 'common/constants'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -43,10 +43,11 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     },
     {
       title: 'Account',
-      cells: accounts.map(({ id }) => (
+      cells: accounts.map(({ id }, index) => (
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
           <Identicon value={id} size={26} theme='beachball' />
           <Link
+            data-testid={`account-link-${index}`}
             to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
             className='hover:text-[#DE67E4]'
           >

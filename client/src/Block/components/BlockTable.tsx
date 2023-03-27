@@ -13,7 +13,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // block
 import { BlockListCard } from 'Block/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 import BlockAuthor from './BlockAuthor'
 
 dayjs.extend(relativeTime)

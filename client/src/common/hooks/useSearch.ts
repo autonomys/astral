@@ -16,7 +16,7 @@ import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
 
 // event
 import { QUERY_EVENT_BY_ID } from 'Event/query'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 import { formatAddress } from 'common/helpers/formatAddress'
 import { isAddress } from '@polkadot/util-crypto'
 

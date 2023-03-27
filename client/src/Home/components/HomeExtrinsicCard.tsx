@@ -9,7 +9,7 @@ import { Extrinsic } from 'gql/graphql'
 // common
 import { StatusIcon, MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

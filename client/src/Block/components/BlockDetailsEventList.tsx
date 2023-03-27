@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 // common
 import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

@@ -10,7 +10,7 @@ import useTheme from 'common/hooks/useTheme'
 
 // layout
 import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 const Header: FC = () => {
   const [isDark, toggleTheme] = useTheme()
