@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Playwright Tests Main
 env:
   NETLIFY_SITE_NAME: "precious-crostata-1376e8"
   GITHUB_PR_NUMBER: ${{github.event.pull_request.number}}

@@ -1,8 +1,20 @@
-name: Playwright Tests Main
+name: Playwright Tests
+env:
+  NETLIFY_SITE_NAME: "precious-crostata-1376e8"
 on:
   push:
     branches: [ main ]
 jobs:
+  e2e-test-prepare:
+    name: Wait for deployment on Netlify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Waiting for Netlify Preview
+        uses: josephduffy/wait-for-netlify-action@v1
+        id: wait-for-netflify-preview
+        with:
+          site_name: ${{env.NETLIFY_SITE_NAME}}
+          max_timeout: 60
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
@@ -21,7 +33,7 @@ jobs:
     - name: Run Playwright tests
       run: yarn playwright test --project=chromium
       env:
-        PLAYWRIGHT_TEST_BASE_URL: "https://explorer.subspace.network/"
+        PLAYWRIGHT_TEST_BASE_URL: "https://main--${{env.NETLIFY_SITE_NAME}}.netlify.app/"
     - uses: actions/upload-artifact@v3
       if: failure()
       with:
