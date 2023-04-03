@@ -10,6 +10,7 @@ import { QUERY_ACCOUNT_CONNECTION_LIST } from 'Account/query'
 import { SearchBar, Pagination, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import { PAGE_SIZE } from 'common/constants'
+import ExportButton from 'common/components/ExportButton'
 
 const AccountList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -61,16 +62,19 @@ const AccountList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <AccountTable accounts={accountsConnection} page={currentPage} />
-        <Pagination
-          nextPage={handleNextPage}
-          previousPage={handlePreviousPage}
-          currentPage={currentPage}
-          pageSize={PAGE_SIZE}
-          totalCount={totalCount}
-          hasNextPage={pageInfo.hasNextPage}
-          hasPreviousPage={pageInfo.hasPreviousPage}
-          handleGetPage={handleGetPage}
-        />
+        <div className='w-full flex justify-between'>
+          <ExportButton data={accountsConnection} filename='account-list' />
+          <Pagination
+            nextPage={handleNextPage}
+            previousPage={handlePreviousPage}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            hasNextPage={pageInfo.hasNextPage}
+            hasPreviousPage={pageInfo.hasPreviousPage}
+            handleGetPage={handleGetPage}
+          />
+        </div>
       </div>
     </div>
   )
