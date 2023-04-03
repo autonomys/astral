@@ -10,6 +10,7 @@ import { QUERY_BLOCK_LIST_CONNECTION } from 'Block/query'
 import { Pagination, Spinner, SearchBar } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import ExportButton from 'common/components/ExportButton'
 
 const BlockList: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -63,16 +64,19 @@ const BlockList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <BlockTable blocks={blocksConnection} isDesktop={isDesktop} />
-        <Pagination
-          nextPage={handleNextPage}
-          previousPage={handlePreviousPage}
-          currentPage={currentPage}
-          pageSize={PAGE_SIZE}
-          totalCount={totalCount}
-          hasNextPage={pageInfo.hasNextPage}
-          hasPreviousPage={pageInfo.hasPreviousPage}
-          handleGetPage={handleGetPage}
-        />
+        <div className='w-full flex justify-between'>
+          <ExportButton data={blocksConnection} filename='block-list' />
+          <Pagination
+            nextPage={handleNextPage}
+            previousPage={handlePreviousPage}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            hasNextPage={pageInfo.hasNextPage}
+            hasPreviousPage={pageInfo.hasPreviousPage}
+            handleGetPage={handleGetPage}
+          />
+        </div>
       </div>
     </div>
   )

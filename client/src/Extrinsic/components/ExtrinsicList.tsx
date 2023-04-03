@@ -10,6 +10,7 @@ import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 import { Pagination, SearchBar, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import ExportButton from 'common/components/ExportButton'
 
 const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -64,16 +65,19 @@ const ExtrinsicList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />
-        <Pagination
-          nextPage={handleNextPage}
-          previousPage={handlePreviousPage}
-          currentPage={currentPage}
-          pageSize={PAGE_SIZE}
-          totalCount={totalCount}
-          hasNextPage={pageInfo.hasNextPage}
-          hasPreviousPage={pageInfo.hasPreviousPage}
-          handleGetPage={handleGetPage}
-        />
+        <div className='w-full flex justify-between'>
+          <ExportButton data={extrinsicsConnection} filename='extrinsic-list' />
+          <Pagination
+            nextPage={handleNextPage}
+            previousPage={handlePreviousPage}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            hasNextPage={pageInfo.hasNextPage}
+            hasPreviousPage={pageInfo.hasPreviousPage}
+            handleGetPage={handleGetPage}
+          />
+        </div>
       </div>
     </div>
   )
