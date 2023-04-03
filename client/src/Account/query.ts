@@ -17,7 +17,12 @@ export const QUERY_ACCOUNT_LIST = gql`
 
 export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
   query AccountsConnection($first: Int!, $after: String) {
-    accountsConnection(orderBy: total_DESC, first: $first, after: $after) {
+    accountsConnection(
+      orderBy: total_DESC
+      first: $first
+      after: $after
+      where: { total_isNull: false }
+    ) {
       totalCount
       pageInfo {
         endCursor
