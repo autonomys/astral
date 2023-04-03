@@ -60,6 +60,20 @@ type Event @entity {
   call: Call
 }
 
+type RewardEvent @entity {
+  id: ID!
+  indexInBlock: Int!
+  name: String!
+  timestamp: DateTime!
+  phase: String!
+  pos: Int
+  block: Block
+  extrinsic: Extrinsic
+  call: Call
+  address: String 
+  amount: BigInt
+}
+
 type Call @entity {
   id: ID!
   name: String!
