@@ -7,20 +7,22 @@ import {
   blockMock,
   extrinsicMock,
   parentCallMock,
+  rewardEvent,
 } from '../../mocks/mocks';
 import { getEvents } from '../../blocks/getEvents';
 
-tap.test('getEvents should return list of Events', async (t) => {
+tap.test('getEvents should return a tuple including a list of Events and a list of RewardEvents', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
 
   const eventItems = [
     eventItemWithoutExtrinsic,
+    rewardEvent,
   ];
 
-  const events = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
-
-  t.equal(events.length, eventItems.length);
+  const [events, rewardEvents] = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
+  t.equal(events.length, 1);
+  t.equal(rewardEvents.length, 1);
 
   t.end();
 });
@@ -33,7 +35,7 @@ tap.test('getEvents should map Event to a Block', async (t) => {
     eventItemWithoutExtrinsic,
   ];
 
-  const eventsStored = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
+  const [eventsStored] = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
 
   t.equal(eventsStored[0].block, blockMock);
 
@@ -51,7 +53,7 @@ tap.test('getEvents should map Event to Call and Extrinsic', async (t) => {
     eventItemWithExtrinsic,
   ];
 
-  const eventsStored = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
+  const [eventsStored] = await getEvents(extrinsicsMap, callsMap, eventItems, blockMock);
 
   const savedExtrinsic = extrinsicsMap.get(extrinsicMock.id);
 
