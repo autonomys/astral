@@ -35,3 +35,17 @@ jobs:
           yarn test
       - name: Build project 🔧
         run: yarn build
+  ts-lint-and-build-health-check:
+    runs-on: ubuntu-lastest
+    defaults:
+      run:
+        working-directory: ./health-check
+    name: Run eslint, check typescript
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
