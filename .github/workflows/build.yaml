@@ -37,9 +37,6 @@ jobs:
         run: yarn build
   ts-lint-and-build-health-check:
     runs-on: ubuntu-lastest
-    defaults:
-      run:
-        working-directory: ./health-check
     name: Run eslint, check typescript
     steps:
       - uses: actions/checkout@v3
@@ -47,5 +44,8 @@ jobs:
         with:
           node-version: "16"
       - run: npm ci
+        working-directory: health-check
       - run: npm run lint
+        working-directory: health-check
       - run: npm run build
+        working-directory: health-check
