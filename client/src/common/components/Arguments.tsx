@@ -28,7 +28,14 @@ const theme = {
 const Arguments: FC<Props> = ({ args }) => {
   return (
     <div data-testid='testJsonDisplay' className='dark:text-white text-[#282929]'>
-      <ReactJson src={args || {}} iconStyle='circle' theme={theme} />
+      <ReactJson
+        src={args || {}}
+        iconStyle='circle'
+        theme={theme}
+        shouldCollapse={(field) => {
+          return field.type === 'object' && Object.entries(field.src).length > 5 ? true : false
+        }}
+      />
     </div>
   )
 }
