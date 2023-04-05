@@ -8,6 +8,7 @@ on:
 env:
   PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-processor:latest
   API_SERVER_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-api-server:latest
+  HEALTH_CHECK_NAME: ghcr.io/${{ github.repository_owner }}/health-check:latest
 
 jobs:
   push:
@@ -19,8 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Log in to registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Log into registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
 
       - name: Build processor image
         run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
@@ -29,9 +34,16 @@ jobs:
       - name: Build API server image
         run: docker build . --target query-node -t graphql-server --tag $API_SERVER_NAME
         working-directory: squid-blockexplorer
+      
+      - name: Build Health check image
+        run: docker build . --file Dockerfile --tag $HEALTH_CHECK_NAME
+        working-directory: health-check
 
       - name: Push processor image
         run: docker push $PROCESSOR_NAME
 
       - name: Push API server image
         run: docker push $API_SERVER_NAME
+      
+      - name: Push Health check image
+        run: docker push $HEALTH_CHECK_NAME
