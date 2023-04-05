@@ -31,6 +31,7 @@ export const QUERY_LOG_BY_ID = gql`
     logById(id: $logId) {
       id
       kind
+      value
       block {
         id
         height
