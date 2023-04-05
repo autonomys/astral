@@ -49,6 +49,8 @@ export const QUERY_BLOCK_BY_ID = gql`
       extrinsicRoot
       specId
       parentHash
+      extrinsicsCount
+      eventsCount
       extrinsics(limit: 10, orderBy: block_height_DESC) {
         id
         hash

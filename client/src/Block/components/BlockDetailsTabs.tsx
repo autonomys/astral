@@ -20,12 +20,21 @@ type Props = {
   extrinsics: Extrinsic[]
   logs: Log[]
   isDesktop?: boolean
+  extrinsicsCount?: string
+  eventsCount?: string
 }
 
-const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
+const BlockDetailsTabs: FC<Props> = ({
+  logs,
+  events,
+  extrinsics,
+  extrinsicsCount,
+  eventsCount,
+  isDesktop = false,
+}) => {
   return (
     <PageTabs isDesktop={isDesktop}>
-      <Tab title={`Extrinsics (${extrinsics.length})`}>
+      <Tab title={`Extrinsics (${extrinsicsCount})`}>
         {isDesktop ? (
           <BlockDetailsExtrinsicList extrinsics={extrinsics} />
         ) : (
@@ -40,15 +49,15 @@ const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = fal
           </div>
         )}
       </Tab>
-      <Tab title={`Events (${events.length})`}>
+      <Tab title={`Events (${eventsCount})`}>
         {isDesktop ? (
           <BlockDetailsEventList events={events} />
         ) : (
           <div className='flex flex-col'>
             {events.map((event) => (
-              <EventCard 
-                key={`block-details-event-card-${event.id}`} 
-                event={event} 
+              <EventCard
+                key={`block-details-event-card-${event.id}`}
+                event={event}
                 id='block-details-event-mobile'
               />
             ))}

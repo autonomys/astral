@@ -42,6 +42,8 @@ const Block: FC = () => {
         events={block.events}
         extrinsics={block.extrinsics}
         logs={block.logs}
+        extrinsicsCount={block.extrinsicsCount}
+        eventsCount={block.eventsCount}
         isDesktop={isDesktop}
       />
     </div>
