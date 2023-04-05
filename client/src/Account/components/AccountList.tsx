@@ -18,6 +18,7 @@ const AccountList: FC = () => {
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
+    pollInterval: 6000,
   })
 
   useErrorHandler(error)

@@ -21,6 +21,7 @@ const ExtrinsicList: FC = () => {
 
   const { data, error, loading } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
     variables: { first: PAGE_SIZE, after: lastCursor },
+    pollInterval: 6000,
   })
 
   useErrorHandler(error)
