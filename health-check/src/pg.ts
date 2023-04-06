@@ -1,6 +1,7 @@
 import { ServerResponse, createServer } from 'http';
 import * as dotenv from 'dotenv';
 import { exec } from 'child_process';
+import { secureCompare } from './utils';
 
 dotenv.config();
 
@@ -41,19 +42,23 @@ const server = createServer(async (req, res) => {
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split('Bearer ')[1];
+    const isTokenValid = secureCompare(token, process.env.HEALTH_CHECK_TOKEN);
 
-    if (token === process.env.SECRET) {
+    if (isTokenValid) {
       if (req.url === '/health') {
         await checkPostgresHealth(res);
       } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end('Not Found');
       }
+    } else {
+      res.writeHead(401, { 'Content-Type': 'text/plain' });
+      res.end('Unauthorized');
     }
   } else {
     res.writeHead(401, { 'Content-Type': 'text/plain' });
     res.end('Unauthorized');
-  }  
+  }
 });
 
 const port = process.env.PORT;
