@@ -5,6 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
 import { Arguments, List, StyledListItem } from 'common/components'
+import { shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)
 
@@ -29,8 +30,10 @@ const LogDetailsCard: FC<Props> = ({ log }) => {
             <div className='w-full md:flex-1'>
               <List>
                 <StyledListItem title='Type'>{log.kind}</StyledListItem>
-                <StyledListItem title='Engine'>-</StyledListItem>
-                <StyledListItem title='Data'>-</StyledListItem>
+                <StyledListItem title='Engine'>{log.value?.engine}</StyledListItem>
+                <StyledListItem title='Data'>
+                  {shortString(log.value?.data || '-', 10, 550)}
+                </StyledListItem>
               </List>
             </div>
             <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all dark:bg-white/10 dark:border-none'>

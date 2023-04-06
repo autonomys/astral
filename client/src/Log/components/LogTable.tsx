@@ -50,11 +50,15 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
     },
     {
       title: 'Engine',
-      cells: logs.map(() => <></>),
+      cells: logs.map(({ value, id }) => {
+        return <div key={`${id}-engine`}>{value?.engine}</div>
+      }),
     },
     {
       title: 'Data',
-      cells: logs.map(() => <></>),
+      cells: logs.map(({ value, id }) => (
+        <div key={`${id}-data`}>{`${value?.data.slice(0, 20)}...`}</div>
+      )),
     },
   ]
 
