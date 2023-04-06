@@ -20,6 +20,7 @@ const BlockList: FC = () => {
 
   const { data, error, loading } = useQuery(QUERY_BLOCK_LIST_CONNECTION, {
     variables: { first: PAGE_SIZE, after: lastCursor },
+    pollInterval: 6000,
   })
 
   useErrorHandler(error)
