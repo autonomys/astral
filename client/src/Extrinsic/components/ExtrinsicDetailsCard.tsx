@@ -62,9 +62,7 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
                   </CopyButton>
                 </StyledListItem>
                 <StyledListItem title='Module'>{module}</StyledListItem>
-                <StyledListItem title='Call' childrenAdditionalClassNames='capitalize'>
-                  {call}
-                </StyledListItem>
+                <StyledListItem title='Call'>{call}</StyledListItem>
                 <StyledListItem title='Sender'>
                   {isDesktop ? extrinsic.signer?.id : shortString(extrinsic.signer?.id || '')}
                 </StyledListItem>
