@@ -25,11 +25,7 @@ export const StyledListItem: FC<StyledListItemProps> = ({ title, children }) => 
             {title}
           </p>
         </div>
-        <div
-          className={
-            'inline-flex text-xs md:text-sm font-normal text-gray-600 dark:text-white items-end break-all capitalize'
-          }
-        >
+        <div className='inline-flex text-xs md:text-sm font-normal text-gray-600 dark:text-white items-end break-all capitalize'>
           {children}
         </div>
       </div>
