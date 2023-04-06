@@ -32,11 +32,21 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   })
 
   if (error) {
-    return <div>There was an error</div>
+    return (
+      <div className='flex w-full mt-5 sm:mt-0 items-center justify-center'>
+        <p className='text-gray-600 text-sm font-light dark:text-white'>There was an error</p>
+      </div>
+    )
   }
 
   if (loading) {
-    return <Spinner />
+    return (
+      <div className='flex w-full mt-5 sm:mt-0 items-center justify-center'>
+        <div className='h-20 w-20 '>
+          <Spinner />
+        </div>
+      </div>
+    )
   }
 
   const extrinsics = data.extrinsicsConnection.edges.map((extrinsic) => extrinsic.node)
