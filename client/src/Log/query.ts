@@ -14,6 +14,7 @@ export const QUERY_LOG_CONNECTION_LIST = gql`
         node {
           id
           kind
+          value
           block {
             id
             height
