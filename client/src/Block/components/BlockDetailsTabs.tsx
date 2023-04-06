@@ -1,10 +1,10 @@
 import { FC } from 'react'
-import { Event, Extrinsic, Log } from 'gql/graphql'
+import { Log } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { EventCard, MobileCard, PageTabs, Tab, ExtrinsicCard } from 'common/components'
+import { MobileCard, PageTabs, Tab } from 'common/components'
 
 // block
 import {
@@ -16,44 +16,20 @@ import {
 dayjs.extend(relativeTime)
 
 type Props = {
-  events: Event[]
-  extrinsics: Extrinsic[]
   logs: Log[]
   isDesktop?: boolean
+  extrinsicsCount?: string
+  eventsCount?: string
 }
 
-const BlockDetailsTabs: FC<Props> = ({ logs, events, extrinsics, isDesktop = false }) => {
+const BlockDetailsTabs: FC<Props> = ({ logs, extrinsicsCount, eventsCount, isDesktop = false }) => {
   return (
     <PageTabs isDesktop={isDesktop}>
-      <Tab title={`Extrinsics (${extrinsics.length})`}>
-        {isDesktop ? (
-          <BlockDetailsExtrinsicList extrinsics={extrinsics} />
-        ) : (
-          <div className='flex flex-col'>
-            {extrinsics.map((extrinsic) => (
-              <ExtrinsicCard
-                id='block-details-extrinsic-mobile'
-                key={`block-details-extrinsic-card-${extrinsic.id}`}
-                extrinsic={extrinsic}
-              />
-            ))}
-          </div>
-        )}
+      <Tab title={`Extrinsics (${extrinsicsCount})`}>
+        <BlockDetailsExtrinsicList isDesktop={isDesktop} />
       </Tab>
-      <Tab title={`Events (${events.length})`}>
-        {isDesktop ? (
-          <BlockDetailsEventList events={events} />
-        ) : (
-          <div className='flex flex-col'>
-            {events.map((event) => (
-              <EventCard 
-                key={`block-details-event-card-${event.id}`} 
-                event={event} 
-                id='block-details-event-mobile'
-              />
-            ))}
-          </div>
-        )}
+      <Tab title={`Events (${eventsCount})`}>
+        <BlockDetailsEventList isDesktop={isDesktop} />
       </Tab>
       <Tab title={`Logs (${logs.length})`}>
         {isDesktop ? (
