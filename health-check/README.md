@@ -26,6 +26,8 @@ services:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       PORT: 8080
+      # provide secret, which is going to be used in 'Authorization' header
+      SECRET: MY_SECRET
     command: "postgres"
     ports:
       - 8080:8080
@@ -36,6 +38,8 @@ services:
       # assuming we're running `ingest` service within same docker-compose.yml
       PROMETHEUS_HOST: http://ingest:9090
       PORT: 7070
+      # provide secret, which is going to be used in 'Authorization' header
+      SECRET: MY_SECRET
     command: "prometheus"
     ports:
       - 7070:7070
