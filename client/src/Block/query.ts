@@ -51,34 +51,6 @@ export const QUERY_BLOCK_BY_ID = gql`
       parentHash
       extrinsicsCount
       eventsCount
-      extrinsics(limit: 10, orderBy: block_height_DESC) {
-        id
-        hash
-        name
-        success
-        block {
-          height
-          timestamp
-        }
-        pos
-      }
-      events(limit: 10, orderBy: block_height_DESC) {
-        id
-        name
-        phase
-        pos
-        block {
-          height
-          id
-        }
-        extrinsic {
-          pos
-          block {
-            height
-            id
-          }
-        }
-      }
       logs(limit: 10, orderBy: block_height_DESC) {
         block {
           height
@@ -89,6 +61,77 @@ export const QUERY_BLOCK_BY_ID = gql`
       }
       author {
         id
+      }
+    }
+  }
+`
+
+export const QUERY_BLOCK_EXTRINSICS = gql`
+  query ExtrinsicsByBlockId($blockId: BigInt!, $first: Int!, $after: String) {
+    extrinsicsConnection(
+      orderBy: pos_DESC
+      first: $first
+      after: $after
+      where: { block: { height_eq: $blockId } }
+    ) {
+      edges {
+        node {
+          id
+          hash
+          name
+          success
+          block {
+            height
+            timestamp
+          }
+          pos
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+`
+
+export const QUERY_BLOCK_EVENTS = gql`
+  query EventsByBlockId($blockId: BigInt!, $first: Int!, $after: String) {
+    eventsConnection(
+      orderBy: pos_DESC
+      first: $first
+      after: $after
+      where: { block: { height_eq: $blockId } }
+    ) {
+      edges {
+        node {
+          id
+          name
+          phase
+          pos
+          block {
+            height
+            id
+          }
+          extrinsic {
+            pos
+            block {
+              height
+              id
+            }
+          }
+        }
+      }
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
       }
     }
   }

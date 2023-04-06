@@ -39,8 +39,6 @@ const Block: FC = () => {
     <div className='w-full'>
       <BlockDetailsCard block={block} isDesktop={isDesktop} />
       <BlockDetailsTabs
-        events={block.events}
-        extrinsics={block.extrinsics}
         logs={block.logs}
         extrinsicsCount={block.extrinsicsCount}
         eventsCount={block.eventsCount}
