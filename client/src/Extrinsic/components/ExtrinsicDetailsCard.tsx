@@ -20,6 +20,8 @@ type Props = {
 const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
   const { selectedChain } = useDomains()
 
+  const [module, call] = extrinsic.name.split('.')
+
   return (
     <div className='w-full'>
       <div className='flex'>
@@ -59,8 +61,8 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
                     {isDesktop ? extrinsic.hash : shortString(extrinsic.hash)}
                   </CopyButton>
                 </StyledListItem>
-                <StyledListItem title='Module'>{extrinsic.name}</StyledListItem>
-                <StyledListItem title='Call'>{extrinsic.name}</StyledListItem>
+                <StyledListItem title='Module'>{module}</StyledListItem>
+                <StyledListItem title='Call'>{call}</StyledListItem>
                 <StyledListItem title='Sender'>
                   {isDesktop ? extrinsic.signer?.id : shortString(extrinsic.signer?.id || '')}
                 </StyledListItem>
