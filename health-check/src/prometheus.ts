@@ -54,7 +54,7 @@ const server = createServer(async (req, res) => {
 
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split('Bearer ')[1];
-    const isTokenValid = secureCompare(token, process.env.HEALTH_CHECK_TOKEN);
+    const isTokenValid = secureCompare(token, process.env.SECRET);
 
     if (isTokenValid) {
       if (req.url === '/health') {
