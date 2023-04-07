@@ -48,16 +48,6 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
     },
     {
       title: 'Status',
-      cells: extrinsics.map(() => <></>),
-    },
-    {
-      title: 'Action',
-      cells: extrinsics.map(({ name, id }) => (
-        <div key={`${id}-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
-      )),
-    },
-    {
-      title: 'Success',
       cells: extrinsics.map(({ success, id }) => (
         <div
           className='md:flex md:items-center md:justify-start md:pl-5'
@@ -65,6 +55,12 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
         >
           <StatusIcon status={success} />
         </div>
+      )),
+    },
+    {
+      title: 'Action',
+      cells: extrinsics.map(({ name, id }) => (
+        <div key={`${id}-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
       )),
     },
     {
