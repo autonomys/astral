@@ -16,7 +16,7 @@ const ExportButton: FC<Props> = ({ data, filename }) => {
 
   return (
     <button
-      className='w-full max-w-fit flex space-x-4 rounded-full bg-[#241235] text-white px-4 py-[10px] font-medium'
+      className='w-full max-w-fit flex space-x-4 rounded-full bg-[#241235] text-white px-4 py-[10px] font-medium dark:bg-[#1E254E]'
       onClick={handleClick}
     >
       <span>Download page data</span>
