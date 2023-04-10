@@ -21,7 +21,13 @@ import { QUERY_EVENT_BY_ID } from 'Event/query'
 import useDomains from 'common/hooks/useDomains'
 import { formatAddress } from 'common/helpers/formatAddress'
 
-const useSearch = () => {
+type Values = {
+  handleSearch: (term: string, searchType: number) => void
+  searching: boolean
+}
+
+const useSearch = (): Values => {
+  const [searching, setSearching] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const { selectedChain } = useDomains()
@@ -96,6 +102,7 @@ const useSearch = () => {
 
   const handleSearch = (term: string, searchType: number) => {
     setSearchTerm(term)
+    setSearching(true)
 
     switch (searchType) {
       case 1: {
@@ -133,7 +140,10 @@ const useSearch = () => {
     }
   }
 
-  return handleSearch
+  return {
+    handleSearch,
+    searching,
+  }
 }
 
 export default useSearch
