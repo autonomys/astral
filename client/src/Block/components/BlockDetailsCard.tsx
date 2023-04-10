@@ -39,7 +39,9 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
         <div className='flow-root'>
           <List>
             <StyledListItem title='Author'>
-              {<BlockAuthor chain={chain} author={block.author?.id} isDesktop={isDesktop} />}
+              <CopyButton value={block.author?.id || ''} message='Block author copied'>
+                <BlockAuthor chain={chain} author={block.author?.id} isDesktop={isDesktop} />
+              </CopyButton>
             </StyledListItem>
             <StyledListItem title='Timestamp'>
               {dayjs(block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
