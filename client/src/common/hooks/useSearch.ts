@@ -23,11 +23,11 @@ import { formatAddress } from 'common/helpers/formatAddress'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
-  searching: boolean
+  isSearching: boolean
 }
 
 const useSearch = (): Values => {
-  const [searching, setSearching] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const { selectedChain } = useDomains()
@@ -102,7 +102,7 @@ const useSearch = (): Values => {
 
   const handleSearch = (term: string, searchType: number) => {
     setSearchTerm(term)
-    setSearching(true)
+    setIsSearching(true)
 
     switch (searchType) {
       case 1: {
@@ -142,7 +142,7 @@ const useSearch = (): Values => {
 
   return {
     handleSearch,
-    searching,
+    isSearching,
   }
 }
 

@@ -20,7 +20,7 @@ const SearchBar: FC = () => {
   const { selectedChain } = useDomains()
   const initialValues: FormValues = { searchTerm: '', searchType: searchTypes[0] }
 
-  const { handleSearch, searching } = useSearch()
+  const { handleSearch, isSearching } = useSearch()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const searchValidationSchema = Yup.object().shape({
@@ -118,12 +118,12 @@ const SearchBar: FC = () => {
                   onChange={handleChange}
                 />
                 <button
-                  disabled={searching}
+                  disabled={isSearching}
                   type='submit'
                   data-testid='testSearchSubmit'
                   className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-full text-sm px-4 py-2 '
                 >
-                  {searching ? (
+                  {isSearching ? (
                     <div className='flex justify-center align-middle mt-4'>
                       <SearchSpinner />
                     </div>
