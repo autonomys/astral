@@ -5,13 +5,12 @@ import { useErrorHandler } from 'react-error-boundary'
 
 // common
 import { Spinner } from 'common/components'
-import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // layout
 import { NotFound } from 'layout/components'
 
 // event
-import { EventDetailsCard, EventDetailsTab } from 'Event/components'
+import { EventDetailsCard } from 'Event/components'
 import { QUERY_EVENT_BY_ID } from 'Event/query'
 
 const Event: FC = () => {
@@ -21,8 +20,6 @@ const Event: FC = () => {
       eventId: eventId,
     },
   })
-
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   useErrorHandler(error)
 
@@ -39,7 +36,6 @@ const Event: FC = () => {
   return (
     <div className='w-full'>
       <EventDetailsCard event={event} />
-      <EventDetailsTab event={event} isDesktop={isDesktop} />
     </div>
   )
 }

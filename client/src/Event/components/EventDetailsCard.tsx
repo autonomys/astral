@@ -2,9 +2,12 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { Link } from 'react-router-dom'
 
 // common
 import { List, StyledListItem, Arguments } from 'common/components'
+import useDomains from 'common/hooks/useDomains'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 dayjs.extend(relativeTime)
 
@@ -13,6 +16,7 @@ type Props = {
 }
 
 const EventDetailsCard: FC<Props> = ({ event }) => {
+  const { selectedChain } = useDomains()
   return (
     <div className='w-full'>
       <div className='flex'>
@@ -22,7 +26,12 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
               Event #{event.id}
             </h3>
             <div className='bg-[#241235] text-xs font-semibold px-5 py-3 rounded-full block leading-normal text-white'>
-              #{event.block?.height}
+              <Link
+                className='flex gap-1'
+                to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, event.block?.height)}
+              >
+                #{event.block?.height}
+              </Link>
             </div>
           </div>
           <div className='flex flex-col md:flex-row gap-5 w-full'>
@@ -34,12 +43,24 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
                 <StyledListItem title='Block Time'>
                   {dayjs(event.timestamp).fromNow(true)}
                 </StyledListItem>
-                <StyledListItem title='Life Time'>-</StyledListItem>
+                <StyledListItem title='Extrinsic'>
+                  {event.extrinsic ? (
+                    <Link
+                      to={INTERNAL_ROUTES.extrinsics.id.page(
+                        selectedChain.urls.page,
+                        event.extrinsic?.id,
+                      )}
+                    >
+                      {event.extrinsic?.id}
+                    </Link>
+                  ) : (
+                    '-'
+                  )}
+                </StyledListItem>
                 <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
                 <StyledListItem title='Call'>
                   {event.call?.name.split('.')[1].toUpperCase()}
                 </StyledListItem>
-                <StyledListItem title='Result'>{event.call?.success}</StyledListItem>
               </List>
             </div>
             <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all dark:bg-white/10 dark:border-none'>
