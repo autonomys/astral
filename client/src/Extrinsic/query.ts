@@ -76,6 +76,16 @@ export const QUERY_EXTRINSIC_BY_HASH = gql`
   query ExtrinsicsByHash($hash: String!) {
     extrinsics(limit: 10, where: { hash_eq: $hash }) {
       id
+      hash
+      pos
+      success
+      block {
+        id
+        timestamp
+        height
+      }
+      name
+      nonce
     }
   }
 `

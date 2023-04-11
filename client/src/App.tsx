@@ -29,6 +29,7 @@ import { Event, EventList } from 'Event/components'
 // log
 import { Log, LogList } from 'Log/components'
 import useDomains from 'common/hooks/useDomains'
+import SearchResult from 'layout/components/SearchResult'
 
 // force page scroll to top on route change
 function ScrollToTopWrapper({ children }) {
@@ -149,6 +150,9 @@ function App() {
                         element={<LegacyGemini2Redirect path='logs' />}
                       />
                     </Route>
+                    <Route path={INTERNAL_ROUTES.search.result.path}>
+                      <Route index element={<SearchResult />} />
+                    </Route>
                   </Route>
                   {/* End: Legacy routing support */}
                   <Route path={':network'}>
@@ -172,6 +176,9 @@ function App() {
                     <Route path={INTERNAL_ROUTES.logs.list}>
                       <Route index element={<LogList />} />
                       <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.search.result.path}>
+                      <Route index element={<SearchResult />} />
                     </Route>
                   </Route>
 
