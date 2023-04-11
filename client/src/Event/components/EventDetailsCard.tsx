@@ -26,7 +26,10 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
               Event #{event.id}
             </h3>
             <div className='bg-[#241235] text-xs font-semibold px-5 py-3 rounded-full block leading-normal text-white'>
-              <Link className='flex gap-1' to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, event.block?.height)}>
+              <Link
+                className='flex gap-1'
+                to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, event.block?.height)}
+              >
                 #{event.block?.height}
               </Link>
             </div>
@@ -39,6 +42,20 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
                 </StyledListItem>
                 <StyledListItem title='Block Time'>
                   {dayjs(event.timestamp).fromNow(true)}
+                </StyledListItem>
+                <StyledListItem title='Extrinsic'>
+                  {event.extrinsic ? (
+                    <Link
+                      to={INTERNAL_ROUTES.extrinsics.id.page(
+                        selectedChain.urls.page,
+                        event.extrinsic?.id,
+                      )}
+                    >
+                      {event.extrinsic?.id}
+                    </Link>
+                  ) : (
+                    '-'
+                  )}
                 </StyledListItem>
                 <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
                 <StyledListItem title='Call'>
