@@ -71,3 +71,11 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
     }
   }
 `
+
+export const QUERY_EXTRINSIC_BY_HASH = gql`
+  query ExtrinsicsByHash($hash: String!) {
+    extrinsics(limit: 10, where: { hash_eq: $hash }) {
+      id
+    }
+  }
+`

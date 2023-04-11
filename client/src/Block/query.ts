@@ -136,3 +136,12 @@ export const QUERY_BLOCK_EVENTS = gql`
     }
   }
 `
+
+export const QUERY_BLOCK_BY_HASH = gql`
+  query BlocksByHash($hash: String!) {
+    blocks(limit: 10, where: { hash_eq: $hash }) {
+      id
+      height
+    }
+  }
+`

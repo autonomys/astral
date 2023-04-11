@@ -1,26 +1,33 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/client'
+import { isHex } from '@polkadot/util'
+import { isAddress } from '@polkadot/util-crypto'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // block
-import { QUERY_BLOCK_BY_ID } from 'Block/query'
+import { QUERY_BLOCK_BY_ID, QUERY_BLOCK_BY_HASH } from 'Block/query'
 
 // account
 import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
 
 // extrinsic
-import { QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
+import { QUERY_EXTRINSIC_BY_HASH, QUERY_EXTRINSIC_BY_ID } from 'Extrinsic/query'
 
 // event
 import { QUERY_EVENT_BY_ID } from 'Event/query'
 import useDomains from 'common/hooks/useDomains'
 import { formatAddress } from 'common/helpers/formatAddress'
-import { isAddress } from '@polkadot/util-crypto'
 
-const useSearch = () => {
+type Values = {
+  handleSearch: (term: string, searchType: number) => void
+  isSearching: boolean
+}
+
+const useSearch = (): Values => {
+  const [isSearching, setIsSearching] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const navigate = useNavigate()
   const { selectedChain } = useDomains()
@@ -31,6 +38,28 @@ const useSearch = () => {
         navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, searchTerm))
       } else {
         navigate(INTERNAL_ROUTES.notFound)
+      }
+    },
+  })
+
+  const [getExtrinsicByHash] = useLazyQuery(QUERY_EXTRINSIC_BY_HASH, {
+    onCompleted: (data) => {
+      if (data.extrinsics.length > 0) {
+        const [extrinsic] = data.extrinsics
+        navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
+      } else {
+        navigate(INTERNAL_ROUTES.notFound)
+      }
+    },
+  })
+
+  const [getBlockByHash] = useLazyQuery(QUERY_BLOCK_BY_HASH, {
+    onCompleted: (data) => {
+      if (data.blocks.length > 0) {
+        const [block] = data.blocks
+        navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, block.height))
+      } else {
+        getExtrinsicByHash({ variables: { hash: searchTerm } })
       }
     },
   })
@@ -73,12 +102,19 @@ const useSearch = () => {
 
   const handleSearch = (term: string, searchType: number) => {
     setSearchTerm(term)
+    setIsSearching(true)
 
     switch (searchType) {
       case 1: {
         const address = formatAddress(term)
 
-        getAccount({ variables: { accountId: address || searchTerm } })
+        const isHexFormat = isHex(term)
+
+        if (isHexFormat) {
+          getBlockByHash({ variables: { hash: term } })
+        } else {
+          getAccount({ variables: { accountId: address || searchTerm } })
+        }
 
         break
       }
@@ -104,7 +140,10 @@ const useSearch = () => {
     }
   }
 
-  return handleSearch
+  return {
+    handleSearch,
+    isSearching,
+  }
 }
 
 export default useSearch
