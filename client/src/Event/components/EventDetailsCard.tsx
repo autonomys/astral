@@ -34,12 +34,10 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
                 <StyledListItem title='Block Time'>
                   {dayjs(event.timestamp).fromNow(true)}
                 </StyledListItem>
-                <StyledListItem title='Life Time'>-</StyledListItem>
                 <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
                 <StyledListItem title='Call'>
                   {event.call?.name.split('.')[1].toUpperCase()}
                 </StyledListItem>
-                <StyledListItem title='Result'>{event.call?.success}</StyledListItem>
               </List>
             </div>
             <div className='w-full sm:max-w-xs lg:max-w-md border border-[#F3FBFF] bg-[#F3FBFF] shadow rounded-lg mb-4 p-4 sm:p-6 break-all dark:bg-white/10 dark:border-none'>
