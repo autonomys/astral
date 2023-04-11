@@ -45,8 +45,14 @@ const useSearch = (): Values => {
   const [getExtrinsicByHash] = useLazyQuery(QUERY_EXTRINSIC_BY_HASH, {
     onCompleted: (data) => {
       if (data.extrinsics.length > 0) {
-        const [extrinsic] = data.extrinsics
-        navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
+        if (data.extrinsics.length > 1) {
+          navigate(INTERNAL_ROUTES.search.result.page(selectedChain.urls.page), {
+            state: { extrinsics: data.extrinsics },
+          })
+        } else {
+          const [extrinsic] = data.extrinsics
+          navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
+        }
       } else {
         navigate(INTERNAL_ROUTES.notFound)
       }
