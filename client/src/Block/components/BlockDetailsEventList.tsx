@@ -77,13 +77,13 @@ const BlockDetailsEventList: FC<Props> = ({ isDesktop = false }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ block, pos, id }, index) => (
+      cells: events.map(({ block, indexInBlock, id }) => (
         <div className='w-full flex gap-1' key={`${id}-block-event-id`}>
           <Link
             className='w-full hover:text-[#DE67E4]'
             to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
           >
-            {`${block?.height || index}-${pos}`}
+            {block ? `${block?.height}-${indexInBlock}` : '-'}
           </Link>
         </div>
       )),
@@ -94,7 +94,7 @@ const BlockDetailsEventList: FC<Props> = ({ isDesktop = false }) => {
       title: 'Extrinsic Id',
       cells: events.map(({ extrinsic, id }) => (
         <div key={`${id}-block-event-extrinsic`}>
-          {extrinsic ? `${extrinsic.block.height}-${extrinsic.pos}` : ''}
+          {extrinsic ? `${extrinsic.block.height}-${extrinsic.indexInBlock}` : '-'}
         </div>
       )),
     },

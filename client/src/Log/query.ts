@@ -42,7 +42,7 @@ export const QUERY_LOG_BY_ID = gql`
           args
           name
           phase
-          pos
+          indexInBlock
           timestamp
           block {
             height

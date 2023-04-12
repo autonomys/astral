@@ -69,7 +69,7 @@ export const QUERY_BLOCK_BY_ID = gql`
 export const QUERY_BLOCK_EXTRINSICS = gql`
   query ExtrinsicsByBlockId($blockId: BigInt!, $first: Int!, $after: String) {
     extrinsicsConnection(
-      orderBy: pos_DESC
+      orderBy: indexInBlock_ASC
       first: $first
       after: $after
       where: { block: { height_eq: $blockId } }
@@ -84,7 +84,7 @@ export const QUERY_BLOCK_EXTRINSICS = gql`
             height
             timestamp
           }
-          pos
+          indexInBlock
         }
         cursor
       }
@@ -102,7 +102,7 @@ export const QUERY_BLOCK_EXTRINSICS = gql`
 export const QUERY_BLOCK_EVENTS = gql`
   query EventsByBlockId($blockId: BigInt!, $first: Int!, $after: String) {
     eventsConnection(
-      orderBy: pos_DESC
+      orderBy: indexInBlock_ASC
       first: $first
       after: $after
       where: { block: { height_eq: $blockId } }
@@ -112,13 +112,13 @@ export const QUERY_BLOCK_EVENTS = gql`
           id
           name
           phase
-          pos
+          indexInBlock
           block {
             height
             id
           }
           extrinsic {
-            pos
+            indexInBlock
             block {
               height
               id

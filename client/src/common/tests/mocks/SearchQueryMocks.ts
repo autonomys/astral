@@ -27,7 +27,7 @@ export const BLOCK_BY_ID_SEARCH = {
                 height: '1',
                 timestamp: '2022-09-04T03:34:13.001000Z',
               },
-              pos: 1,
+              indexInBlock: 1,
             },
           ],
           events: [
@@ -35,13 +35,13 @@ export const BLOCK_BY_ID_SEARCH = {
               id: '0000000001-000000-5b025',
               name: 'System.ExtrinsicSuccess',
               phase: 'ApplyExtrinsic',
-              pos: 2,
+              indexInBlock: 2,
               block: {
                 height: '1',
                 id: '0000000001-5b025',
               },
               extrinsic: {
-                pos: 1,
+                indexInBlock: 1,
                 block: {
                   height: '1',
                   id: '0000000001-5b025',

@@ -58,7 +58,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       extrinsics(limit: 10) {
         hash
         id
-        pos
+        indexInBlock
         name
         success
         timestamp

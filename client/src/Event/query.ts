@@ -5,7 +5,6 @@ export const QUERY_EVENT_LIST = gql`
     events(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
       name
       phase
-      pos
       id
       block {
         height
@@ -27,7 +26,6 @@ export const QUERY_EVENT_CONNECTION_LIST = gql`
           indexInBlock
           name
           phase
-          pos
           timestamp
           block {
             id
@@ -55,7 +53,6 @@ export const QUERY_EVENT_BY_ID = gql`
       indexInBlock
       name
       phase
-      pos
       timestamp
       call {
         args

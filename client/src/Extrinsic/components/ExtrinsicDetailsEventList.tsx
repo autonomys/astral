@@ -21,20 +21,20 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ block, pos, id }, index) => (
+      cells: events.map(({ block, indexInBlock, id }) => (
         <Link
           key={`${id}-extrinsic-event-id`}
           className='w-full hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
         >
-          <div>{`${block?.height || index}-${pos}`}</div>
+          <div>{block ? `${block?.height}-${indexInBlock}` : '-'}</div>
         </Link>
       )),
     },
     {
       title: 'Extrinsic Id',
-      cells: events.map(({ block, id, pos }) => (
-        <div key={`${id}-extrinsic-event-extrinsic`}>{`${block?.height}-${pos}`}</div>
+      cells: events.map(({ block, id, extrinsic }) => (
+        <div key={`${id}-extrinsic-event-extrinsic`}>{extrinsic ? `${block?.height}-${extrinsic.indexInBlock}` : '-'}</div>
       )),
     },
     {
