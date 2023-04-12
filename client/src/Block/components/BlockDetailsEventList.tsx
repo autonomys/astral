@@ -83,7 +83,7 @@ const BlockDetailsEventList: FC<Props> = ({ isDesktop = false }) => {
             className='w-full hover:text-[#DE67E4]'
             to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
           >
-            {block ? `${block?.height}-${indexInBlock}` : '-'}
+            {`${block?.height}-${indexInBlock}`}
           </Link>
         </div>
       )),
