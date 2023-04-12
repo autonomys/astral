@@ -11,13 +11,13 @@ import { Extrinsic } from 'gql/graphql'
 export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[]): Column[] => [
   {
     title: 'Extrinsic Id',
-    cells: extrinsics.map(({ block, pos, id }) => (
+    cells: extrinsics.map(({ block, indexInBlock, id }) => (
       <Link
         key={`${id}-account-extrinsic-id`}
         to={INTERNAL_ROUTES.extrinsics.id.page(chain, id)}
         className='hover:text-[#DE67E4]'
       >
-        <div>{`${block.height}-${pos}`}</div>
+        <div>{`${block.height}-${indexInBlock}`}</div>
       </Link>
     )),
   },

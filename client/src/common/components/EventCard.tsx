@@ -12,14 +12,14 @@ type EventCardProps = {
 const EventCard: FC<EventCardProps> = ({ event, id }) => {
   const body = [
     { name: 'Action', value: event.name.split('.')[1] },
-    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.pos}` },
+    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.indexInBlock}` },
     { name: 'Type', value: event.phase },
   ]
   return (
     <MobileCard
       id={id}
       header={
-        <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`$${event.block?.height}-${event.pos}`}</h3>
+        <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${event.block?.height}-${event.indexInBlock}`}</h3>
       }
       body={body}
     />

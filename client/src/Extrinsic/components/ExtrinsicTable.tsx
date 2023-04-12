@@ -28,13 +28,13 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: 'Extrinsic Id',
-      cells: extrinsics.map(({ block, pos, id }, index) => (
+      cells: extrinsics.map(({ block, indexInBlock, id }) => (
         <Link
-          key={`${id}-extrinsic-block-${index}`}
+          key={`${id}-extrinsic-block-${indexInBlock}`}
           className='hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
         >
-          <div>{`${block.height}-${pos}`}</div>
+          <div>{`${block.height}-${indexInBlock}`}</div>
         </Link>
       )),
     },

@@ -47,7 +47,7 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
   const { selectedChain } = useDomains()
   const body = [
     { name: 'Action', value: event.name.split('.')[1] },
-    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.pos}` },
+    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.indexInBlock}` },
     { name: 'Type', value: event.phase },
   ]
   return (
@@ -59,7 +59,7 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
           to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, event.id)}
         >
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>
-            <div>{`${event.block?.height}-${event.pos}`}</div>
+            <div>{`${event.block?.height}-${event.indexInBlock}`}</div>
           </h3>
         </Link>
       }

@@ -78,13 +78,13 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: 'Extrinsic Id',
-      cells: extrinsics.map(({ block, pos, id }) => (
+      cells: extrinsics.map(({ block, indexInBlock, id }) => (
         <Link
           key={`${id}-block-extrinsic-id`}
           className='hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
         >
-          {`${block.height}-${pos}`}
+          {`${block.height}-${indexInBlock}`}
         </Link>
       )),
     },

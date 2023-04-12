@@ -26,7 +26,7 @@ export const SUCCESS_MOCK_DESKTOP = {
           hash: '0x2a62e719564edbddf89ff062ba3e788eebb3d1cfb1b38d159e6df432cfd6d6f3',
           id: '0001275904-000005-68478',
           success: true,
-          pos: 23,
+          indexInBlock: 23,
           block: {
             id: '0001275904-68478',
             height: '1275904',
@@ -69,7 +69,7 @@ export const SUCCESS_MOCK_MOBILE = {
           hash: '0x2a62e719564edbddf89ff062ba3e788eebb3d1cfb1b38d159e6df432cfd6d6f3',
           id: '0001275904-000005-68478',
           success: true,
-          pos: 23,
+          indexInBlock: 23,
           block: {
             id: '0001275904-68478',
             height: '1275904',

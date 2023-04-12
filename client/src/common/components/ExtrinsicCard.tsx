@@ -24,7 +24,7 @@ const ExtrinsicCard: FC<ExtrinsicCardProps> = ({ extrinsic, id }) => {
       header={
         <>
           <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.block.height}-${extrinsic.indexInBlock}`}</h3>
         </>
       }
       body={body}
