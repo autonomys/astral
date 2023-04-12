@@ -27,14 +27,14 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
           className='w-full hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
         >
-          <div>{block ? `${block?.height}-${indexInBlock}` : '-'}</div>
+          <div>{`${block?.height}-${indexInBlock}`}</div>
         </Link>
       )),
     },
     {
       title: 'Extrinsic Id',
       cells: events.map(({ block, id, extrinsic }) => (
-        <div key={`${id}-extrinsic-event-extrinsic`}>{extrinsic ? `${block?.height}-${extrinsic.indexInBlock}` : '-'}</div>
+        <div key={`${id}-extrinsic-event-extrinsic`}>{`${block?.height}-${extrinsic?.indexInBlock}`}</div>
       )),
     },
     {

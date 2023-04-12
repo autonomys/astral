@@ -19,13 +19,13 @@ const LogDetailsEventList: FC<Props> = ({ events }) => {
     {
       title: 'Event Id',
       cells: events.map(({ block, indexInBlock, id }) => (
-        <div key={`${id}-log-event-id`}>{block ? `${block.height}-${indexInBlock}`: '-'}</div>
+        <div key={`${id}-log-event-id`}>{`${block?.height}-${indexInBlock}`}</div>
       )),
     },
     {
       title: 'Hash',
       cells: events.map(({ block, id }) => (
-        <div key={`${id}-log-event-hash`}>{block ? `${shortString(block.hash)}` : '-'}</div>
+        <div key={`${id}-log-event-hash`}>{`${block && shortString(block.hash)}`}</div>
       )),
     },
     {
