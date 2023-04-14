@@ -20,7 +20,7 @@ export interface ProcessBlocksDependencies {
     calls: CallItem[],
     block: Block,
   ) => Promise<void>;
-  getEvents: (
+  processEvents: (
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
     eventItems: EventItem[],

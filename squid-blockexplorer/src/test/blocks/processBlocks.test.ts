@@ -17,7 +17,7 @@ tap.test('processBlocks should process blocks and items from the Context and sav
     getHistorySize: () => Promise.resolve(BigInt(2)),
     processExtrinsics: () => Promise.resolve(),
     processCalls: () => Promise.resolve(),
-    getEvents: () => Promise.resolve([[], []]),
+    processEvents: () => Promise.resolve([[], []]),
     getLogs: () => Promise.resolve([]),
     getBlockAuthor: () => Promise.resolve(new Account({ id: 'author' })),
   });

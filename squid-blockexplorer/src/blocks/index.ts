@@ -8,10 +8,11 @@ import {
   digestStorageFactory,
   getBlockAuthorFactory,
 } from './storage';
-import { getOrCreateAccountFactory, processCalls, processExtrinsicsFactory } from './processCalls';
-import { getEvents } from './getEvents';
+import { processCalls, processExtrinsicsFactory } from './processCalls';
+import { processEventsFactory } from './processEvents';
 import { getLogsFactory } from './getLogs';
 export { processBlocksFactory } from "./processBlocks";
+import { getOrCreateAccountFactory } from './utils';
 
 export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): ProcessBlocksDependencies {
   const getBlockAuthor = getBlockAuthorFactory(ctx, api);
@@ -19,6 +20,7 @@ export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): 
   const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
   const processExtrinsics = processExtrinsicsFactory(getOrCreateAccount);
+  const processEvents = processEventsFactory(getOrCreateAccount);
   const getLogs = getLogsFactory(ctx, digestStorageFactory);
 
   return {
@@ -26,7 +28,7 @@ export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): 
     getHistorySize,
     processExtrinsics,
     processCalls,
-    getEvents,
+    processEvents,
     getLogs,
     getBlockAuthor
   };

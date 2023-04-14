@@ -8,7 +8,7 @@ export function processBlocksFactory({
   getHistorySize,
   processExtrinsics,
   processCalls,
-  getEvents,
+  processEvents,
   getLogs,
   getBlockAuthor,
 }: ProcessBlocksDependencies) {
@@ -46,7 +46,7 @@ export function processBlocksFactory({
       await processExtrinsics(extrinsicsMap, callsMap, parentCalls, block);
       await processCalls(extrinsicsMap, callsMap, childCalls, block);
 
-      const [blockEvents, rewardEvents] = await getEvents(extrinsicsMap, callsMap, eventItems as EventItem[], block);
+      const [blockEvents, rewardEvents] = await processEvents(extrinsicsMap, callsMap, eventItems as EventItem[], block);
       events.push(...blockEvents);
       rewards.push(...rewardEvents);
 
