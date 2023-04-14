@@ -5,6 +5,7 @@ type Account @entity {
   total: BigInt @index
   updatedAt: BigInt
   extrinsics: [Extrinsic!]! @derivedFrom(field: "signer") @cardinality(value: 10)
+  rewards: [RewardEvent!]! @derivedFrom(field: "account") @cardinality(value: 10)
 }
 
 type Block @entity {
@@ -70,7 +71,7 @@ type RewardEvent @entity {
   block: Block
   extrinsic: Extrinsic
   call: Call
-  address: String 
+  account: Account 
   amount: BigInt
 }
 

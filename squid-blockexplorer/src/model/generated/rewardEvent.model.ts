@@ -3,6 +3,7 @@ import * as marshal from "./marshal"
 import {Block} from "./block.model"
 import {Extrinsic} from "./extrinsic.model"
 import {Call} from "./call.model"
+import {Account} from "./account.model"
 
 @Entity_()
 export class RewardEvent {
@@ -40,8 +41,9 @@ export class RewardEvent {
     @ManyToOne_(() => Call, {nullable: true})
     call!: Call | undefined | null
 
-    @Column_("text", {nullable: true})
-    address!: string | undefined | null
+    @Index_()
+    @ManyToOne_(() => Account, {nullable: true})
+    account!: Account | undefined | null
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     amount!: bigint | undefined | null
