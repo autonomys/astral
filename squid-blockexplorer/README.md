@@ -14,7 +14,10 @@ make build
 # 3. Start target Postgres database and detach
 make up
 
-# 4. Start the processor
+# 4. Start target Postgres database and detach
+make generate-migration
+
+# 5. Start the processor
 make process
 ```
 
