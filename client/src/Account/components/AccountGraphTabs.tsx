@@ -26,8 +26,8 @@ const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => 
   return (
     <div className={`flex flex-wrap w-full ${tabStyle}`}>
       <div className='w-full'>
-        <div className='w-full flex md:justify-between md:items-center'>
-          <div className='hidden 2xl:flex gap-4 items-baseline'>
+        <div className='w-full flex flex-col lg:flex-row md:justify-between md:items-center'>
+          <div className='hidden lg:flex gap-4 items-baseline'>
             <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
               {numberWithCommas(bigNumberToNumber(total, 18))}
             </div>
@@ -36,7 +36,7 @@ const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => 
 
           <div className='w-full lg:w-auto'>
             <ul
-              className={`grid grid-cols-2 2xl:flex w-full list-none flex-wrap pt-3 pb-4 flex-row ${tabTitleStyle}`}
+              className={`grid grid-cols-2 justify-items-center lg:flex w-full list-none flex-wrap pt-3 pb-4 flex-row ${tabTitleStyle}`}
               role='tablist'
             >
               {children.map((item, index) => (
@@ -47,7 +47,7 @@ const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => 
                   index={index}
                   isSelected={selectedTab === index}
                   setSelectedTab={setSelectedTab}
-                  pillStyle='text-gray-600 bg-white dark:bg-transparent dark:text-white'
+                  pillStyle='text-gray-600 bg-white dark:bg-transparent dark:text-white '
                   activePillStyle={activePillStyle}
                 />
               ))}

@@ -7,7 +7,7 @@ import { useErrorHandler } from 'react-error-boundary'
 import { QUERY_ACCOUNT_BY_ID, QUERY_LATEST_REWARDS } from 'Account/query'
 import {
   AccountDetailsCard,
-  AccountDetailsTabs,
+  AccountExtrinsicList,
   AccountGraphs,
   AccountLatestRewards,
 } from 'Account/components'
@@ -26,7 +26,7 @@ const Account: FC = () => {
   const convertedAddress = formatAddress(accountId)
   const hexAddress = accountIdToHex(accountId || '')
 
-  const isDesktop = useMediaQuery('(min-width: 1440px)')
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
     variables: { accountId: convertedAddress },
@@ -64,11 +64,11 @@ const Account: FC = () => {
         accountAddress={convertedAddress}
         isDesktop={isDesktop}
       />
-      <div className='flex flex-col 2xl:flex-row justify-between gap-8'>
+      <div className='flex flex-col lg:flex-row lg:justify-between gap-8'>
         <AccountGraphs hexAddress={hexAddress} account={account} isDesktop={isDesktop} />
         <AccountLatestRewards rewards={dataRewards.rewardEvents} isDesktop={isDesktop} />
       </div>
-      <AccountDetailsTabs extrinsics={account.extrinsics} isDesktop={isDesktop} />
+      <AccountExtrinsicList accountId={convertedAddress} />
     </div>
   )
 }
