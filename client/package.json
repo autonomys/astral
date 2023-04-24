@@ -10,6 +10,7 @@
     "@headlessui/tailwindcss": "^0.1.1",
     "@heroicons/react": "^2.0.13",
     "@nivo/core": "^0.80.0",
+    "@nivo/line": "^0.80.0",
     "@nivo/pie": "^0.80.0",
     "@polkadot/keyring": "^11.1.1",
     "@polkadot/react-identicon": "^2.11.2",

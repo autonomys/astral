@@ -10,7 +10,7 @@ import { Extrinsic } from 'gql/graphql'
 
 export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[]): Column[] => [
   {
-    title: 'Extrinsic Id',
+    title: 'Extrinsics',
     cells: extrinsics.map(({ block, pos, id }) => (
       <Link
         key={`${id}-account-extrinsic-id`}
@@ -22,13 +22,13 @@ export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[])
     )),
   },
   {
-    title: 'Block hash',
+    title: 'Hash',
     cells: extrinsics.map(({ hash, id }) => (
       <div key={`${id}-account-extrinsic-block`}>{shortString(hash)}</div>
     )),
   },
   {
-    title: 'Action',
+    title: 'Call',
     cells: extrinsics.map(({ name, id }) => (
       <div key={`${id}-account-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
     )),
@@ -39,6 +39,10 @@ export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[])
       const blockDate = dayjs(block.timestamp).fromNow(true)
       return <div key={`${id}-account-extrinsic-time`}>{blockDate}</div>
     }),
+  },
+  {
+    title: 'Amount',
+    cells: extrinsics.map(() => <></>),
   },
   {
     title: 'Status',

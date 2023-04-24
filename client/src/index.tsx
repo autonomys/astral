@@ -7,13 +7,16 @@ import reportWebVitals from './reportWebVitals'
 
 // common
 import { ChainProvider } from 'common/providers/ChainProvider'
+import { ThemeProvider } from 'common/providers/ThemeProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
     <ChainProvider>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </ChainProvider>
   </React.StrictMode>,
 )

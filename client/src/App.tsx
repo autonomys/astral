@@ -22,6 +22,7 @@ import Home from 'Home'
 
 // account
 import { AccountList, Account } from 'Account/components'
+import AccountRewardList from 'Account/components/AccountRewardList'
 
 // event
 import { Event, EventList } from 'Event/components'
@@ -104,6 +105,10 @@ function App() {
                       path={INTERNAL_ROUTES.accounts.id.path}
                       element={<LegacyGemini2Redirect path='accounts' />}
                     />
+                    <Route
+                      path={INTERNAL_ROUTES.accounts.rewards.path}
+                      element={<LegacyGemini2Redirect path='accounts' />}
+                    />
                   </Route>
                   <Route path={INTERNAL_ROUTES.events.list}>
                     <Route index element={<LegacyGemini2Redirect path='events' />} />
@@ -134,6 +139,10 @@ function App() {
                   <Route path={INTERNAL_ROUTES.accounts.list}>
                     <Route index element={<AccountList />} />
                     <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+                    <Route
+                      path={INTERNAL_ROUTES.accounts.rewards.path}
+                      element={<AccountRewardList />}
+                    />
                   </Route>
                   <Route path={INTERNAL_ROUTES.events.list}>
                     <Route index element={<EventList />} />
