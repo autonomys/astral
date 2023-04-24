@@ -94,7 +94,7 @@ function App() {
                   />
                   {/* Start: Legacy routing support */}
                   {/* TODO: remove when possible */}
-                  <Route path={':network'}>
+                  <Route path='/gemini-2a'>
                     <Route index element={<Gemini2Static />} />
                     <Route path={INTERNAL_ROUTES.blocks.list}>
                       <Route index element={<Gemini2Static />} />
