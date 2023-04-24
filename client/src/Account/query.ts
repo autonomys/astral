@@ -63,15 +63,15 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       extrinsics(limit: 10) {
         hash
         id
-        block {
-          id
-          height
-        }
-        pos
+        indexInBlock
         name
         success
         timestamp
         tip
+        block {
+          id
+          height
+        }
       }
     }
     rewardEvents(limit: 10, where: { account: { id_eq: $hexAddress } }) {

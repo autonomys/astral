@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   ts-lint-and-build-squid:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: squid-blockexplorer
     name: Run eslint, check typescript and run tests
     steps:
       - uses: actions/checkout@v3
@@ -12,25 +15,36 @@ jobs:
         with:
           node-version: "16"
       - run: npm ci --legacy-peer-deps
-        working-directory: squid-blockexplorer
       - run: npm test
-        working-directory: squid-blockexplorer
       - run: npm run lint
-        working-directory: squid-blockexplorer
       - run: npm run build
-        working-directory: squid-blockexplorer
   ts-lint-and-build-client:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./client
+        working-directory: client
     name: Run eslint and code style check
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Run linter 🔍
         run: |
-          yarn install --frozen-lockfile
+          yarn install
           yarn lint:fix
+          yarn test
       - name: Build project 🔧
         run: yarn build
+  ts-lint-and-build-health-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: health-check
+    name: Run eslint, check typescript
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

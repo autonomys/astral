@@ -18,14 +18,14 @@ const LogDetailsEventList: FC<Props> = ({ events }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ block, pos, id }, index) => (
-        <div key={`${id}-log-event-id`}>{`${block?.height || index}-${pos}`}</div>
+      cells: events.map(({ block, indexInBlock, id }) => (
+        <div key={`${id}-log-event-id`}>{`${block?.height}-${indexInBlock}`}</div>
       )),
     },
     {
       title: 'Hash',
       cells: events.map(({ block, id }) => (
-        <div key={`${id}-log-event-hash`}>{block ? `${shortString(block.hash)}` : ''}</div>
+        <div key={`${id}-log-event-hash`}>{`${block && shortString(block.hash)}`}</div>
       )),
     },
     {

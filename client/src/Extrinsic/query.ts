@@ -7,7 +7,7 @@ export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
         cursor
         node {
           hash
-          pos
+          indexInBlock
           id
           success
           block {
@@ -33,7 +33,7 @@ export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
     extrinsicById(id: $extrinsicId) {
-      pos
+      indexInBlock
       id
       hash
       signature
@@ -52,7 +52,7 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
         id
         indexInBlock
         phase
-        pos
+        indexInBlock
         timestamp
         name
         args
@@ -61,13 +61,31 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
         }
         extrinsic {
           id
-          pos
+          indexInBlock
           block {
             height
           }
         }
       }
       name
+    }
+  }
+`
+
+export const QUERY_EXTRINSIC_BY_HASH = gql`
+  query ExtrinsicsByHash($hash: String!) {
+    extrinsics(limit: 10, where: { hash_eq: $hash }) {
+      id
+      hash
+      indexInBlock
+      success
+      block {
+        id
+        timestamp
+        height
+      }
+      name
+      nonce
     }
   }
 `

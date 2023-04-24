@@ -17,7 +17,7 @@ export const QUERY_HOME = gql`
       hash
       id
       success
-      pos
+      indexInBlock
       block {
         id
         height

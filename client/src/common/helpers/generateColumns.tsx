@@ -17,7 +17,7 @@ export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[])
         to={INTERNAL_ROUTES.extrinsics.id.page(chain, id)}
         className='hover:text-[#DE67E4]'
       >
-        <div>{`${block.height}-${pos}`}</div>
+        <div>{`${block.height}-${indexInBlock}`}</div>
       </Link>
     )),
   },

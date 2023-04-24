@@ -14,6 +14,7 @@ export const QUERY_LOG_CONNECTION_LIST = gql`
         node {
           id
           kind
+          value
           block {
             id
             height
@@ -31,6 +32,7 @@ export const QUERY_LOG_BY_ID = gql`
     logById(id: $logId) {
       id
       kind
+      value
       block {
         id
         height
@@ -40,7 +42,7 @@ export const QUERY_LOG_BY_ID = gql`
           args
           name
           phase
-          pos
+          indexInBlock
           timestamp
           block {
             height

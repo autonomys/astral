@@ -12,7 +12,7 @@ import { LogListCard } from 'Log/components'
 // common
 import { Table, Column, CopyButton } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -27,10 +27,11 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
   const generateColumns = (logs: Log[]): Column[] => [
     {
       title: 'Log Index',
-      cells: logs.map(({ id }) => (
+      cells: logs.map(({ id }, index) => (
         <div className='w-full flex' key={`${id}-log-index`}>
           <Link
             className='w-full hover:text-[#DE67E4]'
+            data-testid={`log-link-${index}`}
             to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, id)}
           >
             <div>{id}</div>
@@ -49,11 +50,15 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
     },
     {
       title: 'Engine',
-      cells: logs.map(() => <></>),
+      cells: logs.map(({ value, id }) => {
+        return <div key={`${id}-engine`}>{value?.engine}</div>
+      }),
     },
     {
       title: 'Data',
-      cells: logs.map(() => <></>),
+      cells: logs.map(({ value, id }) => (
+        <div key={`${id}-data`}>{`${value?.data.slice(0, 20)}...`}</div>
+      )),
     },
   ]
 

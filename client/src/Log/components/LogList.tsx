@@ -2,14 +2,15 @@ import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
 
+// log
+import { QUERY_LOG_CONNECTION_LIST } from 'Log/query'
+import { LogTable } from 'Log/components'
+
 // common
 import { Pagination, SearchBar, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-
-// log
-import { QUERY_LOG_CONNECTION_LIST } from 'Log/query'
-import { LogTable } from 'Log/components'
+import ExportButton from 'common/components/ExportButton'
 
 const LogList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -20,6 +21,7 @@ const LogList: FC = () => {
 
   const { data, error, loading } = useQuery(QUERY_LOG_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
+    pollInterval: 6000,
   })
 
   useErrorHandler(error)
@@ -64,16 +66,19 @@ const LogList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <LogTable logs={logsConnection} isDesktop={isDesktop} />
-        <Pagination
-          nextPage={handleNextPage}
-          previousPage={handlePreviousPage}
-          currentPage={currentPage}
-          pageSize={PAGE_SIZE}
-          totalCount={totalCount}
-          hasNextPage={pageInfo.hasNextPage}
-          hasPreviousPage={pageInfo.hasPreviousPage}
-          handleGetPage={handleGetPage}
-        />
+        <div className='w-full flex justify-between'>
+          <ExportButton data={logsConnection} filename='log-list' />
+          <Pagination
+            nextPage={handleNextPage}
+            previousPage={handlePreviousPage}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            hasNextPage={pageInfo.hasNextPage}
+            hasPreviousPage={pageInfo.hasPreviousPage}
+            handleGetPage={handleGetPage}
+          />
+        </div>
       </div>
     </div>
   )

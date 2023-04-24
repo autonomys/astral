@@ -13,7 +13,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // extrinsic
 import { ExtrinsicListCard } from 'Extrinsic/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -28,49 +28,45 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
       title: 'Extrinsic Id',
-      cells: extrinsics.map(({ block, pos, id }) => (
+      cells: extrinsics.map(({ block, indexInBlock, id }) => (
         <Link
-          key={`${id}-extrinsic-block`}
+          key={`${id}-extrinsic-block-${indexInBlock}`}
           className='hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
         >
-          <div>{`${block.height}-${pos}`}</div>
+          <div>{`${block.height}-${indexInBlock}`}</div>
         </Link>
       )),
     },
     {
       title: 'Time',
-      cells: extrinsics.map(({ block, id }) => {
+      cells: extrinsics.map(({ block, id }, index) => {
         const blockDate = dayjs(block.timestamp).fromNow(true)
 
-        return <div key={`${id}-extrinsic-time`}>{blockDate}</div>
+        return <div key={`${id}-extrinsic-time-${index}`}>{blockDate}</div>
       }),
     },
     {
       title: 'Status',
-      cells: extrinsics.map(() => <></>),
-    },
-    {
-      title: 'Action',
-      cells: extrinsics.map(({ name, id }) => (
-        <div key={`${id}-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
-      )),
-    },
-    {
-      title: 'Success',
-      cells: extrinsics.map(({ success, id }) => (
+      cells: extrinsics.map(({ success, id }, index) => (
         <div
           className='md:flex md:items-center md:justify-start md:pl-5'
-          key={`${id}-home-extrinsic-status`}
+          key={`${id}-home-extrinsic-status-${index}`}
         >
           <StatusIcon status={success} />
         </div>
       )),
     },
     {
+      title: 'Action',
+      cells: extrinsics.map(({ name, id }, index) => (
+        <div key={`${id}-extrinsic-action-${index}`}>{name.split('.')[1].toUpperCase()}</div>
+      )),
+    },
+    {
       title: 'Block hash',
-      cells: extrinsics.map(({ hash, id }) => (
-        <div key={`${id}-extrinsic-hash`}>
+      cells: extrinsics.map(({ hash, id }, index) => (
+        <div key={`${id}-extrinsic-hash-${index}`}>
           <CopyButton value={hash} message='Hash copied'>
             {shortString(hash)}
           </CopyButton>
@@ -96,8 +92,11 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
     </div>
   ) : (
     <div className='w-full'>
-      {extrinsics.map((extrinsic) => (
-        <ExtrinsicListCard extrinsic={extrinsic} key={`extrinsic-list-card-${extrinsic.id}`} />
+      {extrinsics.map((extrinsic, index) => (
+        <ExtrinsicListCard
+          extrinsic={extrinsic}
+          key={`extrinsic-list-card-${extrinsic.id}-${index}`}
+        />
       ))}
     </div>
   )

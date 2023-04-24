@@ -12,7 +12,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // event
 import { EventListCard } from 'Event/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -27,23 +27,24 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ id, pos }) => (
-        <div className='w-full flex gap-1' key={`${id}-${pos}-event-id`}>
+      cells: events.map(({ id, indexInBlock }) => (
+        <div className='w-full flex gap-1' key={`${id}-${indexInBlock}-event-id`}>
           <Link
             className='w-full hover:text-[#DE67E4]'
             to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+            data-testid={`event-link-${indexInBlock}`}
           >
             {id}
           </Link>
-          <CopyButton value={id} message='Id copied' />
+          <CopyButton data-testid={`testCopyButton-${indexInBlock}`} value={id} message='Id copied' />
         </div>
       )),
     },
     {
       title: 'Block',
-      cells: events.map(({ block, id, pos }) => (
+      cells: events.map(({ block, id, indexInBlock }) => (
         <Link
-          key={`${id}-${pos}-event-block`}
+          key={`${id}-${indexInBlock}-event-block`}
           className='hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
         >
@@ -53,21 +54,21 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
     },
     {
       title: 'Action',
-      cells: events.map(({ name, id, pos }) => (
-        <div key={`${id}-${pos}-event-action`}>{name.split('.')[1]}</div>
+      cells: events.map(({ name, id, indexInBlock }) => (
+        <div key={`${id}-${indexInBlock}-event-action`}>{name.split('.')[1]}</div>
       )),
     },
     {
       title: 'Type',
-      cells: events.map(({ phase, id, pos }) => (
-        <div key={`${id}-${pos}-event-phase`}>{phase}</div>
+      cells: events.map(({ phase, id, indexInBlock }) => (
+        <div key={`${id}-${indexInBlock}-event-phase`}>{phase}</div>
       )),
     },
     {
       title: 'Time',
-      cells: events.map(({ block, id, pos }) => {
+      cells: events.map(({ block, id, indexInBlock }) => {
         const blockDate = dayjs(block?.timestamp).fromNow(true)
-        return <div key={`${id}-${pos}-event-time`}>{blockDate}</div>
+        return <div key={`${id}-${indexInBlock}-event-time`}>{blockDate}</div>
       }),
     },
   ]
@@ -90,7 +91,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   ) : (
     <div className='w-full'>
       {events.map((event) => (
-        <EventListCard event={event} key={`event-list-card-${event.id}-${event.pos}`} />
+        <EventListCard event={event} key={`event-list-card-${event.id}-${event.indexInBlock}`} />
       ))}
     </div>
   )

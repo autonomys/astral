@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { CopyButton, List, StatusIcon, StyledListItem, Arguments } from 'common/components'
 import { shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -20,13 +20,15 @@ type Props = {
 const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
   const { selectedChain } = useDomains()
 
+  const [module, call] = extrinsic.name.split('.')
+
   return (
     <div className='w-full'>
       <div className='flex'>
         <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 p-4 sm:p-6 w-full dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
           <div className='flex items-center justify-between mb-10'>
             <h3 className='font-medium text-sm text-[#241235] md:text-2xl  dark:text-white'>
-              Extrinsic #{extrinsic.block.height}-{extrinsic.pos}
+              Extrinsic #{extrinsic.block.height}-{extrinsic.indexInBlock}
             </h3>
             <div className='flex bg-[#241235] rounded-full px-5 py-3 gap-2 items-center justify-center'>
               <div className=' text-xs font-semibold block leading-normal text-white'>
@@ -59,8 +61,8 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
                     {isDesktop ? extrinsic.hash : shortString(extrinsic.hash)}
                   </CopyButton>
                 </StyledListItem>
-                <StyledListItem title='Module'>{extrinsic.name}</StyledListItem>
-                <StyledListItem title='Call'>{extrinsic.name}</StyledListItem>
+                <StyledListItem title='Module'>{module}</StyledListItem>
+                <StyledListItem title='Call'>{call}</StyledListItem>
                 <StyledListItem title='Sender'>
                   {isDesktop ? extrinsic.signer?.id : shortString(extrinsic.signer?.id || '')}
                 </StyledListItem>

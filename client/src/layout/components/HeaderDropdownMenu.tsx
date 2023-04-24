@@ -1,66 +1,86 @@
-import { FC, Fragment } from 'react'
-import { Link } from 'react-router-dom'
-import { Popover, Transition } from '@headlessui/react'
+import { Fragment, FC } from 'react'
+import { Listbox, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { useNavigate } from 'react-router-dom'
 
 // common
+import useDomains from 'common/hooks/useDomains'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
 
 const HeaderDropdownMenu: FC = () => {
   const { selectedChain } = useDomains()
 
+  const navigate = useNavigate()
+
+  const menuList = [
+    {
+      title: 'Accounts',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.accounts.list}`,
+    },
+    {
+      title: 'Blocks',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.blocks.list}`,
+    },
+    {
+      title: 'Extrinsics',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.extrinsics.list}`,
+    },
+    {
+      title: 'Events',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.events.list}`,
+    },
+    {
+      title: 'Logs',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.logs.list}`,
+    },
+  ]
+
+  const handleNavigate = (link: string) => {
+    navigate(link)
+  }
+
   return (
-    <Popover className='relative'>
-      <Popover.Button className='flex font-["Montserrat"] justify-center items-center text-[#282929] text-sm font-semibold dark:text-white'>
-        Blockchain
-        <ChevronDownIcon className='ml-1 ui-open:rotate-180 ui-open:transform w-5 h-5' />
-      </Popover.Button>
-      <Transition
-        as={Fragment}
-        enter='transition ease-out duration-200'
-        enterFrom='opacity-0 translate-y-1'
-        enterTo='opacity-100 translate-y-0'
-        leave='transition ease-in duration-150'
-        leaveFrom='opacity-100 translate-y-0'
-        leaveTo='opacity-0 translate-y-1'
-      >
-        <Popover.Panel className='absolute'>
-          <div className='flex flex-col bg-white dark:bg-[#1E254E] w-44 rounded-md p-6 z-50 shadow-md'>
-            <Link
-              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.accounts.list}`}
-              className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
-            >
-              Accounts
-            </Link>
-            <Link
-              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.blocks.list}`}
-              className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
-            >
-              Blocks
-            </Link>
-            <Link
-              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.extrinsics.list}`}
-              className='text-[#282929] dark:text-white font-medium border-b py-1 border-b-[#E4ECF3]'
-            >
-              Extrinsics
-            </Link>
-            <Link
-              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.events.list}`}
-              className='text-[#282929] font-medium border-b py-1 border-b-[#E4ECF3] dark:text-white'
-            >
-              Events
-            </Link>
-            <Link
-              to={`${selectedChain.urls.page}/${INTERNAL_ROUTES.logs.list}`}
-              className='text-[#282929] dark:text-white font-medium py-1'
-            >
-              Logs
-            </Link>
+    <Listbox>
+      <div className='relative'>
+        <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default py-2 pl-3 pr-8 text-left sm:text-sm dark:text-white'>
+          <div className='flex items-center justify-center font-semibold'>
+            <span className='hidden sm:block truncate w-5 md:w-full text-[#282929] text-sm font-semibold dark:text-white '>
+              Blockchain
+            </span>
+            <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+              <ChevronDownIcon className='ui-open:rotate-180 ui-open:transform w-5 h-5' />
+            </span>
           </div>
-        </Popover.Panel>
-      </Transition>
-    </Popover>
+        </Listbox.Button>
+        <Transition
+          as={Fragment}
+          leave='transition ease-in duration-100'
+          leaveFrom='opacity-100'
+          leaveTo='opacity-0'
+        >
+          <Listbox.Options className='absolute rounded-md mt-1 max-h-60 md:w-44 divide-y px-4  bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
+            {menuList.map((item, index) => (
+              <Listbox.Option
+                key={index}
+                className={({ active }) =>
+                  `relative cursor-default select-none py-2 text-gray-900 justify-items-start dark:text-white ${
+                    active && 'bg-gray-100 dark:bg-[#2A345E]'
+                  }`
+                }
+                value={item}
+              >
+                <button
+                  className='w-full flex justify-start'
+                  onClick={() => handleNavigate(item.link)}
+                >
+                  {item.title}
+                </button>
+              </Listbox.Option>
+            ))}
+          </Listbox.Options>
+        </Transition>
+      </div>
+    </Listbox>
   )
 }
 

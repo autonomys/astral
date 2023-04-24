@@ -9,7 +9,7 @@ import { Extrinsic } from 'gql/graphql'
 // common
 import { StatusIcon, MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -35,7 +35,7 @@ const HomeExtrinsicCard: FC<Props> = ({ extrinsic }) => {
           to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id)}
         >
           <StatusIcon status={extrinsic.success} />
-          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.pos}.${extrinsic.block.height}`}</h3>
+          <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.block.height}-${extrinsic.indexInBlock}`}</h3>
         </Link>
       }
       body={body}

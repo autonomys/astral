@@ -4,8 +4,9 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useNavigate } from 'react-router-dom'
 
 // common
-import { Chain, useDomains } from 'common/providers/ChainProvider'
+import { Chain } from 'common/providers/ChainProvider'
 import { SubspaceSymbol } from 'common/icons'
+import useDomains from 'common/hooks/useDomains'
 
 const HeaderChainDropdown: FC = () => {
   const { setSelectedChain, chains, selectedChain } = useDomains()

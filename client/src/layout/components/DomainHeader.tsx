@@ -2,7 +2,7 @@ import { FC } from 'react'
 
 // common
 import { Tabs, Tab } from 'common/components'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 // TODO: add DomainHeader to the App.tsx once we have support for domains
 const DomainHeader: FC = () => {

@@ -6,8 +6,11 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block } from 'gql/graphql'
 
 // common
-import { List, StyledListItem } from 'common/components'
+import { CopyButton, List, StyledListItem } from 'common/components'
 import { shortString } from 'common/helpers'
+import useDomains from 'common/hooks/useDomains'
+// block
+import BlockAuthor from './BlockAuthor'
 
 dayjs.extend(relativeTime)
 
@@ -17,6 +20,9 @@ type Props = {
 }
 
 const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
+  const chain = selectedChain.urls.page
+
   return (
     <div className='w-full'>
       <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 py-4 px-3 sm:p-6 w-full dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
@@ -32,6 +38,11 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
 
         <div className='flow-root'>
           <List>
+            <StyledListItem title='Author'>
+              <CopyButton value={block.author?.id || ''} message='Block author copied'>
+                <BlockAuthor chain={chain} author={block.author?.id} isDesktop={isDesktop} />
+              </CopyButton>
+            </StyledListItem>
             <StyledListItem title='Timestamp'>
               {dayjs(block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
             </StyledListItem>
@@ -39,10 +50,14 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
               {dayjs(block.timestamp).fromNow(true)}
             </StyledListItem>
             <StyledListItem title='Hash'>
-              {isDesktop ? block.hash : shortString(block.hash)}
+              <CopyButton value={block.hash} message='Hash copied'>
+                {isDesktop ? block.hash : shortString(block.hash)}
+              </CopyButton>
             </StyledListItem>
             <StyledListItem title='Parent Hash'>
-              {isDesktop ? block.parentHash : shortString(block.parentHash)}
+              <CopyButton value={block.parentHash} message='Parent hash copied'>
+                {isDesktop ? block.parentHash : shortString(block.parentHash)}
+              </CopyButton>
             </StyledListItem>
             <StyledListItem title='Extrinsics Root'>{block?.extrinsicRoot}</StyledListItem>
             <StyledListItem title='Spec Version'>{block.specId?.toString() || ''}</StyledListItem>
