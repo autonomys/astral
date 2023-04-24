@@ -104,10 +104,11 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
 
 export function calcHistorySize(segmentsCount: number): bigint {
   // TODO: these constants may change post Gemini-II
-  const WITNESS_SIZE = 48;
+  const KZG_WITNESS_SIZE = 48;
+  const KZG_COMMITMENT_SIZE = 48;
   const PIECE_SIZE = 32 * 1024;
   const PIECES_IN_SEGMENT = 256;
-  const RECORD_SIZE = PIECE_SIZE - WITNESS_SIZE;
+  const RECORD_SIZE = PIECE_SIZE - (KZG_WITNESS_SIZE + KZG_COMMITMENT_SIZE);
   const RECORDED_HISTORY_SEGMENT_SIZE = (RECORD_SIZE * PIECES_IN_SEGMENT) / 2;
   const SEGMENT_SIZE =
     (RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE) * PIECE_SIZE * 2;
