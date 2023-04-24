@@ -60,7 +60,7 @@ const ExtrinsicList: FC<Props> = ({ accountId }) => {
 
   return (
     <div className='w-full flex flex-col align-middle mt-5'>
-      <div className='w-full flex flex-col mt-5 sm:mt-0 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-[20px] p-5'>
+      <div className='w-full flex flex-col mt-5 sm:mt-0 bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-[20px] p-5'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />
         {hasExtrinsics && (
           <Pagination

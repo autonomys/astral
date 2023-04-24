@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
 
 // account
-import { QUERY_ACCOUNT_BY_ID, QUERY_LATEST_REWARDS } from 'Account/query'
+import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
 import {
   AccountDetailsCard,
   AccountExtrinsicList,
@@ -29,29 +29,20 @@ const Account: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
-    variables: { accountId: convertedAddress },
-  })
-
-  const {
-    data: dataRewards,
-    error: errorRewards,
-    loading: loadingRewards,
-  } = useQuery(QUERY_LATEST_REWARDS, {
-    variables: { accountId: hexAddress },
+    variables: { accountId: convertedAddress, hexAddress: hexAddress },
   })
 
   useErrorHandler(error)
-  useErrorHandler(errorRewards)
 
   if (!convertedAddress) {
     return <NotFound />
   }
 
-  if (loading || loadingRewards) {
+  if (loading) {
     return <Spinner />
   }
 
-  if (!data.accountById || !dataRewards.rewardEvents) {
+  if (!data.accountById) {
     return <NotFound />
   }
 
@@ -66,7 +57,7 @@ const Account: FC = () => {
       />
       <div className='flex flex-col lg:flex-row lg:justify-between gap-8'>
         <AccountGraphs hexAddress={hexAddress} account={account} isDesktop={isDesktop} />
-        <AccountLatestRewards rewards={dataRewards.rewardEvents} isDesktop={isDesktop} />
+        <AccountLatestRewards rewards={data.rewardEvents} isDesktop={isDesktop} />
       </div>
       <AccountExtrinsicList accountId={convertedAddress} />
     </div>

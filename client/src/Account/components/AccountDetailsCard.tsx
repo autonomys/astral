@@ -24,11 +24,10 @@ const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = fa
           title={
             <div className='w-full flex items-center gap-3'>
               <Identicon value={accountAddress} size={48} theme='beachball' />
-              <CopyButton value={accountAddress} message='Address copied'>
-                <h3 className='font-medium leading-none text-[#282929] text-sm break-all dark:text-white'>
-                  {accountAddress}
-                </h3>
-              </CopyButton>
+
+              <h3 className='font-medium leading-none text-[#282929] text-sm break-all dark:text-white'>
+                {accountAddress}
+              </h3>
             </div>
           }
         >

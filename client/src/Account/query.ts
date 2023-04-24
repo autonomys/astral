@@ -53,7 +53,7 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
 `
 
 export const QUERY_ACCOUNT_BY_ID = gql`
-  query AccountById($accountId: String!) {
+  query AccountById($accountId: String!, $hexAddress: String!) {
     accountById(id: $accountId) {
       free
       reserved
@@ -74,12 +74,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
         }
       }
     }
-  }
-`
-
-export const QUERY_LATEST_REWARDS = gql`
-  query LatestRewards($accountId: String!) {
-    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
+    rewardEvents(limit: 10, where: { account: { id_eq: $hexAddress } }) {
       amount
       id
       indexInBlock
