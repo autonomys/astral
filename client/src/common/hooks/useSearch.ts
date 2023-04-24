@@ -37,7 +37,7 @@ const useSearch = (): Values => {
       if (data.eventById) {
         navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, searchTerm))
       } else {
-        navigate(INTERNAL_ROUTES.notFound)
+        navigate(INTERNAL_ROUTES.search.empty)
       }
     },
   })
@@ -54,7 +54,7 @@ const useSearch = (): Values => {
           navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
         }
       } else {
-        navigate(INTERNAL_ROUTES.notFound)
+        navigate(INTERNAL_ROUTES.search.empty)
       }
     },
   })
@@ -127,7 +127,7 @@ const useSearch = (): Values => {
       case 2: {
         const blockId = Number(term)
         if (isNaN(blockId)) {
-          return navigate(INTERNAL_ROUTES.notFound)
+          return navigate(INTERNAL_ROUTES.search.empty)
         }
         navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, Number(term)))
         break
@@ -136,13 +136,13 @@ const useSearch = (): Values => {
         return navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
       case 4:
         if (!isAddress(term)) {
-          return navigate(INTERNAL_ROUTES.notFound)
+          return navigate(INTERNAL_ROUTES.search.empty)
         }
         return navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
       case 5:
         return navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, term))
       default:
-        return navigate(INTERNAL_ROUTES.notFound)
+        return navigate(INTERNAL_ROUTES.search.empty)
     }
   }
 

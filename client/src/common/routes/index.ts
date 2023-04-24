@@ -57,6 +57,7 @@ export const INTERNAL_ROUTES = {
       path: 'search/result',
       page: (chain: string): string => `/${chain}/search/result`,
     },
+    empty: '/search/no-result-found',
   },
   notFound: '/404',
 }
