@@ -9,7 +9,7 @@ dotenv.config()
 const config: CodegenConfig = {
   overwrite: true,
   // TODO: use Gemini-3d's schema
-  schema: chains[1].urls.api,
+  schema: chains[0].urls.api,
   documents: './src/**/*.{ts,tsx}',
   generates: {
     './src/gql/': {

@@ -153,3 +153,36 @@ export const QUERY_REWARDS_LIST = gql`
     }
   }
 `
+
+export const QUERY_ACCOUNT_EXTRINSICS = gql`
+  query ExtrinsicsByAccountId($accountId: String!, $first: Int!, $after: String) {
+    extrinsicsConnection(
+      orderBy: indexInBlock_ASC
+      first: $first
+      after: $after
+      where: { signer: { id_eq: $accountId } }
+    ) {
+      edges {
+        node {
+          id
+          hash
+          name
+          success
+          block {
+            height
+            timestamp
+          }
+          indexInBlock
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+`

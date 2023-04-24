@@ -52,7 +52,7 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
   const isEmpty = other === 0 && staking === 0 && transferable === 0
 
   return (
-    <div className='h-80 w-2/4 md:h-[400px] md:w-full'>
+    <div className='h-80 w-2/4 lg:h-[400px] lg:w-full'>
       <ResponsivePie
         data={isEmpty ? emptyState : data}
         enableArcLinkLabels={isEmpty}

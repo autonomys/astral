@@ -26,13 +26,19 @@ const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
 
   return (
     <div
-      className={`w-full md:grid md:grid-cols-3 items-center justify-center flex-col md:gap-8 md:px-5 2xl:rounded-md p-4 ${backgroundStyle}`}
+      className={`w-full lg:grid lg:grid-cols-4 xl:grid-cols-3 items-center justify-center flex-col md:gap-8 md:px-5 lg:rounded-md p-4 ${backgroundStyle}`}
     >
+      <div className='flex lg:hidden gap-4 items-baseline justify-self-start'>
+        <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
+          {numberWithCommas(accountTotal)}
+        </div>
+        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
+      </div>
       <div className='flex w-full h-full justify-center items-center lg:items-end lg:justify-end col-span-2'>
         <AccountBalancePieChart account={account} />
       </div>
-      <div className='flex w-full md:py-10 items-center md:gap-5'>
-        <div className='flex flex-auto md:flex-none md:flex-col gap-8 justify-center'>
+      <div className='flex w-full lg:py-10 items-center lg:gap-5'>
+        <div className='flex flex-row lg:flex-none lg:flex-col gap-8 justify-center'>
           <div className='flex items-center'>
             <div className='mr-4 w-1 bg-[#E970F8] h-[30px]' />
             <StatItem

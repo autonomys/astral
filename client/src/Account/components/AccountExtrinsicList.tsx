@@ -1,30 +1,82 @@
-import { FC } from 'react'
-import { Extrinsic } from 'gql/graphql'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import { useState, FC } from 'react'
+import { useQuery } from '@apollo/client'
+import { useErrorHandler } from 'react-error-boundary'
+
+// extrinsic
+import { ExtrinsicTable } from 'Extrinsic/components'
 
 // common
-import { Table } from 'common/components'
-import { generateExtrinsicColumns } from 'common/helpers/generateColumns'
-import useDomains from 'common/hooks/useDomains'
+import { Pagination } from 'common/components'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import { QUERY_ACCOUNT_EXTRINSICS } from 'Account/query'
+import SimpleSpinner from 'common/components/SimpleSpinner'
 
-dayjs.extend(relativeTime)
-
-interface Props {
-  extrinsics: Extrinsic[]
+type Props = {
+  accountId: string
 }
 
-const AccountExtrinsicList: FC<Props> = ({ extrinsics }) => {
-  const { selectedChain } = useDomains()
-  const columns = generateExtrinsicColumns(selectedChain.urls.page, extrinsics)
+const ExtrinsicList: FC<Props> = ({ accountId }) => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+
+  const PAGE_SIZE = 10
+
+  const { data, error, loading } = useQuery(QUERY_ACCOUNT_EXTRINSICS, {
+    variables: { first: PAGE_SIZE, after: lastCursor, accountId: accountId },
+  })
+
+  useErrorHandler(error)
+
+  if (loading) {
+    return <SimpleSpinner />
+  }
+
+  const extrinsicsConnection = data.extrinsicsConnection.edges.map((extrinsic) => extrinsic.node)
+  const totalCount = data.extrinsicsConnection.totalCount
+
+  const pageInfo = data.extrinsicsConnection.pageInfo
+  const hasExtrinsics = extrinsicsConnection.length > 0
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1)
+    setLastCursor(pageInfo.endCursor)
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => prev - 1)
+    setLastCursor(pageInfo.endCursor)
+  }
+
+  const handleGetPage = (page: string | number) => {
+    setCurrentPage(Number(page))
+    const newCount = PAGE_SIZE * Number(page)
+    const endCursor = newCount - PAGE_SIZE
+    if (endCursor === 0) {
+      return setLastCursor(undefined)
+    }
+    setLastCursor(endCursor.toString())
+  }
 
   return (
-    <Table
-      columns={columns}
-      emptyMessage='There are no extrinsics to show'
-      id='account-details-extrinsics-list'
-    />
+    <div className='w-full flex flex-col align-middle mt-5'>
+      <div className='w-full flex flex-col mt-5 sm:mt-0 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-[20px] p-5'>
+        <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />
+        {hasExtrinsics && (
+          <Pagination
+            nextPage={handleNextPage}
+            previousPage={handlePreviousPage}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            hasNextPage={pageInfo.hasNextPage}
+            hasPreviousPage={pageInfo.hasPreviousPage}
+            handleGetPage={handleGetPage}
+          />
+        )}
+      </div>
+    </div>
   )
 }
 
-export default AccountExtrinsicList
+export default ExtrinsicList

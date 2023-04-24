@@ -13,7 +13,7 @@ import { NotFound } from 'layout/components'
 
 // common
 import { useTheme } from 'common/providers/ThemeProvider'
-import { bigNumberToNumber } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas } from 'common/helpers'
 import SimpleSpinner from 'common/components/SimpleSpinner'
 
 dayjs.extend(relativeTime)
@@ -21,9 +21,10 @@ dayjs.extend(utc)
 
 type Props = {
   hexAddress: string
+  total: string
 }
 
-const AccountRewardGraph: FC<Props> = ({ hexAddress }) => {
+const AccountRewardGraph: FC<Props> = ({ hexAddress, total }) => {
   const { isDark } = useTheme()
 
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
@@ -77,7 +78,13 @@ const AccountRewardGraph: FC<Props> = ({ hexAddress }) => {
   const fillColor = isDark ? '#E970F8' : '#9179EC'
 
   return (
-    <div className='w-full flex flex-col align-middle justify-center items-center'>
+    <div className='w-full flex flex-col p-5 lg:p-0'>
+      <div className='flex lg:hidden gap-4 items-baseline justify-self-start'>
+        <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
+          {numberWithCommas(bigNumberToNumber(total, 18))}
+        </div>
+        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
+      </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>
         <ResponsiveLine
           curve='natural'
@@ -116,7 +123,7 @@ const AccountRewardGraph: FC<Props> = ({ hexAddress }) => {
           axisBottom={{
             tickValues: 1.5,
             tickSize: 0,
-            format: '%m-%d-%Y',
+            format: '%m.%d.%Y',
           }}
         />
       </div>
