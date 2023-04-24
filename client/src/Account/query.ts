@@ -23,13 +23,6 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
       after: $after
       where: { total_isNull: false }
     ) {
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
-      }
       edges {
         cursor
         node {
@@ -40,9 +33,21 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           updatedAt
           extrinsics(limit: 300) {
             id
+            block {
+              height
+              hash
+            }
+            timestamp
           }
         }
       }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
     }
   }
 `
@@ -67,6 +72,83 @@ export const QUERY_ACCOUNT_BY_ID = gql`
           id
           height
         }
+      }
+    }
+  }
+`
+
+export const QUERY_LATEST_REWARDS = gql`
+  query LatestRewards($accountId: String!) {
+    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
+      amount
+      id
+      indexInBlock
+      name
+      phase
+      pos
+      timestamp
+      block {
+        height
+      }
+    }
+  }
+`
+
+export const QUERY_LAST_WEEK_REWARDS = gql`
+  query LatestRewardsWeek($accountId: String!, $gte: DateTime!) {
+    rewardEvents(limit: 500, where: { timestamp_gte: $gte, account: { id_eq: $accountId } }) {
+      amount
+      id
+      indexInBlock
+      name
+      phase
+      pos
+      timestamp
+      block {
+        height
+      }
+    }
+  }
+`
+
+export const QUERY_REWARDS_LIST = gql`
+  query RewardsList($accountId: String!, $first: Int!, $after: String) {
+    rewardEventsConnection(
+      orderBy: id_ASC
+      first: $first
+      after: $after
+      where: { account: { id_eq: $accountId } }
+    ) {
+      totalCount
+      edges {
+        cursor
+        node {
+          amount
+          id
+          indexInBlock
+          name
+          phase
+          pos
+          timestamp
+          block {
+            hash
+            id
+            height
+          }
+          account {
+            id
+            free
+            reserved
+            total
+            updatedAt
+          }
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
       }
     }
   }

@@ -30,6 +30,10 @@ export const INTERNAL_ROUTES = {
       path: ':accountId',
       page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}`,
     },
+    rewards: {
+      path: ':accountId/rewards',
+      page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}/rewards`,
+    },
   },
   events: {
     id: {

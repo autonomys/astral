@@ -6,14 +6,13 @@ import { MoonIcon, Bars3BottomRightIcon, SunIcon } from '@heroicons/react/24/out
 import { INTERNAL_ROUTES } from 'common/routes'
 import { LogoIcon } from 'common/icons'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import useTheme from 'common/hooks/useTheme'
-
 // layout
 import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/components'
 import useDomains from 'common/hooks/useDomains'
+import { useTheme } from 'common/providers/ThemeProvider'
 
 const Header: FC = () => {
-  const [isDark, toggleTheme] = useTheme()
+  const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const pathName = location.pathname
   const isDesktop = useMediaQuery('(min-width: 768px)')

@@ -6,14 +6,14 @@ import { Account } from 'gql/graphql'
 
 // common
 import { bigNumberToNumber } from 'common/helpers'
-import useTheme from 'common/hooks/useTheme'
+import { useTheme } from 'common/providers/ThemeProvider'
 
 type Props = {
   account: Account
 }
 
 const AccountBalancePieChart: FC<Props> = ({ account }) => {
-  const [isDark] = useTheme()
+  const { isDark } = useTheme()
   const otherNumber = Number(account.total) - Number(account.free) - Number(account.reserved)
   const transferable = account.free ? bigNumberToNumber(account.free, 18) : 0
   const staking = account.reserved ? bigNumberToNumber(account.reserved, 18) : 0
@@ -36,7 +36,7 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
       id: 'staking',
       label: 'Staking',
       value: staking,
-      color: '#9179EC',
+      color: '#D9F0FC',
     },
   ]
 
@@ -52,12 +52,12 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
   const isEmpty = other === 0 && staking === 0 && transferable === 0
 
   return (
-    <div className='sm:h-80 sm:w-2/4 h-60 w-full'>
+    <div className='h-80 w-2/4 md:h-[400px] md:w-full'>
       <ResponsivePie
         data={isEmpty ? emptyState : data}
         enableArcLinkLabels={isEmpty}
         margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-        innerRadius={0.5}
+        innerRadius={0}
         padAngle={0}
         cornerRadius={3}
         activeOuterRadiusOffset={8}

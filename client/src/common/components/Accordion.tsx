@@ -10,7 +10,7 @@ type Props = {
 const Accordion: FC<Props> = ({ title, children, value = '' }) => {
   const [isActive, setIsActive] = useState(true)
   return (
-    <div id='accordion-open' data-accordion='open'>
+    <div className='w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
         <button
           type='button'

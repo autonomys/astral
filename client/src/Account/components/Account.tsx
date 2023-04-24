@@ -4,21 +4,27 @@ import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
 
 // account
-import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
-import { AccountDetailsCard, AccountDetailsTabs } from 'Account/components'
-
-// common
-import { Spinner } from 'common/components'
+import { QUERY_ACCOUNT_BY_ID, QUERY_LATEST_REWARDS } from 'Account/query'
+import {
+  AccountDetailsCard,
+  AccountDetailsTabs,
+  AccountGraphs,
+  AccountLatestRewards,
+} from 'Account/components'
 
 // layout
 import { NotFound } from 'layout/components'
+
+// common
+import { Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import { formatAddress } from 'common/helpers/formatAddress'
+import { accountIdToHex, formatAddress } from 'common/helpers/formatAddress'
 
 const Account: FC = () => {
   const { accountId } = useParams<{ accountId?: string }>()
 
   const convertedAddress = formatAddress(accountId)
+  const hexAddress = accountIdToHex(accountId || '')
 
   const isDesktop = useMediaQuery('(min-width: 1440px)')
 
@@ -26,25 +32,42 @@ const Account: FC = () => {
     variables: { accountId: convertedAddress },
   })
 
+  const {
+    data: dataRewards,
+    error: errorRewards,
+    loading: loadingRewards,
+  } = useQuery(QUERY_LATEST_REWARDS, {
+    variables: { accountId: hexAddress },
+  })
+
   useErrorHandler(error)
+  useErrorHandler(errorRewards)
 
   if (!convertedAddress) {
     return <NotFound />
   }
 
-  if (loading) {
+  if (loading || loadingRewards) {
     return <Spinner />
   }
 
-  if (!data.accountById) {
+  if (!data.accountById || !dataRewards.rewardEvents) {
     return <NotFound />
   }
 
   const account = data.accountById
 
   return (
-    <div className='w-full'>
-      <AccountDetailsCard account={account} accountAddress={convertedAddress} />
+    <div className='w-full flex flex-col space-y-4'>
+      <AccountDetailsCard
+        account={account}
+        accountAddress={convertedAddress}
+        isDesktop={isDesktop}
+      />
+      <div className='flex flex-col 2xl:flex-row justify-between gap-8'>
+        <AccountGraphs hexAddress={hexAddress} account={account} isDesktop={isDesktop} />
+        <AccountLatestRewards rewards={dataRewards.rewardEvents} isDesktop={isDesktop} />
+      </div>
       <AccountDetailsTabs extrinsics={account.extrinsics} isDesktop={isDesktop} />
     </div>
   )
