@@ -103,21 +103,21 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
 
   return BigInt(
     ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
-    PIECE_SIZE
+      PIECE_SIZE
   );
 }
 
 /*
-  * Calculates the size of the history in bytes
-  * @param {number} segmentsCount - number of segments in the history
-  * @return {bigint} - size of the history in bytes
-  * TODO: these constants may change post Gemini-II
-  */
+ * Calculates the size of the history in bytes
+ * @param {number} segmentsCount - number of segments in the history
+ * @return {bigint} - size of the history in bytes
+ */
 export function calcHistorySize(segmentsCount: number): bigint {
-  const WITNESS_SIZE = 48;
+  const KZG_WITNESS_SIZE = 48;
+  const KZG_COMMITMENT_SIZE = 48;
   const PIECE_SIZE = 32 * 1024;
   const PIECES_IN_SEGMENT = 256;
-  const RECORD_SIZE = PIECE_SIZE - WITNESS_SIZE;
+  const RECORD_SIZE = PIECE_SIZE - (KZG_WITNESS_SIZE + KZG_COMMITMENT_SIZE);
   const RECORDED_HISTORY_SEGMENT_SIZE = (RECORD_SIZE * PIECES_IN_SEGMENT) / 2;
   const SEGMENT_SIZE =
     (RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE) * PIECE_SIZE * 2;
@@ -175,7 +175,10 @@ export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
  * const account = await getOrCreateAccount(blockHeight, accountId);
  */
 export function getOrCreateAccountFactory(ctx: Context) {
-  return async function getOrCreateAccount(blockHeight: bigint, accountId: string): Promise<Account> {
+  return async function getOrCreateAccount(
+    blockHeight: bigint,
+    accountId: string
+  ): Promise<Account> {
     let account = await ctx.store.get(Account, accountId);
 
     if (!account) {
