@@ -11,7 +11,7 @@ const Gemini2Static = () => {
           Heads up! Gemini2 Incentivized Testnet is now over.
         </h2>
         <p className='text-slate-600 mt-4 mb-8 lg:text-lg w-1/2 dark:text-white'>
-          We have disabled it from our block explorer. If you earned rewards, follow the{' '}
+          We have disabled it from our block explorer. If you earned rewards, follow this{' '}
           <a className='font-medium text-[#9179EC] dark:text-[#DE67E4]' href={INTERNAL_ROUTES.home}>
             guide
           </a>{' '}
