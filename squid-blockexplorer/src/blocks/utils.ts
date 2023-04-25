@@ -3,7 +3,7 @@ import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { toHex } from "@subsquid/util-internal-hex";
 import { Block, Extrinsic, Call, Account } from "../model";
-import { CallItem, EventItem } from "../processor";
+import { CallItem, EventItem, Context } from "../processor";
 
 /**
  * Takes a predicate and a list of items and returns the
@@ -91,6 +91,11 @@ export function createCall(
   });
 }
 
+/**
+ * Calculates the space pledged by a solution
+ * @param {bigint} solutionRange - range of the solution
+ * @return {bigint} - space pledged in bytes
+ */
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = 2n ** 64n - 1n;
   const SLOT_PROBABILITY = [1n, 6n];
@@ -98,12 +103,16 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
 
   return BigInt(
     ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
-      PIECE_SIZE
+    PIECE_SIZE
   );
 }
 
+/*
+  * Calculates the size of the history in bytes
+  * @param {number} segmentsCount - number of segments in the history
+  * @return {bigint} - size of the history in bytes
+  */
 export function calcHistorySize(segmentsCount: number): bigint {
-  // TODO: these constants may change post Gemini-II
   const KZG_WITNESS_SIZE = 48;
   const KZG_COMMITMENT_SIZE = 48;
   const PIECE_SIZE = 32 * 1024;
@@ -139,6 +148,11 @@ export function getStorageHash(prefix: string, name: string) {
   return getNameHash(prefix) + getNameHash(name).slice(2);
 }
 
+/**
+ * Converts a SCALE-encoded log into a human-readable format
+ * @param {null | Uint8Array | Uint8Array[]} value - SCALE-encoded log
+ * @return {null | {data: string} | {engine: string, data: string}} - human-readable log
+ */
 export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
   if (!value) return null;
 
@@ -150,4 +164,29 @@ export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
   }
 
   return { data: toHex(value) };
+}
+
+/**
+ * Returns a function that returns an account by id or creates a new one if it doesn't exist
+ * @param {Context} ctx - processor context
+ * @return {Function} - getOrCreateAccount function
+ * @example
+ * const getOrCreateAccount = getOrCreateAccountFactory(ctx);
+ * const account = await getOrCreateAccount(blockHeight, accountId);
+ */
+export function getOrCreateAccountFactory(ctx: Context) {
+  return async function getOrCreateAccount(blockHeight: bigint, accountId: string): Promise<Account> {
+    let account = await ctx.store.get(Account, accountId);
+
+    if (!account) {
+      account = new Account({
+        id: accountId,
+        updatedAt: blockHeight,
+      });
+
+      await ctx.store.insert(account);
+    }
+
+    return account;
+  };
 }

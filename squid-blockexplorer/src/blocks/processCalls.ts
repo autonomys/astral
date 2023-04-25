@@ -1,4 +1,4 @@
-import { CallItem, Context } from '../processor';
+import { CallItem } from '../processor';
 import { Block, Account } from '../model';
 import { createExtrinsic, createCall } from './utils';
 import { ExtrinsicsMap, CallsMap } from './types';
@@ -31,21 +31,4 @@ export async function processCalls(extrinsicsMap: ExtrinsicsMap, callsMap: Calls
     const call = createCall(item, block, extrinsic!, parent!);
     callsMap.set(call.id, call);
   }
-}
-
-export function getOrCreateAccountFactory(ctx: Context) {
-  return async function getOrCreateAccount(blockHeight: bigint, accountId: string): Promise<Account> {
-    let account = await ctx.store.get(Account, accountId);
-
-    if (!account) {
-      account = new Account({
-        id: accountId,
-        updatedAt: blockHeight,
-      });
-
-      await ctx.store.insert(account);
-    }
-
-    return account;
-  };
 }

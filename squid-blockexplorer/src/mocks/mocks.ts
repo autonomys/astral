@@ -99,6 +99,22 @@ export const eventItemWithoutExtrinsic = {
   }
 } as unknown as EventItem;
 
+export const rewardEvent = {
+  kind: 'event',
+  name: 'Rewards.VoteReward',
+  event: {
+    args: {
+      reward: '100000000000000000',
+      voter: '0x38120f112ed212a0e72232b07cd2b249d512eec512783108b2d2cd06c00ef871'
+    },
+    id: '0000700560-000054-0c1bb',
+    indexInBlock: 54,
+    name: 'Rewards.VoteReward',
+    phase: 'Finalization',
+    pos: 82
+  }
+} as unknown as EventItem;
+
 export const eventItemWithExtrinsic = {
   ...eventItemWithoutExtrinsic,
   event: {

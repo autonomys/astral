@@ -1,50 +1,16 @@
 import tap from 'tap';
 import { Extrinsic, Call, Account } from '../../model';
-import { Context } from '../../processor';
 import {
   parentCallItem,
   childCallItem,
   callItemWithSignature,
-  contextMock,
   callsItems,
   getOrCreateAccountMock,
   blockMock,
   extrinsicMock,
   parentCallMock,
 } from '../../mocks/mocks';
-import { getOrCreateAccountFactory, processCalls, processExtrinsicsFactory } from '../../blocks/processCalls';
-
-tap.test('getOrCreateAccount should get Account if store has one', async (t) => {
-  const accountId = 'random account id';
-
-  const contextWithAccount = {
-    ...contextMock,
-    store: {
-      ...contextMock.store,
-      get: () => Promise.resolve(new Account({ id: accountId })),
-    }
-  } as unknown as Context;
-
-  const getOrCreateAccount = getOrCreateAccountFactory(contextWithAccount);
-
-  const result = await getOrCreateAccount(BigInt(1), accountId);
-
-  t.equal(result.id, accountId);
-
-  t.end();
-});
-
-tap.test('getOrCreateAccount should create new Account if store has none', async (t) => {
-  const accountId = 'new account id';
-
-  const getOrCreateAccount = getOrCreateAccountFactory(contextMock);
-
-  const result = await getOrCreateAccount(BigInt(1), accountId);
-
-  t.equal(result.id, accountId);
-
-  t.end();
-});
+import { processCalls, processExtrinsicsFactory } from '../../blocks/processCalls';
 
 tap.test('processExtrinsics should save Extrinsics and Calls to extrinsics map and calls map respectively', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
