@@ -14,7 +14,7 @@ import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { bigNumberToNumber, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import { useDomains } from 'common/providers/ChainProvider'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
