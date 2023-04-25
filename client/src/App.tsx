@@ -22,7 +22,6 @@ import Home from 'Home'
 
 // account
 import { AccountList, Account } from 'Account/components'
-import AccountRewardList from 'Account/components/AccountRewardList'
 
 // event
 import { Event, EventList } from 'Event/components'
