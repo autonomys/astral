@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://archive.gemini-3b.subspace.network/api",
+  "specVersions": "https://archive.gemini-3c.subspace.network/api",
   "constants": true,
   "events": true,
   "calls": true,
