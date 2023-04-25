@@ -2,14 +2,12 @@ import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { RewardEvent } from 'gql/graphql'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
-
-// home
-import { useDomains } from 'common/providers/ChainProvider'
 import { formatUnits } from 'common/helpers'
-import { RewardEvent } from 'gql/graphql'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 

@@ -11,7 +11,7 @@ import { Extrinsic } from 'gql/graphql'
 export const generateExtrinsicColumns = (chain: string, extrinsics: Extrinsic[]): Column[] => [
   {
     title: 'Extrinsics',
-    cells: extrinsics.map(({ block, indexInBlock, id }) => (
+    cells: extrinsics.map(({ block, id, indexInBlock }) => (
       <Link
         key={`${id}-account-extrinsic-id`}
         to={INTERNAL_ROUTES.extrinsics.id.page(chain, id)}
