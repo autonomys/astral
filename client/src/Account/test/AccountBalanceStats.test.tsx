@@ -17,6 +17,6 @@ describe('Account balance stats', () => {
 
     render(<AccountBalanceStats account={account} />)
 
-    expect(await screen.findByText(/transferable/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Free/i)).toBeInTheDocument()
   })
 })
