@@ -3,8 +3,6 @@
 This API provides access to blockchain data, including accounts, blocks, extrinsics, events, calls, and logs
 
 ## API endpoints
-
-- Gemini-3c API: `https://squid.gemini-3c.subspace.network/graphql`
 - Gemini-3d API: `https://explorer-0.gemini-3d.subspace.network/graphql`
 
 ## Types
