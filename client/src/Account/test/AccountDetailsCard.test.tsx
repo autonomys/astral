@@ -12,6 +12,7 @@ describe('Account details card', () => {
       reserved: 0,
       total: 0,
       updatedAt: 1008639,
+      rewards: [],
     }
 
     render(<AccountDetailsCard account={account} accountAddress={account.id} />)
