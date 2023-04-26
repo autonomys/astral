@@ -26,7 +26,6 @@ export type Account = {
   free?: Maybe<Scalars['BigInt']>;
   id: Scalars['String'];
   reserved?: Maybe<Scalars['BigInt']>;
-  rewards: Array<RewardEvent>;
   total?: Maybe<Scalars['BigInt']>;
   updatedAt?: Maybe<Scalars['BigInt']>;
 };
@@ -37,14 +36,6 @@ export type AccountExtrinsicsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
   where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-
-export type AccountRewardsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
-  where?: InputMaybe<RewardEventWhereInput>;
 };
 
 export type AccountEdge = {
@@ -107,9 +98,6 @@ export type AccountWhereInput = {
   reserved_lte?: InputMaybe<Scalars['BigInt']>;
   reserved_not_eq?: InputMaybe<Scalars['BigInt']>;
   reserved_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  rewards_every?: InputMaybe<RewardEventWhereInput>;
-  rewards_none?: InputMaybe<RewardEventWhereInput>;
-  rewards_some?: InputMaybe<RewardEventWhereInput>;
   total_eq?: InputMaybe<Scalars['BigInt']>;
   total_gt?: InputMaybe<Scalars['BigInt']>;
   total_gte?: InputMaybe<Scalars['BigInt']>;
@@ -1212,11 +1200,6 @@ export type Query = {
   logByUniqueInput?: Maybe<Log>;
   logs: Array<Log>;
   logsConnection: LogsConnection;
-  rewardEventById?: Maybe<RewardEvent>;
-  /** @deprecated Use rewardEventById */
-  rewardEventByUniqueInput?: Maybe<RewardEvent>;
-  rewardEvents: Array<RewardEvent>;
-  rewardEventsConnection: RewardEventsConnection;
   squidStatus?: Maybe<SquidStatus>;
 };
 
@@ -1374,245 +1357,6 @@ export type QueryLogsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   orderBy: Array<LogOrderByInput>;
   where?: InputMaybe<LogWhereInput>;
-};
-
-
-export type QueryRewardEventByIdArgs = {
-  id: Scalars['String'];
-};
-
-
-export type QueryRewardEventByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryRewardEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
-  where?: InputMaybe<RewardEventWhereInput>;
-};
-
-
-export type QueryRewardEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  orderBy: Array<RewardEventOrderByInput>;
-  where?: InputMaybe<RewardEventWhereInput>;
-};
-
-export type RewardEvent = {
-  __typename?: 'RewardEvent';
-  account?: Maybe<Account>;
-  amount?: Maybe<Scalars['BigInt']>;
-  block?: Maybe<Block>;
-  call?: Maybe<Call>;
-  extrinsic?: Maybe<Extrinsic>;
-  id: Scalars['String'];
-  indexInBlock: Scalars['Int'];
-  name: Scalars['String'];
-  phase: Scalars['String'];
-  pos?: Maybe<Scalars['Int']>;
-  timestamp: Scalars['DateTime'];
-};
-
-export type RewardEventEdge = {
-  __typename?: 'RewardEventEdge';
-  cursor: Scalars['String'];
-  node: RewardEvent;
-};
-
-export enum RewardEventOrderByInput {
-  AccountFreeAsc = 'account_free_ASC',
-  AccountFreeDesc = 'account_free_DESC',
-  AccountIdAsc = 'account_id_ASC',
-  AccountIdDesc = 'account_id_DESC',
-  AccountReservedAsc = 'account_reserved_ASC',
-  AccountReservedDesc = 'account_reserved_DESC',
-  AccountTotalAsc = 'account_total_ASC',
-  AccountTotalDesc = 'account_total_DESC',
-  AccountUpdatedAtAsc = 'account_updatedAt_ASC',
-  AccountUpdatedAtDesc = 'account_updatedAt_DESC',
-  AmountAsc = 'amount_ASC',
-  AmountDesc = 'amount_DESC',
-  BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
-  BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockExtrinsicRootAsc = 'block_extrinsicRoot_ASC',
-  BlockExtrinsicRootDesc = 'block_extrinsicRoot_DESC',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdDesc = 'block_id_DESC',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockSpacePledgedAsc = 'block_spacePledged_ASC',
-  BlockSpacePledgedDesc = 'block_spacePledged_DESC',
-  BlockSpecIdAsc = 'block_specId_ASC',
-  BlockSpecIdDesc = 'block_specId_DESC',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  CallIdAsc = 'call_id_ASC',
-  CallIdDesc = 'call_id_DESC',
-  CallNameAsc = 'call_name_ASC',
-  CallNameDesc = 'call_name_DESC',
-  CallPosAsc = 'call_pos_ASC',
-  CallPosDesc = 'call_pos_DESC',
-  CallSignerAsc = 'call_signer_ASC',
-  CallSignerDesc = 'call_signer_DESC',
-  CallSuccessAsc = 'call_success_ASC',
-  CallSuccessDesc = 'call_success_DESC',
-  CallTimestampAsc = 'call_timestamp_ASC',
-  CallTimestampDesc = 'call_timestamp_DESC',
-  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
-  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
-  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
-  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
-  ExtrinsicIdAsc = 'extrinsic_id_ASC',
-  ExtrinsicIdDesc = 'extrinsic_id_DESC',
-  ExtrinsicIndexInBlockAsc = 'extrinsic_indexInBlock_ASC',
-  ExtrinsicIndexInBlockDesc = 'extrinsic_indexInBlock_DESC',
-  ExtrinsicNameAsc = 'extrinsic_name_ASC',
-  ExtrinsicNameDesc = 'extrinsic_name_DESC',
-  ExtrinsicNonceAsc = 'extrinsic_nonce_ASC',
-  ExtrinsicNonceDesc = 'extrinsic_nonce_DESC',
-  ExtrinsicPosAsc = 'extrinsic_pos_ASC',
-  ExtrinsicPosDesc = 'extrinsic_pos_DESC',
-  ExtrinsicSignatureAsc = 'extrinsic_signature_ASC',
-  ExtrinsicSignatureDesc = 'extrinsic_signature_DESC',
-  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
-  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
-  ExtrinsicTimestampAsc = 'extrinsic_timestamp_ASC',
-  ExtrinsicTimestampDesc = 'extrinsic_timestamp_DESC',
-  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
-  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  IndexInBlockAsc = 'indexInBlock_ASC',
-  IndexInBlockDesc = 'indexInBlock_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC',
-  PhaseAsc = 'phase_ASC',
-  PhaseDesc = 'phase_DESC',
-  PosAsc = 'pos_ASC',
-  PosDesc = 'pos_DESC',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
-}
-
-export type RewardEventWhereInput = {
-  AND?: InputMaybe<Array<RewardEventWhereInput>>;
-  OR?: InputMaybe<Array<RewardEventWhereInput>>;
-  account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']>;
-  amount_eq?: InputMaybe<Scalars['BigInt']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']>;
-  amount_lt?: InputMaybe<Scalars['BigInt']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']>;
-  amount_not_eq?: InputMaybe<Scalars['BigInt']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']>;
-  call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']>;
-  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
-  phase_contains?: InputMaybe<Scalars['String']>;
-  phase_containsInsensitive?: InputMaybe<Scalars['String']>;
-  phase_endsWith?: InputMaybe<Scalars['String']>;
-  phase_eq?: InputMaybe<Scalars['String']>;
-  phase_gt?: InputMaybe<Scalars['String']>;
-  phase_gte?: InputMaybe<Scalars['String']>;
-  phase_in?: InputMaybe<Array<Scalars['String']>>;
-  phase_isNull?: InputMaybe<Scalars['Boolean']>;
-  phase_lt?: InputMaybe<Scalars['String']>;
-  phase_lte?: InputMaybe<Scalars['String']>;
-  phase_not_contains?: InputMaybe<Scalars['String']>;
-  phase_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  phase_not_endsWith?: InputMaybe<Scalars['String']>;
-  phase_not_eq?: InputMaybe<Scalars['String']>;
-  phase_not_in?: InputMaybe<Array<Scalars['String']>>;
-  phase_not_startsWith?: InputMaybe<Scalars['String']>;
-  phase_startsWith?: InputMaybe<Scalars['String']>;
-  pos_eq?: InputMaybe<Scalars['Int']>;
-  pos_gt?: InputMaybe<Scalars['Int']>;
-  pos_gte?: InputMaybe<Scalars['Int']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']>;
-  pos_lt?: InputMaybe<Scalars['Int']>;
-  pos_lte?: InputMaybe<Scalars['Int']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
-};
-
-export type RewardEventsConnection = {
-  __typename?: 'RewardEventsConnection';
-  edges: Array<RewardEventEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
 };
 
 export type SquidStatus = {
