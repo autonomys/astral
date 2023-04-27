@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {Extrinsic} from "./extrinsic.model"
 import {Event} from "./event.model"
+import {RewardEvent} from "./rewardEvent.model"
 import {Call} from "./call.model"
 import {Log} from "./log.model"
 import {Account} from "./account.model"
@@ -42,6 +43,9 @@ export class Block {
 
     @OneToMany_(() => Event, e => e.block)
     events!: Event[]
+
+    @OneToMany_(() => RewardEvent, e => e.block)
+    rewards!: RewardEvent[]
 
     @OneToMany_(() => Call, e => e.block)
     calls!: Call[]
