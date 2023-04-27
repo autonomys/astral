@@ -10,23 +10,23 @@ export interface BalanceStatus_Reserved {
     __kind: 'Reserved'
 }
 
-export type RootBlock = RootBlock_V0
+export type SegmentHeader = SegmentHeader_V0
 
-export interface RootBlock_V0 {
+export interface SegmentHeader_V0 {
     __kind: 'V0'
     segmentIndex: bigint
-    recordsRoot: Commitment
-    prevRootBlockHash: Uint8Array
+    segmentCommitment: Commitment
+    prevSegmentHeaderHash: Uint8Array
     lastArchivedBlock: LastArchivedBlock
 }
 
-export type Type_45 = Type_45_Ok | Type_45_Err
+export type Type_46 = Type_46_Ok | Type_46_Err
 
-export interface Type_45_Ok {
+export interface Type_46_Ok {
     __kind: 'Ok'
 }
 
-export interface Type_45_Err {
+export interface Type_46_Err {
     __kind: 'Err'
     value: DispatchError
 }
@@ -136,21 +136,37 @@ export interface SignedBundle {
 }
 
 export interface BundleEquivocationProof {
+    domainId: number
     offender: Uint8Array
     slot: bigint
     firstHeader: BundleHeader
     secondHeader: BundleHeader
 }
 
-export interface FraudProof {
+export type FraudProof = FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition
+
+export interface FraudProof_InvalidStateTransition {
+    __kind: 'InvalidStateTransition'
+    value: InvalidStateTransitionProof
+}
+
+export interface FraudProof_InvalidTransaction {
+    __kind: 'InvalidTransaction'
+    value: InvalidTransactionProof
+}
+
+export interface FraudProof_BundleEquivocation {
+    __kind: 'BundleEquivocation'
+    value: BundleEquivocationProof
+}
+
+export interface FraudProof_ImproperTransactionSortition {
+    __kind: 'ImproperTransactionSortition'
+    value: ImproperTransactionSortitionProof
+}
+
+export interface InvalidTransactionProof {
     domainId: number
-    badSignedBundleHash: Uint8Array
-    parentNumber: number
-    parentHash: Uint8Array
-    preStateRoot: Uint8Array
-    postStateRoot: Uint8Array
-    proof: StorageProof
-    executionPhase: ExecutionPhase
 }
 
 export type FeedProcessorKind = FeedProcessorKind_ContentAddressable | FeedProcessorKind_PolkadotLike | FeedProcessorKind_ParachainLike
@@ -307,7 +323,6 @@ export interface SolutionRangeOverride {
 export interface VoteVerificationData {
     globalRandomness: Uint8Array
     solutionRange: bigint
-    piecesInSegment: number
     currentSlot: bigint
     parentSlot: bigint
 }
@@ -384,13 +399,13 @@ export interface Releases_V2 {
 }
 
 export interface BlockLength {
-    max: Type_75
+    max: Type_76
 }
 
 export interface BlockWeights {
     baseBlock: Weight
     maxBlock: Weight
-    perClass: Type_71
+    perClass: Type_72
 }
 
 export interface RuntimeDbWeight {
@@ -507,7 +522,9 @@ export type BundleSolution = BundleSolution_System | BundleSolution_Core
 
 export interface BundleSolution_System {
     __kind: 'System'
-    value: ProofOfElection
+    authorityStakeWeight: bigint
+    authorityWitness: Type_153
+    proofOfElection: ProofOfElection
 }
 
 export interface BundleSolution_Core {
@@ -519,29 +536,25 @@ export interface BundleSolution_Core {
 }
 
 export interface BundleHeader {
+    primaryNumber: number
     primaryHash: Uint8Array
     slotNumber: bigint
     extrinsicsRoot: Uint8Array
 }
 
-export interface StorageProof {
-    trieNodes: Uint8Array[]
+export interface InvalidStateTransitionProof {
+    domainId: number
+    badReceiptHash: Uint8Array
+    parentNumber: number
+    primaryParentHash: Uint8Array
+    preStateRoot: Uint8Array
+    postStateRoot: Uint8Array
+    proof: StorageProof
+    executionPhase: ExecutionPhase
 }
 
-export type ExecutionPhase = ExecutionPhase_InitializeBlock | ExecutionPhase_ApplyExtrinsic | ExecutionPhase_FinalizeBlock
-
-export interface ExecutionPhase_InitializeBlock {
-    __kind: 'InitializeBlock'
-    callData: Uint8Array
-}
-
-export interface ExecutionPhase_ApplyExtrinsic {
-    __kind: 'ApplyExtrinsic'
-    callData: Uint8Array
-}
-
-export interface ExecutionPhase_FinalizeBlock {
-    __kind: 'FinalizeBlock'
+export interface ImproperTransactionSortitionProof {
+    domainId: number
 }
 
 export interface Header {
@@ -570,9 +583,8 @@ export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemC
 /**
  * Make some on-chain remark.
  * 
- * # <weight>
+ * ## Complexity
  * - `O(1)`
- * # </weight>
  */
 export interface SystemCall_remark {
     __kind: 'remark'
@@ -590,16 +602,8 @@ export interface SystemCall_set_heap_pages {
 /**
  * Set the new runtime code.
  * 
- * # <weight>
+ * ## Complexity
  * - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
- * - 1 call to `can_set_code`: `O(S)` (calls `sp_io::misc::runtime_version` which is
- *   expensive).
- * - 1 storage write (codec `O(C)`).
- * - 1 digest item.
- * - 1 event.
- * The weight of this function is dependent on the runtime, but generally this is very
- * expensive. We will treat this as a full block.
- * # </weight>
  */
 export interface SystemCall_set_code {
     __kind: 'set_code'
@@ -609,13 +613,8 @@ export interface SystemCall_set_code {
 /**
  * Set the new runtime code without doing any checks of the given `code`.
  * 
- * # <weight>
+ * ## Complexity
  * - `O(C)` where `C` length of `code`
- * - 1 storage write (codec `O(C)`).
- * - 1 digest item.
- * - 1 event.
- * The weight of this function is dependent on the runtime. We will treat this as a full
- * block. # </weight>
  */
 export interface SystemCall_set_code_without_checks {
     __kind: 'set_code_without_checks'
@@ -674,12 +673,11 @@ export type TimestampCall = TimestampCall_set
  * 
  * The dispatch origin for this call must be `Inherent`.
  * 
- * # <weight>
+ * ## Complexity
  * - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
  * - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in
  *   `on_finalize`)
  * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
- * # </weight>
  */
 export interface TimestampCall_set {
     __kind: 'set'
@@ -689,7 +687,7 @@ export interface TimestampCall_set {
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
-export type SubspaceCall = SubspaceCall_report_equivocation | SubspaceCall_store_root_blocks | SubspaceCall_enable_solution_range_adjustment | SubspaceCall_vote | SubspaceCall_enable_rewards | SubspaceCall_enable_storage_access | SubspaceCall_enable_authoring_by_anyone
+export type SubspaceCall = SubspaceCall_report_equivocation | SubspaceCall_store_segment_headers | SubspaceCall_enable_solution_range_adjustment | SubspaceCall_vote | SubspaceCall_enable_rewards | SubspaceCall_enable_storage_access | SubspaceCall_enable_authoring_by_anyone
 
 /**
  * Report farmer equivocation/misbehavior. This method will verify the equivocation proof.
@@ -705,12 +703,12 @@ export interface SubspaceCall_report_equivocation {
 }
 
 /**
- * Submit new root block to the blockchain. This is an inherent extrinsic and part of the
- * Subspace consensus logic.
+ * Submit new segment header to the blockchain. This is an inherent extrinsic and part of
+ * the Subspace consensus logic.
  */
-export interface SubspaceCall_store_root_blocks {
-    __kind: 'store_root_blocks'
-    rootBlocks: RootBlock[]
+export interface SubspaceCall_store_segment_headers {
+    __kind: 'store_segment_headers'
+    segmentHeaders: SegmentHeader[]
 }
 
 /**
@@ -767,7 +765,7 @@ export type BalancesCall = BalancesCall_transfer | BalancesCall_set_balance | Ba
  * 
  * The dispatch origin for this call must be `Signed` by the transactor.
  * 
- * # <weight>
+ * ## Complexity
  * - Dependent on arguments but not critical, given proper implementations for input config
  *   types. See related functions below.
  * - It contains a limited number of reads and writes internally and no complex
@@ -781,9 +779,6 @@ export type BalancesCall = BalancesCall_transfer | BalancesCall_set_balance | Ba
  *   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
  *   - `transfer_keep_alive` works the same way as `transfer`, but has an additional check
  *     that the transfer will not kill the origin account.
- * ---------------------------------
- * - Origin account is already in memory, so no DB operations for them.
- * # </weight>
  */
 export interface BalancesCall_transfer {
     __kind: 'transfer'
@@ -811,10 +806,9 @@ export interface BalancesCall_set_balance {
 /**
  * Exactly as `transfer`, except the origin must be root and the source account may be
  * specified.
- * # <weight>
+ * ## Complexity
  * - Same as transfer, but additional read and write because the source account is not
  *   assumed to be in the overlay.
- * # </weight>
  */
 export interface BalancesCall_force_transfer {
     __kind: 'force_transfer'
@@ -852,9 +846,8 @@ export interface BalancesCall_transfer_keep_alive {
  * - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
  *   of the funds the account has, causing the sender account to be killed (false), or
  *   transfer everything except at least the existential deposit, which will guarantee to
- *   keep the sender account alive (true). # <weight>
+ *   keep the sender account alive (true). ## Complexity
  * - O(1). Just like transfer, but reading the user's transferable balance first.
- *   #</weight>
  */
 export interface BalancesCall_transfer_all {
     __kind: 'transfer_all'
@@ -889,9 +882,8 @@ export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative | Utilit
  * If origin is root then the calls are dispatched without checking origin filter. (This
  * includes bypassing `frame_system::Config::BaseCallFilter`).
  * 
- * # <weight>
- * - Complexity: O(C) where C is the number of calls to be batched.
- * # </weight>
+ * ## Complexity
+ * - O(C) where C is the number of calls to be batched.
  * 
  * This will return `Ok` in all circumstances. To determine the success of the batch, an
  * event is deposited. If a call failed and the batch was interrupted, then the
@@ -937,9 +929,8 @@ export interface UtilityCall_as_derivative {
  * If origin is root then the calls are dispatched without checking origin filter. (This
  * includes bypassing `frame_system::Config::BaseCallFilter`).
  * 
- * # <weight>
- * - Complexity: O(C) where C is the number of calls to be batched.
- * # </weight>
+ * ## Complexity
+ * - O(C) where C is the number of calls to be batched.
  */
 export interface UtilityCall_batch_all {
     __kind: 'batch_all'
@@ -951,12 +942,8 @@ export interface UtilityCall_batch_all {
  * 
  * The dispatch origin for this call must be _Root_.
  * 
- * # <weight>
+ * ## Complexity
  * - O(1).
- * - Limited storage reads.
- * - One DB write (event).
- * - Weight of derivative `call` execution + T::WeightInfo::dispatch_as().
- * # </weight>
  */
 export interface UtilityCall_dispatch_as {
     __kind: 'dispatch_as'
@@ -976,9 +963,8 @@ export interface UtilityCall_dispatch_as {
  * If origin is root then the calls are dispatch without checking origin filter. (This
  * includes bypassing `frame_system::Config::BaseCallFilter`).
  * 
- * # <weight>
- * - Complexity: O(C) where C is the number of calls to be batched.
- * # </weight>
+ * ## Complexity
+ * - O(C) where C is the number of calls to be batched.
  */
 export interface UtilityCall_force_batch {
     __kind: 'force_batch'
@@ -1084,6 +1070,7 @@ export interface DomainsCall_submit_bundle_equivocation_proof {
 
 export interface DomainsCall_submit_invalid_transaction_proof {
     __kind: 'submit_invalid_transaction_proof'
+    invalidTransactionProof: InvalidTransactionProof
 }
 
 /**
@@ -1122,12 +1109,8 @@ export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall
  * 
  * The dispatch origin for this call must be _Signed_.
  * 
- * # <weight>
+ * ## Complexity
  * - O(1).
- * - Limited storage reads.
- * - One DB write (event).
- * - Weight of derivative `call` execution + 10,000.
- * # </weight>
  */
 export interface SudoCall_sudo {
     __kind: 'sudo'
@@ -1141,10 +1124,8 @@ export interface SudoCall_sudo {
  * 
  * The dispatch origin for this call must be _Signed_.
  * 
- * # <weight>
+ * ## Complexity
  * - O(1).
- * - The weight of this call is defined by the caller.
- * # </weight>
  */
 export interface SudoCall_sudo_unchecked_weight {
     __kind: 'sudo_unchecked_weight'
@@ -1158,11 +1139,8 @@ export interface SudoCall_sudo_unchecked_weight {
  * 
  * The dispatch origin for this call must be _Signed_.
  * 
- * # <weight>
+ * ## Complexity
  * - O(1).
- * - Limited storage reads.
- * - One DB change.
- * # </weight>
  */
 export interface SudoCall_set_key {
     __kind: 'set_key'
@@ -1175,12 +1153,8 @@ export interface SudoCall_set_key {
  * 
  * The dispatch origin for this call must be _Signed_.
  * 
- * # <weight>
+ * ## Complexity
  * - O(1).
- * - Limited storage reads.
- * - One DB write (event).
- * - Weight of derivative `call` execution + 10,000.
- * # </weight>
  */
 export interface SudoCall_sudo_as {
     __kind: 'sudo_as'
@@ -1317,13 +1291,13 @@ export interface Event_Sudo {
     value: SudoEvent
 }
 
-export interface Type_75 {
+export interface Type_76 {
     normal: number
     operational: number
     mandatory: number
 }
 
-export interface Type_71 {
+export interface Type_72 {
     normal: WeightsPerClass
     operational: WeightsPerClass
     mandatory: WeightsPerClass
@@ -1340,6 +1314,12 @@ export interface ArchivedBlockProgress_Partial {
     value: number
 }
 
+export interface Type_153 {
+    leafIndex: number
+    proof: Uint8Array
+    numberOfLeaves: number
+}
+
 export interface ProofOfElection {
     domainId: number
     vrfOutput: Uint8Array
@@ -1352,13 +1332,34 @@ export interface ProofOfElection {
     blockHash: Uint8Array
 }
 
+export interface StorageProof {
+    trieNodes: Uint8Array[]
+}
+
+export type ExecutionPhase = ExecutionPhase_InitializeBlock | ExecutionPhase_ApplyExtrinsic | ExecutionPhase_FinalizeBlock
+
+export interface ExecutionPhase_InitializeBlock {
+    __kind: 'InitializeBlock'
+    domainParentHash: Uint8Array
+}
+
+export interface ExecutionPhase_ApplyExtrinsic {
+    __kind: 'ApplyExtrinsic'
+    value: number
+}
+
+export interface ExecutionPhase_FinalizeBlock {
+    __kind: 'FinalizeBlock'
+    totalExtrinsics: number
+}
+
 export interface Solution {
     publicKey: Uint8Array
     rewardAddress: Uint8Array
     sectorIndex: bigint
     totalPieces: bigint
     pieceOffset: bigint
-    pieceRecordHash: Uint8Array
+    recordCommitmentHash: Scalar
     pieceWitness: Witness
     chunkOffset: number
     chunk: Scalar
@@ -1422,14 +1423,14 @@ export interface SystemEvent_Remarked {
 /**
  * Events type.
  */
-export type SubspaceEvent = SubspaceEvent_RootBlockStored | SubspaceEvent_FarmerVote
+export type SubspaceEvent = SubspaceEvent_SegmentHeaderStored | SubspaceEvent_FarmerVote
 
 /**
- * Root block was stored in blockchain history.
+ * Segment header was stored in blockchain history.
  */
-export interface SubspaceEvent_RootBlockStored {
-    __kind: 'RootBlockStored'
-    rootBlock: RootBlock
+export interface SubspaceEvent_SegmentHeaderStored {
+    __kind: 'SegmentHeaderStored'
+    segmentHeader: SegmentHeader
 }
 
 /**
@@ -1722,7 +1723,7 @@ export interface UtilityEvent_ItemFailed {
  */
 export interface UtilityEvent_DispatchedAs {
     __kind: 'DispatchedAs'
-    result: Type_45
+    result: Type_46
 }
 
 /**
@@ -1910,7 +1911,7 @@ export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoA
  */
 export interface SudoEvent_Sudid {
     __kind: 'Sudid'
-    sudoResult: Type_45
+    sudoResult: Type_46
 }
 
 /**
@@ -1926,7 +1927,7 @@ export interface SudoEvent_KeyChanged {
  */
 export interface SudoEvent_SudoAsDone {
     __kind: 'SudoAsDone'
-    sudoResult: Type_45
+    sudoResult: Type_46
 }
 
 export interface WeightsPerClass {
@@ -1936,11 +1937,11 @@ export interface WeightsPerClass {
     reserved: (Weight | undefined)
 }
 
-export interface Witness {
+export interface Scalar {
     inner: Uint8Array
 }
 
-export interface Scalar {
+export interface Witness {
     inner: Uint8Array
 }
 

@@ -23,8 +23,8 @@ tap.test('processEvents should return a tuple including a list of Events and a l
   ];
 
   const [events, rewardEvents] = await processEvents(extrinsicsMap, callsMap, eventItems, blockMock);
-  t.equal(events.length, 1);
-  t.equal(rewardEvents.length, 1);
+  t.equal(events.length, eventItems.length); // includes all events
+  t.equal(rewardEvents.length, 1); // only inludes reward events
 
   t.end();
 });

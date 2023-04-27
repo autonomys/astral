@@ -25,6 +25,9 @@ const defaultStorageDependencies = {
     },
     asV0: {
       get: () => Promise.resolve(undefined),
+    },
+    asV1: {
+      get: () => Promise.resolve(undefined),
     }
   } as unknown as BalancesAccountStorage),
 };
@@ -38,6 +41,9 @@ tap.test('getBalance should return balance for given account id from SystemAccou
         get: () => Promise.resolve({ data: systemAccountBalance }),
       },
       asV0: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      },
+      asV1: {
         get: () => Promise.resolve({ data: systemAccountBalance }),
       }
     } as unknown as SystemAccountStorage),
@@ -62,6 +68,9 @@ tap.test('getBalance should return balance for given account id from BalancesAcc
       },
       asV0: {
         get: () => Promise.resolve(undefined),
+      },
+      asV1: {
+        get: () => Promise.resolve(undefined),
       }
     } as unknown as SystemAccountStorage),
     createBalanceAccountStorage: () => ({
@@ -70,6 +79,9 @@ tap.test('getBalance should return balance for given account id from BalancesAcc
         get: () => Promise.resolve(systemAccountBalance),
       },
       asV0: {
+        get: () => Promise.resolve(systemAccountBalance),
+      },
+      asV1: {
         get: () => Promise.resolve(systemAccountBalance),
       }
     } as unknown as BalancesAccountStorage),
