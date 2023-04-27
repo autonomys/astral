@@ -19,6 +19,7 @@ type Block @entity {
   extrinsicRoot: String
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  rewards: [RewardEvent!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   spacePledged: BigInt!
