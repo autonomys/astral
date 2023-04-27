@@ -30,7 +30,7 @@ export function getHistorySizeFactory(ctx: Context) {
     // SubspaceRecordsRoot is a hash map and in order to get count of items (segments)
     // we need to get size of the map and size of the item in the map
     // and then calculate count of items
-    const storageHash = getStorageHash('Subspace', 'RecordsRoot');
+    const storageHash = getStorageHash('Subspace', 'SegmentCommitment');
 
     const totalSize = (await client.call('state_getStorageSizeAt', [
       storageHash,

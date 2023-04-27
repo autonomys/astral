@@ -7,7 +7,7 @@ networks:
 services:
   node:
     platform: linux/x86_64
-    image: ghcr.io/subspace/node:gemini-3c-2023-feb-26-aarch64
+    image: ghcr.io/subspace/node:gemini-3d-2023-apr-25-aarch64
     volumes:
       - ./node-data:/var/subspace:rw
     ports:
@@ -45,7 +45,7 @@ services:
     depends_on:
       node:
         condition: service_healthy
-    image: ghcr.io/subspace/farmer:gemini-3c-2023-feb-26-aarch64
+    image: ghcr.io/subspace/farmer:gemini-3d-2023-apr-25-aarch64
     volumes:
       - ./farmer-data:/var/subspace:rw
     ports:

@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Extrinsic} from "./extrinsic.model"
+import {RewardEvent} from "./rewardEvent.model"
 
 @Entity_()
 export class Account {
@@ -26,4 +27,7 @@ export class Account {
 
     @OneToMany_(() => Extrinsic, e => e.signer)
     extrinsics!: Extrinsic[]
+
+    @OneToMany_(() => RewardEvent, e => e.account)
+    rewards!: RewardEvent[]
 }

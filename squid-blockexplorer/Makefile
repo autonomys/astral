@@ -15,6 +15,9 @@ build-images: build-processor-image build-query-node-image
 serve:
 	@npx squid-graphql-server --max-root-fields 10 --max-response-size 5000
 
+generate-migration:
+	@npx squid-typeorm-migration generate
+
 migrate:
 	@npx squid-typeorm-migration apply
 

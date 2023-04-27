@@ -1,5 +1,5 @@
 import { CallItem, Context, EventItem } from '../processor';
-import { Block, Event, Log } from '../model';
+import { Block, Event, Log, RewardEvent } from '../model';
 import { partitionItems, createBlock } from './utils';
 import { ProcessBlocksDependencies, ExtrinsicsMap, CallsMap } from './types';
 
@@ -8,7 +8,7 @@ export function processBlocksFactory({
   getHistorySize,
   processExtrinsics,
   processCalls,
-  getEvents,
+  processEvents,
   getLogs,
   getBlockAuthor,
 }: ProcessBlocksDependencies) {
@@ -16,6 +16,7 @@ export function processBlocksFactory({
     const extrinsicsMap: ExtrinsicsMap = new Map();
     const callsMap: CallsMap = new Map();
     const events: Event[] = [];
+    const rewards: RewardEvent[] = [];
     const blocks: Block[] = [];
     const logs: Log[] = [];
 
@@ -45,8 +46,9 @@ export function processBlocksFactory({
       await processExtrinsics(extrinsicsMap, callsMap, parentCalls, block);
       await processCalls(extrinsicsMap, callsMap, childCalls, block);
 
-      const blockEvents = await getEvents(extrinsicsMap, callsMap, eventItems as EventItem[], block);
+      const [blockEvents, rewardEvents] = await processEvents(extrinsicsMap, callsMap, eventItems as EventItem[], block);
       events.push(...blockEvents);
+      rewards.push(...rewardEvents);
 
       const blockLogs = await getLogs(header, block);
       logs.push(...blockLogs);
@@ -57,6 +59,7 @@ export function processBlocksFactory({
     await ctx.store.save([...extrinsicsMap.values()]);
     await ctx.store.save([...callsMap.values()]);
     await ctx.store.save(events);
+    await ctx.store.save(rewards);
     await ctx.store.save(logs);
 
     ctx.log

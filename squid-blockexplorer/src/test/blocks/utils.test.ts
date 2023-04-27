@@ -2,10 +2,44 @@ import tap from 'tap';
 import { createBlock, createCall, createExtrinsic } from '../../blocks/utils';
 import { Account, Block, Call, Extrinsic } from '../../model';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { callItemWithSignature } from '../../mocks/mocks';
+import { callItemWithSignature, contextMock } from '../../mocks/mocks';
+import { getOrCreateAccountFactory } from '../../blocks/utils';
+import { Context } from '../../processor';
 
 const spacePledged = BigInt(1);
 const blockchainSize = BigInt(2);
+
+tap.test('getOrCreateAccount should get Account if store has one', async (t) => {
+  const accountId = 'random account id';
+
+  const contextWithAccount = {
+    ...contextMock,
+    store: {
+      ...contextMock.store,
+      get: () => Promise.resolve(new Account({ id: accountId })),
+    }
+  } as unknown as Context;
+
+  const getOrCreateAccount = getOrCreateAccountFactory(contextWithAccount);
+
+  const result = await getOrCreateAccount(BigInt(1), accountId);
+
+  t.equal(result.id, accountId);
+
+  t.end();
+});
+
+tap.test('getOrCreateAccount should create new Account if store has none', async (t) => {
+  const accountId = 'new account id';
+
+  const getOrCreateAccount = getOrCreateAccountFactory(contextMock);
+
+  const result = await getOrCreateAccount(BigInt(1), accountId);
+
+  t.equal(result.id, accountId);
+
+  t.end();
+});
 
 tap.test('createBlock should create instance of a Block', (t) => {
   const result = createBlock({
