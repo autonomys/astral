@@ -13,6 +13,13 @@ import AccountRewardGraph from 'Account/components/AccountRewardGraph'
 import AccountRewardList from 'Account/components/AccountRewardList'
 import AccountRewardListCard from 'Account/components/AccountRewardListCard'
 import AccountRewardTable from 'Account/components/AccountRewardTable'
+// TODO: remove when we merge gemini-2 static page
+import OldAccount from 'Account/components/OldAccount'
+import OldAccountDetailsTabs from 'Account/components/OldAccountDetailsTabs'
+import OldAccountDetailsCard from 'Account/components/OldAccountDetailsCard'
+import OldAccountExtrinsicList from 'Account/components/OldAccountExtrinsicList'
+import OldAccountBalanceStats from 'Account/components/OldAccountBalanceStats'
+import OldAccountBalancePieChart from 'Account/components/OldAccountBalancePieChart'
 
 export {
   Account,
@@ -30,4 +37,10 @@ export {
   AccountRewardList,
   AccountRewardListCard,
   AccountRewardTable,
+  OldAccount,
+  OldAccountDetailsTabs,
+  OldAccountDetailsCard,
+  OldAccountExtrinsicList,
+  OldAccountBalanceStats,
+  OldAccountBalancePieChart,
 }

@@ -89,6 +89,32 @@ export const QUERY_ACCOUNT_BY_ID = gql`
   }
 `
 
+// TODO: when gemini-2 static page PR is merged, remove this query
+export const OLD_QUERY_ACCOUNT_BY_ID = gql`
+  query OldAccountById($accountId: String!) {
+    accountById(id: $accountId) {
+      free
+      reserved
+      id
+      total
+      updatedAt
+      extrinsics(limit: 10) {
+        hash
+        id
+        indexInBlock
+        name
+        success
+        timestamp
+        tip
+        block {
+          id
+          height
+        }
+      }
+    }
+  }
+`
+
 export const QUERY_LAST_WEEK_REWARDS = gql`
   query LatestRewardsWeek($accountId: String!, $gte: DateTime!) {
     rewardEvents(limit: 500, where: { timestamp_gte: $gte, account: { id_eq: $accountId } }) {
