@@ -17,6 +17,7 @@ import ExportButton from 'common/components/ExportButton'
 const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
@@ -65,10 +66,17 @@ const ExtrinsicList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Extrinsics (${totalLabel})`}</div>
-      </div>
-      <div className='w-full mt-8'>
-        <ExtrinsicListFilter filters={filters} setFilters={setFilters} />
+        <ExtrinsicListFilter
+          title={
+            <div className=' font-medium text-[#282929] dark:text-white'>
+              Extrinsics {totalLabel}
+            </div>
+          }
+          timeDimension={timeDimension}
+          setTimeDimension={setTimeDimension}
+          filters={filters}
+          setFilters={setFilters}
+        />
       </div>
       <div className='w-full flex flex-col mt-8 sm:mt-0'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />

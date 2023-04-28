@@ -5,9 +5,10 @@ type Props = {
   title: React.ReactNode
   children: React.ReactNode
   value?: string
+  icon?: React.ReactNode
 }
 
-const Accordion: FC<Props> = ({ title, children, value = '' }) => {
+const Accordion: FC<Props> = ({ title, children, value = '', icon }) => {
   const [isActive, setIsActive] = useState(true)
   return (
     <div id='accordion-open' data-accordion='open'>
@@ -23,10 +24,14 @@ const Accordion: FC<Props> = ({ title, children, value = '' }) => {
           <span className='flex items-center'>{title}</span>
           <div className='flex items-center'>
             {value}
-            <ChevronDownIcon
-              className={isActive ? 'w-6 h-6 shrink-0 ml-2 rotate-180' : 'w-6 h-6 shrink-0 ml-2'}
-              stroke='#DE67E4'
-            />
+            {icon ? (
+              <span className='ml-2'>{icon}</span>
+            ) : (
+              <ChevronDownIcon
+                className={isActive ? 'w-6 h-6 shrink-0 ml-2 rotate-180' : 'w-6 h-6 shrink-0 ml-2'}
+                stroke='#DE67E4'
+              />
+            )}
           </div>
         </button>
       </h2>
