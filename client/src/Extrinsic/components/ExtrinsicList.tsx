@@ -1,9 +1,11 @@
 import { useState, FC } from 'react'
 import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
+import { ExtrinsicWhereInput } from 'gql/graphql'
 
 // extrinsic
 import { ExtrinsicTable } from 'Extrinsic/components'
+import ExtrinsicListFilter from './ExtrinsicListFilter'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 
 // common
@@ -15,12 +17,13 @@ import ExportButton from 'common/components/ExportButton'
 const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const PAGE_SIZE = 10
 
   const { data, error, loading } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
-    variables: { first: PAGE_SIZE, after: lastCursor },
+    variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
     pollInterval: 6000,
   })
 
@@ -64,7 +67,10 @@ const ExtrinsicList: FC = () => {
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base font-medium dark:text-white'>{`Extrinsics (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+      <div className='w-full mt-8'>
+        <ExtrinsicListFilter filters={filters} setFilters={setFilters} />
+      </div>
+      <div className='w-full flex flex-col mt-8 sm:mt-0'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />
         <div className='w-full flex justify-between'>
           <ExportButton data={extrinsicsConnection} filename='extrinsic-list' />
