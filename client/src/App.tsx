@@ -21,7 +21,7 @@ import chains from 'layout/config/chains.json'
 import Home from 'Home'
 
 // account
-import { AccountList, Account } from 'Account/components'
+import { AccountList, Account, OldAccount } from 'Account/components'
 
 // event
 import { Event, EventList } from 'Event/components'
@@ -167,7 +167,12 @@ function App() {
                     </Route>
                     <Route path={INTERNAL_ROUTES.accounts.list}>
                       <Route index element={<AccountList />} />
-                      <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+                      <Route
+                        path={INTERNAL_ROUTES.accounts.id.path}
+                        element={
+                          selectedChain.urls.page === 'gemini-2a' ? <OldAccount /> : <Account />
+                        }
+                      />
                     </Route>
                     <Route path={INTERNAL_ROUTES.events.list}>
                       <Route index element={<EventList />} />

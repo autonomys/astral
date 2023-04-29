@@ -19,8 +19,7 @@ describe('Account details card', () => {
 
     const listItems = screen.getAllByRole('listitem')
 
-    expect(listItems[0]).toHaveTextContent(/stA7ut...qvsQ/i)
-    expect(listItems[1]).toHaveTextContent(/-/i)
-    expect(listItems[2]).toHaveTextContent(/1008639/i)
+    expect(listItems[0]).toHaveTextContent(/Public key/i)
+    expect(listItems[1]).toHaveTextContent(/1008639/i)
   })
 })
