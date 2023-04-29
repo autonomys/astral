@@ -11,23 +11,31 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
   ): Promise<[Event[], RewardEvent[]]> {
     const events: Event[] = [];
     const rewardEvents: RewardEvent[] = [];
-  
+
     for (const item of eventItems) {
       // some events may not have associated extrinsic / call 
       // i.e. TransactionFees.StorageFeesEscrowChange
       let extrinsic = null;
       let call = null;
-  
+
       if (item.event.extrinsic) {
         extrinsic = extrinsicsMap.get(item.event.extrinsic.id);
         call = callsMap.get(item.event.extrinsic.call.id);
       }
-  
-      // handle Block and Vote rewards
+
+      const genericEvent = new Event({
+        ...item.event,
+        block,
+        extrinsic,
+        call,
+        timestamp: block.timestamp,
+      });
+
+      // additional handling for reward events
       if (item.name === 'Rewards.BlockReward' || item.name === 'Rewards.VoteReward') {
         const address = item.event.args?.voter || item.event.args?.blockAuthor;
         const account = await getOrCreateAccount(block.height, address);
-        rewardEvents.push(new RewardEvent({
+        const rewardEvent = new RewardEvent({
           ...item.event,
           block,
           extrinsic,
@@ -35,20 +43,14 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
           timestamp: block.timestamp,
           account,
           amount: item.event.args.reward,
-        }));
-      } else {
-        // handle rest of the events
-        events.push(new Event({
-          ...item.event,
-          block,
-          extrinsic,
-          call,
-          timestamp: block.timestamp,
-        }));
+        });
+
+        rewardEvents.push(rewardEvent);
       }
-  
+
+      events.push(genericEvent);
     }
-  
+
     return [events, rewardEvents];
   };
 }

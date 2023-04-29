@@ -1,19 +1,17 @@
 import { FC } from 'react'
 import { ResponsivePie } from '@nivo/pie'
 
-// gql
-import { Account } from 'gql/graphql'
-
 // common
 import { bigNumberToNumber } from 'common/helpers'
-import { useTheme } from 'common/providers/ThemeProvider'
+import useTheme from 'common/hooks/useTheme'
+import { OldAccount } from 'Account/oldTypes'
 
 type Props = {
-  account: Account
+  account: OldAccount
 }
 
-const AccountBalancePieChart: FC<Props> = ({ account }) => {
-  const { isDark } = useTheme()
+const OldAccountBalancePieChart: FC<Props> = ({ account }) => {
+  const [isDark] = useTheme()
   const otherNumber = Number(account.total) - Number(account.free) - Number(account.reserved)
   const transferable = account.free ? bigNumberToNumber(account.free, 18) : 0
   const staking = account.reserved ? bigNumberToNumber(account.reserved, 18) : 0
@@ -36,7 +34,7 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
       id: 'staking',
       label: 'Staking',
       value: staking,
-      color: '#D9F0FC',
+      color: '#9179EC',
     },
   ]
 
@@ -52,12 +50,12 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
   const isEmpty = other === 0 && staking === 0 && transferable === 0
 
   return (
-    <div className='h-80 w-2/4 lg:h-[400px] lg:w-full'>
+    <div className='sm:h-80 sm:w-2/4 h-60 w-full'>
       <ResponsivePie
         data={isEmpty ? emptyState : data}
         enableArcLinkLabels={isEmpty}
         margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-        innerRadius={0}
+        innerRadius={0.5}
         padAngle={0}
         cornerRadius={3}
         activeOuterRadiusOffset={8}
@@ -71,4 +69,4 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
   )
 }
 
-export default AccountBalancePieChart
+export default OldAccountBalancePieChart
