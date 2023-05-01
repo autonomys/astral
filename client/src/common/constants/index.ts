@@ -39,7 +39,7 @@ export const MODULES = [
   },
   {
     value: 'objectStore',
-    label: 'object Store',
+    label: 'Object Store',
   },
   {
     value: 'offencesSubspace',
