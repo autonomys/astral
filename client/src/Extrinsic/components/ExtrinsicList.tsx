@@ -17,7 +17,6 @@ import ExportButton from 'common/components/ExportButton'
 const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
@@ -72,8 +71,6 @@ const ExtrinsicList: FC = () => {
               Extrinsics {totalLabel}
             </div>
           }
-          timeDimension={timeDimension}
-          setTimeDimension={setTimeDimension}
           filters={filters}
           setFilters={setFilters}
         />

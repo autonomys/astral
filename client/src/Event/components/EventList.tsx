@@ -19,7 +19,6 @@ const EventList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = 10
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
   const [filters, setFilters] = useState<EventWhereInput>({})
 
   const { data, error, loading } = useQuery(QUERY_EVENT_CONNECTION_LIST, {
@@ -69,8 +68,6 @@ const EventList: FC = () => {
           title={
             <div className=' font-medium text-[#282929] dark:text-white'>Events {totalLabel}</div>
           }
-          timeDimension={timeDimension}
-          setTimeDimension={setTimeDimension}
           filters={filters}
           setFilters={setFilters}
         />

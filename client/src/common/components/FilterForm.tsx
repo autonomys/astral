@@ -1,46 +1,50 @@
 /* eslint-disable camelcase */
 import React, { FC, useEffect, useState } from 'react'
-import { LogWhereInput } from 'gql/graphql'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { LOG_TYPES } from 'common/constants'
-import { Accordion } from 'common/components'
 import FilterIcon from 'common/icons/FilterIcon'
+import { Accordion } from 'common/components'
 import BasicDatepicker from 'common/components/BasicDatepicker'
+import { MODULES } from 'common/constants'
+import { EventWhereInput, ExtrinsicWhereInput } from 'gql/graphql'
 
 dayjs.extend(relativeTime)
 dayjs.extend(utc)
 
 type Props = {
   title: React.ReactNode
-  filters: LogWhereInput
-  setFilters: React.Dispatch<React.SetStateAction<LogWhereInput>>
+  filters: ExtrinsicWhereInput | EventWhereInput
+  account: string
+  where: ExtrinsicWhereInput | EventWhereInput
+  setWhere: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput | EventWhereInput>>
+  setFilters: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput | EventWhereInput>>
+  handleAccountChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
-  const [where, setWhere] = useState<LogWhereInput>(filters)
+const FilterForm: FC<Props> = ({
+  title,
+  filters,
+  account,
+  where,
+  setWhere,
+  setFilters,
+  handleAccountChange,
+}) => {
   const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
 
   useEffect(() => {
     if (filters?.block?.height_gte && filters?.block?.height_lte) {
       setTimeDimension('block')
-    } else if (filters?.block?.timestamp_gte && filters?.block?.timestamp_lte) {
+    } else if (filters?.timestamp_gte && filters?.timestamp_lte) {
       setTimeDimension('date')
     }
   }, [filters])
 
-  const handleEngineChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const engine = {
-      engine: e.target.value,
-    }
-    setWhere((prev) => ({ ...prev, value_jsonContains: JSON.stringify(engine) }))
-  }
-
   const handleModuleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setWhere((prev) => ({ ...prev, kind_containsInsensitive: e.target.value }))
+    setWhere((prev) => ({ ...prev, name_containsInsensitive: e.target.value }))
   }
 
   const handleTimeDimensionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -59,10 +63,7 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
     const utcDate = dayjs(date).utc().format()
     setWhere((prev) => ({
       ...prev,
-      block: {
-        ...where?.block,
-        timestamp_gte: utcDate,
-      },
+      timestamp_gte: utcDate,
     }))
   }
 
@@ -70,10 +71,7 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
     const utcDate = dayjs(date).utc().format()
     setWhere((prev) => ({
       ...prev,
-      block: {
-        ...where?.block,
-        timestamp_lte: utcDate,
-      },
+      timestamp_lte: utcDate,
     }))
   }
 
@@ -93,20 +91,42 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
       >
         <div className='w-full shadow p-5 rounded-[20px] bg-[#DDEFF1] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
           <div>
-            <div className='grid grid-cols-2 md:grid-cols-6 gap-4 mt-4 items-end'>
+            <div className='grid grid-cols-2 md:grid-cols-5 gap-4 mt-4 items-end'>
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>Type</div>
+                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                  Module
+                </div>
                 <select
-                  value={where?.kind_containsInsensitive || ''}
+                  value={where?.name_containsInsensitive || ''}
                   onChange={handleModuleChange}
                   className='px-4 py-3 w-full rounded-[42px] bg-white dark:bg-[#1E254E] dark:text-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm'
                 >
-                  {LOG_TYPES.map((module) => (
+                  {MODULES.map((module) => (
                     <option key={module.value ? module.value : 'all'} value={module.value}>
                       {module.label}
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className='flex flex-col gap-3'>
+                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>Call</div>
+                <select className='px-4 py-3 w-full rounded-[42px] bg-white dark:bg-[#1E254E] dark:text-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm'>
+                  <option value=''>All</option>
+                </select>
+              </div>
+
+              <div className='md:col-span-3 flex flex-col gap-3'>
+                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                  Account
+                </div>
+                <input
+                  type='text'
+                  placeholder='Optional'
+                  onChange={handleAccountChange}
+                  value={account}
+                  className='px-4 py-3 w-full rounded-[42px] bg-white dark:bg-[#1E254E] dark:text-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm'
+                />
               </div>
               <div className='flex flex-col gap-3'>
                 <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
@@ -160,7 +180,7 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
                       </div>
 
                       <BasicDatepicker
-                        value={where?.block?.timestamp_gte || ''}
+                        value={where?.timestamp_gte || ''}
                         onChange={handleDateFrom}
                       />
                     </div>
@@ -170,33 +190,15 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
                         To Date
                       </div>
 
-                      <BasicDatepicker
-                        value={where?.block?.timestamp_lte || ''}
-                        onChange={handleDateTo}
-                      />
+                      <BasicDatepicker value={where?.timestamp_lte || ''} onChange={handleDateTo} />
                     </div>
                   </>
                 )}
               </>
 
-              <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
-                  Engine
-                </div>
-                <input
-                  type='text'
-                  placeholder='Optional'
-                  onChange={handleEngineChange}
-                  value={
-                    where?.value_jsonContains ? JSON.parse(where?.value_jsonContains)?.engine : ''
-                  }
-                  className='px-4 py-3 w-full rounded-[42px] bg-white dark:bg-[#1E254E] dark:text-white border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm'
-                />
-              </div>
-
               <button
                 onClick={handleFilter}
-                className='md:justify-self-end px-[33px] py-[13px] bg-white dark:bg-[#1E254E] hover:bg-gray-200 text-gray-800 dark:text-white text-sm font-medium rounded-[20px]'
+                className='md:col-span-2 md:justify-self-end px-[33px] py-[13px] bg-white dark:bg-[#1E254E] hover:bg-gray-200 text-gray-800 dark:text-white text-sm font-medium rounded-[20px]'
               >
                 Filter
               </button>
@@ -208,4 +210,4 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
   )
 }
 
-export default LogListFilter
+export default FilterForm

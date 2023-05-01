@@ -18,7 +18,6 @@ const LogList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
   const [filters, setFilters] = useState<LogWhereInput>({})
 
   const PAGE_SIZE = 10
@@ -70,8 +69,6 @@ const LogList: FC = () => {
           title={
             <div className=' font-medium text-[#282929] dark:text-white'>Logs {totalLabel}</div>
           }
-          timeDimension={timeDimension}
-          setTimeDimension={setTimeDimension}
           filters={filters}
           setFilters={setFilters}
         />
