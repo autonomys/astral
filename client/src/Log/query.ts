@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_LOG_CONNECTION_LIST = gql`
-  query LogsConnection($first: Int!, $after: String) {
-    logsConnection(orderBy: block_height_DESC, first: $first, after: $after) {
+  query LogsConnection($first: Int!, $after: String, $where: LogWhereInput) {
+    logsConnection(orderBy: block_height_DESC, first: $first, after: $after, where: $where) {
       totalCount
       pageInfo {
         endCursor
