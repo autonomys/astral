@@ -23,15 +23,7 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
         call = callsMap.get(item.event.extrinsic.call.id);
       }
 
-      const genericEvent = new Event({
-        ...item.event,
-        block,
-        extrinsic,
-        call,
-        timestamp: block.timestamp,
-      });
-
-      // additional handling for reward events
+      // separate handling for reward events
       if (item.name === 'Rewards.BlockReward' || item.name === 'Rewards.VoteReward') {
         const address = item.event.args?.voter || item.event.args?.blockAuthor;
         const account = await getOrCreateAccount(block.height, address);
@@ -46,9 +38,17 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
         });
 
         rewardEvents.push(rewardEvent);
-      }
+      } else {
+        const genericEvent = new Event({
+          ...item.event,
+          block,
+          extrinsic,
+          call,
+          timestamp: block.timestamp,
+        });
 
-      events.push(genericEvent);
+        events.push(genericEvent);
+      }
     }
 
     return [events, rewardEvents];
