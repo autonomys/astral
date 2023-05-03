@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { gql, useLazyQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 import { isHex } from '@polkadot/util'
 import { isAddress } from '@polkadot/util-crypto'
 
@@ -8,6 +8,7 @@ import { isAddress } from '@polkadot/util-crypto'
 import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
 import { formatAddress } from 'common/helpers/formatAddress'
+import { GET_RESULTS } from 'common/queries'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
@@ -19,38 +20,9 @@ const useSearch = (): Values => {
   const navigate = useNavigate()
   const { selectedChain } = useDomains()
 
-  const [getResults] = useLazyQuery(
-    gql`
-      query GetResults(
-        $term: String!
-        $blockId: BigInt!
-        $isAccount: Boolean!
-        $isBlock: Boolean!
-        $isExtrinsic: Boolean!
-        $isExtrinsicHash: Boolean!
-        $isEvent: Boolean!
-      ) {
-        accountById(id: $term) @include(if: $isAccount) {
-          id
-        }
-        blocks(limit: 1, where: { height_eq: $blockId }) @include(if: $isBlock) {
-          height
-        }
-        extrinsicById(id: $term) @include(if: $isExtrinsic) {
-          id
-        }
-        extrinsics(limit: 1, where: { hash_eq: $term }) @include(if: $isExtrinsicHash) {
-          id
-        }
-        eventById(id: $term) @include(if: $isEvent) {
-          id
-        }
-      }
-    `,
-    { fetchPolicy: 'network-only' },
-  )
+  const [getResults] = useLazyQuery(GET_RESULTS, { fetchPolicy: 'network-only' })
 
-  const handleSearch = (term: string, searchType: number) => {
+  const handleSearch = async (term: string, searchType: number) => {
     setIsSearching(true)
 
     switch (searchType) {
@@ -59,7 +31,7 @@ const useSearch = (): Values => {
         const isHexFormat = isHex(term)
         const blockId = (!isHexFormat && Number(term)) || term
 
-        getResults({
+        const { data, error } = await getResults({
           variables: {
             term,
             blockId: typeof blockId === 'number' ? blockId : -1,
@@ -69,26 +41,32 @@ const useSearch = (): Values => {
             isBlock: !isHexFormat && typeof blockId === 'number',
             isEvent: typeof blockId === 'string',
           },
-        }).then(({ data }) => {
-          if (data?.accountById) {
-            navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
-          } else if (data?.extrinsicById) {
-            navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
-          } else if (data?.extrinsics?.length > 0) {
-            if (data.extrinsics.length > 1) {
-              navigate(INTERNAL_ROUTES.search.result.page(selectedChain.urls.page), {
-                state: { extrinsics: data.extrinsics },
-              })
-            } else {
-              const [extrinsic] = data.extrinsics
-              navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
-            }
-          } else if (data?.blocks?.length > 0 && data.blocks[0].height >= 0) {
-            navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, Number(term)))
-          } else {
-            navigate(INTERNAL_ROUTES.notFound)
-          }
         })
+
+        if (data?.accountById) {
+          navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
+        } else if (data?.extrinsicById) {
+          navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
+        } else if (data?.extrinsics?.length > 0) {
+          if (data.extrinsics.length > 1) {
+            navigate(INTERNAL_ROUTES.search.result.page(selectedChain.urls.page), {
+              state: { extrinsics: data.extrinsics },
+            })
+          } else {
+            const [extrinsic] = data.extrinsics
+            navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
+          }
+        } else if (data?.blocks?.length > 0 && data.blocks[0].height >= 0) {
+          navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, Number(term)))
+        } else if (data?.eventById) {
+          navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, term))
+        } else {
+          navigate(INTERNAL_ROUTES.notFound)
+        }
+
+        if (error) {
+          navigate(INTERNAL_ROUTES.notFound)
+        }
 
         setIsSearching(false)
 
