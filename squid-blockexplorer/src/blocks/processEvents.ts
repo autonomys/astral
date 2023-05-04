@@ -23,7 +23,9 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
         call = callsMap.get(item.event.extrinsic.call.id);
       }
 
-      // separate handling for reward events
+      // it is necessary to save rewards as both separate entity and generic event
+      // separate entity - to be able to query rewards by account faster
+      // generic event - to be able to query all events with pagination and filtering on Events page
       if (item.name === 'Rewards.BlockReward' || item.name === 'Rewards.VoteReward') {
         const address = item.event.args?.voter || item.event.args?.blockAuthor;
         const account = await getOrCreateAccount(block.height, address);
@@ -38,17 +40,17 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
         });
 
         rewardEvents.push(rewardEvent);
-      } else {
-        const genericEvent = new Event({
-          ...item.event,
-          block,
-          extrinsic,
-          call,
-          timestamp: block.timestamp,
-        });
-
-        events.push(genericEvent);
       }
+
+      const genericEvent = new Event({
+        ...item.event,
+        block,
+        extrinsic,
+        call,
+        timestamp: block.timestamp,
+      });
+
+      events.push(genericEvent);
     }
 
     return [events, rewardEvents];
