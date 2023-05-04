@@ -23,7 +23,7 @@ tap.test('processEvents should return a tuple including a list of Events and a l
   ];
 
   const [events, rewardEvents] = await processEvents(extrinsicsMap, callsMap, eventItems, blockMock);
-  t.equal(events.length, 1); // generic events
+  t.equal(events.length, 2); // all events
   t.equal(rewardEvents.length, 1); // reward events
 
   t.end();
