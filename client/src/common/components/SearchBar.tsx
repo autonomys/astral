@@ -27,13 +27,15 @@ const SearchBar: FC = () => {
     searchTerm: Yup.string().trim().required('Search term is required'),
   })
 
+  const handleSubmit = async (values: FormValues) => {
+    await handleSearch(values.searchTerm, values.searchType.id)
+  }
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={searchValidationSchema}
-      onSubmit={(values) => {
-        handleSearch(values.searchTerm, values.searchType.id)
-      }}
+      onSubmit={handleSubmit}
     >
       {({ errors, touched, values, handleSubmit, handleChange, setFieldValue }) => (
         <Form className='w-full my-8' onSubmit={handleSubmit} data-testid='testSearchForm'>
