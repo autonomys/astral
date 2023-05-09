@@ -6,6 +6,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 // common
 import { ErrorFallback } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
+import useDomains from 'common/hooks/useDomains'
 
 // block
 import { Block, BlockList } from 'Block/components'
@@ -16,6 +17,8 @@ import { Extrinsic, ExtrinsicList } from 'Extrinsic/components'
 // layout
 import { Layout, Container, Footer, Header, NotFound, HeaderBackground } from 'layout/components'
 import chains from 'layout/config/chains.json'
+import NotResultsFound from 'layout/components/NotResultsFound'
+import SearchResult from 'layout/components/SearchResult'
 
 // home
 import Home from 'Home'
@@ -28,8 +31,6 @@ import { Event, EventList } from 'Event/components'
 
 // log
 import { Log, LogList } from 'Log/components'
-import useDomains from 'common/hooks/useDomains'
-import SearchResult from 'layout/components/SearchResult'
 
 // force page scroll to top on route change
 function ScrollToTopWrapper({ children }) {
@@ -198,6 +199,7 @@ function App() {
                   </Route>
 
                   <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
+                  <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
                 </Routes>
               </Container>
             </ErrorBoundary>
