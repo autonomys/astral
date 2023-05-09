@@ -30,12 +30,24 @@ export const GET_RESULTS = gql`
     }
     extrinsicById(id: $term) @include(if: $isExtrinsic) {
       id
+      name
+      block {
+        height
+      }
+      indexInBlock
+      timestamp
     }
     extrinsics(limit: 1, where: { hash_eq: $term }) @include(if: $isExtrinsicHash) {
       id
     }
     eventById(id: $term) @include(if: $isEvent) {
       id
+      name
+      block {
+        height
+      }
+      indexInBlock
+      timestamp
     }
   }
 `
