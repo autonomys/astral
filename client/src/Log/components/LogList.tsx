@@ -11,16 +11,19 @@ import { Pagination, SearchBar, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import ExportButton from 'common/components/ExportButton'
+import { LogWhereInput } from 'gql/graphql'
+import LogListFilter from './LogListFilter'
 
 const LogList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const [filters, setFilters] = useState<LogWhereInput>({})
 
   const PAGE_SIZE = 10
 
   const { data, error, loading } = useQuery(QUERY_LOG_CONNECTION_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor },
+    variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
     pollInterval: 6000,
   })
 
@@ -62,7 +65,13 @@ const LogList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Logs (${totalLabel})`}</div>
+        <LogListFilter
+          title={
+            <div className=' font-medium text-[#282929] dark:text-white'>Logs {totalLabel}</div>
+          }
+          filters={filters}
+          setFilters={setFilters}
+        />
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <LogTable logs={logsConnection} isDesktop={isDesktop} />

@@ -36,7 +36,11 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
           >
             {id}
           </Link>
-          <CopyButton data-testid={`testCopyButton-${indexInBlock}`} value={id} message='Id copied' />
+          <CopyButton
+            data-testid={`testCopyButton-${indexInBlock}`}
+            value={id}
+            message='Id copied'
+          />
         </div>
       )),
     },
@@ -55,13 +59,18 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
     {
       title: 'Action',
       cells: events.map(({ name, id, indexInBlock }) => (
-        <div key={`${id}-${indexInBlock}-event-action`}>{name.split('.')[1]}</div>
+        <div key={`${id}-${indexInBlock}-event-action`}>
+          {name
+            .split('.')[1]
+            .split(/(?=[A-Z])/)
+            .join(' ')}
+        </div>
       )),
     },
     {
       title: 'Type',
       cells: events.map(({ phase, id, indexInBlock }) => (
-        <div key={`${id}-${indexInBlock}-event-phase`}>{phase}</div>
+        <div key={`${id}-${indexInBlock}-event-phase`}>{phase.split(/(?=[A-Z])/).join(' ')}</div>
       )),
     },
     {

@@ -5,6 +5,7 @@ type Account @entity {
   total: BigInt @index
   updatedAt: BigInt
   extrinsics: [Extrinsic!]! @derivedFrom(field: "signer") @cardinality(value: 10)
+  rewards: [RewardEvent!]! @derivedFrom(field: "account") @cardinality(value: 10)
 }
 
 type Block @entity {
@@ -18,6 +19,7 @@ type Block @entity {
   extrinsicRoot: String
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  rewards: [RewardEvent!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   spacePledged: BigInt!
@@ -58,6 +60,20 @@ type Event @entity {
   block: Block
   extrinsic: Extrinsic
   call: Call
+}
+
+type RewardEvent @entity {
+  id: ID!
+  indexInBlock: Int!
+  name: String!
+  timestamp: DateTime!
+  phase: String!
+  pos: Int
+  block: Block
+  extrinsic: Extrinsic
+  call: Call
+  account: Account 
+  amount: BigInt
 }
 
 type Call @entity {

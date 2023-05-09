@@ -12,10 +12,11 @@ describe('Account balance stats', () => {
       reserved: 0,
       total: 0,
       updatedAt: 1008639,
+      rewards: [],
     }
 
     render(<AccountBalanceStats account={account} />)
 
-    expect(await screen.findByText(/transferable/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Free/i)).toBeInTheDocument()
   })
 })

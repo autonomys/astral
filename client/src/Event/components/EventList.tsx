@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
+import { EventWhereInput } from 'gql/graphql'
 
 // event
 import { QUERY_EVENT_CONNECTION_LIST } from 'Event/query'
@@ -11,15 +12,17 @@ import { Spinner, SearchBar, Pagination } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import ExportButton from 'common/components/ExportButton'
+import EventListFilter from './EventListFilter'
 
 const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = 10
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const [filters, setFilters] = useState<EventWhereInput>({})
 
   const { data, error, loading } = useQuery(QUERY_EVENT_CONNECTION_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor },
+    variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
     pollInterval: 6000,
   })
 
@@ -61,7 +64,13 @@ const EventList: FC = () => {
         <SearchBar />
       </div>
       <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Events (${totalLabel})`}</div>
+        <EventListFilter
+          title={
+            <div className=' font-medium text-[#282929] dark:text-white'>Events {totalLabel}</div>
+          }
+          filters={filters}
+          setFilters={setFilters}
+        />
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <EventTable events={eventsConnection} isDesktop={isDesktop} />

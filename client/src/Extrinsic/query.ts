@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
-  query ExtrinsicsConnection($first: Int!, $after: String) {
-    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after) {
+  query ExtrinsicsConnection($first: Int!, $after: String, $where: ExtrinsicWhereInput) {
+    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after, where: $where) {
       edges {
         cursor
         node {

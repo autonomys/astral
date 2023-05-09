@@ -5,25 +5,31 @@ import { useErrorHandler } from 'react-error-boundary'
 
 // account
 import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
-import { AccountDetailsCard, AccountDetailsTabs } from 'Account/components'
-
-// common
-import { Spinner } from 'common/components'
+import {
+  AccountDetailsCard,
+  AccountExtrinsicList,
+  AccountGraphs,
+  AccountLatestRewards,
+} from 'Account/components'
 
 // layout
 import { NotFound } from 'layout/components'
+
+// common
+import { Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import { formatAddress } from 'common/helpers/formatAddress'
+import { accountIdToHex, formatAddress } from 'common/helpers/formatAddress'
 
 const Account: FC = () => {
   const { accountId } = useParams<{ accountId?: string }>()
 
   const convertedAddress = formatAddress(accountId)
+  const hexAddress = accountIdToHex(accountId || '')
 
-  const isDesktop = useMediaQuery('(min-width: 1440px)')
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
-    variables: { accountId: convertedAddress },
+    variables: { accountId: convertedAddress, hexAddress: hexAddress },
   })
 
   useErrorHandler(error)
@@ -43,9 +49,17 @@ const Account: FC = () => {
   const account = data.accountById
 
   return (
-    <div className='w-full'>
-      <AccountDetailsCard account={account} accountAddress={convertedAddress} />
-      <AccountDetailsTabs extrinsics={account.extrinsics} isDesktop={isDesktop} />
+    <div className='w-full flex flex-col space-y-4'>
+      <AccountDetailsCard
+        account={account}
+        accountAddress={convertedAddress}
+        isDesktop={isDesktop}
+      />
+      <div className='flex flex-col lg:flex-row lg:justify-between gap-8'>
+        <AccountGraphs hexAddress={hexAddress} account={account} isDesktop={isDesktop} />
+        <AccountLatestRewards rewards={data.rewardEvents} isDesktop={isDesktop} />
+      </div>
+      <AccountExtrinsicList accountId={convertedAddress} />
     </div>
   )
 }

@@ -1,8 +1,8 @@
 // common
-import useTheme from 'common/hooks/useTheme'
+import { useTheme } from 'common/providers/ThemeProvider'
 
 const NotFoundImage = () => {
-  const [isDark] = useTheme()
+  const { isDark } = useTheme()
   return (
     <div className='text-[#241235] dark:text-white'>
       <svg

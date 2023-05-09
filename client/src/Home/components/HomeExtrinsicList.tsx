@@ -72,8 +72,8 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
     },
     {
       title: 'Time',
-      cells: extrinsics.map(({ block, id }) => {
-        const blockDate = dayjs(block.timestamp).fromNow(true)
+      cells: extrinsics.map(({ id, timestamp }) => {
+        const blockDate = dayjs(timestamp).fromNow(true)
 
         return <div key={`${id}-home-extrinsic-time`}>{blockDate} ago</div>
       }),

@@ -17,7 +17,7 @@ tap.test('processBlocks should process blocks and items from the Context and sav
     getHistorySize: () => Promise.resolve(BigInt(2)),
     processExtrinsics: () => Promise.resolve(),
     processCalls: () => Promise.resolve(),
-    getEvents: () => Promise.resolve([]),
+    processEvents: () => Promise.resolve([[], []]),
     getLogs: () => Promise.resolve([]),
     getBlockAuthor: () => Promise.resolve(new Account({ id: 'author' })),
   });
@@ -53,8 +53,8 @@ tap.test('processBlocks should process blocks and items from the Context and sav
 
   await processBlocks(context);
 
-  // expect store.save method calls: authors, blocks, extrinsics, calls, events, logs
-  t.equal(saveSpy.callCount, 7);
+  // expect store.save method calls: authors, blocks, extrinsics, calls, events, rewardEvents, logs
+  t.equal(saveSpy.callCount, 8);
 
   // check stored block ids against block ids in the context
   // first two calls are for authors
