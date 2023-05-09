@@ -9,6 +9,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
 import { formatAddress } from 'common/helpers/formatAddress'
 import { GET_RESULTS } from 'common/queries'
+import { formatSearchResult } from 'common/helpers/formatSearchResult'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
@@ -45,11 +46,19 @@ const useSearch = (): Values => {
 
         if (data?.accountById) {
           navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
+        } else if (data?.extrinsicById && data?.eventById) {
+          const results = formatSearchResult(data.eventById, data.extrinsicById)
+          navigate(
+            INTERNAL_ROUTES.search.result.page(selectedChain.urls.page, 'extrinsicAndEvent'),
+            {
+              state: { results },
+            },
+          )
         } else if (data?.extrinsicById) {
           navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
         } else if (data?.extrinsics?.length > 0) {
           if (data.extrinsics.length > 1) {
-            navigate(INTERNAL_ROUTES.search.result.page(selectedChain.urls.page), {
+            navigate(INTERNAL_ROUTES.search.result.page(selectedChain.urls.page, 'extrinsics'), {
               state: { extrinsics: data.extrinsics },
             })
           } else {

@@ -58,8 +58,8 @@ export const INTERNAL_ROUTES = {
   },
   search: {
     result: {
-      path: 'search/result',
-      page: (chain: string): string => `/${chain}/search/result`,
+      path: 'search/result/:type',
+      page: (chain: string, type: string): string => `/${chain}/search/result/${type}`,
     },
     empty: '/search/no-result-found',
   },
