@@ -6,7 +6,6 @@ import {
     BatchProcessorItem,
 } from '@subsquid/substrate-processor';
 import { Store, TypeormDatabase } from '@subsquid/typeorm-store';
-import { ApiPromise, WsProvider } from "@polkadot/api";
 import config from './config';
 import { processBalancesFactory, createProcessBalancesDependencies } from './balances';
 import { processBlocksFactory, createProcessBlocksDependencies } from './blocks';
@@ -27,23 +26,9 @@ const processor = new SubstrateBatchProcessor()
     .addCall('*') // process all calls
     .includeAllBlocks();
 
-const types = {
-    Solution: {
-        public_key: 'AccountId32',
-        reward_address: 'AccountId32',
-    },
-    SubPreDigest: {
-        slot: 'u64',
-        solution: 'Solution',
-    }
-};
-
 async function main() {
-    const provider = new WsProvider(process.env.CHAIN_RPC_ENDPOINT);
-    const api = await ApiPromise.create({ provider, types });
-
     async function processChain(ctx: Context): Promise<void> {
-        const processBlocksDependencies = createProcessBlocksDependencies(ctx, api);
+        const processBlocksDependencies = createProcessBlocksDependencies(ctx);
         const processBalancesDependencies = createProcessBalancesDependencies(ctx);
         const processBlocks = processBlocksFactory(processBlocksDependencies);
         const processBalances = processBalancesFactory(processBalancesDependencies);

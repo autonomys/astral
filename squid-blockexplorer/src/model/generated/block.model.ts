@@ -1,11 +1,10 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_, ManyToOne as ManyToOne_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Extrinsic} from "./extrinsic.model"
 import {Event} from "./event.model"
 import {RewardEvent} from "./rewardEvent.model"
 import {Call} from "./call.model"
 import {Log} from "./log.model"
-import {Account} from "./account.model"
 
 @Entity_()
 export class Block {
@@ -53,19 +52,9 @@ export class Block {
     @OneToMany_(() => Log, e => e.block)
     logs!: Log[]
 
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-    spacePledged!: bigint
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-    blockchainSize!: bigint
-
     @Column_("int4", {nullable: false})
     extrinsicsCount!: number
 
     @Column_("int4", {nullable: false})
     eventsCount!: number
-
-    @Index_()
-    @ManyToOne_(() => Account, {nullable: true})
-    author!: Account | undefined | null
 }

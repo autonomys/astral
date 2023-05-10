@@ -9,9 +9,11 @@ export function processExtrinsicsFactory(getOrCreateAccount: (blockHeight: bigin
       let signer = null;
       let signature = null;
 
+      
       if (item.extrinsic.signature) {
-        signer = await getOrCreateAccount(block.height, item.extrinsic.signature.address.value);
-        signature = item.extrinsic.signature.signature.value;
+        console.log('item.extrinsic.signature', item.extrinsic.signature);
+        signer = await getOrCreateAccount(block.height, item.extrinsic.signature.address);
+        signature = item.extrinsic.signature.signature;
       }
       const extrinsic = createExtrinsic(item, block, signature, signer);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -1,5 +1,3 @@
-import { HexSink } from "@subsquid/scale-codec";
-import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { toHex } from "@subsquid/util-internal-hex";
 import { Block, Extrinsic, Call, Account } from "../model";
@@ -30,30 +28,21 @@ export function partitionItems<Item = CallItem | EventItem>(
 
 interface CreateBlockParams {
   header: SubstrateBlock;
-  spacePledged: bigint;
-  blockchainSize: bigint;
   extrinsicsCount: number;
   eventsCount: number;
-  author: Account | undefined;
 }
 
 export function createBlock({
   header,
-  spacePledged,
-  blockchainSize,
   extrinsicsCount,
   eventsCount,
-  author,
 }: CreateBlockParams) {
   return new Block({
     ...header,
     height: BigInt(header.height),
     timestamp: new Date(header.timestamp),
-    spacePledged,
-    blockchainSize,
     extrinsicsCount,
     eventsCount,
-    author,
   });
 }
 
@@ -89,63 +78,6 @@ export function createCall(
     extrinsic,
     parent,
   });
-}
-
-/**
- * Calculates the space pledged by a solution
- * @param {bigint} solutionRange - range of the solution
- * @return {bigint} - space pledged in bytes
- */
-export function calcSpacePledged(solutionRange: bigint): bigint {
-  const MAX_U64 = 2n ** 64n - 1n;
-  const SLOT_PROBABILITY = [1n, 6n];
-  const PIECE_SIZE = 31744n;
-
-  return BigInt(
-    ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
-    PIECE_SIZE
-  );
-}
-
-/*
-  * Calculates the size of the history in bytes
-  * @param {number} segmentsCount - number of segments in the history
-  * @return {bigint} - size of the history in bytes
-  */
-export function calcHistorySize(segmentsCount: number): bigint {
-  const KZG_WITNESS_SIZE = 48;
-  const KZG_COMMITMENT_SIZE = 48;
-  const PIECE_SIZE = 32 * 1024;
-  const PIECES_IN_SEGMENT = 256;
-  const RECORD_SIZE = PIECE_SIZE - (KZG_WITNESS_SIZE + KZG_COMMITMENT_SIZE);
-  const RECORDED_HISTORY_SEGMENT_SIZE = (RECORD_SIZE * PIECES_IN_SEGMENT) / 2;
-  const SEGMENT_SIZE =
-    (RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE) * PIECE_SIZE * 2;
-
-  return BigInt(segmentsCount * SEGMENT_SIZE);
-}
-
-/**
- * Converts string into Scale-encoded hash
- * @param {string} name
- * @return {string} - hex result
- */
-function getNameHash(name: string): string {
-  const digest = xxhash128().update(name).digest();
-  const sink = new HexSink();
-  sink.u128(digest);
-  const hash = sink.toHex();
-  return hash;
-}
-
-/**
- * Converts prefix and name into Scale-encoded hash, useful for querying storage
- * @param {string} prefix - pallet name (i.e "Subspace")
- * @param {string} name - storage name (i.e. "RecordsRoot")
- * @return {string} - hex result
- */
-export function getStorageHash(prefix: string, name: string) {
-  return getNameHash(prefix) + getNameHash(name).slice(2);
 }
 
 /**

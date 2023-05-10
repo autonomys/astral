@@ -44,11 +44,8 @@ tap.test('getOrCreateAccount should create new Account if store has none', async
 tap.test('createBlock should create instance of a Block', (t) => {
   const result = createBlock({
     header: BlockHeaderMock, 
-    spacePledged, 
-    blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
-    author: new Account({ id: 'author' }),
   });
 
   t.type(result, Block);
@@ -69,11 +66,8 @@ tap.test('createBlock should create instance of a Block', (t) => {
 tap.test('createCall should create instance of Call without parent Call', (t) => {
   const block = createBlock({
     header: BlockHeaderMock, 
-    spacePledged, 
-    blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
-    author: new Account({ id: 'author' }),
   });
   const extrinsic = createExtrinsic(callItemWithSignature, block, null, null);
   const result = createCall(callItemWithSignature, block, extrinsic, null);
@@ -86,11 +80,8 @@ tap.todo('createCall should create instance of Call with parent Call');
 tap.test('createExtrinsic should create instance of Extrinsic without signature', (t) => {
   const block = createBlock({
     header: BlockHeaderMock, 
-    spacePledged, 
-    blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
-    author: new Account({ id: 'author' }),
   });
   const result = createExtrinsic(callItemWithSignature, block, null, null);
 

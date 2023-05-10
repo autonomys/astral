@@ -5,7 +5,7 @@ import { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from '../processor';
 import BlockHeaderMock from './BlockHeader.json';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage } from '../types/storage';
+import { SystemDigestStorage } from '../types/storage';
 import { Account } from '../model';
 import { createBlock, createCall, createExtrinsic } from '../blocks/utils';
 
@@ -196,18 +196,6 @@ export const contextMock: Context = {
 export const SOLUTION_RANGES = BigInt(123);
 export const SEGMENTS_COUNT = 123;
 
-export const solutionRangesStorageFactoryMock = () => ({
-  asV3: {
-    get: () => ({ current: SOLUTION_RANGES })
-  },
-  asV0: {
-    get: () => ({ current: SOLUTION_RANGES })
-  },
-  asV1: {
-    get: () => ({ current: SOLUTION_RANGES })
-  }
-} as unknown as SubspaceSolutionRangesStorage);
-
 export const digestLogs = [
   { __kind: 'Consensus' }, { __kind: 'PreRuntime' },
 ];
@@ -234,11 +222,8 @@ export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'r
 
 export const blockMock = createBlock({
   header: BlockHeaderMock,
-  spacePledged: BigInt(1),
-  blockchainSize: BigInt(2),
   extrinsicsCount: 2,
   eventsCount: 5,
-  author: new Account({ id: 'random account id' }),
 });
 export const extrinsicMock = createExtrinsic(parentCallItem as CallItem, blockMock);
 export const parentCallMock = createCall(parentCallItem as CallItem, blockMock, extrinsicMock, null);

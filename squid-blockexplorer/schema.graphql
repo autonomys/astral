@@ -22,11 +22,8 @@ type Block @entity {
   rewards: [RewardEvent!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
-  spacePledged: BigInt!
-  blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
-  author: Account
 }
 
 type Extrinsic @entity {

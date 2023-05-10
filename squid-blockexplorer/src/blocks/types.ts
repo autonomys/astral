@@ -3,11 +3,9 @@ import { Struct, u64 } from "@polkadot/types";
 import { AccountId32 } from "@polkadot/types/interfaces";
 
 import { CallItem, EventItem } from '../processor';
-import { Block, Extrinsic, Call, Event, Log, Account, RewardEvent } from '../model';
+import { Block, Extrinsic, Call, Event, Log, RewardEvent } from '../model';
 
 export interface ProcessBlocksDependencies {
-  getSpacePledged: (header: SubstrateBlock) => Promise<bigint>;
-  getHistorySize: (header: SubstrateBlock) => Promise<bigint>;
   processExtrinsics: (
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
@@ -27,7 +25,6 @@ export interface ProcessBlocksDependencies {
     block: Block,
   ) => Promise<[Event[], RewardEvent[]]>;
   getLogs: (header: SubstrateBlock, block: Block) => Promise<Log[]>;
-  getBlockAuthor: (header: SubstrateBlock) => Promise<Account | undefined>;
 }
 
 export type ExtrinsicsMap = Map<string, Extrinsic>;

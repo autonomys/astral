@@ -24,8 +24,8 @@ export class BalanceEventHandler {
   getTransferAccounts(event: Event) {
     const data = new BalancesTransferEvent(this.ctx, event);
 
-    if (data.isV1) {
-      return [toHex(data.asV1.from), toHex(data.asV1.to)];
+    if (data.isV0) {
+      return [toHex(data.asV0.from), toHex(data.asV0.to)];
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -34,8 +34,8 @@ export class BalanceEventHandler {
   getEndowedAccount(event: Event) {
     const data = new BalancesEndowedEvent(this.ctx, event);
 
-    if (data.isV1) {
-      return toHex(data.asV1.account);
+    if (data.isV0) {
+      return toHex(data.asV0.account);
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -44,8 +44,8 @@ export class BalanceEventHandler {
   getReserveRepatriatedAccounts(event: Event) {
     const data = new BalancesReserveRepatriatedEvent(this.ctx, event);
 
-    if (data.isV1) {
-      return [toHex(data.asV1.from), toHex(data.asV1.to)];
+    if (data.isV0) {
+      return [toHex(data.asV0.from), toHex(data.asV0.to)];
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -56,8 +56,8 @@ export class BalanceEventHandler {
     const EventType = eventTypes[event.name];
     const data = new EventType(this.ctx, event);
 
-    if (data.isV1) {
-      return toHex(data.asV1.who);
+    if (data.isV0) {
+      return toHex(data.asV0.who);
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -88,23 +88,23 @@ export function processEventFactory(balanceEventHandler: BalanceEventHandler) {
       case BALANCE_EVENTS.Unreserved:
       case BALANCE_EVENTS.Withdraw:
       case BALANCE_EVENTS.Slashed: {
-        const account = balanceEventHandler.getAccountFromEvent(item.event);
+        const account = balanceEventHandler.getAccountFromEvent(item.event as unknown as Event);
         accountIdsHex.add(account);
         break;
       }
       case BALANCE_EVENTS.Endowed: {
-        const account = balanceEventHandler.getEndowedAccount(item.event);
+        const account = balanceEventHandler.getEndowedAccount(item.event as unknown as Event);
         accountIdsHex.add(account);
         break;
       }
       case BALANCE_EVENTS.Transfer: {
-        const accounts = balanceEventHandler.getTransferAccounts(item.event);
+        const accounts = balanceEventHandler.getTransferAccounts(item.event as unknown as Event);
         accountIdsHex.add(accounts[0]);
         accountIdsHex.add(accounts[1]);
         break;
       }
       case BALANCE_EVENTS.ReserveRepatriated: {
-        const accounts = balanceEventHandler.getReserveRepatriatedAccounts(item.event);
+        const accounts = balanceEventHandler.getReserveRepatriatedAccounts(item.event as unknown as Event);
         accountIdsHex.add(accounts[0]);
         accountIdsHex.add(accounts[1]);
         break;

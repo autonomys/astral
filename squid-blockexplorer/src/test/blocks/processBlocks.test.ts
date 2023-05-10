@@ -9,17 +9,13 @@ import {
   parentCallItem,
 } from '../../mocks/mocks';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { Account } from '../../model';
 
 tap.test('processBlocks should process blocks and items from the Context and save them to store', async (t) => {
   const processBlocks = processBlocksFactory({
-    getSpacePledged: () => Promise.resolve(BigInt(1)),
-    getHistorySize: () => Promise.resolve(BigInt(2)),
     processExtrinsics: () => Promise.resolve(),
     processCalls: () => Promise.resolve(),
     processEvents: () => Promise.resolve([[], []]),
     getLogs: () => Promise.resolve([]),
-    getBlockAuthor: () => Promise.resolve(new Account({ id: 'author' })),
   });
 
   const blocks = [
