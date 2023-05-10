@@ -24,7 +24,7 @@ import SearchResult from 'layout/components/SearchResult'
 import Home from 'Home'
 
 // account
-import { AccountList, Account, OldAccount, AccountRewardList } from 'Account/components'
+import { AccountList, Account, AccountRewardList } from 'Account/components'
 
 // event
 import { Event, EventList } from 'Event/components'
@@ -137,21 +137,10 @@ function App() {
                     </Route>
                     <Route path={INTERNAL_ROUTES.accounts.list}>
                       <Route index element={<AccountList />} />
-                      <Route
-                        path={INTERNAL_ROUTES.accounts.id.path}
-                        element={
-                          selectedChain.urls.page === 'gemini-2a' ? <OldAccount /> : <Account />
-                        }
-                      />
+                      <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
                       <Route
                         path={INTERNAL_ROUTES.accounts.rewards.path}
-                        element={
-                          selectedChain.urls.page === 'gemini-2a' ? (
-                            <OldAccount />
-                          ) : (
-                            <AccountRewardList />
-                          )
-                        }
+                        element={<AccountRewardList />}
                       />
                     </Route>
                     <Route path={INTERNAL_ROUTES.events.list}>
