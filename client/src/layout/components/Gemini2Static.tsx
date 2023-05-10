@@ -15,6 +15,8 @@ const Gemini2Static = () => {
           <a
             className='font-medium text-[#9179EC] dark:text-[#DE67E4]'
             href={EXTERNAL_ROUTES.gemini2guide}
+            rel='noreferrer'
+            target='_blank'
           >
             guide
           </a>{' '}
