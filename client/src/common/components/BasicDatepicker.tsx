@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react'
-import Datepicker from 'tailwind-datepicker-react'
+import { FC, useEffect, useState } from 'react'
+import Datepicker, { IOptions } from 'tailwind-datepicker-react'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { CalendarIcon } from '@heroicons/react/24/outline'
@@ -9,31 +9,30 @@ dayjs.extend(utc)
 type Props = {
   value?: string | undefined
   onChange?: (selectedDate: Date) => void
+  minDate?: Date
 }
 
-const options = {
-  autoHide: true,
-  todayBtn: true,
-  clearBtn: true,
+const defaultOptions = {
   theme: {
     background: 'bg-white dark:bg-[#1E254E] dark:text-white',
-    todayBtn: '',
-    clearBtn: '',
-    icons: '',
-    text: '',
     disabledText: 'text-gray-500/75 dark:text-gray-400/75',
     input: 'py-3 w-full rounded-[20px] bg-white dark:bg-[#1E254E] dark:text-white',
-    inputIcon: '',
-    selected: '',
   },
 }
 
-const BasicDatepicker: FC<Props> = ({ onChange, value }) => {
+const BasicDatepicker: FC<Props> = ({ onChange, value, minDate }) => {
   const [show, setShow] = useState<boolean>(false)
+  const [options, setOptions] = useState<IOptions>(defaultOptions)
 
   const handleClose = (state: boolean) => {
     setShow(state)
   }
+
+  useEffect(() => {
+    if (minDate) {
+      setOptions({ ...defaultOptions, minDate: new Date(minDate), startDate: new Date(minDate) })
+    }
+  }, [minDate])
 
   return (
     <Datepicker options={options} onChange={onChange} show={show} setShow={handleClose}>
