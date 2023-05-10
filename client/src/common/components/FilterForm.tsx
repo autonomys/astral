@@ -190,7 +190,11 @@ const FilterForm: FC<Props> = ({
                         To Date
                       </div>
 
-                      <BasicDatepicker value={where?.timestamp_lte || ''} onChange={handleDateTo} />
+                      <BasicDatepicker
+                        minDate={where?.timestamp_gte}
+                        value={where?.timestamp_lte || ''}
+                        onChange={handleDateTo}
+                      />
                     </div>
                   </>
                 )}
