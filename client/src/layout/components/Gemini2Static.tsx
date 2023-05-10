@@ -1,5 +1,5 @@
 // common
-import { INTERNAL_ROUTES } from 'common/routes'
+import { EXTERNAL_ROUTES } from 'common/routes'
 import AstronautImage from 'common/components/ErrorFallback/AstronautImage'
 
 const Gemini2Static = () => {
@@ -12,7 +12,10 @@ const Gemini2Static = () => {
         </h2>
         <p className='text-slate-600 mt-4 mb-8 lg:text-lg w-1/2 dark:text-white'>
           We have disabled it from our block explorer. If you earned rewards, follow this{' '}
-          <a className='font-medium text-[#9179EC] dark:text-[#DE67E4]' href={INTERNAL_ROUTES.home}>
+          <a
+            className='font-medium text-[#9179EC] dark:text-[#DE67E4]'
+            href={EXTERNAL_ROUTES.gemini2guide}
+          >
             guide
           </a>{' '}
           to retrieve your farming stats and rewards.
