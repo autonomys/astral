@@ -11,7 +11,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import { HeaderBackground } from 'layout/components'
 
 // hooks
-import useTheme from 'common/hooks/useTheme'
+import { useTheme } from 'common/providers/ThemeProvider'
 
 type Props = {
   children?: ReactNode
@@ -27,7 +27,7 @@ export default MobileHeader
 
 const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
   const navigate = useNavigate()
-  const [isDark, toggleTheme] = useTheme()
+  const { isDark, toggleTheme } = useTheme()
 
   const handleNavigate = (url: string) => {
     setIsOpen(false)

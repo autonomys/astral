@@ -13,10 +13,10 @@ exports[`Tabs renders properly 1`] = `
         role="tablist"
       >
         <li
-          class="-mb-px last:mr-0 text-center"
+          class="-mb-px last:mr-0 text-center w-full lg:w-auto"
         >
           <button
-            class="text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal text-white bg-[#241235] dark:bg-[#1E254E]"
+            class="w-full lg:w-auto text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal text-white bg-[#241235] dark:bg-[#1E254E]"
           >
             Tab title
           </button>

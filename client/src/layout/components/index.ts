@@ -8,6 +8,7 @@ import HeaderBackground from 'layout/components/HeaderBackground'
 import HeaderDropdownMenu from 'layout/components/HeaderDropdownMenu'
 import HeaderChainDropdown from 'layout/components/HeaderChainDropdown'
 import MobileHeader from 'layout/components/MobileHeader'
+import ExtrinsicAndEventResultTable from 'layout/components/ExtrinsicAndEventResult'
 
 export {
   Layout,
@@ -20,4 +21,5 @@ export {
   HeaderDropdownMenu,
   HeaderChainDropdown,
   MobileHeader,
+  ExtrinsicAndEventResultTable,
 }

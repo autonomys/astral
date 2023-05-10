@@ -9,7 +9,7 @@ import { Extrinsic } from 'gql/graphql'
 import { Tab, ExtrinsicCard, PageTabs } from 'common/components'
 
 // account
-import { AccountExtrinsicList } from 'Account/components'
+import { OldAccountExtrinsicList } from 'Account/components'
 
 dayjs.extend(relativeTime)
 
@@ -18,12 +18,12 @@ type Props = {
   isDesktop?: boolean
 }
 
-const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
+const OldAccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   return (
     <PageTabs isDesktop={isDesktop}>
       <Tab title={`Extrinsics (${extrinsics.length})`}>
         {isDesktop ? (
-          <AccountExtrinsicList extrinsics={extrinsics} />
+          <OldAccountExtrinsicList extrinsics={extrinsics} />
         ) : (
           <div className='flex flex-col'>
             {extrinsics.map((extrinsic) => (
@@ -40,4 +40,4 @@ const AccountDetailsTabs: FC<Props> = ({ extrinsics, isDesktop = false }) => {
   )
 }
 
-export default AccountDetailsTabs
+export default OldAccountDetailsTabs

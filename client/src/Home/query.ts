@@ -18,6 +18,7 @@ export const QUERY_HOME = gql`
       id
       success
       indexInBlock
+      timestamp
       block {
         id
         height

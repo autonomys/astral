@@ -15,3 +15,109 @@ export const searchTypes: SearchType[] = [
 ]
 
 export const SUBSPACE_ACC_PREFIX = 2254
+
+export const MODULES = [
+  {
+    value: undefined,
+    label: 'All',
+  },
+  {
+    value: 'balances',
+    label: 'Balances',
+  },
+  {
+    value: 'domains',
+    label: 'Domains',
+  },
+  {
+    value: 'feeds',
+    label: 'Feeds',
+  },
+  {
+    value: 'grandpafinalityverifier',
+    label: 'Grandpa Finality Verifier',
+  },
+  {
+    value: 'objectStore',
+    label: 'Object Store',
+  },
+  {
+    value: 'offencesSubspace',
+    label: 'Offences Subspace',
+  },
+  {
+    value: 'receipts',
+    label: 'Receipts',
+  },
+  {
+    value: 'rewards',
+    label: 'Rewards',
+  },
+  {
+    value: 'runtimeConfigs',
+    label: 'Runtime Configs',
+  },
+  {
+    value: 'subspace',
+    label: 'Subspace',
+  },
+  {
+    value: 'sudo',
+    label: 'Sudo',
+  },
+  {
+    value: 'system',
+    label: 'System',
+  },
+  {
+    value: 'timestamp',
+    label: 'Timestamp',
+  },
+  {
+    value: 'transactionFees',
+    label: 'Transaction Fees',
+  },
+  {
+    value: 'transactionPayment',
+    label: 'Transaction Payment',
+  },
+  {
+    value: 'utility',
+    label: 'Utility',
+  },
+  {
+    value: 'vesting',
+    label: 'Vesting',
+  },
+]
+
+export const LOG_TYPES = [
+  {
+    value: undefined,
+    label: 'All',
+  },
+  {
+    value: 'changesTrieRoot',
+    label: 'Changes Trie Root',
+  },
+  {
+    value: 'changesTrieSignal',
+    label: 'Changes Trie Signal',
+  },
+  {
+    value: 'consensus',
+    label: 'Consensus',
+  },
+  {
+    value: 'other',
+    label: 'Other',
+  },
+  {
+    value: 'preRuntime',
+    label: 'Pre Runtime',
+  },
+  {
+    value: 'seal',
+    label: 'Seal',
+  },
+]

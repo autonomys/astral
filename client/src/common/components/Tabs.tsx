@@ -36,10 +36,10 @@ export const TabTitle: React.FC<TabTitleProps> = ({
     }
   }
   return (
-    <li className='-mb-px last:mr-0 text-center'>
+    <li className='-mb-px last:mr-0 text-center w-full lg:w-auto'>
       <button
         className={
-          'text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal ' +
+          'w-full lg:w-auto text-xs font-semibold px-[13.8px] py-3 rounded-full block leading-normal ' +
           (isSelected ? `${activePillStyle}` : `${pillStyle}`)
         }
         onClick={handleOnClick}

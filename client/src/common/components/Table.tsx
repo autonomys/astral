@@ -2,7 +2,7 @@ import { FC, ReactNode, useMemo } from 'react'
 import { generateArrayOfNumbers } from '../helpers'
 
 export type Column = {
-  title: string
+  title: ReactNode
   cells: ReactNode[]
   isNumeric?: boolean
   centerTitle?: boolean

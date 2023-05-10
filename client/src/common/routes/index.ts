@@ -32,6 +32,10 @@ export const INTERNAL_ROUTES = {
       path: ':accountId',
       page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}`,
     },
+    rewards: {
+      path: ':accountId/rewards',
+      page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}/rewards`,
+    },
   },
   events: {
     id: {
@@ -56,9 +60,10 @@ export const INTERNAL_ROUTES = {
   },
   search: {
     result: {
-      path: 'search/result',
-      page: (chain: string): string => `/${chain}/search/result`,
+      path: 'search/result/:type',
+      page: (chain: string, type: string): string => `/${chain}/search/result/${type}`,
     },
+    empty: '/search/no-result-found',
   },
   notFound: '/404',
 }

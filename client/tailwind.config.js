@@ -2,7 +2,11 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  content: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    './public/index.html',
+    './node_modules/tailwind-datepicker-react/dist/**/*.js',
+  ],
   darkMode: 'class',
   variants: {
     extend: { backgroundImage: ['dark'] },
@@ -34,5 +38,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@headlessui/tailwindcss')],
+  plugins: [require('@headlessui/tailwindcss'), require('@tailwindcss/forms')],
 }
