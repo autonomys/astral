@@ -63,7 +63,7 @@ const AccountList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <AccountTable accounts={accountsConnection} page={currentPage} />
-        <div className='w-full flex justify-between'>
+        <div className='w-full flex justify-between gap-2'>
           <ExportButton data={accountsConnection} filename='account-list' />
           <Pagination
             nextPage={handleNextPage}

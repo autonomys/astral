@@ -23,7 +23,7 @@ const Pagination: FC<Props> = ({
   hasPreviousPage,
   handleGetPage,
 }) => {
-  const pageCount = Math.ceil(totalCount / pageSize)
+  const pageCount = Math.floor(totalCount / pageSize)
 
   return (
     <div className='w-full flex items-center justify-between'>

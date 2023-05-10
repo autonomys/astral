@@ -77,7 +77,7 @@ const ExtrinsicList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-8 sm:mt-0'>
         <ExtrinsicTable extrinsics={extrinsicsConnection} isDesktop={isDesktop} />
-        <div className='w-full flex justify-between'>
+        <div className='w-full flex justify-between gap-2'>
           <ExportButton data={extrinsicsConnection} filename='extrinsic-list' />
           <Pagination
             nextPage={handleNextPage}

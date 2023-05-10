@@ -75,7 +75,7 @@ const LogList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <LogTable logs={logsConnection} isDesktop={isDesktop} />
-        <div className='w-full flex justify-between'>
+        <div className='w-full flex justify-between gap-2'>
           <ExportButton data={logsConnection} filename='log-list' />
           <Pagination
             nextPage={handleNextPage}
