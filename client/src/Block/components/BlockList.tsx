@@ -14,7 +14,7 @@ import ExportButton from 'common/components/ExportButton'
 
 const BlockList: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = isDesktop ? 10 : 5
 
@@ -45,11 +45,13 @@ const BlockList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
-  const handleGetPage = (page: string | number) => {
+  const onChange = (page) => {
     setCurrentPage(Number(page))
+
     const newCount = PAGE_SIZE * Number(page)
     const endCursor = newCount - PAGE_SIZE
-    if (endCursor === 0) {
+
+    if (endCursor === 0 || endCursor < 0) {
       return setLastCursor(undefined)
     }
     setLastCursor(endCursor.toString())
@@ -75,7 +77,7 @@ const BlockList: FC = () => {
             totalCount={totalCount}
             hasNextPage={pageInfo.hasNextPage}
             hasPreviousPage={pageInfo.hasPreviousPage}
-            handleGetPage={handleGetPage}
+            onChange={onChange}
           />
         </div>
       </div>

@@ -43,10 +43,12 @@ const AccountList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
-  const handleGetPage = (page: string | number) => {
-    setCurrentPage(Number(page))
+  const onChange = (page) => {
+    setCurrentPage(page)
+
     const newCount = PAGE_SIZE * Number(page)
     const endCursor = newCount - PAGE_SIZE
+
     if (endCursor === 0) {
       return setLastCursor(undefined)
     }
@@ -73,7 +75,7 @@ const AccountList: FC = () => {
             totalCount={totalCount}
             hasNextPage={pageInfo.hasNextPage}
             hasPreviousPage={pageInfo.hasPreviousPage}
-            handleGetPage={handleGetPage}
+            onChange={onChange}
           />
         </div>
       </div>

@@ -14,7 +14,7 @@ describe('pagination', () => {
         hasPreviousPage={false}
         hasNextPage={true}
         previousPage={() => 0}
-        handleGetPage={() => 0}
+        onChange={() => 0}
       />,
     )
 
