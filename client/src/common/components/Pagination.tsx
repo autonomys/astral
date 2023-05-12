@@ -10,7 +10,7 @@ type Props = {
   hasNextPage: boolean
   hasPreviousPage: boolean
   totalCount: number
-  onChange: (page: string | number) => void
+  onChange: (page: number) => void
 }
 
 const Pagination: FC<Props> = ({

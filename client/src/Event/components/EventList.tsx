@@ -15,7 +15,7 @@ import ExportButton from 'common/components/ExportButton'
 import EventListFilter from './EventListFilter'
 
 const EventList: FC = () => {
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = 10
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -48,13 +48,13 @@ const EventList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
-  const onChange = (page) => {
-    setCurrentPage(page)
+  const onChange = (page: number) => {
+    setCurrentPage(Number(page))
 
-    const newCount = PAGE_SIZE * Number(page)
+    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
     const endCursor = newCount - PAGE_SIZE
 
-    if (endCursor === 0) {
+    if (endCursor === 0 || endCursor < 0) {
       return setLastCursor(undefined)
     }
     setLastCursor(endCursor.toString())
