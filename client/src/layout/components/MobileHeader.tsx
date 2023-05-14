@@ -3,15 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
 
-// common
-import { LogoIcon } from 'common/icons'
-import { INTERNAL_ROUTES } from 'common/routes'
-
 // layout
 import { HeaderBackground } from 'layout/components'
 
-// hooks
+// common
 import { useTheme } from 'common/providers/ThemeProvider'
+import useDomains from 'common/hooks/useDomains'
+import { LogoIcon } from 'common/icons'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 type Props = {
   children?: ReactNode
@@ -28,11 +27,13 @@ export default MobileHeader
 const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
   const navigate = useNavigate()
   const { isDark, toggleTheme } = useTheme()
+  const { selectedChain } = useDomains()
 
   const handleNavigate = (url: string) => {
     setIsOpen(false)
     navigate(url)
   }
+
   return (
     <nav
       className={
@@ -52,7 +53,7 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
         <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-10'>
           <div className='flex items-center align-middle justify-between p-5'>
             <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.home)}
+              onClick={() => handleNavigate(`/${selectedChain.urls.page}`)}
               className='flex title-font font-medium items-center text-gray-900 text-[#282929] dark:text-white'
             >
               <LogoIcon fillColor='currentColor' />
@@ -96,31 +97,41 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
               Home
             </button>
             <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.blocks.list)}
+              onClick={() =>
+                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.blocks.list}`)
+              }
               className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Blocks
             </button>
             <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.extrinsics.list)}
+              onClick={() =>
+                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.extrinsics.list}`)
+              }
               className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Extrinsics
             </button>
             <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.accounts.list)}
+              onClick={() =>
+                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.accounts.list}`)
+              }
               className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Accounts
             </button>
             <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.events.list)}
+              onClick={() =>
+                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.events.list}`)
+              }
               className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Events
             </button>
             <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.logs.list)}
+              onClick={() =>
+                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.logs.list}`)
+              }
               className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
             >
               Logs

@@ -14,7 +14,7 @@ import ExportButton from 'common/components/ExportButton'
 
 const BlockList: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = isDesktop ? 10 : 5
 
@@ -45,11 +45,13 @@ const BlockList: FC = () => {
     setLastCursor(pageInfo.endCursor)
   }
 
-  const handleGetPage = (page: string | number) => {
+  const onChange = (page: number) => {
     setCurrentPage(Number(page))
-    const newCount = PAGE_SIZE * Number(page)
+
+    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
     const endCursor = newCount - PAGE_SIZE
-    if (endCursor === 0) {
+
+    if (endCursor === 0 || endCursor < 0) {
       return setLastCursor(undefined)
     }
     setLastCursor(endCursor.toString())
@@ -65,7 +67,7 @@ const BlockList: FC = () => {
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <BlockTable blocks={blocksConnection} isDesktop={isDesktop} />
-        <div className='w-full flex justify-between'>
+        <div className='w-full flex justify-between gap-2'>
           <ExportButton data={blocksConnection} filename='block-list' />
           <Pagination
             nextPage={handleNextPage}
@@ -75,7 +77,7 @@ const BlockList: FC = () => {
             totalCount={totalCount}
             hasNextPage={pageInfo.hasNextPage}
             hasPreviousPage={pageInfo.hasPreviousPage}
-            handleGetPage={handleGetPage}
+            onChange={onChange}
           />
         </div>
       </div>

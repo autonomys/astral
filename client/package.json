@@ -36,6 +36,7 @@
     "react-error-boundary": "^3.1.4",
     "react-hot-toast": "^2.4.0",
     "react-json-view": "^1.21.3",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "tailwind-datepicker-react": "^1.2.1",

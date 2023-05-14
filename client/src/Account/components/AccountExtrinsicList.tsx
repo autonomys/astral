@@ -18,7 +18,7 @@ type Props = {
 }
 
 const ExtrinsicList: FC<Props> = ({ accountId }) => {
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
@@ -60,11 +60,13 @@ const ExtrinsicList: FC<Props> = ({ accountId }) => {
     setLastCursor(pageInfo.endCursor)
   }
 
-  const handleGetPage = (page: string | number) => {
+  const onChange = (page: number) => {
     setCurrentPage(Number(page))
-    const newCount = PAGE_SIZE * Number(page)
+
+    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
     const endCursor = newCount - PAGE_SIZE
-    if (endCursor === 0) {
+
+    if (endCursor === 0 || endCursor < 0) {
       return setLastCursor(undefined)
     }
     setLastCursor(endCursor.toString())
@@ -88,7 +90,7 @@ const ExtrinsicList: FC<Props> = ({ accountId }) => {
             totalCount={totalCount}
             hasNextPage={pageInfo.hasNextPage}
             hasPreviousPage={pageInfo.hasPreviousPage}
-            handleGetPage={handleGetPage}
+            onChange={onChange}
           />
         )}
       </div>
