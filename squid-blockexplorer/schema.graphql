@@ -16,7 +16,7 @@ type Block @entity {
   parentHash: String!
   specId: String!
   stateRoot: String!
-  extrinsicRoot: String
+  extrinsicsRoot: String!
   extrinsics: [Extrinsic!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   rewards: [RewardEvent!]! @derivedFrom(field: "block") @cardinality(value: 1000)

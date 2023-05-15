@@ -35,8 +35,8 @@ export class Block {
     @Column_("text", {nullable: false})
     stateRoot!: string
 
-    @Column_("text", {nullable: true})
-    extrinsicRoot!: string | undefined | null
+    @Column_("text", {nullable: false})
+    extrinsicsRoot!: string
 
     @OneToMany_(() => Extrinsic, e => e.block)
     extrinsics!: Extrinsic[]
