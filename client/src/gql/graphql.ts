@@ -152,6 +152,7 @@ export type Block = {
   id: Scalars['String'];
   logs: Array<Log>;
   parentHash: Scalars['String'];
+  rewards: Array<RewardEvent>;
   spacePledged: Scalars['BigInt'];
   specId: Scalars['String'];
   stateRoot: Scalars['String'];
@@ -188,6 +189,14 @@ export type BlockLogsArgs = {
   offset?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<LogOrderByInput>>;
   where?: InputMaybe<LogWhereInput>;
+};
+
+
+export type BlockRewardsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
+  where?: InputMaybe<RewardEventWhereInput>;
 };
 
 export type BlockEdge = {
@@ -354,6 +363,9 @@ export type BlockWhereInput = {
   parentHash_not_in?: InputMaybe<Array<Scalars['String']>>;
   parentHash_not_startsWith?: InputMaybe<Scalars['String']>;
   parentHash_startsWith?: InputMaybe<Scalars['String']>;
+  rewards_every?: InputMaybe<RewardEventWhereInput>;
+  rewards_none?: InputMaybe<RewardEventWhereInput>;
+  rewards_some?: InputMaybe<RewardEventWhereInput>;
   spacePledged_eq?: InputMaybe<Scalars['BigInt']>;
   spacePledged_gt?: InputMaybe<Scalars['BigInt']>;
   spacePledged_gte?: InputMaybe<Scalars['BigInt']>;
@@ -641,6 +653,11 @@ export type EventEdge = {
   node: Event;
 };
 
+export type EventNamesResult = {
+  __typename?: 'EventNamesResult';
+  result: Array<Scalars['String']>;
+};
+
 export enum EventOrderByInput {
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
   BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
@@ -856,6 +873,11 @@ export type ExtrinsicEdge = {
   __typename?: 'ExtrinsicEdge';
   cursor: Scalars['String'];
   node: Extrinsic;
+};
+
+export type ExtrinsicNamesResult = {
+  __typename?: 'ExtrinsicNamesResult';
+  result: Array<Scalars['String']>;
 };
 
 export enum ExtrinsicOrderByInput {
@@ -1088,6 +1110,11 @@ export type LogEdge = {
   node: Log;
 };
 
+export type LogNamesResult = {
+  __typename?: 'LogNamesResult';
+  result: Array<Scalars['String']>;
+};
+
 export enum LogOrderByInput {
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
   BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
@@ -1202,14 +1229,17 @@ export type Query = {
   eventByUniqueInput?: Maybe<Event>;
   events: Array<Event>;
   eventsConnection: EventsConnection;
+  eventsNamesQuery: EventNamesResult;
   extrinsicById?: Maybe<Extrinsic>;
   /** @deprecated Use extrinsicById */
   extrinsicByUniqueInput?: Maybe<Extrinsic>;
+  extrinsicNamesQuery: ExtrinsicNamesResult;
   extrinsics: Array<Extrinsic>;
   extrinsicsConnection: ExtrinsicsConnection;
   logById?: Maybe<Log>;
   /** @deprecated Use logById */
   logByUniqueInput?: Maybe<Log>;
+  logTypesQuery: LogNamesResult;
   logs: Array<Log>;
   logsConnection: LogsConnection;
   rewardEventById?: Maybe<RewardEvent>;
