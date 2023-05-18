@@ -205,7 +205,10 @@ export const solutionRangesStorageFactoryMock = () => ({
   },
   asV1: {
     get: () => ({ current: SOLUTION_RANGES })
-  }
+  },
+  asV2: {
+    get: () => ({ current: SOLUTION_RANGES })
+  },
 } as unknown as SubspaceSolutionRangesStorage);
 
 export const digestLogs = [
@@ -224,6 +227,11 @@ export const digestStorageFactoryMock = () => ({
     }),
   },
   asV1: {
+    get: () => ({
+      logs: digestLogs,
+    }),
+  },
+  asV2: {
     get: () => ({
       logs: digestLogs,
     }),
