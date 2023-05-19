@@ -32,6 +32,66 @@ export class BalancesExistentialDepositConstant {
     }
 }
 
+export class BalancesMaxFreezesConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  The maximum number of individual freeze locks that can exist on an account at any time.
+     */
+    get isV2() {
+        return this._chain.getConstantTypeHash('Balances', 'MaxFreezes') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
+    }
+
+    /**
+     *  The maximum number of individual freeze locks that can exist on an account at any time.
+     */
+    get asV2(): number {
+        assert(this.isV2)
+        return this._chain.getConstant('Balances', 'MaxFreezes')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Balances', 'MaxFreezes') != null
+    }
+}
+
+export class BalancesMaxHoldsConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  The maximum number of holds that can exist on an account at any time.
+     */
+    get isV2() {
+        return this._chain.getConstantTypeHash('Balances', 'MaxHolds') === 'b76f37d33f64f2d9b3234e29034ab4a73ee9da01a61ab139c27f8c841971e469'
+    }
+
+    /**
+     *  The maximum number of holds that can exist on an account at any time.
+     */
+    get asV2(): number {
+        assert(this.isV2)
+        return this._chain.getConstant('Balances', 'MaxHolds')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Balances', 'MaxHolds') != null
+    }
+}
+
 export class BalancesMaxLocksConstant {
     private readonly _chain: Chain
 
