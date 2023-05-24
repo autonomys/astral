@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { MoonIcon, Bars3BottomRightIcon, SunIcon } from '@heroicons/react/24/outline'
 
 // layout
-import { HeaderDropdownMenu, HeaderChainDropdown, MobileHeader } from 'layout/components'
+import { HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -16,16 +16,37 @@ const Header: FC = () => {
   const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const pathName = location.pathname
-  const isDesktop = useMediaQuery('(min-width: 768px)')
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
 
-  const isHomeActive = pathName === `/${selectedChain.urls.page}`
+  const menuList = [
+    {
+      title: 'Accounts',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.accounts.list}`,
+    },
+    {
+      title: 'Blocks',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.blocks.list}`,
+    },
+    {
+      title: 'Extrinsics',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.extrinsics.list}`,
+    },
+    {
+      title: 'Events',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.events.list}`,
+    },
+    {
+      title: 'Logs',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.logs.list}`,
+    },
+  ]
 
   return (
-    <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] mx-5 md:mx-[50px] z-10">
+    <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-10">
       {isDesktop ? (
-        <div className='container mx-auto flex flex-wrap py-5 flex-col md:flex-row items-center'>
+        <div className='container mx-auto flex flex-wrap justify-between py-5 md:px-[25px] 2xl:px-0 flex-col md:flex-row items-center'>
           <Link
             to={`/${selectedChain.urls.page}`}
             className='flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0'
@@ -34,18 +55,23 @@ const Header: FC = () => {
               <LogoIcon fillColor='currentColor' />
             </span>
           </Link>
-          <nav className='md:ml-auto md:mr-auto flex flex-wrap items-center text-sm justify-center'>
-            <Link
-              to={`/${selectedChain.urls.page}`}
-              className={
-                isHomeActive
-                  ? 'text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] dark:bg-[#DE67E4]'
-                  : 'text-[#282929] text-sm font-semibold mr-5 hover:text-gray-900 dark:text-white'
-              }
-            >
-              Home
-            </Link>
-            <HeaderDropdownMenu />
+          <nav className='flex flex-wrap gap-10 items-center text-sm justify-center'>
+            {menuList.map((item, index) => {
+              const isCurrentPath = pathName === `/${item.link}`
+              return (
+                <Link
+                  key={index}
+                  className={
+                    isCurrentPath
+                      ? 'leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
+                      : 'leading-4 text-[13px] font-semibold text-[#282929] dark:text-white bg-none'
+                  }
+                  to={item.link}
+                >
+                  {item.title}
+                </Link>
+              )
+            })}
           </nav>
           <div className='flex justify-center'>
             <HeaderChainDropdown />
@@ -74,7 +100,7 @@ const Header: FC = () => {
           </div>
         </div>
       ) : (
-        <div className='flex flex-row justify-between items-center'>
+        <div className='flex flex-row justify-between px-5 items-center'>
           <Link
             to={INTERNAL_ROUTES.home}
             className='flex title-font font-medium items-center text-gray-900 dark:text-white'
