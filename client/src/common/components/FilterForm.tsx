@@ -8,7 +8,6 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import FilterIcon from 'common/icons/FilterIcon'
 import { Accordion } from 'common/components'
 import BasicDatepicker from 'common/components/BasicDatepicker'
-import { MODULES } from 'common/constants'
 import { EventWhereInput, ExtrinsicWhereInput } from 'gql/graphql'
 
 dayjs.extend(relativeTime)
@@ -22,6 +21,7 @@ type Props = {
   setWhere: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput | EventWhereInput>>
   setFilters: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput | EventWhereInput>>
   handleAccountChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  modules: string[]
 }
 
 const FilterForm: FC<Props> = ({
@@ -32,6 +32,7 @@ const FilterForm: FC<Props> = ({
   setWhere,
   setFilters,
   handleAccountChange,
+  modules,
 }) => {
   const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
 
@@ -78,6 +79,10 @@ const FilterForm: FC<Props> = ({
   const handleFilter = () => {
     setFilters(where)
   }
+
+  const uniqueModules = new Set(modules)
+  const modulesFormatted = [...uniqueModules].map((module) => ({ value: module, label: module }))
+  const MODULES = [{ label: 'All', value: undefined }, ...modulesFormatted]
 
   return (
     <div className='w-full'>

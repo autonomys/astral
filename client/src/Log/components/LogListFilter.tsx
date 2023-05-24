@@ -6,7 +6,6 @@ import utc from 'dayjs/plugin/utc'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // common
-import { LOG_TYPES } from 'common/constants'
 import { Accordion } from 'common/components'
 import FilterIcon from 'common/icons/FilterIcon'
 import BasicDatepicker from 'common/components/BasicDatepicker'
@@ -18,9 +17,10 @@ type Props = {
   title: React.ReactNode
   filters: LogWhereInput
   setFilters: React.Dispatch<React.SetStateAction<LogWhereInput>>
+  logTypes: string[]
 }
 
-const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
+const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes }) => {
   const [where, setWhere] = useState<LogWhereInput>(filters)
   const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
 
@@ -80,6 +80,9 @@ const LogListFilter: FC<Props> = ({ filters, setFilters, title }) => {
   const handleFilter = () => {
     setFilters(where)
   }
+
+  const modulesFormatted = logTypes.map((module) => ({ value: module, label: module }))
+  const LOG_TYPES = [{ label: 'All', value: undefined }, ...modulesFormatted]
 
   return (
     <div className='w-full'>

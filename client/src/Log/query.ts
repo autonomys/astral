@@ -24,6 +24,9 @@ export const QUERY_LOG_CONNECTION_LIST = gql`
         cursor
       }
     }
+    logTypesQuery {
+      result
+    }
   }
 `
 

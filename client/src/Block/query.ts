@@ -7,7 +7,7 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
         cursor
         node {
           blockchainSize
-          extrinsicRoot
+          extrinsicsRoot
           hash
           height
           id
@@ -46,7 +46,7 @@ export const QUERY_BLOCK_BY_ID = gql`
       hash
       stateRoot
       timestamp
-      extrinsicRoot
+      extrinsicsRoot
       specId
       parentHash
       extrinsicsCount
