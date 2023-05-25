@@ -6,7 +6,7 @@ type Props = {
 
 const Container: FC<Props> = ({ children }) => {
   return (
-    <div className="flex justify-center grow container font-['Montserrat'] mb-20 px-5 xl:px-0 mx-auto">
+    <div className="flex justify-center grow container font-['Montserrat'] mx-auto mb-20 px-5 md:px-[25px] 2xl:px-0">
       {children}
     </div>
   )
