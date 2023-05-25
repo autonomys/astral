@@ -39,6 +39,8 @@ const LogList: FC = () => {
 
   const pageInfo = data.logsConnection.pageInfo
 
+  const logTypes = data.logTypesQuery.result
+
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
     setLastCursor(pageInfo.endCursor)
@@ -72,6 +74,7 @@ const LogList: FC = () => {
             <div className=' font-medium text-[#282929] dark:text-white'>Logs {totalLabel}</div>
           }
           filters={filters}
+          logTypes={logTypes}
           setFilters={setFilters}
         />
       </div>
