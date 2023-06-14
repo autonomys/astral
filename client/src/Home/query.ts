@@ -35,7 +35,7 @@ export const QUERY_HOME = gql`
 `
 
 export const QUERY_HOME_DOMAIN = gql`
-  query HomeQuery($limit: Int!, $offset: Int!, $accountTotal: BigInt!) {
+  query HomeQueryDomain($limit: Int!, $offset: Int!, $accountTotal: BigInt!) {
     blocks(limit: $limit, offset: $offset, orderBy: height_DESC) {
       id
       hash

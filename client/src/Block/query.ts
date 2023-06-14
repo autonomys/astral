@@ -39,7 +39,7 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
 `
 
 export const QUERY_BLOCK_LIST_CONNECTION_DOMAIN = gql`
-  query BlocksConnection($first: Int!, $after: String) {
+  query BlocksConnectionDomain($first: Int!, $after: String) {
     blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
       edges {
         cursor
@@ -100,7 +100,7 @@ export const QUERY_BLOCK_BY_ID = gql`
 `
 
 export const QUERY_BLOCK_BY_ID_DOMAIN = gql`
-  query BlockById($blockId: BigInt!) {
+  query BlockByIdDomain($blockId: BigInt!) {
     blocks(limit: 10, where: { height_eq: $blockId }) {
       id
       height
