@@ -2,7 +2,7 @@
   {
     "title": "Gemini 3d",
     "urls": {
-      "api": "http://localhost:4350/graphql",
+      "api": "http://localhost:4350/graphql", // TODO: change to production
       "page": "gemini-3d"
     },
     "isDomain": true
