@@ -6,9 +6,6 @@ import { callItemWithSignature, contextMock } from '../../mocks/mocks';
 import { getOrCreateAccountFactory } from '../../blocks/utils';
 import { Context } from '../../processor';
 
-const spacePledged = BigInt(1);
-const blockchainSize = BigInt(2);
-
 tap.test('getOrCreateAccount should get Account if store has one', async (t) => {
   const accountId = 'random account id';
 
@@ -57,8 +54,6 @@ tap.test('createBlock should create instance of a Block', (t) => {
     parentHash: BlockHeaderMock.parentHash,
     specId: BlockHeaderMock.specId,
     stateRoot: BlockHeaderMock.stateRoot,
-    spacePledged,
-    blockchainSize,
   });
   t.end();
 });

@@ -58,7 +58,7 @@ tap.test('processExtrinsics should add signer (Account) and signature if origina
 
   const savedExtrinsic = extrinsicsMap.get(callItemWithSignature.extrinsic.id);
 
-  t.type(savedExtrinsic?.signature, 'string');
+  t.type(savedExtrinsic?.signature, 'object');
   t.type(savedExtrinsic?.signer, Account);
 
   t.end();
