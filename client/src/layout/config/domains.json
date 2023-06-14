@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Gemini 3d",
+    "urls": {
+      "api": "http://localhost:4350/graphql",
+      "page": "gemini-3d"
+    },
+    "isDomain": true
+  }
+]

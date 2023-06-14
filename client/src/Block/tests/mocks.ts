@@ -13,7 +13,7 @@ export const SUCCESS_MOCK_DESKTOP = {
             cursor: '1',
             node: {
               blockchainSize: '1306341146624',
-              extrinsicRoot: null,
+              extrinsicsRoot: null,
               hash: '0x684782ad5eb50f85dfbff551caac6389e514c958ec6ad295c061c9686feae2b5',
               height: '1275904',
               id: '0001275904-68478',
@@ -63,7 +63,7 @@ export const SUCCESS_MOCK_MOBILE = {
             cursor: '1',
             node: {
               blockchainSize: '1306341146624',
-              extrinsicRoot: null,
+              extrinsicsRoot: null,
               hash: '0x684782ad5eb50f85dfbff551caac6389e514c958ec6ad295c061c9686feae2b5',
               height: '1275904',
               id: '0001275904-68478',

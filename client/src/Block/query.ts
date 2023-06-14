@@ -7,7 +7,7 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
         cursor
         node {
           blockchainSize
-          extrinsicRoot
+          extrinsicsRoot
           hash
           height
           id
@@ -38,6 +38,39 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
   }
 `
 
+export const QUERY_BLOCK_LIST_CONNECTION_DOMAIN = gql`
+  query BlocksConnection($first: Int!, $after: String) {
+    blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
+      edges {
+        cursor
+        node {
+          extrinsicsRoot
+          hash
+          height
+          id
+          parentHash
+          specId
+          stateRoot
+          timestamp
+          events(limit: 10) {
+            id
+          }
+          extrinsics(limit: 10) {
+            id
+          }
+        }
+      }
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+    }
+  }
+`
+
 export const QUERY_BLOCK_BY_ID = gql`
   query BlockById($blockId: BigInt!) {
     blocks(limit: 10, where: { height_eq: $blockId }) {
@@ -46,7 +79,7 @@ export const QUERY_BLOCK_BY_ID = gql`
       hash
       stateRoot
       timestamp
-      extrinsicRoot
+      extrinsicsRoot
       specId
       parentHash
       extrinsicsCount
@@ -60,6 +93,31 @@ export const QUERY_BLOCK_BY_ID = gql`
         id
       }
       author {
+        id
+      }
+    }
+  }
+`
+
+export const QUERY_BLOCK_BY_ID_DOMAIN = gql`
+  query BlockById($blockId: BigInt!) {
+    blocks(limit: 10, where: { height_eq: $blockId }) {
+      id
+      height
+      hash
+      stateRoot
+      timestamp
+      extrinsicsRoot
+      specId
+      parentHash
+      extrinsicsCount
+      eventsCount
+      logs(limit: 10, orderBy: block_height_DESC) {
+        block {
+          height
+          timestamp
+        }
+        kind
         id
       }
     }

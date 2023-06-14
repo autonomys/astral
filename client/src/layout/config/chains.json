@@ -2,15 +2,17 @@
   {
     "title": "Gemini 3d",
     "urls": {
-      "api": "https://explorer-0.gemini-3d.subspace.network/graphql",
+      "api": "https://squid.gemini-3d.subspace.network/graphql",
       "page": "gemini-3d"
-    }
+    },
+    "isDomain": false
   },
   {
     "title": "Gemini 2a",
     "urls": {
       "api": "https://squid.gemini-2a.subspace.network/graphql",
       "page": "gemini-2a"
-    }
+    },
+    "isDomain": false
   }
 ]

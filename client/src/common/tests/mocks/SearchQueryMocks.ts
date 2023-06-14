@@ -14,7 +14,7 @@ export const BLOCK_BY_ID_SEARCH = {
           hash: '0x5b02567f8d7fd54224f6dbee8ef430053d5fb379c1561dac4e1c9a59db7732b6',
           stateRoot: '0xecbdbb36de00bb6e7a8e8539dd7e4f0f0dda3e7bb728a6e133d4ca740d2a5b52',
           timestamp: '2022-09-04T03:34:13.001000Z',
-          extrinsicRoot: null,
+          extrinsicsRoot: null,
           specId: 'subspace@3',
           parentHash: '0x43d10ffd50990380ffe6c9392145431d630ae67e89dbc9c014cac2a417759101',
           extrinsics: [

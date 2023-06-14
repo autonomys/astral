@@ -59,7 +59,7 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
                 {isDesktop ? block.parentHash : shortString(block.parentHash)}
               </CopyButton>
             </StyledListItem>
-            <StyledListItem title='Extrinsics Root'>{block?.extrinsicRoot}</StyledListItem>
+            <StyledListItem title='Extrinsics Root'>{block?.extrinsicsRoot}</StyledListItem>
             <StyledListItem title='Spec Version'>{block.specId?.toString() || ''}</StyledListItem>
           </List>
         </div>

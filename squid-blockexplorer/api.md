@@ -31,7 +31,7 @@ extrinsics, events, calls, and logs
 | parentHash      | String!         | Parent block hash.                       |
 | specId          | String!         | Specification ID.                        |
 | stateRoot       | String!         | State root hash.                         |
-| extrinsicRoot   | String          | Extrinsic root hash.                     |
+| extrinsicsRoot  | String          | Extrinsic root hash.                     |
 | extrinsics      | [Extrinsic!]!   | Extrinsics included in the block.        |
 | events          | [Event!]!       | Events associated with the block.        |
 | rewards         | [RewardEvent!]! | Reward events associated with the block. |

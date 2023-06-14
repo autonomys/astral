@@ -4,13 +4,14 @@ import { useErrorHandler } from 'react-error-boundary'
 
 // block
 import { BlockTable } from 'Block/components'
-import { QUERY_BLOCK_LIST_CONNECTION } from 'Block/query'
+import { QUERY_BLOCK_LIST_CONNECTION, QUERY_BLOCK_LIST_CONNECTION_DOMAIN } from 'Block/query'
 
 // common
 import { Pagination, Spinner, SearchBar } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import ExportButton from 'common/components/ExportButton'
+import useDomains from 'common/hooks/useDomains'
 
 const BlockList: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -18,7 +19,13 @@ const BlockList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = isDesktop ? 10 : 5
 
-  const { data, error, loading } = useQuery(QUERY_BLOCK_LIST_CONNECTION, {
+  const { selectedChain } = useDomains()
+
+  const BlockListQuery = selectedChain.isDomain
+    ? QUERY_BLOCK_LIST_CONNECTION_DOMAIN
+    : QUERY_BLOCK_LIST_CONNECTION
+
+  const { data, error, loading } = useQuery(BlockListQuery, {
     variables: { first: PAGE_SIZE, after: lastCursor },
     pollInterval: 6000,
   })

@@ -15,7 +15,15 @@ import { Block, BlockList } from 'Block/components'
 import { Extrinsic, ExtrinsicList } from 'Extrinsic/components'
 
 // layout
-import { Layout, Container, Footer, Header, NotFound, HeaderBackground } from 'layout/components'
+import {
+  Layout,
+  Container,
+  Footer,
+  Header,
+  NotFound,
+  HeaderBackground,
+  DomainHeader,
+} from 'layout/components'
 import chains from 'layout/config/chains.json'
 import NotResultsFound from 'layout/components/NotResultsFound'
 import SearchResult from 'layout/components/SearchResult'
@@ -98,6 +106,7 @@ function App() {
       <ScrollToTopWrapper>
         <Layout>
           {/* TODO: add DomainHeader once we have support for domains */}
+          <DomainHeader />
           <UpdateSelectedChainByPath>
             <Header />
             <ErrorBoundary

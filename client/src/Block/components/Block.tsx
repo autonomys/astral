@@ -11,13 +11,18 @@ import { Spinner } from 'common/components'
 import { NotFound } from 'layout/components'
 
 // block
-import { QUERY_BLOCK_BY_ID } from 'Block/query'
+import { QUERY_BLOCK_BY_ID, QUERY_BLOCK_BY_ID_DOMAIN } from 'Block/query'
 import { BlockDetailsCard, BlockDetailsTabs } from 'Block/components'
+import useDomains from 'common/hooks/useDomains'
 
 const Block: FC = () => {
   const { blockId } = useParams()
 
-  const { data, error, loading } = useQuery(QUERY_BLOCK_BY_ID, {
+  const { selectedChain } = useDomains()
+
+  const BlockIdQuery = selectedChain.isDomain ? QUERY_BLOCK_BY_ID_DOMAIN : QUERY_BLOCK_BY_ID
+
+  const { data, error, loading } = useQuery(BlockIdQuery, {
     variables: { blockId: Number(blockId) },
   })
 
