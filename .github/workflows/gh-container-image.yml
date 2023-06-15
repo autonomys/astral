@@ -6,9 +6,9 @@ on:
       - evm-domain
 
 env:
-  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-processor:latest
-  API_SERVER_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-api-server:latest
-  HEALTH_CHECK_NAME: ghcr.io/${{ github.repository_owner }}/health-check:latest
+  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-processor:evm-domain
+  API_SERVER_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-api-server:evm-domain
+  HEALTH_CHECK_NAME: ghcr.io/${{ github.repository_owner }}/health-check:evm-domain
 
 jobs:
   push:
