@@ -12,7 +12,7 @@ export function processExtrinsicsFactory(getOrCreateAccount: (blockHeight: bigin
       
       if (item.extrinsic.signature) {
         console.log('item.extrinsic.signature', item.extrinsic.signature);
-        signer = await getOrCreateAccount(block.height, item.extrinsic.signature.address);
+        signer = await getOrCreateAccount(block.height, item.extrinsic.signature.address.value);
         signature = item.extrinsic.signature.signature;
       }
       const extrinsic = createExtrinsic(item, block, signature, signer);
