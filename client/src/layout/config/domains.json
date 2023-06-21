@@ -1,0 +1,10 @@
+[
+  {
+    "title": "Gemini 3d",
+    "urls": {
+      "api": "https://evm.squid.gemini-3d.subspace.network/graphql",
+      "page": "gemini-3d"
+    },
+    "isDomain": true
+  }
+]

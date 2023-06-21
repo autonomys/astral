@@ -12,6 +12,7 @@ export type Chain = {
     api: string
     page: string
   }
+  isDomain: boolean
 }
 
 export type ChainContextValue = {

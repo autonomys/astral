@@ -27,8 +27,15 @@ Make sure you provide following environmental variables:
 > Please, refer to Subsquid [docs](https://docs.subsquid.io/archives/) to learn, more about Squid Archives
 
 In order to use GraphiQL explorer, run following in a separate terminal:
-```
+```bash
 make serve
+```
+
+## Update runtime configuration
+To update the runtime configuration run:
+
+```bash
+make typegen
 ```
 
 ## Development

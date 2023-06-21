@@ -4,17 +4,23 @@ import { useErrorHandler } from 'react-error-boundary'
 
 // home
 import { HomeBlockList, HomeExtrinsicList, HomeChainInfo } from 'Home/components'
-import { QUERY_HOME } from 'Home/query'
+import { QUERY_HOME, QUERY_HOME_DOMAIN } from 'Home/query'
 import { ACCOUNT_MIN_VAL } from 'Home/constants'
 
 // common
 import { SearchBar, Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import useDomains from 'common/hooks/useDomains'
 
 const Home: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = isDesktop ? 10 : 3
-  const homeQueryResult = useQuery(QUERY_HOME, {
+
+  const { selectedChain } = useDomains()
+
+  const HomeQuery = selectedChain.isDomain ? QUERY_HOME_DOMAIN : QUERY_HOME
+
+  const homeQueryResult = useQuery(HomeQuery, {
     variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
     pollInterval: 6000,
   })
