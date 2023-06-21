@@ -7,11 +7,11 @@ import useDomains from 'common/hooks/useDomains'
 
 // chains
 import domains from 'layout/config/domains.json'
+import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
 
-// TODO: add DomainHeader to the App.tsx once we have support for domains
 const DomainHeader: FC = () => {
   const [isActive, setIsActive] = useState(true)
-  const [domainSelected, setDomainSelected] = useState('All')
+  const [domainSelected, setDomainSelected] = useSafeLocalStorage('domain-selected', 'All')
 
   const { setSelectedChain, chains } = useDomains()
 
@@ -64,13 +64,6 @@ const DomainHeader: FC = () => {
           </button>
         </div>
       </div>
-      {/* <div
-        className={isActive ? 'block bg-white min-h-screen z-9999' : 'hidden'}
-        id='accordion-open-body-1'
-        aria-labelledby='accordion-open-heading-1'
-      >
-        content
-      </div> */}
     </div>
   )
 }

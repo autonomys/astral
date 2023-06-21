@@ -16,9 +16,9 @@ interface HomeChainInfo {
 
 const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   const [block] = data.blocks
-  const spacePledgedVal = Number(block.spacePledged)
+  const spacePledgedVal = Number(block?.spacePledged || 0)
   const spacePledged = formatSpacePledged(spacePledgedVal)
-  const historySizeVal = Number(block.blockchainSize)
+  const historySizeVal = Number(block?.blockchainSize || 0)
   const historySize = formatSpacePledged(historySizeVal)
   const rewardAddresses = numberWithCommas(Number(data.accountsConnection.totalCount))
   const signedExtrinsics = numberWithCommas(Number(data.extrinsicsConnection.totalCount))
