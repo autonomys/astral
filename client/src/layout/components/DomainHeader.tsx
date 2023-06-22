@@ -1,27 +1,73 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-// common
-import { Tabs, Tab } from 'common/components'
+// layout
+import { DOMAINS } from 'layout/constants'
+import BarsLeftIcon from 'common/icons/BarsLeftIcon'
 import useDomains from 'common/hooks/useDomains'
 
-// TODO: add DomainHeader to the App.tsx once we have support for domains
+// chains
+import domains from 'layout/config/domains.json'
+import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
+
 const DomainHeader: FC = () => {
-  const { setSelectedChain, chains } = useDomains()
+  const [isActive, setIsActive] = useState(true)
+  const [domainSelected, setDomainSelected] = useSafeLocalStorage('domain-selected', 'All')
+  const navigate = useNavigate()
+
+  const { setSelectedChain, chains, selectedChain } = useDomains()
+
+  const handleDomainSelected = (domain: string) => {
+    if (domain === 'All') {
+      setSelectedChain(chains[0])
+      setDomainSelected(domain)
+      navigate(`/${selectedChain.urls.page}`)
+      return
+    } else {
+      setDomainSelected(domain)
+      setSelectedChain(domains[0])
+      navigate(`/${selectedChain.urls.page}`)
+    }
+  }
+
   return (
-    <div className='px-4 xl:px-0 z-10'>
-      <Tabs
-        tabStyle='bg-[#241235] rounded-full mt-5 px-4 container mx-auto dark:bg-[#1E254E]'
-        pillStyle='bg-[#241235] text-white dark:bg-[#1E254E]'
-        activePillStyle='bg-[#DE67E4] text-white'
-      >
-        {chains.map((item, index) => (
-          <Tab
-            key={`${item.title}-${index}`}
-            title={item.title}
-            onClick={() => setSelectedChain(item)}
-          ></Tab>
-        ))}
-      </Tabs>
+    <div
+      className='w-full h-[60px] bg-white dark:bg-[#1E254E] z-10'
+      id='accordion-open'
+      data-accordion='open'
+    >
+      <div className='w-full flex justify-between container py-3 items-center px-5 md:px-[25px] 2xl:px-0 mx-auto'>
+        <div className='flex gap-9'>
+          {DOMAINS.map((item, index) => {
+            const isActive = domainSelected === item
+            return (
+              <div className='text-[13px] font-semibold items-center flex' key={`${item}-${index}`}>
+                <button
+                  onClick={() => handleDomainSelected(item)}
+                  className={
+                    isActive
+                      ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
+                      : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
+                  }
+                >
+                  {item}
+                </button>
+              </div>
+            )
+          })}
+        </div>
+        <div className='flex gap-4'>
+          <span className='text-[#857EC2] dark:text-white font-medium text-[13px] leading-4'>
+            All Domains
+          </span>
+          <button
+            onClick={() => setIsActive(!isActive)}
+            className=' w-4 h-4 text-[#241235] dark:text-white'
+          >
+            <BarsLeftIcon />
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
