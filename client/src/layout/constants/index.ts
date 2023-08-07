@@ -1,1 +1,1 @@
-export const DOMAINS = ['All', 'EVM']
+export const DOMAINS = ['Consensus Chain', 'EVM']

@@ -17,7 +17,7 @@ export const QUERY_EVENT_LIST = gql`
 
 export const QUERY_EVENT_CONNECTION_LIST = gql`
   query EventsConnection($first: Int!, $after: String, $where: EventWhereInput) {
-    eventsConnection(orderBy: block_height_DESC, first: $first, after: $after, where: $where) {
+    eventsConnection(orderBy: id_DESC, first: $first, after: $after, where: $where) {
       edges {
         cursor
         node {

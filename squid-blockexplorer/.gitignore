@@ -8,3 +8,6 @@ coverage
 
 devnet/farmer-data
 devnet/node-data
+
+# misc
+.env

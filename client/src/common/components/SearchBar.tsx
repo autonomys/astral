@@ -1,27 +1,23 @@
 import { Fragment, FC } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
-import { Formik, Form } from 'formik'
+import { Formik, Form, Field } from 'formik'
 import * as Yup from 'yup'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 
 // common
 import useSearch from 'common/hooks/useSearch'
-import useMediaQuery from 'common/hooks/useMediaQuery'
 import { SearchType, searchTypes } from 'common/constants'
-import useDomains from 'common/hooks/useDomains'
+import SearchInput from './SearchInput'
 
-interface FormValues {
+export interface FormValues {
   searchTerm: string
   searchType: SearchType
 }
 
 const SearchBar: FC = () => {
-  const { selectedChain } = useDomains()
   const initialValues: FormValues = { searchTerm: '', searchType: searchTypes[0] }
-
   const { handleSearch, isSearching } = useSearch()
-  const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const searchValidationSchema = Yup.object().shape({
     searchTerm: Yup.string().trim().required('Search term is required'),
@@ -37,7 +33,7 @@ const SearchBar: FC = () => {
       validationSchema={searchValidationSchema}
       onSubmit={handleSubmit}
     >
-      {({ errors, touched, values, handleSubmit, handleChange, setFieldValue }) => (
+      {({ errors, touched, values, handleSubmit, setFieldValue }) => (
         <Form className='w-full my-8' onSubmit={handleSubmit} data-testid='testSearchForm'>
           <div className='flex w-full items-center'>
             <Listbox
@@ -99,26 +95,7 @@ const SearchBar: FC = () => {
             </Listbox>
             <div className='ml-4 w-full'>
               <div className='relative'>
-                <input
-                  data-testid='search-term-input'
-                  id='searchTerm'
-                  className={`
-                    dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg
-                    ${
-                      errors.searchTerm &&
-                      touched.searchTerm &&
-                      'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
-                    } 
-                  `}
-                  placeholder={
-                    isDesktop
-                      ? `Search for Block / Account in ${selectedChain.urls.page} ...`
-                      : 'Search...'
-                  }
-                  name='searchTerm'
-                  value={values.searchTerm}
-                  onChange={handleChange}
-                />
+                <Field component={SearchInput} name='searchTerm' />
                 <button
                   disabled={isSearching}
                   type='submit'
