@@ -18,7 +18,7 @@ const DomainHeader: FC = () => {
   const { setSelectedChain, chains, selectedChain } = useDomains()
 
   const handleDomainSelected = (domain: string) => {
-    if (domain === 'All') {
+    if (domain === 'Consensus Chain') {
       setSelectedChain(chains[0])
       setDomainSelected(domain)
       navigate(`/${selectedChain.urls.page}`)
