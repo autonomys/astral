@@ -66,84 +66,80 @@ const Footer: FC = () => {
               <h2 className='mb-6 col-span-2 title-font uppercase font-semibold text-white text-xs'>
                 Social:
               </h2>
-              <div>
-                <ul className='text-gray-600 dark:text-gray-400 space-y-4'>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.twitter}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Twitter
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.discord}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Discord
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.telegram}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Telegram
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.github}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Github
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <ul className='text-gray-600 dark:text-gray-400 space-y-4'>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.medium}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Medium
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.youtube}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Youtube
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.linkedin}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      LinkedIn
-                    </a>
-                  </li>
-                </ul>
-              </div>
+              <ul className='text-gray-600 dark:text-gray-400 space-y-4'>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.twitter}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    Twitter
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.discord}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    Discord
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.telegram}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    Telegram
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.github}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    Github
+                  </a>
+                </li>
+              </ul>
+              <ul className='text-gray-600 dark:text-gray-400 space-y-4'>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.medium}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    Medium
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.youtube}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    Youtube
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.social.linkedin}
+                    className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
+                    rel='noreferrer'
+                  >
+                    LinkedIn
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
