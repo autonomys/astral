@@ -1,6 +1,7 @@
-import { FC } from 'react'
 import dayjs from 'dayjs'
 import { Link } from 'react-router-dom'
+
+import type { FC } from 'react'
 
 // common
 import { EXTERNAL_ROUTES } from 'common/routes'
@@ -61,13 +62,13 @@ const Footer: FC = () => {
                 </li>
               </ul>
             </div>
-            <div className='grid grid-cols-2 gap-6'>
+            <div className='grid grid-cols-2 gap-x-6'>
+              <h2 className='mb-6 col-span-2 title-font uppercase font-semibold text-white text-xs'>
+                Social:
+              </h2>
               <div>
-                <h2 className='mb-6 title-font uppercase font-semibold text-white text-xs'>
-                  Social:
-                </h2>
-                <ul className='text-gray-600 dark:text-gray-400'>
-                  <li className='mb-4'>
+                <ul className='text-gray-600 dark:text-gray-400 space-y-4'>
+                  <li>
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.twitter}
@@ -77,7 +78,7 @@ const Footer: FC = () => {
                       Twitter
                     </a>
                   </li>
-                  <li className='mb-4'>
+                  <li>
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.discord}
@@ -87,7 +88,7 @@ const Footer: FC = () => {
                       Discord
                     </a>
                   </li>
-                  <li className='mb-4'>
+                  <li>
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.telegram}
@@ -110,18 +111,8 @@ const Footer: FC = () => {
                 </ul>
               </div>
               <div>
-                <ul className='text-gray-600 dark:text-gray-400 mt-11'>
-                  <li className='mb-4'>
-                    <a
-                      target='_blank'
-                      href={EXTERNAL_ROUTES.social.reddit}
-                      className='text-[#ffffffb3] text-xs hover:text-[#DE67E4]'
-                      rel='noreferrer'
-                    >
-                      Reddit
-                    </a>
-                  </li>
-                  <li className='mb-4'>
+                <ul className='text-gray-600 dark:text-gray-400 space-y-4'>
+                  <li>
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.medium}
@@ -131,7 +122,7 @@ const Footer: FC = () => {
                       Medium
                     </a>
                   </li>
-                  <li className='mb-4'>
+                  <li>
                     <a
                       target='_blank'
                       href={EXTERNAL_ROUTES.social.youtube}
