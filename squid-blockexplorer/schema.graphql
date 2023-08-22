@@ -1,5 +1,5 @@
 type Account @entity {
-  id: ID!
+  id: ID! @index
   free: BigInt
   reserved: BigInt
   total: BigInt @index
@@ -13,7 +13,7 @@ type Account @entity {
 }
 
 type Block @entity {
-  id: ID!
+  id: ID! @index
   height: BigInt! @index
   timestamp: DateTime!
   hash: String!
@@ -59,9 +59,9 @@ type Extrinsic @entity {
 
 type Event @entity {
   id: ID! @index
-  indexInBlock: Int!
+  indexInBlock: Int! @index
   name: String!
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   phase: String!
   pos: Int
   args: JSON
@@ -74,7 +74,7 @@ type RewardEvent @entity {
   id: ID! @index
   indexInBlock: Int!
   name: String!
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   phase: String!
   pos: Int
   block: Block
@@ -87,20 +87,20 @@ type RewardEvent @entity {
 type Call @entity {
   id: ID! @index
   name: String!
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   success: Boolean!
   args: JSON
   block: Block!
   extrinsic: Extrinsic!
   error: JSON
-  signer: String
+  signer: String @index
   parent: Call
   calls: [Call] @derivedFrom(field: "parent") @cardinality(value: 10)
   pos: Int
 }
 
 type Log @entity {
-  kind: String!
+  kind: String! @index
   value: JSON
   block: Block!
 }
