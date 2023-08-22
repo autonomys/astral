@@ -30,6 +30,8 @@ const DomainHeader: FC = () => {
     }
   }
 
+  const domainAvailable = selectedChain.title !== 'Gemini 3f' && selectedChain.title !== 'Gemini 2a'
+
   return (
     <div
       className='w-full h-[60px] bg-white dark:bg-[#1E254E] z-10'
@@ -43,11 +45,14 @@ const DomainHeader: FC = () => {
             return (
               <div className='text-[13px] font-semibold items-center flex' key={`${item}-${index}`}>
                 <button
+                  disabled={!domainAvailable}
                   onClick={() => handleDomainSelected(item)}
                   className={
                     isActive
                       ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
-                      : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
+                      : domainAvailable
+                      ? 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
+                      : 'bg-white text-[#5b6161] dark:text-white/50 dark:bg-[#1E254E]'
                   }
                 >
                   {item}
