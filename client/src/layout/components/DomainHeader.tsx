@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // layout
@@ -22,16 +22,20 @@ const DomainHeader: FC = () => {
 
   const handleDomainSelected = (domain: string) => {
     if (domain === 'Consensus Chain') {
-      setSelectedChain(selectedChain)
       setDomainSelected(domain)
-      navigate(`/${selectedChain.urls.page}`)
-      return
     } else {
       setDomainSelected(domain)
       setSelectedChain(domains[0])
-      navigate(`/${selectedChain.urls.page}`)
     }
+    navigate(`/${selectedChain.urls.page}`)
   }
+
+  useEffect(() => {
+    if (selectedChain.title !== 'Gemini 3d') {
+      setDomainSelected('Consensus Chain')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChain.title])
 
   const domainAvailable = selectedChain.title !== 'Gemini 3f' && selectedChain.title !== 'Gemini 2a'
 
