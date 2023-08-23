@@ -99,7 +99,7 @@ export function createCall(
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = 2n ** 64n - 1n;
   const SLOT_PROBABILITY = [1n, 6n];
-  const PIECE_SIZE = 31744n;
+  const PIECE_SIZE = 65536n;
 
   return BigInt(
     ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
