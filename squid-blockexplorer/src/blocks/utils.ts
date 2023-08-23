@@ -113,16 +113,26 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
   * @return {bigint} - size of the history in bytes
   */
 export function calcHistorySize(segmentsCount: number): bigint {
-  const KZG_WITNESS_SIZE = 48;
-  const KZG_COMMITMENT_SIZE = 48;
-  const PIECE_SIZE = 32 * 1024;
-  const PIECES_IN_SEGMENT = 256;
-  const RECORD_SIZE = PIECE_SIZE - (KZG_WITNESS_SIZE + KZG_COMMITMENT_SIZE);
-  const RECORDED_HISTORY_SEGMENT_SIZE = (RECORD_SIZE * PIECES_IN_SEGMENT) / 2;
-  const SEGMENT_SIZE =
-    (RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE) * PIECE_SIZE * 2;
 
-  return BigInt(segmentsCount * SEGMENT_SIZE);
+  const SLOT_PROBABILITY = BigInt(1/6);
+  const PIECE_SIZE = BigInt(32 * 32768);
+ 
+  const RECORD_BUCKETS = BigInt(Math.pow(2,15)*2);
+  const RECORD_CHUNKS = BigInt(Math.pow(2,15));
+  const SOLUTION_RANGE = BigInt(8);
+  const SCALAR = BigInt(32);
+
+  const history_size = BigInt(segmentsCount)
+        * PIECE_SIZE
+        * SLOT_PROBABILITY
+        / RECORD_BUCKETS
+        * RECORD_CHUNKS
+        / SOLUTION_RANGE
+        / SLOT_PROBABILITY
+        * SCALAR
+        / SOLUTION_RANGE;
+
+  return history_size;
 }
 
 /**
