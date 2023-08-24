@@ -105,7 +105,7 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
 
   const RECORD_NUM_S_BUCKETS = BigInt(65536);
   const RECORD_NUM_CHUNKS = BigInt(32768);
-  const SOLUTION_RANGE = BigInt(8);
+  const SIZE_OF_SOLUTION_RANGE = BigInt(8);
   const SCALAR_FULL_BYTES = BigInt(32);
 
   const history_size =
@@ -114,7 +114,7 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
     / solutionRange
     / SLOT_PROBABILITY[1]
     * SCALAR_FULL_BYTES
-    / SOLUTION_RANGE;
+    / SIZE_OF_SOLUTION_RANGE;
 
   return history_size;
 }
