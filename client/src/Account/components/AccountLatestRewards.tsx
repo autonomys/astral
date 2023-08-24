@@ -79,6 +79,7 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
         </div>
       </div>
       <button
+        disabled={!rewards.length}
         onClick={() =>
           navigate(INTERNAL_ROUTES.accounts.rewards.page(selectedChain.urls.page, accountId || ''))
         }

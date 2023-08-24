@@ -29,7 +29,7 @@ const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => 
         <div className='w-full flex flex-col lg:flex-row md:justify-between md:items-center'>
           <div className='hidden lg:flex gap-4 items-baseline'>
             <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
-              {numberWithCommas(bigNumberToNumber(total, 18))}
+              {total ? numberWithCommas(bigNumberToNumber(total, 18)) : 0}
             </div>
             <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
           </div>
