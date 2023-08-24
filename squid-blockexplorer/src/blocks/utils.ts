@@ -108,10 +108,9 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
   const SCALAR = BigInt(32);
 
   const history_size =
-    ((((((MAX_U64 * SLOT_PROBABILITY[0]) /
+    ((((MAX_U64 * SLOT_PROBABILITY[0]) /
       SLOT_PROBABILITY[1] /
-      solutionRange) *
-      PIECE_SIZE) /
+      (solutionRange * PIECE_SIZE) /
       RECORD_BUCKETS) *
       RECORD_CHUNKS) /
       SOLUTION_RANGE) *
