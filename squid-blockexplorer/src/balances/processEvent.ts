@@ -1,5 +1,4 @@
 import {
-  BalancesBalanceSetEvent,
   BalancesDepositEvent,
   BalancesEndowedEvent,
   BalancesReservedEvent,
@@ -71,7 +70,6 @@ class UnknownVersionError extends Error {
 }
 
 const eventTypes = {
-  // [BALANCE_EVENTS.BalanceSet]: BalancesBalanceSetEvent,
   [BALANCE_EVENTS.Deposit]: BalancesDepositEvent,
   [BALANCE_EVENTS.Reserved]: BalancesReservedEvent,
   [BALANCE_EVENTS.Unreserved]: BalancesUnreservedEvent,
@@ -82,7 +80,6 @@ const eventTypes = {
 export function processEventFactory(balanceEventHandler: BalanceEventHandler) {
   return function processEvent(item: EventItem, accountIdsHex: Set<string>) {
     switch (item.name) {
-      // case BALANCE_EVENTS.BalanceSet:
       case BALANCE_EVENTS.Deposit:
       case BALANCE_EVENTS.Reserved:
       case BALANCE_EVENTS.Unreserved:
