@@ -92,6 +92,7 @@ export function createCall(
 }
 
 const PIECE_SIZE = BigInt(1048576);
+const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
 
 /**
  * Calculates the space pledged by a solution
@@ -100,7 +101,7 @@ const PIECE_SIZE = BigInt(1048576);
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = BigInt(2 ** 64 - 1);
-  const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
+  
 
   return BigInt(
     ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
@@ -115,20 +116,19 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
   */
 export function calcHistorySize(segmentsCount: number): bigint {
 
-  const SLOT_PROBABILITY = BigInt(1) / BigInt(6);
- 
+
   const RECORD_BUCKETS = BigInt(65536);
   const RECORD_CHUNKS = BigInt(32768);
   const SOLUTION_RANGE = BigInt(8);
   const SCALAR = BigInt(32);
 
   const history_size = BigInt(segmentsCount)
-        * PIECE_SIZE
-        * SLOT_PROBABILITY
+        * (PIECE_SIZE
+        * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1]
         / RECORD_BUCKETS
         * RECORD_CHUNKS
         / SOLUTION_RANGE
-        / SLOT_PROBABILITY
+        / SLOT_PROBABILITY[0] / SLOT_PROBABILITY[1]
         * SCALAR
         / SOLUTION_RANGE;
 
