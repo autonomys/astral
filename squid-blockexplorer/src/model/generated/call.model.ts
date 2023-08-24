@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_, OneToMany as OneToMany_} from "typeorm"
 import {Block} from "./block.model"
 import {Extrinsic} from "./extrinsic.model"
 
@@ -14,6 +14,7 @@ export class Call {
     @Column_("text", {nullable: false})
     name!: string
 
+    @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
@@ -34,6 +35,7 @@ export class Call {
     @Column_("jsonb", {nullable: true})
     error!: unknown | undefined | null
 
+    @Index_()
     @Column_("text", {nullable: true})
     signer!: string | undefined | null
 
