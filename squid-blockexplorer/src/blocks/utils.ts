@@ -108,11 +108,12 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
   const SCALAR = BigInt(32);
 
   const history_size =
-    (MAX_U64 * SLOT_PROBABILITY[0]) /
-    SLOT_PROBABILITY[1] /
-    (solutionRange * PIECE_SIZE) /
-    (RECORD_BUCKETS * RECORD_CHUNKS) /
-    (SOLUTION_RANGE * SCALAR);
+    MAX_U64 * PIECE_SIZE * SLOT_PROBABILITY[0]
+    / RECORD_BUCKETS * RECORD_CHUNKS
+    / solutionRange
+    / SLOT_PROBABILITY[1]
+    * SCALAR
+    / SOLUTION_RANGE;
 
   return history_size;
 }
@@ -179,10 +180,7 @@ export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
  * const account = await getOrCreateAccount(blockHeight, accountId);
  */
 export function getOrCreateAccountFactory(ctx: Context) {
-  return async function getOrCreateAccount(
-    blockHeight: bigint,
-    accountId: string
-  ): Promise<Account> {
+  return async function getOrCreateAccount(blockHeight: bigint, accountId: string): Promise<Account> {
     let account = await ctx.store.get(Account, accountId);
 
     if (!account) {
