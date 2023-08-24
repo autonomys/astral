@@ -95,24 +95,25 @@ const PIECE_SIZE = BigInt(1048576);
 const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
 
 /**
- * Calculates the space pledged by a solution
+ * Calculates the space pledged by a solution range, based on monorepo calculation
+ * in function TotalSpacePledged: https://github.com/subspace/subspace/blob/f782f7297a6d61d8f22a3b10d201396fe30708fd/crates/subspace-runtime/src/lib.rs#L396-L399
  * @param {bigint} solutionRange - range of the solution
  * @return {bigint} - space pledged in bytes
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = BigInt(2 ** 64 - 1);
 
-  const RECORD_BUCKETS = BigInt(65536);
-  const RECORD_CHUNKS = BigInt(32768);
+  const RECORD_NUM_S_BUCKETS = BigInt(65536);
+  const RECORD_NUM_CHUNKS = BigInt(32768);
   const SOLUTION_RANGE = BigInt(8);
-  const SCALAR = BigInt(32);
+  const SCALAR_FULL_BYTES = BigInt(32);
 
   const history_size =
     MAX_U64 * PIECE_SIZE * SLOT_PROBABILITY[0]
-    / RECORD_BUCKETS * RECORD_CHUNKS
+    / RECORD_NUM_S_BUCKETS * RECORD_NUM_CHUNKS
     / solutionRange
     / SLOT_PROBABILITY[1]
-    * SCALAR
+    * SCALAR_FULL_BYTES
     / SOLUTION_RANGE;
 
   return history_size;
