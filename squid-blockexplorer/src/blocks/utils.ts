@@ -101,38 +101,35 @@ const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = BigInt(2 ** 64 - 1);
-  
-
-  return BigInt(
-    ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
-    PIECE_SIZE
-  );
-}
-
-/*
-  * Calculates the size of the history in bytes
-  * @param {number} segmentsCount - number of segments in the history
-  * @return {bigint} - size of the history in bytes
-  */
-export function calcHistorySize(segmentsCount: number): bigint {
-
 
   const RECORD_BUCKETS = BigInt(65536);
   const RECORD_CHUNKS = BigInt(32768);
   const SOLUTION_RANGE = BigInt(8);
   const SCALAR = BigInt(32);
 
-  const history_size = BigInt(segmentsCount)
-        * (PIECE_SIZE
-        * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1]
-        / RECORD_BUCKETS
-        * RECORD_CHUNKS
-        / SOLUTION_RANGE
-        / SLOT_PROBABILITY[0] / SLOT_PROBABILITY[1]
-        * SCALAR
-        / SOLUTION_RANGE;
+  const history_size =
+    ((((((MAX_U64 * SLOT_PROBABILITY[0]) /
+      SLOT_PROBABILITY[1] /
+      solutionRange) *
+      PIECE_SIZE) /
+      RECORD_BUCKETS) *
+      RECORD_CHUNKS) /
+      SOLUTION_RANGE) *
+    SCALAR;
 
   return history_size;
+}
+
+/*
+ * Calculates the size of the history in bytes
+ * @param {number} segmentsCount - number of segments in the history
+ * @return {bigint} - size of the history in bytes
+ */
+export function calcHistorySize(segmentsCount: number): bigint {
+  const segmentCountBigInt = BigInt(segmentsCount);
+  const PIECES_IN_SEGMENT = BigInt(256);
+
+  return PIECE_SIZE * PIECES_IN_SEGMENT * segmentCountBigInt;
 }
 
 /**
@@ -185,7 +182,10 @@ export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
  * const account = await getOrCreateAccount(blockHeight, accountId);
  */
 export function getOrCreateAccountFactory(ctx: Context) {
-  return async function getOrCreateAccount(blockHeight: bigint, accountId: string): Promise<Account> {
+  return async function getOrCreateAccount(
+    blockHeight: bigint,
+    accountId: string
+  ): Promise<Account> {
     let account = await ctx.store.get(Account, accountId);
 
     if (!account) {
