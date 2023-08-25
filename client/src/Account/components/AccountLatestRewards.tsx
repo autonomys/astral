@@ -78,15 +78,22 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
           </ol>
         </div>
       </div>
-      <button
-        disabled={!rewards.length}
-        onClick={() =>
-          navigate(INTERNAL_ROUTES.accounts.rewards.page(selectedChain.urls.page, accountId || ''))
-        }
-        className='w-full bg-[#F3FBFF] rounded-[20px] py-4 mt-5 dark:bg-[#ffffff1a] dark:text-white'
-      >
-        See All Rewards
-      </button>
+      {rewards.length > 0 ? (
+        <button
+          onClick={() =>
+            navigate(
+              INTERNAL_ROUTES.accounts.rewards.page(selectedChain.urls.page, accountId || ''),
+            )
+          }
+          className='w-full bg-[#F3FBFF] rounded-[20px] py-4 mt-5 dark:bg-[#ffffff1a] dark:text-white'
+        >
+          See All Rewards
+        </button>
+      ) : (
+        <div className='w-full h-full align-middle flex justify-center rounded-[20px] py-4 mt-5 text-[13px] font-semibold text-gray-900 dark:text-white'>
+          No Rewards
+        </div>
+      )}
     </div>
   )
 }

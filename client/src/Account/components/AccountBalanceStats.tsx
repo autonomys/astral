@@ -43,12 +43,15 @@ const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
             <div className='mr-4 w-1 bg-[#E970F8] h-[30px]' />
             <StatItem
               title='Free'
-              value={`${numberWithCommas(accountFree)} tSSC (${freePercent}%)`}
+              value={`${numberWithCommas(accountFree)} tSSC (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
             <div className='mr-4 w-1 bg-[#D9F0FC] h-[30px]' />
-            <StatItem title='Reserved' value={`${accountReserved} tSSC (${reservedPercent}%)`} />
+            <StatItem
+              title='Reserved'
+              value={`${accountReserved} tSSC (${reservedPercent.toFixed(2)}%)`}
+            />
           </div>
         </div>
       </div>

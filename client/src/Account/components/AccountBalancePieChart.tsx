@@ -53,20 +53,26 @@ const AccountBalancePieChart: FC<Props> = ({ account }) => {
 
   return (
     <div className='h-80 w-2/4 lg:h-[400px] lg:w-full'>
-      <ResponsivePie
-        data={isEmpty ? emptyState : data}
-        enableArcLinkLabels={isEmpty}
-        margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
-        innerRadius={0}
-        padAngle={0}
-        cornerRadius={3}
-        activeOuterRadiusOffset={8}
-        colors={{ datum: 'data.color' }}
-        enableArcLabels={false}
-        sortByValue={true}
-        // do not render tooltip if there is no data
-        tooltip={isEmpty ? () => null : undefined}
-      />
+      {!isEmpty ? (
+        <ResponsivePie
+          data={isEmpty ? emptyState : data}
+          enableArcLinkLabels={isEmpty}
+          margin={{ top: 20, right: 0, bottom: 40, left: 0 }}
+          innerRadius={0}
+          padAngle={0}
+          cornerRadius={3}
+          activeOuterRadiusOffset={8}
+          colors={{ datum: 'data.color' }}
+          enableArcLabels={false}
+          sortByValue={true}
+          // do not render tooltip if there is no data
+          tooltip={isEmpty ? () => null : undefined}
+        />
+      ) : (
+        <div className='flex justify-center items-center h-full'>
+          <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>No balance</div>
+        </div>
+      )}
     </div>
   )
 }
