@@ -17,12 +17,7 @@ export const QUERY_ACCOUNT_LIST = gql`
 
 export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
   query AccountsConnection($first: Int!, $after: String) {
-    accountsConnection(
-      orderBy: total_DESC
-      first: $first
-      after: $after
-      where: { total_isNull: false }
-    ) {
+    accountsConnection(orderBy: total_ASC, first: $first, after: $after) {
       edges {
         cursor
         node {

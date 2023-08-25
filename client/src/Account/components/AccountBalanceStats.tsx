@@ -17,8 +17,8 @@ const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
   const accountTotal = bigNumberToNumber(account.total || 0, 18)
   const accountFree = bigNumberToNumber(account.free || 0, 18)
   const accountReserved = bigNumberToNumber(account.reserved || 0, 18)
-  const freePercent = (100 * accountFree) / accountTotal
-  const reservedPercent = (100 * accountReserved) / accountTotal
+  const freePercent = accountTotal ? (100 * accountFree) / accountTotal : 0
+  const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
 
   const backgroundStyle = !isDesktop
     ? 'dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-[20px]'
@@ -43,12 +43,15 @@ const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
             <div className='mr-4 w-1 bg-[#E970F8] h-[30px]' />
             <StatItem
               title='Free'
-              value={`${numberWithCommas(accountFree)} tSSC (${freePercent}%)`}
+              value={`${numberWithCommas(accountFree)} tSSC (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
             <div className='mr-4 w-1 bg-[#D9F0FC] h-[30px]' />
-            <StatItem title='Reserved' value={`${accountReserved} tSSC (${reservedPercent}%)`} />
+            <StatItem
+              title='Reserved'
+              value={`${accountReserved} tSSC (${reservedPercent.toFixed(2)}%)`}
+            />
           </div>
         </div>
       </div>
