@@ -91,38 +91,44 @@ export function createCall(
   });
 }
 
+const PIECE_SIZE = BigInt(1048576);
+const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
+
 /**
- * Calculates the space pledged by a solution
+ * Calculates the space pledged by a solution range, based on monorepo calculation
+ * in function TotalSpacePledged: https://github.com/subspace/subspace/blob/f782f7297a6d61d8f22a3b10d201396fe30708fd/crates/subspace-runtime/src/lib.rs#L396-L399
  * @param {bigint} solutionRange - range of the solution
  * @return {bigint} - space pledged in bytes
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
-  const MAX_U64 = 2n ** 64n - 1n;
-  const SLOT_PROBABILITY = [1n, 6n];
-  const PIECE_SIZE = 31744n;
+  const MAX_U64 = BigInt(2 ** 64 - 1);
 
-  return BigInt(
-    ((MAX_U64 * SLOT_PROBABILITY[0]) / SLOT_PROBABILITY[1] / solutionRange) *
-    PIECE_SIZE
-  );
+  const RECORD_NUM_S_BUCKETS = BigInt(65536);
+  const RECORD_NUM_CHUNKS = BigInt(32768);
+  const SIZE_OF_SOLUTION_RANGE = BigInt(8);
+  const SCALAR_FULL_BYTES = BigInt(32);
+
+  const history_size =
+    MAX_U64 * PIECE_SIZE * SLOT_PROBABILITY[0]
+    / RECORD_NUM_S_BUCKETS * RECORD_NUM_CHUNKS
+    / solutionRange
+    / SLOT_PROBABILITY[1]
+    * SCALAR_FULL_BYTES
+    / SIZE_OF_SOLUTION_RANGE;
+
+  return history_size;
 }
 
 /*
-  * Calculates the size of the history in bytes
-  * @param {number} segmentsCount - number of segments in the history
-  * @return {bigint} - size of the history in bytes
-  */
+ * Calculates the size of the history in bytes
+ * @param {number} segmentsCount - number of segments in the history
+ * @return {bigint} - size of the history in bytes
+ */
 export function calcHistorySize(segmentsCount: number): bigint {
-  const KZG_WITNESS_SIZE = 48;
-  const KZG_COMMITMENT_SIZE = 48;
-  const PIECE_SIZE = 32 * 1024;
-  const PIECES_IN_SEGMENT = 256;
-  const RECORD_SIZE = PIECE_SIZE - (KZG_WITNESS_SIZE + KZG_COMMITMENT_SIZE);
-  const RECORDED_HISTORY_SEGMENT_SIZE = (RECORD_SIZE * PIECES_IN_SEGMENT) / 2;
-  const SEGMENT_SIZE =
-    (RECORDED_HISTORY_SEGMENT_SIZE / RECORD_SIZE) * PIECE_SIZE * 2;
+  const segmentCountBigInt = BigInt(segmentsCount);
+  const PIECES_IN_SEGMENT = BigInt(256);
 
-  return BigInt(segmentsCount * SEGMENT_SIZE);
+  return PIECE_SIZE * PIECES_IN_SEGMENT * segmentCountBigInt;
 }
 
 /**
