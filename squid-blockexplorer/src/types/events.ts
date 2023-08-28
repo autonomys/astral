@@ -1,7 +1,6 @@
 import assert from 'assert'
 import {Chain, ChainContext, EventContext, Event, Result, Option} from './support'
 import * as v1 from './v1'
-import * as v2 from './v2'
 
 export class BalancesBalanceSetEvent {
     private readonly _chain: Chain
@@ -20,29 +19,14 @@ export class BalancesBalanceSetEvent {
      * A balance was set by root.
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Balances.BalanceSet') === '1e2b5d5a07046e6d6e5507661d3f3feaddfb41fc609a2336b24957322080ca77'
-    }
-
-    /**
-     * A balance was set by root.
-     */
-    get asV1(): {who: Uint8Array, free: bigint, reserved: bigint} {
-        assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * A balance was set by root.
-     */
-    get isV2(): boolean {
         return this._chain.getEventHash('Balances.BalanceSet') === '8c52e43e845654720e1db5c5bd166f80eb777baf474e93ce4d20fd385601a8fb'
     }
 
     /**
      * A balance was set by root.
      */
-    get asV2(): {who: Uint8Array, free: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, free: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -63,15 +47,15 @@ export class BalancesBurnedEvent {
     /**
      * Some amount was burned from an account.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Burned') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
      * Some amount was burned from an account.
      */
-    get asV2(): {who: Uint8Array, amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -165,6 +149,35 @@ export class BalancesEndowedEvent {
     }
 }
 
+export class BalancesFrozenEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Frozen')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was frozen.
+     */
+    get isV1(): boolean {
+        return this._chain.getEventHash('Balances.Frozen') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was frozen.
+     */
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class BalancesIssuedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -181,15 +194,15 @@ export class BalancesIssuedEvent {
     /**
      * Total issuance was increased by `amount`, creating a credit to be balanced.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Issued') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
     }
 
     /**
      * Total issuance was increased by `amount`, creating a credit to be balanced.
      */
-    get asV2(): {amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -210,15 +223,15 @@ export class BalancesLockedEvent {
     /**
      * Some balance was locked.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Locked') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
      * Some balance was locked.
      */
-    get asV2(): {who: Uint8Array, amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -239,15 +252,15 @@ export class BalancesMintedEvent {
     /**
      * Some amount was minted into an account.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Minted') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
      * Some amount was minted into an account.
      */
-    get asV2(): {who: Uint8Array, amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -268,15 +281,15 @@ export class BalancesRescindedEvent {
     /**
      * Total issuance was decreased by `amount`, creating a debt to be balanced.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Rescinded') === 'a3bdd43eed59e7b65720eef9b2dfe72389ca71ac9dbe7fe2874438aae4f18886'
     }
 
     /**
      * Total issuance was decreased by `amount`, creating a debt to be balanced.
      */
-    get asV2(): {amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -357,15 +370,15 @@ export class BalancesRestoredEvent {
     /**
      * Some amount was restored into an account.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Restored') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
      * Some amount was restored into an account.
      */
-    get asV2(): {who: Uint8Array, amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -415,15 +428,44 @@ export class BalancesSuspendedEvent {
     /**
      * Some amount was suspended from an account (it can be restored later).
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Suspended') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
      * Some amount was suspended from an account (it can be restored later).
      */
-    get asV2(): {who: Uint8Array, amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class BalancesThawedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Balances.Thawed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * Some balance was thawed.
+     */
+    get isV1(): boolean {
+        return this._chain.getEventHash('Balances.Thawed') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+    }
+
+    /**
+     * Some balance was thawed.
+     */
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -473,15 +515,15 @@ export class BalancesUnlockedEvent {
     /**
      * Some balance was unlocked.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Unlocked') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
     }
 
     /**
      * Some balance was unlocked.
      */
-    get asV2(): {who: Uint8Array, amount: bigint} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array, amount: bigint} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -531,15 +573,15 @@ export class BalancesUpgradedEvent {
     /**
      * An account was upgraded.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this._chain.getEventHash('Balances.Upgraded') === 'b8a0d2208835f6ada60dd21cd93533d703777b3779109a7c6a2f26bad68c2f3b'
     }
 
     /**
      * An account was upgraded.
      */
-    get asV2(): {who: Uint8Array} {
-        assert(this.isV2)
+    get asV1(): {who: Uint8Array} {
+        assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -573,35 +615,6 @@ export class BalancesWithdrawEvent {
     }
 }
 
-export class DomainsBundleEquivocationProofProcessedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Domains.BundleEquivocationProofProcessed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * A bundle equivocation proof was processed.
-     */
-    get isV1(): boolean {
-        return this._chain.getEventHash('Domains.BundleEquivocationProofProcessed') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     * A bundle equivocation proof was processed.
-     */
-    get asV1(): null {
-        assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
 export class DomainsBundleStoredEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -619,19 +632,19 @@ export class DomainsBundleStoredEvent {
      * A domain bundle was included.
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Domains.BundleStored') === 'c7902f39bcf2d9d73482bb09696b6123ae56c3de573a1db1869402cdc2a0b3c6'
+        return this._chain.getEventHash('Domains.BundleStored') === '77b3a0cb165b2ed52f524a2328625f604ec2360c2aef78db15de1f3af4950455'
     }
 
     /**
      * A domain bundle was included.
      */
-    get asV1(): {domainId: number, bundleHash: Uint8Array, bundleAuthor: Uint8Array} {
+    get asV1(): {domainId: number, bundleHash: Uint8Array, bundleAuthor: bigint} {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class DomainsInvalidTransactionProofProcessedEvent {
+export class DomainsDomainEpochCompletedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -639,22 +652,269 @@ export class DomainsInvalidTransactionProofProcessedEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'Domains.InvalidTransactionProofProcessed')
+        assert(event.name === 'Domains.DomainEpochCompleted')
         this._chain = ctx._chain
         this.event = event
     }
 
-    /**
-     * An invalid transaction proof was processed.
-     */
     get isV1(): boolean {
-        return this._chain.getEventHash('Domains.InvalidTransactionProofProcessed') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+        return this._chain.getEventHash('Domains.DomainEpochCompleted') === '6641f9112d3517683ff0183b2260fcd2e90ac07c3d64e78842dfa8f1305b1a57'
     }
 
-    /**
-     * An invalid transaction proof was processed.
-     */
-    get asV1(): null {
+    get asV1(): {domainId: number, completedEpochIndex: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsDomainInstantiatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.DomainInstantiated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.DomainInstantiated') === '3037d4816636b5c3fb65811d3539dec2cca52f588262804bf1cbf515a78108bb'
+    }
+
+    get asV1(): {domainId: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsDomainRuntimeCreatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.DomainRuntimeCreated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.DomainRuntimeCreated') === 'fa98444b8d2d5668ec750959d5e4d2c10870e00fd321c8c4b34d28f2a0cde674'
+    }
+
+    get asV1(): {runtimeId: number, runtimeType: v1.RuntimeType} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsDomainRuntimeUpgradeScheduledEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.DomainRuntimeUpgradeScheduled')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.DomainRuntimeUpgradeScheduled') === '0e9e2f52937c6b7d278d7e6e8889b7976b67105c48b931b9c724dfdb418c6c68'
+    }
+
+    get asV1(): {runtimeId: number, scheduledAt: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsDomainRuntimeUpgradedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.DomainRuntimeUpgraded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.DomainRuntimeUpgraded') === 'b2a97b0e43e4ac095c1d5d2a9b052e0a4aca1b2870c0b20768eeb3dcacc685c5'
+    }
+
+    get asV1(): {runtimeId: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorDeregisteredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorDeregistered')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.OperatorDeregistered') === '8ffd479fbc1b33b18b9485df09465e8f37e733ec4184266f9bbe335de066f5ec'
+    }
+
+    get asV1(): {operatorId: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorNominatedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorNominated')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.OperatorNominated') === '70e95936f842f9d6e0fb3cf376c695c17ef475eadb689739f4d0d35e7887fcad'
+    }
+
+    get asV1(): {operatorId: bigint, nominatorId: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorRegisteredEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorRegistered')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.OperatorRegistered') === 'd27b30266d3acce0e9ed794b5c4e3cf04c4b84f97072bb7fcbae02f17dfa9b1f'
+    }
+
+    get asV1(): {operatorId: bigint, domainId: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorRewardedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorRewarded')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.OperatorRewarded') === 'b9eed1de2e05d0c8ec956e512420c3b6f8ca02565e985fd21a7f1e95c2622037'
+    }
+
+    get asV1(): {operatorId: bigint, reward: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorSwitchedDomainEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorSwitchedDomain')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.OperatorSwitchedDomain') === '77423adbeca85a39e75117a3571e4dcc42b1c62fd6b500c5a02ba73710623744'
+    }
+
+    get asV1(): {oldDomainId: number, newDomainId: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsPreferredOperatorEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.PreferredOperator')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.PreferredOperator') === '70e95936f842f9d6e0fb3cf376c695c17ef475eadb689739f4d0d35e7887fcad'
+    }
+
+    get asV1(): {operatorId: bigint, nominatorId: Uint8Array} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsWithdrewStakeEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.WithdrewStake')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.WithdrewStake') === '70e95936f842f9d6e0fb3cf376c695c17ef475eadb689739f4d0d35e7887fcad'
+    }
+
+    get asV1(): {operatorId: bigint, nominatorId: Uint8Array} {
         assert(this.isV1)
         return this._chain.decodeEvent(this.event)
     }
@@ -896,64 +1156,6 @@ export class OffencesSubspaceOffenceEvent {
     }
 }
 
-export class ReceiptsFraudProofProcessedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Receipts.FraudProofProcessed')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * A fraud proof was processed.
-     */
-    get isV1(): boolean {
-        return this._chain.getEventHash('Receipts.FraudProofProcessed') === 'a562970cc8703adfcd6b50763bc389e03a0154122533c163c0032f60030ca223'
-    }
-
-    /**
-     * A fraud proof was processed.
-     */
-    get asV1(): {domainId: number, newBestNumber: number, newBestHash: Uint8Array} {
-        assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class ReceiptsNewDomainReceiptEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Receipts.NewDomainReceipt')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * A new domain receipt.
-     */
-    get isV1(): boolean {
-        return this._chain.getEventHash('Receipts.NewDomainReceipt') === 'cb94a4a0e596547a66c63a881a36583ab36c6a882b721350ee3f5d6895045fba'
-    }
-
-    /**
-     * A new domain receipt.
-     */
-    get asV1(): {domainId: number, primaryNumber: number, primaryHash: Uint8Array} {
-        assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
 export class RewardsBlockRewardEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1116,29 +1318,14 @@ export class SudoSudidEvent {
      * A sudo just took place. \[result\]
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Sudo.Sudid') === '1b4cd14e3ef27d194a19f72ca99c0748bad5378dacf5240cdcde1536e1d11dad'
+        return this._chain.getEventHash('Sudo.Sudid') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
     }
 
     /**
      * A sudo just took place. \[result\]
      */
-    get asV1(): {sudoResult: v1.Type_46} {
+    get asV1(): {sudoResult: v1.Type_47} {
         assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * A sudo just took place. \[result\]
-     */
-    get isV2(): boolean {
-        return this._chain.getEventHash('Sudo.Sudid') === '46f705cf78f55862454e1c96cbd85624469e65d9c879c6278cf4b6428bc723a4'
-    }
-
-    /**
-     * A sudo just took place. \[result\]
-     */
-    get asV2(): {sudoResult: v2.Type_47} {
-        assert(this.isV2)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1160,29 +1347,14 @@ export class SudoSudoAsDoneEvent {
      * A sudo just took place. \[result\]
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Sudo.SudoAsDone') === '1b4cd14e3ef27d194a19f72ca99c0748bad5378dacf5240cdcde1536e1d11dad'
+        return this._chain.getEventHash('Sudo.SudoAsDone') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
     }
 
     /**
      * A sudo just took place. \[result\]
      */
-    get asV1(): {sudoResult: v1.Type_46} {
+    get asV1(): {sudoResult: v1.Type_47} {
         assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * A sudo just took place. \[result\]
-     */
-    get isV2(): boolean {
-        return this._chain.getEventHash('Sudo.SudoAsDone') === '46f705cf78f55862454e1c96cbd85624469e65d9c879c6278cf4b6428bc723a4'
-    }
-
-    /**
-     * A sudo just took place. \[result\]
-     */
-    get asV2(): {sudoResult: v2.Type_47} {
-        assert(this.isV2)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1233,7 +1405,7 @@ export class SystemExtrinsicFailedEvent {
      * An extrinsic failed.
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('System.ExtrinsicFailed') === '36c29895cd15b6f845bb064a671635ce07ef9de9648695c2803020e8510d0fb3'
+        return this._chain.getEventHash('System.ExtrinsicFailed') === '89ca818f689e3f6e085d8137a961f36cc94819777211c5c11cca985a448944b8'
     }
 
     /**
@@ -1241,21 +1413,6 @@ export class SystemExtrinsicFailedEvent {
      */
     get asV1(): {dispatchError: v1.DispatchError, dispatchInfo: v1.DispatchInfo} {
         assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * An extrinsic failed.
-     */
-    get isV2(): boolean {
-        return this._chain.getEventHash('System.ExtrinsicFailed') === '3dbd96eefe1aa593b278d8684042e23a6a118e379fb5699dd871cf28fb627cd6'
-    }
-
-    /**
-     * An extrinsic failed.
-     */
-    get asV2(): {dispatchError: v2.DispatchError, dispatchInfo: v2.DispatchInfo} {
-        assert(this.isV2)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1599,7 +1756,7 @@ export class UtilityBatchInterruptedEvent {
      * well as the error.
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Utility.BatchInterrupted') === '14dbb9456065a44deeed159d4dbd21796ec92754c0494d698c9bcc529d0f7279'
+        return this._chain.getEventHash('Utility.BatchInterrupted') === '031f8c01ddd9491965bf6e6671d70381e70d55e6028aab52a937d1c3afeecb9f'
     }
 
     /**
@@ -1608,23 +1765,6 @@ export class UtilityBatchInterruptedEvent {
      */
     get asV1(): {index: number, error: v1.DispatchError} {
         assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-     * well as the error.
-     */
-    get isV2(): boolean {
-        return this._chain.getEventHash('Utility.BatchInterrupted') === '55aa3365272ab00b66790b493c7489ead9e9c34bdcad0b48ee9755d3bd0d725e'
-    }
-
-    /**
-     * Batch of dispatches did not complete fully. Index of first failing dispatch given, as
-     * well as the error.
-     */
-    get asV2(): {index: number, error: v2.DispatchError} {
-        assert(this.isV2)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1646,29 +1786,14 @@ export class UtilityDispatchedAsEvent {
      * A call was dispatched.
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Utility.DispatchedAs') === 'd15218d9451baa25e4e3c2b30a15d679f7c3c9aa3d43b64b531831430663eb58'
+        return this._chain.getEventHash('Utility.DispatchedAs') === 'ee56f7174dc1a4631da3e5b48f323193771be6a702fb2ff1ff40459869d34a0e'
     }
 
     /**
      * A call was dispatched.
      */
-    get asV1(): {result: v1.Type_46} {
+    get asV1(): {result: v1.Type_47} {
         assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * A call was dispatched.
-     */
-    get isV2(): boolean {
-        return this._chain.getEventHash('Utility.DispatchedAs') === 'e6b126b1d10869892737f36b23109c1b51d3828aeab399104c160e9f275d8049'
-    }
-
-    /**
-     * A call was dispatched.
-     */
-    get asV2(): {result: v2.Type_47} {
-        assert(this.isV2)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -1719,7 +1844,7 @@ export class UtilityItemFailedEvent {
      * A single item within a Batch of dispatches has completed with error.
      */
     get isV1(): boolean {
-        return this._chain.getEventHash('Utility.ItemFailed') === '58463e011dfd19c6786d4056e9e9452b33b4cb0fcf9c6e8c032e8ad7d16b0d34'
+        return this._chain.getEventHash('Utility.ItemFailed') === '4564a5412ce55535234d019dbd1d2999c5a9d6f452a565385d0c43e85d0dbf0b'
     }
 
     /**
@@ -1727,21 +1852,6 @@ export class UtilityItemFailedEvent {
      */
     get asV1(): {error: v1.DispatchError} {
         assert(this.isV1)
-        return this._chain.decodeEvent(this.event)
-    }
-
-    /**
-     * A single item within a Batch of dispatches has completed with error.
-     */
-    get isV2(): boolean {
-        return this._chain.getEventHash('Utility.ItemFailed') === '3ea595fddebcb407af8f717186084e8c4f09481ff7bcc5d4cc97dcd83cddd616'
-    }
-
-    /**
-     * A single item within a Batch of dispatches has completed with error.
-     */
-    get asV2(): {error: v2.DispatchError} {
-        assert(this.isV2)
         return this._chain.decodeEvent(this.event)
     }
 }
