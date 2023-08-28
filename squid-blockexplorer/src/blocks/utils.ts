@@ -91,6 +91,7 @@ export function createCall(
   });
 }
 
+const PIECE_SIZE = 1048576n;
 
 /**
  * Calculates the space pledged by a solution range, based on monorepo calculation
@@ -100,7 +101,6 @@ export function createCall(
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
   const MAX_U64 = 2n ** 64n - 1n;
-  const PIECE_SIZE = 1048576n;
   const SLOT_PROBABILITY = [1n, 6n];
 
   const RECORD_NUM_S_BUCKETS = 65536n;
@@ -125,10 +125,10 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
  * @return {bigint} - size of the history in bytes
  */
 export function calcHistorySize(segmentsCount: number): bigint {
-  const PIECES_IN_SEGMENT = 256;
-  const PIECE_SIZE = 1048576;
+  const PIECES_IN_SEGMENT = 256n;
+  const segmentsCountBigInt = BigInt(segmentsCount);
 
-  return BigInt(PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCount);
+  return PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCountBigInt;
 }
 
 /**
