@@ -108,13 +108,13 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
   const SIZE_OF_SOLUTION_RANGE = 8n;
   const SCALAR_FULL_BYTES = 32n;
 
-  const totalSpacePledged = BigInt(
+  const totalSpacePledged =
     MAX_U64 * PIECE_SIZE * SLOT_PROBABILITY[0]
     / RECORD_NUM_S_BUCKETS * RECORD_NUM_CHUNKS
     / solutionRange
     / SLOT_PROBABILITY[1]
     * SCALAR_FULL_BYTES
-    / SIZE_OF_SOLUTION_RANGE);
+    / SIZE_OF_SOLUTION_RANGE;
 
   return totalSpacePledged;
 }
