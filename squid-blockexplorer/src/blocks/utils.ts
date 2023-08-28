@@ -92,7 +92,6 @@ export function createCall(
 }
 
 
-
 /**
  * Calculates the space pledged by a solution range, based on monorepo calculation
  * in function TotalSpacePledged: https://github.com/subspace/subspace/blob/f782f7297a6d61d8f22a3b10d201396fe30708fd/crates/subspace-runtime/src/lib.rs#L396-L399

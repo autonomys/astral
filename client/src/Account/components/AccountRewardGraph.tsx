@@ -81,51 +81,59 @@ const AccountRewardGraph: FC<Props> = ({ hexAddress, total }) => {
     <div className='w-full flex flex-col p-5 lg:p-0'>
       <div className='flex lg:hidden gap-4 items-baseline justify-self-start'>
         <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
-          {numberWithCommas(bigNumberToNumber(total, 18))}
+          {total ? numberWithCommas(bigNumberToNumber(total, 18)) : 0}
         </div>
         <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
       </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>
-        <ResponsiveLine
-          curve='natural'
-          margin={{ top: 50, right: 30, bottom: 50, left: 30 }}
-          data={[
-            {
-              id: 'fake corp. A',
-              color: fillColor,
-              data: parsedData,
-            },
-          ]}
-          enableGridX={false}
-          enableGridY={false}
-          enablePoints={false}
-          xScale={{
-            type: 'time',
-            format: '%Y-%m-%d',
-            precision: 'day',
-            useUTC: false,
-          }}
-          colors={{ datum: 'color' }}
-          axisLeft={null}
-          theme={{
-            axis: {
-              ticks: {
-                line: {
-                  stroke: isDark ? '#fff' : '#000',
-                },
-                text: {
-                  fill: isDark ? '#fff' : '#000',
+        {parsedData.length > 0 ? (
+          <ResponsiveLine
+            curve='natural'
+            margin={{ top: 50, right: 30, bottom: 50, left: 30 }}
+            data={[
+              {
+                id: 'fake corp. A',
+                color: fillColor,
+                data: parsedData,
+              },
+            ]}
+            enableGridX={false}
+            enableGridY={false}
+            enablePoints={false}
+            xScale={{
+              type: 'time',
+              format: '%Y-%m-%d',
+              precision: 'day',
+              useUTC: false,
+            }}
+            colors={{ datum: 'color' }}
+            axisLeft={null}
+            theme={{
+              axis: {
+                ticks: {
+                  line: {
+                    stroke: isDark ? '#fff' : '#000',
+                  },
+                  text: {
+                    fill: isDark ? '#fff' : '#000',
+                  },
                 },
               },
-            },
-          }}
-          xFormat='time:%Y-%m-%d'
-          axisBottom={{
-            tickValues: 1.5,
-            tickSize: 0,
-            format: '%m.%d.%Y',
-          }}
-        />
+            }}
+            xFormat='time:%Y-%m-%d'
+            axisBottom={{
+              tickValues: 1.5,
+              tickSize: 0,
+              format: '%m.%d.%Y',
+            }}
+          />
+        ) : (
+          <div className='flex justify-center items-center h-full'>
+            <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
+              No rewards yet
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
