@@ -10,6 +10,12 @@ export interface BalanceStatus_Reserved {
     __kind: 'Reserved'
 }
 
+export type RuntimeType = RuntimeType_Evm
+
+export interface RuntimeType_Evm {
+    __kind: 'Evm'
+}
+
 export type SegmentHeader = SegmentHeader_V0
 
 export interface SegmentHeader_V0 {
@@ -20,18 +26,18 @@ export interface SegmentHeader_V0 {
     lastArchivedBlock: LastArchivedBlock
 }
 
-export type Type_46 = Type_46_Ok | Type_46_Err
+export type Type_47 = Type_47_Ok | Type_47_Err
 
-export interface Type_46_Ok {
+export interface Type_47_Ok {
     __kind: 'Ok'
 }
 
-export interface Type_46_Err {
+export interface Type_47_Err {
     __kind: 'Err'
     value: DispatchError
 }
 
-export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional | DispatchError_Exhausted | DispatchError_Corruption | DispatchError_Unavailable
+export type DispatchError = DispatchError_Other | DispatchError_CannotLookup | DispatchError_BadOrigin | DispatchError_Module | DispatchError_ConsumerRemaining | DispatchError_NoProviders | DispatchError_TooManyConsumers | DispatchError_Token | DispatchError_Arithmetic | DispatchError_Transactional | DispatchError_Exhausted | DispatchError_Corruption | DispatchError_Unavailable | DispatchError_RootNotAllowed
 
 export interface DispatchError_Other {
     __kind: 'Other'
@@ -89,6 +95,10 @@ export interface DispatchError_Unavailable {
     __kind: 'Unavailable'
 }
 
+export interface DispatchError_RootNotAllowed {
+    __kind: 'RootNotAllowed'
+}
+
 export interface DispatchInfo {
     weight: Weight
     class: DispatchClass
@@ -129,18 +139,24 @@ export interface MultiAddress_Address20 {
     value: Uint8Array
 }
 
-export interface SignedBundle {
-    bundle: Bundle
-    bundleSolution: BundleSolution
-    signature: Uint8Array
+export interface DomainConfig {
+    domainName: Uint8Array
+    runtimeId: number
+    maxBlockSize: number
+    maxBlockWeight: Weight
+    bundleSlotProbability: [bigint, bigint]
+    targetBundlesPerBlock: number
 }
 
-export interface BundleEquivocationProof {
-    domainId: number
-    offender: Uint8Array
-    slot: bigint
-    firstHeader: BundleHeader
-    secondHeader: BundleHeader
+export interface OperatorConfig {
+    signingKey: Uint8Array
+    minimumNominatorStake: bigint
+    nominationTax: number
+}
+
+export interface Bundle {
+    sealedHeader: SealedBundleHeader
+    extrinsics: Uint8Array[]
 }
 
 export type FraudProof = FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition
@@ -165,8 +181,15 @@ export interface FraudProof_ImproperTransactionSortition {
     value: ImproperTransactionSortitionProof
 }
 
-export interface InvalidTransactionProof {
-    domainId: number
+export type Withdraw = Withdraw_All | Withdraw_Some
+
+export interface Withdraw_All {
+    __kind: 'All'
+}
+
+export interface Withdraw_Some {
+    __kind: 'Some'
+    value: bigint
 }
 
 export type FeedProcessorKind = FeedProcessorKind_ContentAddressable | FeedProcessorKind_PolkadotLike | FeedProcessorKind_ParachainLike
@@ -267,8 +290,17 @@ export interface OriginCaller_Void {
 export interface AccountData {
     free: bigint
     reserved: bigint
-    miscFrozen: bigint
-    feeFrozen: bigint
+    frozen: bigint
+    flags: bigint
+}
+
+export interface Type_139 {
+    amount: bigint
+}
+
+export interface IdAmount {
+    id: HoldIdentifier
+    amount: bigint
 }
 
 export interface BalanceLock {
@@ -280,6 +312,101 @@ export interface BalanceLock {
 export interface ReserveData {
     id: Uint8Array
     amount: bigint
+}
+
+export interface DomainBlock {
+    executionReceipt: ExecutionReceipt
+    operatorIds: bigint[]
+}
+
+export interface DomainObject {
+    ownerAccountId: Uint8Array
+    createdAt: number
+    genesisReceiptHash: Uint8Array
+    domainConfig: DomainConfig
+    rawGenesisConfig: (Uint8Array | undefined)
+}
+
+export interface StakingSummary {
+    currentEpochIndex: number
+    currentTotalStake: bigint
+    currentOperators: [bigint, bigint][]
+    nextOperators: bigint[]
+    currentEpochRewards: [bigint, bigint][]
+}
+
+export interface TxRangeState {
+    txRange: bigint
+    intervalBlocks: bigint
+    intervalBundles: bigint
+}
+
+export interface BundleDigest {
+    headerHash: Uint8Array
+    extrinsicsRoot: Uint8Array
+}
+
+export interface ElectionVerificationParams {
+    operators: [bigint, bigint][]
+    totalDomainStake: bigint
+}
+
+export interface Nominator {
+    shares: bigint
+}
+
+export interface Operator {
+    signingKey: Uint8Array
+    currentDomainId: number
+    nextDomainId: number
+    minimumNominatorStake: bigint
+    nominationTax: number
+    currentTotalStake: bigint
+    currentEpochRewards: bigint
+    totalShares: bigint
+    status: OperatorStatus
+}
+
+export interface GenesisDomain {
+    runtimeName: Uint8Array
+    runtimeType: RuntimeType
+    runtimeVersion: RuntimeVersion
+    code: Uint8Array
+    ownerAccountId: Uint8Array
+    domainName: Uint8Array
+    maxBlockSize: number
+    maxBlockWeight: Weight
+    bundleSlotProbability: [bigint, bigint]
+    targetBundlesPerBlock: number
+    rawGenesisConfig: Uint8Array
+    signingKey: Uint8Array
+    minimumNominatorStake: bigint
+    nominationTax: number
+}
+
+export interface PendingNominatorUnlock {
+    nominatorId: Uint8Array
+    balance: bigint
+}
+
+export interface PendingOperatorSlashInfo {
+    unlockingNominators: PendingNominatorUnlock[]
+}
+
+export interface RuntimeObject {
+    runtimeName: Uint8Array
+    runtimeType: RuntimeType
+    runtimeUpgrades: number
+    hash: Uint8Array
+    code: Uint8Array
+    version: RuntimeVersion
+    createdAt: number
+    updatedAt: number
+}
+
+export interface ScheduledRuntimeUpgrade {
+    code: Uint8Array
+    version: RuntimeVersion
 }
 
 export interface FeedConfig {
@@ -302,12 +429,8 @@ export interface OffenceDetails {
     offender: Uint8Array
 }
 
-export interface ExecutionReceipt {
-    primaryNumber: number
-    primaryHash: Uint8Array
-    domainHash: Uint8Array
-    trace: Uint8Array[]
-    traceRoot: Uint8Array
+export interface Scalar {
+    inner: Uint8Array
 }
 
 export interface GlobalRandomnesses {
@@ -434,14 +557,14 @@ export interface ModuleError {
     error: Uint8Array
 }
 
-export type TokenError = TokenError_NoFunds | TokenError_WouldDie | TokenError_BelowMinimum | TokenError_CannotCreate | TokenError_UnknownAsset | TokenError_Frozen | TokenError_Unsupported
+export type TokenError = TokenError_FundsUnavailable | TokenError_OnlyProvider | TokenError_BelowMinimum | TokenError_CannotCreate | TokenError_UnknownAsset | TokenError_Frozen | TokenError_Unsupported | TokenError_CannotCreateHold | TokenError_NotExpendable | TokenError_Blocked
 
-export interface TokenError_NoFunds {
-    __kind: 'NoFunds'
+export interface TokenError_FundsUnavailable {
+    __kind: 'FundsUnavailable'
 }
 
-export interface TokenError_WouldDie {
-    __kind: 'WouldDie'
+export interface TokenError_OnlyProvider {
+    __kind: 'OnlyProvider'
 }
 
 export interface TokenError_BelowMinimum {
@@ -462,6 +585,18 @@ export interface TokenError_Frozen {
 
 export interface TokenError_Unsupported {
     __kind: 'Unsupported'
+}
+
+export interface TokenError_CannotCreateHold {
+    __kind: 'CannotCreateHold'
+}
+
+export interface TokenError_NotExpendable {
+    __kind: 'NotExpendable'
+}
+
+export interface TokenError_Blocked {
+    __kind: 'Blocked'
 }
 
 export type ArithmeticError = ArithmeticError_Underflow | ArithmeticError_Overflow | ArithmeticError_DivisionByZero
@@ -512,45 +647,36 @@ export interface Pays_No {
     __kind: 'No'
 }
 
-export interface Bundle {
+export interface SealedBundleHeader {
     header: BundleHeader
-    receipts: ExecutionReceipt[]
-    extrinsics: Uint8Array[]
-}
-
-export type BundleSolution = BundleSolution_System | BundleSolution_Core
-
-export interface BundleSolution_System {
-    __kind: 'System'
-    authorityStakeWeight: bigint
-    authorityWitness: Type_153
-    proofOfElection: ProofOfElection
-}
-
-export interface BundleSolution_Core {
-    __kind: 'Core'
-    proofOfElection: ProofOfElection
-    coreBlockNumber: number
-    coreBlockHash: Uint8Array
-    coreStateRoot: Uint8Array
-}
-
-export interface BundleHeader {
-    primaryNumber: number
-    primaryHash: Uint8Array
-    slotNumber: bigint
-    extrinsicsRoot: Uint8Array
+    signature: Uint8Array
 }
 
 export interface InvalidStateTransitionProof {
     domainId: number
     badReceiptHash: Uint8Array
     parentNumber: number
-    primaryParentHash: Uint8Array
+    consensusParentHash: Uint8Array
     preStateRoot: Uint8Array
     postStateRoot: Uint8Array
     proof: StorageProof
     executionPhase: ExecutionPhase
+}
+
+export interface InvalidTransactionProof {
+    domainId: number
+    blockNumber: number
+    domainBlockHash: Uint8Array
+    invalidExtrinsic: Uint8Array
+    storageProof: StorageProof
+}
+
+export interface BundleEquivocationProof {
+    domainId: number
+    offender: Uint8Array
+    slot: bigint
+    firstHeader: SealedBundleHeader
+    secondHeader: SealedBundleHeader
 }
 
 export interface ImproperTransactionSortitionProof {
@@ -576,15 +702,12 @@ export interface Vote_V0 {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event
 
 /**
- * Make some on-chain remark.
- * 
- * ## Complexity
- * - `O(1)`
+ * See [`Pallet::remark`].
  */
 export interface SystemCall_remark {
     __kind: 'remark'
@@ -592,7 +715,7 @@ export interface SystemCall_remark {
 }
 
 /**
- * Set the number of pages in the WebAssembly environment's heap.
+ * See [`Pallet::set_heap_pages`].
  */
 export interface SystemCall_set_heap_pages {
     __kind: 'set_heap_pages'
@@ -600,10 +723,7 @@ export interface SystemCall_set_heap_pages {
 }
 
 /**
- * Set the new runtime code.
- * 
- * ## Complexity
- * - `O(C + S)` where `C` length of `code` and `S` complexity of `can_set_code`
+ * See [`Pallet::set_code`].
  */
 export interface SystemCall_set_code {
     __kind: 'set_code'
@@ -611,10 +731,7 @@ export interface SystemCall_set_code {
 }
 
 /**
- * Set the new runtime code without doing any checks of the given `code`.
- * 
- * ## Complexity
- * - `O(C)` where `C` length of `code`
+ * See [`Pallet::set_code_without_checks`].
  */
 export interface SystemCall_set_code_without_checks {
     __kind: 'set_code_without_checks'
@@ -622,7 +739,7 @@ export interface SystemCall_set_code_without_checks {
 }
 
 /**
- * Set some items of storage.
+ * See [`Pallet::set_storage`].
  */
 export interface SystemCall_set_storage {
     __kind: 'set_storage'
@@ -630,7 +747,7 @@ export interface SystemCall_set_storage {
 }
 
 /**
- * Kill some items from storage.
+ * See [`Pallet::kill_storage`].
  */
 export interface SystemCall_kill_storage {
     __kind: 'kill_storage'
@@ -638,10 +755,7 @@ export interface SystemCall_kill_storage {
 }
 
 /**
- * Kill all storage items with a key that starts with the given prefix.
- * 
- * **NOTE:** We rely on the Root origin to provide us the number of subkeys under
- * the prefix we are removing to accurately calculate the weight of this function.
+ * See [`Pallet::kill_prefix`].
  */
 export interface SystemCall_kill_prefix {
     __kind: 'kill_prefix'
@@ -650,7 +764,7 @@ export interface SystemCall_kill_prefix {
 }
 
 /**
- * Make some on-chain remark and emit event.
+ * See [`Pallet::remark_with_event`].
  */
 export interface SystemCall_remark_with_event {
     __kind: 'remark_with_event'
@@ -658,26 +772,12 @@ export interface SystemCall_remark_with_event {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type TimestampCall = TimestampCall_set
 
 /**
- * Set the current time.
- * 
- * This call should be invoked exactly once per block. It will panic at the finalization
- * phase, if this call hasn't been invoked by that time.
- * 
- * The timestamp should be greater than the previous one by the amount specified by
- * `MinimumPeriod`.
- * 
- * The dispatch origin for this call must be `Inherent`.
- * 
- * ## Complexity
- * - `O(1)` (Note that implementations of `OnTimestampSet` must also be `O(1)`)
- * - 1 storage read and 1 storage mutation (codec `O(1)`). (because of `DidUpdate::take` in
- *   `on_finalize`)
- * - 1 event handler `on_timestamp_set`. Must be `O(1)`.
+ * See [`Pallet::set`].
  */
 export interface TimestampCall_set {
     __kind: 'set'
@@ -685,17 +785,12 @@ export interface TimestampCall_set {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type SubspaceCall = SubspaceCall_report_equivocation | SubspaceCall_store_segment_headers | SubspaceCall_enable_solution_range_adjustment | SubspaceCall_vote | SubspaceCall_enable_rewards | SubspaceCall_enable_storage_access | SubspaceCall_enable_authoring_by_anyone
 
 /**
- * Report farmer equivocation/misbehavior. This method will verify the equivocation proof.
- * If valid, the offence will be reported.
- * 
- * This extrinsic must be called unsigned and it is expected that only block authors will
- * call it (validated in `ValidateUnsigned`), as such if the block author is defined it
- * will be defined as the equivocation reporter.
+ * See [`Pallet::report_equivocation`].
  */
 export interface SubspaceCall_report_equivocation {
     __kind: 'report_equivocation'
@@ -703,8 +798,7 @@ export interface SubspaceCall_report_equivocation {
 }
 
 /**
- * Submit new segment header to the blockchain. This is an inherent extrinsic and part of
- * the Subspace consensus logic.
+ * See [`Pallet::store_segment_headers`].
  */
 export interface SubspaceCall_store_segment_headers {
     __kind: 'store_segment_headers'
@@ -712,8 +806,7 @@ export interface SubspaceCall_store_segment_headers {
 }
 
 /**
- * Enable solution range adjustment after every era.
- * Note: No effect on the solution range for the current era
+ * See [`Pallet::enable_solution_range_adjustment`].
  */
 export interface SubspaceCall_enable_solution_range_adjustment {
     __kind: 'enable_solution_range_adjustment'
@@ -722,7 +815,7 @@ export interface SubspaceCall_enable_solution_range_adjustment {
 }
 
 /**
- * Farmer vote, currently only used for extra rewards to farmers.
+ * See [`Pallet::vote`].
  */
 export interface SubspaceCall_vote {
     __kind: 'vote'
@@ -730,7 +823,7 @@ export interface SubspaceCall_vote {
 }
 
 /**
- * Enable rewards for blocks and votes at specified block height.
+ * See [`Pallet::enable_rewards`].
  */
 export interface SubspaceCall_enable_rewards {
     __kind: 'enable_rewards'
@@ -738,77 +831,45 @@ export interface SubspaceCall_enable_rewards {
 }
 
 /**
- * Enable storage access for all users.
+ * See [`Pallet::enable_storage_access`].
  */
 export interface SubspaceCall_enable_storage_access {
     __kind: 'enable_storage_access'
 }
 
 /**
- * Enable storage access for all users.
+ * See [`Pallet::enable_authoring_by_anyone`].
  */
 export interface SubspaceCall_enable_authoring_by_anyone {
     __kind: 'enable_authoring_by_anyone'
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type BalancesCall = BalancesCall_transfer | BalancesCall_set_balance | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve
+export type BalancesCall = BalancesCall_transfer_allow_death | BalancesCall_set_balance_deprecated | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve | BalancesCall_upgrade_accounts | BalancesCall_transfer | BalancesCall_force_set_balance
 
 /**
- * Transfer some liquid free balance to another account.
- * 
- * `transfer` will set the `FreeBalance` of the sender and receiver.
- * If the sender's account is below the existential deposit as a result
- * of the transfer, the account will be reaped.
- * 
- * The dispatch origin for this call must be `Signed` by the transactor.
- * 
- * ## Complexity
- * - Dependent on arguments but not critical, given proper implementations for input config
- *   types. See related functions below.
- * - It contains a limited number of reads and writes internally and no complex
- *   computation.
- * 
- * Related functions:
- * 
- *   - `ensure_can_withdraw` is always called internally but has a bounded complexity.
- *   - Transferring balances to accounts that did not exist before will cause
- *     `T::OnNewAccount::on_new_account` to be called.
- *   - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
- *   - `transfer_keep_alive` works the same way as `transfer`, but has an additional check
- *     that the transfer will not kill the origin account.
+ * See [`Pallet::transfer_allow_death`].
  */
-export interface BalancesCall_transfer {
-    __kind: 'transfer'
+export interface BalancesCall_transfer_allow_death {
+    __kind: 'transfer_allow_death'
     dest: MultiAddress
     value: bigint
 }
 
 /**
- * Set the balances of a given account.
- * 
- * This will alter `FreeBalance` and `ReservedBalance` in storage. it will
- * also alter the total issuance of the system (`TotalIssuance`) appropriately.
- * If the new free or reserved balance is below the existential deposit,
- * it will reset the account nonce (`frame_system::AccountNonce`).
- * 
- * The dispatch origin for this call is `root`.
+ * See [`Pallet::set_balance_deprecated`].
  */
-export interface BalancesCall_set_balance {
-    __kind: 'set_balance'
+export interface BalancesCall_set_balance_deprecated {
+    __kind: 'set_balance_deprecated'
     who: MultiAddress
     newFree: bigint
-    newReserved: bigint
+    oldReserved: bigint
 }
 
 /**
- * Exactly as `transfer`, except the origin must be root and the source account may be
- * specified.
- * ## Complexity
- * - Same as transfer, but additional read and write because the source account is not
- *   assumed to be in the overlay.
+ * See [`Pallet::force_transfer`].
  */
 export interface BalancesCall_force_transfer {
     __kind: 'force_transfer'
@@ -818,12 +879,7 @@ export interface BalancesCall_force_transfer {
 }
 
 /**
- * Same as the [`transfer`] call, but with a check that the transfer will not kill the
- * origin account.
- * 
- * 99% of the time you want [`transfer`] instead.
- * 
- * [`transfer`]: struct.Pallet.html#method.transfer
+ * See [`Pallet::transfer_keep_alive`].
  */
 export interface BalancesCall_transfer_keep_alive {
     __kind: 'transfer_keep_alive'
@@ -832,22 +888,7 @@ export interface BalancesCall_transfer_keep_alive {
 }
 
 /**
- * Transfer the entire transferable balance from the caller account.
- * 
- * NOTE: This function only attempts to transfer _transferable_ balances. This means that
- * any locked, reserved, or existential deposits (when `keep_alive` is `true`), will not be
- * transferred by this function. To ensure that this function results in a killed account,
- * you might need to prepare the account by removing any reference counters, storage
- * deposits, etc...
- * 
- * The dispatch origin of this call must be Signed.
- * 
- * - `dest`: The recipient of the transfer.
- * - `keep_alive`: A boolean to determine if the `transfer_all` operation should send all
- *   of the funds the account has, causing the sender account to be killed (false), or
- *   transfer everything except at least the existential deposit, which will guarantee to
- *   keep the sender account alive (true). ## Complexity
- * - O(1). Just like transfer, but reading the user's transferable balance first.
+ * See [`Pallet::transfer_all`].
  */
 export interface BalancesCall_transfer_all {
     __kind: 'transfer_all'
@@ -856,9 +897,7 @@ export interface BalancesCall_transfer_all {
 }
 
 /**
- * Unreserve some balance from a user by force.
- * 
- * Can only be called by ROOT.
+ * See [`Pallet::force_unreserve`].
  */
 export interface BalancesCall_force_unreserve {
     __kind: 'force_unreserve'
@@ -867,29 +906,38 @@ export interface BalancesCall_force_unreserve {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * See [`Pallet::upgrade_accounts`].
+ */
+export interface BalancesCall_upgrade_accounts {
+    __kind: 'upgrade_accounts'
+    who: Uint8Array[]
+}
+
+/**
+ * See [`Pallet::transfer`].
+ */
+export interface BalancesCall_transfer {
+    __kind: 'transfer'
+    dest: MultiAddress
+    value: bigint
+}
+
+/**
+ * See [`Pallet::force_set_balance`].
+ */
+export interface BalancesCall_force_set_balance {
+    __kind: 'force_set_balance'
+    who: MultiAddress
+    newFree: bigint
+}
+
+/**
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type UtilityCall = UtilityCall_batch | UtilityCall_as_derivative | UtilityCall_batch_all | UtilityCall_dispatch_as | UtilityCall_force_batch | UtilityCall_with_weight
 
 /**
- * Send a batch of dispatch calls.
- * 
- * May be called from any origin except `None`.
- * 
- * - `calls`: The calls to be dispatched from the same origin. The number of call must not
- *   exceed the constant: `batched_calls_limit` (available in constant metadata).
- * 
- * If origin is root then the calls are dispatched without checking origin filter. (This
- * includes bypassing `frame_system::Config::BaseCallFilter`).
- * 
- * ## Complexity
- * - O(C) where C is the number of calls to be batched.
- * 
- * This will return `Ok` in all circumstances. To determine the success of the batch, an
- * event is deposited. If a call failed and the batch was interrupted, then the
- * `BatchInterrupted` event is deposited, along with the number of successful calls made
- * and the error of the failed call. If all were successful, then the `BatchCompleted`
- * event is deposited.
+ * See [`Pallet::batch`].
  */
 export interface UtilityCall_batch {
     __kind: 'batch'
@@ -897,19 +945,7 @@ export interface UtilityCall_batch {
 }
 
 /**
- * Send a call through an indexed pseudonym of the sender.
- * 
- * Filter from origin are passed along. The call will be dispatched with an origin which
- * use the same filter as the origin of this call.
- * 
- * NOTE: If you need to ensure that any account-based filtering is not honored (i.e.
- * because you expect `proxy` to have been used prior in the call stack and you do not want
- * the call restrictions to apply to any sub-accounts), then use `as_multi_threshold_1`
- * in the Multisig pallet instead.
- * 
- * NOTE: Prior to version *12, this was called `as_limited_sub`.
- * 
- * The dispatch origin for this call must be _Signed_.
+ * See [`Pallet::as_derivative`].
  */
 export interface UtilityCall_as_derivative {
     __kind: 'as_derivative'
@@ -918,19 +954,7 @@ export interface UtilityCall_as_derivative {
 }
 
 /**
- * Send a batch of dispatch calls and atomically execute them.
- * The whole transaction will rollback and fail if any of the calls failed.
- * 
- * May be called from any origin except `None`.
- * 
- * - `calls`: The calls to be dispatched from the same origin. The number of call must not
- *   exceed the constant: `batched_calls_limit` (available in constant metadata).
- * 
- * If origin is root then the calls are dispatched without checking origin filter. (This
- * includes bypassing `frame_system::Config::BaseCallFilter`).
- * 
- * ## Complexity
- * - O(C) where C is the number of calls to be batched.
+ * See [`Pallet::batch_all`].
  */
 export interface UtilityCall_batch_all {
     __kind: 'batch_all'
@@ -938,12 +962,7 @@ export interface UtilityCall_batch_all {
 }
 
 /**
- * Dispatches a function call with a provided origin.
- * 
- * The dispatch origin for this call must be _Root_.
- * 
- * ## Complexity
- * - O(1).
+ * See [`Pallet::dispatch_as`].
  */
 export interface UtilityCall_dispatch_as {
     __kind: 'dispatch_as'
@@ -952,19 +971,7 @@ export interface UtilityCall_dispatch_as {
 }
 
 /**
- * Send a batch of dispatch calls.
- * Unlike `batch`, it allows errors and won't interrupt.
- * 
- * May be called from any origin except `None`.
- * 
- * - `calls`: The calls to be dispatched from the same origin. The number of call must not
- *   exceed the constant: `batched_calls_limit` (available in constant metadata).
- * 
- * If origin is root then the calls are dispatch without checking origin filter. (This
- * includes bypassing `frame_system::Config::BaseCallFilter`).
- * 
- * ## Complexity
- * - O(C) where C is the number of calls to be batched.
+ * See [`Pallet::force_batch`].
  */
 export interface UtilityCall_force_batch {
     __kind: 'force_batch'
@@ -972,12 +979,7 @@ export interface UtilityCall_force_batch {
 }
 
 /**
- * Dispatch a function call with a specified weight.
- * 
- * This function does not check the weight of the call, and instead allows the
- * Root origin to specify the weight of the call.
- * 
- * The dispatch origin for this call must be _Root_.
+ * See [`Pallet::with_weight`].
  */
 export interface UtilityCall_with_weight {
     __kind: 'with_weight'
@@ -986,12 +988,12 @@ export interface UtilityCall_with_weight {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type FeedsCall = FeedsCall_create | FeedsCall_update | FeedsCall_put | FeedsCall_close | FeedsCall_transfer
 
 /**
- * Create a new feed
+ * See [`Pallet::create`].
  */
 export interface FeedsCall_create {
     __kind: 'create'
@@ -1000,7 +1002,7 @@ export interface FeedsCall_create {
 }
 
 /**
- * Updates the feed with init data provided.
+ * See [`Pallet::update`].
  */
 export interface FeedsCall_update {
     __kind: 'update'
@@ -1010,7 +1012,7 @@ export interface FeedsCall_update {
 }
 
 /**
- * Put a new object into a feed
+ * See [`Pallet::put`].
  */
 export interface FeedsCall_put {
     __kind: 'put'
@@ -1019,7 +1021,7 @@ export interface FeedsCall_put {
 }
 
 /**
- * Closes the feed and stops accepting new feed.
+ * See [`Pallet::close`].
  */
 export interface FeedsCall_close {
     __kind: 'close'
@@ -1027,7 +1029,7 @@ export interface FeedsCall_close {
 }
 
 /**
- * Transfers feed from current owner to new owner
+ * See [`Pallet::transfer`].
  */
 export interface FeedsCall_transfer {
     __kind: 'transfer'
@@ -1036,12 +1038,12 @@ export interface FeedsCall_transfer {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type ObjectStoreCall = ObjectStoreCall_put
 
 /**
- * Put a new object into a feed
+ * See [`Pallet::put`].
  */
 export interface ObjectStoreCall_put {
     __kind: 'put'
@@ -1049,68 +1051,151 @@ export interface ObjectStoreCall_put {
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_submit_bundle_equivocation_proof | DomainsCall_submit_invalid_transaction_proof
+export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_register_domain_runtime | DomainsCall_upgrade_domain_runtime | DomainsCall_register_operator | DomainsCall_nominate_operator | DomainsCall_instantiate_domain | DomainsCall_switch_domain | DomainsCall_deregister_operator | DomainsCall_withdraw_stake | DomainsCall_auto_stake_block_rewards
 
+/**
+ * See [`Pallet::submit_bundle`].
+ */
 export interface DomainsCall_submit_bundle {
     __kind: 'submit_bundle'
-    signedOpaqueBundle: SignedBundle
+    opaqueBundle: Bundle
 }
 
+/**
+ * See [`Pallet::submit_fraud_proof`].
+ */
 export interface DomainsCall_submit_fraud_proof {
     __kind: 'submit_fraud_proof'
     fraudProof: FraudProof
 }
 
-export interface DomainsCall_submit_bundle_equivocation_proof {
-    __kind: 'submit_bundle_equivocation_proof'
-    bundleEquivocationProof: BundleEquivocationProof
-}
-
-export interface DomainsCall_submit_invalid_transaction_proof {
-    __kind: 'submit_invalid_transaction_proof'
-    invalidTransactionProof: InvalidTransactionProof
+/**
+ * See [`Pallet::register_domain_runtime`].
+ */
+export interface DomainsCall_register_domain_runtime {
+    __kind: 'register_domain_runtime'
+    runtimeName: Uint8Array
+    runtimeType: RuntimeType
+    code: Uint8Array
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * See [`Pallet::upgrade_domain_runtime`].
+ */
+export interface DomainsCall_upgrade_domain_runtime {
+    __kind: 'upgrade_domain_runtime'
+    runtimeId: number
+    code: Uint8Array
+}
+
+/**
+ * See [`Pallet::register_operator`].
+ */
+export interface DomainsCall_register_operator {
+    __kind: 'register_operator'
+    domainId: number
+    amount: bigint
+    config: OperatorConfig
+}
+
+/**
+ * See [`Pallet::nominate_operator`].
+ */
+export interface DomainsCall_nominate_operator {
+    __kind: 'nominate_operator'
+    operatorId: bigint
+    amount: bigint
+}
+
+/**
+ * See [`Pallet::instantiate_domain`].
+ */
+export interface DomainsCall_instantiate_domain {
+    __kind: 'instantiate_domain'
+    domainConfig: DomainConfig
+}
+
+/**
+ * See [`Pallet::switch_domain`].
+ */
+export interface DomainsCall_switch_domain {
+    __kind: 'switch_domain'
+    operatorId: bigint
+    newDomainId: number
+}
+
+/**
+ * See [`Pallet::deregister_operator`].
+ */
+export interface DomainsCall_deregister_operator {
+    __kind: 'deregister_operator'
+    operatorId: bigint
+}
+
+/**
+ * See [`Pallet::withdraw_stake`].
+ */
+export interface DomainsCall_withdraw_stake {
+    __kind: 'withdraw_stake'
+    operatorId: bigint
+    withdraw: Withdraw
+}
+
+/**
+ * See [`Pallet::auto_stake_block_rewards`].
+ */
+export interface DomainsCall_auto_stake_block_rewards {
+    __kind: 'auto_stake_block_rewards'
+    operatorId: bigint
+}
+
+/**
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type VestingCall = VestingCall_claim | VestingCall_vested_transfer | VestingCall_update_vesting_schedules | VestingCall_claim_for
 
+/**
+ * See [`Pallet::claim`].
+ */
 export interface VestingCall_claim {
     __kind: 'claim'
 }
 
+/**
+ * See [`Pallet::vested_transfer`].
+ */
 export interface VestingCall_vested_transfer {
     __kind: 'vested_transfer'
     dest: MultiAddress
     schedule: VestingSchedule
 }
 
+/**
+ * See [`Pallet::update_vesting_schedules`].
+ */
 export interface VestingCall_update_vesting_schedules {
     __kind: 'update_vesting_schedules'
     who: MultiAddress
     vestingSchedules: VestingSchedule[]
 }
 
+/**
+ * See [`Pallet::claim_for`].
+ */
 export interface VestingCall_claim_for {
     __kind: 'claim_for'
     dest: MultiAddress
 }
 
 /**
- * Contains one variant per dispatchable that can be called by an extrinsic.
+ * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as
 
 /**
- * Authenticates the sudo key and dispatches a function call with `Root` origin.
- * 
- * The dispatch origin for this call must be _Signed_.
- * 
- * ## Complexity
- * - O(1).
+ * See [`Pallet::sudo`].
  */
 export interface SudoCall_sudo {
     __kind: 'sudo'
@@ -1118,14 +1203,7 @@ export interface SudoCall_sudo {
 }
 
 /**
- * Authenticates the sudo key and dispatches a function call with `Root` origin.
- * This function does not check the weight of the call, and instead allows the
- * Sudo user to specify the weight of the call.
- * 
- * The dispatch origin for this call must be _Signed_.
- * 
- * ## Complexity
- * - O(1).
+ * See [`Pallet::sudo_unchecked_weight`].
  */
 export interface SudoCall_sudo_unchecked_weight {
     __kind: 'sudo_unchecked_weight'
@@ -1134,13 +1212,7 @@ export interface SudoCall_sudo_unchecked_weight {
 }
 
 /**
- * Authenticates the current sudo key and sets the given AccountId (`new`) as the new sudo
- * key.
- * 
- * The dispatch origin for this call must be _Signed_.
- * 
- * ## Complexity
- * - O(1).
+ * See [`Pallet::set_key`].
  */
 export interface SudoCall_set_key {
     __kind: 'set_key'
@@ -1148,13 +1220,7 @@ export interface SudoCall_set_key {
 }
 
 /**
- * Authenticates the sudo key and dispatches a function call with `Signed` origin from
- * a given account.
- * 
- * The dispatch origin for this call must be _Signed_.
- * 
- * ## Complexity
- * - O(1).
+ * See [`Pallet::sudo_as`].
  */
 export interface SudoCall_sudo_as {
     __kind: 'sudo_as'
@@ -1179,6 +1245,13 @@ export interface RawOrigin_None {
 
 export type Void = never
 
+export type HoldIdentifier = HoldIdentifier_Domains
+
+export interface HoldIdentifier_Domains {
+    __kind: 'Domains'
+    value: DomainsHoldIdentifier
+}
+
 export type Reasons = Reasons_Fee | Reasons_Misc | Reasons_All
 
 export interface Reasons_Fee {
@@ -1191,6 +1264,34 @@ export interface Reasons_Misc {
 
 export interface Reasons_All {
     __kind: 'All'
+}
+
+export interface ExecutionReceipt {
+    domainBlockNumber: number
+    domainBlockHash: Uint8Array
+    parentDomainBlockReceiptHash: Uint8Array
+    consensusBlockNumber: number
+    consensusBlockHash: Uint8Array
+    invalidBundles: InvalidBundle[]
+    blockExtrinsicsRoots: Uint8Array[]
+    finalStateRoot: Uint8Array
+    executionTrace: Uint8Array[]
+    executionTraceRoot: Uint8Array
+    totalRewards: bigint
+}
+
+export type OperatorStatus = OperatorStatus_Registered | OperatorStatus_Deregistered | OperatorStatus_Slashed
+
+export interface OperatorStatus_Registered {
+    __kind: 'Registered'
+}
+
+export interface OperatorStatus_Deregistered {
+    __kind: 'Deregistered'
+}
+
+export interface OperatorStatus_Slashed {
+    __kind: 'Slashed'
 }
 
 export type DigestItem = DigestItem_PreRuntime | DigestItem_Consensus | DigestItem_Seal | DigestItem_Other | DigestItem_RuntimeEnvironmentUpdated
@@ -1219,7 +1320,7 @@ export interface DigestItem_RuntimeEnvironmentUpdated {
     __kind: 'RuntimeEnvironmentUpdated'
 }
 
-export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Receipts | Event_Domains | Event_Vesting | Event_Sudo
+export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Domains | Event_Vesting | Event_Sudo
 
 export interface Event_System {
     __kind: 'System'
@@ -1271,11 +1372,6 @@ export interface Event_ObjectStore {
     value: ObjectStoreEvent
 }
 
-export interface Event_Receipts {
-    __kind: 'Receipts'
-    value: ReceiptsEvent
-}
-
 export interface Event_Domains {
     __kind: 'Domains'
     value: DomainsEvent
@@ -1314,22 +1410,12 @@ export interface ArchivedBlockProgress_Partial {
     value: number
 }
 
-export interface Type_153 {
-    leafIndex: number
-    proof: Uint8Array
-    numberOfLeaves: number
-}
-
-export interface ProofOfElection {
-    domainId: number
-    vrfOutput: Uint8Array
-    vrfProof: Uint8Array
-    executorPublicKey: Uint8Array
-    globalChallenge: Uint8Array
-    stateRoot: Uint8Array
-    storageProof: StorageProof
-    blockNumber: number
-    blockHash: Uint8Array
+export interface BundleHeader {
+    proofOfElection: ProofOfElection
+    receipt: ExecutionReceipt
+    bundleSize: number
+    estimatedBundleWeight: Weight
+    bundleExtrinsicsRoot: Uint8Array
 }
 
 export interface StorageProof {
@@ -1356,14 +1442,32 @@ export interface ExecutionPhase_FinalizeBlock {
 export interface Solution {
     publicKey: Uint8Array
     rewardAddress: Uint8Array
-    sectorIndex: bigint
-    totalPieces: bigint
-    pieceOffset: bigint
-    recordCommitmentHash: Scalar
-    pieceWitness: Witness
-    chunkOffset: number
+    sectorIndex: number
+    historySize: bigint
+    pieceOffset: number
+    recordCommitment: Commitment
+    recordWitness: Witness
     chunk: Scalar
-    chunkSignature: ChunkSignature
+    chunkWitness: Witness
+    auditChunkOffset: number
+    proofOfSpace: Uint8Array
+}
+
+export type DomainsHoldIdentifier = DomainsHoldIdentifier_Staking | DomainsHoldIdentifier_DomainInstantiation
+
+export interface DomainsHoldIdentifier_Staking {
+    __kind: 'Staking'
+    value: StakingHoldIdentifier
+}
+
+export interface DomainsHoldIdentifier_DomainInstantiation {
+    __kind: 'DomainInstantiation'
+    value: number
+}
+
+export interface InvalidBundle {
+    bundleIndex: number
+    invalidBundleType: InvalidBundleType
 }
 
 /**
@@ -1484,12 +1588,9 @@ export interface RewardsEvent_VoteReward {
 }
 
 /**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * The `Event` enum of this pallet
  */
-export type BalancesEvent = BalancesEvent_Endowed | BalancesEvent_DustLost | BalancesEvent_Transfer | BalancesEvent_BalanceSet | BalancesEvent_Reserved | BalancesEvent_Unreserved | BalancesEvent_ReserveRepatriated | BalancesEvent_Deposit | BalancesEvent_Withdraw | BalancesEvent_Slashed
+export type BalancesEvent = BalancesEvent_Endowed | BalancesEvent_DustLost | BalancesEvent_Transfer | BalancesEvent_BalanceSet | BalancesEvent_Reserved | BalancesEvent_Unreserved | BalancesEvent_ReserveRepatriated | BalancesEvent_Deposit | BalancesEvent_Withdraw | BalancesEvent_Slashed | BalancesEvent_Minted | BalancesEvent_Burned | BalancesEvent_Suspended | BalancesEvent_Restored | BalancesEvent_Upgraded | BalancesEvent_Issued | BalancesEvent_Rescinded | BalancesEvent_Locked | BalancesEvent_Unlocked | BalancesEvent_Frozen | BalancesEvent_Thawed
 
 /**
  * An account was created with some free balance.
@@ -1527,7 +1628,6 @@ export interface BalancesEvent_BalanceSet {
     __kind: 'BalanceSet'
     who: Uint8Array
     free: bigint
-    reserved: bigint
 }
 
 /**
@@ -1583,6 +1683,102 @@ export interface BalancesEvent_Withdraw {
  */
 export interface BalancesEvent_Slashed {
     __kind: 'Slashed'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some amount was minted into an account.
+ */
+export interface BalancesEvent_Minted {
+    __kind: 'Minted'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some amount was burned from an account.
+ */
+export interface BalancesEvent_Burned {
+    __kind: 'Burned'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some amount was suspended from an account (it can be restored later).
+ */
+export interface BalancesEvent_Suspended {
+    __kind: 'Suspended'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some amount was restored into an account.
+ */
+export interface BalancesEvent_Restored {
+    __kind: 'Restored'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * An account was upgraded.
+ */
+export interface BalancesEvent_Upgraded {
+    __kind: 'Upgraded'
+    who: Uint8Array
+}
+
+/**
+ * Total issuance was increased by `amount`, creating a credit to be balanced.
+ */
+export interface BalancesEvent_Issued {
+    __kind: 'Issued'
+    amount: bigint
+}
+
+/**
+ * Total issuance was decreased by `amount`, creating a debt to be balanced.
+ */
+export interface BalancesEvent_Rescinded {
+    __kind: 'Rescinded'
+    amount: bigint
+}
+
+/**
+ * Some balance was locked.
+ */
+export interface BalancesEvent_Locked {
+    __kind: 'Locked'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some balance was unlocked.
+ */
+export interface BalancesEvent_Unlocked {
+    __kind: 'Unlocked'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some balance was frozen.
+ */
+export interface BalancesEvent_Frozen {
+    __kind: 'Frozen'
+    who: Uint8Array
+    amount: bigint
+}
+
+/**
+ * Some balance was thawed.
+ */
+export interface BalancesEvent_Thawed {
+    __kind: 'Thawed'
     who: Uint8Array
     amount: bigint
 }
@@ -1653,10 +1849,7 @@ export interface TransactionFeesEvent_TipsReward {
 }
 
 /**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * The `Event` enum of this pallet
  */
 export type TransactionPaymentEvent = TransactionPaymentEvent_TransactionFeePaid
 
@@ -1672,10 +1865,7 @@ export interface TransactionPaymentEvent_TransactionFeePaid {
 }
 
 /**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * The `Event` enum of this pallet
  */
 export type UtilityEvent = UtilityEvent_BatchInterrupted | UtilityEvent_BatchCompleted | UtilityEvent_BatchCompletedWithErrors | UtilityEvent_ItemCompleted | UtilityEvent_ItemFailed | UtilityEvent_DispatchedAs
 
@@ -1723,7 +1913,7 @@ export interface UtilityEvent_ItemFailed {
  */
 export interface UtilityEvent_DispatchedAs {
     __kind: 'DispatchedAs'
-    result: Type_46
+    result: Type_47
 }
 
 /**
@@ -1804,40 +1994,9 @@ export interface ObjectStoreEvent_ObjectSubmitted {
 }
 
 /**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * The `Event` enum of this pallet
  */
-export type ReceiptsEvent = ReceiptsEvent_NewDomainReceipt | ReceiptsEvent_FraudProofProcessed
-
-/**
- * A new domain receipt.
- */
-export interface ReceiptsEvent_NewDomainReceipt {
-    __kind: 'NewDomainReceipt'
-    domainId: number
-    primaryNumber: number
-    primaryHash: Uint8Array
-}
-
-/**
- * A fraud proof was processed.
- */
-export interface ReceiptsEvent_FraudProofProcessed {
-    __kind: 'FraudProofProcessed'
-    domainId: number
-    newBestNumber: number
-    newBestHash: Uint8Array
-}
-
-/**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
- */
-export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_BundleEquivocationProofProcessed | DomainsEvent_InvalidTransactionProofProcessed
+export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_DomainRuntimeCreated | DomainsEvent_DomainRuntimeUpgradeScheduled | DomainsEvent_DomainRuntimeUpgraded | DomainsEvent_OperatorRegistered | DomainsEvent_OperatorNominated | DomainsEvent_DomainInstantiated | DomainsEvent_OperatorSwitchedDomain | DomainsEvent_OperatorDeregistered | DomainsEvent_WithdrewStake | DomainsEvent_PreferredOperator | DomainsEvent_OperatorRewarded | DomainsEvent_DomainEpochCompleted
 
 /**
  * A domain bundle was included.
@@ -1846,28 +2005,80 @@ export interface DomainsEvent_BundleStored {
     __kind: 'BundleStored'
     domainId: number
     bundleHash: Uint8Array
-    bundleAuthor: Uint8Array
+    bundleAuthor: bigint
+}
+
+export interface DomainsEvent_DomainRuntimeCreated {
+    __kind: 'DomainRuntimeCreated'
+    runtimeId: number
+    runtimeType: RuntimeType
+}
+
+export interface DomainsEvent_DomainRuntimeUpgradeScheduled {
+    __kind: 'DomainRuntimeUpgradeScheduled'
+    runtimeId: number
+    scheduledAt: number
+}
+
+export interface DomainsEvent_DomainRuntimeUpgraded {
+    __kind: 'DomainRuntimeUpgraded'
+    runtimeId: number
+}
+
+export interface DomainsEvent_OperatorRegistered {
+    __kind: 'OperatorRegistered'
+    operatorId: bigint
+    domainId: number
+}
+
+export interface DomainsEvent_OperatorNominated {
+    __kind: 'OperatorNominated'
+    operatorId: bigint
+    nominatorId: Uint8Array
+}
+
+export interface DomainsEvent_DomainInstantiated {
+    __kind: 'DomainInstantiated'
+    domainId: number
+}
+
+export interface DomainsEvent_OperatorSwitchedDomain {
+    __kind: 'OperatorSwitchedDomain'
+    oldDomainId: number
+    newDomainId: number
+}
+
+export interface DomainsEvent_OperatorDeregistered {
+    __kind: 'OperatorDeregistered'
+    operatorId: bigint
+}
+
+export interface DomainsEvent_WithdrewStake {
+    __kind: 'WithdrewStake'
+    operatorId: bigint
+    nominatorId: Uint8Array
+}
+
+export interface DomainsEvent_PreferredOperator {
+    __kind: 'PreferredOperator'
+    operatorId: bigint
+    nominatorId: Uint8Array
+}
+
+export interface DomainsEvent_OperatorRewarded {
+    __kind: 'OperatorRewarded'
+    operatorId: bigint
+    reward: bigint
+}
+
+export interface DomainsEvent_DomainEpochCompleted {
+    __kind: 'DomainEpochCompleted'
+    domainId: number
+    completedEpochIndex: number
 }
 
 /**
- * A bundle equivocation proof was processed.
- */
-export interface DomainsEvent_BundleEquivocationProofProcessed {
-    __kind: 'BundleEquivocationProofProcessed'
-}
-
-/**
- * An invalid transaction proof was processed.
- */
-export interface DomainsEvent_InvalidTransactionProofProcessed {
-    __kind: 'InvalidTransactionProofProcessed'
-}
-
-/**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * The `Event` enum of this pallet
  */
 export type VestingEvent = VestingEvent_VestingScheduleAdded | VestingEvent_Claimed | VestingEvent_VestingSchedulesUpdated
 
@@ -1899,10 +2110,7 @@ export interface VestingEvent_VestingSchedulesUpdated {
 }
 
 /**
- * 
-			The [event](https://docs.substrate.io/main-docs/build/events-errors/) emitted
-			by this pallet.
-			
+ * The `Event` enum of this pallet
  */
 export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
 
@@ -1911,7 +2119,7 @@ export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoA
  */
 export interface SudoEvent_Sudid {
     __kind: 'Sudid'
-    sudoResult: Type_46
+    sudoResult: Type_47
 }
 
 /**
@@ -1927,7 +2135,7 @@ export interface SudoEvent_KeyChanged {
  */
 export interface SudoEvent_SudoAsDone {
     __kind: 'SudoAsDone'
-    sudoResult: Type_46
+    sudoResult: Type_47
 }
 
 export interface WeightsPerClass {
@@ -1937,15 +2145,61 @@ export interface WeightsPerClass {
     reserved: (Weight | undefined)
 }
 
-export interface Scalar {
-    inner: Uint8Array
+export interface ProofOfElection {
+    domainId: number
+    slotNumber: bigint
+    globalRandomness: Uint8Array
+    vrfSignature: VrfSignature
+    operatorId: bigint
 }
 
 export interface Witness {
     inner: Uint8Array
 }
 
-export interface ChunkSignature {
+export type StakingHoldIdentifier = StakingHoldIdentifier_PendingDeposit | StakingHoldIdentifier_Staked | StakingHoldIdentifier_PendingUnlock
+
+export interface StakingHoldIdentifier_PendingDeposit {
+    __kind: 'PendingDeposit'
+    value: bigint
+}
+
+export interface StakingHoldIdentifier_Staked {
+    __kind: 'Staked'
+    value: bigint
+}
+
+export interface StakingHoldIdentifier_PendingUnlock {
+    __kind: 'PendingUnlock'
+    value: bigint
+}
+
+export type InvalidBundleType = InvalidBundleType_UndecodableTx | InvalidBundleType_OutOfRangeTx | InvalidBundleType_IllegalTx | InvalidBundleType_InvalidReceipt
+
+export interface InvalidBundleType_UndecodableTx {
+    __kind: 'UndecodableTx'
+}
+
+export interface InvalidBundleType_OutOfRangeTx {
+    __kind: 'OutOfRangeTx'
+}
+
+export interface InvalidBundleType_IllegalTx {
+    __kind: 'IllegalTx'
+}
+
+export interface InvalidBundleType_InvalidReceipt {
+    __kind: 'InvalidReceipt'
+    value: InvalidReceipt
+}
+
+export interface VrfSignature {
     output: Uint8Array
     proof: Uint8Array
+}
+
+export type InvalidReceipt = InvalidReceipt_InvalidBundles
+
+export interface InvalidReceipt_InvalidBundles {
+    __kind: 'InvalidBundles'
 }

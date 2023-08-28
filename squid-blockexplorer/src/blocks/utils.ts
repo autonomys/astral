@@ -91,8 +91,7 @@ export function createCall(
   });
 }
 
-const PIECE_SIZE = BigInt(1048576);
-const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
+const PIECE_SIZE = 1048576n;
 
 /**
  * Calculates the space pledged by a solution range, based on monorepo calculation
@@ -101,14 +100,15 @@ const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
  * @return {bigint} - space pledged in bytes
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
-  const MAX_U64 = BigInt(2 ** 64 - 1);
+  const MAX_U64 = 2n ** 64n - 1n;
+  const SLOT_PROBABILITY = [1n, 6n];
 
-  const RECORD_NUM_S_BUCKETS = BigInt(65536);
-  const RECORD_NUM_CHUNKS = BigInt(32768);
-  const SIZE_OF_SOLUTION_RANGE = BigInt(8);
-  const SCALAR_FULL_BYTES = BigInt(32);
+  const RECORD_NUM_S_BUCKETS = 65536n;
+  const RECORD_NUM_CHUNKS = 32768n;
+  const SIZE_OF_SOLUTION_RANGE = 8n;
+  const SCALAR_FULL_BYTES = 32n;
 
-  const history_size =
+  const totalSpacePledged =
     MAX_U64 * PIECE_SIZE * SLOT_PROBABILITY[0]
     / RECORD_NUM_S_BUCKETS * RECORD_NUM_CHUNKS
     / solutionRange
@@ -116,7 +116,7 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
     * SCALAR_FULL_BYTES
     / SIZE_OF_SOLUTION_RANGE;
 
-  return history_size;
+  return totalSpacePledged;
 }
 
 /*
@@ -125,10 +125,10 @@ export function calcSpacePledged(solutionRange: bigint): bigint {
  * @return {bigint} - size of the history in bytes
  */
 export function calcHistorySize(segmentsCount: number): bigint {
-  const segmentCountBigInt = BigInt(segmentsCount);
-  const PIECES_IN_SEGMENT = BigInt(256);
+  const PIECES_IN_SEGMENT = 256n;
+  const segmentsCountBigInt = BigInt(segmentsCount);
 
-  return PIECE_SIZE * PIECES_IN_SEGMENT * segmentCountBigInt;
+  return PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCountBigInt;
 }
 
 /**

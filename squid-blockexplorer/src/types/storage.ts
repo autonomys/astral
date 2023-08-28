@@ -1,7 +1,6 @@
 import assert from 'assert'
 import {Block, BlockContext, Chain, ChainContext, Option, Result, StorageBase} from './support'
 import * as v1 from './v1'
-import * as v2 from './v2'
 
 export class BalancesAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -39,7 +38,7 @@ export class BalancesAccountStorage extends StorageBase {
      *  NOTE: This is only used in the case that this pallet is used to store balances.
      */
     get isV1(): boolean {
-        return this.getTypeHash() === '0b3b4bf0dd7388459eba461bc7c3226bf58608c941710a714e02f33ec0f91e78'
+        return this.getTypeHash() === '12d9e780c790f66e9c340b94cabd98da447e1087819d4acb4b1fe22bbb2783fb'
     }
 
     /**
@@ -70,67 +69,6 @@ export class BalancesAccountStorage extends StorageBase {
      */
     get asV1(): BalancesAccountStorageV1 {
         assert(this.isV1)
-        return this as any
-    }
-
-    /**
-     *  The Balances pallet example of storing the balance of an account.
-     * 
-     *  # Example
-     * 
-     *  ```nocompile
-     *   impl pallet_balances::Config for Runtime {
-     *     type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
-     *   }
-     *  ```
-     * 
-     *  You can also store the balance of an account in the `System` pallet.
-     * 
-     *  # Example
-     * 
-     *  ```nocompile
-     *   impl pallet_balances::Config for Runtime {
-     *    type AccountStore = System
-     *   }
-     *  ```
-     * 
-     *  But this comes with tradeoffs, storing account balances in the system pallet stores
-     *  `frame_system` data alongside the account data contrary to storing account balances in the
-     *  `Balances` pallet, which uses a `StorageMap` to store balances data only.
-     *  NOTE: This is only used in the case that this pallet is used to store balances.
-     */
-    get isV2(): boolean {
-        return this.getTypeHash() === '12d9e780c790f66e9c340b94cabd98da447e1087819d4acb4b1fe22bbb2783fb'
-    }
-
-    /**
-     *  The Balances pallet example of storing the balance of an account.
-     * 
-     *  # Example
-     * 
-     *  ```nocompile
-     *   impl pallet_balances::Config for Runtime {
-     *     type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
-     *   }
-     *  ```
-     * 
-     *  You can also store the balance of an account in the `System` pallet.
-     * 
-     *  # Example
-     * 
-     *  ```nocompile
-     *   impl pallet_balances::Config for Runtime {
-     *    type AccountStore = System
-     *   }
-     *  ```
-     * 
-     *  But this comes with tradeoffs, storing account balances in the system pallet stores
-     *  `frame_system` data alongside the account data contrary to storing account balances in the
-     *  `Balances` pallet, which uses a `StorageMap` to store balances data only.
-     *  NOTE: This is only used in the case that this pallet is used to store balances.
-     */
-    get asV2(): BalancesAccountStorageV2 {
-        assert(this.isV2)
         return this as any
     }
 }
@@ -175,46 +113,6 @@ export interface BalancesAccountStorageV1 {
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.AccountData][]>
 }
 
-/**
- *  The Balances pallet example of storing the balance of an account.
- * 
- *  # Example
- * 
- *  ```nocompile
- *   impl pallet_balances::Config for Runtime {
- *     type AccountStore = StorageMapShim<Self::Account<Runtime>, frame_system::Provider<Runtime>, AccountId, Self::AccountData<Balance>>
- *   }
- *  ```
- * 
- *  You can also store the balance of an account in the `System` pallet.
- * 
- *  # Example
- * 
- *  ```nocompile
- *   impl pallet_balances::Config for Runtime {
- *    type AccountStore = System
- *   }
- *  ```
- * 
- *  But this comes with tradeoffs, storing account balances in the system pallet stores
- *  `frame_system` data alongside the account data contrary to storing account balances in the
- *  `Balances` pallet, which uses a `StorageMap` to store balances data only.
- *  NOTE: This is only used in the case that this pallet is used to store balances.
- */
-export interface BalancesAccountStorageV2 {
-    get(key: Uint8Array): Promise<v2.AccountData>
-    getAll(): Promise<v2.AccountData[]>
-    getMany(keys: Uint8Array[]): Promise<v2.AccountData[]>
-    getKeys(): Promise<Uint8Array[]>
-    getKeys(key: Uint8Array): Promise<Uint8Array[]>
-    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
-    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v2.AccountData][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v2.AccountData][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v2.AccountData][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v2.AccountData][]>
-}
-
 export class BalancesFreezesStorage extends StorageBase {
     protected getPrefix() {
         return 'Balances'
@@ -227,15 +125,15 @@ export class BalancesFreezesStorage extends StorageBase {
     /**
      *  Freeze locks on account balances.
      */
-    get isV2(): boolean {
+    get isV1(): boolean {
         return this.getTypeHash() === '687d129c824d7b23d1f21a471b19c3fed952e35b64e5de19f549851d1c3f7f91'
     }
 
     /**
      *  Freeze locks on account balances.
      */
-    get asV2(): BalancesFreezesStorageV2 {
-        assert(this.isV2)
+    get asV1(): BalancesFreezesStorageV1 {
+        assert(this.isV1)
         return this as any
     }
 }
@@ -243,18 +141,18 @@ export class BalancesFreezesStorage extends StorageBase {
 /**
  *  Freeze locks on account balances.
  */
-export interface BalancesFreezesStorageV2 {
-    get(key: Uint8Array): Promise<v2.IdAmount[]>
-    getAll(): Promise<v2.IdAmount[][]>
-    getMany(keys: Uint8Array[]): Promise<v2.IdAmount[][]>
+export interface BalancesFreezesStorageV1 {
+    get(key: Uint8Array): Promise<v1.Type_139[]>
+    getAll(): Promise<v1.Type_139[][]>
+    getMany(keys: Uint8Array[]): Promise<v1.Type_139[][]>
     getKeys(): Promise<Uint8Array[]>
     getKeys(key: Uint8Array): Promise<Uint8Array[]>
     getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
     getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v2.IdAmount[]][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v2.IdAmount[]][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v2.IdAmount[]][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v2.IdAmount[]][]>
+    getPairs(): Promise<[k: Uint8Array, v: v1.Type_139[]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.Type_139[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.Type_139[]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.Type_139[]][]>
 }
 
 export class BalancesHoldsStorage extends StorageBase {
@@ -269,15 +167,15 @@ export class BalancesHoldsStorage extends StorageBase {
     /**
      *  Holds on account balances.
      */
-    get isV2(): boolean {
-        return this.getTypeHash() === '687d129c824d7b23d1f21a471b19c3fed952e35b64e5de19f549851d1c3f7f91'
+    get isV1(): boolean {
+        return this.getTypeHash() === '204d8b02a648a7c6c7ea18a95de1d1370bad45f7a952604eef5f4a2a423f7888'
     }
 
     /**
      *  Holds on account balances.
      */
-    get asV2(): BalancesHoldsStorageV2 {
-        assert(this.isV2)
+    get asV1(): BalancesHoldsStorageV1 {
+        assert(this.isV1)
         return this as any
     }
 }
@@ -285,18 +183,18 @@ export class BalancesHoldsStorage extends StorageBase {
 /**
  *  Holds on account balances.
  */
-export interface BalancesHoldsStorageV2 {
-    get(key: Uint8Array): Promise<v2.IdAmount[]>
-    getAll(): Promise<v2.IdAmount[][]>
-    getMany(keys: Uint8Array[]): Promise<v2.IdAmount[][]>
+export interface BalancesHoldsStorageV1 {
+    get(key: Uint8Array): Promise<v1.IdAmount[]>
+    getAll(): Promise<v1.IdAmount[][]>
+    getMany(keys: Uint8Array[]): Promise<v1.IdAmount[][]>
     getKeys(): Promise<Uint8Array[]>
     getKeys(key: Uint8Array): Promise<Uint8Array[]>
     getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
     getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v2.IdAmount[]][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v2.IdAmount[]][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v2.IdAmount[]][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v2.IdAmount[]][]>
+    getPairs(): Promise<[k: Uint8Array, v: v1.IdAmount[]][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.IdAmount[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.IdAmount[]][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.IdAmount[]][]>
 }
 
 export class BalancesInactiveIssuanceStorage extends StorageBase {
@@ -448,6 +346,1384 @@ export class BalancesTotalIssuanceStorage extends StorageBase {
  */
 export interface BalancesTotalIssuanceStorageV1 {
     get(): Promise<bigint>
+}
+
+export class DomainsBlockTreeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'BlockTree'
+    }
+
+    /**
+     *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of a domain blocks,
+     *  which can be used get the domain block in `DomainBlocks`
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '05816b1bdbe11d0e04ffb446adba22a68ff9fd377cc1a4c8b4ea29e5605f0978'
+    }
+
+    /**
+     *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of a domain blocks,
+     *  which can be used get the domain block in `DomainBlocks`
+     */
+    get asV1(): DomainsBlockTreeStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of a domain blocks,
+ *  which can be used get the domain block in `DomainBlocks`
+ */
+export interface DomainsBlockTreeStorageV1 {
+    get(key1: number, key2: number): Promise<Uint8Array[]>
+    getAll(): Promise<Uint8Array[][]>
+    getMany(keys: [number, number][]): Promise<Uint8Array[][]>
+    getKeys(): Promise<[number, number][]>
+    getKeys(key1: number): Promise<[number, number][]>
+    getKeys(key1: number, key2: number): Promise<[number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number][]>
+    getPairs(): Promise<[k: [number, number], v: Uint8Array[]][]>
+    getPairs(key1: number): Promise<[k: [number, number], v: Uint8Array[]][]>
+    getPairs(key1: number, key2: number): Promise<[k: [number, number], v: Uint8Array[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
+}
+
+export class DomainsConsensusBlockHashStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'ConsensusBlockHash'
+    }
+
+    /**
+     *  The consensus block hash used to verify ER, only store the consensus block hash for a domain
+     *  if that consensus block contains bundle of the domain, the hash will be pruned when the ER
+     *  that point to the consensus block is pruned.
+     * 
+     *  TODO: this storage is unbounded in some cases, see https://github.com/subspace/subspace/issues/1673
+     *  for more details, this will be fixed once https://github.com/subspace/subspace/issues/1731 is implemented.
+     */
+    get isV2(): boolean {
+        return this.getTypeHash() === 'b3c15232fb4346b458fc3153a06d89787a103676fa34fe3d795ee04fe62bf4d8'
+    }
+
+    /**
+     *  The consensus block hash used to verify ER, only store the consensus block hash for a domain
+     *  if that consensus block contains bundle of the domain, the hash will be pruned when the ER
+     *  that point to the consensus block is pruned.
+     * 
+     *  TODO: this storage is unbounded in some cases, see https://github.com/subspace/subspace/issues/1673
+     *  for more details, this will be fixed once https://github.com/subspace/subspace/issues/1731 is implemented.
+     */
+    get asV2(): DomainsConsensusBlockHashStorageV2 {
+        assert(this.isV2)
+        return this as any
+    }
+}
+
+/**
+ *  The consensus block hash used to verify ER, only store the consensus block hash for a domain
+ *  if that consensus block contains bundle of the domain, the hash will be pruned when the ER
+ *  that point to the consensus block is pruned.
+ * 
+ *  TODO: this storage is unbounded in some cases, see https://github.com/subspace/subspace/issues/1673
+ *  for more details, this will be fixed once https://github.com/subspace/subspace/issues/1731 is implemented.
+ */
+export interface DomainsConsensusBlockHashStorageV2 {
+    get(key1: number, key2: number): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: [number, number][]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<[number, number][]>
+    getKeys(key1: number): Promise<[number, number][]>
+    getKeys(key1: number, key2: number): Promise<[number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number][]>
+    getPairs(): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairs(key1: number): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairs(key1: number, key2: number): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+}
+
+export class DomainsDomainBlocksStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'DomainBlocks'
+    }
+
+    /**
+     *  Mapping of domain block hash to domain block
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'd5954976577ef6008eae68925c8ea2df190e3c1c20c06b4f90908dad82f85f82'
+    }
+
+    /**
+     *  Mapping of domain block hash to domain block
+     */
+    get asV1(): DomainsDomainBlocksStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Mapping of domain block hash to domain block
+ */
+export interface DomainsDomainBlocksStorageV1 {
+    get(key: Uint8Array): Promise<(v1.DomainBlock | undefined)>
+    getAll(): Promise<v1.DomainBlock[]>
+    getMany(keys: Uint8Array[]): Promise<(v1.DomainBlock | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v1.DomainBlock][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.DomainBlock][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.DomainBlock][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.DomainBlock][]>
+}
+
+export class DomainsDomainRegistryStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'DomainRegistry'
+    }
+
+    /**
+     *  The domain registry
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '937fa268778e9673ff30aa878ba1c724c80976066fcf3f7cb0aa6c40fb1e3dba'
+    }
+
+    /**
+     *  The domain registry
+     */
+    get asV1(): DomainsDomainRegistryStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  The domain registry
+ */
+export interface DomainsDomainRegistryStorageV1 {
+    get(key: number): Promise<(v1.DomainObject | undefined)>
+    getAll(): Promise<v1.DomainObject[]>
+    getMany(keys: number[]): Promise<(v1.DomainObject | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v1.DomainObject][]>
+    getPairs(key: number): Promise<[k: number, v: v1.DomainObject][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v1.DomainObject][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v1.DomainObject][]>
+}
+
+export class DomainsDomainStakingSummaryStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'DomainStakingSummary'
+    }
+
+    get isV1(): boolean {
+        return this.getTypeHash() === 'e4962a38125d72bf8ec89ca7af661a9db43cf468454deb464cf1ed90d927f1ce'
+    }
+
+    get asV1(): DomainsDomainStakingSummaryStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+export interface DomainsDomainStakingSummaryStorageV1 {
+    get(key: number): Promise<(v1.StakingSummary | undefined)>
+    getAll(): Promise<v1.StakingSummary[]>
+    getMany(keys: number[]): Promise<(v1.StakingSummary | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v1.StakingSummary][]>
+    getPairs(key: number): Promise<[k: number, v: v1.StakingSummary][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v1.StakingSummary][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v1.StakingSummary][]>
+}
+
+export class DomainsDomainTxRangeStateStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'DomainTxRangeState'
+    }
+
+    get isV1(): boolean {
+        return this.getTypeHash() === 'b33cdcbf1fbd2a196f953b48092bb36b14bbe6dbd0c45cc4d40b7ce6e2597eac'
+    }
+
+    get asV1(): DomainsDomainTxRangeStateStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+export interface DomainsDomainTxRangeStateStorageV1 {
+    get(key: number): Promise<(v1.TxRangeState | undefined)>
+    getAll(): Promise<v1.TxRangeState[]>
+    getMany(keys: number[]): Promise<(v1.TxRangeState | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v1.TxRangeState][]>
+    getPairs(key: number): Promise<[k: number, v: v1.TxRangeState][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v1.TxRangeState][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v1.TxRangeState][]>
+}
+
+export class DomainsExecutionInboxStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'ExecutionInbox'
+    }
+
+    /**
+     *  A set of `BundleDigest` from all bundles that successfully submitted to the consensus block,
+     *  these bundles will be used to construct the domain block and `ExecutionInbox` is used to:
+     * 
+     *  1. Ensure subsequent ERs of that domain block include all pre-validated extrinsic bundles
+     *  2. Index the `InboxedBundle` and pruned its value when the corresponding `ExecutionInbox` is pruned
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'e1e2e7abf454f1f0d62f4d39fcd2fa276b68b422339f8d57dbfff3d55cbe9812'
+    }
+
+    /**
+     *  A set of `BundleDigest` from all bundles that successfully submitted to the consensus block,
+     *  these bundles will be used to construct the domain block and `ExecutionInbox` is used to:
+     * 
+     *  1. Ensure subsequent ERs of that domain block include all pre-validated extrinsic bundles
+     *  2. Index the `InboxedBundle` and pruned its value when the corresponding `ExecutionInbox` is pruned
+     */
+    get asV1(): DomainsExecutionInboxStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  A set of `BundleDigest` from all bundles that successfully submitted to the consensus block,
+ *  these bundles will be used to construct the domain block and `ExecutionInbox` is used to:
+ * 
+ *  1. Ensure subsequent ERs of that domain block include all pre-validated extrinsic bundles
+ *  2. Index the `InboxedBundle` and pruned its value when the corresponding `ExecutionInbox` is pruned
+ */
+export interface DomainsExecutionInboxStorageV1 {
+    get(key1: number, key2: number, key3: number): Promise<v1.BundleDigest[]>
+    getAll(): Promise<v1.BundleDigest[][]>
+    getMany(keys: [number, number, number][]): Promise<v1.BundleDigest[][]>
+    getKeys(): Promise<[number, number, number][]>
+    getKeys(key1: number): Promise<[number, number, number][]>
+    getKeys(key1: number, key2: number): Promise<[number, number, number][]>
+    getKeys(key1: number, key2: number, key3: number): Promise<[number, number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number, number][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number, key3: number): AsyncIterable<[number, number, number][]>
+    getPairs(): Promise<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairs(key1: number): Promise<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairs(key1: number, key2: number): Promise<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairs(key1: number, key2: number, key3: number): Promise<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number, number], v: v1.BundleDigest[]][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number, key3: number): AsyncIterable<[k: [number, number, number], v: v1.BundleDigest[]][]>
+}
+
+export class DomainsHeadDomainNumberStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'HeadDomainNumber'
+    }
+
+    /**
+     *  The block number of the best domain block, increase by one when the first bundle of the domain is
+     *  successfully submitted to current consensus block, which mean a new domain block with this block
+     *  number will be produce. Used as a pointer in `ExecutionInbox` to identify the current under building
+     *  domain block, also used as a mapping of consensus block number to domain block number.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'be37cd27c0e60862618e14817365ea9f5c3c45854fea63a6259de44af2521364'
+    }
+
+    /**
+     *  The block number of the best domain block, increase by one when the first bundle of the domain is
+     *  successfully submitted to current consensus block, which mean a new domain block with this block
+     *  number will be produce. Used as a pointer in `ExecutionInbox` to identify the current under building
+     *  domain block, also used as a mapping of consensus block number to domain block number.
+     */
+    get asV1(): DomainsHeadDomainNumberStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  The block number of the best domain block, increase by one when the first bundle of the domain is
+ *  successfully submitted to current consensus block, which mean a new domain block with this block
+ *  number will be produce. Used as a pointer in `ExecutionInbox` to identify the current under building
+ *  domain block, also used as a mapping of consensus block number to domain block number.
+ */
+export interface DomainsHeadDomainNumberStorageV1 {
+    get(key: number): Promise<number>
+    getAll(): Promise<number[]>
+    getMany(keys: number[]): Promise<number[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: number][]>
+    getPairs(key: number): Promise<[k: number, v: number][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: number][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: number][]>
+}
+
+export class DomainsHeadReceiptNumberStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'HeadReceiptNumber'
+    }
+
+    /**
+     *  The head receipt number of each domain
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'be37cd27c0e60862618e14817365ea9f5c3c45854fea63a6259de44af2521364'
+    }
+
+    /**
+     *  The head receipt number of each domain
+     */
+    get asV1(): DomainsHeadReceiptNumberStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  The head receipt number of each domain
+ */
+export interface DomainsHeadReceiptNumberStorageV1 {
+    get(key: number): Promise<number>
+    getAll(): Promise<number[]>
+    getMany(keys: number[]): Promise<number[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: number][]>
+    getPairs(key: number): Promise<[k: number, v: number][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: number][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: number][]>
+}
+
+export class DomainsInboxedBundleStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'InboxedBundle'
+    }
+
+    /**
+     *  A mapping of `bundle_header_hash` -> `bundle_author` for all the successfully submitted bundles of
+     *  the last `BlockTreePruningDepth` domain blocks. Used to verify the invalid bundle fraud proof and
+     *  slash malicious operator who have submitted invalid bundle.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'fc96d6750297129d4ff884dffc4742fe833e9be687fa34e80679655014942975'
+    }
+
+    /**
+     *  A mapping of `bundle_header_hash` -> `bundle_author` for all the successfully submitted bundles of
+     *  the last `BlockTreePruningDepth` domain blocks. Used to verify the invalid bundle fraud proof and
+     *  slash malicious operator who have submitted invalid bundle.
+     */
+    get asV1(): DomainsInboxedBundleStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  A mapping of `bundle_header_hash` -> `bundle_author` for all the successfully submitted bundles of
+ *  the last `BlockTreePruningDepth` domain blocks. Used to verify the invalid bundle fraud proof and
+ *  slash malicious operator who have submitted invalid bundle.
+ */
+export interface DomainsInboxedBundleStorageV1 {
+    get(key: Uint8Array): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: Uint8Array[]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: bigint][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: bigint][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: bigint][]>
+}
+
+export class DomainsLastEpochStakingDistributionStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'LastEpochStakingDistribution'
+    }
+
+    /**
+     *  A temporary storage to hold any previous epoch details for a given domain
+     *  if the epoch transitioned in this block so that all the submitted bundles
+     *  within this block are verified.
+     *  The storage is cleared on block finalization.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '3fbfed0280a211286cd7057803f571ba30eafa821c81988d3f7600945ba20260'
+    }
+
+    /**
+     *  A temporary storage to hold any previous epoch details for a given domain
+     *  if the epoch transitioned in this block so that all the submitted bundles
+     *  within this block are verified.
+     *  The storage is cleared on block finalization.
+     */
+    get asV1(): DomainsLastEpochStakingDistributionStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  A temporary storage to hold any previous epoch details for a given domain
+ *  if the epoch transitioned in this block so that all the submitted bundles
+ *  within this block are verified.
+ *  The storage is cleared on block finalization.
+ */
+export interface DomainsLastEpochStakingDistributionStorageV1 {
+    get(key: number): Promise<(v1.ElectionVerificationParams | undefined)>
+    getAll(): Promise<v1.ElectionVerificationParams[]>
+    getMany(keys: number[]): Promise<(v1.ElectionVerificationParams | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v1.ElectionVerificationParams][]>
+    getPairs(key: number): Promise<[k: number, v: v1.ElectionVerificationParams][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v1.ElectionVerificationParams][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v1.ElectionVerificationParams][]>
+}
+
+export class DomainsNextDomainIdStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'NextDomainId'
+    }
+
+    /**
+     *  Stores the next domain id.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    }
+
+    /**
+     *  Stores the next domain id.
+     */
+    get asV1(): DomainsNextDomainIdStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Stores the next domain id.
+ */
+export interface DomainsNextDomainIdStorageV1 {
+    get(): Promise<number>
+}
+
+export class DomainsNextOperatorIdStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'NextOperatorId'
+    }
+
+    get isV1(): boolean {
+        return this.getTypeHash() === '95ff4f914f08e149ddbe1ae2dcb1743bbf9aaae69d04c486e1a398cacfcca06a'
+    }
+
+    get asV1(): DomainsNextOperatorIdStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+export interface DomainsNextOperatorIdStorageV1 {
+    get(): Promise<bigint>
+}
+
+export class DomainsNextRuntimeIdStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'NextRuntimeId'
+    }
+
+    /**
+     *  Stores the next runtime id.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+    }
+
+    /**
+     *  Stores the next runtime id.
+     */
+    get asV1(): DomainsNextRuntimeIdStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Stores the next runtime id.
+ */
+export interface DomainsNextRuntimeIdStorageV1 {
+    get(): Promise<number>
+}
+
+export class DomainsNominatorsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'Nominators'
+    }
+
+    /**
+     *  List of all current epoch's nominators and their shares under a given operator,
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '462d3e1b8faa92cfc96b05dd4e3ea97ff60f30e122bfe01dc7fa29963d8ad049'
+    }
+
+    /**
+     *  List of all current epoch's nominators and their shares under a given operator,
+     */
+    get asV1(): DomainsNominatorsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  List of all current epoch's nominators and their shares under a given operator,
+ */
+export interface DomainsNominatorsStorageV1 {
+    get(key1: bigint, key2: Uint8Array): Promise<(v1.Nominator | undefined)>
+    getAll(): Promise<v1.Nominator[]>
+    getMany(keys: [bigint, Uint8Array][]): Promise<(v1.Nominator | undefined)[]>
+    getKeys(): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint, key2: Uint8Array): Promise<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[bigint, Uint8Array][]>
+    getPairs(): Promise<[k: [bigint, Uint8Array], v: v1.Nominator][]>
+    getPairs(key1: bigint): Promise<[k: [bigint, Uint8Array], v: v1.Nominator][]>
+    getPairs(key1: bigint, key2: Uint8Array): Promise<[k: [bigint, Uint8Array], v: v1.Nominator][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [bigint, Uint8Array], v: v1.Nominator][]>
+    getPairsPaged(pageSize: number, key1: bigint): AsyncIterable<[k: [bigint, Uint8Array], v: v1.Nominator][]>
+    getPairsPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[k: [bigint, Uint8Array], v: v1.Nominator][]>
+}
+
+export class DomainsOperatorIdOwnerStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'OperatorIdOwner'
+    }
+
+    get isV1(): boolean {
+        return this.getTypeHash() === 'ffc087e1323413e73a9729e444bf115bb89bc74cab9f4347c9dc890a14ae8d68'
+    }
+
+    get asV1(): DomainsOperatorIdOwnerStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+export interface DomainsOperatorIdOwnerStorageV1 {
+    get(key: bigint): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: bigint[]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<bigint[]>
+    getKeys(key: bigint): Promise<bigint[]>
+    getKeysPaged(pageSize: number): AsyncIterable<bigint[]>
+    getKeysPaged(pageSize: number, key: bigint): AsyncIterable<bigint[]>
+    getPairs(): Promise<[k: bigint, v: Uint8Array][]>
+    getPairs(key: bigint): Promise<[k: bigint, v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: bigint, v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key: bigint): AsyncIterable<[k: bigint, v: Uint8Array][]>
+}
+
+export class DomainsOperatorsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'Operators'
+    }
+
+    /**
+     *  List of all registered operators and their configuration.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'd89f95a1a2e91948c86fb71302c209eab34daddac4e102e79d0f5833bb6e6d6e'
+    }
+
+    /**
+     *  List of all registered operators and their configuration.
+     */
+    get asV1(): DomainsOperatorsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  List of all registered operators and their configuration.
+ */
+export interface DomainsOperatorsStorageV1 {
+    get(key: bigint): Promise<(v1.Operator | undefined)>
+    getAll(): Promise<v1.Operator[]>
+    getMany(keys: bigint[]): Promise<(v1.Operator | undefined)[]>
+    getKeys(): Promise<bigint[]>
+    getKeys(key: bigint): Promise<bigint[]>
+    getKeysPaged(pageSize: number): AsyncIterable<bigint[]>
+    getKeysPaged(pageSize: number, key: bigint): AsyncIterable<bigint[]>
+    getPairs(): Promise<[k: bigint, v: v1.Operator][]>
+    getPairs(key: bigint): Promise<[k: bigint, v: v1.Operator][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: bigint, v: v1.Operator][]>
+    getPairsPaged(pageSize: number, key: bigint): AsyncIterable<[k: bigint, v: v1.Operator][]>
+}
+
+export class DomainsPendingDepositsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingDeposits'
+    }
+
+    /**
+     *  Deposits initiated a nominator under this operator.
+     *  Will be stored temporarily until the current epoch is complete.
+     *  Once, epoch is complete, these deposits are staked beginning next epoch.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '3193c3ea200c934fac10ec318ae9e0f3f68648d492b8a4aae86f55259134365d'
+    }
+
+    /**
+     *  Deposits initiated a nominator under this operator.
+     *  Will be stored temporarily until the current epoch is complete.
+     *  Once, epoch is complete, these deposits are staked beginning next epoch.
+     */
+    get asV1(): DomainsPendingDepositsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Deposits initiated a nominator under this operator.
+ *  Will be stored temporarily until the current epoch is complete.
+ *  Once, epoch is complete, these deposits are staked beginning next epoch.
+ */
+export interface DomainsPendingDepositsStorageV1 {
+    get(key1: bigint, key2: Uint8Array): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: [bigint, Uint8Array][]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint, key2: Uint8Array): Promise<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[bigint, Uint8Array][]>
+    getPairs(): Promise<[k: [bigint, Uint8Array], v: bigint][]>
+    getPairs(key1: bigint): Promise<[k: [bigint, Uint8Array], v: bigint][]>
+    getPairs(key1: bigint, key2: Uint8Array): Promise<[k: [bigint, Uint8Array], v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [bigint, Uint8Array], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: bigint): AsyncIterable<[k: [bigint, Uint8Array], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[k: [bigint, Uint8Array], v: bigint][]>
+}
+
+export class DomainsPendingGenesisDomainStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingGenesisDomain'
+    }
+
+    /**
+     *  The genesis domian that scheduled to register at block #1, should be removed once
+     *  https://github.com/paritytech/substrate/issues/14541 is resolved.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'f520f5afa6248eb18f3a23d51089d9f554686ada339d4ff29b00ebe448ce554f'
+    }
+
+    /**
+     *  The genesis domian that scheduled to register at block #1, should be removed once
+     *  https://github.com/paritytech/substrate/issues/14541 is resolved.
+     */
+    get asV1(): DomainsPendingGenesisDomainStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  The genesis domian that scheduled to register at block #1, should be removed once
+ *  https://github.com/paritytech/substrate/issues/14541 is resolved.
+ */
+export interface DomainsPendingGenesisDomainStorageV1 {
+    get(): Promise<(v1.GenesisDomain | undefined)>
+}
+
+export class DomainsPendingNominatorUnlocksStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingNominatorUnlocks'
+    }
+
+    /**
+     *  All the pending unlocks for the nominators.
+     *  We use this storage to fetch all the pending unlocks under a operator pool at the time of slashing.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '1412d7a822d5726648202444dc5b043984742ced71e90d8517917acb144ec2dd'
+    }
+
+    /**
+     *  All the pending unlocks for the nominators.
+     *  We use this storage to fetch all the pending unlocks under a operator pool at the time of slashing.
+     */
+    get asV1(): DomainsPendingNominatorUnlocksStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  All the pending unlocks for the nominators.
+ *  We use this storage to fetch all the pending unlocks under a operator pool at the time of slashing.
+ */
+export interface DomainsPendingNominatorUnlocksStorageV1 {
+    get(key1: bigint, key2: number): Promise<(v1.PendingNominatorUnlock[] | undefined)>
+    getAll(): Promise<v1.PendingNominatorUnlock[][]>
+    getMany(keys: [bigint, number][]): Promise<(v1.PendingNominatorUnlock[] | undefined)[]>
+    getKeys(): Promise<[bigint, number][]>
+    getKeys(key1: bigint): Promise<[bigint, number][]>
+    getKeys(key1: bigint, key2: number): Promise<[bigint, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[bigint, number][]>
+    getKeysPaged(pageSize: number, key1: bigint): AsyncIterable<[bigint, number][]>
+    getKeysPaged(pageSize: number, key1: bigint, key2: number): AsyncIterable<[bigint, number][]>
+    getPairs(): Promise<[k: [bigint, number], v: v1.PendingNominatorUnlock[]][]>
+    getPairs(key1: bigint): Promise<[k: [bigint, number], v: v1.PendingNominatorUnlock[]][]>
+    getPairs(key1: bigint, key2: number): Promise<[k: [bigint, number], v: v1.PendingNominatorUnlock[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [bigint, number], v: v1.PendingNominatorUnlock[]][]>
+    getPairsPaged(pageSize: number, key1: bigint): AsyncIterable<[k: [bigint, number], v: v1.PendingNominatorUnlock[]][]>
+    getPairsPaged(pageSize: number, key1: bigint, key2: number): AsyncIterable<[k: [bigint, number], v: v1.PendingNominatorUnlock[]][]>
+}
+
+export class DomainsPendingOperatorDeregistrationsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingOperatorDeregistrations'
+    }
+
+    /**
+     *  Operators who chose to deregister from a domain.
+     *  Stored here temporarily until domain epoch is complete.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'ad89e1c9cb8fd2d186873c54d677e80653e7a6bb19339657b83b5b789a22279e'
+    }
+
+    /**
+     *  Operators who chose to deregister from a domain.
+     *  Stored here temporarily until domain epoch is complete.
+     */
+    get asV1(): DomainsPendingOperatorDeregistrationsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Operators who chose to deregister from a domain.
+ *  Stored here temporarily until domain epoch is complete.
+ */
+export interface DomainsPendingOperatorDeregistrationsStorageV1 {
+    get(key: number): Promise<(bigint[] | undefined)>
+    getAll(): Promise<bigint[][]>
+    getMany(keys: number[]): Promise<(bigint[] | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: bigint[]][]>
+    getPairs(key: number): Promise<[k: number, v: bigint[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: bigint[]][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: bigint[]][]>
+}
+
+export class DomainsPendingOperatorSwitchesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingOperatorSwitches'
+    }
+
+    /**
+     *  Temporary hold of all the operators who decided to switch to another domain.
+     *  Once epoch is complete, these operators are added to new domains under next_operators.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'ad89e1c9cb8fd2d186873c54d677e80653e7a6bb19339657b83b5b789a22279e'
+    }
+
+    /**
+     *  Temporary hold of all the operators who decided to switch to another domain.
+     *  Once epoch is complete, these operators are added to new domains under next_operators.
+     */
+    get asV1(): DomainsPendingOperatorSwitchesStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Temporary hold of all the operators who decided to switch to another domain.
+ *  Once epoch is complete, these operators are added to new domains under next_operators.
+ */
+export interface DomainsPendingOperatorSwitchesStorageV1 {
+    get(key: number): Promise<(bigint[] | undefined)>
+    getAll(): Promise<bigint[][]>
+    getMany(keys: number[]): Promise<(bigint[] | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: bigint[]][]>
+    getPairs(key: number): Promise<[k: number, v: bigint[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: bigint[]][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: bigint[]][]>
+}
+
+export class DomainsPendingOperatorUnlocksStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingOperatorUnlocks'
+    }
+
+    /**
+     *  Stores a list of operators who are unlocking in the coming blocks.
+     *  The operator will be removed when the wait period is over
+     *  or when the operator is slashed.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '6b894cf69a2ca57c425933307e81a0c56377a214575e8ac0ab9ddbe2347b438b'
+    }
+
+    /**
+     *  Stores a list of operators who are unlocking in the coming blocks.
+     *  The operator will be removed when the wait period is over
+     *  or when the operator is slashed.
+     */
+    get asV1(): DomainsPendingOperatorUnlocksStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Stores a list of operators who are unlocking in the coming blocks.
+ *  The operator will be removed when the wait period is over
+ *  or when the operator is slashed.
+ */
+export interface DomainsPendingOperatorUnlocksStorageV1 {
+    get(): Promise<bigint[]>
+}
+
+export class DomainsPendingSlashesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingSlashes'
+    }
+
+    /**
+     *  A list operators who were slashed during the current epoch associated with the domain.
+     *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
+     *  then deleted.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '8218737ed51b5d9ed164d3a05759476dc1bd11072be34b56804d083471647d25'
+    }
+
+    /**
+     *  A list operators who were slashed during the current epoch associated with the domain.
+     *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
+     *  then deleted.
+     */
+    get asV1(): DomainsPendingSlashesStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  A list operators who were slashed during the current epoch associated with the domain.
+ *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
+ *  then deleted.
+ */
+export interface DomainsPendingSlashesStorageV1 {
+    get(key: number): Promise<([bigint, v1.PendingOperatorSlashInfo][] | undefined)>
+    getAll(): Promise<[bigint, v1.PendingOperatorSlashInfo][][]>
+    getMany(keys: number[]): Promise<([bigint, v1.PendingOperatorSlashInfo][] | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: [bigint, v1.PendingOperatorSlashInfo][]][]>
+    getPairs(key: number): Promise<[k: number, v: [bigint, v1.PendingOperatorSlashInfo][]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: [bigint, v1.PendingOperatorSlashInfo][]][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: [bigint, v1.PendingOperatorSlashInfo][]][]>
+}
+
+export class DomainsPendingStakingOperationCountStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingStakingOperationCount'
+    }
+
+    /**
+     *  The pending staking operation count of the current epoch, it should not larger than
+     *  `MaxPendingStakingOperation` and will be resetted to 0 upon epoch transition.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'be37cd27c0e60862618e14817365ea9f5c3c45854fea63a6259de44af2521364'
+    }
+
+    /**
+     *  The pending staking operation count of the current epoch, it should not larger than
+     *  `MaxPendingStakingOperation` and will be resetted to 0 upon epoch transition.
+     */
+    get asV1(): DomainsPendingStakingOperationCountStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  The pending staking operation count of the current epoch, it should not larger than
+ *  `MaxPendingStakingOperation` and will be resetted to 0 upon epoch transition.
+ */
+export interface DomainsPendingStakingOperationCountStorageV1 {
+    get(key: number): Promise<number>
+    getAll(): Promise<number[]>
+    getMany(keys: number[]): Promise<number[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: number][]>
+    getPairs(key: number): Promise<[k: number, v: number][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: number][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: number][]>
+}
+
+export class DomainsPendingUnlocksStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingUnlocks'
+    }
+
+    /**
+     *  A list of operators that are either unregistering or one more of the nominators
+     *  are withdrawing some staked funds.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '990930d6b6298bd986dda49583be2d342dcf5333409e9d4d4ce3dfb872a91d91'
+    }
+
+    /**
+     *  A list of operators that are either unregistering or one more of the nominators
+     *  are withdrawing some staked funds.
+     */
+    get asV1(): DomainsPendingUnlocksStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  A list of operators that are either unregistering or one more of the nominators
+ *  are withdrawing some staked funds.
+ */
+export interface DomainsPendingUnlocksStorageV1 {
+    get(key: [number, number]): Promise<(bigint[] | undefined)>
+    getAll(): Promise<bigint[][]>
+    getMany(keys: [number, number][]): Promise<(bigint[] | undefined)[]>
+    getKeys(): Promise<[number, number][]>
+    getKeys(key: [number, number]): Promise<[number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key: [number, number]): AsyncIterable<[number, number][]>
+    getPairs(): Promise<[k: [number, number], v: bigint[]][]>
+    getPairs(key: [number, number]): Promise<[k: [number, number], v: bigint[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: bigint[]][]>
+    getPairsPaged(pageSize: number, key: [number, number]): AsyncIterable<[k: [number, number], v: bigint[]][]>
+}
+
+export class DomainsPendingWithdrawalsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PendingWithdrawals'
+    }
+
+    /**
+     *  Withdrawals initiated a nominator under this operator.
+     *  Will be stored temporarily until the current epoch is complete.
+     *  Once, epoch is complete, these will be moved to PendingNominatorUnlocks.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '7c85471fb8d17d4fca6deae963db7106c07030093886a61b90b2d6945733a4d4'
+    }
+
+    /**
+     *  Withdrawals initiated a nominator under this operator.
+     *  Will be stored temporarily until the current epoch is complete.
+     *  Once, epoch is complete, these will be moved to PendingNominatorUnlocks.
+     */
+    get asV1(): DomainsPendingWithdrawalsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Withdrawals initiated a nominator under this operator.
+ *  Will be stored temporarily until the current epoch is complete.
+ *  Once, epoch is complete, these will be moved to PendingNominatorUnlocks.
+ */
+export interface DomainsPendingWithdrawalsStorageV1 {
+    get(key1: bigint, key2: Uint8Array): Promise<(v1.Withdraw | undefined)>
+    getAll(): Promise<v1.Withdraw[]>
+    getMany(keys: [bigint, Uint8Array][]): Promise<(v1.Withdraw | undefined)[]>
+    getKeys(): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint): Promise<[bigint, Uint8Array][]>
+    getKeys(key1: bigint, key2: Uint8Array): Promise<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint): AsyncIterable<[bigint, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[bigint, Uint8Array][]>
+    getPairs(): Promise<[k: [bigint, Uint8Array], v: v1.Withdraw][]>
+    getPairs(key1: bigint): Promise<[k: [bigint, Uint8Array], v: v1.Withdraw][]>
+    getPairs(key1: bigint, key2: Uint8Array): Promise<[k: [bigint, Uint8Array], v: v1.Withdraw][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [bigint, Uint8Array], v: v1.Withdraw][]>
+    getPairsPaged(pageSize: number, key1: bigint): AsyncIterable<[k: [bigint, Uint8Array], v: v1.Withdraw][]>
+    getPairsPaged(pageSize: number, key1: bigint, key2: Uint8Array): AsyncIterable<[k: [bigint, Uint8Array], v: v1.Withdraw][]>
+}
+
+export class DomainsPreferredOperatorStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'PreferredOperator'
+    }
+
+    /**
+     *  A preferred Operator for a given Farmer, enabling automatic staking of block rewards.
+     *  For the auto-staking to succeed, the Farmer must also be a Nominator of the preferred Operator.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'fc96d6750297129d4ff884dffc4742fe833e9be687fa34e80679655014942975'
+    }
+
+    /**
+     *  A preferred Operator for a given Farmer, enabling automatic staking of block rewards.
+     *  For the auto-staking to succeed, the Farmer must also be a Nominator of the preferred Operator.
+     */
+    get asV1(): DomainsPreferredOperatorStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  A preferred Operator for a given Farmer, enabling automatic staking of block rewards.
+ *  For the auto-staking to succeed, the Farmer must also be a Nominator of the preferred Operator.
+ */
+export interface DomainsPreferredOperatorStorageV1 {
+    get(key: Uint8Array): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: Uint8Array[]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: bigint][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: bigint][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: bigint][]>
+}
+
+export class DomainsRuntimeRegistryStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'RuntimeRegistry'
+    }
+
+    get isV1(): boolean {
+        return this.getTypeHash() === '7cd92574f14ff0421a640a2b24bd26d2f0a6bed95a203e4d4f64136b26c3c3fe'
+    }
+
+    get asV1(): DomainsRuntimeRegistryStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+export interface DomainsRuntimeRegistryStorageV1 {
+    get(key: number): Promise<(v1.RuntimeObject | undefined)>
+    getAll(): Promise<v1.RuntimeObject[]>
+    getMany(keys: number[]): Promise<(v1.RuntimeObject | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v1.RuntimeObject][]>
+    getPairs(key: number): Promise<[k: number, v: v1.RuntimeObject][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v1.RuntimeObject][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v1.RuntimeObject][]>
+}
+
+export class DomainsScheduledRuntimeUpgradesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'ScheduledRuntimeUpgrades'
+    }
+
+    get isV1(): boolean {
+        return this.getTypeHash() === '718ac2b0cf85c498ed81cdf57ca126d62696b0bbd903b1bc92b4a4501dce2ac8'
+    }
+
+    get asV1(): DomainsScheduledRuntimeUpgradesStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+export interface DomainsScheduledRuntimeUpgradesStorageV1 {
+    get(key1: number, key2: number): Promise<(v1.ScheduledRuntimeUpgrade | undefined)>
+    getAll(): Promise<v1.ScheduledRuntimeUpgrade[]>
+    getMany(keys: [number, number][]): Promise<(v1.ScheduledRuntimeUpgrade | undefined)[]>
+    getKeys(): Promise<[number, number][]>
+    getKeys(key1: number): Promise<[number, number][]>
+    getKeys(key1: number, key2: number): Promise<[number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number][]>
+    getPairs(): Promise<[k: [number, number], v: v1.ScheduledRuntimeUpgrade][]>
+    getPairs(key1: number): Promise<[k: [number, number], v: v1.ScheduledRuntimeUpgrade][]>
+    getPairs(key1: number, key2: number): Promise<[k: [number, number], v: v1.ScheduledRuntimeUpgrade][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: v1.ScheduledRuntimeUpgrade][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: v1.ScheduledRuntimeUpgrade][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: v1.ScheduledRuntimeUpgrade][]>
+}
+
+export class DomainsStateRootsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'StateRoots'
+    }
+
+    /**
+     *  State root mapped again each domain (block, hash)
+     *  This acts as an index for other protocols like XDM to fetch state roots faster.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === '761cba00429d11332c16c4e8e73c5d48f26da7ac2b15449cb5c7d04591eb59e2'
+    }
+
+    /**
+     *  State root mapped again each domain (block, hash)
+     *  This acts as an index for other protocols like XDM to fetch state roots faster.
+     */
+    get asV1(): DomainsStateRootsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  State root mapped again each domain (block, hash)
+ *  This acts as an index for other protocols like XDM to fetch state roots faster.
+ */
+export interface DomainsStateRootsStorageV1 {
+    get(key: [number, number, Uint8Array]): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: [number, number, Uint8Array][]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<[number, number, Uint8Array][]>
+    getKeys(key: [number, number, Uint8Array]): Promise<[number, number, Uint8Array][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number, Uint8Array][]>
+    getKeysPaged(pageSize: number, key: [number, number, Uint8Array]): AsyncIterable<[number, number, Uint8Array][]>
+    getPairs(): Promise<[k: [number, number, Uint8Array], v: Uint8Array][]>
+    getPairs(key: [number, number, Uint8Array]): Promise<[k: [number, number, Uint8Array], v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number, Uint8Array], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key: [number, number, Uint8Array]): AsyncIterable<[k: [number, number, Uint8Array], v: Uint8Array][]>
+}
+
+export class DomainsSuccessfulBundlesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'SuccessfulBundles'
+    }
+
+    /**
+     *  Bundles submitted successfully in current block.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'f619540cfd39ec62194ccd8c2d0c1c6ffcb39cfc17df25d0e83357e4b6c7d6d5'
+    }
+
+    /**
+     *  Bundles submitted successfully in current block.
+     */
+    get asV1(): DomainsSuccessfulBundlesStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Bundles submitted successfully in current block.
+ */
+export interface DomainsSuccessfulBundlesStorageV1 {
+    get(key: number): Promise<Uint8Array[]>
+    getAll(): Promise<Uint8Array[][]>
+    getMany(keys: number[]): Promise<Uint8Array[][]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: Uint8Array[]][]>
+    getPairs(key: number): Promise<[k: number, v: Uint8Array[]][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: Uint8Array[]][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: Uint8Array[]][]>
 }
 
 export class FeedsFeedConfigsStorage extends StorageBase {
@@ -941,324 +2217,6 @@ export interface OffencesSubspaceReportsByKindIndexStorageV1 {
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: Uint8Array][]>
 }
 
-export class ReceiptsHeadReceiptNumberStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Receipts'
-    }
-
-    protected getName() {
-        return 'HeadReceiptNumber'
-    }
-
-    /**
-     *  Stores the latest block number for which Execution receipt(s) are available for a given Domain.
-     */
-    get isV1(): boolean {
-        return this.getTypeHash() === 'be37cd27c0e60862618e14817365ea9f5c3c45854fea63a6259de44af2521364'
-    }
-
-    /**
-     *  Stores the latest block number for which Execution receipt(s) are available for a given Domain.
-     */
-    get asV1(): ReceiptsHeadReceiptNumberStorageV1 {
-        assert(this.isV1)
-        return this as any
-    }
-}
-
-/**
- *  Stores the latest block number for which Execution receipt(s) are available for a given Domain.
- */
-export interface ReceiptsHeadReceiptNumberStorageV1 {
-    get(key: number): Promise<number>
-    getAll(): Promise<number[]>
-    getMany(keys: number[]): Promise<number[]>
-    getKeys(): Promise<number[]>
-    getKeys(key: number): Promise<number[]>
-    getKeysPaged(pageSize: number): AsyncIterable<number[]>
-    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
-    getPairs(): Promise<[k: number, v: number][]>
-    getPairs(key: number): Promise<[k: number, v: number][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: number][]>
-    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: number][]>
-}
-
-export class ReceiptsOldestReceiptNumberStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Receipts'
-    }
-
-    protected getName() {
-        return 'OldestReceiptNumber'
-    }
-
-    /**
-     *  Block number of the oldest receipt stored in the state.
-     */
-    get isV1(): boolean {
-        return this.getTypeHash() === 'be37cd27c0e60862618e14817365ea9f5c3c45854fea63a6259de44af2521364'
-    }
-
-    /**
-     *  Block number of the oldest receipt stored in the state.
-     */
-    get asV1(): ReceiptsOldestReceiptNumberStorageV1 {
-        assert(this.isV1)
-        return this as any
-    }
-}
-
-/**
- *  Block number of the oldest receipt stored in the state.
- */
-export interface ReceiptsOldestReceiptNumberStorageV1 {
-    get(key: number): Promise<number>
-    getAll(): Promise<number[]>
-    getMany(keys: number[]): Promise<number[]>
-    getKeys(): Promise<number[]>
-    getKeys(key: number): Promise<number[]>
-    getKeysPaged(pageSize: number): AsyncIterable<number[]>
-    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
-    getPairs(): Promise<[k: number, v: number][]>
-    getPairs(key: number): Promise<[k: number, v: number][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: number][]>
-    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: number][]>
-}
-
-export class ReceiptsPrimaryBlockHashStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Receipts'
-    }
-
-    protected getName() {
-        return 'PrimaryBlockHash'
-    }
-
-    /**
-     *  Map of primary block number to primary block hash for tracking bounded receipts per domain.
-     * 
-     *  The oldest block hash will be pruned once the oldest receipt is pruned. However, if a
-     *  domain stalls, i.e., no receipts are included in the domain's parent chain for a long time,
-     *  the corresponding entry will grow indefinitely.
-     * 
-     *  TODO: there is a pitfall that any stalled domain can lead to an ubounded runtime storage
-     *  growth.
-     */
-    get isV1(): boolean {
-        return this.getTypeHash() === 'b3c15232fb4346b458fc3153a06d89787a103676fa34fe3d795ee04fe62bf4d8'
-    }
-
-    /**
-     *  Map of primary block number to primary block hash for tracking bounded receipts per domain.
-     * 
-     *  The oldest block hash will be pruned once the oldest receipt is pruned. However, if a
-     *  domain stalls, i.e., no receipts are included in the domain's parent chain for a long time,
-     *  the corresponding entry will grow indefinitely.
-     * 
-     *  TODO: there is a pitfall that any stalled domain can lead to an ubounded runtime storage
-     *  growth.
-     */
-    get asV1(): ReceiptsPrimaryBlockHashStorageV1 {
-        assert(this.isV1)
-        return this as any
-    }
-}
-
-/**
- *  Map of primary block number to primary block hash for tracking bounded receipts per domain.
- * 
- *  The oldest block hash will be pruned once the oldest receipt is pruned. However, if a
- *  domain stalls, i.e., no receipts are included in the domain's parent chain for a long time,
- *  the corresponding entry will grow indefinitely.
- * 
- *  TODO: there is a pitfall that any stalled domain can lead to an ubounded runtime storage
- *  growth.
- */
-export interface ReceiptsPrimaryBlockHashStorageV1 {
-    get(key1: number, key2: number): Promise<(Uint8Array | undefined)>
-    getAll(): Promise<Uint8Array[]>
-    getMany(keys: [number, number][]): Promise<(Uint8Array | undefined)[]>
-    getKeys(): Promise<[number, number][]>
-    getKeys(key1: number): Promise<[number, number][]>
-    getKeys(key1: number, key2: number): Promise<[number, number][]>
-    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
-    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number][]>
-    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number][]>
-    getPairs(): Promise<[k: [number, number], v: Uint8Array][]>
-    getPairs(key1: number): Promise<[k: [number, number], v: Uint8Array][]>
-    getPairs(key1: number, key2: number): Promise<[k: [number, number], v: Uint8Array][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
-    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
-    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
-}
-
-export class ReceiptsReceiptVotesStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Receipts'
-    }
-
-    protected getName() {
-        return 'ReceiptVotes'
-    }
-
-    /**
-     *  Mapping for tracking the receipt votes.
-     * 
-     *  (domain_id, domain_block_hash, receipt_hash) -> receipt_count
-     */
-    get isV1(): boolean {
-        return this.getTypeHash() === 'b5368aba2b08a0cd7eb0f2a07079ff53382c43f521633e8200f78bd0032c5b91'
-    }
-
-    /**
-     *  Mapping for tracking the receipt votes.
-     * 
-     *  (domain_id, domain_block_hash, receipt_hash) -> receipt_count
-     */
-    get asV1(): ReceiptsReceiptVotesStorageV1 {
-        assert(this.isV1)
-        return this as any
-    }
-}
-
-/**
- *  Mapping for tracking the receipt votes.
- * 
- *  (domain_id, domain_block_hash, receipt_hash) -> receipt_count
- */
-export interface ReceiptsReceiptVotesStorageV1 {
-    get(key1: number, key2: Uint8Array, key3: Uint8Array): Promise<number>
-    getAll(): Promise<number[]>
-    getMany(keys: [number, Uint8Array, Uint8Array][]): Promise<number[]>
-    getKeys(): Promise<[number, Uint8Array, Uint8Array][]>
-    getKeys(key1: number): Promise<[number, Uint8Array, Uint8Array][]>
-    getKeys(key1: number, key2: Uint8Array): Promise<[number, Uint8Array, Uint8Array][]>
-    getKeys(key1: number, key2: Uint8Array, key3: Uint8Array): Promise<[number, Uint8Array, Uint8Array][]>
-    getKeysPaged(pageSize: number): AsyncIterable<[number, Uint8Array, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, Uint8Array, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[number, Uint8Array, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array, key3: Uint8Array): AsyncIterable<[number, Uint8Array, Uint8Array][]>
-    getPairs(): Promise<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairs(key1: number): Promise<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairs(key1: number, key2: Uint8Array): Promise<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairs(key1: number, key2: Uint8Array, key3: Uint8Array): Promise<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[k: [number, Uint8Array, Uint8Array], v: number][]>
-    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array, key3: Uint8Array): AsyncIterable<[k: [number, Uint8Array, Uint8Array], v: number][]>
-}
-
-export class ReceiptsReceiptsStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Receipts'
-    }
-
-    protected getName() {
-        return 'Receipts'
-    }
-
-    /**
-     *  Mapping from the receipt hash to the corresponding verified execution receipt.
-     * 
-     *  The capacity of receipts stored in the state is [`Config::ReceiptsPruningDepth`], the older
-     *  ones will be pruned once the size of receipts exceeds this number.
-     */
-    get isV1(): boolean {
-        return this.getTypeHash() === 'c2881848fa0c99d217c29d7d90870276b0ab8167a6029df9c77ee92d7838790d'
-    }
-
-    /**
-     *  Mapping from the receipt hash to the corresponding verified execution receipt.
-     * 
-     *  The capacity of receipts stored in the state is [`Config::ReceiptsPruningDepth`], the older
-     *  ones will be pruned once the size of receipts exceeds this number.
-     */
-    get asV1(): ReceiptsReceiptsStorageV1 {
-        assert(this.isV1)
-        return this as any
-    }
-}
-
-/**
- *  Mapping from the receipt hash to the corresponding verified execution receipt.
- * 
- *  The capacity of receipts stored in the state is [`Config::ReceiptsPruningDepth`], the older
- *  ones will be pruned once the size of receipts exceeds this number.
- */
-export interface ReceiptsReceiptsStorageV1 {
-    get(key1: number, key2: Uint8Array): Promise<(v1.ExecutionReceipt | undefined)>
-    getAll(): Promise<v1.ExecutionReceipt[]>
-    getMany(keys: [number, Uint8Array][]): Promise<(v1.ExecutionReceipt | undefined)[]>
-    getKeys(): Promise<[number, Uint8Array][]>
-    getKeys(key1: number): Promise<[number, Uint8Array][]>
-    getKeys(key1: number, key2: Uint8Array): Promise<[number, Uint8Array][]>
-    getKeysPaged(pageSize: number): AsyncIterable<[number, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[number, Uint8Array][]>
-    getPairs(): Promise<[k: [number, Uint8Array], v: v1.ExecutionReceipt][]>
-    getPairs(key1: number): Promise<[k: [number, Uint8Array], v: v1.ExecutionReceipt][]>
-    getPairs(key1: number, key2: Uint8Array): Promise<[k: [number, Uint8Array], v: v1.ExecutionReceipt][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, Uint8Array], v: v1.ExecutionReceipt][]>
-    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, Uint8Array], v: v1.ExecutionReceipt][]>
-    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[k: [number, Uint8Array], v: v1.ExecutionReceipt][]>
-}
-
-export class ReceiptsStateRootsStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Receipts'
-    }
-
-    protected getName() {
-        return 'StateRoots'
-    }
-
-    /**
-     *  Mapping for tracking the domain state roots.
-     * 
-     *  (domain_id, domain_block_number, domain_block_hash) -> domain_state_root
-     */
-    get isV1(): boolean {
-        return this.getTypeHash() === 'af09af2e541e67c95622fd28dbdbad7b90d885c7e03a2cbf4412f369450db480'
-    }
-
-    /**
-     *  Mapping for tracking the domain state roots.
-     * 
-     *  (domain_id, domain_block_number, domain_block_hash) -> domain_state_root
-     */
-    get asV1(): ReceiptsStateRootsStorageV1 {
-        assert(this.isV1)
-        return this as any
-    }
-}
-
-/**
- *  Mapping for tracking the domain state roots.
- * 
- *  (domain_id, domain_block_number, domain_block_hash) -> domain_state_root
- */
-export interface ReceiptsStateRootsStorageV1 {
-    get(key1: number, key2: number, key3: Uint8Array): Promise<(Uint8Array | undefined)>
-    getAll(): Promise<Uint8Array[]>
-    getMany(keys: [number, number, Uint8Array][]): Promise<(Uint8Array | undefined)[]>
-    getKeys(): Promise<[number, number, Uint8Array][]>
-    getKeys(key1: number): Promise<[number, number, Uint8Array][]>
-    getKeys(key1: number, key2: number): Promise<[number, number, Uint8Array][]>
-    getKeys(key1: number, key2: number, key3: Uint8Array): Promise<[number, number, Uint8Array][]>
-    getKeysPaged(pageSize: number): AsyncIterable<[number, number, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number, Uint8Array][]>
-    getKeysPaged(pageSize: number, key1: number, key2: number, key3: Uint8Array): AsyncIterable<[number, number, Uint8Array][]>
-    getPairs(): Promise<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairs(key1: number): Promise<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairs(key1: number, key2: number): Promise<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairs(key1: number, key2: number, key3: Uint8Array): Promise<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number, Uint8Array], v: Uint8Array][]>
-    getPairsPaged(pageSize: number, key1: number, key2: number, key3: Uint8Array): AsyncIterable<[k: [number, number, Uint8Array], v: Uint8Array][]>
-}
-
 export class RuntimeConfigsConfirmationDepthKStorage extends StorageBase {
     protected getPrefix() {
         return 'RuntimeConfigs'
@@ -1282,35 +2240,35 @@ export interface RuntimeConfigsConfirmationDepthKStorageV1 {
     get(): Promise<number>
 }
 
-export class RuntimeConfigsEnableExecutorStorage extends StorageBase {
+export class RuntimeConfigsEnableDomainsStorage extends StorageBase {
     protected getPrefix() {
         return 'RuntimeConfigs'
     }
 
     protected getName() {
-        return 'EnableExecutor'
+        return 'EnableDomains'
     }
 
     /**
-     *  Whether to disable the executor calls.
+     *  Whether to disable the calls in pallet-domains.
      */
     get isV1(): boolean {
         return this.getTypeHash() === '1b6fbf1674d189f761a7ac63093bf5c755bf073dd9d9f0dbe657289f92575db5'
     }
 
     /**
-     *  Whether to disable the executor calls.
+     *  Whether to disable the calls in pallet-domains.
      */
-    get asV1(): RuntimeConfigsEnableExecutorStorageV1 {
+    get asV1(): RuntimeConfigsEnableDomainsStorageV1 {
         assert(this.isV1)
         return this as any
     }
 }
 
 /**
- *  Whether to disable the executor calls.
+ *  Whether to disable the calls in pallet-domains.
  */
-export interface RuntimeConfigsEnableExecutorStorageV1 {
+export interface RuntimeConfigsEnableDomainsStorageV1 {
     get(): Promise<boolean>
 }
 
@@ -1465,7 +2423,7 @@ export class SubspaceCurrentBlockAuthorInfoStorage extends StorageBase {
      *  Temporary value (cleared at block finalization) with block author information.
      */
     get isV1(): boolean {
-        return this.getTypeHash() === '6d79390637ae1a4b2c7f94365fac773058faad0c5c3975e0c9f890274124be78'
+        return this.getTypeHash() === '61c86c54648077a98a979d6aa8f50e42a3c15039790d738c6510cad634bd97a1'
     }
 
     /**
@@ -1481,7 +2439,7 @@ export class SubspaceCurrentBlockAuthorInfoStorage extends StorageBase {
  *  Temporary value (cleared at block finalization) with block author information.
  */
 export interface SubspaceCurrentBlockAuthorInfoStorageV1 {
-    get(): Promise<([Uint8Array, bigint, number, bigint, Uint8Array] | undefined)>
+    get(): Promise<([Uint8Array, number, v1.Scalar, number, bigint, Uint8Array] | undefined)>
 }
 
 export class SubspaceCurrentBlockVotersStorage extends StorageBase {
@@ -1497,7 +2455,7 @@ export class SubspaceCurrentBlockVotersStorage extends StorageBase {
      *  Temporary value (cleared at block finalization) with voters in the current block thus far.
      */
     get isV1(): boolean {
-        return this.getTypeHash() === '47def9f6d7e6014a6300f058be0c10695977357e2d30d053338f97ef5e29b57c'
+        return this.getTypeHash() === '16936fb9f93b37c7d70eb7b0853a969b58a8e69eb34525b13fd91991420cbe5b'
     }
 
     /**
@@ -1513,7 +2471,7 @@ export class SubspaceCurrentBlockVotersStorage extends StorageBase {
  *  Temporary value (cleared at block finalization) with voters in the current block thus far.
  */
 export interface SubspaceCurrentBlockVotersStorageV1 {
-    get(): Promise<([[Uint8Array, bigint, number, bigint], [Uint8Array, Uint8Array]][] | undefined)>
+    get(): Promise<([[Uint8Array, number, v1.Scalar, number, bigint], [Uint8Array, Uint8Array]][] | undefined)>
 }
 
 export class SubspaceCurrentSlotStorage extends StorageBase {
@@ -1753,7 +2711,7 @@ export class SubspaceParentBlockAuthorInfoStorage extends StorageBase {
      *  Parent block author information.
      */
     get isV1(): boolean {
-        return this.getTypeHash() === 'ba9fc0896f843bdd462fb296fc28c5b777440427dcb2d8ddc4df69e77a826901'
+        return this.getTypeHash() === 'edfb0faf0a6f0a122e754cc01f777b1d00ca2d371a525af68d489ebb60c07ff7'
     }
 
     /**
@@ -1769,7 +2727,7 @@ export class SubspaceParentBlockAuthorInfoStorage extends StorageBase {
  *  Parent block author information.
  */
 export interface SubspaceParentBlockAuthorInfoStorageV1 {
-    get(): Promise<([Uint8Array, bigint, number, bigint] | undefined)>
+    get(): Promise<([Uint8Array, number, v1.Scalar, number, bigint] | undefined)>
 }
 
 export class SubspaceParentBlockVotersStorage extends StorageBase {
@@ -1785,7 +2743,7 @@ export class SubspaceParentBlockVotersStorage extends StorageBase {
      *  Voters in the parent block (set at the end of the block with current values).
      */
     get isV1(): boolean {
-        return this.getTypeHash() === '40d56fe1f1fa7e5a7a12eca51129efa2535e4ea87c718b94396215bf1e0da8c1'
+        return this.getTypeHash() === 'ea9fce3ce021125c045cd2696e1a8c2c8c14473c840b010b480a31672969db42'
     }
 
     /**
@@ -1801,7 +2759,7 @@ export class SubspaceParentBlockVotersStorage extends StorageBase {
  *  Voters in the parent block (set at the end of the block with current values).
  */
 export interface SubspaceParentBlockVotersStorageV1 {
-    get(): Promise<[[Uint8Array, bigint, number, bigint], [Uint8Array, Uint8Array]][]>
+    get(): Promise<[[Uint8Array, number, v1.Scalar, number, bigint], [Uint8Array, Uint8Array]][]>
 }
 
 export class SubspaceParentVoteVerificationDataStorage extends StorageBase {
@@ -2057,7 +3015,7 @@ export class SystemAccountStorage extends StorageBase {
      *  The full account information for a particular account ID.
      */
     get isV1(): boolean {
-        return this.getTypeHash() === '1ddc7ade926221442c388ee4405a71c9428e548fab037445aaf4b3a78f4735c1'
+        return this.getTypeHash() === 'd6b7a816e0cf6dc8f60cb2bd55c5c5ae7ad928521a6e98aafbe6e954f5c54878'
     }
 
     /**
@@ -2065,21 +3023,6 @@ export class SystemAccountStorage extends StorageBase {
      */
     get asV1(): SystemAccountStorageV1 {
         assert(this.isV1)
-        return this as any
-    }
-
-    /**
-     *  The full account information for a particular account ID.
-     */
-    get isV2(): boolean {
-        return this.getTypeHash() === 'd6b7a816e0cf6dc8f60cb2bd55c5c5ae7ad928521a6e98aafbe6e954f5c54878'
-    }
-
-    /**
-     *  The full account information for a particular account ID.
-     */
-    get asV2(): SystemAccountStorageV2 {
-        assert(this.isV2)
         return this as any
     }
 }
@@ -2099,23 +3042,6 @@ export interface SystemAccountStorageV1 {
     getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v1.AccountInfo][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v1.AccountInfo][]>
     getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v1.AccountInfo][]>
-}
-
-/**
- *  The full account information for a particular account ID.
- */
-export interface SystemAccountStorageV2 {
-    get(key: Uint8Array): Promise<v2.AccountInfo>
-    getAll(): Promise<v2.AccountInfo[]>
-    getMany(keys: Uint8Array[]): Promise<v2.AccountInfo[]>
-    getKeys(): Promise<Uint8Array[]>
-    getKeys(key: Uint8Array): Promise<Uint8Array[]>
-    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
-    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v2.AccountInfo][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v2.AccountInfo][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v2.AccountInfo][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v2.AccountInfo][]>
 }
 
 export class SystemAllExtrinsicsLenStorage extends StorageBase {
@@ -2376,7 +3302,7 @@ export class SystemEventsStorage extends StorageBase {
      *  just in case someone still reads them from within the runtime.
      */
     get isV1(): boolean {
-        return this.getTypeHash() === 'c7542c22fedb6c5b96d0a6a5c06a5d090f70a3c3f4624f63e2fad03a5f014c42'
+        return this.getTypeHash() === '8f37e440db51b1813f5235d6e60d46154006ae9e3e8cfca47d947c7071724c04'
     }
 
     /**
@@ -2392,33 +3318,6 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV1)
         return this as any
     }
-
-    /**
-     *  Events deposited for the current block.
-     * 
-     *  NOTE: The item is unbound and should therefore never be read on chain.
-     *  It could otherwise inflate the PoV size of a block.
-     * 
-     *  Events have a large in-memory size. Box the events to not go out-of-memory
-     *  just in case someone still reads them from within the runtime.
-     */
-    get isV2(): boolean {
-        return this.getTypeHash() === 'e04e990fca9a753e1b532372cc7a4641d9bfdb9fbfe71b83a569f84c209a0631'
-    }
-
-    /**
-     *  Events deposited for the current block.
-     * 
-     *  NOTE: The item is unbound and should therefore never be read on chain.
-     *  It could otherwise inflate the PoV size of a block.
-     * 
-     *  Events have a large in-memory size. Box the events to not go out-of-memory
-     *  just in case someone still reads them from within the runtime.
-     */
-    get asV2(): SystemEventsStorageV2 {
-        assert(this.isV2)
-        return this as any
-    }
 }
 
 /**
@@ -2432,19 +3331,6 @@ export class SystemEventsStorage extends StorageBase {
  */
 export interface SystemEventsStorageV1 {
     get(): Promise<v1.EventRecord[]>
-}
-
-/**
- *  Events deposited for the current block.
- * 
- *  NOTE: The item is unbound and should therefore never be read on chain.
- *  It could otherwise inflate the PoV size of a block.
- * 
- *  Events have a large in-memory size. Box the events to not go out-of-memory
- *  just in case someone still reads them from within the runtime.
- */
-export interface SystemEventsStorageV2 {
-    get(): Promise<v2.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {
@@ -2978,7 +3864,7 @@ export class VestingVestingSchedulesStorage extends StorageBase {
     /**
      *  Vesting schedules of an account.
      * 
-     *  VestingSchedules: map AccountId => Vec\<VestingSchedule>
+     *  VestingSchedules: map AccountId => Vec<VestingSchedule>
      */
     get isV1(): boolean {
         return this.getTypeHash() === 'd1025301ffa60f04c50bb1007ecb356d52103dd9c366150de1ba80c6e043ac2f'
@@ -2987,7 +3873,7 @@ export class VestingVestingSchedulesStorage extends StorageBase {
     /**
      *  Vesting schedules of an account.
      * 
-     *  VestingSchedules: map AccountId => Vec\<VestingSchedule>
+     *  VestingSchedules: map AccountId => Vec<VestingSchedule>
      */
     get asV1(): VestingVestingSchedulesStorageV1 {
         assert(this.isV1)
@@ -2998,7 +3884,7 @@ export class VestingVestingSchedulesStorage extends StorageBase {
 /**
  *  Vesting schedules of an account.
  * 
- *  VestingSchedules: map AccountId => Vec\<VestingSchedule>
+ *  VestingSchedules: map AccountId => Vec<VestingSchedule>
  */
 export interface VestingVestingSchedulesStorageV1 {
     get(key: Uint8Array): Promise<v1.VestingSchedule[]>
