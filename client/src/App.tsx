@@ -24,7 +24,6 @@ import {
   HeaderBackground,
   DomainHeader,
 } from 'layout/components'
-import Gemini2Static from 'layout/components/Gemini2Static'
 import NotResultsFound from 'layout/components/NotResultsFound'
 import SearchResult from 'layout/components/SearchResult'
 
@@ -101,38 +100,6 @@ function App() {
                     path={INTERNAL_ROUTES.home}
                     element={<Navigate to={selectedChain.urls.page} />}
                   />
-                  {/* Start: Legacy routing support */}
-                  {/* TODO: remove when possible */}
-                  <Route path='/gemini-2a'>
-                    <Route index element={<Gemini2Static />} />
-                    <Route path={INTERNAL_ROUTES.blocks.list}>
-                      <Route index element={<Gemini2Static />} />
-                      <Route path={INTERNAL_ROUTES.blocks.id.path} element={<Gemini2Static />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.extrinsics.list}>
-                      <Route index element={<Gemini2Static />} />
-                      <Route
-                        path={INTERNAL_ROUTES.extrinsics.id.path}
-                        element={<Gemini2Static />}
-                      />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.accounts.list}>
-                      <Route index element={<Gemini2Static />} />
-                      <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Gemini2Static />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.events.list}>
-                      <Route index element={<Gemini2Static />} />
-                      <Route path={INTERNAL_ROUTES.events.id.path} element={<Gemini2Static />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.logs.list}>
-                      <Route index element={<Gemini2Static />} />
-                      <Route path={INTERNAL_ROUTES.logs.id.path} element={<Gemini2Static />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.search.result.path}>
-                      <Route index element={<SearchResult />} />
-                    </Route>
-                  </Route>
-                  {/* End: Legacy routing support */}
                   <Route path={':network'}>
                     <Route index element={<Home />} />
                     <Route path={INTERNAL_ROUTES.blocks.list}>
