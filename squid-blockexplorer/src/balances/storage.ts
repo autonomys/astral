@@ -44,7 +44,7 @@ export class BalanceStorage {
       return { free, reserved };
     }
 
-    const balance = await storage.asV2.get(accountId);
+    const balance = await storage.asV1.get(accountId);
     const { free, reserved } = balance.data;
     return { free, reserved };
   }
@@ -60,7 +60,7 @@ export class BalanceStorage {
       return { free, reserved };
     }
 
-    const balance = await storage.asV2.get(accountId);
+    const balance = await storage.asV1.get(accountId);
     const { free, reserved } = balance;
     return { free, reserved };
   }
