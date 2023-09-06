@@ -7,12 +7,14 @@ import {
   solutionRangesStorageFactory,
   digestStorageFactory,
   getBlockAuthorFactory,
+  domainStorageFactory,
 } from './storage';
 import { processCalls, processExtrinsicsFactory } from './processCalls';
 import { processEventsFactory } from './processEvents';
 import { getLogsFactory } from './getLogs';
 export { processBlocksFactory } from "./processBlocks";
 import { getOrCreateAccountFactory } from './utils';
+import { getOperatorsFactory } from "./getOperators";
 
 export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): ProcessBlocksDependencies {
   const getBlockAuthor = getBlockAuthorFactory(ctx, api);
@@ -22,6 +24,7 @@ export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): 
   const processExtrinsics = processExtrinsicsFactory(getOrCreateAccount);
   const processEvents = processEventsFactory(getOrCreateAccount);
   const getLogs = getLogsFactory(ctx, digestStorageFactory);
+  const getOperators = getOperatorsFactory(ctx, domainStorageFactory);
 
   return {
     getSpacePledged,
@@ -30,6 +33,7 @@ export function createProcessBlocksDependencies(ctx: Context, api: ApiPromise): 
     processCalls,
     processEvents,
     getLogs,
-    getBlockAuthor
+    getBlockAuthor,
+    getOperators,
   };
 }
