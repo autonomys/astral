@@ -18,7 +18,7 @@ const HeaderChainDropdown: FC = () => {
   }
 
   return (
-    <Listbox value={selectedChain} onChange={handleChainChange}>
+    <Listbox value={selectedChain} disabled={selectedChain.isDomain} onChange={handleChainChange}>
       <div className='relative'>
         <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
           <div className='flex items-center justify-center'>
