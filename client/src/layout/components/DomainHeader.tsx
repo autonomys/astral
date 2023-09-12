@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // layout
@@ -8,6 +8,7 @@ import useDomains from 'common/hooks/useDomains'
 
 // chains
 import domains from 'layout/config/domains.json'
+import chains from 'layout/config/chains.json'
 import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
 
 const DomainHeader: FC = () => {
@@ -23,21 +24,13 @@ const DomainHeader: FC = () => {
   const handleDomainSelected = (domain: string) => {
     if (domain === 'Consensus Chain') {
       setDomainSelected(domain)
+      setSelectedChain(chains[0])
     } else {
       setDomainSelected(domain)
       setSelectedChain(domains[0])
     }
     navigate(`/${selectedChain.urls.page}`)
   }
-
-  useEffect(() => {
-    if (selectedChain.title !== 'Gemini 3d') {
-      setDomainSelected('Consensus Chain')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChain.title])
-
-  const domainAvailable = selectedChain.title !== 'Gemini 3f' && selectedChain.title !== 'Gemini 2a'
 
   return (
     <div
@@ -52,14 +45,11 @@ const DomainHeader: FC = () => {
             return (
               <div className='text-[13px] font-semibold items-center flex' key={`${item}-${index}`}>
                 <button
-                  disabled={!domainAvailable}
                   onClick={() => handleDomainSelected(item)}
                   className={
                     isActive
                       ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
-                      : domainAvailable
-                      ? 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
-                      : 'bg-white text-[#5b6161] dark:text-white/50 dark:bg-[#1E254E]'
+                      : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
                   }
                 >
                   {item}
