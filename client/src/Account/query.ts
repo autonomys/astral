@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_ACCOUNT_LIST = gql`
   query Account($limit: Int!, $offset: Int!) {
-    accounts(limit: $limit, offset: $offset, orderBy: total_DESC) {
+    accounts(limit: $limit, offset: $offset, orderBy: total_DESC, where: { total_gt: "0" }) {
       free
       id
       reserved
@@ -17,7 +17,12 @@ export const QUERY_ACCOUNT_LIST = gql`
 
 export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
   query AccountsConnection($first: Int!, $after: String) {
-    accountsConnection(orderBy: total_ASC, first: $first, after: $after) {
+    accountsConnection(
+      orderBy: total_DESC
+      where: { total_gt: "0" }
+      first: $first
+      after: $after
+    ) {
       edges {
         cursor
         node {
