@@ -6,7 +6,6 @@ import {
   BalancesSlashedEvent,
   BalancesTransferEvent,
   BalancesUnreservedEvent,
-  BalancesWithdrawEvent,
 } from '../types/events';
 import { toHex } from '@subsquid/substrate-processor';
 import { Event } from '../types/support';
@@ -73,7 +72,6 @@ const eventTypes = {
   [BALANCE_EVENTS.Deposit]: BalancesDepositEvent,
   [BALANCE_EVENTS.Reserved]: BalancesReservedEvent,
   [BALANCE_EVENTS.Unreserved]: BalancesUnreservedEvent,
-  [BALANCE_EVENTS.Withdraw]: BalancesWithdrawEvent,
   [BALANCE_EVENTS.Slashed]: BalancesSlashedEvent,
 };
 
