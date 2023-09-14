@@ -5,6 +5,7 @@ import { BlockIcon, DocIcon, WalletIcon, PieChartIcon } from 'common/icons'
 
 // home
 import { HomeInfoCard } from 'Home/components'
+import useDomains from 'common/hooks/useDomains'
 
 type Props = {
   signedExtrinsics?: string
@@ -21,6 +22,8 @@ const HomeCards: FC<Props> = ({
   blocksCount = '0',
   historySize = '0',
 }) => {
+  const { selectedChain } = useDomains()
+
   const listOfCards = [
     {
       title: 'Processed Blocks',
@@ -61,10 +64,22 @@ const HomeCards: FC<Props> = ({
     },
   ]
 
+  const visibleCards = selectedChain.isDomain
+    ? listOfCards.filter(
+        (card) => card.title !== 'Total Space Pledged' && card.title !== 'Blockchain History Size',
+      )
+    : listOfCards
+
   return (
     <div className='w-full flex mb-12 items-center overflow-x-auto gap-5'>
-      {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
-        <HomeInfoCard key={`${title}-${index}`} title={title} value={value} icon={icon} darkBgClass={darkBgClass} />
+      {visibleCards.map(({ title, value, icon, darkBgClass }, index) => (
+        <HomeInfoCard
+          key={`${title}-${index}`}
+          title={title}
+          value={value}
+          icon={icon}
+          darkBgClass={darkBgClass}
+        />
       ))}
     </div>
   )
