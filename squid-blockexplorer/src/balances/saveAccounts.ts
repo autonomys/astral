@@ -1,12 +1,13 @@
-import * as ss58 from '@subsquid/ss58';
-import config from '../config';
+//import * as ss58 from '@subsquid/ss58';
+import { ethers } from "ethers";
+//import config from '../config';
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { Account } from '../model';
 import { Context } from '../processor';
 import { BalanceStorage } from './storage';
 
 function encodeId(id: Uint8Array) {
-  return ss58.codec(config.prefix).encode(id);
+  return ethers.hexlify(id);
 }
 
 export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
@@ -14,6 +15,7 @@ export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
     const accounts: Account[] = [];
 
     for (let i = 0; i < accountIds.length; i++) {
+      
       const id = encodeId(accountIds[i]);
       const balance = await storage.getBalance(header, accountIds[i]);
 
