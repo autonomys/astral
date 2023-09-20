@@ -25,13 +25,13 @@ export interface ProcessorConfig {
 }
 
 const config: ProcessorConfig = {
-    chainName: 'gemini-2a',
+    chainName: 'gemini-3f',
     prefix: 2254,
     dataSource: {
         archive: process.env.ARCHIVE_ENDPOINT as string,
         chain: process.env.CHAIN_RPC_ENDPOINT as string,
     },
-    typesBundle: 'gemini-2a',
+    typesBundle: 'gemini-3f',
 };
 
 export default config;
