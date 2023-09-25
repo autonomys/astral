@@ -89,6 +89,43 @@ export const QUERY_ACCOUNT_BY_ID = gql`
   }
 `
 
+export const QUERY_ACCOUNT_BY_ID_EVM = gql`
+  query AccountById($accountId: String!) {
+    accountById(id: $accountId) {
+      free
+      reserved
+      id
+      total
+      updatedAt
+      extrinsics(limit: 10) {
+        hash
+        id
+        indexInBlock
+        name
+        success
+        timestamp
+        tip
+        block {
+          id
+          height
+        }
+      }
+    }
+    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
+      amount
+      id
+      indexInBlock
+      name
+      phase
+      pos
+      timestamp
+      block {
+        height
+      }
+    }
+  }
+`
+
 // TODO: when gemini-2 static page PR is merged, remove this query
 export const OLD_QUERY_ACCOUNT_BY_ID = gql`
   query OldAccountById($accountId: String!) {
