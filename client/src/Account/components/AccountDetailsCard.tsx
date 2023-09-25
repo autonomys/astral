@@ -8,6 +8,7 @@ import { Account } from 'gql/graphql'
 import { Accordion, CopyButton, List, StyledListItem } from 'common/components'
 import { shortString } from 'common/helpers'
 import { accountIdToHex } from 'common/helpers/formatAddress'
+import useDomains from 'common/hooks/useDomains'
 
 type Props = {
   account: Account
@@ -17,13 +18,16 @@ type Props = {
 
 const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = false }) => {
   const publicKey = accountIdToHex(accountAddress)
+  const { selectedChain } = useDomains()
+
+  const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
   return (
     <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 md:p-4 p-6 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
       <div className='flex items-center gap-3 w-full'>
         <Accordion
           title={
             <div className='w-full flex items-center gap-3'>
-              <Identicon value={accountAddress} size={48} theme='beachball' />
+              <Identicon value={accountAddress} size={48} theme={theme} />
 
               <h3 className='font-medium leading-none text-[#282929] text-sm break-all dark:text-white'>
                 {accountAddress}

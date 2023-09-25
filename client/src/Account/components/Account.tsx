@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
 
 // account
-import { QUERY_ACCOUNT_BY_ID } from 'Account/query'
+import { QUERY_ACCOUNT_BY_ID, QUERY_ACCOUNT_BY_ID_EVM } from 'Account/query'
 import {
   AccountDetailsCard,
   AccountExtrinsicList,
@@ -19,16 +19,21 @@ import { NotFound } from 'layout/components'
 import { Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { accountIdToHex, formatAddress } from 'common/helpers/formatAddress'
+import useDomains from 'common/hooks/useDomains'
 
 const Account: FC = () => {
   const { accountId } = useParams<{ accountId?: string }>()
 
-  const convertedAddress = formatAddress(accountId)
+  const { selectedChain } = useDomains()
+
+  const convertedAddress = selectedChain.isDomain ? accountId : formatAddress(accountId)
   const hexAddress = accountIdToHex(accountId || '')
 
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
-  const { data, error, loading } = useQuery(QUERY_ACCOUNT_BY_ID, {
+  const AccountQuery = selectedChain.isDomain ? QUERY_ACCOUNT_BY_ID_EVM : QUERY_ACCOUNT_BY_ID
+
+  const { data, error, loading } = useQuery(AccountQuery, {
     variables: { accountId: convertedAddress, hexAddress: hexAddress },
   })
 
