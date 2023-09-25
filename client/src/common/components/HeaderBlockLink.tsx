@@ -11,8 +11,8 @@ type Props = {
 }
 
 const HeaderBlockLink: FC<Props> = ({ height, chain }) => (
-  <Link className='flex gap-1' to={INTERNAL_ROUTES.blocks.id.page(chain, height)}>
-    <h3 className='font-medium text-[#241235] text-sm dark:text-white'>#{height}</h3>
+  <Link className='flex gap-1' to={INTERNAL_ROUTES.blocks.id.page(chain, Number(height))}>
+    <h3 className='font-medium text-[#241235] text-sm dark:text-white'>#{Number(height)}</h3>
   </Link>
 )
 

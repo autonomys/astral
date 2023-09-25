@@ -90,7 +90,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
 `
 
 export const QUERY_ACCOUNT_BY_ID_EVM = gql`
-  query AccountById($accountId: String!) {
+  query AccountByIdEVM($accountId: String!) {
     accountById(id: $accountId) {
       free
       reserved
