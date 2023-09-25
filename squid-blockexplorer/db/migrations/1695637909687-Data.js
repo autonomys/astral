@@ -1,5 +1,5 @@
-module.exports = class Data1693992249376 {
-    name = 'Data1693992249376'
+module.exports = class Data1695637909687 {
+    name = 'Data1695637909687'
 
     async up(db) {
         await db.query(`CREATE TABLE "call" ("id" character varying NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "success" boolean NOT NULL, "args" jsonb, "error" jsonb, "signer" text, "pos" integer, "block_id" character varying, "extrinsic_id" character varying, "parent_id" character varying, CONSTRAINT "PK_2098af0169792a34f9cfdd39c47" PRIMARY KEY ("id"))`)
@@ -36,8 +36,6 @@ module.exports = class Data1693992249376 {
         await db.query(`CREATE TABLE "operator" ("id" character varying NOT NULL, "signing_key" text NOT NULL, "current_domain_id" integer, "next_domain_id" integer, "minimum_nominator_stake" numeric, "nomination_tax" integer, "current_total_stake" numeric, "current_epoch_rewards" numeric, "total_shares" numeric, "status" text NOT NULL, CONSTRAINT "PK_8b950e1572745d9f69be7748ae8" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_51b6c3609906ff3cd25e39e1b2" ON "operator" ("signing_key") `)
         await db.query(`CREATE INDEX "IDX_c7fd0bf382a9832cf1db87827c" ON "operator" ("status") `)
-        await db.query(`CREATE TABLE "nominator" ("id" character varying NOT NULL, "shares" numeric, "operator_id" character varying, CONSTRAINT "PK_7489b7a79b066f2660eab25f60b" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE INDEX "IDX_14374f281ccb6e72c55dab3c20" ON "nominator" ("operator_id") `)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_bd3f11fd4110d60ac8b96cd62f3" FOREIGN KEY ("block_id") REFERENCES "block"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_dde30e4f2c6a80f9236bfdf2590" FOREIGN KEY ("extrinsic_id") REFERENCES "extrinsic"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_11c1e76d5be8f04c472c4a05b95" FOREIGN KEY ("parent_id") REFERENCES "call"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -52,7 +50,6 @@ module.exports = class Data1693992249376 {
         await db.query(`ALTER TABLE "block" ADD CONSTRAINT "FK_3ea8d7fe1c84ea1e9f25fbaf437" FOREIGN KEY ("author_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "extrinsic" ADD CONSTRAINT "FK_886be421c92f221ac8234c6624c" FOREIGN KEY ("signer_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "extrinsic" ADD CONSTRAINT "FK_a3b99daba1259dab0dd040d4f74" FOREIGN KEY ("block_id") REFERENCES "block"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-        await db.query(`ALTER TABLE "nominator" ADD CONSTRAINT "FK_14374f281ccb6e72c55dab3c209" FOREIGN KEY ("operator_id") REFERENCES "operator"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     }
 
     async down(db) {
@@ -90,8 +87,6 @@ module.exports = class Data1693992249376 {
         await db.query(`DROP TABLE "operator"`)
         await db.query(`DROP INDEX "public"."IDX_51b6c3609906ff3cd25e39e1b2"`)
         await db.query(`DROP INDEX "public"."IDX_c7fd0bf382a9832cf1db87827c"`)
-        await db.query(`DROP TABLE "nominator"`)
-        await db.query(`DROP INDEX "public"."IDX_14374f281ccb6e72c55dab3c20"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_bd3f11fd4110d60ac8b96cd62f3"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_dde30e4f2c6a80f9236bfdf2590"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_11c1e76d5be8f04c472c4a05b95"`)
@@ -106,6 +101,5 @@ module.exports = class Data1693992249376 {
         await db.query(`ALTER TABLE "block" DROP CONSTRAINT "FK_3ea8d7fe1c84ea1e9f25fbaf437"`)
         await db.query(`ALTER TABLE "extrinsic" DROP CONSTRAINT "FK_886be421c92f221ac8234c6624c"`)
         await db.query(`ALTER TABLE "extrinsic" DROP CONSTRAINT "FK_a3b99daba1259dab0dd040d4f74"`)
-        await db.query(`ALTER TABLE "nominator" DROP CONSTRAINT "FK_14374f281ccb6e72c55dab3c209"`)
     }
 }
