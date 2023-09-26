@@ -92,6 +92,32 @@ export function createCall(
 }
 
 const PIECE_SIZE = 1048576n;
+const MAX_PIECES_IN_SECTOR = 1000n;
+
+
+/**
+ * Calculates the number of sectors pledged by a solution range, based on monorepo calculation
+ * in function solution_range_to_sectors: https://github.com/subspace/subspace/blob/main/crates/subspace-runtime/src/lib.rs#L240-252
+ * @param {bigint} solutionRange - range of the solution
+ * @return {bigint} - sectors pledged number
+ */
+export function solutionRangeToSectors(solutionRange: bigint): bigint {
+  const SIZE_OF_SOLUTION_RANGE = 8n;
+  const SCALAR_FULL_BYTES = 32n;
+  const MAX_U64 = 2n ** 64n - 1n;
+  const SLOT_PROBABILITY = [1n, 6n];
+  const RECORD_NUM_CHUNKS = 32768n;
+  const RECORD_NUM_S_BUCKETS = 65536n;
+
+  let auditChunksPerChunk = SCALAR_FULL_BYTES / SIZE_OF_SOLUTION_RANGE;
+  let sectors = MAX_U64
+      / SLOT_PROBABILITY[1] * SLOT_PROBABILITY[0]
+      / auditChunksPerChunk
+      / (MAX_PIECES_IN_SECTOR * RECORD_NUM_CHUNKS / RECORD_NUM_S_BUCKETS);
+
+  // Take solution range into account
+  return sectors / solutionRange
+}
 
 /**
  * Calculates the space pledged by a solution range, based on monorepo calculation
@@ -100,23 +126,9 @@ const PIECE_SIZE = 1048576n;
  * @return {bigint} - space pledged in bytes
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
-  const MAX_U64 = 2n ** 64n - 1n;
-  const SLOT_PROBABILITY = [1n, 6n];
+  let sectors = solutionRangeToSectors(solutionRange);
 
-  const RECORD_NUM_S_BUCKETS = 65536n;
-  const RECORD_NUM_CHUNKS = 32768n;
-  const SIZE_OF_SOLUTION_RANGE = 8n;
-  const SCALAR_FULL_BYTES = 32n;
-
-  const totalSpacePledged =
-    MAX_U64 * PIECE_SIZE * SLOT_PROBABILITY[0]
-    / RECORD_NUM_S_BUCKETS * RECORD_NUM_CHUNKS
-    / solutionRange
-    / SLOT_PROBABILITY[1]
-    * SCALAR_FULL_BYTES
-    / SIZE_OF_SOLUTION_RANGE;
-
-  return totalSpacePledged;
+  return sectors * MAX_PIECES_IN_SECTOR * PIECE_SIZE;
 }
 
 /*
