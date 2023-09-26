@@ -109,14 +109,14 @@ export function solutionRangeToSectors(solutionRange: bigint): bigint {
   const RECORD_NUM_CHUNKS = 32768n;
   const RECORD_NUM_S_BUCKETS = 65536n;
 
-  let auditChunksPerChunk = SCALAR_FULL_BYTES / SIZE_OF_SOLUTION_RANGE;
-  let sectors = MAX_U64
+  const auditChunksPerChunk = SCALAR_FULL_BYTES / SIZE_OF_SOLUTION_RANGE;
+  const sectors = MAX_U64
       / SLOT_PROBABILITY[1] * SLOT_PROBABILITY[0]
       / auditChunksPerChunk
       / (MAX_PIECES_IN_SECTOR * RECORD_NUM_CHUNKS / RECORD_NUM_S_BUCKETS);
 
   // Take solution range into account
-  return sectors / solutionRange
+  return sectors / solutionRange;
 }
 
 /**
@@ -126,7 +126,7 @@ export function solutionRangeToSectors(solutionRange: bigint): bigint {
  * @return {bigint} - space pledged in bytes
  */
 export function calcSpacePledged(solutionRange: bigint): bigint {
-  let sectors = solutionRangeToSectors(solutionRange);
+  const sectors = solutionRangeToSectors(solutionRange);
 
   return sectors * MAX_PIECES_IN_SECTOR * PIECE_SIZE;
 }
