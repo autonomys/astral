@@ -21,7 +21,7 @@ type Props = {
   setWhere: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput | EventWhereInput>>
   setFilters: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput | EventWhereInput>>
   handleAccountChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  modules: string[]
+  modules?: string[]
 }
 
 const FilterForm: FC<Props> = ({

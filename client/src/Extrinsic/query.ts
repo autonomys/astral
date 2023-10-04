@@ -27,9 +27,6 @@ export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
       }
       totalCount
     }
-    extrinsicNamesQuery {
-      result
-    }
   }
 `
 

@@ -38,7 +38,7 @@ const ExtrinsicList: FC = () => {
   const totalLabel = numberWithCommas(Number(totalCount))
 
   const pageInfo = data.extrinsicsConnection.pageInfo
-  const modules = data.extrinsicNamesQuery.result.map((module) => module.split('.')[0])
+  // const modules = data.extrinsicNamesQuery.result.map((module) => module.split('.')[0])
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -75,7 +75,7 @@ const ExtrinsicList: FC = () => {
             </div>
           }
           filters={filters}
-          modules={modules}
+          // modules={modules}
           setFilters={setFilters}
         />
       </div>
