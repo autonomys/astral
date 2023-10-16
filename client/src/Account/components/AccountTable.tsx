@@ -31,14 +31,14 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
-  const newCount = PAGE_SIZE * Number(page) - 10
+  const newCount = PAGE_SIZE * Number(page + 1) - 10
 
   // methods
   const generateColumns = (accounts: Account[]): Column[] => [
     {
       title: 'Rank',
       cells: accounts.map((id, index) => (
-        <div key={`${id}-account-index`}>{page > 1 ? newCount + index + 1 : index + 1}</div>
+        <div key={`${id}-account-index`}>{page + 1 > 1 ? newCount + index + 1 : index + 1}</div>
       )),
     },
     {
