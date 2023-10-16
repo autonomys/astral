@@ -65,5 +65,8 @@ export const INTERNAL_ROUTES = {
     },
     empty: '/search/no-result-found',
   },
+  rewards: {
+    list: 'rewards',
+  },
   notFound: '/404',
 }
