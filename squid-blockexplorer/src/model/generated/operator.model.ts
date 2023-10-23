@@ -35,7 +35,6 @@ export class Operator {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     totalShares!: bigint | undefined | null
 
-    @Index_()
-    @Column_("text", {nullable: false})
-    status!: string
+    @Column_("text", {nullable: true})
+    status!: string | undefined | null
 }

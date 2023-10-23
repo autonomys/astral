@@ -23,16 +23,17 @@ export function getOperatorsFactory(
     const operators: Operator[] = [];
 
     for (let i = 0; i < operatorsList.length; i++) {
-      const id = encodeId(operatorsList[i].signingKey);
+      const signingKey = encodeId(operatorsList[i].signingKey);
+      console.log("🚀 ~ file: getOperators.ts:27 ~ getOperators ~ operatorsList[i]:", operatorsList[i])
 
       // check if there is an existing account created earlier (i.e. when processing blocks)
-      const existingOperator = await ctx.store.get(Operator, id);
+      const existingOperator = await ctx.store.get(Operator, signingKey);
 
       const operator = new Operator({
         ...existingOperator,
-        id: id,
+        id: signingKey,
         status: operatorsList[i].status.__kind.toString(),
-        signingKey: operatorsList[i].signingKey.toString(),
+        signingKey: signingKey,
         totalShares: operatorsList[i].totalShares,
         currentEpochRewards: operatorsList[i].currentEpochRewards,
         currentTotalStake: operatorsList[i].currentTotalStake,
