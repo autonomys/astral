@@ -2,8 +2,9 @@ import { HexSink } from "@subsquid/scale-codec";
 import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { toHex } from "@subsquid/util-internal-hex";
-import { Block, Extrinsic, Call, Account } from "../model";
+import { Block, Extrinsic, Call, Account, ExtrinsicModuleName, EventModuleName } from "../model";
 import { CallItem, EventItem, Context } from "../processor";
+import { randomUUID }from 'crypto';
 
 /**
  * Takes a predicate and a list of items and returns the
@@ -206,5 +207,35 @@ export function getOrCreateAccountFactory(ctx: Context) {
     }
 
     return account;
+  };
+}
+
+export function addExtrinsicModuleNameFactory(ctx: Context) {
+  return async function addExtrinsicModuleName(name: string): Promise<void> {
+    let module = await ctx.store.findOneBy(ExtrinsicModuleName, {name: name});
+
+    if (!module) {
+      module = new ExtrinsicModuleName({
+        id: randomUUID(),
+        name: name,
+      });
+
+      await ctx.store.insert(module);
+    }
+  };
+}
+
+export function addEventModuleNameFactory(ctx: Context) {
+  return async function addEventModuleName(name: string): Promise<void> {
+    let module = await ctx.store.findOneBy(EventModuleName, {name: name});
+
+    if (!module) {
+      module = new EventModuleName({
+        id: randomUUID(),
+        name: name,
+      });
+
+      await ctx.store.insert(module);
+    }
   };
 }
