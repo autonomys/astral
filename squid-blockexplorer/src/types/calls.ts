@@ -1,7 +1,6 @@
 import assert from 'assert'
 import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
 import * as v1 from './v1'
-import * as v2 from './v2'
 
 export class BalancesForceSetBalanceCall {
     private readonly _chain: Chain
@@ -347,21 +346,6 @@ export class DomainsInstantiateDomainCall {
      */
     get asV1(): {domainConfig: v1.DomainConfig} {
         assert(this.isV1)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     * See [`Pallet::instantiate_domain`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Domains.instantiate_domain') === '9e6ec7bab2c44f72dcdb642b6157dc8e80a9227bce213879f3e7a906fedaa6c0'
-    }
-
-    /**
-     * See [`Pallet::instantiate_domain`].
-     */
-    get asV2(): {domainConfig: v2.DomainConfig, rawGenesis: Uint8Array} {
-        assert(this.isV2)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1031,21 +1015,6 @@ export class SudoSudoCall {
         assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
-
-    /**
-     * See [`Pallet::sudo`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === '021eb4ca3d0532cc62f6c3b37856e94bc2d24ad1fa5754c65c8a901d771c6495'
-    }
-
-    /**
-     * See [`Pallet::sudo`].
-     */
-    get asV2(): {call: v2.Call} {
-        assert(this.isV2)
-        return this._chain.decodeCall(this.call)
-    }
 }
 
 export class SudoSudoAsCall {
@@ -1075,21 +1044,6 @@ export class SudoSudoAsCall {
         assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
-
-    /**
-     * See [`Pallet::sudo_as`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === '8f85fae7a39d88ea5b800a8de3a45c60496ce7e62c322b3b47b0e62a9025cfb4'
-    }
-
-    /**
-     * See [`Pallet::sudo_as`].
-     */
-    get asV2(): {who: v2.MultiAddress, call: v2.Call} {
-        assert(this.isV2)
-        return this._chain.decodeCall(this.call)
-    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -1117,21 +1071,6 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV1(): {call: v1.Call, weight: v1.Weight} {
         assert(this.isV1)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     * See [`Pallet::sudo_unchecked_weight`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'b4dca4e1c97f2ece801f824c7075ae7595136d3657931968fd4186ae36009e07'
-    }
-
-    /**
-     * See [`Pallet::sudo_unchecked_weight`].
-     */
-    get asV2(): {call: v2.Call, weight: v2.Weight} {
-        assert(this.isV2)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1424,21 +1363,6 @@ export class UtilityAsDerivativeCall {
         assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
-
-    /**
-     * See [`Pallet::as_derivative`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Utility.as_derivative') === 'a462d7f1cb03d449c0a9fc04912723638cac57b370fbe4d4a71a0b25dc51bd01'
-    }
-
-    /**
-     * See [`Pallet::as_derivative`].
-     */
-    get asV2(): {index: number, call: v2.Call} {
-        assert(this.isV2)
-        return this._chain.decodeCall(this.call)
-    }
 }
 
 export class UtilityBatchCall {
@@ -1466,21 +1390,6 @@ export class UtilityBatchCall {
      */
     get asV1(): {calls: v1.Call[]} {
         assert(this.isV1)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     * See [`Pallet::batch`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Utility.batch') === 'e7824a8166f28e08d9929c73f34b81e35a6e4df30c6bfa21e170295d48761b3e'
-    }
-
-    /**
-     * See [`Pallet::batch`].
-     */
-    get asV2(): {calls: v2.Call[]} {
-        assert(this.isV2)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1512,21 +1421,6 @@ export class UtilityBatchAllCall {
         assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
-
-    /**
-     * See [`Pallet::batch_all`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Utility.batch_all') === 'e7824a8166f28e08d9929c73f34b81e35a6e4df30c6bfa21e170295d48761b3e'
-    }
-
-    /**
-     * See [`Pallet::batch_all`].
-     */
-    get asV2(): {calls: v2.Call[]} {
-        assert(this.isV2)
-        return this._chain.decodeCall(this.call)
-    }
 }
 
 export class UtilityDispatchAsCall {
@@ -1554,21 +1448,6 @@ export class UtilityDispatchAsCall {
      */
     get asV1(): {asOrigin: v1.OriginCaller, call: v1.Call} {
         assert(this.isV1)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     * See [`Pallet::dispatch_as`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Utility.dispatch_as') === '90b9ef03a1a91d62b1d46aeb52e09e2e226dd1d2761e623741ac61df4b16cd19'
-    }
-
-    /**
-     * See [`Pallet::dispatch_as`].
-     */
-    get asV2(): {asOrigin: v2.OriginCaller, call: v2.Call} {
-        assert(this.isV2)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1600,21 +1479,6 @@ export class UtilityForceBatchCall {
         assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
-
-    /**
-     * See [`Pallet::force_batch`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Utility.force_batch') === 'e7824a8166f28e08d9929c73f34b81e35a6e4df30c6bfa21e170295d48761b3e'
-    }
-
-    /**
-     * See [`Pallet::force_batch`].
-     */
-    get asV2(): {calls: v2.Call[]} {
-        assert(this.isV2)
-        return this._chain.decodeCall(this.call)
-    }
 }
 
 export class UtilityWithWeightCall {
@@ -1642,21 +1506,6 @@ export class UtilityWithWeightCall {
      */
     get asV1(): {call: v1.Call, weight: v1.Weight} {
         assert(this.isV1)
-        return this._chain.decodeCall(this.call)
-    }
-
-    /**
-     * See [`Pallet::with_weight`].
-     */
-    get isV2(): boolean {
-        return this._chain.getCallHash('Utility.with_weight') === 'b4dca4e1c97f2ece801f824c7075ae7595136d3657931968fd4186ae36009e07'
-    }
-
-    /**
-     * See [`Pallet::with_weight`].
-     */
-    get asV2(): {call: v2.Call, weight: v2.Weight} {
-        assert(this.isV2)
         return this._chain.decodeCall(this.call)
     }
 }
