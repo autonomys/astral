@@ -42,6 +42,9 @@ export const QUERY_EVENT_CONNECTION_LIST = gql`
       }
       totalCount
     }
+    eventModuleNames(limit: 300) {
+      name
+    }
   }
 `
 
