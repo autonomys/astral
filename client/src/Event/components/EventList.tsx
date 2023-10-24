@@ -38,7 +38,7 @@ const EventList: FC = () => {
 
   const pageInfo = data.eventsConnection.pageInfo
 
-  // const modules = data.eventsNamesQuery.result.map((module) => module.split('.')[0])
+  const modules = data.eventModuleNames.map((module) => module.name.split('.')[0])
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -73,7 +73,7 @@ const EventList: FC = () => {
             <div className=' font-medium text-[#282929] dark:text-white'>Events {totalLabel}</div>
           }
           filters={filters}
-          // modules={modules}
+          modules={modules}
           setFilters={setFilters}
         />
       </div>

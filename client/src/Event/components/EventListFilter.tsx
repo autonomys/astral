@@ -9,10 +9,10 @@ type Props = {
   title: React.ReactNode
   filters: EventWhereInput
   setFilters: React.Dispatch<React.SetStateAction<EventWhereInput>>
-  // modules: string[]
+  modules: string[]
 }
 
-const EventListFilter: FC<Props> = ({ title, setFilters, filters }) => {
+const EventListFilter: FC<Props> = ({ title, setFilters, filters, modules }) => {
   const [where, setWhere] = useState<EventWhereInput>(filters)
 
   const handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +24,7 @@ const EventListFilter: FC<Props> = ({ title, setFilters, filters }) => {
       title={title}
       where={where}
       filters={filters}
-      // modules={modules}
+      modules={modules}
       setWhere={setWhere}
       setFilters={setFilters}
       handleAccountChange={handleAccountChange}

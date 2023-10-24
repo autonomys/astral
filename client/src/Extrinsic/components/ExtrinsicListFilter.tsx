@@ -9,10 +9,10 @@ type Props = {
   title: React.ReactNode
   filters: ExtrinsicWhereInput
   setFilters: React.Dispatch<React.SetStateAction<ExtrinsicWhereInput>>
-  // modules: string[]
+  modules: string[]
 }
 
-const ExtrinsicListFilter: FC<Props> = ({ title, setFilters, filters }) => {
+const ExtrinsicListFilter: FC<Props> = ({ title, setFilters, filters, modules }) => {
   const [where, setWhere] = useState<ExtrinsicWhereInput>(filters)
 
   const handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,7 +24,7 @@ const ExtrinsicListFilter: FC<Props> = ({ title, setFilters, filters }) => {
       title={title}
       where={where}
       filters={filters}
-      // modules={modules}
+      modules={modules}
       setWhere={setWhere}
       setFilters={setFilters}
       handleAccountChange={handleAccountChange}
