@@ -65,5 +65,13 @@ export const INTERNAL_ROUTES = {
     },
     empty: '/search/no-result-found',
   },
+  leaderBoard: '/leaderBoard',
+  tokenCalculator: {
+    id: {
+      path: ':accountId',
+      page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}`,
+    },
+    list: 'tokenCalculator',
+  },
   notFound: '/404',
 }

@@ -24,6 +24,7 @@ import {
   HeaderBackground,
   DomainHeader,
 } from 'layout/components'
+import TokenCalculator from 'layout/components/TokenCalculator'
 import NotResultsFound from 'layout/components/NotResultsFound'
 import SearchResult from 'layout/components/SearchResult'
 
@@ -129,6 +130,10 @@ function App() {
                     <Route path={INTERNAL_ROUTES.search.result.path}>
                       <Route index element={<SearchResult />} />
                     </Route>
+                  </Route>
+                  <Route path={INTERNAL_ROUTES.tokenCalculator.list}>
+                    <Route index element={<TokenCalculator />} />
+                      <Route path={INTERNAL_ROUTES.tokenCalculator.id.path} element={<TokenCalculator />} />
                   </Route>
 
                   <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
