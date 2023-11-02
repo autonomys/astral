@@ -25,8 +25,8 @@ export class BalanceEventHandler {
   getTransferAccounts(event: Event) {
     const data = new BalancesTransferEvent(this.ctx, event);
 
-    if (data.isV1) {
-      return [toHex(data.asV1.from), toHex(data.asV1.to)];
+    if (data.isV0) {
+      return [toHex(data.asV0.from), toHex(data.asV0.to)];
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -35,8 +35,8 @@ export class BalanceEventHandler {
   getEndowedAccount(event: Event) {
     const data = new BalancesEndowedEvent(this.ctx, event);
 
-    if (data.isV1) {
-      return toHex(data.asV1.account);
+    if (data.isV0) {
+      return toHex(data.asV0.account);
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -45,8 +45,8 @@ export class BalanceEventHandler {
   getReserveRepatriatedAccounts(event: Event) {
     const data = new BalancesReserveRepatriatedEvent(this.ctx, event);
 
-    if (data.isV1) {
-      return [toHex(data.asV1.from), toHex(data.asV1.to)];
+    if (data.isV0) {
+      return [toHex(data.asV0.from), toHex(data.asV0.to)];
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -57,8 +57,8 @@ export class BalanceEventHandler {
     const EventType = eventTypes[event.name];
     const data = new EventType(this.ctx, event);
 
-    if (data.isV1) {
-      return toHex(data.asV1.who);
+    if (data.isV0) {
+      return toHex(data.asV0.who);
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }

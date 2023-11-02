@@ -16,12 +16,34 @@ export interface RuntimeType_Evm {
     __kind: 'Evm'
 }
 
+export type ChainId = ChainId_Consensus | ChainId_Domain
+
+export interface ChainId_Consensus {
+    __kind: 'Consensus'
+}
+
+export interface ChainId_Domain {
+    __kind: 'Domain'
+    value: number
+}
+
+export type OutboxMessageResult = OutboxMessageResult_Ok | OutboxMessageResult_Err
+
+export interface OutboxMessageResult_Ok {
+    __kind: 'Ok'
+}
+
+export interface OutboxMessageResult_Err {
+    __kind: 'Err'
+    value: DispatchError
+}
+
 export type SegmentHeader = SegmentHeader_V0
 
 export interface SegmentHeader_V0 {
     __kind: 'V0'
     segmentIndex: bigint
-    segmentCommitment: Commitment
+    segmentCommitment: Uint8Array
     prevSegmentHeaderHash: Uint8Array
     lastArchivedBlock: LastArchivedBlock
 }
@@ -140,12 +162,13 @@ export interface MultiAddress_Address20 {
 }
 
 export interface DomainConfig {
-    domainName: Uint8Array
+    domainName: string
     runtimeId: number
     maxBlockSize: number
     maxBlockWeight: Weight
     bundleSlotProbability: [bigint, bigint]
     targetBundlesPerBlock: number
+    operatorAllowList: OperatorAllowList
 }
 
 export interface OperatorConfig {
@@ -159,7 +182,7 @@ export interface Bundle {
     extrinsics: Uint8Array[]
 }
 
-export type FraudProof = FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition
+export type FraudProof = FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition | FraudProof_InvalidTotalRewards | FraudProof_InvalidExtrinsicsRoot | FraudProof_ValidBundle | FraudProof_InvalidDomainBlockHash | FraudProof_InvalidBundles
 
 export interface FraudProof_InvalidStateTransition {
     __kind: 'InvalidStateTransition'
@@ -181,6 +204,42 @@ export interface FraudProof_ImproperTransactionSortition {
     value: ImproperTransactionSortitionProof
 }
 
+export interface FraudProof_InvalidTotalRewards {
+    __kind: 'InvalidTotalRewards'
+    value: InvalidTotalRewardsProof
+}
+
+export interface FraudProof_InvalidExtrinsicsRoot {
+    __kind: 'InvalidExtrinsicsRoot'
+    value: InvalidExtrinsicsRootProof
+}
+
+export interface FraudProof_ValidBundle {
+    __kind: 'ValidBundle'
+    value: ValidBundleProof
+}
+
+export interface FraudProof_InvalidDomainBlockHash {
+    __kind: 'InvalidDomainBlockHash'
+    value: InvalidDomainBlockHashProof
+}
+
+export interface FraudProof_InvalidBundles {
+    __kind: 'InvalidBundles'
+    value: InvalidBundlesFraudProof
+}
+
+export type OperatorAllowList = OperatorAllowList_Anyone | OperatorAllowList_Operators
+
+export interface OperatorAllowList_Anyone {
+    __kind: 'Anyone'
+}
+
+export interface OperatorAllowList_Operators {
+    __kind: 'Operators'
+    value: Uint8Array[]
+}
+
 export type Withdraw = Withdraw_All | Withdraw_Some
 
 export interface Withdraw_All {
@@ -192,18 +251,18 @@ export interface Withdraw_Some {
     value: bigint
 }
 
-export type FeedProcessorKind = FeedProcessorKind_ContentAddressable | FeedProcessorKind_PolkadotLike | FeedProcessorKind_ParachainLike
-
-export interface FeedProcessorKind_ContentAddressable {
-    __kind: 'ContentAddressable'
+export interface InitiateChannelParams {
+    maxOutgoingMessages: number
+    feeModel: FeeModel
 }
 
-export interface FeedProcessorKind_PolkadotLike {
-    __kind: 'PolkadotLike'
-}
-
-export interface FeedProcessorKind_ParachainLike {
-    __kind: 'ParachainLike'
+export interface CrossDomainMessage {
+    srcChainId: ChainId
+    dstChainId: ChainId
+    channelId: bigint
+    nonce: bigint
+    proof: Proof
+    weightTag: MessageWeightTag
 }
 
 export interface EquivocationProof {
@@ -218,7 +277,7 @@ export interface SignedVote {
     signature: Uint8Array
 }
 
-export type Call = Call_System | Call_Timestamp | Call_Subspace | Call_Balances | Call_Utility | Call_Feeds | Call_ObjectStore | Call_Domains | Call_Vesting | Call_Sudo
+export type Call = Call_System | Call_Timestamp | Call_Subspace | Call_Balances | Call_Utility | Call_Domains | Call_RuntimeConfigs | Call_Vesting | Call_Messenger | Call_Transporter | Call_Sudo
 
 export interface Call_System {
     __kind: 'System'
@@ -245,24 +304,29 @@ export interface Call_Utility {
     value: UtilityCall
 }
 
-export interface Call_Feeds {
-    __kind: 'Feeds'
-    value: FeedsCall
-}
-
-export interface Call_ObjectStore {
-    __kind: 'ObjectStore'
-    value: ObjectStoreCall
-}
-
 export interface Call_Domains {
     __kind: 'Domains'
     value: DomainsCall
 }
 
+export interface Call_RuntimeConfigs {
+    __kind: 'RuntimeConfigs'
+    value: RuntimeConfigsCall
+}
+
 export interface Call_Vesting {
     __kind: 'Vesting'
     value: VestingCall
+}
+
+export interface Call_Messenger {
+    __kind: 'Messenger'
+    value: MessengerCall
+}
+
+export interface Call_Transporter {
+    __kind: 'Transporter'
+    value: TransporterCall
 }
 
 export interface Call_Sudo {
@@ -273,6 +337,11 @@ export interface Call_Sudo {
 export interface Weight {
     refTime: bigint
     proofSize: bigint
+}
+
+export interface Location {
+    chainId: ChainId
+    accountId: MultiAccountId
 }
 
 export type OriginCaller = OriginCaller_system | OriginCaller_Void
@@ -294,7 +363,7 @@ export interface AccountData {
     flags: bigint
 }
 
-export interface Type_139 {
+export interface Type_149 {
     amount: bigint
 }
 
@@ -314,7 +383,7 @@ export interface ReserveData {
     amount: bigint
 }
 
-export interface DomainBlock {
+export interface BlockTreeNode {
     executionReceipt: ExecutionReceipt
     operatorIds: bigint[]
 }
@@ -324,7 +393,6 @@ export interface DomainObject {
     createdAt: number
     genesisReceiptHash: Uint8Array
     domainConfig: DomainConfig
-    rawGenesisConfig: (Uint8Array | undefined)
 }
 
 export interface StakingSummary {
@@ -367,23 +435,6 @@ export interface Operator {
     status: OperatorStatus
 }
 
-export interface GenesisDomain {
-    runtimeName: Uint8Array
-    runtimeType: RuntimeType
-    runtimeVersion: RuntimeVersion
-    code: Uint8Array
-    ownerAccountId: Uint8Array
-    domainName: Uint8Array
-    maxBlockSize: number
-    maxBlockWeight: Weight
-    bundleSlotProbability: [bigint, bigint]
-    targetBundlesPerBlock: number
-    rawGenesisConfig: Uint8Array
-    signingKey: Uint8Array
-    minimumNominatorStake: bigint
-    nominationTax: number
-}
-
 export interface PendingNominatorUnlock {
     nominatorId: Uint8Array
     balance: bigint
@@ -394,35 +445,44 @@ export interface PendingOperatorSlashInfo {
 }
 
 export interface RuntimeObject {
-    runtimeName: Uint8Array
+    runtimeName: string
     runtimeType: RuntimeType
     runtimeUpgrades: number
     hash: Uint8Array
-    code: Uint8Array
+    rawGenesis: RawGenesis
     version: RuntimeVersion
     createdAt: number
     updatedAt: number
 }
 
 export interface ScheduledRuntimeUpgrade {
-    code: Uint8Array
+    rawGenesis: RawGenesis
     version: RuntimeVersion
+    hash: Uint8Array
 }
 
-export interface FeedConfig {
-    active: boolean
-    feedProcessorId: FeedProcessorKind
-    owner: Uint8Array
+export interface BlockMessages {
+    outbox: [ChainId, [bigint, bigint], MessageWeightTag][]
+    inboxResponses: [ChainId, [bigint, bigint], MessageWeightTag][]
 }
 
-export interface TotalObjectsAndSize {
-    size: bigint
-    count: bigint
+export interface Channel {
+    channelId: bigint
+    state: ChannelState
+    nextInboxNonce: bigint
+    nextOutboxNonce: bigint
+    latestResponseReceivedMessageNonce: (bigint | undefined)
+    maxOutgoingMessages: number
+    fee: FeeModel
 }
 
-export interface AuthoritySet {
-    authorities: [Uint8Array, bigint][]
-    setId: bigint
+export interface Message {
+    srcChainId: ChainId
+    dstChainId: ChainId
+    channelId: bigint
+    nonce: bigint
+    payload: VersionedPayload
+    lastDeliveredMessageResponseNonce: (bigint | undefined)
 }
 
 export interface OffenceDetails {
@@ -433,25 +493,21 @@ export interface Scalar {
     inner: Uint8Array
 }
 
-export interface GlobalRandomnesses {
-    current: Uint8Array
-    next: (Uint8Array | undefined)
-}
-
 export interface SolutionRangeOverride {
     solutionRange: bigint
     votingSolutionRange: bigint
 }
 
 export interface VoteVerificationData {
-    globalRandomness: Uint8Array
     solutionRange: bigint
+    voteSolutionRange: bigint
     currentSlot: bigint
     parentSlot: bigint
 }
 
-export interface Commitment {
-    inner: Uint8Array
+export interface PotEntropyValue {
+    targetSlot: (bigint | undefined)
+    entropy: Uint8Array
 }
 
 export interface SolutionRanges {
@@ -521,14 +577,20 @@ export interface Releases_V2 {
     __kind: 'V2'
 }
 
+export interface Transfer {
+    amount: bigint
+    sender: Location
+    receiver: Location
+}
+
 export interface BlockLength {
-    max: Type_76
+    max: Type_82
 }
 
 export interface BlockWeights {
     baseBlock: Weight
     maxBlock: Weight
-    perClass: Type_72
+    perClass: Type_78
 }
 
 export interface RuntimeDbWeight {
@@ -655,17 +717,14 @@ export interface SealedBundleHeader {
 export interface InvalidStateTransitionProof {
     domainId: number
     badReceiptHash: Uint8Array
-    parentNumber: number
-    consensusParentHash: Uint8Array
-    preStateRoot: Uint8Array
-    postStateRoot: Uint8Array
     proof: StorageProof
     executionPhase: ExecutionPhase
 }
 
 export interface InvalidTransactionProof {
     domainId: number
-    blockNumber: number
+    badReceiptHash: Uint8Array
+    domainBlockNumber: number
     domainBlockHash: Uint8Array
     invalidExtrinsic: Uint8Array
     storageProof: StorageProof
@@ -681,6 +740,75 @@ export interface BundleEquivocationProof {
 
 export interface ImproperTransactionSortitionProof {
     domainId: number
+    badReceiptHash: Uint8Array
+}
+
+export interface InvalidTotalRewardsProof {
+    domainId: number
+    badReceiptHash: Uint8Array
+    storageProof: StorageProof
+}
+
+export interface InvalidExtrinsicsRootProof {
+    domainId: number
+    badReceiptHash: Uint8Array
+    validBundleDigests: ValidBundleDigest[]
+}
+
+export interface ValidBundleProof {
+    domainId: number
+    badReceiptHash: Uint8Array
+    bundleIndex: number
+}
+
+export interface InvalidDomainBlockHashProof {
+    domainId: number
+    badReceiptHash: Uint8Array
+    digestStorageProof: StorageProof
+}
+
+export interface InvalidBundlesFraudProof {
+    badReceiptHash: Uint8Array
+    domainId: number
+    bundleIndex: number
+    invalidBundleType: InvalidBundleType
+    extrinsicInclusionProof: StorageProof
+    isTrueInvalidFraudProof: boolean
+}
+
+export interface FeeModel {
+    relayFee: bigint
+}
+
+export interface Proof {
+    consensusChainBlockInfo: BlockInfo
+    consensusChainStateRoot: Uint8Array
+    domainProof: ([BlockInfo, StorageProof] | undefined)
+    messageProof: StorageProof
+}
+
+export type MessageWeightTag = MessageWeightTag_ProtocolChannelOpen | MessageWeightTag_ProtocolChannelClose | MessageWeightTag_EndpointRequest | MessageWeightTag_EndpointResponse | MessageWeightTag_None
+
+export interface MessageWeightTag_ProtocolChannelOpen {
+    __kind: 'ProtocolChannelOpen'
+}
+
+export interface MessageWeightTag_ProtocolChannelClose {
+    __kind: 'ProtocolChannelClose'
+}
+
+export interface MessageWeightTag_EndpointRequest {
+    __kind: 'EndpointRequest'
+    value: Endpoint
+}
+
+export interface MessageWeightTag_EndpointResponse {
+    __kind: 'EndpointResponse'
+    value: Endpoint
+}
+
+export interface MessageWeightTag_None {
+    __kind: 'None'
 }
 
 export interface Header {
@@ -699,6 +827,8 @@ export interface Vote_V0 {
     parentHash: Uint8Array
     slot: bigint
     solution: Solution
+    proofOfTime: Uint8Array
+    futureProofOfTime: Uint8Array
 }
 
 /**
@@ -847,7 +977,7 @@ export interface SubspaceCall_enable_authoring_by_anyone {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type BalancesCall = BalancesCall_transfer_allow_death | BalancesCall_set_balance_deprecated | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve | BalancesCall_upgrade_accounts | BalancesCall_transfer | BalancesCall_force_set_balance
+export type BalancesCall = BalancesCall_transfer_allow_death | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve | BalancesCall_upgrade_accounts | BalancesCall_force_set_balance
 
 /**
  * See [`Pallet::transfer_allow_death`].
@@ -856,16 +986,6 @@ export interface BalancesCall_transfer_allow_death {
     __kind: 'transfer_allow_death'
     dest: MultiAddress
     value: bigint
-}
-
-/**
- * See [`Pallet::set_balance_deprecated`].
- */
-export interface BalancesCall_set_balance_deprecated {
-    __kind: 'set_balance_deprecated'
-    who: MultiAddress
-    newFree: bigint
-    oldReserved: bigint
 }
 
 /**
@@ -911,15 +1031,6 @@ export interface BalancesCall_force_unreserve {
 export interface BalancesCall_upgrade_accounts {
     __kind: 'upgrade_accounts'
     who: Uint8Array[]
-}
-
-/**
- * See [`Pallet::transfer`].
- */
-export interface BalancesCall_transfer {
-    __kind: 'transfer'
-    dest: MultiAddress
-    value: bigint
 }
 
 /**
@@ -990,70 +1101,7 @@ export interface UtilityCall_with_weight {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type FeedsCall = FeedsCall_create | FeedsCall_update | FeedsCall_put | FeedsCall_close | FeedsCall_transfer
-
-/**
- * See [`Pallet::create`].
- */
-export interface FeedsCall_create {
-    __kind: 'create'
-    feedProcessorId: FeedProcessorKind
-    initData: (Uint8Array | undefined)
-}
-
-/**
- * See [`Pallet::update`].
- */
-export interface FeedsCall_update {
-    __kind: 'update'
-    feedId: bigint
-    feedProcessorId: FeedProcessorKind
-    initData: (Uint8Array | undefined)
-}
-
-/**
- * See [`Pallet::put`].
- */
-export interface FeedsCall_put {
-    __kind: 'put'
-    feedId: bigint
-    object: Uint8Array
-}
-
-/**
- * See [`Pallet::close`].
- */
-export interface FeedsCall_close {
-    __kind: 'close'
-    feedId: bigint
-}
-
-/**
- * See [`Pallet::transfer`].
- */
-export interface FeedsCall_transfer {
-    __kind: 'transfer'
-    feedId: bigint
-    newOwner: MultiAddress
-}
-
-/**
- * Contains a variant per dispatchable extrinsic that this pallet has.
- */
-export type ObjectStoreCall = ObjectStoreCall_put
-
-/**
- * See [`Pallet::put`].
- */
-export interface ObjectStoreCall_put {
-    __kind: 'put'
-    object: Uint8Array
-}
-
-/**
- * Contains a variant per dispatchable extrinsic that this pallet has.
- */
-export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_register_domain_runtime | DomainsCall_upgrade_domain_runtime | DomainsCall_register_operator | DomainsCall_nominate_operator | DomainsCall_instantiate_domain | DomainsCall_switch_domain | DomainsCall_deregister_operator | DomainsCall_withdraw_stake | DomainsCall_auto_stake_block_rewards
+export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_register_domain_runtime | DomainsCall_upgrade_domain_runtime | DomainsCall_register_operator | DomainsCall_nominate_operator | DomainsCall_instantiate_domain | DomainsCall_switch_domain | DomainsCall_deregister_operator | DomainsCall_withdraw_stake | DomainsCall_auto_stake_block_rewards | DomainsCall_update_domain_operator_allow_list
 
 /**
  * See [`Pallet::submit_bundle`].
@@ -1076,9 +1124,9 @@ export interface DomainsCall_submit_fraud_proof {
  */
 export interface DomainsCall_register_domain_runtime {
     __kind: 'register_domain_runtime'
-    runtimeName: Uint8Array
+    runtimeName: string
     runtimeType: RuntimeType
-    code: Uint8Array
+    rawGenesisStorage: Uint8Array
 }
 
 /**
@@ -1087,7 +1135,7 @@ export interface DomainsCall_register_domain_runtime {
 export interface DomainsCall_upgrade_domain_runtime {
     __kind: 'upgrade_domain_runtime'
     runtimeId: number
-    code: Uint8Array
+    rawGenesisStorage: Uint8Array
 }
 
 /**
@@ -1152,6 +1200,36 @@ export interface DomainsCall_auto_stake_block_rewards {
 }
 
 /**
+ * See [`Pallet::update_domain_operator_allow_list`].
+ */
+export interface DomainsCall_update_domain_operator_allow_list {
+    __kind: 'update_domain_operator_allow_list'
+    domainId: number
+    operatorAllowList: OperatorAllowList
+}
+
+/**
+ * Contains a variant per dispatchable extrinsic that this pallet has.
+ */
+export type RuntimeConfigsCall = RuntimeConfigsCall_set_enable_domains | RuntimeConfigsCall_set_enable_balance_transfers
+
+/**
+ * See [`Pallet::set_enable_domains`].
+ */
+export interface RuntimeConfigsCall_set_enable_domains {
+    __kind: 'set_enable_domains'
+    enableDomains: boolean
+}
+
+/**
+ * See [`Pallet::set_enable_balance_transfers`].
+ */
+export interface RuntimeConfigsCall_set_enable_balance_transfers {
+    __kind: 'set_enable_balance_transfers'
+    enableBalanceTransfers: boolean
+}
+
+/**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type VestingCall = VestingCall_claim | VestingCall_vested_transfer | VestingCall_update_vesting_schedules | VestingCall_claim_for
@@ -1192,6 +1270,59 @@ export interface VestingCall_claim_for {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
+export type MessengerCall = MessengerCall_initiate_channel | MessengerCall_close_channel | MessengerCall_relay_message | MessengerCall_relay_message_response
+
+/**
+ * See [`Pallet::initiate_channel`].
+ */
+export interface MessengerCall_initiate_channel {
+    __kind: 'initiate_channel'
+    dstChainId: ChainId
+    params: InitiateChannelParams
+}
+
+/**
+ * See [`Pallet::close_channel`].
+ */
+export interface MessengerCall_close_channel {
+    __kind: 'close_channel'
+    chainId: ChainId
+    channelId: bigint
+}
+
+/**
+ * See [`Pallet::relay_message`].
+ */
+export interface MessengerCall_relay_message {
+    __kind: 'relay_message'
+    msg: CrossDomainMessage
+}
+
+/**
+ * See [`Pallet::relay_message_response`].
+ */
+export interface MessengerCall_relay_message_response {
+    __kind: 'relay_message_response'
+    msg: CrossDomainMessage
+}
+
+/**
+ * Contains a variant per dispatchable extrinsic that this pallet has.
+ */
+export type TransporterCall = TransporterCall_transfer
+
+/**
+ * See [`Pallet::transfer`].
+ */
+export interface TransporterCall_transfer {
+    __kind: 'transfer'
+    dstLocation: Location
+    amount: bigint
+}
+
+/**
+ * Contains a variant per dispatchable extrinsic that this pallet has.
+ */
 export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as
 
 /**
@@ -1226,6 +1357,23 @@ export interface SudoCall_sudo_as {
     __kind: 'sudo_as'
     who: MultiAddress
     call: Call
+}
+
+export type MultiAccountId = MultiAccountId_AccountId32 | MultiAccountId_AccountId20 | MultiAccountId_Raw
+
+export interface MultiAccountId_AccountId32 {
+    __kind: 'AccountId32'
+    value: Uint8Array
+}
+
+export interface MultiAccountId_AccountId20 {
+    __kind: 'AccountId20'
+    value: Uint8Array
+}
+
+export interface MultiAccountId_Raw {
+    __kind: 'Raw'
+    value: Uint8Array
 }
 
 export type RawOrigin = RawOrigin_Root | RawOrigin_Signed | RawOrigin_None
@@ -1269,11 +1417,11 @@ export interface Reasons_All {
 export interface ExecutionReceipt {
     domainBlockNumber: number
     domainBlockHash: Uint8Array
+    domainBlockExtrinsicRoot: Uint8Array
     parentDomainBlockReceiptHash: Uint8Array
     consensusBlockNumber: number
     consensusBlockHash: Uint8Array
-    invalidBundles: InvalidBundle[]
-    blockExtrinsicsRoots: Uint8Array[]
+    inboxedBundles: InboxedBundle[]
     finalStateRoot: Uint8Array
     executionTrace: Uint8Array[]
     executionTraceRoot: Uint8Array
@@ -1292,6 +1440,32 @@ export interface OperatorStatus_Deregistered {
 
 export interface OperatorStatus_Slashed {
     __kind: 'Slashed'
+}
+
+export interface RawGenesis {
+    top: [Uint8Array, Uint8Array][]
+    childrenDefault: [Uint8Array, [Uint8Array, Uint8Array][]][]
+}
+
+export type ChannelState = ChannelState_Initiated | ChannelState_Open | ChannelState_Closed
+
+export interface ChannelState_Initiated {
+    __kind: 'Initiated'
+}
+
+export interface ChannelState_Open {
+    __kind: 'Open'
+}
+
+export interface ChannelState_Closed {
+    __kind: 'Closed'
+}
+
+export type VersionedPayload = VersionedPayload_V0
+
+export interface VersionedPayload_V0 {
+    __kind: 'V0'
+    value: Payload
 }
 
 export type DigestItem = DigestItem_PreRuntime | DigestItem_Consensus | DigestItem_Seal | DigestItem_Other | DigestItem_RuntimeEnvironmentUpdated
@@ -1320,7 +1494,7 @@ export interface DigestItem_RuntimeEnvironmentUpdated {
     __kind: 'RuntimeEnvironmentUpdated'
 }
 
-export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Feeds | Event_ObjectStore | Event_Domains | Event_Vesting | Event_Sudo
+export type Event = Event_System | Event_Subspace | Event_OffencesSubspace | Event_Rewards | Event_Balances | Event_TransactionFees | Event_TransactionPayment | Event_Utility | Event_Domains | Event_Vesting | Event_Messenger | Event_Transporter | Event_Sudo
 
 export interface Event_System {
     __kind: 'System'
@@ -1362,16 +1536,6 @@ export interface Event_Utility {
     value: UtilityEvent
 }
 
-export interface Event_Feeds {
-    __kind: 'Feeds'
-    value: FeedsEvent
-}
-
-export interface Event_ObjectStore {
-    __kind: 'ObjectStore'
-    value: ObjectStoreEvent
-}
-
 export interface Event_Domains {
     __kind: 'Domains'
     value: DomainsEvent
@@ -1382,18 +1546,28 @@ export interface Event_Vesting {
     value: VestingEvent
 }
 
+export interface Event_Messenger {
+    __kind: 'Messenger'
+    value: MessengerEvent
+}
+
+export interface Event_Transporter {
+    __kind: 'Transporter'
+    value: TransporterEvent
+}
+
 export interface Event_Sudo {
     __kind: 'Sudo'
     value: SudoEvent
 }
 
-export interface Type_76 {
+export interface Type_82 {
     normal: number
     operational: number
     mandatory: number
 }
 
-export interface Type_72 {
+export interface Type_78 {
     normal: WeightsPerClass
     operational: WeightsPerClass
     mandatory: WeightsPerClass
@@ -1426,17 +1600,61 @@ export type ExecutionPhase = ExecutionPhase_InitializeBlock | ExecutionPhase_App
 
 export interface ExecutionPhase_InitializeBlock {
     __kind: 'InitializeBlock'
-    domainParentHash: Uint8Array
 }
 
 export interface ExecutionPhase_ApplyExtrinsic {
     __kind: 'ApplyExtrinsic'
-    value: number
+    proofOfInclusion: StorageProof
+    mismatchIndex: number
+    extrinsic: Uint8Array
 }
 
 export interface ExecutionPhase_FinalizeBlock {
     __kind: 'FinalizeBlock'
-    totalExtrinsics: number
+}
+
+export interface ValidBundleDigest {
+    bundleIndex: number
+    bundleDigest: [(Uint8Array | undefined), ExtrinsicDigest][]
+}
+
+export type InvalidBundleType = InvalidBundleType_UndecodableTx | InvalidBundleType_OutOfRangeTx | InvalidBundleType_IllegalTx | InvalidBundleType_InvalidXDM | InvalidBundleType_InherentExtrinsic
+
+export interface InvalidBundleType_UndecodableTx {
+    __kind: 'UndecodableTx'
+    value: number
+}
+
+export interface InvalidBundleType_OutOfRangeTx {
+    __kind: 'OutOfRangeTx'
+    value: number
+}
+
+export interface InvalidBundleType_IllegalTx {
+    __kind: 'IllegalTx'
+    value: number
+}
+
+export interface InvalidBundleType_InvalidXDM {
+    __kind: 'InvalidXDM'
+    value: number
+}
+
+export interface InvalidBundleType_InherentExtrinsic {
+    __kind: 'InherentExtrinsic'
+    value: number
+}
+
+export interface BlockInfo {
+    blockNumber: number
+    blockHash: Uint8Array
+}
+
+export type Endpoint = Endpoint_Id
+
+export interface Endpoint_Id {
+    __kind: 'Id'
+    value: bigint
 }
 
 export interface Solution {
@@ -1445,11 +1663,10 @@ export interface Solution {
     sectorIndex: number
     historySize: bigint
     pieceOffset: number
-    recordCommitment: Commitment
-    recordWitness: Witness
+    recordCommitment: Uint8Array
+    recordWitness: Uint8Array
     chunk: Scalar
-    chunkWitness: Witness
-    auditChunkOffset: number
+    chunkWitness: Uint8Array
     proofOfSpace: Uint8Array
 }
 
@@ -1465,9 +1682,21 @@ export interface DomainsHoldIdentifier_DomainInstantiation {
     value: number
 }
 
-export interface InvalidBundle {
-    bundleIndex: number
-    invalidBundleType: InvalidBundleType
+export interface InboxedBundle {
+    bundle: BundleValidity
+    extrinsicsRoot: Uint8Array
+}
+
+export type Payload = Payload_Protocol | Payload_Endpoint
+
+export interface Payload_Protocol {
+    __kind: 'Protocol'
+    value: RequestResponse
+}
+
+export interface Payload_Endpoint {
+    __kind: 'Endpoint'
+    value: Type_282
 }
 
 /**
@@ -1917,86 +2146,9 @@ export interface UtilityEvent_DispatchedAs {
 }
 
 /**
- * `pallet-feeds` events
- */
-export type FeedsEvent = FeedsEvent_ObjectSubmitted | FeedsEvent_FeedCreated | FeedsEvent_FeedUpdated | FeedsEvent_FeedClosed | FeedsEvent_FeedDeleted | FeedsEvent_OwnershipTransferred
-
-/**
- * New object was added.
- */
-export interface FeedsEvent_ObjectSubmitted {
-    __kind: 'ObjectSubmitted'
-    feedId: bigint
-    who: Uint8Array
-    metadata: Uint8Array
-    objectSize: bigint
-}
-
-/**
- * New feed was created.
- */
-export interface FeedsEvent_FeedCreated {
-    __kind: 'FeedCreated'
-    feedId: bigint
-    who: Uint8Array
-}
-
-/**
- * An existing feed was updated.
- */
-export interface FeedsEvent_FeedUpdated {
-    __kind: 'FeedUpdated'
-    feedId: bigint
-    who: Uint8Array
-}
-
-/**
- * Feed was closed.
- */
-export interface FeedsEvent_FeedClosed {
-    __kind: 'FeedClosed'
-    feedId: bigint
-    who: Uint8Array
-}
-
-/**
- * Feed was deleted.
- */
-export interface FeedsEvent_FeedDeleted {
-    __kind: 'FeedDeleted'
-    feedId: bigint
-    who: Uint8Array
-}
-
-/**
- * feed ownership transferred
- */
-export interface FeedsEvent_OwnershipTransferred {
-    __kind: 'OwnershipTransferred'
-    feedId: bigint
-    oldOwner: Uint8Array
-    newOwner: Uint8Array
-}
-
-/**
- * `pallet-object-store` events
- */
-export type ObjectStoreEvent = ObjectStoreEvent_ObjectSubmitted
-
-/**
- * New object was added.
- */
-export interface ObjectStoreEvent_ObjectSubmitted {
-    __kind: 'ObjectSubmitted'
-    who: Uint8Array
-    objectId: Uint8Array
-    objectSize: number
-}
-
-/**
  * The `Event` enum of this pallet
  */
-export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_DomainRuntimeCreated | DomainsEvent_DomainRuntimeUpgradeScheduled | DomainsEvent_DomainRuntimeUpgraded | DomainsEvent_OperatorRegistered | DomainsEvent_OperatorNominated | DomainsEvent_DomainInstantiated | DomainsEvent_OperatorSwitchedDomain | DomainsEvent_OperatorDeregistered | DomainsEvent_WithdrewStake | DomainsEvent_PreferredOperator | DomainsEvent_OperatorRewarded | DomainsEvent_DomainEpochCompleted
+export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_DomainRuntimeCreated | DomainsEvent_DomainRuntimeUpgradeScheduled | DomainsEvent_DomainRuntimeUpgraded | DomainsEvent_OperatorRegistered | DomainsEvent_OperatorNominated | DomainsEvent_DomainInstantiated | DomainsEvent_OperatorSwitchedDomain | DomainsEvent_OperatorDeregistered | DomainsEvent_WithdrewStake | DomainsEvent_PreferredOperator | DomainsEvent_OperatorRewarded | DomainsEvent_DomainEpochCompleted | DomainsEvent_FraudProofProcessed | DomainsEvent_DomainOperatorAllowListUpdated
 
 /**
  * A domain bundle was included.
@@ -2077,6 +2229,17 @@ export interface DomainsEvent_DomainEpochCompleted {
     completedEpochIndex: number
 }
 
+export interface DomainsEvent_FraudProofProcessed {
+    __kind: 'FraudProofProcessed'
+    domainId: number
+    newHeadReceiptNumber: (number | undefined)
+}
+
+export interface DomainsEvent_DomainOperatorAllowListUpdated {
+    __kind: 'DomainOperatorAllowListUpdated'
+    domainId: number
+}
+
 /**
  * The `Event` enum of this pallet
  */
@@ -2110,31 +2273,222 @@ export interface VestingEvent_VestingSchedulesUpdated {
 }
 
 /**
+ * `pallet-messenger` events
+ */
+export type MessengerEvent = MessengerEvent_ChannelInitiated | MessengerEvent_ChannelClosed | MessengerEvent_ChannelOpen | MessengerEvent_OutboxMessage | MessengerEvent_OutboxMessageResponse | MessengerEvent_OutboxMessageResult | MessengerEvent_InboxMessage | MessengerEvent_InboxMessageResponse
+
+/**
+ * Emits when a channel between two chains is initiated.
+ */
+export interface MessengerEvent_ChannelInitiated {
+    __kind: 'ChannelInitiated'
+    /**
+     * Foreign chain id this channel connects to.
+     */
+    chainId: ChainId
+    /**
+     * Channel ID of the said channel.
+     */
+    channelId: bigint
+}
+
+/**
+ * Emits when a channel between two chains is closed.
+ */
+export interface MessengerEvent_ChannelClosed {
+    __kind: 'ChannelClosed'
+    /**
+     * Foreign chain id this channel connects to.
+     */
+    chainId: ChainId
+    /**
+     * Channel ID of the said channel.
+     */
+    channelId: bigint
+}
+
+/**
+ * Emits when a channel between two chain is open.
+ */
+export interface MessengerEvent_ChannelOpen {
+    __kind: 'ChannelOpen'
+    /**
+     * Foreign chain id this channel connects to.
+     */
+    chainId: ChainId
+    /**
+     * Channel ID of the said channel.
+     */
+    channelId: bigint
+}
+
+/**
+ * Emits when a new message is added to the outbox.
+ */
+export interface MessengerEvent_OutboxMessage {
+    __kind: 'OutboxMessage'
+    chainId: ChainId
+    channelId: bigint
+    nonce: bigint
+}
+
+/**
+ * Emits when a message response is available for Outbox message.
+ */
+export interface MessengerEvent_OutboxMessageResponse {
+    __kind: 'OutboxMessageResponse'
+    /**
+     * Destination chain ID.
+     */
+    chainId: ChainId
+    /**
+     * Channel Is
+     */
+    channelId: bigint
+    nonce: bigint
+}
+
+/**
+ * Emits outbox message result.
+ */
+export interface MessengerEvent_OutboxMessageResult {
+    __kind: 'OutboxMessageResult'
+    chainId: ChainId
+    channelId: bigint
+    nonce: bigint
+    result: OutboxMessageResult
+}
+
+/**
+ * Emits when a new inbox message is validated and added to Inbox.
+ */
+export interface MessengerEvent_InboxMessage {
+    __kind: 'InboxMessage'
+    chainId: ChainId
+    channelId: bigint
+    nonce: bigint
+}
+
+/**
+ * Emits when a message response is available for Inbox message.
+ */
+export interface MessengerEvent_InboxMessageResponse {
+    __kind: 'InboxMessageResponse'
+    /**
+     * Destination chain ID.
+     */
+    chainId: ChainId
+    /**
+     * Channel Is
+     */
+    channelId: bigint
+    nonce: bigint
+}
+
+/**
+ * Events emitted by pallet-transporter.
+ */
+export type TransporterEvent = TransporterEvent_OutgoingTransferInitiated | TransporterEvent_OutgoingTransferFailed | TransporterEvent_OutgoingTransferSuccessful | TransporterEvent_IncomingTransferSuccessful
+
+/**
+ * Emits when there is a new outgoing transfer.
+ */
+export interface TransporterEvent_OutgoingTransferInitiated {
+    __kind: 'OutgoingTransferInitiated'
+    /**
+     * Destination chain the transfer is bound to.
+     */
+    chainId: ChainId
+    /**
+     * Id of the transfer.
+     */
+    messageId: [bigint, bigint]
+}
+
+/**
+ * Emits when a given outgoing transfer was failed on dst_chain.
+ */
+export interface TransporterEvent_OutgoingTransferFailed {
+    __kind: 'OutgoingTransferFailed'
+    /**
+     * Destination chain the transfer is bound to.
+     */
+    chainId: ChainId
+    /**
+     * Id of the transfer.
+     */
+    messageId: [bigint, bigint]
+    /**
+     * Error from dst_chain endpoint.
+     */
+    err: DispatchError
+}
+
+/**
+ * Emits when a given outgoing transfer was successful.
+ */
+export interface TransporterEvent_OutgoingTransferSuccessful {
+    __kind: 'OutgoingTransferSuccessful'
+    /**
+     * Destination chain the transfer is bound to.
+     */
+    chainId: ChainId
+    /**
+     * Id of the transfer.
+     */
+    messageId: [bigint, bigint]
+}
+
+/**
+ * Emits when a given incoming transfer was successfully processed.
+ */
+export interface TransporterEvent_IncomingTransferSuccessful {
+    __kind: 'IncomingTransferSuccessful'
+    /**
+     * Source chain the transfer is coming from.
+     */
+    chainId: ChainId
+    /**
+     * Id of the transfer.
+     */
+    messageId: [bigint, bigint]
+}
+
+/**
  * The `Event` enum of this pallet
  */
 export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
 
 /**
- * A sudo just took place. \[result\]
+ * A sudo call just took place.
  */
 export interface SudoEvent_Sudid {
     __kind: 'Sudid'
+    /**
+     * The result of the call made by the sudo user.
+     */
     sudoResult: Type_47
 }
 
 /**
- * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+ * The sudo key has been updated.
  */
 export interface SudoEvent_KeyChanged {
     __kind: 'KeyChanged'
+    /**
+     * The old sudo key if one was previously set.
+     */
     oldSudoer: (Uint8Array | undefined)
 }
 
 /**
- * A sudo just took place. \[result\]
+ * A [sudo_as](Pallet::sudo_as) call just took place.
  */
 export interface SudoEvent_SudoAsDone {
     __kind: 'SudoAsDone'
+    /**
+     * The result of the call made by the sudo user.
+     */
     sudoResult: Type_47
 }
 
@@ -2153,8 +2507,16 @@ export interface ProofOfElection {
     operatorId: bigint
 }
 
-export interface Witness {
-    inner: Uint8Array
+export type ExtrinsicDigest = ExtrinsicDigest_Data | ExtrinsicDigest_Hash
+
+export interface ExtrinsicDigest_Data {
+    __kind: 'Data'
+    value: Uint8Array
+}
+
+export interface ExtrinsicDigest_Hash {
+    __kind: 'Hash'
+    value: Uint8Array
 }
 
 export type StakingHoldIdentifier = StakingHoldIdentifier_PendingDeposit | StakingHoldIdentifier_Staked | StakingHoldIdentifier_PendingUnlock
@@ -2174,23 +2536,40 @@ export interface StakingHoldIdentifier_PendingUnlock {
     value: bigint
 }
 
-export type InvalidBundleType = InvalidBundleType_UndecodableTx | InvalidBundleType_OutOfRangeTx | InvalidBundleType_IllegalTx | InvalidBundleType_InvalidReceipt
+export type BundleValidity = BundleValidity_Invalid | BundleValidity_Valid
 
-export interface InvalidBundleType_UndecodableTx {
-    __kind: 'UndecodableTx'
+export interface BundleValidity_Invalid {
+    __kind: 'Invalid'
+    value: InvalidBundleType
 }
 
-export interface InvalidBundleType_OutOfRangeTx {
-    __kind: 'OutOfRangeTx'
+export interface BundleValidity_Valid {
+    __kind: 'Valid'
+    value: Uint8Array
 }
 
-export interface InvalidBundleType_IllegalTx {
-    __kind: 'IllegalTx'
+export type RequestResponse = RequestResponse_Request | RequestResponse_Response
+
+export interface RequestResponse_Request {
+    __kind: 'Request'
+    value: ProtocolMessageRequest
 }
 
-export interface InvalidBundleType_InvalidReceipt {
-    __kind: 'InvalidReceipt'
-    value: InvalidReceipt
+export interface RequestResponse_Response {
+    __kind: 'Response'
+    value: Type_47
+}
+
+export type Type_282 = Type_282_Request | Type_282_Response
+
+export interface Type_282_Request {
+    __kind: 'Request'
+    value: EndpointRequest
+}
+
+export interface Type_282_Response {
+    __kind: 'Response'
+    value: Result<Uint8Array, DispatchError>
 }
 
 export interface VrfSignature {
@@ -2198,8 +2577,19 @@ export interface VrfSignature {
     proof: Uint8Array
 }
 
-export type InvalidReceipt = InvalidReceipt_InvalidBundles
+export type ProtocolMessageRequest = ProtocolMessageRequest_ChannelOpen | ProtocolMessageRequest_ChannelClose
 
-export interface InvalidReceipt_InvalidBundles {
-    __kind: 'InvalidBundles'
+export interface ProtocolMessageRequest_ChannelOpen {
+    __kind: 'ChannelOpen'
+    value: InitiateChannelParams
+}
+
+export interface ProtocolMessageRequest_ChannelClose {
+    __kind: 'ChannelClose'
+}
+
+export interface EndpointRequest {
+    srcEndpoint: Endpoint
+    dstEndpoint: Endpoint
+    payload: Uint8Array
 }
