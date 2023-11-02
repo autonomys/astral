@@ -38,17 +38,6 @@ export interface ExitReason_Fatal {
     value: ExitFatal
 }
 
-export type Type_32 = Type_32_Ok | Type_32_Err
-
-export interface Type_32_Ok {
-    __kind: 'Ok'
-}
-
-export interface Type_32_Err {
-    __kind: 'Err'
-    value: DispatchError
-}
-
 export type ChainId = ChainId_Consensus | ChainId_Domain
 
 export interface ChainId_Consensus {
@@ -67,6 +56,17 @@ export interface OutboxMessageResult_Ok {
 }
 
 export interface OutboxMessageResult_Err {
+    __kind: 'Err'
+    value: DispatchError
+}
+
+export type Type_59 = Type_59_Ok | Type_59_Err
+
+export interface Type_59_Ok {
+    __kind: 'Ok'
+}
+
+export interface Type_59_Err {
     __kind: 'Err'
     value: DispatchError
 }
@@ -156,6 +156,20 @@ export interface TransactionV2_EIP1559 {
     value: EIP1559Transaction
 }
 
+export interface InitiateChannelParams {
+    maxOutgoingMessages: number
+    feeModel: FeeModel
+}
+
+export interface CrossDomainMessage {
+    srcChainId: ChainId
+    dstChainId: ChainId
+    channelId: bigint
+    nonce: bigint
+    proof: Proof
+    weightTag: MessageWeightTag
+}
+
 export type Call = Call_System | Call_Timestamp | Call_ExecutivePallet | Call_Balances | Call_Messenger | Call_Transporter | Call_Ethereum | Call_EVM | Call_BaseFee | Call_Sudo
 
 export interface Call_System {
@@ -211,20 +225,6 @@ export interface Call_Sudo {
 export interface Weight {
     refTime: bigint
     proofSize: bigint
-}
-
-export interface InitiateChannelParams {
-    maxOutgoingMessages: number
-    feeModel: FeeModel
-}
-
-export interface CrossDomainMessage {
-    srcChainId: ChainId
-    dstChainId: ChainId
-    channelId: bigint
-    nonce: bigint
-    proof: Proof
-    weightTag: MessageWeightTag
 }
 
 export interface Location {
@@ -292,6 +292,11 @@ export interface TransactionStatus {
     logsBloom: Uint8Array
 }
 
+export interface BlockMessages {
+    outbox: [ChainId, [bigint, bigint], MessageWeightTag][]
+    inboxResponses: [ChainId, [bigint, bigint], MessageWeightTag][]
+}
+
 export interface Channel {
     channelId: bigint
     state: ChannelState
@@ -309,16 +314,6 @@ export interface Message {
     nonce: bigint
     payload: VersionedPayload
     lastDeliveredMessageResponseNonce: (bigint | undefined)
-}
-
-export interface RelayerMessages {
-    outbox: [ChainId, [bigint, bigint], MessageWeightTag][]
-    inboxResponses: [ChainId, [bigint, bigint], MessageWeightTag][]
-}
-
-export interface RelayerInfo {
-    owner: Uint8Array
-    depositReserved: bigint
 }
 
 export interface AccountInfo {
@@ -649,6 +644,41 @@ export interface EIP1559Transaction {
     s: Uint8Array
 }
 
+export interface FeeModel {
+    relayFee: bigint
+}
+
+export interface Proof {
+    consensusChainBlockInfo: BlockInfo
+    consensusChainStateRoot: Uint8Array
+    domainProof: ([BlockInfo, StorageProof] | undefined)
+    messageProof: StorageProof
+}
+
+export type MessageWeightTag = MessageWeightTag_ProtocolChannelOpen | MessageWeightTag_ProtocolChannelClose | MessageWeightTag_EndpointRequest | MessageWeightTag_EndpointResponse | MessageWeightTag_None
+
+export interface MessageWeightTag_ProtocolChannelOpen {
+    __kind: 'ProtocolChannelOpen'
+}
+
+export interface MessageWeightTag_ProtocolChannelClose {
+    __kind: 'ProtocolChannelClose'
+}
+
+export interface MessageWeightTag_EndpointRequest {
+    __kind: 'EndpointRequest'
+    value: Endpoint
+}
+
+export interface MessageWeightTag_EndpointResponse {
+    __kind: 'EndpointResponse'
+    value: Endpoint
+}
+
+export interface MessageWeightTag_None {
+    __kind: 'None'
+}
+
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
@@ -735,21 +765,20 @@ export interface TimestampCall_set {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type ExecutivePalletCall = ExecutivePalletCall_sudo_unchecked_weight_unsigned
+export type ExecutivePalletCall = ExecutivePalletCall_set_code
 
 /**
- * See [`Pallet::sudo_unchecked_weight_unsigned`].
+ * See [`Pallet::set_code`].
  */
-export interface ExecutivePalletCall_sudo_unchecked_weight_unsigned {
-    __kind: 'sudo_unchecked_weight_unsigned'
-    call: Call
-    weight: Weight
+export interface ExecutivePalletCall_set_code {
+    __kind: 'set_code'
+    code: Uint8Array
 }
 
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type BalancesCall = BalancesCall_transfer_allow_death | BalancesCall_set_balance_deprecated | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve | BalancesCall_upgrade_accounts | BalancesCall_transfer | BalancesCall_force_set_balance
+export type BalancesCall = BalancesCall_transfer_allow_death | BalancesCall_force_transfer | BalancesCall_transfer_keep_alive | BalancesCall_transfer_all | BalancesCall_force_unreserve | BalancesCall_upgrade_accounts | BalancesCall_force_set_balance
 
 /**
  * See [`Pallet::transfer_allow_death`].
@@ -758,16 +787,6 @@ export interface BalancesCall_transfer_allow_death {
     __kind: 'transfer_allow_death'
     dest: Uint8Array
     value: bigint
-}
-
-/**
- * See [`Pallet::set_balance_deprecated`].
- */
-export interface BalancesCall_set_balance_deprecated {
-    __kind: 'set_balance_deprecated'
-    who: Uint8Array
-    newFree: bigint
-    oldReserved: bigint
 }
 
 /**
@@ -816,15 +835,6 @@ export interface BalancesCall_upgrade_accounts {
 }
 
 /**
- * See [`Pallet::transfer`].
- */
-export interface BalancesCall_transfer {
-    __kind: 'transfer'
-    dest: Uint8Array
-    value: bigint
-}
-
-/**
  * See [`Pallet::force_set_balance`].
  */
 export interface BalancesCall_force_set_balance {
@@ -836,7 +846,7 @@ export interface BalancesCall_force_set_balance {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type MessengerCall = MessengerCall_initiate_channel | MessengerCall_close_channel | MessengerCall_relay_message | MessengerCall_relay_message_response | MessengerCall_join_relayer_set | MessengerCall_exit_relayer_set
+export type MessengerCall = MessengerCall_initiate_channel | MessengerCall_close_channel | MessengerCall_relay_message | MessengerCall_relay_message_response
 
 /**
  * See [`Pallet::initiate_channel`].
@@ -870,22 +880,6 @@ export interface MessengerCall_relay_message {
 export interface MessengerCall_relay_message_response {
     __kind: 'relay_message_response'
     msg: CrossDomainMessage
-}
-
-/**
- * See [`Pallet::join_relayer_set`].
- */
-export interface MessengerCall_join_relayer_set {
-    __kind: 'join_relayer_set'
-    relayerId: Uint8Array
-}
-
-/**
- * See [`Pallet::exit_relayer_set`].
- */
-export interface MessengerCall_exit_relayer_set {
-    __kind: 'exit_relayer_set'
-    relayerId: Uint8Array
 }
 
 /**
@@ -1034,42 +1028,6 @@ export interface SudoCall_sudo_as {
     __kind: 'sudo_as'
     who: Uint8Array
     call: Call
-}
-
-export interface FeeModel {
-    outboxFee: ExecutionFee
-    inboxFee: ExecutionFee
-}
-
-export interface Proof {
-    consensusChainBlockInfo: BlockInfo
-    consensusChainStateRoot: Uint8Array
-    domainProof: ([BlockInfo, StorageProof] | undefined)
-    messageProof: StorageProof
-}
-
-export type MessageWeightTag = MessageWeightTag_ProtocolChannelOpen | MessageWeightTag_ProtocolChannelClose | MessageWeightTag_EndpointRequest | MessageWeightTag_EndpointResponse | MessageWeightTag_None
-
-export interface MessageWeightTag_ProtocolChannelOpen {
-    __kind: 'ProtocolChannelOpen'
-}
-
-export interface MessageWeightTag_ProtocolChannelClose {
-    __kind: 'ProtocolChannelClose'
-}
-
-export interface MessageWeightTag_EndpointRequest {
-    __kind: 'EndpointRequest'
-    value: Endpoint
-}
-
-export interface MessageWeightTag_EndpointResponse {
-    __kind: 'EndpointResponse'
-    value: Endpoint
-}
-
-export interface MessageWeightTag_None {
-    __kind: 'None'
 }
 
 export type MultiAccountId = MultiAccountId_AccountId32 | MultiAccountId_AccountId20 | MultiAccountId_Raw
@@ -1261,11 +1219,6 @@ export interface AccessListItem {
     storageKeys: Uint8Array[]
 }
 
-export interface ExecutionFee {
-    relayerPoolFee: bigint
-    computeFee: bigint
-}
-
 export interface BlockInfo {
     blockNumber: number
     blockHash: Uint8Array
@@ -1291,7 +1244,7 @@ export interface Payload_Protocol {
 
 export interface Payload_Endpoint {
     __kind: 'Endpoint'
-    value: Type_146
+    value: Type_116
 }
 
 /**
@@ -1351,15 +1304,7 @@ export interface SystemEvent_Remarked {
 /**
  * The `Event` enum of this pallet
  */
-export type ExecutivePalletEvent = ExecutivePalletEvent_Sudid
-
-/**
- * A sudo just took place.
- */
-export interface ExecutivePalletEvent_Sudid {
-    __kind: 'Sudid'
-    sudoResult: Type_32
-}
+export type ExecutivePalletEvent = never
 
 /**
  * The `Event` enum of this pallet
@@ -1576,7 +1521,7 @@ export interface TransactionPaymentEvent_TransactionFeePaid {
 /**
  * `pallet-messenger` events
  */
-export type MessengerEvent = MessengerEvent_ChannelInitiated | MessengerEvent_ChannelClosed | MessengerEvent_ChannelOpen | MessengerEvent_OutboxMessage | MessengerEvent_OutboxMessageResponse | MessengerEvent_OutboxMessageResult | MessengerEvent_InboxMessage | MessengerEvent_InboxMessageResponse | MessengerEvent_RelayerJoined | MessengerEvent_RelayerExited
+export type MessengerEvent = MessengerEvent_ChannelInitiated | MessengerEvent_ChannelClosed | MessengerEvent_ChannelOpen | MessengerEvent_OutboxMessage | MessengerEvent_OutboxMessageResponse | MessengerEvent_OutboxMessageResult | MessengerEvent_InboxMessage | MessengerEvent_InboxMessageResponse
 
 /**
  * Emits when a channel between two chains is initiated.
@@ -1631,7 +1576,6 @@ export interface MessengerEvent_OutboxMessage {
     chainId: ChainId
     channelId: bigint
     nonce: bigint
-    relayerId: Uint8Array
 }
 
 /**
@@ -1685,37 +1629,6 @@ export interface MessengerEvent_InboxMessageResponse {
      */
     channelId: bigint
     nonce: bigint
-    relayerId: Uint8Array
-}
-
-/**
- * Emits when a relayer successfully joins the relayer set.
- */
-export interface MessengerEvent_RelayerJoined {
-    __kind: 'RelayerJoined'
-    /**
-     * Owner who controls the relayer.
-     */
-    owner: Uint8Array
-    /**
-     * Relayer address to which rewards are paid.
-     */
-    relayerId: Uint8Array
-}
-
-/**
- * Emits when a relayer exists the relayer set.
- */
-export interface MessengerEvent_RelayerExited {
-    __kind: 'RelayerExited'
-    /**
-     * Owner who controls the relayer.
-     */
-    owner: Uint8Array
-    /**
-     * Relayer address which exited the set.
-     */
-    relayerId: Uint8Array
 }
 
 /**
@@ -1874,27 +1787,36 @@ export interface BaseFeeEvent_NewElasticity {
 export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
 
 /**
- * A sudo just took place. \[result\]
+ * A sudo call just took place.
  */
 export interface SudoEvent_Sudid {
     __kind: 'Sudid'
-    sudoResult: Type_32
+    /**
+     * The result of the call made by the sudo user.
+     */
+    sudoResult: Type_59
 }
 
 /**
- * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+ * The sudo key has been updated.
  */
 export interface SudoEvent_KeyChanged {
     __kind: 'KeyChanged'
+    /**
+     * The old sudo key if one was previously set.
+     */
     oldSudoer: (Uint8Array | undefined)
 }
 
 /**
- * A sudo just took place. \[result\]
+ * A [sudo_as](Pallet::sudo_as) call just took place.
  */
 export interface SudoEvent_SudoAsDone {
     __kind: 'SudoAsDone'
-    sudoResult: Type_32
+    /**
+     * The result of the call made by the sudo user.
+     */
+    sudoResult: Type_59
 }
 
 export interface WeightsPerClass {
@@ -1913,17 +1835,17 @@ export interface RequestResponse_Request {
 
 export interface RequestResponse_Response {
     __kind: 'Response'
-    value: Type_32
+    value: Type_59
 }
 
-export type Type_146 = Type_146_Request | Type_146_Response
+export type Type_116 = Type_116_Request | Type_116_Response
 
-export interface Type_146_Request {
+export interface Type_116_Request {
     __kind: 'Request'
     value: EndpointRequest
 }
 
-export interface Type_146_Response {
+export interface Type_116_Response {
     __kind: 'Response'
     value: Result<Uint8Array, DispatchError>
 }

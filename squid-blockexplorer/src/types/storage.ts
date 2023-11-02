@@ -722,6 +722,41 @@ export interface ExecutivePalletIntermediateRootsStorageV0 {
     get(): Promise<Uint8Array[]>
 }
 
+export class MessengerBlockMessagesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Messenger'
+    }
+
+    protected getName() {
+        return 'BlockMessages'
+    }
+
+    /**
+     *  A temporary storage to store all the messages to be relayed in this block.
+     *  Will be cleared on the initialization on next block.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '63bbd4671d536cad499bbf5b77fcc5028b66dc73d7982d46ef777d4f70d3a702'
+    }
+
+    /**
+     *  A temporary storage to store all the messages to be relayed in this block.
+     *  Will be cleared on the initialization on next block.
+     */
+    get asV0(): MessengerBlockMessagesStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  A temporary storage to store all the messages to be relayed in this block.
+ *  Will be cleared on the initialization on next block.
+ */
+export interface MessengerBlockMessagesStorageV0 {
+    get(): Promise<(v0.BlockMessages | undefined)>
+}
+
 export class MessengerChannelsStorage extends StorageBase {
     protected getPrefix() {
         return 'Messenger'
@@ -736,7 +771,7 @@ export class MessengerChannelsStorage extends StorageBase {
      *  Key points to the foreign chain wrt own chain's storage name space
      */
     get isV0(): boolean {
-        return this.getTypeHash() === '33ad04cb579bde5a0a5c811ffe905c22e724452bf0105a50530ac8dd5d4e63af'
+        return this.getTypeHash() === 'bed44cf9d2a57ba3f8263a0b909e1ef8e843a47437dba82afb0cf386d78fcc49'
     }
 
     /**
@@ -849,7 +884,7 @@ export class MessengerInboxStorage extends StorageBase {
      *  and `relay_message`.
      */
     get isV0(): boolean {
-        return this.getTypeHash() === 'd931803a361c58e4d749147335f10ec3965eb2a922352db0f96eabd68e736fb2'
+        return this.getTypeHash() === '26152400928c991381b49dee1d3fb3dcb8a40931dcc5dc773de97a4ce03decc4'
     }
 
     /**
@@ -870,6 +905,54 @@ export interface MessengerInboxStorageV0 {
     get(): Promise<(v0.Message | undefined)>
 }
 
+export class MessengerInboxFeeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Messenger'
+    }
+
+    protected getName() {
+        return 'InboxFee'
+    }
+
+    /**
+     *  A temporary storage of fees for executing an inbox message.
+     *  The storage is cleared when the acknowledgement of inbox response is received
+     *  from the src_chain.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '7618137b0f2ebf14fc33ad64beab1e7e1456823b7d25b8f722497bc49dd3f16b'
+    }
+
+    /**
+     *  A temporary storage of fees for executing an inbox message.
+     *  The storage is cleared when the acknowledgement of inbox response is received
+     *  from the src_chain.
+     */
+    get asV0(): MessengerInboxFeeStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  A temporary storage of fees for executing an inbox message.
+ *  The storage is cleared when the acknowledgement of inbox response is received
+ *  from the src_chain.
+ */
+export interface MessengerInboxFeeStorageV0 {
+    get(key: [v0.ChainId, [bigint, bigint]]): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: [v0.ChainId, [bigint, bigint]][]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<[v0.ChainId, [bigint, bigint]][]>
+    getKeys(key: [v0.ChainId, [bigint, bigint]]): Promise<[v0.ChainId, [bigint, bigint]][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[v0.ChainId, [bigint, bigint]][]>
+    getKeysPaged(pageSize: number, key: [v0.ChainId, [bigint, bigint]]): AsyncIterable<[v0.ChainId, [bigint, bigint]][]>
+    getPairs(): Promise<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+    getPairs(key: [v0.ChainId, [bigint, bigint]]): Promise<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+    getPairsPaged(pageSize: number, key: [v0.ChainId, [bigint, bigint]]): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+}
+
 export class MessengerInboxResponsesStorage extends StorageBase {
     protected getPrefix() {
         return 'Messenger'
@@ -884,7 +967,7 @@ export class MessengerInboxResponsesStorage extends StorageBase {
      *  Used by the dst_chains to verify the message response.
      */
     get isV0(): boolean {
-        return this.getTypeHash() === '09f99765cd2f79eeb769989d72f75fe966e884a5ef43f555ff0e11ce37b8e316'
+        return this.getTypeHash() === '8bc659381531be7140b2f3b0efd367b5746efdbb1fce43287d7c2fc23a6a685e'
     }
 
     /**
@@ -957,29 +1040,6 @@ export interface MessengerNextChannelIdStorageV0 {
     getPairsPaged(pageSize: number, key: v0.ChainId): AsyncIterable<[k: v0.ChainId, v: bigint][]>
 }
 
-export class MessengerNextRelayerIdxStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Messenger'
-    }
-
-    protected getName() {
-        return 'NextRelayerIdx'
-    }
-
-    get isV0(): boolean {
-        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
-    }
-
-    get asV0(): MessengerNextRelayerIdxStorageV0 {
-        assert(this.isV0)
-        return this as any
-    }
-}
-
-export interface MessengerNextRelayerIdxStorageV0 {
-    get(): Promise<number>
-}
-
 export class MessengerOutboxStorage extends StorageBase {
     protected getPrefix() {
         return 'Messenger'
@@ -994,7 +1054,7 @@ export class MessengerOutboxStorage extends StorageBase {
      *  Messages are processed in the outbox nonce order of chain's channel.
      */
     get isV0(): boolean {
-        return this.getTypeHash() === '09f99765cd2f79eeb769989d72f75fe966e884a5ef43f555ff0e11ce37b8e316'
+        return this.getTypeHash() === '8bc659381531be7140b2f3b0efd367b5746efdbb1fce43287d7c2fc23a6a685e'
     }
 
     /**
@@ -1025,6 +1085,51 @@ export interface MessengerOutboxStorageV0 {
     getPairsPaged(pageSize: number, key: [v0.ChainId, bigint, bigint]): AsyncIterable<[k: [v0.ChainId, bigint, bigint], v: v0.Message][]>
 }
 
+export class MessengerOutboxFeeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Messenger'
+    }
+
+    protected getName() {
+        return 'OutboxFee'
+    }
+
+    /**
+     *  A temporary storage of fees for executing an outbox message and its response from dst_chain.
+     *  The storage is cleared when src_chain receives the response from dst_chain.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '7618137b0f2ebf14fc33ad64beab1e7e1456823b7d25b8f722497bc49dd3f16b'
+    }
+
+    /**
+     *  A temporary storage of fees for executing an outbox message and its response from dst_chain.
+     *  The storage is cleared when src_chain receives the response from dst_chain.
+     */
+    get asV0(): MessengerOutboxFeeStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  A temporary storage of fees for executing an outbox message and its response from dst_chain.
+ *  The storage is cleared when src_chain receives the response from dst_chain.
+ */
+export interface MessengerOutboxFeeStorageV0 {
+    get(key: [v0.ChainId, [bigint, bigint]]): Promise<(bigint | undefined)>
+    getAll(): Promise<bigint[]>
+    getMany(keys: [v0.ChainId, [bigint, bigint]][]): Promise<(bigint | undefined)[]>
+    getKeys(): Promise<[v0.ChainId, [bigint, bigint]][]>
+    getKeys(key: [v0.ChainId, [bigint, bigint]]): Promise<[v0.ChainId, [bigint, bigint]][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[v0.ChainId, [bigint, bigint]][]>
+    getKeysPaged(pageSize: number, key: [v0.ChainId, [bigint, bigint]]): AsyncIterable<[v0.ChainId, [bigint, bigint]][]>
+    getPairs(): Promise<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+    getPairs(key: [v0.ChainId, [bigint, bigint]]): Promise<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+    getPairsPaged(pageSize: number, key: [v0.ChainId, [bigint, bigint]]): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: bigint][]>
+}
+
 export class MessengerOutboxResponsesStorage extends StorageBase {
     protected getPrefix() {
         return 'Messenger'
@@ -1039,7 +1144,7 @@ export class MessengerOutboxResponsesStorage extends StorageBase {
      *  and `relay_message_response`.
      */
     get isV0(): boolean {
-        return this.getTypeHash() === 'd931803a361c58e4d749147335f10ec3965eb2a922352db0f96eabd68e736fb2'
+        return this.getTypeHash() === '26152400928c991381b49dee1d3fb3dcb8a40931dcc5dc773de97a4ce03decc4'
     }
 
     /**
@@ -1060,93 +1165,45 @@ export interface MessengerOutboxResponsesStorageV0 {
     get(): Promise<(v0.Message | undefined)>
 }
 
-export class MessengerRelayerMessagesStorage extends StorageBase {
+export class OperatorRewardsBlockRewardsStorage extends StorageBase {
     protected getPrefix() {
-        return 'Messenger'
+        return 'OperatorRewards'
     }
 
     protected getName() {
-        return 'RelayerMessages'
+        return 'BlockRewards'
     }
 
+    /**
+     *  The accumulated rewards of the current block
+     * 
+     *  Currently, the only source of rewards is the transaction fees, in the future it
+     *  will include the XDM reward.
+     */
     get isV0(): boolean {
-        return this.getTypeHash() === 'be43fc5410915ba4b35ece9348cbcbc94cac289b54305bf091726f1272ce47e5'
+        return this.getTypeHash() === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
     }
 
-    get asV0(): MessengerRelayerMessagesStorageV0 {
+    /**
+     *  The accumulated rewards of the current block
+     * 
+     *  Currently, the only source of rewards is the transaction fees, in the future it
+     *  will include the XDM reward.
+     */
+    get asV0(): OperatorRewardsBlockRewardsStorageV0 {
         assert(this.isV0)
         return this as any
     }
 }
 
-export interface MessengerRelayerMessagesStorageV0 {
-    get(key: Uint8Array): Promise<(v0.RelayerMessages | undefined)>
-    getAll(): Promise<v0.RelayerMessages[]>
-    getMany(keys: Uint8Array[]): Promise<(v0.RelayerMessages | undefined)[]>
-    getKeys(): Promise<Uint8Array[]>
-    getKeys(key: Uint8Array): Promise<Uint8Array[]>
-    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
-    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v0.RelayerMessages][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v0.RelayerMessages][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v0.RelayerMessages][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v0.RelayerMessages][]>
-}
-
-export class MessengerRelayersStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Messenger'
-    }
-
-    protected getName() {
-        return 'Relayers'
-    }
-
-    get isV0(): boolean {
-        return this.getTypeHash() === 'd14508def9da76532021b53d553e9048fd079e2e735d2393e6d531e6d1fd29ca'
-    }
-
-    get asV0(): MessengerRelayersStorageV0 {
-        assert(this.isV0)
-        return this as any
-    }
-}
-
-export interface MessengerRelayersStorageV0 {
-    get(): Promise<Uint8Array[]>
-}
-
-export class MessengerRelayersInfoStorage extends StorageBase {
-    protected getPrefix() {
-        return 'Messenger'
-    }
-
-    protected getName() {
-        return 'RelayersInfo'
-    }
-
-    get isV0(): boolean {
-        return this.getTypeHash() === '5f3525925a9eeed0c167bb6aab33cac21608ad2176636d0107e0b90c551da99e'
-    }
-
-    get asV0(): MessengerRelayersInfoStorageV0 {
-        assert(this.isV0)
-        return this as any
-    }
-}
-
-export interface MessengerRelayersInfoStorageV0 {
-    get(key: Uint8Array): Promise<(v0.RelayerInfo | undefined)>
-    getAll(): Promise<v0.RelayerInfo[]>
-    getMany(keys: Uint8Array[]): Promise<(v0.RelayerInfo | undefined)[]>
-    getKeys(): Promise<Uint8Array[]>
-    getKeys(key: Uint8Array): Promise<Uint8Array[]>
-    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
-    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
-    getPairs(): Promise<[k: Uint8Array, v: v0.RelayerInfo][]>
-    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v0.RelayerInfo][]>
-    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v0.RelayerInfo][]>
-    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v0.RelayerInfo][]>
+/**
+ *  The accumulated rewards of the current block
+ * 
+ *  Currently, the only source of rewards is the transaction fees, in the future it
+ *  will include the XDM reward.
+ */
+export interface OperatorRewardsBlockRewardsStorageV0 {
+    get(): Promise<bigint>
 }
 
 export class SelfDomainIdSelfDomainIdStorage extends StorageBase {
@@ -1159,7 +1216,7 @@ export class SelfDomainIdSelfDomainIdStorage extends StorageBase {
     }
 
     get isV0(): boolean {
-        return this.getTypeHash() === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+        return this.getTypeHash() === 'a926ad48d1a07d1162c5fdb99f3f6cef39c7c5a115a92ff9ccf0357bae4bf2ed'
     }
 
     get asV0(): SelfDomainIdSelfDomainIdStorageV0 {
@@ -1169,7 +1226,7 @@ export class SelfDomainIdSelfDomainIdStorage extends StorageBase {
 }
 
 export interface SelfDomainIdSelfDomainIdStorageV0 {
-    get(): Promise<number>
+    get(): Promise<(number | undefined)>
 }
 
 export class SudoKeyStorage extends StorageBase {
@@ -1433,7 +1490,7 @@ export class SystemEventTopicsStorage extends StorageBase {
      *  allows light-clients to leverage the changes trie storage tracking mechanism and
      *  in case of changes fetch the list of events of interest.
      * 
-     *  The value has the type `(T::BlockNumber, EventIndex)` because if we used only just
+     *  The value has the type `(BlockNumberFor<T>, EventIndex)` because if we used only just
      *  the `EventIndex` then in case if the topic has the same contents on the next block
      *  no notification will be triggered thus the event might be lost.
      */
@@ -1449,7 +1506,7 @@ export class SystemEventTopicsStorage extends StorageBase {
      *  allows light-clients to leverage the changes trie storage tracking mechanism and
      *  in case of changes fetch the list of events of interest.
      * 
-     *  The value has the type `(T::BlockNumber, EventIndex)` because if we used only just
+     *  The value has the type `(BlockNumberFor<T>, EventIndex)` because if we used only just
      *  the `EventIndex` then in case if the topic has the same contents on the next block
      *  no notification will be triggered thus the event might be lost.
      */
@@ -1467,7 +1524,7 @@ export class SystemEventTopicsStorage extends StorageBase {
  *  allows light-clients to leverage the changes trie storage tracking mechanism and
  *  in case of changes fetch the list of events of interest.
  * 
- *  The value has the type `(T::BlockNumber, EventIndex)` because if we used only just
+ *  The value has the type `(BlockNumberFor<T>, EventIndex)` because if we used only just
  *  the `EventIndex` then in case if the topic has the same contents on the next block
  *  no notification will be triggered thus the event might be lost.
  */
@@ -1504,7 +1561,7 @@ export class SystemEventsStorage extends StorageBase {
      *  just in case someone still reads them from within the runtime.
      */
     get isV0(): boolean {
-        return this.getTypeHash() === '2ef7fb273a4067bce2dce5891cb828523c34d5eddeef5deba0fe949dbc29cd27'
+        return this.getTypeHash() === '23624d32723ccf1f66f5a522c53da280cdc0ff4db50ea34f65440327cbd5abca'
     }
 
     /**

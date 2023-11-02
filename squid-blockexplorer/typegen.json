@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://evm.archive.gemini-3f.subspace.network/graphql",
+  "specVersions": "http://localhost:8888/graphql",
   "constants": true,
   "events": true,
   "calls": true,

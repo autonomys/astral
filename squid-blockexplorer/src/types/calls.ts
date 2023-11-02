@@ -89,64 +89,6 @@ export class BalancesForceUnreserveCall {
     }
 }
 
-export class BalancesSetBalanceDeprecatedCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Balances.set_balance_deprecated')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * See [`Pallet::set_balance_deprecated`].
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Balances.set_balance_deprecated') === 'f3b252041566bf9f8a5123ad6f426e3be195e9866b82ab8ea5346211b8f13c54'
-    }
-
-    /**
-     * See [`Pallet::set_balance_deprecated`].
-     */
-    get asV0(): {who: Uint8Array, newFree: bigint, oldReserved: bigint} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class BalancesTransferCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Balances.transfer')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * See [`Pallet::transfer`].
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Balances.transfer') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
-    }
-
-    /**
-     * See [`Pallet::transfer`].
-     */
-    get asV0(): {dest: Uint8Array, value: bigint} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
 export class BalancesTransferAllCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -466,7 +408,7 @@ export class EthereumTransactCall {
     }
 }
 
-export class ExecutivePalletSudoUncheckedWeightUnsignedCall {
+export class ExecutivePalletSetCodeCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -474,22 +416,22 @@ export class ExecutivePalletSudoUncheckedWeightUnsignedCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'ExecutivePallet.sudo_unchecked_weight_unsigned')
+        assert(call.name === 'ExecutivePallet.set_code')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     * See [`Pallet::sudo_unchecked_weight_unsigned`].
+     * See [`Pallet::set_code`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('ExecutivePallet.sudo_unchecked_weight_unsigned') === '6e903fdb9fcdf599ef7a5fbfec3b1e52f51ef7f1287324a9a6088ab5989bc13d'
+        return this._chain.getCallHash('ExecutivePallet.set_code') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
     }
 
     /**
-     * See [`Pallet::sudo_unchecked_weight_unsigned`].
+     * See [`Pallet::set_code`].
      */
-    get asV0(): {call: v0.Call, weight: v0.Weight} {
+    get asV0(): {code: Uint8Array} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -524,35 +466,6 @@ export class MessengerCloseChannelCall {
     }
 }
 
-export class MessengerExitRelayerSetCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Messenger.exit_relayer_set')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * See [`Pallet::exit_relayer_set`].
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Messenger.exit_relayer_set') === 'e17993f2e68388545e1f82a7adf9d4c32d75db317f51550f44ce0bb3a7afd846'
-    }
-
-    /**
-     * See [`Pallet::exit_relayer_set`].
-     */
-    get asV0(): {relayerId: Uint8Array} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
 export class MessengerInitiateChannelCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -570,42 +483,13 @@ export class MessengerInitiateChannelCall {
      * See [`Pallet::initiate_channel`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Messenger.initiate_channel') === '5c88e810ee331695896b59991dbd5e7d042b3828c5d158909a0b9ad1dee0e85b'
+        return this._chain.getCallHash('Messenger.initiate_channel') === 'e7497a443803c2de1a58a5edd070059d577ad163effc9fb720c1b7fc35ee5477'
     }
 
     /**
      * See [`Pallet::initiate_channel`].
      */
     get asV0(): {dstChainId: v0.ChainId, params: v0.InitiateChannelParams} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class MessengerJoinRelayerSetCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Messenger.join_relayer_set')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * See [`Pallet::join_relayer_set`].
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Messenger.join_relayer_set') === 'e17993f2e68388545e1f82a7adf9d4c32d75db317f51550f44ce0bb3a7afd846'
-    }
-
-    /**
-     * See [`Pallet::join_relayer_set`].
-     */
-    get asV0(): {relayerId: Uint8Array} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -715,7 +599,7 @@ export class SudoSudoCall {
      * See [`Pallet::sudo`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === 'f2a011df7ae1286e4526b7bcc8d581212151ed9883facc0453e84babf3ce299e'
+        return this._chain.getCallHash('Sudo.sudo') === '221a37c7b6c4d95e6fba51fde0c0262eea1e800659a87edc6bd72be3fdb68bb0'
     }
 
     /**
@@ -744,7 +628,7 @@ export class SudoSudoAsCall {
      * See [`Pallet::sudo_as`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === 'c89d95e138be4a59915efe401124c03b0122f7323d74e27f166bc52d966c54fd'
+        return this._chain.getCallHash('Sudo.sudo_as') === 'e4ebddaaab727fd1b02cf5b9656cc3e257ada10209efbe6bd841c5ea323f1977'
     }
 
     /**
@@ -773,7 +657,7 @@ export class SudoSudoUncheckedWeightCall {
      * See [`Pallet::sudo_unchecked_weight`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '6e903fdb9fcdf599ef7a5fbfec3b1e52f51ef7f1287324a9a6088ab5989bc13d'
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'e90f3b37ed28bb541ecdf643d3bffc724a7f1faa5c00cc43e6911cf7e344b1d0'
     }
 
     /**
