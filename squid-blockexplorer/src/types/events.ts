@@ -858,35 +858,6 @@ export class EthereumExecutedEvent {
     }
 }
 
-export class ExecutivePalletSudidEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'ExecutivePallet.Sudid')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * A sudo just took place.
-     */
-    get isV0(): boolean {
-        return this._chain.getEventHash('ExecutivePallet.Sudid') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
-    }
-
-    /**
-     * A sudo just took place.
-     */
-    get asV0(): {sudoResult: v0.Type_32} {
-        assert(this.isV0)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
 export class MessengerChannelClosedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1020,13 +991,13 @@ export class MessengerInboxMessageResponseEvent {
      * Emits when a message response is available for Inbox message.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('Messenger.InboxMessageResponse') === 'a9be62ec471d0e6b71e4ff953dc2203ce20da74dfd1b7c8aedf41489b5db0b73'
+        return this._chain.getEventHash('Messenger.InboxMessageResponse') === '0e34089e72443f740fd696858423da231d02658f8476a3a9c7f69667704e429e'
     }
 
     /**
      * Emits when a message response is available for Inbox message.
      */
-    get asV0(): {chainId: v0.ChainId, channelId: bigint, nonce: bigint, relayerId: Uint8Array} {
+    get asV0(): {chainId: v0.ChainId, channelId: bigint, nonce: bigint} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1049,13 +1020,13 @@ export class MessengerOutboxMessageEvent {
      * Emits when a new message is added to the outbox.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('Messenger.OutboxMessage') === 'a9be62ec471d0e6b71e4ff953dc2203ce20da74dfd1b7c8aedf41489b5db0b73'
+        return this._chain.getEventHash('Messenger.OutboxMessage') === '0e34089e72443f740fd696858423da231d02658f8476a3a9c7f69667704e429e'
     }
 
     /**
      * Emits when a new message is added to the outbox.
      */
-    get asV0(): {chainId: v0.ChainId, channelId: bigint, nonce: bigint, relayerId: Uint8Array} {
+    get asV0(): {chainId: v0.ChainId, channelId: bigint, nonce: bigint} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1119,64 +1090,6 @@ export class MessengerOutboxMessageResultEvent {
     }
 }
 
-export class MessengerRelayerExitedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Messenger.RelayerExited')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * Emits when a relayer exists the relayer set.
-     */
-    get isV0(): boolean {
-        return this._chain.getEventHash('Messenger.RelayerExited') === '9c5397893ef536fe8c1d559d36e2abf141cba74ddcae364e153c668161651836'
-    }
-
-    /**
-     * Emits when a relayer exists the relayer set.
-     */
-    get asV0(): {owner: Uint8Array, relayerId: Uint8Array} {
-        assert(this.isV0)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class MessengerRelayerJoinedEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'Messenger.RelayerJoined')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * Emits when a relayer successfully joins the relayer set.
-     */
-    get isV0(): boolean {
-        return this._chain.getEventHash('Messenger.RelayerJoined') === '9c5397893ef536fe8c1d559d36e2abf141cba74ddcae364e153c668161651836'
-    }
-
-    /**
-     * Emits when a relayer successfully joins the relayer set.
-     */
-    get asV0(): {owner: Uint8Array, relayerId: Uint8Array} {
-        assert(this.isV0)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
 export class SudoKeyChangedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -1191,14 +1104,14 @@ export class SudoKeyChangedEvent {
     }
 
     /**
-     * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+     * The sudo key has been updated.
      */
     get isV0(): boolean {
         return this._chain.getEventHash('Sudo.KeyChanged') === 'a51e68bb9e434ef786a7be512f2eaf348c198352ad5831f5d74cdbb9f17ba1a0'
     }
 
     /**
-     * The \[sudoer\] just switched identity; the old key is supplied if one existed.
+     * The sudo key has been updated.
      */
     get asV0(): {oldSudoer: (Uint8Array | undefined)} {
         assert(this.isV0)
@@ -1220,16 +1133,16 @@ export class SudoSudidEvent {
     }
 
     /**
-     * A sudo just took place. \[result\]
+     * A sudo call just took place.
      */
     get isV0(): boolean {
         return this._chain.getEventHash('Sudo.Sudid') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
     }
 
     /**
-     * A sudo just took place. \[result\]
+     * A sudo call just took place.
      */
-    get asV0(): {sudoResult: v0.Type_32} {
+    get asV0(): {sudoResult: v0.Type_59} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1249,16 +1162,16 @@ export class SudoSudoAsDoneEvent {
     }
 
     /**
-     * A sudo just took place. \[result\]
+     * A [sudo_as](Pallet::sudo_as) call just took place.
      */
     get isV0(): boolean {
         return this._chain.getEventHash('Sudo.SudoAsDone') === '3ecb430e21c76eb720064ac2294a31cf70178245416aa72891f2973dfab55b73'
     }
 
     /**
-     * A sudo just took place. \[result\]
+     * A [sudo_as](Pallet::sudo_as) call just took place.
      */
-    get asV0(): {sudoResult: v0.Type_32} {
+    get asV0(): {sudoResult: v0.Type_59} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
