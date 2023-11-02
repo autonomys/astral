@@ -108,7 +108,7 @@ export function solutionRangeToSectors(solutionRange: bigint): bigint {
   const RECORD_NUM_CHUNKS = 32768n;
   const RECORD_NUM_S_BUCKETS = 65536n;
 
-const sectors = MAX_U64
+  const sectors = MAX_U64
       / SLOT_PROBABILITY[1] * SLOT_PROBABILITY[0]
       / (MAX_PIECES_IN_SECTOR * RECORD_NUM_CHUNKS / RECORD_NUM_S_BUCKETS);
 
