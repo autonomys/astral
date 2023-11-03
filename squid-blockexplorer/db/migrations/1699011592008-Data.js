@@ -1,5 +1,5 @@
-module.exports = class Data1698934305411 {
-    name = 'Data1698934305411'
+module.exports = class Data1699011592008 {
+    name = 'Data1699011592008'
 
     async up(db) {
         await db.query(`CREATE TABLE "call" ("id" character varying NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "success" boolean NOT NULL, "args" jsonb, "error" jsonb, "signer" text, "pos" integer, "block_id" character varying, "extrinsic_id" character varying, "parent_id" character varying, CONSTRAINT "PK_2098af0169792a34f9cfdd39c47" PRIMARY KEY ("id"))`)
@@ -26,6 +26,10 @@ module.exports = class Data1698934305411 {
         await db.query(`CREATE INDEX "IDX_6e232918078798b1fade21dcf8" ON "extrinsic" ("timestamp") `)
         await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "free" numeric, "reserved" numeric, "total" numeric, "updated_at" numeric, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_3756b99a2c20a91a19196cbc11" ON "account" ("total") `)
+        await db.query(`CREATE TABLE "extrinsic_module_name" ("id" character varying NOT NULL, "name" text NOT NULL, CONSTRAINT "PK_e3d3a5a01f50bf01655cf4f30eb" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_bf23a0cce635d8eba9918d0339" ON "extrinsic_module_name" ("name") `)
+        await db.query(`CREATE TABLE "event_module_name" ("id" character varying NOT NULL, "name" text NOT NULL, CONSTRAINT "PK_07f4296e4cf56dce19efa3be07c" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_ec4fc7a578894139f5bbdfbb33" ON "event_module_name" ("name") `)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_bd3f11fd4110d60ac8b96cd62f3" FOREIGN KEY ("block_id") REFERENCES "block"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_dde30e4f2c6a80f9236bfdf2590" FOREIGN KEY ("extrinsic_id") REFERENCES "extrinsic"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "call" ADD CONSTRAINT "FK_11c1e76d5be8f04c472c4a05b95" FOREIGN KEY ("parent_id") REFERENCES "call"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -66,6 +70,10 @@ module.exports = class Data1698934305411 {
         await db.query(`DROP INDEX "public"."IDX_6e232918078798b1fade21dcf8"`)
         await db.query(`DROP TABLE "account"`)
         await db.query(`DROP INDEX "public"."IDX_3756b99a2c20a91a19196cbc11"`)
+        await db.query(`DROP TABLE "extrinsic_module_name"`)
+        await db.query(`DROP INDEX "public"."IDX_bf23a0cce635d8eba9918d0339"`)
+        await db.query(`DROP TABLE "event_module_name"`)
+        await db.query(`DROP INDEX "public"."IDX_ec4fc7a578894139f5bbdfbb33"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_bd3f11fd4110d60ac8b96cd62f3"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_dde30e4f2c6a80f9236bfdf2590"`)
         await db.query(`ALTER TABLE "call" DROP CONSTRAINT "FK_11c1e76d5be8f04c472c4a05b95"`)
