@@ -4,7 +4,6 @@ import { RetryLink } from '@apollo/client/link/retry'
 
 // chains
 import chains from 'layout/config/chains.json'
-import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
 
 export type Chain = {
   title: string
