@@ -1,4 +1,4 @@
-import { FC, createContext, ReactNode } from 'react'
+import { FC, createContext, ReactNode, useState } from 'react'
 import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 
@@ -31,7 +31,7 @@ type Props = {
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useSafeLocalStorage('selected-chain', chains[0])
+  const [selectedChain, setSelectedChain] = useState(chains[0])
 
   const client = new ApolloClient({
     link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
