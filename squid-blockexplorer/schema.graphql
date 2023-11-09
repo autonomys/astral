@@ -37,6 +37,11 @@ type Block @entity {
   author: Account
 }
 
+type ExtrinsicModuleName @entity{
+  id: ID! @index
+  name: String! @index
+}
+
 type Extrinsic @entity {
   id: ID! @index
   hash: String!
@@ -55,6 +60,11 @@ type Extrinsic @entity {
   args: JSON
   events: [Event] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
   calls: [Call!] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+}
+
+type EventModuleName @entity{
+  id: ID! @index
+  name: String! @index
 }
 
 type Event @entity {

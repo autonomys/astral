@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_ACCOUNT_LIST = gql`
   query Account($limit: Int!, $offset: Int!) {
-    accounts(limit: $limit, offset: $offset, orderBy: total_DESC) {
+    accounts(limit: $limit, offset: $offset, orderBy: total_DESC, where: { total_gt: "0" }) {
       free
       id
       reserved
@@ -17,7 +17,12 @@ export const QUERY_ACCOUNT_LIST = gql`
 
 export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
   query AccountsConnection($first: Int!, $after: String) {
-    accountsConnection(orderBy: total_ASC, first: $first, after: $after) {
+    accountsConnection(
+      orderBy: total_DESC
+      where: { total_gt: "0" }
+      first: $first
+      after: $after
+    ) {
       edges {
         cursor
         node {
@@ -70,6 +75,43 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       }
     }
     rewardEvents(limit: 10, where: { account: { id_eq: $hexAddress } }) {
+      amount
+      id
+      indexInBlock
+      name
+      phase
+      pos
+      timestamp
+      block {
+        height
+      }
+    }
+  }
+`
+
+export const QUERY_ACCOUNT_BY_ID_EVM = gql`
+  query AccountByIdEVM($accountId: String!) {
+    accountById(id: $accountId) {
+      free
+      reserved
+      id
+      total
+      updatedAt
+      extrinsics(limit: 10) {
+        hash
+        id
+        indexInBlock
+        name
+        success
+        timestamp
+        tip
+        block {
+          id
+          height
+        }
+      }
+    }
+    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
       amount
       id
       indexInBlock

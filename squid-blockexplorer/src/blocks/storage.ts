@@ -6,7 +6,7 @@ import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsSto
 import { calcHistorySize, calcSpacePledged, getStorageHash, decodeLog } from './utils';
 import { Account } from '../model';
 import { SubPreDigest } from './types';
-import { DigestItem_PreRuntime } from '../types/v1';
+import { DigestItem_PreRuntime } from '../types/v0';
 
 export function solutionRangesStorageFactory(ctx: Context, header: SubstrateBlock) {
   return new SubspaceSolutionRangesStorage(ctx, header);
@@ -28,7 +28,7 @@ export function domainNominatorStorageFactory(ctx: Context, header: SubstrateBlo
 export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {
   return async function getSpacePledged(header: SubstrateBlock) {
     const storage = storageFactory(ctx, header);
-    const solutionRange = (await storage.asV1.get()).current;
+    const solutionRange = (await storage.asV0.get()).current;
     return calcSpacePledged(solutionRange);
   };
 }
@@ -70,7 +70,7 @@ export function getBlockAuthorFactory(ctx: Context, api: ApiPromise) {
   return async function getBlockAuthor(header: SubstrateBlock): Promise<Account | undefined> {
     if (header.height === 0) return; // genesis block does not have logs
     const storage = digestStorageFactory(ctx, header);
-    const digest = await storage.asV1.get();
+    const digest = await storage.asV0.get();
     const preRuntimeRaw = digest.logs.find((digestItem) => digestItem.__kind === 'PreRuntime');
     const value = decodeLog((preRuntimeRaw as DigestItem_PreRuntime).value);
     const type: SubPreDigest = api.registry.createType('SubPreDigest', value?.data);

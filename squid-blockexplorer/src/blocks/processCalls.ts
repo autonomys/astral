@@ -3,7 +3,7 @@ import { Block, Account } from '../model';
 import { createExtrinsic, createCall } from './utils';
 import { ExtrinsicsMap, CallsMap } from './types';
 
-export function processExtrinsicsFactory(getOrCreateAccount: (blockHeight: bigint, accountId: string) => Promise<Account>) {
+export function processExtrinsicsFactory(getOrCreateAccount: (blockHeight: bigint, accountId: string) => Promise<Account>, addExtrinsicModuleName: (name:string) => Promise<void>) {
   return async function processExtrinsics(extrinsicsMap: ExtrinsicsMap, callsMap: CallsMap, calls: CallItem[], block: Block) {
     for (const item of calls) {
       let signer = null;
@@ -13,6 +13,7 @@ export function processExtrinsicsFactory(getOrCreateAccount: (blockHeight: bigin
         signer = await getOrCreateAccount(block.height, item.extrinsic.signature.address.value);
         signature = item.extrinsic.signature.signature.value;
       }
+      await addExtrinsicModuleName(item.name);
       const extrinsic = createExtrinsic(item, block, signature, signer);
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const call = createCall(item, block, extrinsic!, null);

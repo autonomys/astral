@@ -27,7 +27,7 @@ const AccountList: FC = () => {
     return <Spinner />
   }
 
-  const accountsConnection = data.accountsConnection.edges.map((extrinsic) => extrinsic.node)
+  const accountsConnection = data.accountsConnection.edges.map((account) => account.node)
   const totalCount = data.accountsConnection.totalCount
   const totalLabel = numberWithCommas(Number(totalCount))
 

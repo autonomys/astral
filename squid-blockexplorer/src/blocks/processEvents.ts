@@ -2,7 +2,7 @@ import { EventItem } from '../processor';
 import { Block, Event, RewardEvent, Account} from '../model';
 import { ExtrinsicsMap, CallsMap } from './types';
 
-export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, accountId: string) => Promise<Account>) {
+export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, accountId: string) => Promise<Account>, addEventModuleName: (name: string) => Promise<void>) {
   return async function processEvents(
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
@@ -58,6 +58,8 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
 
         rewardEvents.push(rewardEvent);
       }
+
+      await addEventModuleName(item.event.name);
 
       const genericEvent = new Event({
         ...item.event,

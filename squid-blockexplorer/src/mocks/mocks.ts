@@ -239,6 +239,7 @@ export const digestStorageFactoryMock = () => ({
 } as unknown as SystemDigestStorage);
 
 export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'random account id' }));
+export const addModuleNameMock = () => Promise.resolve();
 
 export const blockMock = createBlock({
   header: BlockHeaderMock,
