@@ -1,3 +1,5 @@
+import config from "../config";
+import * as ss58 from "@subsquid/ss58";
 import { HexSink } from "@subsquid/scale-codec";
 import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
@@ -195,4 +197,8 @@ export function getOrCreateAccountFactory(ctx: Context) {
 
     return account;
   };
+}
+
+export function encodeId(id: Uint8Array) {
+  return ss58.codec(config.prefix).encode(id);
 }

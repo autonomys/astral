@@ -397,6 +397,67 @@ export interface DomainsBlockTreeStorageV1 {
     getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
 }
 
+export class DomainsConsensusBlockHashStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'ConsensusBlockHash'
+    }
+
+    /**
+     *  The consensus block hash used to verify ER, only store the consensus block hash for a domain
+     *  if that consensus block contains bundle of the domain, the hash will be pruned when the ER
+     *  that point to the consensus block is pruned.
+     * 
+     *  TODO: this storage is unbounded in some cases, see https://github.com/subspace/subspace/issues/1673
+     *  for more details, this will be fixed once https://github.com/subspace/subspace/issues/1731 is implemented.
+     */
+    get isV2(): boolean {
+        return this.getTypeHash() === 'b3c15232fb4346b458fc3153a06d89787a103676fa34fe3d795ee04fe62bf4d8'
+    }
+
+    /**
+     *  The consensus block hash used to verify ER, only store the consensus block hash for a domain
+     *  if that consensus block contains bundle of the domain, the hash will be pruned when the ER
+     *  that point to the consensus block is pruned.
+     * 
+     *  TODO: this storage is unbounded in some cases, see https://github.com/subspace/subspace/issues/1673
+     *  for more details, this will be fixed once https://github.com/subspace/subspace/issues/1731 is implemented.
+     */
+    get asV2(): DomainsConsensusBlockHashStorageV2 {
+        assert(this.isV2)
+        return this as any
+    }
+}
+
+/**
+ *  The consensus block hash used to verify ER, only store the consensus block hash for a domain
+ *  if that consensus block contains bundle of the domain, the hash will be pruned when the ER
+ *  that point to the consensus block is pruned.
+ * 
+ *  TODO: this storage is unbounded in some cases, see https://github.com/subspace/subspace/issues/1673
+ *  for more details, this will be fixed once https://github.com/subspace/subspace/issues/1731 is implemented.
+ */
+export interface DomainsConsensusBlockHashStorageV2 {
+    get(key1: number, key2: number): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: [number, number][]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<[number, number][]>
+    getKeys(key1: number): Promise<[number, number][]>
+    getKeys(key1: number, key2: number): Promise<[number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number][]>
+    getPairs(): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairs(key1: number): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairs(key1: number, key2: number): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+}
+
 export class DomainsDomainBlocksStorage extends StorageBase {
     protected getPrefix() {
         return 'Domains'

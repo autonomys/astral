@@ -2,7 +2,7 @@ import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { ApiPromise } from "@polkadot/api";
 
 import { Context } from '../processor';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsStorage, } from '../types/storage';
+import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsStorage, DomainsNominatorsStorage, } from '../types/storage';
 import { calcHistorySize, calcSpacePledged, getStorageHash, decodeLog } from './utils';
 import { Account } from '../model';
 import { SubPreDigest } from './types';
@@ -19,6 +19,11 @@ export function digestStorageFactory(ctx: Context, header: SubstrateBlock) {
 export function domainStorageFactory(ctx: Context, header: SubstrateBlock) {
   return new DomainsOperatorsStorage(ctx, header);
 }
+
+export function domainNominatorStorageFactory(ctx: Context, header: SubstrateBlock) {
+  return new DomainsNominatorsStorage(ctx, header);
+}
+
 
 export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {
   return async function getSpacePledged(header: SubstrateBlock) {

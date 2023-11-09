@@ -1,13 +1,8 @@
-import * as ss58 from "@subsquid/ss58";
-import config from "../config";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { Operator } from "../model";
 import { Context } from "../processor";
 import { DomainsOperatorsStorage } from "../types/storage";
-
-function encodeId(id: Uint8Array) {
-  return ss58.codec(config.prefix).encode(id);
-}
+import { encodeId } from "./utils";
 
 export function getOperatorsFactory(
   ctx: Context,
@@ -24,14 +19,13 @@ export function getOperatorsFactory(
 
     for (let i = 0; i < operatorsList.length; i++) {
       const signingKey = encodeId(operatorsList[i].signingKey);
-      console.log("🚀 ~ file: getOperators.ts:27 ~ getOperators ~ operatorsList[i]:", operatorsList[i])
 
       // check if there is an existing account created earlier (i.e. when processing blocks)
       const existingOperator = await ctx.store.get(Operator, signingKey);
 
       const operator = new Operator({
         ...existingOperator,
-        id: signingKey,
+        id: `${operatorsList[i].currentDomainId}-${signingKey}`,
         status: operatorsList[i].status.__kind.toString(),
         signingKey: signingKey,
         totalShares: operatorsList[i].totalShares,

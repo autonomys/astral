@@ -1,7 +1,7 @@
-import { CallItem, Context, EventItem } from '../processor';
-import { Block, Event, Log, Operator, RewardEvent } from '../model';
-import { partitionItems, createBlock } from './utils';
-import { ProcessBlocksDependencies, ExtrinsicsMap, CallsMap } from './types';
+import { CallItem, Context, EventItem } from "../processor";
+import { Block, Event, Log, Operator, RewardEvent } from "../model";
+import { partitionItems, createBlock } from "./utils";
+import { ProcessBlocksDependencies, ExtrinsicsMap, CallsMap } from "./types";
 
 export function processBlocksFactory({
   getSpacePledged,
@@ -20,7 +20,9 @@ export function processBlocksFactory({
     const rewards: RewardEvent[] = [];
     const blocks: Block[] = [];
     const logs: Log[] = [];
+    const operatorsList: Operator[] = [];
     const operators: Operator[] = [];
+    let domainOperators: Operator[] = [];
 
     for (const { header, items } of ctx.blocks) {
       // creating block
@@ -28,12 +30,18 @@ export function processBlocksFactory({
       const blockchainSize = await getHistorySize(header);
       const author = await getBlockAuthor(header);
       // save block author to avoid foreign key constraint violation
-      author && await ctx.store.save(author);
+      author && (await ctx.store.save(author));
       // get block items: calls and events
-      const [callItems, eventItems] = partitionItems(({ kind }: CallItem | EventItem) => kind === "call", items);
+      const [callItems, eventItems] = partitionItems(
+        ({ kind }: CallItem | EventItem) => kind === "call",
+        items
+      );
       // some extrinsics (i.e. Utility.batch_all) have parent call and child calls
       // in that case we need to process parent calls first
-      const [parentCalls, childCalls] = partitionItems(({ call }) => !call.parent, (callItems as CallItem[]));
+      const [parentCalls, childCalls] = partitionItems(
+        ({ call }) => !call.parent,
+        callItems as CallItem[]
+      );
 
       const block = createBlock({
         author,
@@ -48,16 +56,22 @@ export function processBlocksFactory({
       await processExtrinsics(extrinsicsMap, callsMap, parentCalls, block);
       await processCalls(extrinsicsMap, callsMap, childCalls, block);
 
-      const [blockEvents, rewardEvents] = await processEvents(extrinsicsMap, callsMap, eventItems as EventItem[], block);
+      const [blockEvents, rewardEvents] = await processEvents(
+        extrinsicsMap,
+        callsMap,
+        eventItems as EventItem[],
+        block
+      );
       events.push(...blockEvents);
       rewards.push(...rewardEvents);
 
       const blockLogs = await getLogs(header, block);
       logs.push(...blockLogs);
 
-      const domainOperators = await getOperators(header);
-      operators.push(...domainOperators);
+      domainOperators = await getOperators(header);
     }
+
+    operatorsList.push(...new Set([...operators, ...domainOperators]));
 
     // saving results
     await ctx.store.save(blocks);
@@ -66,19 +80,17 @@ export function processBlocksFactory({
     await ctx.store.save(events);
     await ctx.store.save(rewards);
     await ctx.store.save(logs);
-    await ctx.store.save(operators);
+    await ctx.store.save(operatorsList);
+    console.log("🚀 ~ file: processBlocks.ts:78 ~ processBlocks ~ operatorsList:", operatorsList.length);
 
-    ctx.log
-      .child('blocks')
-      .info(`added: 
+    ctx.log.child("blocks").info(`added: 
       ${blocks.length} blocks, 
       ${extrinsicsMap.size} extrinsics, 
       ${callsMap.size} calls, 
       ${events.length} events,
       ${rewards.length} rewards,
       ${logs.length} logs,
-      ${operators.length} operators
+      ${operatorsList.length} operators
     `);
   };
 }
-

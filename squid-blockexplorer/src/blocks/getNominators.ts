@@ -1,11 +1,9 @@
-
 import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { Nominator } from "../model";
 import { Context } from "../processor";
 import { DomainsNominatorsStorage } from "../types/storage";
 
-
-export function getOperatorsFactory(
+export function getNominatorsFactory(
   ctx: Context,
   storageFactory: (
     ctx: Context,
@@ -19,12 +17,8 @@ export function getOperatorsFactory(
     const nominators: Nominator[] = [];
 
     for (let i = 0; i < nominatorsList.length; i++) {
-      console.log("🚀 ~ file: getOperators.ts:27 ~ getOperators ~ operatorsList[i]:", nominatorsList[i])
-
-
       const newNominator = new Nominator({
         ...nominatorsList[i],
-        
       });
 
       nominators.push(newNominator);

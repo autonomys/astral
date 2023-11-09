@@ -22,7 +22,7 @@ export type EventItem = Omit<ProcessorEventItem, 'name'> & { name: string };
 
 const processor = new SubstrateBatchProcessor()
     .setDataSource(config.dataSource)
-    .setBlockRange(config.blockRange || { from: 0 })
+    .setBlockRange(config.blockRange || { from: 120000 })
     .addEvent('*') // process all events
     .addCall('*') // process all calls
     .includeAllBlocks();
