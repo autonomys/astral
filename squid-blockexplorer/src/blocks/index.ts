@@ -14,7 +14,6 @@ import { processCalls, processExtrinsicsFactory } from './processCalls';
 import { processEventsFactory } from './processEvents';
 import { getLogsFactory } from './getLogs';
 export { processBlocksFactory } from "./processBlocks";
-import { getOrCreateAccountFactory } from './utils';
 import { getOperatorsFactory } from "./getOperators";
 import { getNominatorsFactory } from "./getNominators";
 import { getOrCreateAccountFactory, addExtrinsicModuleNameFactory, addEventModuleNameFactory } from './utils';

@@ -12,7 +12,7 @@ export function getNominatorsFactory(
 ) {
   return async function getNominators(header: SubstrateBlock) {
     const storage = storageFactory(ctx, header);
-    const nominatorsList = await storage.asV1.getAll();
+    const nominatorsList = await storage.asV0.getAll();
 
     const nominators: Nominator[] = [];
 

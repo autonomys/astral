@@ -13,7 +13,7 @@ export function getOperatorsFactory(
 ) {
   return async function getOperators(header: SubstrateBlock) {
     const storage = storageFactory(ctx, header);
-    const operatorsList = await storage.asV1.getAll();
+    const operatorsList = await storage.asV0.getAll();
 
     const operators: Operator[] = [];
 
