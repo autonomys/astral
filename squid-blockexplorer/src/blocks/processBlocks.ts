@@ -81,7 +81,6 @@ export function processBlocksFactory({
     await ctx.store.save(rewards);
     await ctx.store.save(logs);
     await ctx.store.save(operatorsList);
-    console.log("🚀 ~ file: processBlocks.ts:78 ~ processBlocks ~ operatorsList:", operatorsList.length);
 
     ctx.log.child("blocks").info(`added: 
       ${blocks.length} blocks, 
