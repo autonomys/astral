@@ -803,6 +803,15 @@ export class DomainsFraudProofProcessedEvent {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.FraudProofProcessed') === '22012ca74bcc2bce4c31d06a9f87e122b0b37ecca0dc051969175172f9ca1ae0'
+    }
+
+    get asV1(): {domainId: number, newHeadReceiptNumber: number} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
 }
 
 export class DomainsOperatorDeregisteredEvent {
