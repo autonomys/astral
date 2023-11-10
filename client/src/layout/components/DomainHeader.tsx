@@ -9,14 +9,10 @@ import useDomains from 'common/hooks/useDomains'
 // chains
 import domains from 'layout/config/domains.json'
 import chains from 'layout/config/chains.json'
-import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
 
 const DomainHeader: FC = () => {
   const [isActive, setIsActive] = useState(true)
-  const [domainSelected, setDomainSelected] = useSafeLocalStorage(
-    'domain-selected',
-    'Consensus Chain',
-  )
+  const [domainSelected, setDomainSelected] = useState('Consensus Chain')
   const navigate = useNavigate()
 
   const { setSelectedChain, selectedChain } = useDomains()
