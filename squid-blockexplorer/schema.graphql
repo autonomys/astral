@@ -114,3 +114,23 @@ type Log @entity {
   value: JSON
   block: Block!
 }
+
+type Operator @entity {
+  id: ID! @index
+  signingKey: String! @index
+  currentDomainId: Int
+  nextDomainId: Int
+  minimumNominatorStake: BigInt
+  nominationTax: Int
+  currentTotalStake: BigInt
+  currentEpochRewards: BigInt
+  totalShares: BigInt
+  status: String
+}
+
+type Nominator @entity {
+  id: ID! @index
+  operator: Operator!
+  account: Account!
+  shares: BigInt
+}

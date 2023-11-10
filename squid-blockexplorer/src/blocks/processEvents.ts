@@ -1,5 +1,5 @@
 import { EventItem } from '../processor';
-import { Block, Event, RewardEvent, Account } from '../model';
+import { Block, Event, RewardEvent, Account} from '../model';
 import { ExtrinsicsMap, CallsMap } from './types';
 
 export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, accountId: string) => Promise<Account>, addEventModuleName: (name: string) => Promise<void>) {
@@ -21,6 +21,23 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
       if (item.event.extrinsic) {
         extrinsic = extrinsicsMap.get(item.event.extrinsic.id);
         call = callsMap.get(item.event.extrinsic.call.id);
+      }
+
+      if (item.name === 'Domains.OperatorRewarded') {
+        const operatorId = item.event.args?.operatorId;
+
+        const account = await getOrCreateAccount(block.height, operatorId);
+        const rewardEvent = new RewardEvent({
+          ...item.event,
+          block,
+          extrinsic,
+          call,
+          timestamp: block.timestamp,
+          account,
+          amount: item.event.args.reward,
+        });
+
+        rewardEvents.push(rewardEvent);
       }
 
       // it is necessary to save rewards as both separate entity and generic event

@@ -1,6 +1,5 @@
 import {
   BalancesBalanceSetEvent,
-
   BalancesDepositEvent,
   BalancesEndowedEvent,
   BalancesReservedEvent,

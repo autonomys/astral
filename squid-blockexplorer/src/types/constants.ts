@@ -618,6 +618,36 @@ export class DomainsStakeWithdrawalLockingPeriodConstant {
     }
 }
 
+export class DomainsSudoIdConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  The sudo account id
+     */
+    get isV1() {
+        return this._chain.getConstantTypeHash('Domains', 'SudoId') === 'cc28a7f7046ec4d0eb3419e4aa142bf25c25992e58d0e8646eb029c7c6b4c0c8'
+    }
+
+    /**
+     *  The sudo account id
+     */
+    get asV1(): Uint8Array {
+        assert(this.isV1)
+        return this._chain.getConstant('Domains', 'SudoId')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Domains', 'SudoId') != null
+    }
+}
+
 export class DomainsTreasuryAccountConstant {
     private readonly _chain: Chain
 

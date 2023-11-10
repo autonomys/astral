@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {Block, BlockContext, Chain, ChainContext, Option, Result, StorageBase} from './support'
 import * as v0 from './v0'
+import * as v1 from './v1'
 
 export class BalancesAccountStorage extends StorageBase {
     protected getPrefix() {
@@ -373,6 +374,23 @@ export class DomainsBlockTreeStorage extends StorageBase {
         assert(this.isV0)
         return this as any
     }
+
+    /**
+     *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of ER,
+     *  which can be used get the block tree node in `BlockTreeNodes`
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'b3c15232fb4346b458fc3153a06d89787a103676fa34fe3d795ee04fe62bf4d8'
+    }
+
+    /**
+     *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of ER,
+     *  which can be used get the block tree node in `BlockTreeNodes`
+     */
+    get asV1(): DomainsBlockTreeStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
 }
 
 /**
@@ -395,6 +413,28 @@ export interface DomainsBlockTreeStorageV0 {
     getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
     getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
     getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array[]][]>
+}
+
+/**
+ *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of ER,
+ *  which can be used get the block tree node in `BlockTreeNodes`
+ */
+export interface DomainsBlockTreeStorageV1 {
+    get(key1: number, key2: number): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: [number, number][]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<[number, number][]>
+    getKeys(key1: number): Promise<[number, number][]>
+    getKeys(key1: number, key2: number): Promise<[number, number][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, number][]>
+    getKeysPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[number, number][]>
+    getPairs(): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairs(key1: number): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairs(key1: number, key2: number): Promise<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key1: number, key2: number): AsyncIterable<[k: [number, number], v: Uint8Array][]>
 }
 
 export class DomainsBlockTreeNodesStorage extends StorageBase {
@@ -755,6 +795,54 @@ export interface DomainsHeadDomainNumberStorageV0 {
     getPairs(key: number): Promise<[k: number, v: number][]>
     getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: number][]>
     getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: number][]>
+}
+
+export class DomainsHeadReceiptExtendedStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Domains'
+    }
+
+    protected getName() {
+        return 'HeadReceiptExtended'
+    }
+
+    /**
+     *  Whether the head receipt have extended in the current consensus block
+     * 
+     *  Temporary storage only exist during block execution
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'b527cfaace50a542585bae15a66f695c20e62fa45eabfd79ce93d7c504830239'
+    }
+
+    /**
+     *  Whether the head receipt have extended in the current consensus block
+     * 
+     *  Temporary storage only exist during block execution
+     */
+    get asV1(): DomainsHeadReceiptExtendedStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
+}
+
+/**
+ *  Whether the head receipt have extended in the current consensus block
+ * 
+ *  Temporary storage only exist during block execution
+ */
+export interface DomainsHeadReceiptExtendedStorageV1 {
+    get(key: number): Promise<boolean>
+    getAll(): Promise<boolean[]>
+    getMany(keys: number[]): Promise<boolean[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: boolean][]>
+    getPairs(key: number): Promise<[k: number, v: boolean][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: boolean][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: boolean][]>
 }
 
 export class DomainsHeadReceiptNumberStorage extends StorageBase {
@@ -3555,6 +3643,33 @@ export class SystemEventsStorage extends StorageBase {
         assert(this.isV0)
         return this as any
     }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get isV1(): boolean {
+        return this.getTypeHash() === 'b1b8244daa38dd1659cb358b47f7be0ca66e7ab955928f628e5aa3a96ce63231'
+    }
+
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    get asV1(): SystemEventsStorageV1 {
+        assert(this.isV1)
+        return this as any
+    }
 }
 
 /**
@@ -3568,6 +3683,19 @@ export class SystemEventsStorage extends StorageBase {
  */
 export interface SystemEventsStorageV0 {
     get(): Promise<v0.EventRecord[]>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface SystemEventsStorageV1 {
+    get(): Promise<v1.EventRecord[]>
 }
 
 export class SystemExecutionPhaseStorage extends StorageBase {
