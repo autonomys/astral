@@ -1,9 +1,12 @@
+import config from "../config";
+import * as ss58 from "@subsquid/ss58";
 import { HexSink } from "@subsquid/scale-codec";
 import { xxhash128 } from "@subsquid/util-xxhash";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { toHex } from "@subsquid/util-internal-hex";
-import { Block, Extrinsic, Call, Account } from "../model";
+import { Block, Extrinsic, Call, Account, ExtrinsicModuleName, EventModuleName } from "../model";
 import { CallItem, EventItem, Context } from "../processor";
+import { randomUUID }from 'crypto';
 
 /**
  * Takes a predicate and a list of items and returns the
@@ -97,22 +100,18 @@ const MAX_PIECES_IN_SECTOR = 1000n;
 
 /**
  * Calculates the number of sectors pledged by a solution range, based on monorepo calculation
- * in function solution_range_to_sectors: https://github.com/subspace/subspace/blob/main/crates/subspace-runtime/src/lib.rs#L240-252
+ * in function solution_range_to_sectors: https://github.com/subspace/subspace/blob/main/crates/subspace-runtime/src/lib.rs#L227-L236
  * @param {bigint} solutionRange - range of the solution
  * @return {bigint} - sectors pledged number
  */
 export function solutionRangeToSectors(solutionRange: bigint): bigint {
-  const SIZE_OF_SOLUTION_RANGE = 8n;
-  const SCALAR_FULL_BYTES = 32n;
   const MAX_U64 = 2n ** 64n - 1n;
   const SLOT_PROBABILITY = [1n, 6n];
   const RECORD_NUM_CHUNKS = 32768n;
   const RECORD_NUM_S_BUCKETS = 65536n;
 
-  const auditChunksPerChunk = SCALAR_FULL_BYTES / SIZE_OF_SOLUTION_RANGE;
   const sectors = MAX_U64
       / SLOT_PROBABILITY[1] * SLOT_PROBABILITY[0]
-      / auditChunksPerChunk
       / (MAX_PIECES_IN_SECTOR * RECORD_NUM_CHUNKS / RECORD_NUM_S_BUCKETS);
 
   // Take solution range into account
@@ -121,7 +120,7 @@ export function solutionRangeToSectors(solutionRange: bigint): bigint {
 
 /**
  * Calculates the space pledged by a solution range, based on monorepo calculation
- * in function TotalSpacePledged: https://github.com/subspace/subspace/blob/f782f7297a6d61d8f22a3b10d201396fe30708fd/crates/subspace-runtime/src/lib.rs#L396-L399
+ * in function TotalSpacePledged: https://github.com/subspace/subspace/blob/main/crates/subspace-runtime/src/lib.rs#L442-L447
  * @param {bigint} solutionRange - range of the solution
  * @return {bigint} - space pledged in bytes
  */
@@ -206,5 +205,39 @@ export function getOrCreateAccountFactory(ctx: Context) {
     }
 
     return account;
+  };
+}
+
+export function encodeId(id: Uint8Array) {
+  return ss58.codec(config.prefix).encode(id);
+}
+
+export function addExtrinsicModuleNameFactory(ctx: Context) {
+  return async function addExtrinsicModuleName(name: string): Promise<void> {
+    let module = await ctx.store.findOneBy(ExtrinsicModuleName, {name: name});
+
+    if (!module) {
+      module = new ExtrinsicModuleName({
+        id: randomUUID(),
+        name: name,
+      });
+
+      await ctx.store.insert(module);
+    }
+  };
+}
+
+export function addEventModuleNameFactory(ctx: Context) {
+  return async function addEventModuleName(name: string): Promise<void> {
+    let module = await ctx.store.findOneBy(EventModuleName, {name: name});
+
+    if (!module) {
+      module = new EventModuleName({
+        id: randomUUID(),
+        name: name,
+      });
+
+      await ctx.store.insert(module);
+    }
   };
 }

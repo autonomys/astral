@@ -6,7 +6,7 @@ type Props = {
 
 const MainLayout: FC<Props> = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen w-full bg-light dark:bg-dark bg-cover font-['Montserrat'] relative">
+    <div className="bg-[url('/src/common/images/backgroundColor.svg')] flex flex-col min-h-screen w-full dark:bg-dark bg-cover font-['Montserrat'] relative">
       {children}
     </div>
   )

@@ -9,13 +9,14 @@ import {
   parentCallMock,
   rewardEvent,
   getOrCreateAccountMock,
+  addModuleNameMock,
 } from '../../mocks/mocks';
 import { processEventsFactory } from '../../blocks/processEvents';
 
 tap.test('processEvents should return a tuple including a list of Events and a list of RewardEvents', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processEvents = processEventsFactory(getOrCreateAccountMock);
+  const processEvents = processEventsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   const eventItems = [
     eventItemWithoutExtrinsic,
@@ -32,7 +33,7 @@ tap.test('processEvents should return a tuple including a list of Events and a l
 tap.test('processEvents should map Event to a Block', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processEvents = processEventsFactory(getOrCreateAccountMock);
+  const processEvents = processEventsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   const eventItems = [
     eventItemWithoutExtrinsic,
@@ -48,7 +49,7 @@ tap.test('processEvents should map Event to a Block', async (t) => {
 tap.test('processEvents should map Event to Call and Extrinsic', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processEvents = processEventsFactory(getOrCreateAccountMock);
+  const processEvents = processEventsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   extrinsicsMap.set(extrinsicMock.id, extrinsicMock);
   callsMap.set(parentCallItem.call.id, parentCallMock);

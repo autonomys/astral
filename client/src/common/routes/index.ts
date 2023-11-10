@@ -58,6 +58,13 @@ export const INTERNAL_ROUTES = {
     },
     list: 'logs',
   },
+  operators: {
+    id: {
+      path: ':operatorId',
+      page: (chain: string, operatorId: string): string => `/${chain}/operator/${operatorId}`,
+    },
+    list: 'operators',
+  },
   search: {
     result: {
       path: 'search/result/:type',

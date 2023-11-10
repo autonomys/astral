@@ -1,9 +1,19 @@
-import { SubstrateBlock } from '@subsquid/substrate-processor';
+import { SubstrateBlock } from "@subsquid/substrate-processor";
 import { Struct, u64 } from "@polkadot/types";
 import { AccountId32 } from "@polkadot/types/interfaces";
 
-import { CallItem, EventItem } from '../processor';
-import { Block, Extrinsic, Call, Event, Log, Account, RewardEvent } from '../model';
+import { CallItem, EventItem } from "../processor";
+import {
+  Block,
+  Extrinsic,
+  Call,
+  Event,
+  Log,
+  Account,
+  RewardEvent,
+  Operator,
+  Nominator,
+} from "../model";
 
 export interface ProcessBlocksDependencies {
   getSpacePledged: (header: SubstrateBlock) => Promise<bigint>;
@@ -12,22 +22,24 @@ export interface ProcessBlocksDependencies {
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
     calls: CallItem[],
-    block: Block,
+    block: Block
   ) => Promise<void>;
   processCalls: (
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
     calls: CallItem[],
-    block: Block,
+    block: Block
   ) => Promise<void>;
   processEvents: (
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
     eventItems: EventItem[],
-    block: Block,
+    block: Block
   ) => Promise<[Event[], RewardEvent[]]>;
   getLogs: (header: SubstrateBlock, block: Block) => Promise<Log[]>;
   getBlockAuthor: (header: SubstrateBlock) => Promise<Account | undefined>;
+  getOperators: (header: SubstrateBlock) => Promise<Operator[]>;
+  getNominators: (header: SubstrateBlock) => Promise<Nominator[]>;
 }
 
 export type ExtrinsicsMap = Map<string, Extrinsic>;
