@@ -1,5 +1,5 @@
-module.exports = class Data1699011592008 {
-    name = 'Data1699011592008'
+module.exports = class Data1699631021771 {
+    name = 'Data1699631021771'
 
     async up(db) {
         await db.query(`CREATE TABLE "call" ("id" character varying NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "success" boolean NOT NULL, "args" jsonb, "error" jsonb, "signer" text, "pos" integer, "block_id" character varying, "extrinsic_id" character varying, "parent_id" character varying, CONSTRAINT "PK_2098af0169792a34f9cfdd39c47" PRIMARY KEY ("id"))`)
@@ -24,8 +24,10 @@ module.exports = class Data1699011592008 {
         await db.query(`CREATE INDEX "IDX_29ac1ee135f61e5f2e476d3e22" ON "extrinsic" ("signature") `)
         await db.query(`CREATE INDEX "IDX_a3b99daba1259dab0dd040d4f7" ON "extrinsic" ("block_id") `)
         await db.query(`CREATE INDEX "IDX_6e232918078798b1fade21dcf8" ON "extrinsic" ("timestamp") `)
-        await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "free" numeric, "reserved" numeric, "total" numeric, "updated_at" numeric, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "free" numeric, "reserved" numeric, "total" numeric, "updated_at" numeric, "vote_rewards_total" numeric, "block_rewards_total" numeric, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_3756b99a2c20a91a19196cbc11" ON "account" ("total") `)
+        await db.query(`CREATE INDEX "IDX_13c9fd411cc0728209f5249ad1" ON "account" ("vote_rewards_total") `)
+        await db.query(`CREATE INDEX "IDX_5d7eeaf265b65f4779cb2bed6f" ON "account" ("block_rewards_total") `)
         await db.query(`CREATE TABLE "extrinsic_module_name" ("id" character varying NOT NULL, "name" text NOT NULL, CONSTRAINT "PK_e3d3a5a01f50bf01655cf4f30eb" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_bf23a0cce635d8eba9918d0339" ON "extrinsic_module_name" ("name") `)
         await db.query(`CREATE TABLE "event_module_name" ("id" character varying NOT NULL, "name" text NOT NULL, CONSTRAINT "PK_07f4296e4cf56dce19efa3be07c" PRIMARY KEY ("id"))`)
@@ -70,6 +72,8 @@ module.exports = class Data1699011592008 {
         await db.query(`DROP INDEX "public"."IDX_6e232918078798b1fade21dcf8"`)
         await db.query(`DROP TABLE "account"`)
         await db.query(`DROP INDEX "public"."IDX_3756b99a2c20a91a19196cbc11"`)
+        await db.query(`DROP INDEX "public"."IDX_13c9fd411cc0728209f5249ad1"`)
+        await db.query(`DROP INDEX "public"."IDX_5d7eeaf265b65f4779cb2bed6f"`)
         await db.query(`DROP TABLE "extrinsic_module_name"`)
         await db.query(`DROP INDEX "public"."IDX_bf23a0cce635d8eba9918d0339"`)
         await db.query(`DROP TABLE "event_module_name"`)
