@@ -1331,6 +1331,268 @@ export type LogsConnection = {
   totalCount: Scalars['Int']['output'];
 };
 
+export type Nominator = {
+  __typename?: 'Nominator';
+  account: Account;
+  id: Scalars['String']['output'];
+  operator: Operator;
+  shares?: Maybe<Scalars['BigInt']['output']>;
+};
+
+export type NominatorEdge = {
+  __typename?: 'NominatorEdge';
+  cursor: Scalars['String']['output'];
+  node: Nominator;
+};
+
+export enum NominatorOrderByInput {
+  AccountFreeAsc = 'account_free_ASC',
+  AccountFreeDesc = 'account_free_DESC',
+  AccountIdAsc = 'account_id_ASC',
+  AccountIdDesc = 'account_id_DESC',
+  AccountReservedAsc = 'account_reserved_ASC',
+  AccountReservedDesc = 'account_reserved_DESC',
+  AccountTotalAsc = 'account_total_ASC',
+  AccountTotalDesc = 'account_total_DESC',
+  AccountUpdatedAtAsc = 'account_updatedAt_ASC',
+  AccountUpdatedAtDesc = 'account_updatedAt_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  OperatorCurrentDomainIdAsc = 'operator_currentDomainId_ASC',
+  OperatorCurrentDomainIdDesc = 'operator_currentDomainId_DESC',
+  OperatorCurrentEpochRewardsAsc = 'operator_currentEpochRewards_ASC',
+  OperatorCurrentEpochRewardsDesc = 'operator_currentEpochRewards_DESC',
+  OperatorCurrentTotalStakeAsc = 'operator_currentTotalStake_ASC',
+  OperatorCurrentTotalStakeDesc = 'operator_currentTotalStake_DESC',
+  OperatorIdAsc = 'operator_id_ASC',
+  OperatorIdDesc = 'operator_id_DESC',
+  OperatorMinimumNominatorStakeAsc = 'operator_minimumNominatorStake_ASC',
+  OperatorMinimumNominatorStakeDesc = 'operator_minimumNominatorStake_DESC',
+  OperatorNextDomainIdAsc = 'operator_nextDomainId_ASC',
+  OperatorNextDomainIdDesc = 'operator_nextDomainId_DESC',
+  OperatorNominationTaxAsc = 'operator_nominationTax_ASC',
+  OperatorNominationTaxDesc = 'operator_nominationTax_DESC',
+  OperatorSigningKeyAsc = 'operator_signingKey_ASC',
+  OperatorSigningKeyDesc = 'operator_signingKey_DESC',
+  OperatorStatusAsc = 'operator_status_ASC',
+  OperatorStatusDesc = 'operator_status_DESC',
+  OperatorTotalSharesAsc = 'operator_totalShares_ASC',
+  OperatorTotalSharesDesc = 'operator_totalShares_DESC',
+  SharesAsc = 'shares_ASC',
+  SharesDesc = 'shares_DESC'
+}
+
+export type NominatorWhereInput = {
+  AND?: InputMaybe<Array<NominatorWhereInput>>;
+  OR?: InputMaybe<Array<NominatorWhereInput>>;
+  account?: InputMaybe<AccountWhereInput>;
+  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  operator?: InputMaybe<OperatorWhereInput>;
+  operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  shares_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  shares_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  shares_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
+export type NominatorsConnection = {
+  __typename?: 'NominatorsConnection';
+  edges: Array<NominatorEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type Operator = {
+  __typename?: 'Operator';
+  currentDomainId?: Maybe<Scalars['Int']['output']>;
+  currentEpochRewards?: Maybe<Scalars['BigInt']['output']>;
+  currentTotalStake?: Maybe<Scalars['BigInt']['output']>;
+  id: Scalars['String']['output'];
+  minimumNominatorStake?: Maybe<Scalars['BigInt']['output']>;
+  nextDomainId?: Maybe<Scalars['Int']['output']>;
+  nominationTax?: Maybe<Scalars['Int']['output']>;
+  signingKey: Scalars['String']['output'];
+  status?: Maybe<Scalars['String']['output']>;
+  totalShares?: Maybe<Scalars['BigInt']['output']>;
+};
+
+export type OperatorEdge = {
+  __typename?: 'OperatorEdge';
+  cursor: Scalars['String']['output'];
+  node: Operator;
+};
+
+export enum OperatorOrderByInput {
+  CurrentDomainIdAsc = 'currentDomainId_ASC',
+  CurrentDomainIdDesc = 'currentDomainId_DESC',
+  CurrentEpochRewardsAsc = 'currentEpochRewards_ASC',
+  CurrentEpochRewardsDesc = 'currentEpochRewards_DESC',
+  CurrentTotalStakeAsc = 'currentTotalStake_ASC',
+  CurrentTotalStakeDesc = 'currentTotalStake_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  MinimumNominatorStakeAsc = 'minimumNominatorStake_ASC',
+  MinimumNominatorStakeDesc = 'minimumNominatorStake_DESC',
+  NextDomainIdAsc = 'nextDomainId_ASC',
+  NextDomainIdDesc = 'nextDomainId_DESC',
+  NominationTaxAsc = 'nominationTax_ASC',
+  NominationTaxDesc = 'nominationTax_DESC',
+  SigningKeyAsc = 'signingKey_ASC',
+  SigningKeyDesc = 'signingKey_DESC',
+  StatusAsc = 'status_ASC',
+  StatusDesc = 'status_DESC',
+  TotalSharesAsc = 'totalShares_ASC',
+  TotalSharesDesc = 'totalShares_DESC'
+}
+
+export type OperatorWhereInput = {
+  AND?: InputMaybe<Array<OperatorWhereInput>>;
+  OR?: InputMaybe<Array<OperatorWhereInput>>;
+  currentDomainId_eq?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_gt?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_gte?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  currentDomainId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  currentDomainId_lt?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_lte?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  currentEpochRewards_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  currentEpochRewards_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  currentEpochRewards_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  currentTotalStake_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  currentTotalStake_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  currentTotalStake_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  minimumNominatorStake_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  minimumNominatorStake_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  minimumNominatorStake_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  nextDomainId_eq?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_gt?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_gte?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nextDomainId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nextDomainId_lt?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_lte?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nominationTax_eq?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_gt?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_gte?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nominationTax_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nominationTax_lt?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_lte?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  signingKey_contains?: InputMaybe<Scalars['String']['input']>;
+  signingKey_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signingKey_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_eq?: InputMaybe<Scalars['String']['input']>;
+  signingKey_gt?: InputMaybe<Scalars['String']['input']>;
+  signingKey_gte?: InputMaybe<Scalars['String']['input']>;
+  signingKey_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signingKey_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  signingKey_lt?: InputMaybe<Scalars['String']['input']>;
+  signingKey_lte?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_contains?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_eq?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signingKey_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_startsWith?: InputMaybe<Scalars['String']['input']>;
+  status_contains?: InputMaybe<Scalars['String']['input']>;
+  status_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  status_endsWith?: InputMaybe<Scalars['String']['input']>;
+  status_eq?: InputMaybe<Scalars['String']['input']>;
+  status_gt?: InputMaybe<Scalars['String']['input']>;
+  status_gte?: InputMaybe<Scalars['String']['input']>;
+  status_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  status_lt?: InputMaybe<Scalars['String']['input']>;
+  status_lte?: InputMaybe<Scalars['String']['input']>;
+  status_not_contains?: InputMaybe<Scalars['String']['input']>;
+  status_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  status_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  status_not_eq?: InputMaybe<Scalars['String']['input']>;
+  status_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  status_startsWith?: InputMaybe<Scalars['String']['input']>;
+  totalShares_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalShares_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  totalShares_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
+export type OperatorsConnection = {
+  __typename?: 'OperatorsConnection';
+  edges: Array<OperatorEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
 export type PageInfo = {
   __typename?: 'PageInfo';
   endCursor: Scalars['String']['output'];
@@ -1384,6 +1646,16 @@ export type Query = {
   logTypesQuery: LogNamesResult;
   logs: Array<Log>;
   logsConnection: LogsConnection;
+  nominatorById?: Maybe<Nominator>;
+  /** @deprecated Use nominatorById */
+  nominatorByUniqueInput?: Maybe<Nominator>;
+  nominators: Array<Nominator>;
+  nominatorsConnection: NominatorsConnection;
+  operatorById?: Maybe<Operator>;
+  /** @deprecated Use operatorById */
+  operatorByUniqueInput?: Maybe<Operator>;
+  operators: Array<Operator>;
+  operatorsConnection: OperatorsConnection;
   rewardEventById?: Maybe<RewardEvent>;
   /** @deprecated Use rewardEventById */
   rewardEventByUniqueInput?: Maybe<RewardEvent>;
@@ -1598,6 +1870,58 @@ export type QueryLogsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<LogOrderByInput>;
   where?: InputMaybe<LogWhereInput>;
+};
+
+
+export type QueryNominatorByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryNominatorByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryNominatorsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<NominatorOrderByInput>>;
+  where?: InputMaybe<NominatorWhereInput>;
+};
+
+
+export type QueryNominatorsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<NominatorOrderByInput>;
+  where?: InputMaybe<NominatorWhereInput>;
+};
+
+
+export type QueryOperatorByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryOperatorByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryOperatorsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OperatorOrderByInput>>;
+  where?: InputMaybe<OperatorWhereInput>;
+};
+
+
+export type QueryOperatorsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<OperatorOrderByInput>;
+  where?: InputMaybe<OperatorWhereInput>;
 };
 
 
