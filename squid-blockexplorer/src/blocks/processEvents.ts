@@ -29,6 +29,15 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
       if (item.name === 'Rewards.BlockReward' || item.name === 'Rewards.VoteReward') {
         const address = item.event.args?.voter || item.event.args?.blockAuthor;
         const account = await getOrCreateAccount(block.height, address);
+
+        if (item.name === 'Rewards.BlockReward') {
+          account.blockRewardsTotal += item.event.args.reward;
+        }
+
+        if (item.name === 'Rewards.VoteReward') {
+          account.blockRewardsTotal += item.event.args.reward;
+        }
+
         const rewardEvent = new RewardEvent({
           ...item.event,
           block,
