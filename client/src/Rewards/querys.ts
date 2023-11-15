@@ -25,6 +25,7 @@ export const QUERY_REWARDS_LIST = gql`
           updatedAt
           voteRewardsTotal
         }
+        cursor
       }
     }
   }
