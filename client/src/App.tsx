@@ -38,6 +38,7 @@ import { Event, EventList } from 'Event/components'
 
 // log
 import { Log, LogList } from 'Log/components'
+import RewardList from 'Rewards/components/RewardList'
 import OperatorList from 'operator/components/OperatorList'
 
 // force page scroll to top on route change
@@ -132,6 +133,9 @@ function App() {
                     </Route>
                     <Route path={INTERNAL_ROUTES.search.result.path}>
                       <Route index element={<SearchResult />} />
+                    </Route>
+                    <Route path={INTERNAL_ROUTES.rewards.list}>
+                      <Route index element={<RewardList />} />
                     </Route>
                   </Route>
 
