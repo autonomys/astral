@@ -4,6 +4,8 @@ type Account @entity {
   reserved: BigInt
   total: BigInt @index
   updatedAt: BigInt
+  voteRewardsTotal: BigInt @index
+  blockRewardsTotal: BigInt @index
   extrinsics: [Extrinsic!]!
     @derivedFrom(field: "signer")
     @cardinality(value: 10)
@@ -113,4 +115,24 @@ type Log @entity {
   kind: String! @index
   value: JSON
   block: Block!
+}
+
+type Operator @entity {
+  id: ID! @index
+  signingKey: String! @index
+  currentDomainId: Int
+  nextDomainId: Int
+  minimumNominatorStake: BigInt
+  nominationTax: Int
+  currentTotalStake: BigInt
+  currentEpochRewards: BigInt
+  totalShares: BigInt
+  status: String
+}
+
+type Nominator @entity {
+  id: ID! @index
+  operator: Operator!
+  account: Account!
+  shares: BigInt
 }

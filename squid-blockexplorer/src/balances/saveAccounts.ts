@@ -1,13 +1,9 @@
-import * as ss58 from '@subsquid/ss58';
-import config from '../config';
 import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { Account } from '../model';
 import { Context } from '../processor';
 import { BalanceStorage } from './storage';
+import { encodeId } from '../blocks/utils';
 
-function encodeId(id: Uint8Array) {
-  return ss58.codec(config.prefix).encode(id);
-}
 
 export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
   return async function saveAccounts(header: SubstrateBlock, accountIds: Buffer[]) {

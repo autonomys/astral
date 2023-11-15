@@ -1,5 +1,5 @@
 import { EventItem } from '../processor';
-import { Block, Event, RewardEvent, Account } from '../model';
+import { Block, Event, RewardEvent, Account} from '../model';
 import { ExtrinsicsMap, CallsMap } from './types';
 
 export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, accountId: string) => Promise<Account>, addEventModuleName: (name: string) => Promise<void>) {
@@ -23,12 +23,38 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
         call = callsMap.get(item.event.extrinsic.call.id);
       }
 
+      if (item.name === 'Domains.OperatorRewarded') {
+        const operatorId = item.event.args?.operatorId;
+
+        const account = await getOrCreateAccount(block.height, operatorId);
+        const rewardEvent = new RewardEvent({
+          ...item.event,
+          block,
+          extrinsic,
+          call,
+          timestamp: block.timestamp,
+          account,
+          amount: item.event.args.reward,
+        });
+
+        rewardEvents.push(rewardEvent);
+      }
+
       // it is necessary to save rewards as both separate entity and generic event
       // separate entity - to be able to query rewards by account faster
       // generic event - to be able to query all events with pagination and filtering on Events page
       if (item.name === 'Rewards.BlockReward' || item.name === 'Rewards.VoteReward') {
         const address = item.event.args?.voter || item.event.args?.blockAuthor;
         const account = await getOrCreateAccount(block.height, address);
+
+        if (item.name === 'Rewards.BlockReward') {
+          account.blockRewardsTotal += item.event.args.reward;
+        }
+
+        if (item.name === 'Rewards.VoteReward') {
+          account.blockRewardsTotal += item.event.args.reward;
+        }
+
         const rewardEvent = new RewardEvent({
           ...item.event,
           block,
