@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Identicon from '@polkadot/react-identicon'
 import { accountIdToHex } from 'common/helpers/formatAddress'
@@ -37,39 +37,82 @@ const SearchBar: FC = () => {
   )
 }
 
+const defaultRewards = {
+  aries: {
+    blocksWon: '0',
+  },
+  geminiI: {
+    earnings: '0',
+    percentage: '0',
+  },
+  geminiII: {
+    stage1: {
+      earnings: '0',
+      percentage: '0',
+    },
+    stage2: {
+      earnings: '0',
+      percentageFarm: '0',
+      percentage: '0',
+    },
+  },
+  geminiIII: {
+    earnings: '0',
+    percentage: '0',
+  },
+  totalMainnet: {
+    earnings: '0',
+    percentage: '0',
+  },
+}
+
 const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
   const publicKey = accountIdToHex(accountAddress)
   const { selectedChain } = useDomains()
   const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
+  const [userRewards, setUserRewards] = useState(defaultRewards)
 
-  // To-Do: Replace this with the actual earnings
-  const earnings = {
-    aries: {
-      blocksWon: 130,
-    },
-    geminiI: {
-      earnings: 0,
-      percentage: 0,
-    },
-    geminiII: {
-      stage1: {
-        earnings: 46,
-        percentage: 0.00045,
-      },
-      stage2: {
-        earnings: 32,
-        percentage: 0.000034,
-      },
-    },
-    geminiIII: {
-      earnings: 345,
-      percentage: 0.00000021,
-    },
-    totalMainnet: {
-      earnings: 320,
-      percentage: 0.00000012,
-    },
+  const handleSearch = async () => {
+    const file = await fetch('/data/rewards.csv')
+    const data = await file.text()
+    const rows = data.split('\n').slice(1)
+    const rewards = rows.map(row => {
+      const columns = row.split(',')
+      return {
+        address: {
+          subspaceFormat: columns[0],
+          polkadotFormat: columns[1],
+        },
+        rewards: {
+          ...defaultRewards,
+          aries: {
+            blocksWon: columns[2],
+          },
+          geminiI: {
+            earnings: columns[3],
+            percentage: columns[4],
+          },
+          geminiII: {
+            stage1: {
+              earnings: columns[5],
+              percentage: columns[6],
+            },
+            stage2: {
+              earnings: columns[7],
+              percentageFarm: columns[8],
+              percentage: columns[9],
+            },
+          },
+        }
+      }
+    })
+    const userRewards = rewards.filter(reward => reward.address.subspaceFormat === accountAddress || reward.address.polkadotFormat === accountAddress)
+    if (userRewards.length > 0) setUserRewards(userRewards[0].rewards)
   }
+
+  useEffect(() => {
+    handleSearch()
+  }, [])
 
   return (
     <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 md:p-4 p-6 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
@@ -112,14 +155,14 @@ const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
         <div className='w-1/2 flex items-center'>
           <div className='w-full text-center'>
             <p className='text-3xl font-extrabold text-[#48C0B5]'>Aries</p>
-            <p className='text-lg font-bold mt-2 text-[#241235]'>Aries Blocks Won: {earnings.aries.blocksWon}</p>
+            <p className='text-lg font-bold mt-2 text-[#241235]'>Aries Blocks Won: {userRewards.aries.blocksWon}</p>
           </div>
         </div>
 
         <div className='w-1/2 flex items-center'>
           <div className='w-full text-center'>
             <p className='text-3xl font-extrabold text-[#4B5563]'>Gemini I</p>
-            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {earnings.geminiI.earnings} TSSC, {earnings.geminiI.percentage}%</p>
+            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {userRewards.geminiI.earnings} TSSC, {userRewards.geminiI.percentage}%</p>
           </div>
         </div>
       </div>
@@ -127,14 +170,14 @@ const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
         <div className='w-1/2 flex items-center'>
           <div className='w-full text-center'>
             <p className='text-3xl font-extrabold text-[#48C0B5]'>Gemini II, stage 1:</p>
-            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {earnings.geminiII.stage1.earnings} TSSC, {earnings.geminiII.stage1.percentage}%</p>
+            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {userRewards.geminiII.stage1.earnings} TSSC, {userRewards.geminiII.stage1.percentage}%</p>
           </div>
         </div>
 
         <div className='w-1/2 flex items-center'>
           <div className='w-full text-center'>
             <p className='text-3xl font-extrabold text-[#48C0B5]'>Gemini II, stage 2:</p>
-            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {earnings.geminiII.stage2.earnings} TSSC, {earnings.geminiII.stage2.percentage}%</p>
+            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {userRewards.geminiII.stage2.earnings} TSSC, {userRewards.geminiII.stage2.percentage}%</p>
           </div>
         </div>
       </div>
@@ -142,13 +185,13 @@ const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
         <div className='w-1/2 flex items-center'>
           <div className='w-full text-center'>
             <p className='text-3xl font-extrabold text-[#48C0B5]'>Gemini III:</p>
-            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {earnings.geminiIII.earnings} TSSC, {earnings.geminiIII.percentage}%</p>
+            <p className='text-lg font-bold mt-2 text-[#241235]'>Earnings: {userRewards.geminiIII.earnings} TSSC, {userRewards.geminiIII.percentage}%</p>
             </div>
           </div>
         <div className='w-1/2 flex items-center'>
           <div className='w-full text-center'>
             <p className='text-3xl font-extrabold text-[#48C0B5]'>Total, Mainnet:</p>
-            <p className='text-lg font-bold mt- text-[#241235]'>Earnings: {earnings.totalMainnet.earnings} SSC, {earnings.totalMainnet.percentage}%</p>
+            <p className='text-lg font-bold mt- text-[#241235]'>Earnings: {userRewards.totalMainnet.earnings} SSC, {userRewards.totalMainnet.percentage}%</p>
           </div>
         </div>
       </div>
