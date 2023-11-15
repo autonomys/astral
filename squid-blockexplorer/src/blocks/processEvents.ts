@@ -48,11 +48,11 @@ export function processEventsFactory(getOrCreateAccount: (blockHeight: bigint, a
         const account = await getOrCreateAccount(block.height, address);
 
         if (item.name === 'Rewards.BlockReward') {
-          account.blockRewardsTotal += item.event.args.reward;
+          account.blockRewardsTotal = account.blockRewardsTotal ? BigInt(item.event.args.reward) + account.blockRewardsTotal : BigInt(item.event.args.reward);
         }
 
         if (item.name === 'Rewards.VoteReward') {
-          account.blockRewardsTotal += item.event.args.reward;
+          account.voteRewardsTotal = account.voteRewardsTotal ? BigInt(item.event.args.reward) + account.voteRewardsTotal : BigInt(item.event.args.reward);
         }
 
         const rewardEvent = new RewardEvent({
