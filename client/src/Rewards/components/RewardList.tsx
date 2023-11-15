@@ -5,16 +5,19 @@ import { useErrorHandler } from 'react-error-boundary'
 // common
 import { Pagination, SearchBar, Spinner } from 'common/components'
 import { PAGE_SIZE } from 'common/constants'
+import useDomains from 'common/hooks/useDomains'
+import ExportButton from 'common/components/ExportButton'
+import { numberWithCommas } from 'common/helpers'
+import NotAllowed from 'common/components/NotAllowed'
 
 // reward
 import RewardTable from './RewardTable'
 import { QUERY_REWARDS_LIST } from 'Rewards/querys'
-import { numberWithCommas } from 'common/helpers'
-import ExportButton from 'common/components/ExportButton'
 
 const RewardList = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const { selectedChain } = useDomains()
 
   const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
@@ -25,6 +28,10 @@ const RewardList = () => {
 
   if (loading) {
     return <Spinner />
+  }
+
+  if (selectedChain.title !== 'Gemini 3g' || selectedChain.isDomain) {
+    return <NotAllowed />
   }
 
   const accountsConnection = data.accountsConnection.edges.map((account) => account.node)
