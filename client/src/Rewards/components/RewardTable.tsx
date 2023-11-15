@@ -12,68 +12,76 @@ import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import { bigNumberToNumber, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-
-// account
-import { AccountListCard } from 'Account/components'
 import { PAGE_SIZE } from 'common/constants'
 import useDomains from 'common/hooks/useDomains'
+
+// rewards
 import RewardListCard from './RewardListCard'
-import { Reward } from 'Rewards/helpers'
 
 dayjs.extend(relativeTime)
 
 interface Props {
-  rewards: Reward[]
+  accounts: Account[]
+  page: number
 }
 
-const RewardTable: FC<Props> = ({ rewards }) => {
+const RewardTable: FC<Props> = ({ accounts, page }) => {
   const { selectedChain } = useDomains()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
+  const newCount = PAGE_SIZE * Number(page + 1) - 10
+
   // methods
-  const generateColumns = (rewards: Reward[]): Column[] => [
+  const generateColumns = (accounts: Account[]): Column[] => [
     {
       title: 'Rank',
-      cells: rewards.map(({ rank }) => <div key={`${rank}-reward-rank`}>{rank}</div>),
+      cells: accounts.map((id, index) => (
+        <div key={`${id}-account-index`}>{page + 1 > 1 ? newCount + index + 1 : index + 1}</div>
+      )),
     },
     {
       title: 'Account',
-      cells: rewards.map(({ account }, index) => (
-        <div key={`${account}-reward-id`} className='flex row items-center gap-3'>
+      cells: accounts.map(({ id }, index) => (
+        <div key={`${id}-account-id`} className='flex row items-center gap-3'>
+          <Identicon value={id} size={26} theme='beachball' />
           <Link
-            data-testid={`reward-link-${index}`}
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, account)}
+            data-testid={`account-link-${index}`}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
             className='hover:text-[#DE67E4]'
           >
-            <div>{isLargeLaptop ? account : shortString(account)}</div>
+            <div>{isLargeLaptop ? id : shortString(id)}</div>
           </Link>
         </div>
       )),
     },
     {
       title: 'Block rewards',
-      cells: rewards.map(({ blockReward, account }) => (
-        <div key={`${account}-reward-block`}>{blockReward}</div>
+      cells: accounts.map(({ blockRewardsTotal, id }) => (
+        <div key={`${id}-reward-block`}>
+          {blockRewardsTotal ? bigNumberToNumber(blockRewardsTotal, 18) : 0}
+        </div>
       )),
     },
     {
       title: 'Vote rewards',
-      cells: rewards.map(({ voteReward, account }) => (
-        <div key={`${account}-reward-vote`}>{voteReward}</div>
+      cells: accounts.map(({ voteRewardsTotal, id }) => (
+        <div key={`${id}-reward-vote`}>
+          {voteRewardsTotal ? bigNumberToNumber(voteRewardsTotal, 18) : 0}
+        </div>
       )),
     },
     {
       title: 'Total rewards',
-      cells: rewards.map(({ totalReward, account }) => (
-        <div key={`${account}-reward-total`}>{totalReward}</div>
+      cells: accounts.map(({ total, id }) => (
+        <div key={`${id}-reward-total`}>{total ? bigNumberToNumber(total, 18) : 0}</div>
       )),
     },
   ]
 
   // constants
-  const columns = generateColumns(rewards)
+  const columns = generateColumns(accounts)
 
   return isDesktop ? (
     <div className='w-full'>
@@ -89,8 +97,8 @@ const RewardTable: FC<Props> = ({ rewards }) => {
     </div>
   ) : (
     <div className='w-full'>
-      {rewards.map((reward, index) => (
-        <RewardListCard index={index} reward={reward} key={`reward-list-card-${reward.account}`} />
+      {accounts.map((account, index) => (
+        <RewardListCard index={index} account={account} key={`reward-list-card-${account.id}`} />
       ))}
     </div>
   )
