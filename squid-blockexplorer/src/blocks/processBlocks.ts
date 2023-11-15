@@ -20,7 +20,6 @@ export function processBlocksFactory({
     const rewards: RewardEvent[] = [];
     const blocks: Block[] = [];
     const logs: Log[] = [];
-    const operatorsList: Operator[] = [];
     const operators: Operator[] = [];
     let domainOperators: Operator[] = [];
 
@@ -70,8 +69,7 @@ export function processBlocksFactory({
 
       domainOperators = await getOperators(header);
     }
-
-    operatorsList.push(...new Set([...operators, ...domainOperators]));
+    const operatorsList = operators.filter(({ id }) => !domainOperators.some((e) => e.id === id));
 
     // saving results
     await ctx.store.save(blocks);
