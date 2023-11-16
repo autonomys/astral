@@ -1,8 +1,12 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useQuery } from '@apollo/client'
 import Identicon from '@polkadot/react-identicon'
+import { useErrorHandler } from 'react-error-boundary'
 import { accountIdToHex } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
+import { QUERY_ACCOUNT_REWARDS_BY_ID } from 'Account/query'
+import { Spinner } from 'common/components'
 
 export interface FormValues {
   searchAddress: string
@@ -71,8 +75,13 @@ const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
   const { selectedChain } = useDomains()
   const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
   const [userRewards, setUserRewards] = useState(defaultRewards)
+  const { data, error, loading } = useQuery(QUERY_ACCOUNT_REWARDS_BY_ID, { variables: { account: publicKey } })
 
-  const handleSearch = async () => {
+  useErrorHandler(error)
+
+  const totalCurrentRewards = useMemo(() => (data && data.accounts.length === 1 && data.accounts[0].rewards.length > 0) ? (data.accounts[0].rewards.reduce((acc, reward) => acc + parseFloat(reward.amount), 0) / 10 ** 18).toFixed(4).toLocaleString() : '0', [data])
+
+  const handleSearch = useCallback(async () => {
     const file = await fetch('/data/rewards.csv')
     const data = await file.text()
     const rows = data.split('\n').slice(1)
@@ -108,11 +117,25 @@ const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
     })
     const userRewards = rewards.filter(reward => reward.address.subspaceFormat === accountAddress || reward.address.polkadotFormat === accountAddress)
     if (userRewards.length > 0) setUserRewards(userRewards[0].rewards)
-  }
+  }, [accountAddress])
 
   useEffect(() => {
     handleSearch()
-  }, [])
+  }, [handleSearch])
+
+  useEffect(() => {
+    setUserRewards({
+      ...userRewards,
+      geminiIII: {
+        earnings: totalCurrentRewards,
+        percentage: '',
+      },
+    })
+  }, [totalCurrentRewards])
+
+  if (loading) {
+    return <Spinner />
+  }
 
   return (
     <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 md:p-4 p-6 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
