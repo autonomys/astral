@@ -239,3 +239,18 @@ export const QUERY_ACCOUNT_EXTRINSICS = gql`
     }
   }
 `
+
+export const QUERY_ACCOUNT_REWARDS_BY_ID = gql`
+  query AccountReward($account: String!) {
+    accounts(where: {id_eq: $account}) {
+      id
+      total
+      free
+      rewards(where: {amount_gt: 0}) {
+        amount
+        name
+        phase
+      }
+    }
+  }
+`
