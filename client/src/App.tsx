@@ -24,7 +24,7 @@ import {
   HeaderBackground,
   DomainHeader,
 } from 'layout/components'
-import TokenCalculator from 'layout/components/TokenCalculator'
+import TokenCalculator from 'Account/components/AccountTokenCalculator'
 import NotResultsFound from 'layout/components/NotResultsFound'
 import SearchResult from 'layout/components/SearchResult'
 
