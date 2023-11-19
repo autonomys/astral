@@ -126,7 +126,7 @@ const SearchBar: FC = () => {
 
 export default SearchBar
 
-const SearchSpinner: FC = () => {
+export const SearchSpinner: FC = () => {
   return (
     <div role='status'>
       <svg

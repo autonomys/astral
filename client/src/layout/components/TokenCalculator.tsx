@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
 import Identicon from '@polkadot/react-identicon'
 import { useErrorHandler } from 'react-error-boundary'
@@ -7,36 +7,67 @@ import { accountIdToHex } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
 import { QUERY_ACCOUNT_REWARDS_BY_ID } from 'Account/query'
 import { Spinner } from 'common/components'
+import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { SearchSpinner } from '../../common/components/SearchBar'
 
 export interface FormValues {
   searchAddress: string
 }
 
 const SearchBar: FC = () => {
+  const navigate = useNavigate()
+  const [isSearching, setIsSearching] = useState(false)
+  const [rewardAddress, setRewardAddress] = useState('') 
 
   // TO-DO: Remove this once we have a better way to handle the search
   const errors = { searchTerm: '' }
   const touched = { searchTerm: '' }
   const isDesktop = true
 
+  const handleChange = useCallback((e) => setRewardAddress(e.target.value), [setRewardAddress])
+
+  const handleSubmit = useCallback(async () => {
+    setIsSearching(true)
+    navigate(`/tokenCalculator/${rewardAddress}`)
+  }, [navigate, rewardAddress])
+
   return (
     <div className='container flex flex-col justify-left w-1/2'>
-    <input
-      data-testid='search-term-input'
-      id='searchTerm'
-      className={`
-                    dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg
-                    ${
-                      errors.searchTerm &&
-                      touched.searchTerm &&
-                      'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
-                    } 
-                  `}
-      placeholder={isDesktop ? 'Reward Address - Subspace Testnet Format' : 'Search...'}
-      // name='searchTerm'
-      // value={values.searchTerm}
-      // onChange={handleChange}
-    />
+      <div className='ml-4 w-full'>
+        <div className='relative'>
+          <input
+            data-testid='search-term-input'
+            id='searchTerm'
+            className={`
+                          dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg
+                          ${
+                            errors.searchTerm &&
+                            touched.searchTerm &&
+                            'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-md bg-white shadow-lg'
+                          } 
+                        `}
+            placeholder={isDesktop ? 'Reward Address - Subspace Testnet Format' : 'Search...'}
+            name='searchTerm'
+            value={rewardAddress}
+            onChange={handleChange}
+          />
+          <button
+            disabled={isSearching}
+            type='submit'
+            data-testid='testSearchSubmit'
+            className='absolute right-1 md:right-2.5 bottom-0 focus:ring-4 focus:outline-none font-medium rounded-full text-sm px-4 py-2 '
+            onClick={handleSubmit}
+          >
+            {isSearching ? (
+              <div className='flex justify-center align-middle mt-4'>
+                <SearchSpinner />
+              </div>
+            ) : (
+              <ArrowLongRightIcon stroke='#DE67E4' className='w-6 h-6' />
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -131,6 +162,7 @@ const SearchResult: FC<{ accountAddress: string }> = ({ accountAddress }) => {
         percentage: '',
       },
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [totalCurrentRewards])
 
   if (loading) {
