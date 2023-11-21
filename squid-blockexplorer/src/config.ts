@@ -10,8 +10,8 @@ enum HandlerParams {
 }
 
 export interface ProcessorConfig {
-    chainName: string
-    prefix: number | string
+    chainName: string;
+    prefix: number | string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dataSource: Parameters<SubstrateProcessor<any>['setDataSource']>[HandlerParams.NAME]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,13 +25,17 @@ export interface ProcessorConfig {
 }
 
 const config: ProcessorConfig = {
-    chainName: 'gemini-3f',
+    chainName: 'gemini-3g',
     prefix: 2254,
     dataSource: {
         archive: process.env.ARCHIVE_ENDPOINT as string,
-        chain: process.env.CHAIN_RPC_ENDPOINT as string,
-    },
-    typesBundle: 'gemini-3f',
+        chain: {
+            url: process.env.CHAIN_RPC_ENDPOINT as string,
+            capacity: 30 as number,
+            maxBatchCallSize: 300 as number,
+        },
+    }, // Type assertion
+    typesBundle: 'gemini-3g',
 };
 
 export default config;

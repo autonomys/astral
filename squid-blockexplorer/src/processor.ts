@@ -13,7 +13,7 @@ import { processBlocksFactory, createProcessBlocksDependencies } from './blocks'
 
 export type Item = BatchProcessorItem<typeof processor>;
 export type Context = BatchContext<Store, Item>;
-// workaround for types: 
+// workaround for types:
 // original call and event items have `name: '*'` instead of `name: string`
 type ProcessorCallItem = BatchProcessorCallItem<typeof processor>;
 type ProcessorEventItem = BatchProcessorEventItem<typeof processor>;
