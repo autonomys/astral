@@ -218,7 +218,7 @@ export function getOrCreateAccountFactory(ctx: Context) {
       account = new Account({
         id: accountId,
         updatedAt: BigInt(header.height),
-        nonce: BigInt(accountInfo.nonce),
+        nonce: accountInfo ? BigInt(accountInfo.nonce) : 0n,
       });
 
       await ctx.store.insert(account);

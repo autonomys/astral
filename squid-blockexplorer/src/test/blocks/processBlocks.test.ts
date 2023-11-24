@@ -54,7 +54,7 @@ tap.test('processBlocks should process blocks and items from the Context and sav
   await processBlocks(context);
 
   // expect store.save method calls: authors, blocks, extrinsics, calls, events, rewardEvents, logs
-  t.equal(saveSpy.callCount, 9);
+  t.equal(saveSpy.callCount, 8);
 
   // check stored block ids against block ids in the context
   // first two calls are for authors

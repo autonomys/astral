@@ -4,9 +4,9 @@ import { ProcessBlocksDependencies } from "./types";
 import {
   getHistorySizeFactory,
   getSpacePledgedFactory,
-  solutionRangesStorageFactory,
   digestStorageFactory,
   getBlockAuthorFactory,
+  transactionFeesCollectedStorage,
 } from "./storage";
 import { processCalls, processExtrinsicsFactory } from "./processCalls";
 import { processEventsFactory } from "./processEvents";
@@ -27,15 +27,22 @@ export function createProcessBlocksDependencies(
   const getBlockAuthor = getBlockAuthorFactory(ctx, api);
   const getSpacePledged = getSpacePledgedFactory(
     ctx,
-    solutionRangesStorageFactory
+    transactionFeesCollectedStorage
   );
   const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
   const getOrCreateOperator = getOrCreateOperatorFactory(ctx, api);
-  const getOrCreateNominators = getOrCreateNominatorsFactory(ctx, api, getOrCreateAccount);
+  const getOrCreateNominators = getOrCreateNominatorsFactory(
+    ctx,
+    api,
+    getOrCreateAccount
+  );
   const addEventModuleName = addEventModuleNameFactory(ctx);
   const addExtrinsicModuleName = addExtrinsicModuleNameFactory(ctx);
-  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccount, addExtrinsicModuleName);
+  const processExtrinsics = processExtrinsicsFactory(
+    getOrCreateAccount,
+    addExtrinsicModuleName
+  );
   const processEvents = processEventsFactory(
     ctx,
     getOrCreateAccount,
