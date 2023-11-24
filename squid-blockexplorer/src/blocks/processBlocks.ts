@@ -1,5 +1,5 @@
 import { CallItem, Context, EventItem } from "../processor";
-import { Block, Event, Log, Operator, RewardEvent } from "../model";
+import { Block, Event, Log, RewardEvent } from "../model";
 import { partitionItems, createBlock } from "./utils";
 import { ProcessBlocksDependencies, ExtrinsicsMap, CallsMap } from "./types";
 
@@ -11,7 +11,6 @@ export function processBlocksFactory({
   processEvents,
   getLogs,
   getBlockAuthor,
-  getOperators,
 }: ProcessBlocksDependencies) {
   return async function processBlocks(ctx: Context) {
     const extrinsicsMap: ExtrinsicsMap = new Map();
@@ -20,8 +19,6 @@ export function processBlocksFactory({
     const rewards: RewardEvent[] = [];
     const blocks: Block[] = [];
     const logs: Log[] = [];
-    const operators: Operator[] = [];
-    let domainOperators: Operator[] = [];
 
     for (const { header, items } of ctx.blocks) {
       // creating block
@@ -52,24 +49,28 @@ export function processBlocksFactory({
       });
       blocks.push(block);
 
-      await processExtrinsics(extrinsicsMap, callsMap, parentCalls, block);
+      await processExtrinsics(
+        extrinsicsMap,
+        callsMap,
+        parentCalls,
+        block,
+        header
+      );
       await processCalls(extrinsicsMap, callsMap, childCalls, block);
 
       const [blockEvents, rewardEvents] = await processEvents(
         extrinsicsMap,
         callsMap,
         eventItems as EventItem[],
-        block
+        block,
+        header
       );
       events.push(...blockEvents);
       rewards.push(...rewardEvents);
 
       const blockLogs = await getLogs(header, block);
       logs.push(...blockLogs);
-
-      domainOperators = await getOperators(header);
     }
-    const operatorsList = operators.filter(({ id }) => !domainOperators.some((e) => e.id === id));
 
     // saving results
     await ctx.store.save(blocks);
@@ -78,7 +79,6 @@ export function processBlocksFactory({
     await ctx.store.save(events);
     await ctx.store.save(rewards);
     await ctx.store.save(logs);
-    await ctx.store.save(operatorsList);
 
     ctx.log.child("blocks").info(`added: 
       ${blocks.length} blocks, 
@@ -87,7 +87,6 @@ export function processBlocksFactory({
       ${events.length} events,
       ${rewards.length} rewards,
       ${logs.length} logs,
-      ${operatorsList.length} operators
     `);
   };
 }

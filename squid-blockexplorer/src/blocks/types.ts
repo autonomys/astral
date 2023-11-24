@@ -22,7 +22,8 @@ export interface ProcessBlocksDependencies {
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
     calls: CallItem[],
-    block: Block
+    block: Block,
+    header: SubstrateBlock
   ) => Promise<void>;
   processCalls: (
     extrinsicsMap: ExtrinsicsMap,
@@ -34,12 +35,11 @@ export interface ProcessBlocksDependencies {
     extrinsicsMap: ExtrinsicsMap,
     callsMap: CallsMap,
     eventItems: EventItem[],
-    block: Block
+    block: Block,
+    header: SubstrateBlock
   ) => Promise<[Event[], RewardEvent[]]>;
   getLogs: (header: SubstrateBlock, block: Block) => Promise<Log[]>;
   getBlockAuthor: (header: SubstrateBlock) => Promise<Account | undefined>;
-  getOperators: (header: SubstrateBlock) => Promise<Operator[]>;
-  getNominators: (header: SubstrateBlock) => Promise<Nominator[]>;
 }
 
 export type ExtrinsicsMap = Map<string, Extrinsic>;

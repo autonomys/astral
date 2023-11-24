@@ -6,7 +6,7 @@ import { decodeHex } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from '../processor';
 import BlockHeaderMock from './BlockHeader.json';
 import { SystemDigestStorage, SubspaceSolutionRangesStorage } from '../types/storage';
-import { Account } from '../model';
+import { Account, Operator } from '../model';
 import { createBlock, createCall, createExtrinsic } from '../blocks/utils';
 
 const callData = {
@@ -239,6 +239,8 @@ export const digestStorageFactoryMock = () => ({
 } as unknown as SystemDigestStorage);
 
 export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'random account id' }));
+export const getOrCreateOperator = () => Promise.resolve(new Operator({ id: '1' }));
+export const getOrCreateNominators = () => Promise.resolve([]);
 export const addModuleNameMock = () => Promise.resolve();
 
 export const blockMock = createBlock({

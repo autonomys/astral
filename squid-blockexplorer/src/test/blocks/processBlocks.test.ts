@@ -19,9 +19,7 @@ tap.test('processBlocks should process blocks and items from the Context and sav
     processCalls: () => Promise.resolve(),
     processEvents: () => Promise.resolve([[], []]),
     getLogs: () => Promise.resolve([]),
-    getBlockAuthor: () => Promise.resolve(new Account({ id: 'author' })),
-    getOperators: () => Promise.resolve([]),
-    getNominators: () => Promise.resolve([]),
+    getBlockAuthor: () => Promise.resolve(new Account({ id: 'author' }))
   });
 
   const blocks = [

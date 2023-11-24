@@ -2,7 +2,7 @@ import tap from 'tap';
 import { createBlock, createCall, createExtrinsic } from '../../blocks/utils';
 import { Account, Block, Call, Extrinsic } from '../../model';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { callItemWithSignature, contextMock } from '../../mocks/mocks';
+import { blockMock, callItemWithSignature, contextMock } from '../../mocks/mocks';
 import { getOrCreateAccountFactory } from '../../blocks/utils';
 import { Context } from '../../processor';
 
@@ -22,7 +22,7 @@ tap.test('getOrCreateAccount should get Account if store has one', async (t) => 
 
   const getOrCreateAccount = getOrCreateAccountFactory(contextWithAccount);
 
-  const result = await getOrCreateAccount(BigInt(1), accountId);
+  const result = await getOrCreateAccount(BlockHeaderMock, accountId);
 
   t.equal(result.id, accountId);
 
@@ -34,7 +34,7 @@ tap.test('getOrCreateAccount should create new Account if store has none', async
 
   const getOrCreateAccount = getOrCreateAccountFactory(contextMock);
 
-  const result = await getOrCreateAccount(BigInt(1), accountId);
+  const result = await getOrCreateAccount(BlockHeaderMock, accountId);
 
   t.equal(result.id, accountId);
 
