@@ -43,6 +43,13 @@ const Header: FC = () => {
     },
   ]
 
+  if (selectedChain.title === 'Gemini 3g' && !selectedChain.isDomain) {
+    menuList.push({
+      title: 'Rewards',
+      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.rewards.list}`,
+    })
+  }
+
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-10">
       {isDesktop ? (

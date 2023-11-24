@@ -40,7 +40,7 @@ export const formatSpacePledged = (value: number) => {
   const MB = 1024 * 1024
 
   if (value >= TB) {
-    return `${Math.round((value * 100) / TB) / 100} TB`
+    return `${Math.round((value * 100) / TB) / 100} TiB`
   } else if (value >= GB) {
     return `${Math.round((value * 100) / GB) / 100} GB`
   } else {
