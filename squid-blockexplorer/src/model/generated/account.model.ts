@@ -33,6 +33,9 @@ export class Account {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     blockRewardsTotal!: bigint | undefined | null
 
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    nonce!: bigint | undefined | null
+
     @OneToMany_(() => Extrinsic, e => e.signer)
     extrinsics!: Extrinsic[]
 

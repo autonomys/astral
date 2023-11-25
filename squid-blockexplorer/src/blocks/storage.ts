@@ -2,8 +2,8 @@ import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { ApiPromise } from "@polkadot/api";
 
 import { Context } from '../processor';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsStorage, DomainsNominatorsStorage, } from '../types/storage';
-import { calcHistorySize, calcSpacePledged, getStorageHash, decodeLog } from './utils';
+import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsStorage, DomainsNominatorsStorage, TransactionFeesCollectedStorageFeesEscrowStorage, } from '../types/storage';
+import { calcHistorySize, getStorageHash, decodeLog } from './utils';
 import { Account } from '../model';
 import { SubPreDigest } from './types';
 import { DigestItem_PreRuntime } from '../types/v0';
@@ -24,12 +24,15 @@ export function domainNominatorStorageFactory(ctx: Context, header: SubstrateBlo
   return new DomainsNominatorsStorage(ctx, header);
 }
 
+export function transactionFeesCollectedStorage(ctx: Context, header: SubstrateBlock) {
+  return new TransactionFeesCollectedStorageFeesEscrowStorage(ctx, header);
+}
 
-export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {
+export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => TransactionFeesCollectedStorageFeesEscrowStorage) {
   return async function getSpacePledged(header: SubstrateBlock) {
-    const storage = storageFactory(ctx, header);
-    const solutionRange = (await storage.asV0.get()).current;
-    return calcSpacePledged(solutionRange);
+    const storage = storageFactory(ctx, header); 
+    const spacePledged = await storage.asV0.get();
+   return spacePledged;
   };
 }
 

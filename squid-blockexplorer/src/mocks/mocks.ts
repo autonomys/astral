@@ -5,8 +5,8 @@ import { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from '../processor';
 import BlockHeaderMock from './BlockHeader.json';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage } from '../types/storage';
-import { Account } from '../model';
+import { SystemDigestStorage, SubspaceSolutionRangesStorage, TransactionFeesCollectedStorageFeesEscrowStorage } from '../types/storage';
+import { Account, Operator } from '../model';
 import { createBlock, createCall, createExtrinsic } from '../blocks/utils';
 
 const callData = {
@@ -195,6 +195,7 @@ export const contextMock: Context = {
 
 export const SOLUTION_RANGES = BigInt(123);
 export const SEGMENTS_COUNT = 123;
+export const SPACE_PLEDGED = BigInt(123);
 
 export const solutionRangesStorageFactoryMock = () => ({
   asV3: {
@@ -210,6 +211,21 @@ export const solutionRangesStorageFactoryMock = () => ({
     get: () => ({ current: SOLUTION_RANGES })
   },
 } as unknown as SubspaceSolutionRangesStorage);
+
+export const transactionFeesCollectedStorageMock = () => ({
+  asV3: {
+    get: () => SPACE_PLEDGED
+  },
+  asV0: {
+    get: () => SPACE_PLEDGED
+  },
+  asV1: {
+    get: () => SPACE_PLEDGED
+  },
+  asV2: {
+    get: () => SPACE_PLEDGED
+  },
+} as unknown as TransactionFeesCollectedStorageFeesEscrowStorage);
 
 export const digestLogs = [
   { __kind: 'Consensus' }, { __kind: 'PreRuntime' },
@@ -238,7 +254,9 @@ export const digestStorageFactoryMock = () => ({
   }
 } as unknown as SystemDigestStorage);
 
-export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: 'random account id' }));
+export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: '0x14682f9dea76a4dd47172a118eb29b9cf9976df7ade12f95709a7cd2e3d81d6c' }));
+export const getOrCreateOperator = () => Promise.resolve(new Operator({ id: '1' }));
+export const getOrCreateNominators = () => Promise.resolve([]);
 export const addModuleNameMock = () => Promise.resolve();
 
 export const blockMock = createBlock({

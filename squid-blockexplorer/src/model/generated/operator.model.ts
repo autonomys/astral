@@ -1,5 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
+import {Nominator} from "./nominator.model"
 
 @Entity_()
 export class Operator {
@@ -35,6 +36,12 @@ export class Operator {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     totalShares!: bigint | undefined | null
 
+    @OneToMany_(() => Nominator, e => e.operator)
+    nominators!: Nominator[]
+
     @Column_("text", {nullable: true})
     status!: string | undefined | null
+
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    updatedAt!: bigint | undefined | null
 }

@@ -6,6 +6,7 @@ type Account @entity {
   updatedAt: BigInt
   voteRewardsTotal: BigInt @index
   blockRewardsTotal: BigInt @index
+  nonce: BigInt
   extrinsics: [Extrinsic!]!
     @derivedFrom(field: "signer")
     @cardinality(value: 10)
@@ -127,7 +128,9 @@ type Operator @entity {
   currentTotalStake: BigInt
   currentEpochRewards: BigInt
   totalShares: BigInt
+  nominators: [Nominator!]! @derivedFrom(field: "operator") @cardinality(value: 1000)
   status: String
+  updatedAt: BigInt
 }
 
 type Nominator @entity {
@@ -135,4 +138,5 @@ type Nominator @entity {
   operator: Operator!
   account: Account!
   shares: BigInt
+  updatedAt: BigInt
 }

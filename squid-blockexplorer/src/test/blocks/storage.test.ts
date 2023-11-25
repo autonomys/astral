@@ -1,11 +1,10 @@
 import tap from 'tap';
 import { SubspaceSolutionRangesStorage } from '../../types/storage';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { calcSpacePledged, calcHistorySize } from '../../blocks/utils';
+import { calcHistorySize } from '../../blocks/utils';
 import {
   contextMock,
-  solutionRangesStorageFactoryMock,
-  SOLUTION_RANGES,
+  transactionFeesCollectedStorageMock,
 } from '../../mocks/mocks';
 import { solutionRangesStorageFactory, getSpacePledgedFactory, getHistorySizeFactory } from '../../blocks/storage';
 
@@ -18,13 +17,12 @@ tap.test('solutionRangesStorageFactory should create instance of SubspaceSolutio
 });
 
 tap.test('getSpacePledgedFactory should create getSpacePledged method, which returns space pledged (bigint)', async (t) => {
-  const getSpacePledged = getSpacePledgedFactory(contextMock, solutionRangesStorageFactoryMock);
+  const getSpacePledged = getSpacePledgedFactory(contextMock, transactionFeesCollectedStorageMock);
 
   const result = await getSpacePledged(BlockHeaderMock);
-  const expected = calcSpacePledged(SOLUTION_RANGES);
 
   t.type(result, 'bigint');
-  t.equal(result, expected);
+  t.equal(result, 123n);
 
   t.end();
 });

@@ -11,6 +11,7 @@ import {
   parentCallMock,
   addModuleNameMock,
 } from '../../mocks/mocks';
+import BlockHeaderMock from '../../mocks/BlockHeader.json';
 import { processCalls, processExtrinsicsFactory } from '../../blocks/processCalls';
 
 tap.test('processExtrinsics should save Extrinsics and Calls to extrinsics map and calls map respectively', async (t) => {
@@ -21,7 +22,7 @@ tap.test('processExtrinsics should save Extrinsics and Calls to extrinsics map a
   t.equal(extrinsicsMap.size, 0);
   t.equal(callsMap.size, 0);
 
-  await processExtrinsics(extrinsicsMap, callsMap, callsItems, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, callsItems, blockMock, BlockHeaderMock);
 
   t.equal(extrinsicsMap.size, callsItems.length); // 2
   t.equal(callsMap.size, callsItems.length); // 2
@@ -38,7 +39,7 @@ tap.test('processExtrinsics should map Extrinsics and Calls to a Block', async (
     callItemWithSignature,
   ];
 
-  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock, BlockHeaderMock);
 
   t.equal(extrinsicsMap.get(callItemWithSignature.extrinsic.id)?.block, blockMock);
   t.equal(callsMap.get(callItemWithSignature.call.id)?.block, blockMock);
@@ -55,7 +56,7 @@ tap.test('processExtrinsics should add signer (Account) and signature if origina
     callItemWithSignature,
   ];
 
-  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock, BlockHeaderMock);
 
   const savedExtrinsic = extrinsicsMap.get(callItemWithSignature.extrinsic.id);
 
@@ -74,7 +75,7 @@ tap.test('processExtrinsics should not add signer (Account) and signature if ori
     parentCallItem,
   ];
 
-  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock, BlockHeaderMock);
 
   const savedExtrinsic = extrinsicsMap.get(callItemWithSignature.extrinsic.id);
 
