@@ -206,17 +206,17 @@ export function getOrCreateAccountFactory(ctx: Context) {
     header: SubstrateBlock,
     accountId: string
   ): Promise<Account> {
-    let account = await ctx.store.get(Account, accountId);
-
     const storage = createSystemAccountStorage(ctx, header);
     const accountBufferId = decodeHex(accountId);
+    const id = encodeId(accountBufferId);
+    let account = await ctx.store.get(Account, id);
 
     // update account nonce if it exists
     const accountInfo = await storage.asV0.get(accountBufferId);
 
     if (!account) {
       account = new Account({
-        id: accountId,
+        id: id,
         updatedAt: BigInt(header.height),
         nonce: accountInfo ? BigInt(accountInfo.nonce) : 0n,
       });
