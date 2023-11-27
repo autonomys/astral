@@ -1,141 +1,83 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
+import { useErrorHandler } from 'react-error-boundary'
+import { useQuery } from '@apollo/client'
 
 // common
-import { SearchBar } from 'common/components'
-import OperatorTable from './OperatorTable'
+import { Pagination, SearchBar, Spinner } from 'common/components'
+import { PAGE_SIZE } from 'common/constants'
+import { numberWithCommas } from 'common/helpers'
+import ExportButton from 'common/components/ExportButton'
+
+// operator
+import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
+import OperatorsTable from 'Operator/components/OperatorsTable'
 
 const OperatorList: FC = () => {
-  const operators = [
-    {
-      id: '1',
-      signingKey: 'operator1',
-      currentDomainId: 1,
-      nextDomainId: 2,
-      minimumNominatorStake: '1000000000',
-      nominationTax: 5,
-      currentTotalStake: '2000000000',
-      currentEpochRewards: '500000000',
-      totalShares: '5000000000',
-      status: 'Active',
-    },
-    {
-      id: '2',
-      signingKey: 'operator2',
-      currentDomainId: 3,
-      nextDomainId: 4,
-      minimumNominatorStake: '800000000',
-      nominationTax: 3,
-      currentTotalStake: '1500000000',
-      currentEpochRewards: '400000000',
-      totalShares: '4000000000',
-      status: 'Active',
-    },
-    {
-      id: '3',
-      signingKey: 'operator3',
-      currentDomainId: 2,
-      nextDomainId: 1,
-      minimumNominatorStake: '1200000000',
-      nominationTax: 4,
-      currentTotalStake: '1800000000',
-      currentEpochRewards: '450000000',
-      totalShares: '4500000000',
-      status: 'Active',
-    },
-    {
-      id: '4',
-      signingKey: 'operator4',
-      currentDomainId: 5,
-      nextDomainId: 6,
-      minimumNominatorStake: '900000000',
-      nominationTax: 3,
-      currentTotalStake: '1400000000',
-      currentEpochRewards: '350000000',
-      totalShares: '3500000000',
-      status: 'Active',
-    },
-    {
-      id: '5',
-      signingKey: 'operator5',
-      currentDomainId: 4,
-      nextDomainId: 5,
-      minimumNominatorStake: '1100000000',
-      nominationTax: 5,
-      currentTotalStake: '1700000000',
-      currentEpochRewards: '480000000',
-      totalShares: '4800000000',
-      status: 'Active',
-    },
-    {
-      id: '6',
-      signingKey: 'operator6',
-      currentDomainId: 7,
-      nextDomainId: 8,
-      minimumNominatorStake: '950000000',
-      nominationTax: 4,
-      currentTotalStake: '1600000000',
-      currentEpochRewards: '420000000',
-      totalShares: '4200000000',
-      status: 'Active',
-    },
-    {
-      id: '7',
-      signingKey: 'operator7',
-      currentDomainId: 6,
-      nextDomainId: 7,
-      minimumNominatorStake: '1300000000',
-      nominationTax: 3,
-      currentTotalStake: '1900000000',
-      currentEpochRewards: '460000000',
-      totalShares: '4600000000',
-      status: 'Active',
-    },
-    {
-      id: '8',
-      signingKey: 'operator8',
-      currentDomainId: 9,
-      nextDomainId: 10,
-      minimumNominatorStake: '850000000',
-      nominationTax: 5,
-      currentTotalStake: '1500000000',
-      currentEpochRewards: '380000000',
-      totalShares: '3800000000',
-      status: 'Active',
-    },
-    {
-      id: '9',
-      signingKey: 'operator9',
-      currentDomainId: 8,
-      nextDomainId: 9,
-      minimumNominatorStake: '1150000000',
-      nominationTax: 4,
-      currentTotalStake: '1700000000',
-      currentEpochRewards: '430000000',
-      totalShares: '4300000000',
-      status: 'Active',
-    },
-    {
-      id: '10',
-      signingKey: 'operator10',
-      currentDomainId: 11,
-      nextDomainId: 12,
-      minimumNominatorStake: '980000000',
-      nominationTax: 3,
-      currentTotalStake: '1600000000',
-      currentEpochRewards: '370000000',
-      totalShares: '3700000000',
-      status: 'Active',
-    },
-  ]
+  const [currentPage, setCurrentPage] = useState(-1)
+  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+
+  const { data, error, loading } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
+    variables: { first: PAGE_SIZE, after: lastCursor },
+    pollInterval: 6000,
+  })
+
+  useErrorHandler(error)
+
+  if (loading) {
+    return <Spinner />
+  }
+
+  const operatorsConnection = data.operatorsConnection.edges.map((operator) => operator.node)
+  const totalCount = data.operatorsConnection.totalCount
+  const totalLabel = numberWithCommas(Number(totalCount))
+
+  const pageInfo = data.operatorsConnection.pageInfo
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => prev + 1)
+    setLastCursor(pageInfo.endCursor)
+  }
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => prev - 1)
+    setLastCursor(pageInfo.endCursor)
+  }
+
+  const onChange = (page: number) => {
+    setCurrentPage(Number(page))
+
+    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
+    const endCursor = newCount - PAGE_SIZE
+
+    if (endCursor === 0 || endCursor < 0) {
+      return setLastCursor(undefined)
+    }
+    setLastCursor(endCursor.toString())
+  }
 
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full grid lg:grid-cols-2'>
         <SearchBar />
       </div>
-
+      <div className='w-full flex justify-between mt-5'>
+        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
+      </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
-        <OperatorTable operators={operators} />
+        <OperatorsTable operators={operatorsConnection} />
+        <div className='w-full flex justify-between gap-2'>
+          <ExportButton data={operatorsConnection} filename='operator-list' />
+          <Pagination
+            nextPage={handleNextPage}
+            previousPage={handlePreviousPage}
+            currentPage={currentPage}
+            pageSize={PAGE_SIZE}
+            totalCount={totalCount}
+            hasNextPage={pageInfo.hasNextPage}
+            hasPreviousPage={pageInfo.hasPreviousPage}
+            onChange={onChange}
+          />
+        </div>
       </div>
     </div>
   )

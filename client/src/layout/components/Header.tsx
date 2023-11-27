@@ -44,10 +44,18 @@ const Header: FC = () => {
   ]
 
   if (selectedChain.title === 'Gemini 3g' && !selectedChain.isDomain) {
-    menuList.push({
-      title: 'Rewards',
-      link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.rewards.list}`,
-    })
+    menuList.push(
+      ...[
+        {
+          title: 'Rewards',
+          link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.rewards.list}`,
+        },
+        {
+          title: 'Operators',
+          link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.operators.list}`,
+        },
+      ],
+    )
   }
 
   return (

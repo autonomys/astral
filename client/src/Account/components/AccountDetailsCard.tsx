@@ -41,7 +41,7 @@ const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = fa
                 {!isDesktop ? shortString(publicKey) : publicKey}
               </CopyButton>
             </StyledListItem>
-            <StyledListItem title='Nonce'>{account.updatedAt}</StyledListItem>
+            <StyledListItem title='Nonce'>{account.nonce}</StyledListItem>
           </List>
         </Accordion>
       </div>

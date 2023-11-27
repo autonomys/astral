@@ -61,7 +61,7 @@ export const INTERNAL_ROUTES = {
   operators: {
     id: {
       path: ':operatorId',
-      page: (chain: string, operatorId: string): string => `/${chain}/operator/${operatorId}`,
+      page: (chain: string, operatorId: string): string => `/${chain}/operators/${operatorId}`,
     },
     list: 'operators',
   },

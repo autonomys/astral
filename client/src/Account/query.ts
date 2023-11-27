@@ -30,6 +30,7 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           id
           reserved
           total
+          nonce
           updatedAt
           extrinsics(limit: 300) {
             id
@@ -59,6 +60,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       reserved
       id
       total
+      nonce
       updatedAt
       extrinsics(limit: 10) {
         hash
