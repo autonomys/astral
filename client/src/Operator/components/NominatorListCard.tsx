@@ -15,7 +15,7 @@ const NominatorListCard: FC<Props> = ({ nominator }) => {
   const { selectedChain } = useDomains()
 
   const body = [
-    { name: 'Id', value: nominator.account?.id ? shortString(nominator.account?.id) : 'Unknow' },
+    { name: 'Id', value: nominator.account.id ? shortString(nominator.account.id) : 'Unknown' },
     { name: 'Shares', value: nominator.shares },
   ]
   return (
