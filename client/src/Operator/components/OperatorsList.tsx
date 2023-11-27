@@ -12,7 +12,7 @@ import ExportButton from 'common/components/ExportButton'
 import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import OperatorsTable from 'Operator/components/OperatorsTable'
 
-const OperatorList: FC = () => {
+const OperatorsList: FC = () => {
   const [currentPage, setCurrentPage] = useState(-1)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
 
@@ -83,4 +83,4 @@ const OperatorList: FC = () => {
   )
 }
 
-export default OperatorList
+export default OperatorsList
