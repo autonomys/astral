@@ -9,7 +9,7 @@ import { bigNumberToNumber, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // operator
-import OperatorListCard from 'Operator/components/OperatorListCard'
+import OperatorsListCard from 'Operator/components/OperatorsListCard'
 import { Link } from 'react-router-dom'
 import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
@@ -106,7 +106,7 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
   ) : (
     <div className='w-full'>
       {operators.map((operator, index) => (
-        <OperatorListCard
+        <OperatorsListCard
           index={index}
           operator={operator}
           isDesktop={isDesktop}

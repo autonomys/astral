@@ -15,7 +15,7 @@ type Props = {
   isDesktop?: boolean
 }
 
-const OperatorListCard: FC<Props> = ({ operator, isDesktop }) => {
+const OperatorsListCard: FC<Props> = ({ operator, isDesktop }) => {
   const body = [
     { name: 'id', value: !isDesktop ? shortString(operator.id) : operator.id },
     { name: 'Total Stake', value: bigNumberToNumber(operator.currentTotalStake, 18) },
@@ -37,4 +37,4 @@ const OperatorListCard: FC<Props> = ({ operator, isDesktop }) => {
   )
 }
 
-export default OperatorListCard
+export default OperatorsListCard
