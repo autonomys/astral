@@ -8,7 +8,7 @@ import Identicon from '@polkadot/react-identicon'
 import { Account } from 'gql/graphql'
 
 // common
-import { bigNumberToNumber } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas } from 'common/helpers'
 import { MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
@@ -26,13 +26,30 @@ const RewardListCard: FC<Props> = ({ account, index }) => {
     { name: 'Rank', value: index },
     {
       name: 'Block reward',
-      value: account.blockRewardsTotal ? bigNumberToNumber(account.blockRewardsTotal, 18) : 0,
+      value: account.blockRewardsTotal
+        ? `${numberWithCommas(bigNumberToNumber(account.blockRewardsTotal, 18))} tSSC`
+        : 0,
     },
     {
       name: 'Vote reward',
-      value: account.voteRewardsTotal ? bigNumberToNumber(account.blockRewardsTotal, 18) : 0,
+      value: account.voteRewardsTotal
+        ? `${numberWithCommas(bigNumberToNumber(account.voteRewardsTotal, 18))} tSSC`
+        : 0,
     },
-    { name: 'Total reward', value: account.total ? bigNumberToNumber(account.total, 18) : 0 },
+    {
+      name: 'Total reward',
+      value: account.total ? `${numberWithCommas(bigNumberToNumber(account.total, 18))} tSSC` : 0,
+    },
+    {
+      name: 'Total rewards (Vote+Block)%',
+      value: account.total
+        ? `${(
+            (bigNumberToNumber(account.voteRewardsTotal + account.blockRewardsTotal, 18) /
+              bigNumberToNumber(account.total, 18)) *
+            100
+          ).toFixed(2)}%`
+        : 0,
+    },
   ]
   return (
     <MobileCard

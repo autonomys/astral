@@ -18,7 +18,7 @@ import { NotFound } from 'layout/components'
 // common
 import { Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
-import { accountIdToHex, formatAddress } from 'common/helpers/formatAddress'
+import { formatAddress } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
 
 const Account: FC = () => {
@@ -27,14 +27,13 @@ const Account: FC = () => {
   const { selectedChain } = useDomains()
 
   const convertedAddress = selectedChain.isDomain ? accountId : formatAddress(accountId)
-  const hexAddress = accountIdToHex(accountId || '')
 
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const AccountQuery = selectedChain.isDomain ? QUERY_ACCOUNT_BY_ID_EVM : QUERY_ACCOUNT_BY_ID
 
   const { data, error, loading } = useQuery(AccountQuery, {
-    variables: { accountId: convertedAddress, hexAddress: hexAddress },
+    variables: { accountId: convertedAddress },
   })
 
   useErrorHandler(error)
@@ -61,7 +60,7 @@ const Account: FC = () => {
         isDesktop={isDesktop}
       />
       <div className='flex flex-col lg:flex-row lg:justify-between gap-8'>
-        <AccountGraphs hexAddress={hexAddress} account={account} isDesktop={isDesktop} />
+        <AccountGraphs account={account} isDesktop={isDesktop} />
         <AccountLatestRewards rewards={data.rewardEvents} isDesktop={isDesktop} />
       </div>
       <AccountExtrinsicList accountId={convertedAddress} />
