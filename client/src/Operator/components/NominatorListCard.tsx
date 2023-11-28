@@ -1,11 +1,13 @@
 import { FC } from 'react'
+import { Link } from 'react-router-dom'
+import Identicon from '@polkadot/react-identicon'
+import { Nominator } from 'gql/graphql'
+
+// common
 import { MobileCard } from 'common/components'
 import useDomains from 'common/hooks/useDomains'
-import { Nominator } from 'gql/graphql'
-import { shortString } from 'common/helpers'
-import Identicon from '@polkadot/react-identicon'
+import { numberWithCommas, shortString } from 'common/helpers'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { Link } from 'react-router-dom'
 
 type Props = {
   nominator: Nominator
@@ -16,11 +18,11 @@ const NominatorListCard: FC<Props> = ({ nominator }) => {
 
   const body = [
     { name: 'Id', value: nominator.account.id ? shortString(nominator.account.id) : 'Unknown' },
-    { name: 'Shares', value: nominator.shares },
+    { name: 'Shares', value: nominator.shares ? numberWithCommas(nominator.shares) : 0 },
   ]
   return (
     <MobileCard
-      id='block-list-mobile'
+      id='nominator-list-mobile'
       header={
         <div
           key={`${nominator.account.id}-account-id`}

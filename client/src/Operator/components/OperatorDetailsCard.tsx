@@ -7,7 +7,7 @@ import { Operator } from 'gql/graphql'
 
 // common
 import { CopyButton, List, StyledListItem } from 'common/components'
-import { shortString } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
 
 dayjs.extend(relativeTime)
 
@@ -33,10 +33,14 @@ const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
                 {isDesktop ? operator.signingKey : shortString(operator.signingKey)}
               </CopyButton>
             </StyledListItem>
-            <StyledListItem title='Minimun Stake'>{operator.minimumNominatorStake}</StyledListItem>
-            <StyledListItem title='Nominator Tax'>{operator.nominationTax}</StyledListItem>
-            <StyledListItem title='Current Stake'>{operator.currentTotalStake}</StyledListItem>
-            <StyledListItem title='Shares'>{operator.totalShares}</StyledListItem>
+            <StyledListItem title='Minimun Stake'>
+              {bigNumberToNumber(operator.minimumNominatorStake, 18)} tSSC
+            </StyledListItem>
+            <StyledListItem title='Nominator Tax'>{operator.nominationTax} %</StyledListItem>
+            <StyledListItem title='Current Stake'>
+              {bigNumberToNumber(operator.currentTotalStake, 18)} tSSC
+            </StyledListItem>
+            <StyledListItem title='Shares'>{numberWithCommas(operator.totalShares)}</StyledListItem>
             <StyledListItem title='Status'>{operator.status}</StyledListItem>
           </List>
         </div>

@@ -5,7 +5,7 @@ import { Operator } from 'gql/graphql'
 
 // common
 import { Table, Column } from 'common/components'
-import { bigNumberToNumber, shortString } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // operator
@@ -79,7 +79,7 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
     {
       title: 'Total Shares',
       cells: operators.map(({ totalShares, id }) => (
-        <div key={`${id}-operator-shares`}>{bigNumberToNumber(totalShares, 18)}</div>
+        <div key={`${id}-operator-shares`}>{numberWithCommas(totalShares)}</div>
       )),
     },
     {

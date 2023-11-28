@@ -1,6 +1,6 @@
 import Identicon from '@polkadot/react-identicon'
 import { Column, Table } from 'common/components'
-import { shortString } from 'common/helpers'
+import { numberWithCommas, shortString } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -24,13 +24,13 @@ const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
       title: 'Account Id',
       cells: nominators.map(({ account, id }) => (
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
-          <Identicon value={id} size={26} theme='beachball' />
+          <Identicon value={account.id} size={26} theme='beachball' />
           <Link
             data-testid={`nominator-account-link-${id}`}
             to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
             className='hover:text-[#DE67E4]'
           >
-            <div>{isLargeLaptop ? id : shortString(account.id)}</div>
+            <div>{isLargeLaptop ? account.id : shortString(account.id)}</div>
           </Link>
         </div>
       )),
@@ -38,7 +38,9 @@ const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
     {
       title: 'Shares',
       cells: nominators.map(({ shares, id }, index) => {
-        return <div key={`${id}-nominator-shares-${index}`}>{shares}</div>
+        return (
+          <div key={`${id}-nominator-shares-${index}`}>{shares ? numberWithCommas(shares) : 0}</div>
+        )
       }),
     },
   ]

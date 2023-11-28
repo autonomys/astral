@@ -24,7 +24,7 @@ const OperatorsListCard: FC<Props> = ({ operator, isDesktop }) => {
   ]
   return (
     <MobileCard
-      id='account-list-mobile'
+      id='operator-list-mobile'
       header={
         <div key={`${operator.id}-operator-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
           <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>
