@@ -1,15 +1,18 @@
 import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { Operator } from 'gql/graphql'
 
 // common
 import { Table, Column } from 'common/components'
-import { shortString } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // operator
-import { Operator } from 'operator/helpers/types'
-import OperatorListCard from './OperatorListCard'
+import OperatorsListCard from 'Operator/components/OperatorsListCard'
+import { Link } from 'react-router-dom'
+import { INTERNAL_ROUTES } from 'common/routes'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -17,47 +20,66 @@ interface Props {
   operators: Operator[]
 }
 
-const OperatorTable: FC<Props> = ({ operators }) => {
+const OperatorsTable: FC<Props> = ({ operators }) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+  const { selectedChain } = useDomains()
+
+  const chain = selectedChain.urls.page
 
   // methods
   const generateColumns = (operators: Operator[]): Column[] => [
     {
       title: 'id',
-      cells: operators.map((id, index) => <div key={`${id}-account-index`}>{index + 1}</div>),
+      cells: operators.map(({ id, signingKey }, index) => (
+        <Link
+          key={`${id}-operator-id-${signingKey}-${index}`}
+          data-testid={`operator-link-${id}-${signingKey}-${index}}`}
+          className='hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.operators.id.page(chain, id)}
+        >
+          <div>{id}</div>
+        </Link>
+      )),
+    },
+    {
+      title: 'Domain',
+      cells: operators.map(({ currentDomainId, id }) => (
+        <div key={`${id}-operator-domain`}>{currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>
+      )),
     },
     {
       title: 'Signing Key',
       cells: operators.map(({ id, signingKey }) => (
         <div key={`${id}-operator-id`} className='flex row items-center gap-3'>
-          <div>{isLargeLaptop ? signingKey : shortString(signingKey)}</div>
+          <div>{shortString(signingKey)}</div>
         </div>
       )),
     },
     {
       title: 'Minimun Stake',
       cells: operators.map(({ minimumNominatorStake, id }) => (
-        <div key={`${id}-operator-minimum-stake`}>{minimumNominatorStake}</div>
+        <div key={`${id}-operator-minimum-stake`}>
+          {`${bigNumberToNumber(minimumNominatorStake, 18)} tSSC`}
+        </div>
       )),
     },
     {
       title: 'Nominator Tax',
       cells: operators.map(({ nominationTax, id }) => (
-        <div key={`${id}-operator-tax`}>{nominationTax}</div>
+        <div key={`${id}-operator-tax`}>{`${nominationTax}%`}</div>
       )),
     },
     {
       title: 'Current Total Stake',
       cells: operators.map(({ currentTotalStake, id }) => (
-        <div key={`${id}-operator-stake`}>{currentTotalStake}</div>
+        <div key={`${id}-operator-stake`}>{`${bigNumberToNumber(currentTotalStake, 18)} tSSC`}</div>
       )),
     },
     {
       title: 'Total Shares',
       cells: operators.map(({ totalShares, id }) => (
-        <div key={`${id}-operator-shares`}>{totalShares}</div>
+        <div key={`${id}-operator-shares`}>{numberWithCommas(totalShares)}</div>
       )),
     },
     {
@@ -84,9 +106,10 @@ const OperatorTable: FC<Props> = ({ operators }) => {
   ) : (
     <div className='w-full'>
       {operators.map((operator, index) => (
-        <OperatorListCard
+        <OperatorsListCard
           index={index}
           operator={operator}
+          isDesktop={isDesktop}
           key={`operator-list-card-${operator.id}`}
         />
       ))}
@@ -94,4 +117,4 @@ const OperatorTable: FC<Props> = ({ operators }) => {
   )
 }
 
-export default OperatorTable
+export default OperatorsTable

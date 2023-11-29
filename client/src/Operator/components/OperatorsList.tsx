@@ -1,24 +1,22 @@
-import { useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { FC, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { useQuery } from '@apollo/client'
 
 // common
-import { Pagination, Spinner } from 'common/components'
+import { Pagination, SearchBar, Spinner } from 'common/components'
 import { PAGE_SIZE } from 'common/constants'
-import useDomains from 'common/hooks/useDomains'
+import { numberWithCommas } from 'common/helpers'
 import ExportButton from 'common/components/ExportButton'
-import NotAllowed from 'common/components/NotAllowed'
 
-// reward
-import RewardTable from './RewardTable'
-import { QUERY_REWARDS_LIST } from 'Rewards/querys'
+// operator
+import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
+import OperatorsTable from 'Operator/components/OperatorsTable'
 
-const RewardList = () => {
+const OperatorsList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const { selectedChain } = useDomains()
 
-  const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
+  const { data, error, loading } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
     pollInterval: 6000,
   })
@@ -29,15 +27,11 @@ const RewardList = () => {
     return <Spinner />
   }
 
-  if (selectedChain.title !== 'Gemini 3g' || selectedChain.isDomain) {
-    return <NotAllowed />
-  }
+  const operatorsConnection = data.operatorsConnection.edges.map((operator) => operator.node)
+  const totalCount = data.operatorsConnection.totalCount
+  const totalLabel = numberWithCommas(Number(totalCount))
 
-  const accountsConnection = data.accountsConnection.edges.map((account) => account.node)
-  const totalCount = data.accountsConnection.totalCount
-  // const totalLabel = numberWithCommas(Number(totalCount))
-
-  const pageInfo = data.accountsConnection.pageInfo
+  const pageInfo = data.operatorsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -64,19 +58,15 @@ const RewardList = () => {
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full grid lg:grid-cols-2'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>
-          Testnet Leaderboard
-        </div>
+        <SearchBar />
       </div>
-      <div className='w-full flex justify-between mt-7'>
-        <div className='text-[#282929] text-base font-thin dark:text-white'>
-          Subspace Network Block and Vote rewards leaderboard
-        </div>
+      <div className='w-full flex justify-between mt-5'>
+        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
       </div>
-      <div className='w-full flex flex-col mt-t sm:mt-0'>
-        <RewardTable accounts={accountsConnection} page={currentPage} />
+      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+        <OperatorsTable operators={operatorsConnection} />
         <div className='w-full flex justify-between gap-2'>
-          <ExportButton data={accountsConnection} filename='account-list' />
+          <ExportButton data={operatorsConnection} filename='operator-list' />
           <Pagination
             nextPage={handleNextPage}
             previousPage={handlePreviousPage}
@@ -93,4 +83,4 @@ const RewardList = () => {
   )
 }
 
-export default RewardList
+export default OperatorsList

@@ -39,7 +39,8 @@ import { Event, EventList } from 'Event/components'
 // log
 import { Log, LogList } from 'Log/components'
 import RewardList from 'Rewards/components/RewardList'
-import OperatorList from 'operator/components/OperatorList'
+import Operator from 'Operator/components/Operator'
+import OperatorsList from 'Operator/components/OperatorsList'
 
 // force page scroll to top on route change
 function ScrollToTopWrapper({ children }) {
@@ -102,6 +103,7 @@ function App() {
                     path={INTERNAL_ROUTES.home}
                     element={<Navigate to={selectedChain.urls.page} />}
                   />
+                  <Route path={INTERNAL_ROUTES.leaderboard.list} element={<RewardList />} />
                   <Route path={':network'}>
                     <Route index element={<Home />} />
                     <Route path={INTERNAL_ROUTES.blocks.list}>
@@ -129,13 +131,11 @@ function App() {
                       <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
                     </Route>
                     <Route path={INTERNAL_ROUTES.operators.list}>
-                      <Route index element={<OperatorList />} />\
+                      <Route index element={<OperatorsList />} />
+                      <Route path={INTERNAL_ROUTES.operators.id.path} element={<Operator />} />
                     </Route>
                     <Route path={INTERNAL_ROUTES.search.result.path}>
                       <Route index element={<SearchResult />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.rewards.list}>
-                      <Route index element={<RewardList />} />
                     </Route>
                   </Route>
 

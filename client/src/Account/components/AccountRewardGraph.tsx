@@ -20,24 +20,24 @@ dayjs.extend(relativeTime)
 dayjs.extend(utc)
 
 type Props = {
-  hexAddress: string
+  accountId: string
   total: string
 }
 
-const AccountRewardGraph: FC<Props> = ({ hexAddress, total }) => {
+const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { isDark } = useTheme()
 
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
 
   const { data, error, loading } = useQuery(QUERY_LAST_WEEK_REWARDS, {
-    variables: { accountId: hexAddress, gte: lastWeek },
+    variables: { accountId: accountId, gte: lastWeek },
   })
 
   if (error) {
     return <div>Ha ocurrido un error</div>
   }
 
-  if (!hexAddress) {
+  if (!accountId) {
     return <NotFound />
   }
 

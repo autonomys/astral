@@ -30,6 +30,7 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           id
           reserved
           total
+          nonce
           updatedAt
           extrinsics(limit: 300) {
             id
@@ -53,12 +54,13 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
 `
 
 export const QUERY_ACCOUNT_BY_ID = gql`
-  query AccountById($accountId: String!, $hexAddress: String!) {
+  query AccountById($accountId: String!) {
     accountById(id: $accountId) {
       free
       reserved
       id
       total
+      nonce
       updatedAt
       extrinsics(limit: 10) {
         hash
@@ -74,7 +76,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
         }
       }
     }
-    rewardEvents(limit: 10, where: { account: { id_eq: $hexAddress } }) {
+    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
       amount
       id
       indexInBlock

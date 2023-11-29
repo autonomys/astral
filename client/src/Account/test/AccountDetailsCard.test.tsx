@@ -29,6 +29,7 @@ describe('Account details card', () => {
       reserved: 0,
       total: 0,
       updatedAt: 1008639,
+      nonce: 1008639,
       rewards: [],
     }
 

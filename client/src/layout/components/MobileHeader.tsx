@@ -34,6 +34,8 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
     navigate(url)
   }
 
+  const showRewardsAndOperators = selectedChain.title === 'Gemini 3g' && !selectedChain.isDomain
+
   return (
     <nav
       className={
@@ -136,6 +138,18 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
             >
               Logs
             </button>
+            {showRewardsAndOperators && (
+              <>
+                <button
+                  onClick={() =>
+                    handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.operators.list}`)
+                  }
+                  className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
+                >
+                  Operators
+                </button>
+              </>
+            )}
           </div>
           {children}
           <div className='flex'>
