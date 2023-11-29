@@ -5,7 +5,6 @@ import { calcHistorySize } from "../../blocks/utils";
 import {
   contextMock,
   solutionRangesStorageFactoryMock,
-  transactionFeesCollectedStorageMock,
 } from "../../mocks/mocks";
 import {
   solutionRangesStorageFactory,
@@ -35,7 +34,7 @@ tap.test(
     const result = await getSpacePledged(BlockHeaderMock);
 
     t.type(result, "bigint");
-    t.equal(result, 123n);
+    t.equal(result, 52419547733967241216000n);
 
     t.end();
   }
