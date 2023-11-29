@@ -7,6 +7,7 @@ import {
   digestStorageFactory,
   getBlockAuthorFactory,
   transactionFeesCollectedStorage,
+  solutionRangesStorageFactory,
 } from "./storage";
 import { processCalls, processExtrinsicsFactory } from "./processCalls";
 import { processEventsFactory } from "./processEvents";
@@ -27,7 +28,7 @@ export function createProcessBlocksDependencies(
   const getBlockAuthor = getBlockAuthorFactory(ctx, api);
   const getSpacePledged = getSpacePledgedFactory(
     ctx,
-    transactionFeesCollectedStorage
+    solutionRangesStorageFactory
   );
   const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
