@@ -142,14 +142,6 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
               <>
                 <button
                   onClick={() =>
-                    handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.rewards.list}`)
-                  }
-                  className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-                >
-                  Rewards
-                </button>
-                <button
-                  onClick={() =>
                     handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.operators.list}`)
                   }
                   className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'

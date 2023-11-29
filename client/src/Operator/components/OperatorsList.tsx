@@ -13,7 +13,7 @@ import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import OperatorsTable from 'Operator/components/OperatorsTable'
 
 const OperatorsList: FC = () => {
-  const [currentPage, setCurrentPage] = useState(-1)
+  const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
 
   const { data, error, loading } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {

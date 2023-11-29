@@ -72,8 +72,8 @@ export const INTERNAL_ROUTES = {
     },
     empty: '/search/no-result-found',
   },
-  rewards: {
-    list: 'rewards',
+  leaderboard: {
+    list: 'leaderboard',
   },
   notFound: '/404',
 }

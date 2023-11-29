@@ -77,26 +77,20 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
       )),
     },
     {
-      title: 'Total rewards',
-      cells: accounts.map(({ total, id }) => (
-        <div key={`${id}-reward-total`}>
-          {total ? `${numberWithCommas(bigNumberToNumber(total, 18))} tSSC` : 0}
-        </div>
-      )),
-    },
-    {
-      title: 'Total rewards (Vote+Block) %',
-      cells: accounts.map(({ total, id, voteRewardsTotal, blockRewardsTotal }) => (
-        <div key={`${id}-reward-total-percent`} className='text-right'>
-          {total
-            ? `${(
-                (bigNumberToNumber(voteRewardsTotal + blockRewardsTotal, 18) /
-                  bigNumberToNumber(total, 18)) *
-                100
-              ).toFixed(2)}%`
-            : 0}
-        </div>
-      )),
+      title: 'Total rewards (Vote+Block)%',
+      cells: accounts.map(({ total, id, voteRewardsTotal, blockRewardsTotal }) => {
+        return (
+          <div key={`${id}-reward-total-percent`} className='text-right'>
+            {total
+              ? `${(
+                  (bigNumberToNumber(blockRewardsTotal, 18) /
+                    bigNumberToNumber(voteRewardsTotal, 18)) *
+                  100
+                ).toFixed(2)}%`
+              : 0}
+          </div>
+        )
+      }),
     },
   ]
 

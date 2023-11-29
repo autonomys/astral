@@ -3,11 +3,10 @@ import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
 
 // common
-import { Pagination, SearchBar, Spinner } from 'common/components'
+import { Pagination, Spinner } from 'common/components'
 import { PAGE_SIZE } from 'common/constants'
 import useDomains from 'common/hooks/useDomains'
 import ExportButton from 'common/components/ExportButton'
-import { numberWithCommas } from 'common/helpers'
 import NotAllowed from 'common/components/NotAllowed'
 
 // reward
@@ -36,7 +35,7 @@ const RewardList = () => {
 
   const accountsConnection = data.accountsConnection.edges.map((account) => account.node)
   const totalCount = data.accountsConnection.totalCount
-  const totalLabel = numberWithCommas(Number(totalCount))
+  // const totalLabel = numberWithCommas(Number(totalCount))
 
   const pageInfo = data.accountsConnection.pageInfo
 
@@ -65,12 +64,16 @@ const RewardList = () => {
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full grid lg:grid-cols-2'>
-        <SearchBar />
+        <div className='text-[#282929] text-base font-medium dark:text-white'>
+          Testnet Leaderboard
+        </div>
       </div>
-      <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Holders (${totalLabel})`}</div>
+      <div className='w-full flex justify-between mt-7'>
+        <div className='text-[#282929] text-base font-thin dark:text-white'>
+          Subspace Network Block and Vote rewards leaderboard
+        </div>
       </div>
-      <div className='w-full flex flex-col mt-5 sm:mt-0'>
+      <div className='w-full flex flex-col mt-t sm:mt-0'>
         <RewardTable accounts={accountsConnection} page={currentPage} />
         <div className='w-full flex justify-between gap-2'>
           <ExportButton data={accountsConnection} filename='account-list' />

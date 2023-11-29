@@ -103,6 +103,7 @@ function App() {
                     path={INTERNAL_ROUTES.home}
                     element={<Navigate to={selectedChain.urls.page} />}
                   />
+                  <Route path={INTERNAL_ROUTES.leaderboard.list} element={<RewardList />} />
                   <Route path={':network'}>
                     <Route index element={<Home />} />
                     <Route path={INTERNAL_ROUTES.blocks.list}>
@@ -135,9 +136,6 @@ function App() {
                     </Route>
                     <Route path={INTERNAL_ROUTES.search.result.path}>
                       <Route index element={<SearchResult />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.rewards.list}>
-                      <Route index element={<RewardList />} />
                     </Route>
                   </Route>
 

@@ -47,10 +47,6 @@ const Header: FC = () => {
     menuList.push(
       ...[
         {
-          title: 'Rewards',
-          link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.rewards.list}`,
-        },
-        {
           title: 'Operators',
           link: `${selectedChain.urls.page}/${INTERNAL_ROUTES.operators.list}`,
         },
