@@ -13,6 +13,7 @@ import {
   EventModuleName,
   Operator,
   Nominator,
+  AccountRewards,
 } from "../model";
 import { CallItem, EventItem, Context } from "../processor";
 import { randomUUID } from "crypto";
@@ -225,6 +226,30 @@ export function getOrCreateAccountFactory(ctx: Context) {
     }
 
     return account;
+  };
+}
+
+export function getOrCreateAccountRewardsFactory(ctx: Context) {
+  return async function getOrCreateAccountRewards(
+    header: SubstrateBlock,
+    account: Account
+  ): Promise<AccountRewards> {
+    let accountRewards = await ctx.store.get(AccountRewards, account.id);
+
+    if (!accountRewards) {
+      accountRewards = new AccountRewards({
+        id:  account.id,
+        account: account,
+        vote: BigInt(0),
+        block: BigInt(0),
+        amount: BigInt(0),
+        updatedAt: BigInt(header.height),
+      });
+
+      await ctx.store.insert(accountRewards);
+    }
+
+    return accountRewards;
   };
 }
 
