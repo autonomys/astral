@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useMatch, useNavigate } from 'react-router-dom'
 
 // layout
 import { DOMAINS } from 'layout/constants'
@@ -9,6 +9,7 @@ import useDomains from 'common/hooks/useDomains'
 // chains
 import domains from 'layout/config/domains.json'
 import chains from 'layout/config/chains.json'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 const DomainHeader: FC = () => {
   const [isActive, setIsActive] = useState(true)
@@ -16,6 +17,9 @@ const DomainHeader: FC = () => {
   const navigate = useNavigate()
 
   const { setSelectedChain, selectedChain } = useDomains()
+  const match = useMatch('/leaderboard')
+
+  const isLeaderBoard = match?.pathname === '/leaderboard'
 
   const handleDomainSelected = (domain: string) => {
     if (domain === 'Consensus Chain') {
@@ -43,7 +47,7 @@ const DomainHeader: FC = () => {
                 <button
                   onClick={() => handleDomainSelected(item)}
                   className={
-                    isActive
+                    isActive && !isLeaderBoard
                       ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
                       : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
                   }
@@ -53,6 +57,18 @@ const DomainHeader: FC = () => {
               </div>
             )
           })}
+          <div className='text-[13px] font-semibold items-center flex'>
+            <Link
+              to={INTERNAL_ROUTES.leaderboard.list}
+              className={
+                isLeaderBoard
+                  ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
+                  : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
+              }
+            >
+              Leaderboard
+            </Link>
+          </div>
         </div>
         <div className='flex gap-4'>
           <span className='text-[#857EC2] dark:text-white font-medium text-[13px] leading-4'>

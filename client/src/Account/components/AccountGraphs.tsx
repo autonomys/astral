@@ -15,11 +15,10 @@ dayjs.extend(relativeTime)
 
 type Props = {
   account: Account
-  hexAddress: string
   isDesktop?: boolean
 }
 
-const AccountGraphs: FC<Props> = ({ account, hexAddress, isDesktop = false }) => {
+const AccountGraphs: FC<Props> = ({ account, isDesktop = false }) => {
   const backgroundStyle = !isDesktop
     ? 'dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-[20px]'
     : ''
@@ -31,7 +30,7 @@ const AccountGraphs: FC<Props> = ({ account, hexAddress, isDesktop = false }) =>
           <div
             className={`lg:h-[500px] flex align-middle justify-center items-center ${backgroundStyle}`}
           >
-            <AccountRewardGraph hexAddress={hexAddress} total={account.total} />
+            <AccountRewardGraph accountId={account.id} total={account.total} />
           </div>
         </Tab>
         <Tab title='Balance'>

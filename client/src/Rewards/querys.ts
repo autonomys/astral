@@ -3,8 +3,8 @@ import { gql } from '@apollo/client'
 export const QUERY_REWARDS_LIST = gql`
   query AccountsConnectionRewards($first: Int!, $after: String) {
     accountsConnection(
-      orderBy: total_DESC
-      where: { total_gt: "0" }
+      orderBy: voteRewardsTotal_DESC
+      where: { voteRewardsTotal_gt: "0", voteRewardsTotal_isNull: false }
       first: $first
       after: $after
     ) {

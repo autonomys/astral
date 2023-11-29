@@ -11,17 +11,16 @@ import { AccountDetailsCard, AccountRewardTable } from 'Account/components'
 import { Pagination, Spinner } from 'common/components'
 import { numberWithCommas } from 'common/helpers'
 import { PAGE_SIZE } from 'common/constants'
-import { accountIdToHex, formatAddress } from 'common/helpers/formatAddress'
+import { formatAddress } from 'common/helpers/formatAddress'
 
 const AccountRewardList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
 
   const { accountId } = useParams<{ accountId?: string }>()
-  const hexAccount = accountIdToHex(accountId || '')
 
   const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor, accountId: hexAccount },
+    variables: { first: PAGE_SIZE, after: lastCursor, accountId: accountId },
   })
 
   useErrorHandler(error)
