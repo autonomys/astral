@@ -11,8 +11,7 @@ import {
   Log,
   Account,
   RewardEvent,
-  Operator,
-  Nominator,
+  AccountRewards,
 } from "../model";
 
 export interface ProcessBlocksDependencies {

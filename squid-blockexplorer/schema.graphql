@@ -4,8 +4,6 @@ type Account @entity {
   reserved: BigInt
   total: BigInt @index
   updatedAt: BigInt
-  voteRewardsTotal: BigInt @index
-  blockRewardsTotal: BigInt @index
   nonce: BigInt
   extrinsics: [Extrinsic!]!
     @derivedFrom(field: "signer")

@@ -18,6 +18,7 @@ import {
   addEventModuleNameFactory,
   getOrCreateOperatorFactory,
   getOrCreateNominatorsFactory,
+  getOrCreateAccountRewardsFactory,
 } from "./utils";
 
 export function createProcessBlocksDependencies(
@@ -31,6 +32,7 @@ export function createProcessBlocksDependencies(
   );
   const getHistorySize = getHistorySizeFactory(ctx);
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
+  const getOrCreateAccountRewards = getOrCreateAccountRewardsFactory(ctx);
   const getOrCreateOperator = getOrCreateOperatorFactory(ctx, api);
   const getOrCreateNominators = getOrCreateNominatorsFactory(
     ctx,
@@ -48,7 +50,8 @@ export function createProcessBlocksDependencies(
     getOrCreateAccount,
     addEventModuleName,
     getOrCreateOperator,
-    getOrCreateNominators
+    getOrCreateNominators,
+    getOrCreateAccountRewards,
   );
   const getLogs = getLogsFactory(ctx, digestStorageFactory);
 
