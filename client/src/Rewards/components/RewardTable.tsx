@@ -10,7 +10,7 @@ import { Account } from 'gql/graphql'
 // common
 import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { bigNumberToNumber, shortString } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { PAGE_SIZE } from 'common/constants'
 import useDomains from 'common/hooks/useDomains'
@@ -60,7 +60,9 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
       title: 'Block rewards',
       cells: accounts.map(({ blockRewardsTotal, id }) => (
         <div key={`${id}-reward-block`}>
-          {blockRewardsTotal ? bigNumberToNumber(blockRewardsTotal, 18) : 0}
+          {blockRewardsTotal
+            ? `${numberWithCommas(bigNumberToNumber(blockRewardsTotal, 18))} tSSC`
+            : 0}
         </div>
       )),
     },
@@ -68,15 +70,27 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
       title: 'Vote rewards',
       cells: accounts.map(({ voteRewardsTotal, id }) => (
         <div key={`${id}-reward-vote`}>
-          {voteRewardsTotal ? bigNumberToNumber(voteRewardsTotal, 18) : 0}
+          {voteRewardsTotal
+            ? `${numberWithCommas(bigNumberToNumber(voteRewardsTotal, 18))} tSSC`
+            : 0}
         </div>
       )),
     },
     {
-      title: 'Total rewards',
-      cells: accounts.map(({ total, id }) => (
-        <div key={`${id}-reward-total`}>{total ? bigNumberToNumber(total, 18) : 0}</div>
-      )),
+      title: 'Total rewards (Vote+Block)%',
+      cells: accounts.map(({ total, id, voteRewardsTotal, blockRewardsTotal }) => {
+        return (
+          <div key={`${id}-reward-total-percent`} className='text-right'>
+            {total
+              ? `${(
+                  (bigNumberToNumber(blockRewardsTotal, 18) /
+                    bigNumberToNumber(voteRewardsTotal, 18)) *
+                  100
+                ).toFixed(2)}%`
+              : 0}
+          </div>
+        )
+      }),
     },
   ]
 

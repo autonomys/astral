@@ -7,7 +7,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { RewardEvent } from 'gql/graphql'
 
 // common
-import { bigNumberToNumber } from 'common/helpers'
+import { bigNumberToNumber, shortString } from 'common/helpers'
 import { MobileCard } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
@@ -22,7 +22,7 @@ type Props = {
 const AccountRewardListCard: FC<Props> = ({ reward }) => {
   const { selectedChain } = useDomains()
   const body = [
-    { name: 'Block Hash', value: reward.block?.hash || '' },
+    { name: 'Block Hash', value: shortString(reward.block?.hash || '') },
     { name: 'Type', value: reward.name.split('.')[1] },
     { name: 'Time', value: dayjs(reward.timestamp).fromNow(true) },
     { name: 'Amount', value: bigNumberToNumber(reward.amount || 0, 18) },

@@ -3,7 +3,7 @@ import { ApiPromise } from "@polkadot/api";
 
 import { Context } from '../processor';
 import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsStorage, DomainsNominatorsStorage, TransactionFeesCollectedStorageFeesEscrowStorage, } from '../types/storage';
-import { calcHistorySize, getStorageHash, decodeLog } from './utils';
+import { calcHistorySize, getStorageHash, decodeLog, calcSpacePledged } from './utils';
 import { Account } from '../model';
 import { SubPreDigest } from './types';
 import { DigestItem_PreRuntime } from '../types/v0';
@@ -28,11 +28,11 @@ export function transactionFeesCollectedStorage(ctx: Context, header: SubstrateB
   return new TransactionFeesCollectedStorageFeesEscrowStorage(ctx, header);
 }
 
-export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => TransactionFeesCollectedStorageFeesEscrowStorage) {
+export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {
   return async function getSpacePledged(header: SubstrateBlock) {
-    const storage = storageFactory(ctx, header); 
-    const spacePledged = await storage.asV0.get();
-   return spacePledged;
+    const storage = storageFactory(ctx, header);
+    const solutionRange = (await storage.asV0.get()).current;
+    return calcSpacePledged(solutionRange);
   };
 }
 
