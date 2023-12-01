@@ -6,7 +6,6 @@ import {
   getSpacePledgedFactory,
   digestStorageFactory,
   getBlockAuthorFactory,
-  transactionFeesCollectedStorage,
   solutionRangesStorageFactory,
 } from "./storage";
 import { processCalls, processExtrinsicsFactory } from "./processCalls";

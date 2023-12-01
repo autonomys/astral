@@ -11,7 +11,6 @@ import {
   Log,
   Account,
   RewardEvent,
-  AccountRewards,
 } from "../model";
 
 export interface ProcessBlocksDependencies {
