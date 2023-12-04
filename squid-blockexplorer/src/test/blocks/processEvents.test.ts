@@ -9,10 +9,11 @@ import {
   parentCallMock,
   rewardEvent,
   getOrCreateAccountMock,
-  getOrCreateOperator,
-  getOrCreateNominators,
   addModuleNameMock,
   contextMock,
+  getOrCreateOperatorMock,
+  getOrCreateNominatorsMock,
+  getOrCreateAccountRewardsMock,
 } from "../../mocks/mocks";
 import BlockHeaderMock from "../../mocks/BlockHeader.json";
 import { processEventsFactory } from "../../blocks/processEvents";
@@ -26,8 +27,9 @@ tap.test(
       contextMock,
       getOrCreateAccountMock,
       addModuleNameMock,
-      getOrCreateOperator,
-      getOrCreateNominators
+      getOrCreateOperatorMock,
+      getOrCreateNominatorsMock,
+      getOrCreateAccountRewardsMock
     );
 
     const eventItems = [eventItemWithoutExtrinsic, rewardEvent];
@@ -53,8 +55,9 @@ tap.test("processEvents should map Event to a Block", async (t) => {
     contextMock,
     getOrCreateAccountMock,
     addModuleNameMock,
-    getOrCreateOperator,
-    getOrCreateNominators
+    getOrCreateOperatorMock,
+    getOrCreateNominatorsMock,
+    getOrCreateAccountRewardsMock
   );
 
   const eventItems = [eventItemWithoutExtrinsic];
@@ -79,8 +82,9 @@ tap.test("processEvents should map Event to Call and Extrinsic", async (t) => {
     contextMock,
     getOrCreateAccountMock,
     addModuleNameMock,
-    getOrCreateOperator,
-    getOrCreateNominators
+    getOrCreateOperatorMock,
+    getOrCreateNominatorsMock,
+    getOrCreateAccountRewardsMock
   );
 
   extrinsicsMap.set(extrinsicMock.id, extrinsicMock);

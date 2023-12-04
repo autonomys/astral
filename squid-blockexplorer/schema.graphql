@@ -4,8 +4,6 @@ type Account @entity {
   reserved: BigInt
   total: BigInt @index
   updatedAt: BigInt
-  voteRewardsTotal: BigInt @index
-  blockRewardsTotal: BigInt @index
   nonce: BigInt
   extrinsics: [Extrinsic!]!
     @derivedFrom(field: "signer")
@@ -40,7 +38,7 @@ type Block @entity {
   author: Account
 }
 
-type ExtrinsicModuleName @entity{
+type ExtrinsicModuleName @entity {
   id: ID! @index
   name: String! @index
 }
@@ -65,7 +63,7 @@ type Extrinsic @entity {
   calls: [Call!] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
 }
 
-type EventModuleName @entity{
+type EventModuleName @entity {
   id: ID! @index
   name: String! @index
 }
@@ -128,7 +126,9 @@ type Operator @entity {
   currentTotalStake: BigInt
   currentEpochRewards: BigInt
   totalShares: BigInt
-  nominators: [Nominator!]! @derivedFrom(field: "operator") @cardinality(value: 1000)
+  nominators: [Nominator!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000)
   status: String
   updatedAt: BigInt
 }
@@ -139,4 +139,14 @@ type Nominator @entity {
   account: Account!
   shares: BigInt
   updatedAt: BigInt
+}
+
+type AccountRewards @entity {
+  id: ID! @index
+  account: Account!
+  amount: BigInt
+  block: BigInt @index
+  vote: BigInt @index
+  operator: BigInt @index
+  updatedAt: BigInt!
 }
