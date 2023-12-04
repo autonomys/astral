@@ -14,6 +14,7 @@ import AccountRewardGraph from 'Account/components/AccountRewardGraph'
 import AccountRewardList from 'Account/components/AccountRewardList'
 import AccountRewardListCard from 'Account/components/AccountRewardListCard'
 import AccountRewardsHistory from 'Account/components/AccountRewardsHistory'
+import AccountRewardsTabs from 'Account/components/AccountRewardsTabs'
 import AccountRewardTable from 'Account/components/AccountRewardTable'
 import AccountExtrinsicTable from 'Account/components/AccountExtrinsicTable'
 import AccountExtrinsicFilterDropdown from 'Account/components/AccountExtrinsicFilterDropdown'
@@ -35,6 +36,7 @@ export {
   AccountRewardList,
   AccountRewardListCard,
   AccountRewardsHistory,
+  AccountRewardsTabs,
   AccountRewardTable,
   AccountExtrinsicTable,
   AccountExtrinsicFilterDropdown,

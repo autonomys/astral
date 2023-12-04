@@ -61,7 +61,7 @@ const Account: FC = () => {
       />
       <div className='flex flex-col lg:flex-row lg:justify-between gap-8'>
         <AccountGraphs account={account} isDesktop={isDesktop} />
-        <AccountRewardsHistory account={account} isDesktop={isDesktop} rewards={data.rewardEvents} />
+        <AccountRewardsHistory  isDesktop={isDesktop} rewards={data.rewardEvents} />
       </div>
       <AccountExtrinsicList accountId={convertedAddress} />
     </div>

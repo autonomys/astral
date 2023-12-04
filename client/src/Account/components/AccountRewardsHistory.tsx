@@ -3,27 +3,25 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 // gql
-import { Account, RewardEvent } from 'gql/graphql'
+import { RewardEvent } from 'gql/graphql'
 
 // common
 import { Tab } from 'common/components'
 
 // account
-import { AccountLatestRewards, AccountPreviousRewards, AccountGraphTabs } from 'Account/components'
+import { AccountLatestRewards, AccountPreviousRewards, AccountRewardsTabs } from 'Account/components'
 
 dayjs.extend(relativeTime)
 
 type Props = {
-  account: Account
   isDesktop?: boolean
   rewards: RewardEvent[]
 }
 
-const AccountRewardsHistory: FC<Props> = ({ account, isDesktop = false, rewards }) => {
-
+const AccountRewardsHistory: FC<Props> = ({ isDesktop = false, rewards }) => {
   return (
     <div className='w-full'>
-      <AccountGraphTabs total={account?.total} isDesktop={isDesktop}>
+      <AccountRewardsTabs isDesktop={isDesktop}>
         <Tab title='Current Rewards'>
           <div className='lg:h-[500px]'>
             <AccountLatestRewards rewards={rewards} isDesktop={isDesktop} />
@@ -34,7 +32,7 @@ const AccountRewardsHistory: FC<Props> = ({ account, isDesktop = false, rewards 
             <AccountPreviousRewards rewards={rewards} isDesktop={isDesktop} />
           </div>
         </Tab>
-      </AccountGraphTabs>
+      </AccountRewardsTabs>
     </div>
   )
 }
