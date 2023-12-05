@@ -208,16 +208,23 @@ export function getOrCreateAccountFactory(ctx: Context) {
     accountId: string
   ): Promise<Account> {
     const storage = createSystemAccountStorage(ctx, header);
-    const accountBufferId = decodeHex(accountId);
-    const id = encodeId(accountBufferId);
-    let account = await ctx.store.get(Account, id);
+    const isHex = accountId.startsWith("0x");
+    let account, accountInfo, convertedId;
+    if (isHex) {
+      const accountBufferId = decodeHex(accountId);
+      convertedId = encodeId(accountBufferId);
+      account = await ctx.store.get(Account, convertedId);
+      // update account nonce if it exists
+      accountInfo = await storage.asV0.get(accountBufferId);
+    }
 
-    // update account nonce if it exists
-    const accountInfo = await storage.asV0.get(accountBufferId);
+    if (!account) {
+      account = await ctx.store.get(Account, accountId);
+    }
 
     if (!account) {
       account = new Account({
-        id: id,
+        id: isHex ? convertedId : accountId,
         updatedAt: BigInt(header.height),
         nonce: accountInfo ? BigInt(accountInfo.nonce) : 0n,
       });
@@ -238,7 +245,7 @@ export function getOrCreateAccountRewardsFactory(ctx: Context) {
 
     if (!accountRewards) {
       accountRewards = new AccountRewards({
-        id:  account.id,
+        id: account.id,
         account: account,
         vote: BigInt(0),
         block: BigInt(0),
