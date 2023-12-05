@@ -73,17 +73,11 @@ const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
       )),
     },
     {
-      title: 'Total rewards (Vote+Block)%',
-      cells: accounts.map(({ amount, id, vote, block }) => {
+      title: 'Total rewards',
+      cells: accounts.map(({ amount, id }) => {
         return (
           <div key={`${id}-reward-total-percent`} className='text-right'>
-            {amount
-              ? `${(
-                  ((bigNumberToNumber(vote, 18) + bigNumberToNumber(block, 18)) /
-                    bigNumberToNumber(amount, 18)) *
-                  100
-                ).toFixed(2)}%`
-              : 0}
+            {amount ? `${numberWithCommas(bigNumberToNumber(amount, 18))} tSSC` : 0}
           </div>
         )
       }),

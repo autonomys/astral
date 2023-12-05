@@ -37,14 +37,8 @@ const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
       value: account.amount ? `${numberWithCommas(bigNumberToNumber(account.amount, 18))} tSSC` : 0,
     },
     {
-      name: 'Total rewards (Vote+Block)%',
-      value: account.amount
-        ? `${(
-            ((bigNumberToNumber(account.vote, 18) + bigNumberToNumber(account.block, 18)) /
-              bigNumberToNumber(account.amount, 18)) *
-            100
-          ).toFixed(2)}%`
-        : 0,
+      name: 'Total rewards',
+      value: account.amount ? `${numberWithCommas(bigNumberToNumber(account.amount, 18))} tSSC` : 0,
     },
   ]
   return (
