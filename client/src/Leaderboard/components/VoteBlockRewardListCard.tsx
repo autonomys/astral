@@ -40,7 +40,7 @@ const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
       name: 'Total rewards (Vote+Block)%',
       value: account.amount
         ? `${(
-            (bigNumberToNumber(account.vote + account.block, 18) /
+            ((bigNumberToNumber(account.vote, 18) + bigNumberToNumber(account.block, 18)) /
               bigNumberToNumber(account.amount, 18)) *
             100
           ).toFixed(2)}%`
