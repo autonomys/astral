@@ -10,13 +10,15 @@ import ExportButton from 'common/components/ExportButton'
 import NotAllowed from 'common/components/NotAllowed'
 
 // reward
-import RewardTable from './RewardTable'
-import { QUERY_REWARDS_LIST } from 'Rewards/querys'
+import VoteBlockRewardTable from './VoteBlockRewardTable'
+import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
 
-const RewardList = () => {
+const VoteBlockRewardList = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const { selectedChain } = useDomains()
+  const { selectedChain, setSelectedChain, chains } = useDomains()
+
+  setSelectedChain(chains[0])
 
   const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
@@ -33,11 +35,13 @@ const RewardList = () => {
     return <NotAllowed />
   }
 
-  const accountsConnection = data.accountsConnection.edges.map((account) => account.node)
-  const totalCount = data.accountsConnection.totalCount
+  const accountRewardsConnection = data.accountRewardsConnection.edges.map(
+    (accountRewards) => accountRewards.node,
+  )
+  const totalCount = data.accountRewardsConnection.totalCount
   // const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = data.accountsConnection.pageInfo
+  const pageInfo = data.accountRewardsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -74,9 +78,9 @@ const RewardList = () => {
         </div>
       </div>
       <div className='w-full flex flex-col mt-t sm:mt-0'>
-        <RewardTable accounts={accountsConnection} page={currentPage} />
+        <VoteBlockRewardTable accounts={accountRewardsConnection} page={currentPage} />
         <div className='w-full flex justify-between gap-2'>
-          <ExportButton data={accountsConnection} filename='account-list' />
+          <ExportButton data={accountRewardsConnection} filename='account-list' />
           <Pagination
             nextPage={handleNextPage}
             previousPage={handlePreviousPage}
@@ -93,4 +97,4 @@ const RewardList = () => {
   )
 }
 
-export default RewardList
+export default VoteBlockRewardList

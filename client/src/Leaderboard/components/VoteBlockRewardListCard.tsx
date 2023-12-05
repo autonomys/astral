@@ -5,7 +5,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import Identicon from '@polkadot/react-identicon'
 
 // gql
-import { Account } from 'gql/graphql'
+import { AccountRewards } from 'gql/graphql'
 
 // common
 import { bigNumberToNumber, numberWithCommas } from 'common/helpers'
@@ -16,36 +16,32 @@ import useDomains from 'common/hooks/useDomains'
 dayjs.extend(relativeTime)
 
 type Props = {
-  account: Account
+  account: AccountRewards
   index: number
 }
 
-const RewardListCard: FC<Props> = ({ account, index }) => {
+const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
   const { selectedChain } = useDomains()
   const body = [
     { name: 'Rank', value: index },
     {
       name: 'Block reward',
-      value: account.blockRewardsTotal
-        ? `${numberWithCommas(bigNumberToNumber(account.blockRewardsTotal, 18))} tSSC`
-        : 0,
+      value: account.block ? `${numberWithCommas(bigNumberToNumber(account.block, 18))} tSSC` : 0,
     },
     {
       name: 'Vote reward',
-      value: account.voteRewardsTotal
-        ? `${numberWithCommas(bigNumberToNumber(account.voteRewardsTotal, 18))} tSSC`
-        : 0,
+      value: account.vote ? `${numberWithCommas(bigNumberToNumber(account.vote, 18))} tSSC` : 0,
     },
     {
       name: 'Total reward',
-      value: account.total ? `${numberWithCommas(bigNumberToNumber(account.total, 18))} tSSC` : 0,
+      value: account.amount ? `${numberWithCommas(bigNumberToNumber(account.amount, 18))} tSSC` : 0,
     },
     {
       name: 'Total rewards (Vote+Block)%',
-      value: account.total
+      value: account.amount
         ? `${(
-            (bigNumberToNumber(account.voteRewardsTotal + account.blockRewardsTotal, 18) /
-              bigNumberToNumber(account.total, 18)) *
+            (bigNumberToNumber(account.vote + account.block, 18) /
+              bigNumberToNumber(account.amount, 18)) *
             100
           ).toFixed(2)}%`
         : 0,
@@ -69,4 +65,4 @@ const RewardListCard: FC<Props> = ({ account, index }) => {
   )
 }
 
-export default RewardListCard
+export default VoteBlockRewardListCard

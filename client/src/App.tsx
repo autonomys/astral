@@ -38,9 +38,13 @@ import { Event, EventList } from 'Event/components'
 
 // log
 import { Log, LogList } from 'Log/components'
-import RewardList from 'Rewards/components/RewardList'
+
+// operator
 import Operator from 'Operator/components/Operator'
 import OperatorsList from 'Operator/components/OperatorsList'
+
+// leaderboard
+import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
 
 // force page scroll to top on route change
 function ScrollToTopWrapper({ children }) {
@@ -103,7 +107,10 @@ function App() {
                     path={INTERNAL_ROUTES.home}
                     element={<Navigate to={selectedChain.urls.page} />}
                   />
-                  <Route path={INTERNAL_ROUTES.leaderboard.list} element={<RewardList />} />
+                  <Route
+                    path={INTERNAL_ROUTES.leaderboard.list}
+                    element={<VoteBlockRewardList />}
+                  />
                   <Route path={':network'}>
                     <Route index element={<Home />} />
                     <Route path={INTERNAL_ROUTES.blocks.list}>

@@ -38,7 +38,7 @@ const HomeCards: FC<Props> = ({
       darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
     },
     {
-      title: 'Qualified Reward Addresses',
+      title: selectedChain.isDomain ? 'Wallet addresses' : 'Qualified Reward Addresses',
       icon: <WalletIcon />,
       value: rewardAddresses,
       darkBgClass: 'dark:bg-gradient-to-b dark:from-[#AC70E1] dark:to-[#E6ADDC]',
