@@ -26,7 +26,7 @@ interface Props {
 }
 
 const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
@@ -48,7 +48,7 @@ const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
           <Identicon value={id} size={26} theme='beachball' />
           <Link
             data-testid={`account-link-${index}`}
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, id)}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? id : shortString(id)}</div>

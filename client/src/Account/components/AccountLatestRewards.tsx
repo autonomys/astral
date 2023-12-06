@@ -17,7 +17,7 @@ interface AccountLatestRewardsProps {
 }
 
 const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const { accountId } = useParams<{ accountId?: string }>()
 
@@ -52,7 +52,11 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
                     <Link
                       key={`${id}-account-index`}
                       className='hover:text-[#DE67E4]'
-                      to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, block?.height)}
+                      to={INTERNAL_ROUTES.blocks.id.page(
+                        selectedChain.urls.page,
+                        selectedDomain,
+                        block?.height,
+                      )}
                     >
                       {block?.height}
                     </Link>
@@ -76,7 +80,11 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
         <button
           onClick={() =>
             navigate(
-              INTERNAL_ROUTES.accounts.rewards.page(selectedChain.urls.page, accountId || ''),
+              INTERNAL_ROUTES.accounts.rewards.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                accountId || '',
+              ),
             )
           }
           className='w-full bg-[#F3FBFF] rounded-[20px] py-4 mt-5 dark:bg-[#ffffff1a] dark:text-white'

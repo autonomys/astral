@@ -30,7 +30,6 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           id
           reserved
           total
-          nonce
           updatedAt
           extrinsics(limit: 300) {
             id

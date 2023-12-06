@@ -20,7 +20,7 @@ type Props = {
 
 // TODO: similar to HomeExtrinsicCard, consider refactoring
 const ExtrinsicListCard: FC<Props> = ({ extrinsic }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const blockDate = dayjs(extrinsic.block.timestamp).fromNow(true)
 
   const body = [
@@ -35,7 +35,11 @@ const ExtrinsicListCard: FC<Props> = ({ extrinsic }) => {
       header={
         <Link
           className='flex gap-2'
-          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(
+            selectedChain.urls.page,
+            selectedDomain,
+            extrinsic.id,
+          )}
         >
           <StatusIcon status={extrinsic.success} />
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${extrinsic.block.height}-${extrinsic.indexInBlock}`}</h3>

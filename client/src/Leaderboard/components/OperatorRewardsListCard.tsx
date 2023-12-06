@@ -16,7 +16,7 @@ type Props = {
 }
 
 const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const body = [
     { name: 'Rank', value: index },
     {
@@ -31,7 +31,13 @@ const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
       id='account-list-mobile'
       header={
         <div key={`${operator.id}-account-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
-          <Link to={INTERNAL_ROUTES.operators.id.page(selectedChain.urls.page, operator.id)}>
+          <Link
+            to={INTERNAL_ROUTES.operators.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              operator.id,
+            )}
+          >
             <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>
               {operator.id}
             </p>

@@ -23,7 +23,7 @@ interface Props {
 const OperatorsTable: FC<Props> = ({ operators }) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const chain = selectedChain.urls.page
 
@@ -36,7 +36,7 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
           key={`${id}-operator-id-${signingKey}-${index}`}
           data-testid={`operator-link-${id}-${signingKey}-${index}}`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.operators.id.page(chain, id)}
+          to={INTERNAL_ROUTES.operators.id.page(chain, selectedDomain, id)}
         >
           <div>{id}</div>
         </Link>

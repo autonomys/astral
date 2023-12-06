@@ -16,7 +16,7 @@ type Props = {
 }
 
 const EventDetailsCard: FC<Props> = ({ event }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   return (
     <div className='w-full'>
       <div className='flex'>
@@ -28,7 +28,11 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
             <div className='bg-[#241235] text-xs font-semibold px-5 py-3 rounded-full block leading-normal text-white'>
               <Link
                 className='flex gap-1'
-                to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, event.block?.height)}
+                to={INTERNAL_ROUTES.blocks.id.page(
+                  selectedChain.urls.page,
+                  selectedDomain,
+                  event.block?.height,
+                )}
               >
                 #{event.block?.height}
               </Link>
@@ -48,6 +52,7 @@ const EventDetailsCard: FC<Props> = ({ event }) => {
                     <Link
                       to={INTERNAL_ROUTES.extrinsics.id.page(
                         selectedChain.urls.page,
+                        selectedDomain,
                         event.extrinsic?.id,
                       )}
                     >

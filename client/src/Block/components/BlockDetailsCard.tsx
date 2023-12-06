@@ -20,7 +20,7 @@ type Props = {
 }
 
 const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const chain = selectedChain.urls.page
 
   return (
@@ -40,7 +40,12 @@ const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
           <List>
             <StyledListItem title='Author'>
               <CopyButton value={block.author?.id || ''} message='Block author copied'>
-                <BlockAuthor chain={chain} author={block.author?.id} isDesktop={isDesktop} />
+                <BlockAuthor
+                  domain={selectedDomain}
+                  chain={chain}
+                  author={block.author?.id}
+                  isDesktop={isDesktop}
+                />
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Timestamp'>

@@ -44,10 +44,13 @@ type EventCardProps = {
 
 // TODO: similar to EventCard, consider refactoring
 const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const body = [
     { name: 'Action', value: event.name.split('.')[1] },
-    { name: 'Extrinsic Id', value: `${event.extrinsic?.block.height}-${event.extrinsic?.indexInBlock}` },
+    {
+      name: 'Extrinsic Id',
+      value: `${event.extrinsic?.block.height}-${event.extrinsic?.indexInBlock}`,
+    },
     { name: 'Type', value: event.phase },
   ]
   return (
@@ -56,7 +59,7 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
       header={
         <Link
           className='w-full'
-          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, event.id)}
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, event.id)}
         >
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>
             <div>{`${event.block?.height}-${event.indexInBlock}`}</div>

@@ -24,7 +24,7 @@ interface Props {
 }
 
 const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const chain = selectedChain.urls.page
 
@@ -37,7 +37,7 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
           key={`${id}-block-height`}
           data-testid={`block-link-${index}`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.blocks.id.page(chain, height)}
+          to={INTERNAL_ROUTES.blocks.id.page(chain, selectedDomain, height)}
         >
           <div>{height}</div>
         </Link>
@@ -76,7 +76,12 @@ const BlockList: FC<Props> = ({ blocks, isDesktop = true }) => {
       cells: blocks.map(({ author, id }) => (
         <div key={`${id}-block-author`}>
           <CopyButton value={author?.id || 'Unkown'} message='Author account copied'>
-            <BlockAuthor chain={chain} author={author?.id} isDesktop={false} />
+            <BlockAuthor
+              domain={selectedDomain}
+              chain={chain}
+              author={author?.id}
+              isDesktop={false}
+            />
           </CopyButton>
         </div>
       )),

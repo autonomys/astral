@@ -14,7 +14,7 @@ type Props = {
 }
 
 const LogListCard: FC<Props> = ({ log }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const body = [
     { name: 'Block', value: log.block.height },
     { name: 'Type', value: log.kind },
@@ -27,7 +27,7 @@ const LogListCard: FC<Props> = ({ log }) => {
       header={
         <Link
           className='flex gap-2'
-          to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, log.id)}
+          to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, log.id)}
         >
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{log.id}</h3>
         </Link>

@@ -12,22 +12,28 @@ import useDomains from 'common/hooks/useDomains'
 import { LogoIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
 
+type MenuItem = {
+  title: string
+  link: string
+}
+
 type Props = {
   children?: ReactNode
   isOpen: boolean
   setIsOpen: (update: boolean | ((prevState: boolean) => boolean)) => void
+  menuList: MenuItem[]
 }
 
-const MobileHeader: FC<Props> = ({ isOpen, setIsOpen }) => {
-  return <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
+const MobileHeader: FC<Props> = ({ isOpen, setIsOpen, menuList }) => {
+  return <Drawer menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
 }
 
 export default MobileHeader
 
-const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
+const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
   const navigate = useNavigate()
   const { isDark, toggleTheme } = useTheme()
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const handleNavigate = (url: string) => {
     setIsOpen(false)
@@ -55,7 +61,7 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
         <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-10'>
           <div className='flex items-center align-middle justify-between p-5'>
             <button
-              onClick={() => handleNavigate(`/${selectedChain.urls.page}`)}
+              onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
               className='flex title-font font-medium items-center text-gray-900 text-[#282929] dark:text-white'
             >
               <LogoIcon fillColor='currentColor' />
@@ -92,64 +98,17 @@ const Drawer: FC<Props> = ({ children, isOpen, setIsOpen }) => {
             </div>
           </div>
           <div className='flex flex-col justify-center items-center gap-12'>
-            <button
-              onClick={() => handleNavigate(INTERNAL_ROUTES.home)}
-              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-            >
-              Home
-            </button>
-            <button
-              onClick={() =>
-                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.blocks.list}`)
-              }
-              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-            >
-              Blocks
-            </button>
-            <button
-              onClick={() =>
-                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.extrinsics.list}`)
-              }
-              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-            >
-              Extrinsics
-            </button>
-            <button
-              onClick={() =>
-                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.accounts.list}`)
-              }
-              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-            >
-              Accounts
-            </button>
-            <button
-              onClick={() =>
-                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.events.list}`)
-              }
-              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-            >
-              Events
-            </button>
-            <button
-              onClick={() =>
-                handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.logs.list}`)
-              }
-              className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
-            >
-              Logs
-            </button>
-            {showRewardsAndOperators && (
-              <>
+            {menuList.map((item, index) => {
+              return (
                 <button
-                  onClick={() =>
-                    handleNavigate(`${selectedChain.urls.page}/${INTERNAL_ROUTES.operators.list}`)
-                  }
+                  onClick={() => handleNavigate(item.link)}
                   className='flex title-font font-medium items-center text-[#282929] dark:text-white text-xl'
+                  key={`${item.title}-${index}`}
                 >
-                  Operators
+                  {item.title}
                 </button>
-              </>
-            )}
+              )
+            })}
           </div>
           {children}
           <div className='flex'>

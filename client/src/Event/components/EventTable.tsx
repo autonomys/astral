@@ -22,7 +22,7 @@ interface Props {
 }
 
 const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
@@ -31,7 +31,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         <div className='w-full flex gap-1' key={`${id}-${indexInBlock}-event-id`}>
           <Link
             className='w-full hover:text-[#DE67E4]'
-            to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
             data-testid={`event-link-${indexInBlock}`}
           >
             {id}
@@ -50,7 +50,7 @@ const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         <Link
           key={`${id}-${indexInBlock}-event-block`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           {block?.height}
         </Link>

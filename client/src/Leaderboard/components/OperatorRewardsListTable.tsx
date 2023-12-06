@@ -19,7 +19,7 @@ interface Props {
 }
 
 const OperatorRewardsListTable: FC<Props> = ({ operators, page }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
@@ -40,7 +40,7 @@ const OperatorRewardsListTable: FC<Props> = ({ operators, page }) => {
         <div key={`${id}-account-id`} className='flex row items-center gap-3'>
           <Link
             data-testid={`account-link-${index}`}
-            to={INTERNAL_ROUTES.operators.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.operators.id.page(selectedChain.urls.page, selectedDomain, id)}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? id : shortString(id)}</div>

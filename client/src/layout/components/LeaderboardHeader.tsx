@@ -12,7 +12,7 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 import { useTheme } from 'common/providers/ThemeProvider'
 import useDomains from 'common/hooks/useDomains'
 
-const Header: FC = () => {
+const LeaderBoardHeader: FC = () => {
   const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const pathName = location.pathname
@@ -22,37 +22,18 @@ const Header: FC = () => {
 
   const menuList = [
     {
-      title: 'Accounts',
-      link: `${INTERNAL_ROUTES.accounts.list}`,
+      title: 'Farmers Leaderboard',
+      link: `${INTERNAL_ROUTES.leaderboard.farmers}`,
     },
     {
-      title: 'Blocks',
-      link: `${INTERNAL_ROUTES.blocks.list}`,
+      title: 'Operators Leaderboard',
+      link: `${INTERNAL_ROUTES.leaderboard.operators}`,
     },
     {
-      title: 'Extrinsics',
-      link: `${INTERNAL_ROUTES.extrinsics.list}`,
-    },
-    {
-      title: 'Events',
-      link: `${INTERNAL_ROUTES.events.list}`,
-    },
-    {
-      title: 'Logs',
-      link: `${INTERNAL_ROUTES.logs.list}`,
+      title: 'Nominators Leaderboard',
+      link: `${INTERNAL_ROUTES.leaderboard.nominators}`,
     },
   ]
-
-  if (selectedChain.title === 'Gemini 3g' && !selectedChain.isDomain) {
-    menuList.push(
-      ...[
-        {
-          title: 'Operators',
-          link: `${INTERNAL_ROUTES.operators.list}`,
-        },
-      ],
-    )
-  }
 
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-10">
@@ -113,7 +94,7 @@ const Header: FC = () => {
       ) : (
         <div className='flex flex-row justify-between px-5 items-center'>
           <Link
-            to={`/${selectedChain.urls.page}/${selectedDomain}`}
+            to={INTERNAL_ROUTES.home}
             className='flex title-font font-medium items-center text-gray-900 dark:text-white'
           >
             <LogoIcon fillColor='currentColor' />
@@ -134,4 +115,4 @@ const Header: FC = () => {
   )
 }
 
-export default Header
+export default LeaderBoardHeader

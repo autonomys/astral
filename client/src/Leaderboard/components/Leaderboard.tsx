@@ -4,13 +4,9 @@ import VoteBlockRewardList from './VoteBlockRewardList'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import NominatorRewardsList from './NominatorRewardsList'
 import OperatorRewardsList from './OperatorRewardsList'
-import useDomains from 'common/hooks/useDomains'
 
 const Leaderboard = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { setSelectedChain, chains } = useDomains()
-
-  setSelectedChain(chains[0])
 
   return (
     <div className='w-full flex flex-col space-y-6'>

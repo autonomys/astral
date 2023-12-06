@@ -15,7 +15,7 @@ interface Props {
 }
 
 const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   // methods
@@ -27,7 +27,11 @@ const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
           <Identicon value={account.id} size={26} theme='beachball' />
           <Link
             data-testid={`nominator-account-link-${id}`}
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, account.id)}
+            to={INTERNAL_ROUTES.accounts.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              account.id,
+            )}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? account.id : shortString(account.id)}</div>

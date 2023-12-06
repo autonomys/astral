@@ -22,7 +22,7 @@ type Props = {
 
 const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { blockId } = useParams()
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = isDesktop ? 10 : 5
@@ -83,7 +83,7 @@ const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         <Link
           key={`${id}-block-extrinsic-id`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           {`${block.height}-${indexInBlock}`}
         </Link>

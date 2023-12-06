@@ -16,7 +16,7 @@ type Props = {
 }
 
 const BlockDetailsLogList: FC<Props> = ({ logs }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (logs: Log[]): Column[] => [
     {
@@ -25,7 +25,7 @@ const BlockDetailsLogList: FC<Props> = ({ logs }) => {
         <Link
           key={`${id}-block-log-id`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           {id}
         </Link>

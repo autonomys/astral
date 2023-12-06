@@ -23,7 +23,7 @@ interface Props {
 }
 
 const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -32,7 +32,7 @@ const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
         <Link
           key={`${id}-extrinsic-block-${indexInBlock}`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           <div>{`${block.height}-${indexInBlock}`}</div>
         </Link>

@@ -42,7 +42,7 @@ const HomeBlockListHeader: FC = () => (
 )
 
 const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (blocks: Block[]): Column[] => [
     {
@@ -51,7 +51,7 @@ const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
         <Link
           className='flex gap-2 hover:text-[#DE67E4]'
           key={`${id}-home-block-height`}
-          to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, height)}
+          to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, height)}
         >
           <div>#{height}</div>
         </Link>
