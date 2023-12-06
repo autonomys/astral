@@ -10,7 +10,6 @@ import { HeaderBackground } from 'layout/components'
 import { useTheme } from 'common/providers/ThemeProvider'
 import useDomains from 'common/hooks/useDomains'
 import { LogoIcon } from 'common/icons'
-import { INTERNAL_ROUTES } from 'common/routes'
 
 type MenuItem = {
   title: string
@@ -39,8 +38,6 @@ const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
     setIsOpen(false)
     navigate(url)
   }
-
-  const showRewardsAndOperators = selectedChain.title === 'Gemini 3g' && !selectedChain.isDomain
 
   return (
     <nav
