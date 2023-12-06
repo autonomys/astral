@@ -6,7 +6,7 @@ import { decodeHex } from '@subsquid/substrate-processor';
 import { CallItem, Context, EventItem } from '../processor';
 import BlockHeaderMock from './BlockHeader.json';
 import { SystemDigestStorage, SubspaceSolutionRangesStorage, TransactionFeesCollectedStorageFeesEscrowStorage } from '../types/storage';
-import { Account, AccountRewards, Operator } from '../model';
+import { Account, AccountRewards, Operator, OperatorRewards } from '../model';
 import { createBlock, createCall, createExtrinsic } from '../blocks/utils';
 
 const callData = {
@@ -257,6 +257,7 @@ export const digestStorageFactoryMock = () => ({
 export const getOrCreateAccountMock = () => Promise.resolve(new Account({ id: '0x14682f9dea76a4dd47172a118eb29b9cf9976df7ade12f95709a7cd2e3d81d6c' }));
 export const getOrCreateAccountRewardsMock = () => Promise.resolve(new AccountRewards({ id: '0x14682f9dea76a4dd47172a118eb29b9cf9976df7ade12f95709a7cd2e3d81d6c' }));
 export const getOrCreateOperatorMock = () => Promise.resolve(new Operator({ id: '1' }));
+export const getOrCreateOperatorRewardsMock = () => Promise.resolve(new OperatorRewards({ id: '1' }));
 export const getOrCreateNominatorsMock = () => Promise.resolve([]);
 export const addModuleNameMock = () => Promise.resolve();
 
