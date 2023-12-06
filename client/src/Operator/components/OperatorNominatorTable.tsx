@@ -27,7 +27,7 @@ const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
           <Identicon value={account.id} size={26} theme='beachball' />
           <Link
             data-testid={`nominator-account-link-${id}`}
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, account.id)}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? account.id : shortString(account.id)}</div>
