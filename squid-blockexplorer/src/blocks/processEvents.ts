@@ -7,6 +7,7 @@ import {
   Operator,
   Nominator,
   AccountRewards,
+  OperatorRewards,
 } from "../model";
 import { ExtrinsicsMap, CallsMap } from "./types";
 import { SubstrateBlock } from "@subsquid/substrate-processor";
@@ -23,7 +24,11 @@ export function processEventsFactory(
   getOrCreateAccountRewards: (
     header: SubstrateBlock,
     account: Account
-  ) => Promise<AccountRewards>
+  ) => Promise<AccountRewards>,
+  getOrCreateOperatorRewards: (
+    header: SubstrateBlock,
+    operator: Operator
+  ) => Promise<OperatorRewards>
 ) {
   async function getExtrinsicAndCallFromEventItem(
     eventItem: EventItem,
@@ -84,28 +89,26 @@ export function processEventsFactory(
     const operator = await getOrCreateOperator(operatorId);
     if (!operator) return;
 
+    const operatorRewards = await getOrCreateOperatorRewards(header, operator);
+
+    const updatedOperatorRewards = new OperatorRewards({
+      ...operatorRewards,
+      amount: operatorRewards.amount
+        ? operatorRewards.amount + BigInt(eventItem.event.args?.reward)
+        : BigInt(eventItem.event.args?.reward),
+      updatedAt: BigInt(header.height),
+    });
+
+    await ctx.store.save(updatedOperatorRewards);
+
     const nominators = await getOrCreateNominators(operator);
-    for (const nominator of nominators) {
-      const account = await getOrCreateAccount(header, nominator.account.id);
-      const accountRewards = await getOrCreateAccountRewards(header, account);
-      const rewardDetails = calculateNominatorReward(
-        eventItem,
-        operator,
-        nominator,
-        accountRewards
-      );
+    const nominatorsLength = nominators.length;
 
-      if (rewardDetails.operatorReward) {
-        const updatedReward = new AccountRewards({
-          ...accountRewards,
-          account,
-          operator: rewardDetails.operatorReward,
-          amount: rewardDetails.accountRewardAmount,
-          updatedAt: BigInt(header.height),
-        });
-
-        await ctx.store.save(updatedReward);
-      }
+    if (
+      nominatorsLength === 1 &&
+      nominators[0].account.id === operator.operatorOwner
+    ) {
+      const account = await getOrCreateAccount(header, operator.operatorOwner);
 
       const rewardEvent = new RewardEvent({
         ...eventItem.event,
@@ -113,11 +116,60 @@ export function processEventsFactory(
         extrinsic,
         call,
         timestamp: block.timestamp,
-        account: nominator.account,
-        amount: rewardDetails.nominatorReward,
+        account: account,
+        amount: BigInt(eventItem.event.args?.reward),
       });
 
+      const accountRewards = await getOrCreateAccountRewards(header, account);
+
+      const updatedReward = new AccountRewards({
+        ...accountRewards,
+        account,
+        operator: BigInt(eventItem.event.args?.reward),
+        amount: accountRewards.amount
+          ? accountRewards.amount + BigInt(eventItem.event.args?.reward)
+          : BigInt(eventItem.event.args?.reward),
+        updatedAt: BigInt(header.height),
+      });
+
+      await ctx.store.save(updatedReward);
+
       return rewardEvent;
+    } else {
+      for (const nominator of nominators) {
+        const account = await getOrCreateAccount(header, nominator.account.id);
+        const accountRewards = await getOrCreateAccountRewards(header, account);
+        const rewardDetails = calculateNominatorReward(
+          eventItem,
+          operator,
+          nominator,
+          accountRewards
+        );
+
+        if (rewardDetails.operatorReward) {
+          const updatedReward = new AccountRewards({
+            ...accountRewards,
+            account,
+            operator: rewardDetails.operatorReward,
+            amount: rewardDetails.accountRewardAmount,
+            updatedAt: BigInt(header.height),
+          });
+
+          await ctx.store.save(updatedReward);
+        }
+
+        const rewardEvent = new RewardEvent({
+          ...eventItem.event,
+          block,
+          extrinsic,
+          call,
+          timestamp: block.timestamp,
+          account: nominator.account,
+          amount: rewardDetails.nominatorReward,
+        });
+
+        return rewardEvent;
+      }
     }
   }
 

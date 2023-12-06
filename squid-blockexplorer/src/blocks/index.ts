@@ -19,6 +19,7 @@ import {
   getOrCreateOperatorFactory,
   getOrCreateNominatorsFactory,
   getOrCreateAccountRewardsFactory,
+  getOrCreateOperatorRewardsFactory,
 } from "./utils";
 
 export function createProcessBlocksDependencies(
@@ -34,6 +35,7 @@ export function createProcessBlocksDependencies(
   const getOrCreateAccount = getOrCreateAccountFactory(ctx);
   const getOrCreateAccountRewards = getOrCreateAccountRewardsFactory(ctx);
   const getOrCreateOperator = getOrCreateOperatorFactory(ctx, api);
+  const getOrCreateOperatorRewards = getOrCreateOperatorRewardsFactory(ctx);
   const getOrCreateNominators = getOrCreateNominatorsFactory(
     ctx,
     api,
@@ -52,6 +54,7 @@ export function createProcessBlocksDependencies(
     getOrCreateOperator,
     getOrCreateNominators,
     getOrCreateAccountRewards,
+    getOrCreateOperatorRewards,
   );
   const getLogs = getLogsFactory(ctx, digestStorageFactory);
 

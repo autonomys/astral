@@ -119,6 +119,7 @@ type Log @entity {
 type Operator @entity {
   id: ID! @index
   signingKey: String! @index
+  operatorOwner: String @index
   currentDomainId: Int
   nextDomainId: Int
   minimumNominatorStake: BigInt
@@ -148,5 +149,11 @@ type AccountRewards @entity {
   block: BigInt @index
   vote: BigInt @index
   operator: BigInt @index
+  updatedAt: BigInt!
+}
+
+type OperatorRewards @entity {
+  id: ID! @index
+  amount: BigInt
   updatedAt: BigInt!
 }
