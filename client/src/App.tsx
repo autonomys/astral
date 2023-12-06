@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -76,13 +76,17 @@ const createDomainRoutes = () => {
 }
 
 const App = () => {
-  const { chains } = useDomains()
+  const { chains, selectedChain, selectedDomain } = useDomains()
 
   const networks = chains.map((chain) => chain.urls.page)
 
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path={INTERNAL_ROUTES.home}
+          element={<Navigate to={`${selectedChain.urls.page}/${selectedDomain}`} />}
+        />
         {networks.map((network, index) => (
           <Fragment key={`${network}-${index}`}>
             <Route path={`/${network}/evm`} element={<DomainLayout />}>
