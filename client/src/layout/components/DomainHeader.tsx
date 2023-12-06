@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { Link, useMatch, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
 import { DOMAINS } from 'layout/constants'
@@ -9,14 +9,15 @@ import useDomains from 'common/hooks/useDomains'
 // chains
 import domains from 'layout/config/domains.json'
 import chains from 'layout/config/chains.json'
-import { INTERNAL_ROUTES } from 'common/routes'
 
 const DomainHeader: FC = () => {
   const [isActive, setIsActive] = useState(true)
+  const location = useLocation()
+  const pathName = location.pathname
 
   const navigate = useNavigate()
 
-  const { setSelectedChain, selectedChain, setSelectedDomain, selectedDomain } = useDomains()
+  const { setSelectedChain, selectedChain, setSelectedDomain } = useDomains()
 
   const handleDomainSelected = (domain: string) => {
     if (domain === 'evm') {
@@ -38,7 +39,7 @@ const DomainHeader: FC = () => {
       <div className='w-full flex justify-between container py-3 items-center px-5 md:px-[25px] 2xl:px-0 mx-auto'>
         <div className='flex gap-9'>
           {DOMAINS.map((item, index) => {
-            const isActive = selectedDomain === item.name
+            const isActive = pathName.includes(item.name)
             return (
               <div className='text-[13px] font-semibold items-center flex' key={`${item}-${index}`}>
                 <button
