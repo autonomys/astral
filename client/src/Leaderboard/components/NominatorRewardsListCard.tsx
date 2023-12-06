@@ -16,17 +16,15 @@ type Props = {
   index: number
 }
 
-const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
+const NominatorRewardsListCard: FC<Props> = ({ account, index }) => {
   const { selectedChain } = useDomains()
   const body = [
     { name: 'Rank', value: index },
     {
-      name: 'Block reward',
-      value: account.block ? `${numberWithCommas(bigNumberToNumber(account.block, 18))} tSSC` : 0,
-    },
-    {
-      name: 'Vote reward',
-      value: account.vote ? `${numberWithCommas(bigNumberToNumber(account.vote, 18))} tSSC` : 0,
+      name: 'Operator reward',
+      value: account.operator
+        ? `${numberWithCommas(bigNumberToNumber(account.operator, 18))} tSSC`
+        : 0,
     },
     {
       name: 'Total reward',
@@ -51,4 +49,4 @@ const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
   )
 }
 
-export default VoteBlockRewardListCard
+export default NominatorRewardsListCard

@@ -73,7 +73,15 @@ export const INTERNAL_ROUTES = {
     empty: '/search/no-result-found',
   },
   leaderboard: {
-    list: 'leaderboard',
+    farmers: 'leaderboard',
+    operators: {
+      path: ':operators',
+      page: (): string => '/leaderboard/operators',
+    },
+    nominators: {
+      path: ':nominators',
+      page: (): string => '/leaderboard/nominators',
+    },
   },
   notFound: '/404',
 }

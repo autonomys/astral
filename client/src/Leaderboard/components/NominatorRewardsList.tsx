@@ -1,24 +1,24 @@
 import { useState } from 'react'
-import { useQuery } from '@apollo/client'
 import { useErrorHandler } from 'react-error-boundary'
+import { useQuery } from '@apollo/client'
 
 // common
 import { Pagination, Spinner } from 'common/components'
-import { PAGE_SIZE } from 'common/constants'
-import useDomains from 'common/hooks/useDomains'
 import ExportButton from 'common/components/ExportButton'
 import NotAllowed from 'common/components/NotAllowed'
+import { PAGE_SIZE } from 'common/constants'
+import useDomains from 'common/hooks/useDomains'
 
-// reward
-import VoteBlockRewardTable from './VoteBlockRewardTable'
-import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
+// leaderboard
+import { QUERY_NOMINATORS_REWARDS_LIST } from 'Leaderboard/querys'
+import NominatorRewardsListTable from './NominatorRewardsListTable'
 
-const VoteBlockRewardList = () => {
+const NominatorRewardsList = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const { selectedChain } = useDomains()
 
-  const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
+  const { data, error, loading } = useQuery(QUERY_NOMINATORS_REWARDS_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
     pollInterval: 6000,
   })
@@ -66,7 +66,7 @@ const VoteBlockRewardList = () => {
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full flex flex-col sm:mt-0'>
-        <VoteBlockRewardTable accounts={accountRewardsConnection} page={currentPage} />
+        <NominatorRewardsListTable accounts={accountRewardsConnection} page={currentPage} />
         <div className='w-full flex justify-between gap-2'>
           <ExportButton data={accountRewardsConnection} filename='account-list' />
           <Pagination
@@ -85,4 +85,4 @@ const VoteBlockRewardList = () => {
   )
 }
 
-export default VoteBlockRewardList
+export default NominatorRewardsList

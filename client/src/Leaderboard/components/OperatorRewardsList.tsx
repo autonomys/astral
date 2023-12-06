@@ -1,24 +1,24 @@
-import { useState } from 'react'
-import { useQuery } from '@apollo/client'
+import React, { useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { useQuery } from '@apollo/client'
 
 // common
 import { Pagination, Spinner } from 'common/components'
-import { PAGE_SIZE } from 'common/constants'
-import useDomains from 'common/hooks/useDomains'
 import ExportButton from 'common/components/ExportButton'
+import { PAGE_SIZE } from 'common/constants'
 import NotAllowed from 'common/components/NotAllowed'
+import useDomains from 'common/hooks/useDomains'
 
-// reward
-import VoteBlockRewardTable from './VoteBlockRewardTable'
-import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
+// leaderboard
+import { QUERY_OPERATORS_REWARDS_LIST } from 'Leaderboard/querys'
+import OperatorRewardsListTable from './OperatorRewardsListTable'
 
-const VoteBlockRewardList = () => {
+const OperatorRewardsList = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const { selectedChain } = useDomains()
 
-  const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
+  const { data, error, loading } = useQuery(QUERY_OPERATORS_REWARDS_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
     pollInterval: 6000,
   })
@@ -33,13 +33,12 @@ const VoteBlockRewardList = () => {
     return <NotAllowed />
   }
 
-  const accountRewardsConnection = data.accountRewardsConnection.edges.map(
+  const operatorRewardsConnection = data.operatorRewardsConnection.edges.map(
     (accountRewards) => accountRewards.node,
   )
-  const totalCount = data.accountRewardsConnection.totalCount
-  // const totalLabel = numberWithCommas(Number(totalCount))
+  const totalCount = data.operatorRewardsConnection.totalCount
 
-  const pageInfo = data.accountRewardsConnection.pageInfo
+  const pageInfo = data.operatorRewardsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -66,9 +65,9 @@ const VoteBlockRewardList = () => {
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full flex flex-col sm:mt-0'>
-        <VoteBlockRewardTable accounts={accountRewardsConnection} page={currentPage} />
+        <OperatorRewardsListTable operators={operatorRewardsConnection} page={currentPage} />
         <div className='w-full flex justify-between gap-2'>
-          <ExportButton data={accountRewardsConnection} filename='account-list' />
+          <ExportButton data={operatorRewardsConnection} filename='account-list' />
           <Pagination
             nextPage={handleNextPage}
             previousPage={handlePreviousPage}
@@ -84,5 +83,4 @@ const VoteBlockRewardList = () => {
     </div>
   )
 }
-
-export default VoteBlockRewardList
+export default OperatorRewardsList

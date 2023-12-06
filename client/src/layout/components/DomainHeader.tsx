@@ -59,7 +59,7 @@ const DomainHeader: FC = () => {
           })}
           <div className='text-[13px] font-semibold items-center flex'>
             <Link
-              to={INTERNAL_ROUTES.leaderboard.list}
+              to={INTERNAL_ROUTES.leaderboard.farmers}
               className={
                 isLeaderBoard
                   ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
