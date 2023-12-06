@@ -17,7 +17,7 @@ type Props = {
 }
 
 const NominatorRewardsListCard: FC<Props> = ({ account, index }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { selectedChain } = useDomains()
   const body = [
     { name: 'Rank', value: index },
     {
@@ -38,11 +38,7 @@ const NominatorRewardsListCard: FC<Props> = ({ account, index }) => {
         <div key={`${account.id}-account-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
           <Identicon value={account.id} size={49} theme='beachball' />
           <Link
-            to={INTERNAL_ROUTES.accounts.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              account.id,
-            )}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, 'consensus', account.id)}
           >
             <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>
               {account.id}

@@ -20,7 +20,7 @@ interface Props {
 }
 
 const NominatorRewardsListTable: FC<Props> = ({ accounts, page }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { selectedChain } = useDomains()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
@@ -42,7 +42,7 @@ const NominatorRewardsListTable: FC<Props> = ({ accounts, page }) => {
           <Identicon value={id} size={26} theme='beachball' />
           <Link
             data-testid={`account-link-${index}`}
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, id)}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, 'consensus', id)}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? id : shortString(id)}</div>

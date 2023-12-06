@@ -16,7 +16,7 @@ type Props = {
 }
 
 const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { selectedChain } = useDomains()
   const body = [
     { name: 'Rank', value: index },
     {
@@ -34,7 +34,7 @@ const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
           <Link
             to={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
-              selectedDomain,
+              'consensus',
               operator.id,
             )}
           >

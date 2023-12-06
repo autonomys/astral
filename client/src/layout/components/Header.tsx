@@ -68,7 +68,7 @@ const Header: FC = () => {
           </Link>
           <nav className='flex flex-wrap gap-10 items-center text-sm justify-center'>
             {menuList.map((item, index) => {
-              const isCurrentPath = pathName === `/${item.link}`
+              const isCurrentPath = pathName.includes(item.link)
               return (
                 <Link
                   key={index}

@@ -23,7 +23,7 @@ const LeaderBoardHeader: FC = () => {
   const menuList = [
     {
       title: 'Farmers Leaderboard',
-      link: `${INTERNAL_ROUTES.leaderboard.farmers}`,
+      link: `/${selectedChain.urls.page}/${selectedDomain}`,
     },
     {
       title: 'Operators Leaderboard',
@@ -49,12 +49,15 @@ const LeaderBoardHeader: FC = () => {
           </Link>
           <nav className='flex flex-wrap gap-10 items-center text-sm justify-center'>
             {menuList.map((item, index) => {
-              const isCurrentPath = pathName === `/${item.link}`
+              const isCurrentPath = pathName.includes(item.link) && index !== 0
+              const isInitialPath =
+                pathName === `/${selectedChain.urls.page}/leaderboard` && index === 0
+
               return (
                 <Link
                   key={index}
                   className={
-                    isCurrentPath
+                    isCurrentPath || isInitialPath
                       ? 'leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
                       : 'leading-4 text-[13px] font-semibold text-[#282929] dark:text-white bg-none'
                   }
