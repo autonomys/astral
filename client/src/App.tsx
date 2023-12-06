@@ -39,19 +39,6 @@ import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import DomainLayout from 'layout/components/DomainLayout'
 import { Fragment } from 'react'
 
-// force page scroll to top on route change
-// function ScrollToTopWrapper({ children }) {
-//   const location = useLocation()
-//   useLayoutEffect(() => {
-//     document.documentElement.scrollTo(0, 0)
-//   }, [location.pathname])
-//   return children
-// }
-
-// type Props = {
-//   children: ReactNode
-// }
-
 const createDomainRoutes = () => {
   return (
     <>
@@ -88,31 +75,6 @@ const createDomainRoutes = () => {
   )
 }
 
-// const UpdateSelectedChainByPath = ({ children }: Props) => {
-//   const { setSelectedChain, selectedChain, chains } = useDomains()
-
-//   const location = useLocation()
-
-//   useEffect(() => {
-//     const regex = new RegExp('^/([^/]+)')
-
-//     const match = location.pathname.match(regex)
-
-//     if (match && match[1] !== selectedChain.urls.page) {
-//       const urlSelectedPage = match[1]
-//       const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
-
-//       if (newChain) {
-//         setSelectedChain(newChain)
-//       }
-//     }
-
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, [location.pathname])
-
-//   return <>{children}</>
-// }
-
 const App = () => {
   const { chains } = useDomains()
 
@@ -143,78 +105,5 @@ const App = () => {
     </BrowserRouter>
   )
 }
-
-// function App() {
-//   const { selectedChain } = useDomains()
-
-//   return (
-//     <HashRouter>
-//       <ScrollToTopWrapper>
-//         <Layout>
-//           <DomainHeader />
-//           <UpdateSelectedChainByPath>
-//             <Header />
-//             <ErrorBoundary
-//               fallbackRender={ErrorFallback}
-//               onReset={() => window.location.reload()}
-//               // TODO: consider adding error monitoring
-//               onError={(error) => console.error(error)}
-//             >
-//               <Container>
-//                 <HeaderBackground />
-//                 <Routes>
-//                   <Route
-//                     path={INTERNAL_ROUTES.home}
-//                     element={<Navigate to={selectedChain.urls.page} />}
-//                   />
-//                   <Route path={INTERNAL_ROUTES.leaderboard.farmers} element={<Leaderboard />} />
-//                   <Route path={':network'}>
-//                     <Route index element={<Home />} />
-//                     <Route path={INTERNAL_ROUTES.blocks.list}>
-//                       <Route index element={<BlockList />} />
-//                       <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
-//                     </Route>
-//                     <Route path={INTERNAL_ROUTES.extrinsics.list}>
-//                       <Route index element={<ExtrinsicList />} />
-//                       <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
-//                     </Route>
-//                     <Route path={INTERNAL_ROUTES.accounts.list}>
-//                       <Route index element={<AccountList />} />
-//                       <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
-//                       <Route
-//                         path={INTERNAL_ROUTES.accounts.rewards.path}
-//                         element={<AccountRewardList />}
-//                       />
-//                     </Route>
-//                     <Route path={INTERNAL_ROUTES.events.list}>
-//                       <Route index element={<EventList />} />
-//                       <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
-//                     </Route>
-//                     <Route path={INTERNAL_ROUTES.logs.list}>
-//                       <Route index element={<LogList />} />
-//                       <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-//                     </Route>
-//                     <Route path={INTERNAL_ROUTES.operators.list}>
-//                       <Route index element={<OperatorsList />} />
-//                       <Route path={INTERNAL_ROUTES.operators.id.path} element={<Operator />} />
-//                     </Route>
-//                     <Route path={INTERNAL_ROUTES.search.result.path}>
-//                       <Route index element={<SearchResult />} />
-//                     </Route>
-//                   </Route>
-
-//                   <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
-//                   <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
-//                 </Routes>
-//               </Container>
-//             </ErrorBoundary>
-//           </UpdateSelectedChainByPath>
-//           <Footer />
-//           <Toaster />
-//         </Layout>
-//       </ScrollToTopWrapper>
-//     </HashRouter>
-//   )
-// }
 
 export default App
