@@ -14,7 +14,7 @@ type Props = {
 }
 
 const NominatorListCard: FC<Props> = ({ nominator }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const body = [
     { name: 'Id', value: nominator.account.id ? shortString(nominator.account.id) : 'Unknown' },
@@ -30,7 +30,11 @@ const NominatorListCard: FC<Props> = ({ nominator }) => {
         >
           <Identicon value={nominator.account.id} size={49} theme='beachball' />
           <Link
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, nominator.account.id)}
+            to={INTERNAL_ROUTES.accounts.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              nominator.account.id,
+            )}
           >
             <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>
               {nominator.account.id}

@@ -26,7 +26,7 @@ interface Props {
 }
 
 const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (results: Result[]): Column[] => [
     {
@@ -34,8 +34,8 @@ const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = false })
       cells: results.map(({ id, indexInBlock, type }) => {
         const link =
           type === 'Extrinsic'
-            ? INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)
-            : INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)
+            ? INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)
+            : INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)
         return (
           <Link key={`${id}-result-id-${indexInBlock}`} className='hover:text-[#DE67E4]' to={link}>
             <div>{id}</div>
@@ -49,7 +49,7 @@ const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = false })
         <Link
           key={`${id}-result-block-${indexInBlock}`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           <div>{blockHeight}</div>
         </Link>

@@ -16,7 +16,7 @@ type Props = {
 }
 
 const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
@@ -25,7 +25,7 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
         <Link
           key={`${id}-extrinsic-event-id`}
           className='w-full hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           <div>{`${block?.height}-${indexInBlock}`}</div>
         </Link>
@@ -34,7 +34,9 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
     {
       title: 'Extrinsic Id',
       cells: events.map(({ block, id, extrinsic }) => (
-        <div key={`${id}-extrinsic-event-extrinsic`}>{`${block?.height}-${extrinsic?.indexInBlock}`}</div>
+        <div
+          key={`${id}-extrinsic-event-extrinsic`}
+        >{`${block?.height}-${extrinsic?.indexInBlock}`}</div>
       )),
     },
     {

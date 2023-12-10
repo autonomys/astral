@@ -19,7 +19,7 @@ type Values = {
 const useSearch = (): Values => {
   const [isSearching, setIsSearching] = useState(false)
   const navigate = useNavigate()
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const [getResults] = useLazyQuery(GET_RESULTS, { fetchPolicy: 'network-only' })
 
@@ -45,30 +45,51 @@ const useSearch = (): Values => {
         })
 
         if (data?.accountById) {
-          navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
+          navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, term))
         } else if (data?.extrinsicById && data?.eventById) {
           const results = formatSearchResult(data.eventById, data.extrinsicById)
           navigate(
-            INTERNAL_ROUTES.search.result.page(selectedChain.urls.page, 'extrinsicAndEvent'),
+            INTERNAL_ROUTES.search.result.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              'extrinsicAndEvent',
+            ),
             {
               state: { results },
             },
           )
         } else if (data?.extrinsicById) {
-          navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
+          navigate(
+            INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, term),
+          )
         } else if (data?.extrinsics?.length > 0) {
           if (data.extrinsics.length > 1) {
-            navigate(INTERNAL_ROUTES.search.result.page(selectedChain.urls.page, 'extrinsics'), {
-              state: { extrinsics: data.extrinsics },
-            })
+            navigate(
+              INTERNAL_ROUTES.search.result.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                'extrinsics',
+              ),
+              {
+                state: { extrinsics: data.extrinsics },
+              },
+            )
           } else {
             const [extrinsic] = data.extrinsics
-            navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, extrinsic.id))
+            navigate(
+              INTERNAL_ROUTES.extrinsics.id.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                extrinsic.id,
+              ),
+            )
           }
         } else if (data?.blocks?.length > 0 && data.blocks[0].height >= 0) {
-          navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, Number(term)))
+          navigate(
+            INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, Number(term)),
+          )
         } else if (data?.eventById) {
-          navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, term))
+          navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, term))
         } else {
           navigate(INTERNAL_ROUTES.search.empty)
         }
@@ -86,18 +107,26 @@ const useSearch = (): Values => {
         if (isNaN(blockId)) {
           return navigate(INTERNAL_ROUTES.search.empty)
         }
-        navigate(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, Number(term)))
+        navigate(
+          INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, Number(term)),
+        )
         break
       }
       case 3:
-        return navigate(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, term))
+        return navigate(
+          INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, term),
+        )
       case 4:
         if (!isAddress(term)) {
           return navigate(INTERNAL_ROUTES.search.empty)
         }
-        return navigate(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, term))
+        return navigate(
+          INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, term),
+        )
       case 5:
-        return navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, term))
+        return navigate(
+          INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, term),
+        )
       default:
         return navigate(INTERNAL_ROUTES.search.empty)
     }

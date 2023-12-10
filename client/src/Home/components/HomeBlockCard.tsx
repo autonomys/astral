@@ -16,7 +16,7 @@ type Props = {
 }
 
 const HomeBlockCard: FC<Props> = ({ block }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const blockDate = dayjs(block.timestamp).fromNow(true)
   const body = [
     { name: 'Extrinsics', value: block.extrinsics?.length || 0 },
@@ -26,7 +26,13 @@ const HomeBlockCard: FC<Props> = ({ block }) => {
   return (
     <MobileCard
       id='home-block-list-mobile'
-      header={<HeaderBlockLink chain={selectedChain.urls.page} height={block.height} />}
+      header={
+        <HeaderBlockLink
+          chain={selectedChain.urls.page}
+          domain={selectedDomain}
+          height={block.height}
+        />
+      }
       body={body}
     />
   )

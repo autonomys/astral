@@ -1,5 +1,5 @@
 import { FC, useState } from 'react'
-import { Link, useMatch, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
 import { DOMAINS } from 'layout/constants'
@@ -9,27 +9,25 @@ import useDomains from 'common/hooks/useDomains'
 // chains
 import domains from 'layout/config/domains.json'
 import chains from 'layout/config/chains.json'
-import { INTERNAL_ROUTES } from 'common/routes'
 
 const DomainHeader: FC = () => {
   const [isActive, setIsActive] = useState(true)
-  const [domainSelected, setDomainSelected] = useState('Consensus Chain')
+  const location = useLocation()
+  const pathName = location.pathname
+
   const navigate = useNavigate()
 
-  const { setSelectedChain, selectedChain } = useDomains()
-  const match = useMatch('/leaderboard')
-
-  const isLeaderBoard = match?.pathname === '/leaderboard'
+  const { setSelectedChain, selectedChain, setSelectedDomain } = useDomains()
 
   const handleDomainSelected = (domain: string) => {
-    if (domain === 'Consensus Chain') {
-      setDomainSelected(domain)
-      setSelectedChain(chains[0])
-    } else {
-      setDomainSelected(domain)
+    if (domain === 'evm') {
+      setSelectedDomain(domain)
       setSelectedChain(domains[0])
+    } else {
+      setSelectedDomain(domain)
+      setSelectedChain(chains[0])
     }
-    navigate(`/${selectedChain.urls.page}`)
+    navigate(`/${selectedChain.urls.page}/${domain}`)
   }
 
   return (
@@ -41,39 +39,24 @@ const DomainHeader: FC = () => {
       <div className='w-full flex justify-between container py-3 items-center px-5 md:px-[25px] 2xl:px-0 mx-auto'>
         <div className='flex gap-9'>
           {DOMAINS.map((item, index) => {
-            const isActive = domainSelected === item
+            const isActive = pathName.includes(item.name)
             return (
               <div className='text-[13px] font-semibold items-center flex' key={`${item}-${index}`}>
                 <button
-                  onClick={() => handleDomainSelected(item)}
+                  onClick={() => handleDomainSelected(item.name)}
                   className={
-                    isActive && !isLeaderBoard
+                    isActive
                       ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
                       : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
                   }
                 >
-                  {item}
+                  {item.title}
                 </button>
               </div>
             )
           })}
-          <div className='text-[13px] font-semibold items-center flex'>
-            <Link
-              to={INTERNAL_ROUTES.leaderboard.list}
-              className={
-                isLeaderBoard
-                  ? 'bg-[#241235] rounded-full py-2 px-4 dark:bg-[#DE67E4] text-white'
-                  : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
-              }
-            >
-              Leaderboard
-            </Link>
-          </div>
         </div>
         <div className='flex gap-4'>
-          <span className='text-[#857EC2] dark:text-white font-medium text-[13px] leading-4'>
-            All Domains
-          </span>
           <button
             onClick={() => setIsActive(!isActive)}
             className=' w-4 h-4 text-[#241235] dark:text-white'

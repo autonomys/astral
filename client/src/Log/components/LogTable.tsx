@@ -22,7 +22,7 @@ interface Props {
 }
 
 const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (logs: Log[]): Column[] => [
     {
@@ -32,7 +32,7 @@ const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
           <Link
             className='w-full hover:text-[#DE67E4]'
             data-testid={`log-link-${index}`}
-            to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, id)}
           >
             <div>{id}</div>
           </Link>

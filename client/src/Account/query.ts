@@ -30,7 +30,6 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           id
           reserved
           total
-          nonce
           updatedAt
           extrinsics(limit: 300) {
             id
@@ -156,7 +155,11 @@ export const OLD_QUERY_ACCOUNT_BY_ID = gql`
 
 export const QUERY_LAST_WEEK_REWARDS = gql`
   query LatestRewardsWeek($accountId: String!, $gte: DateTime!) {
-    rewardEvents(limit: 500, where: { timestamp_gte: $gte, account: { id_eq: $accountId } }) {
+    rewardEvents(
+      limit: 500
+      orderBy: id_DESC
+      where: { timestamp_gte: $gte, account: { id_eq: $accountId } }
+    ) {
       amount
       id
       indexInBlock

@@ -18,7 +18,7 @@ type Props = {
 }
 
 const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const [module, call] = extrinsic.name.split('.')
 
@@ -47,6 +47,7 @@ const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
                   <Link
                     to={INTERNAL_ROUTES.blocks.id.page(
                       selectedChain.urls.page,
+                      selectedDomain,
                       extrinsic.block.height,
                     )}
                   >

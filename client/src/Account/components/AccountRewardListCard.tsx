@@ -20,7 +20,7 @@ type Props = {
 }
 
 const AccountRewardListCard: FC<Props> = ({ reward }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const body = [
     { name: 'Block Hash', value: shortString(reward.block?.hash || '') },
     { name: 'Type', value: reward.name.split('.')[1] },
@@ -34,7 +34,11 @@ const AccountRewardListCard: FC<Props> = ({ reward }) => {
         <div key={`${reward.id}-account-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
           <Link
             className='font-medium text-[#241235] text-sm break-all dark:text-white hover:text-[#DE67E4]'
-            to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, reward.block?.height)}
+            to={INTERNAL_ROUTES.blocks.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              reward.block?.height,
+            )}
           >
             <div>{reward.block?.height}</div>
           </Link>

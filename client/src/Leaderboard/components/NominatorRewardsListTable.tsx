@@ -1,31 +1,25 @@
 import { FC } from 'react'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
+import { AccountRewards } from 'gql/graphql'
 import { Link } from 'react-router-dom'
 import Identicon from '@polkadot/react-identicon'
 
-// gql
-import { Account } from 'gql/graphql'
-
 // common
-import { Table, Column } from 'common/components'
-import { INTERNAL_ROUTES } from 'common/routes'
-import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
+import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { PAGE_SIZE } from 'common/constants'
-import useDomains from 'common/hooks/useDomains'
+import { Column, Table } from 'common/components'
+import { INTERNAL_ROUTES } from 'common/routes'
+import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
 
-// rewards
-import RewardListCard from './RewardListCard'
-
-dayjs.extend(relativeTime)
+// leaderboard
+import NominatorRewardsListCard from './NominatorRewardsListCard'
 
 interface Props {
-  accounts: Account[]
+  accounts: AccountRewards[]
   page: number
 }
 
-const RewardTable: FC<Props> = ({ accounts, page }) => {
+const NominatorRewardsListTable: FC<Props> = ({ accounts, page }) => {
   const { selectedChain } = useDomains()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
@@ -34,7 +28,7 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
   const newCount = PAGE_SIZE * Number(page + 1) - 10
 
   // methods
-  const generateColumns = (accounts: Account[]): Column[] => [
+  const generateColumns = (accounts: AccountRewards[]): Column[] => [
     {
       title: 'Rank',
       cells: accounts.map((id, index) => (
@@ -48,7 +42,7 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
           <Identicon value={id} size={26} theme='beachball' />
           <Link
             data-testid={`account-link-${index}`}
-            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, 'consensus', id)}
             className='hover:text-[#DE67E4]'
           >
             <div>{isLargeLaptop ? id : shortString(id)}</div>
@@ -57,37 +51,19 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
       )),
     },
     {
-      title: 'Block rewards',
-      cells: accounts.map(({ blockRewardsTotal, id }) => (
+      title: 'Operator rewards',
+      cells: accounts.map(({ operator, id }) => (
         <div key={`${id}-reward-block`}>
-          {blockRewardsTotal
-            ? `${numberWithCommas(bigNumberToNumber(blockRewardsTotal, 18))} tSSC`
-            : 0}
+          {operator ? `${numberWithCommas(bigNumberToNumber(operator, 18))} tSSC` : 0}
         </div>
       )),
     },
     {
-      title: 'Vote rewards',
-      cells: accounts.map(({ voteRewardsTotal, id }) => (
-        <div key={`${id}-reward-vote`}>
-          {voteRewardsTotal
-            ? `${numberWithCommas(bigNumberToNumber(voteRewardsTotal, 18))} tSSC`
-            : 0}
-        </div>
-      )),
-    },
-    {
-      title: 'Total rewards (Vote+Block)%',
-      cells: accounts.map(({ total, id, voteRewardsTotal, blockRewardsTotal }) => {
+      title: 'Total rewards',
+      cells: accounts.map(({ amount, id }) => {
         return (
-          <div key={`${id}-reward-total-percent`} className='text-right'>
-            {total
-              ? `${(
-                  (bigNumberToNumber(blockRewardsTotal, 18) /
-                    bigNumberToNumber(voteRewardsTotal, 18)) *
-                  100
-                ).toFixed(2)}%`
-              : 0}
+          <div key={`${id}-reward-total-percent`}>
+            {amount ? `${numberWithCommas(bigNumberToNumber(amount, 18))} tSSC` : 0}
           </div>
         )
       }),
@@ -112,10 +88,14 @@ const RewardTable: FC<Props> = ({ accounts, page }) => {
   ) : (
     <div className='w-full'>
       {accounts.map((account, index) => (
-        <RewardListCard index={index} account={account} key={`reward-list-card-${account.id}`} />
+        <NominatorRewardsListCard
+          index={index}
+          account={account}
+          key={`reward-list-card-${account.id}`}
+        />
       ))}
     </div>
   )
 }
 
-export default RewardTable
+export default NominatorRewardsListTable

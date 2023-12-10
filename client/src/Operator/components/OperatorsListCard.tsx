@@ -15,7 +15,7 @@ type Props = {
 }
 
 const OperatorsListCard: FC<Props> = ({ operator }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const chain = selectedChain.urls.page
 
@@ -39,7 +39,7 @@ const OperatorsListCard: FC<Props> = ({ operator }) => {
           key={`${operator.id}-operator-id-${operator.signingKey}`}
           data-testid={`operator-link-${operator.id}-${operator.signingKey}}`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.operators.id.page(chain, operator.id)}
+          to={INTERNAL_ROUTES.operators.id.page(chain, selectedDomain, operator.id)}
         >
           <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>
             {operator.id}
