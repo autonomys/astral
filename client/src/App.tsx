@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, Navigate, useLocation } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -37,7 +37,7 @@ import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
 import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import DomainLayout from 'layout/components/DomainLayout'
-import { Fragment } from 'react'
+import { Fragment, ReactNode, useEffect } from 'react'
 
 const createDomainRoutes = () => {
   return (
@@ -75,6 +75,35 @@ const createDomainRoutes = () => {
   )
 }
 
+type Props = {
+  children: ReactNode
+}
+
+const UpdateSelectedChainByPath = ({ children }: Props) => {
+  const { setSelectedChain, selectedChain, chains } = useDomains()
+
+  const location = useLocation()
+
+  useEffect(() => {
+    const regex = new RegExp('^/([^/]+)')
+
+    const match = location.pathname.match(regex)
+
+    if (match && match[1] !== selectedChain.urls.page) {
+      const urlSelectedPage = match[1]
+      const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
+
+      if (newChain) {
+        setSelectedChain(newChain)
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
+
+  return <>{children}</>
+}
+
 const App = () => {
   const { chains, selectedChain, selectedDomain } = useDomains()
 
@@ -82,30 +111,32 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          path={INTERNAL_ROUTES.home}
-          element={<Navigate to={`${selectedChain.urls.page}/${selectedDomain}`} />}
-        />
-        {networks.map((network, index) => (
-          <Fragment key={`${network}-${index}`}>
-            <Route path={`/${network}/evm`} element={<DomainLayout />}>
-              {createDomainRoutes()}
-            </Route>
-            <Route path={`/${network}/consensus`} element={<DomainLayout />}>
-              {createDomainRoutes()}
-            </Route>
-            <Route path={`/${network}/leaderboard`} element={<LeaderboardLayout />}>
-              <Route index element={<VoteBlockRewardList />} />
-              <Route path='farmers' element={<VoteBlockRewardList />} />
-              <Route path='nominators' element={<NominatorRewardsList />} />
-              <Route path='operators' element={<OperatorRewardsList />} />
-            </Route>
-          </Fragment>
-        ))}
-        <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
-        <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
-      </Routes>
+      <UpdateSelectedChainByPath>
+        <Routes>
+          <Route
+            path={INTERNAL_ROUTES.home}
+            element={<Navigate to={`${selectedChain.urls.page}/${selectedDomain}`} />}
+          />
+          {networks.map((network, index) => (
+            <Fragment key={`${network}-${index}`}>
+              <Route path={`/${network}/evm`} element={<DomainLayout />}>
+                {createDomainRoutes()}
+              </Route>
+              <Route path={`/${network}/consensus`} element={<DomainLayout />}>
+                {createDomainRoutes()}
+              </Route>
+              <Route path={`/${network}/leaderboard`} element={<LeaderboardLayout />}>
+                <Route index element={<VoteBlockRewardList />} />
+                <Route path='farmers' element={<VoteBlockRewardList />} />
+                <Route path='nominators' element={<NominatorRewardsList />} />
+                <Route path='operators' element={<OperatorRewardsList />} />
+              </Route>
+            </Fragment>
+          ))}
+          <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
+          <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
+        </Routes>
+      </UpdateSelectedChainByPath>
     </BrowserRouter>
   )
 }
