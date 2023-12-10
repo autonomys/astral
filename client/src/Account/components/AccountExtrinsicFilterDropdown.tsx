@@ -16,6 +16,8 @@ const ACTIONS = [
   { id: 'Subspace.vote', name: 'Vote' },
   { id: 'Timestamp.set', name: 'Set' },
   { id: 'Domains.submit_bundle', name: 'Submit Bundle' },
+  { id: 'Domains.nominate_operator', name: 'Nominate Operator' },
+  { id: 'Domains.register_operator', name: 'Register Operator' },
 ]
 
 type Props = {
