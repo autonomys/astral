@@ -80,7 +80,8 @@ type Props = {
 }
 
 const UpdateSelectedChainByPath = ({ children }: Props) => {
-  const { setSelectedChain, setSelectedDomain, selectedChain, chains } = useDomains()
+  const { setSelectedChain, setSelectedDomain, selectedChain, selectedDomain, chains } =
+    useDomains()
 
   const location = useLocation()
 
@@ -88,9 +89,10 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
     const regex = new RegExp('^/([^/]+)/([^/]+)')
 
     const match = location.pathname.match(regex)
-    const domain = match ? match[2] : 'consensus'
 
-    setSelectedDomain(domain)
+    if (match && match[2] !== selectedDomain) {
+      setSelectedDomain(match[2])
+    }
 
     if (match && match[1] !== selectedChain.urls.page) {
       const urlSelectedPage = match[1]
