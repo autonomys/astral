@@ -33,7 +33,7 @@ export const QUERY_REWARDS_LIST = gql`
 export const QUERY_NOMINATORS_REWARDS_LIST = gql`
   query AccountsNominatorsConnectionRewards($first: Int!, $after: String) {
     accountRewardsConnection(
-      orderBy: amount_DESC
+      orderBy: operator_DESC
       first: $first
       after: $after
       where: { operator_gt: "0", operator_isNull: false }
