@@ -76,7 +76,7 @@ const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
       title: 'Total rewards',
       cells: accounts.map(({ amount, id }) => {
         return (
-          <div key={`${id}-reward-total-percent`} className='text-right'>
+          <div key={`${id}-reward-total-percent`}>
             {amount ? `${numberWithCommas(bigNumberToNumber(amount, 18))} tSSC` : 0}
           </div>
         )
