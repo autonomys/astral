@@ -1,4 +1,4 @@
-import { Routes, Route, BrowserRouter, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, HashRouter } from 'react-router-dom'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -116,7 +116,7 @@ const App = () => {
   const networks = chains.map((chain) => chain.urls.page)
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <UpdateSelectedChainByPath>
         <Routes>
           <Route
@@ -143,7 +143,7 @@ const App = () => {
           <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
         </Routes>
       </UpdateSelectedChainByPath>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
