@@ -38,7 +38,7 @@ const Operator: FC = () => {
   return (
     <div className='w-full flex flex-col space-y-4'>
       <OperatorDetailsCard operator={operator} isDesktop={isDesktop} />
-      <OperatorNominatorList nominators={operator.nominators} isDesktop={isDesktop} />
+      <OperatorNominatorList operator={operator} isDesktop={isDesktop} />
     </div>
   )
 }

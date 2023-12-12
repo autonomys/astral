@@ -4,17 +4,17 @@ import { numberWithCommas, shortString } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { Nominator } from 'gql/graphql'
+import { Nominator, Operator } from 'gql/graphql'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import NominatorListCard from './NominatorListCard'
 
 interface Props {
-  nominators: Nominator[]
+  operator: Operator
   isDesktop?: boolean
 }
 
-const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
+const OperatorNominatorTable: FC<Props> = ({ operator, isDesktop }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
@@ -47,10 +47,18 @@ const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
         )
       }),
     },
+    {
+      title: 'Owner',
+      cells: nominators.map(({ id, account }, index) => {
+        const isOwner = operator.operatorOwner === account.id
+
+        return <div key={`${id}-nominator-owner-${index}`}>{isOwner ? 'Yes' : 'No'}</div>
+      }),
+    },
   ]
 
   // constants
-  const columns = generateColumns(nominators)
+  const columns = generateColumns(operator.nominators)
 
   return isDesktop ? (
     <div className='w-full'>
@@ -66,7 +74,7 @@ const OperatorNominatorTable: FC<Props> = ({ nominators, isDesktop }) => {
     </div>
   ) : (
     <div className='w-full'>
-      {nominators.map((nominator, index) => (
+      {operator.nominators.map((nominator, index) => (
         <NominatorListCard
           nominator={nominator}
           key={`operator-list-card-${nominator.id}-${index}`}
