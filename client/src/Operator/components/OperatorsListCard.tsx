@@ -22,6 +22,7 @@ const OperatorsListCard: FC<Props> = ({ operator }) => {
   const body = [
     { name: 'Domain', value: operator.currentDomainId === 0 ? 'Subspace' : 'Nova' },
     { name: 'Signing Key', value: shortString(operator.signingKey) },
+    { name: 'Owner', value: shortString(operator.operatorOwner || '') },
     {
       name: 'Minimum Stake',
       value: `${bigNumberToNumber(operator.minimumNominatorStake, 18)} tSSC`,

@@ -33,6 +33,11 @@ const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
                 {isDesktop ? operator.signingKey : shortString(operator.signingKey)}
               </CopyButton>
             </StyledListItem>
+            <StyledListItem title='Operator Owner'>
+              <CopyButton value={operator.operatorOwner || ''} message='Operator owner key copied'>
+                {isDesktop ? operator.operatorOwner : shortString(operator.operatorOwner || '')}
+              </CopyButton>
+            </StyledListItem>
             <StyledListItem title='Minimun Stake'>
               {bigNumberToNumber(operator.minimumNominatorStake, 18)} tSSC
             </StyledListItem>
