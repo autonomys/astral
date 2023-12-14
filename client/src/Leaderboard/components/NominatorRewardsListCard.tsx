@@ -21,14 +21,10 @@ const NominatorRewardsListCard: FC<Props> = ({ account, index }) => {
   const body = [
     { name: 'Rank', value: index },
     {
-      name: 'Operator reward',
+      name: 'Nominator reward',
       value: account.operator
         ? `${numberWithCommas(bigNumberToNumber(account.operator, 18))} tSSC`
         : 0,
-    },
-    {
-      name: 'Total reward',
-      value: account.amount ? `${numberWithCommas(bigNumberToNumber(account.amount, 18))} tSSC` : 0,
     },
   ]
   return (

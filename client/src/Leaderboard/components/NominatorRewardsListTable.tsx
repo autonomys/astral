@@ -51,22 +51,12 @@ const NominatorRewardsListTable: FC<Props> = ({ accounts, page }) => {
       )),
     },
     {
-      title: 'Operator rewards',
+      title: 'Nominator rewards',
       cells: accounts.map(({ operator, id }) => (
         <div key={`${id}-reward-block`}>
           {operator ? `${numberWithCommas(bigNumberToNumber(operator, 18))} tSSC` : 0}
         </div>
       )),
-    },
-    {
-      title: 'Total rewards',
-      cells: accounts.map(({ amount, id }) => {
-        return (
-          <div key={`${id}-reward-total-percent`}>
-            {amount ? `${numberWithCommas(bigNumberToNumber(amount, 18))} tSSC` : 0}
-          </div>
-        )
-      }),
     },
   ]
 
