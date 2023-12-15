@@ -61,7 +61,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       total
       nonce
       updatedAt
-      extrinsics(limit: 10) {
+      extrinsics(limit: 10, orderBy: block_height_DESC) {
         hash
         id
         indexInBlock
@@ -98,7 +98,7 @@ export const QUERY_ACCOUNT_BY_ID_EVM = gql`
       id
       total
       updatedAt
-      extrinsics(limit: 10) {
+      extrinsics(limit: 10, orderBy: block_height_DESC) {
         hash
         id
         indexInBlock
@@ -136,7 +136,7 @@ export const OLD_QUERY_ACCOUNT_BY_ID = gql`
       id
       total
       updatedAt
-      extrinsics(limit: 10) {
+      extrinsics(limit: 10, orderBy: block_height_DESC) {
         hash
         id
         indexInBlock
@@ -219,7 +219,7 @@ export const QUERY_REWARDS_LIST = gql`
 
 export const QUERY_ACCOUNT_EXTRINSICS = gql`
   query ExtrinsicsByAccountId($first: Int!, $after: String, $where: ExtrinsicWhereInput) {
-    extrinsicsConnection(orderBy: indexInBlock_ASC, first: $first, after: $after, where: $where) {
+    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after, where: $where) {
       edges {
         node {
           id
