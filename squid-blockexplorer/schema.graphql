@@ -120,6 +120,7 @@ type Operator @entity {
   id: ID! @index
   signingKey: String! @index
   operatorOwner: String @index
+  orderingId: Int! @index
   currentDomainId: Int
   nextDomainId: Int
   minimumNominatorStake: BigInt
@@ -131,7 +132,7 @@ type Operator @entity {
     @derivedFrom(field: "operator")
     @cardinality(value: 1000)
   status: String
-  updatedAt: BigInt
+  updatedAt: BigInt @index
 }
 
 type Nominator @entity {

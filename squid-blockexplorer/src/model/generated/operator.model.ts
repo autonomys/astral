@@ -19,6 +19,10 @@ export class Operator {
     @Column_("text", {nullable: true})
     operatorOwner!: string | undefined | null
 
+    @Index_()
+    @Column_("int4", {nullable: false})
+    orderingId!: number
+
     @Column_("int4", {nullable: true})
     currentDomainId!: number | undefined | null
 
@@ -46,6 +50,7 @@ export class Operator {
     @Column_("text", {nullable: true})
     status!: string | undefined | null
 
+    @Index_()
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     updatedAt!: bigint | undefined | null
 }

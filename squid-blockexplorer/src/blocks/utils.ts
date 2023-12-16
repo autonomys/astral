@@ -353,6 +353,7 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
       if (operatorInfo) {
         operator = new Operator({
           id: operatorId.toString(),
+          orderingId: Number(operatorId),
           operatorOwner: ownerAccount?.toString(),
           status: operatorInfo.status.toString(),
           signingKey: operatorInfo.signingKey,
