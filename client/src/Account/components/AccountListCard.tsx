@@ -21,7 +21,7 @@ type Props = {
 }
 
 const AccountListCard: FC<Props> = ({ account, index }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const body = [
     { name: 'Rank', value: index },
     { name: 'Extrinsics', value: account.extrinsics.length },
@@ -34,7 +34,13 @@ const AccountListCard: FC<Props> = ({ account, index }) => {
       header={
         <div key={`${account.id}-account-id`} className='flex row items-center gap-3 -mt-3 -mx-1'>
           <Identicon value={account.id} size={49} theme='beachball' />
-          <Link to={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, account.id)}>
+          <Link
+            to={INTERNAL_ROUTES.accounts.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              account.id,
+            )}
+          >
             <p className='font-medium text-[#241235] text-sm break-all dark:text-white'>
               {account.id}
             </p>

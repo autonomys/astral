@@ -1,10 +1,6 @@
-import { ReactNode, useEffect, useLayoutEffect } from 'react'
-import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
-import { ErrorBoundary } from 'react-error-boundary'
+import { Routes, Route, Navigate, useLocation, HashRouter } from 'react-router-dom'
 
 // common
-import { ErrorFallback } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
 
@@ -15,15 +11,7 @@ import { Block, BlockList } from 'Block/components'
 import { Extrinsic, ExtrinsicList } from 'Extrinsic/components'
 
 // layout
-import {
-  Layout,
-  Container,
-  Footer,
-  Header,
-  NotFound,
-  HeaderBackground,
-  DomainHeader,
-} from 'layout/components'
+import { NotFound } from 'layout/components'
 import NotResultsFound from 'layout/components/NotResultsFound'
 import SearchResult from 'layout/components/SearchResult'
 
@@ -38,17 +26,53 @@ import { Event, EventList } from 'Event/components'
 
 // log
 import { Log, LogList } from 'Log/components'
-import RewardList from 'Rewards/components/RewardList'
+
+// operator
 import Operator from 'Operator/components/Operator'
 import OperatorsList from 'Operator/components/OperatorsList'
 
-// force page scroll to top on route change
-function ScrollToTopWrapper({ children }) {
-  const location = useLocation()
-  useLayoutEffect(() => {
-    document.documentElement.scrollTo(0, 0)
-  }, [location.pathname])
-  return children
+// leaderboard
+import LeaderboardLayout from 'layout/components/LeaderboardLayout'
+import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
+import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
+import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
+import DomainLayout from 'layout/components/DomainLayout'
+import { Fragment, ReactNode, useEffect } from 'react'
+
+const createDomainRoutes = () => {
+  return (
+    <>
+      <Route index element={<Home />} />
+      <Route path={INTERNAL_ROUTES.blocks.list}>
+        <Route index element={<BlockList />} />
+        <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
+      </Route>
+      <Route path={INTERNAL_ROUTES.extrinsics.list}>
+        <Route index element={<ExtrinsicList />} />
+        <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
+      </Route>
+      <Route path={INTERNAL_ROUTES.accounts.list}>
+        <Route index element={<AccountList />} />
+        <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
+        <Route path={INTERNAL_ROUTES.accounts.rewards.path} element={<AccountRewardList />} />
+      </Route>
+      <Route path={INTERNAL_ROUTES.events.list}>
+        <Route index element={<EventList />} />
+        <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
+      </Route>
+      <Route path={INTERNAL_ROUTES.logs.list}>
+        <Route index element={<LogList />} />
+        <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
+      </Route>
+      <Route path={INTERNAL_ROUTES.operators.list}>
+        <Route index element={<OperatorsList />} />
+        <Route path={INTERNAL_ROUTES.operators.id.path} element={<Operator />} />
+      </Route>
+      <Route path={INTERNAL_ROUTES.search.result.path}>
+        <Route index element={<SearchResult />} />
+      </Route>
+    </>
+  )
 }
 
 type Props = {
@@ -56,17 +80,23 @@ type Props = {
 }
 
 const UpdateSelectedChainByPath = ({ children }: Props) => {
-  const { setSelectedChain, selectedChain, chains } = useDomains()
+  const { setSelectedChain, setSelectedDomain, selectedChain, selectedDomain, chains } =
+    useDomains()
 
   const location = useLocation()
 
   useEffect(() => {
-    const regex = new RegExp('^/([^/]+)')
+    const regex = new RegExp('^/([^/]+)/([^/]+)')
 
     const match = location.pathname.match(regex)
 
+    if (match && match[2] !== selectedDomain) {
+      setSelectedDomain(match[2])
+    }
+
     if (match && match[1] !== selectedChain.urls.page) {
       const urlSelectedPage = match[1]
+
       const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
 
       if (newChain) {
@@ -80,75 +110,39 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
   return <>{children}</>
 }
 
-function App() {
-  const { selectedChain } = useDomains()
+const App = () => {
+  const { chains, selectedChain, selectedDomain } = useDomains()
+
+  const networks = chains.map((chain) => chain.urls.page)
 
   return (
     <HashRouter>
-      <ScrollToTopWrapper>
-        <Layout>
-          <DomainHeader />
-          <UpdateSelectedChainByPath>
-            <Header />
-            <ErrorBoundary
-              fallbackRender={ErrorFallback}
-              onReset={() => window.location.reload()}
-              // TODO: consider adding error monitoring
-              onError={(error) => console.error(error)}
-            >
-              <Container>
-                <HeaderBackground />
-                <Routes>
-                  <Route
-                    path={INTERNAL_ROUTES.home}
-                    element={<Navigate to={selectedChain.urls.page} />}
-                  />
-                  <Route path={INTERNAL_ROUTES.leaderboard.list} element={<RewardList />} />
-                  <Route path={':network'}>
-                    <Route index element={<Home />} />
-                    <Route path={INTERNAL_ROUTES.blocks.list}>
-                      <Route index element={<BlockList />} />
-                      <Route element={<Block />} path={INTERNAL_ROUTES.blocks.id.path} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.extrinsics.list}>
-                      <Route index element={<ExtrinsicList />} />
-                      <Route path={INTERNAL_ROUTES.extrinsics.id.path} element={<Extrinsic />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.accounts.list}>
-                      <Route index element={<AccountList />} />
-                      <Route path={INTERNAL_ROUTES.accounts.id.path} element={<Account />} />
-                      <Route
-                        path={INTERNAL_ROUTES.accounts.rewards.path}
-                        element={<AccountRewardList />}
-                      />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.events.list}>
-                      <Route index element={<EventList />} />
-                      <Route path={INTERNAL_ROUTES.events.id.path} element={<Event />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.logs.list}>
-                      <Route index element={<LogList />} />
-                      <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.operators.list}>
-                      <Route index element={<OperatorsList />} />
-                      <Route path={INTERNAL_ROUTES.operators.id.path} element={<Operator />} />
-                    </Route>
-                    <Route path={INTERNAL_ROUTES.search.result.path}>
-                      <Route index element={<SearchResult />} />
-                    </Route>
-                  </Route>
-
-                  <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
-                  <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
-                </Routes>
-              </Container>
-            </ErrorBoundary>
-          </UpdateSelectedChainByPath>
-          <Footer />
-          <Toaster />
-        </Layout>
-      </ScrollToTopWrapper>
+      <UpdateSelectedChainByPath>
+        <Routes>
+          <Route
+            path={INTERNAL_ROUTES.home}
+            element={<Navigate to={`${selectedChain.urls.page}/${selectedDomain}`} />}
+          />
+          {networks.map((network, index) => (
+            <Fragment key={`${network}-${index}`}>
+              <Route path={`/${network}/evm`} element={<DomainLayout />}>
+                {createDomainRoutes()}
+              </Route>
+              <Route path={`/${network}/consensus`} element={<DomainLayout />}>
+                {createDomainRoutes()}
+              </Route>
+              <Route path={`/${network}/leaderboard`} element={<LeaderboardLayout />}>
+                <Route index element={<VoteBlockRewardList />} />
+                <Route path='farmers' element={<VoteBlockRewardList />} />
+                <Route path='nominators' element={<NominatorRewardsList />} />
+                <Route path='operators' element={<OperatorRewardsList />} />
+              </Route>
+            </Fragment>
+          ))}
+          <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
+          <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
+        </Routes>
+      </UpdateSelectedChainByPath>
     </HashRouter>
   )
 }

@@ -18,7 +18,7 @@ type Props = {
 }
 
 const EventListCard: FC<Props> = ({ event }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const body = [
     { name: 'Block', value: event.block?.height },
     { name: 'Action', value: event.name.split('.')[1] },
@@ -31,7 +31,7 @@ const EventListCard: FC<Props> = ({ event }) => {
       header={
         <Link
           className='flex gap-2'
-          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, event.id)}
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, event.id)}
         >
           <h3 className='font-medium text-[#241235] text-sm dark:text-white'>{`${event.block?.height}-${event.indexInBlock}`}</h3>
         </Link>

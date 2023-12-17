@@ -21,7 +21,7 @@ type Props = {
 
 const BlockDetailsEventList: FC<Props> = ({ isDesktop = false }) => {
   const { blockId } = useParams()
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const PAGE_SIZE = isDesktop ? 10 : 5
@@ -83,7 +83,7 @@ const BlockDetailsEventList: FC<Props> = ({ isDesktop = false }) => {
         <div className='w-full flex gap-1' key={`${id}-block-event-id`}>
           <Link
             className='w-full hover:text-[#DE67E4]'
-            to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, id)}
+            to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
           >
             {`${block?.height}-${indexInBlock}`}
           </Link>

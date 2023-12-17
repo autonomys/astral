@@ -1,1 +1,14 @@
-export const DOMAINS = ['Consensus Chain', 'EVM']
+export const DOMAINS = [
+  {
+    name: 'consensus',
+    title: 'Consensus Chain',
+  },
+  {
+    name: 'evm',
+    title: 'EVM',
+  },
+  {
+    name: 'leaderboard',
+    title: 'Leaderboard',
+  },
+]

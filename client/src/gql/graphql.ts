@@ -5,60 +5,58 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
   /** Big number integer */
-  BigInt: any;
+  BigInt: { input: any; output: any; }
   /** A date-time string in simplified extended ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ) */
-  DateTime: any;
+  DateTime: { input: any; output: any; }
   /** A scalar that can represent any JSON value */
-  JSON: any;
+  JSON: { input: any; output: any; }
 };
 
 export type Account = {
   __typename?: 'Account';
-  blockRewardsTotal?: Maybe<Scalars['BigInt']>;
   extrinsics: Array<Extrinsic>;
-  free?: Maybe<Scalars['BigInt']>;
-  id: Scalars['String'];
-  nonce?: Maybe<Scalars['BigInt']>;
-  reserved?: Maybe<Scalars['BigInt']>;
+  free?: Maybe<Scalars['BigInt']['output']>;
+  id: Scalars['String']['output'];
+  nonce?: Maybe<Scalars['BigInt']['output']>;
+  reserved?: Maybe<Scalars['BigInt']['output']>;
   rewards: Array<RewardEvent>;
-  total?: Maybe<Scalars['BigInt']>;
-  updatedAt?: Maybe<Scalars['BigInt']>;
-  voteRewardsTotal?: Maybe<Scalars['BigInt']>;
+  total?: Maybe<Scalars['BigInt']['output']>;
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
 };
 
 
 export type AccountExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
   where?: InputMaybe<ExtrinsicWhereInput>;
 };
 
 
 export type AccountRewardsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
   where?: InputMaybe<RewardEventWhereInput>;
 };
 
 export type AccountEdge = {
   __typename?: 'AccountEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Account;
 };
 
 export enum AccountOrderByInput {
-  BlockRewardsTotalAsc = 'blockRewardsTotal_ASC',
-  BlockRewardsTotalDesc = 'blockRewardsTotal_DESC',
   FreeAsc = 'free_ASC',
   FreeDesc = 'free_DESC',
   IdAsc = 'id_ASC',
@@ -70,180 +68,278 @@ export enum AccountOrderByInput {
   TotalAsc = 'total_ASC',
   TotalDesc = 'total_DESC',
   UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC',
-  VoteRewardsTotalAsc = 'voteRewardsTotal_ASC',
-  VoteRewardsTotalDesc = 'voteRewardsTotal_DESC'
+  UpdatedAtDesc = 'updatedAt_DESC'
 }
+
+export type AccountRewards = {
+  __typename?: 'AccountRewards';
+  account: Account;
+  amount?: Maybe<Scalars['BigInt']['output']>;
+  block?: Maybe<Scalars['BigInt']['output']>;
+  id: Scalars['String']['output'];
+  operator?: Maybe<Scalars['BigInt']['output']>;
+  updatedAt: Scalars['BigInt']['output'];
+  vote?: Maybe<Scalars['BigInt']['output']>;
+};
+
+export type AccountRewardsConnection = {
+  __typename?: 'AccountRewardsConnection';
+  edges: Array<AccountRewardsEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type AccountRewardsEdge = {
+  __typename?: 'AccountRewardsEdge';
+  cursor: Scalars['String']['output'];
+  node: AccountRewards;
+};
+
+export enum AccountRewardsOrderByInput {
+  AccountFreeAsc = 'account_free_ASC',
+  AccountFreeDesc = 'account_free_DESC',
+  AccountIdAsc = 'account_id_ASC',
+  AccountIdDesc = 'account_id_DESC',
+  AccountNonceAsc = 'account_nonce_ASC',
+  AccountNonceDesc = 'account_nonce_DESC',
+  AccountReservedAsc = 'account_reserved_ASC',
+  AccountReservedDesc = 'account_reserved_DESC',
+  AccountTotalAsc = 'account_total_ASC',
+  AccountTotalDesc = 'account_total_DESC',
+  AccountUpdatedAtAsc = 'account_updatedAt_ASC',
+  AccountUpdatedAtDesc = 'account_updatedAt_DESC',
+  AmountAsc = 'amount_ASC',
+  AmountDesc = 'amount_DESC',
+  BlockAsc = 'block_ASC',
+  BlockDesc = 'block_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  OperatorAsc = 'operator_ASC',
+  OperatorDesc = 'operator_DESC',
+  UpdatedAtAsc = 'updatedAt_ASC',
+  UpdatedAtDesc = 'updatedAt_DESC',
+  VoteAsc = 'vote_ASC',
+  VoteDesc = 'vote_DESC'
+}
+
+export type AccountRewardsWhereInput = {
+  AND?: InputMaybe<Array<AccountRewardsWhereInput>>;
+  OR?: InputMaybe<Array<AccountRewardsWhereInput>>;
+  account?: InputMaybe<AccountWhereInput>;
+  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  block_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  block_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  block_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  block_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  block_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  block_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  block_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  block_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  operator_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  operator_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  operator_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  operator_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  operator_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  operator_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  operator_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  operator_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  vote_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  vote_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  vote_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  vote_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  vote_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  vote_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  vote_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  vote_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  vote_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
 
 export type AccountWhereInput = {
   AND?: InputMaybe<Array<AccountWhereInput>>;
   OR?: InputMaybe<Array<AccountWhereInput>>;
-  blockRewardsTotal_eq?: InputMaybe<Scalars['BigInt']>;
-  blockRewardsTotal_gt?: InputMaybe<Scalars['BigInt']>;
-  blockRewardsTotal_gte?: InputMaybe<Scalars['BigInt']>;
-  blockRewardsTotal_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  blockRewardsTotal_isNull?: InputMaybe<Scalars['Boolean']>;
-  blockRewardsTotal_lt?: InputMaybe<Scalars['BigInt']>;
-  blockRewardsTotal_lte?: InputMaybe<Scalars['BigInt']>;
-  blockRewardsTotal_not_eq?: InputMaybe<Scalars['BigInt']>;
-  blockRewardsTotal_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
   extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
   extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
   extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
-  free_eq?: InputMaybe<Scalars['BigInt']>;
-  free_gt?: InputMaybe<Scalars['BigInt']>;
-  free_gte?: InputMaybe<Scalars['BigInt']>;
-  free_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  free_isNull?: InputMaybe<Scalars['Boolean']>;
-  free_lt?: InputMaybe<Scalars['BigInt']>;
-  free_lte?: InputMaybe<Scalars['BigInt']>;
-  free_not_eq?: InputMaybe<Scalars['BigInt']>;
-  free_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  nonce_eq?: InputMaybe<Scalars['BigInt']>;
-  nonce_gt?: InputMaybe<Scalars['BigInt']>;
-  nonce_gte?: InputMaybe<Scalars['BigInt']>;
-  nonce_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  nonce_isNull?: InputMaybe<Scalars['Boolean']>;
-  nonce_lt?: InputMaybe<Scalars['BigInt']>;
-  nonce_lte?: InputMaybe<Scalars['BigInt']>;
-  nonce_not_eq?: InputMaybe<Scalars['BigInt']>;
-  nonce_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  reserved_eq?: InputMaybe<Scalars['BigInt']>;
-  reserved_gt?: InputMaybe<Scalars['BigInt']>;
-  reserved_gte?: InputMaybe<Scalars['BigInt']>;
-  reserved_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  reserved_isNull?: InputMaybe<Scalars['Boolean']>;
-  reserved_lt?: InputMaybe<Scalars['BigInt']>;
-  reserved_lte?: InputMaybe<Scalars['BigInt']>;
-  reserved_not_eq?: InputMaybe<Scalars['BigInt']>;
-  reserved_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  free_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  free_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  free_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  free_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  free_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  free_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  free_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  free_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  free_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  nonce_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  nonce_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nonce_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  reserved_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  reserved_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  reserved_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  reserved_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  reserved_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  reserved_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  reserved_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  reserved_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  reserved_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   rewards_every?: InputMaybe<RewardEventWhereInput>;
   rewards_none?: InputMaybe<RewardEventWhereInput>;
   rewards_some?: InputMaybe<RewardEventWhereInput>;
-  total_eq?: InputMaybe<Scalars['BigInt']>;
-  total_gt?: InputMaybe<Scalars['BigInt']>;
-  total_gte?: InputMaybe<Scalars['BigInt']>;
-  total_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  total_isNull?: InputMaybe<Scalars['Boolean']>;
-  total_lt?: InputMaybe<Scalars['BigInt']>;
-  total_lte?: InputMaybe<Scalars['BigInt']>;
-  total_not_eq?: InputMaybe<Scalars['BigInt']>;
-  total_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  voteRewardsTotal_eq?: InputMaybe<Scalars['BigInt']>;
-  voteRewardsTotal_gt?: InputMaybe<Scalars['BigInt']>;
-  voteRewardsTotal_gte?: InputMaybe<Scalars['BigInt']>;
-  voteRewardsTotal_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  voteRewardsTotal_isNull?: InputMaybe<Scalars['Boolean']>;
-  voteRewardsTotal_lt?: InputMaybe<Scalars['BigInt']>;
-  voteRewardsTotal_lte?: InputMaybe<Scalars['BigInt']>;
-  voteRewardsTotal_not_eq?: InputMaybe<Scalars['BigInt']>;
-  voteRewardsTotal_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  total_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  total_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  total_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  total_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  total_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  total_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  total_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  total_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  total_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export type AccountsConnection = {
   __typename?: 'AccountsConnection';
   edges: Array<AccountEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Block = {
   __typename?: 'Block';
   author?: Maybe<Account>;
-  blockchainSize: Scalars['BigInt'];
+  blockchainSize: Scalars['BigInt']['output'];
   calls: Array<Call>;
   events: Array<Event>;
-  eventsCount: Scalars['Int'];
+  eventsCount: Scalars['Int']['output'];
   extrinsics: Array<Extrinsic>;
-  extrinsicsCount: Scalars['Int'];
-  extrinsicsRoot: Scalars['String'];
-  hash: Scalars['String'];
-  height: Scalars['BigInt'];
-  id: Scalars['String'];
+  extrinsicsCount: Scalars['Int']['output'];
+  extrinsicsRoot: Scalars['String']['output'];
+  hash: Scalars['String']['output'];
+  height: Scalars['BigInt']['output'];
+  id: Scalars['String']['output'];
   logs: Array<Log>;
-  parentHash: Scalars['String'];
+  parentHash: Scalars['String']['output'];
   rewards: Array<RewardEvent>;
-  spacePledged: Scalars['BigInt'];
-  specId: Scalars['String'];
-  stateRoot: Scalars['String'];
-  timestamp: Scalars['DateTime'];
+  spacePledged: Scalars['BigInt']['output'];
+  specId: Scalars['String']['output'];
+  stateRoot: Scalars['String']['output'];
+  timestamp: Scalars['DateTime']['output'];
 };
 
 
 export type BlockCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CallOrderByInput>>;
   where?: InputMaybe<CallWhereInput>;
 };
 
 
 export type BlockEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EventOrderByInput>>;
   where?: InputMaybe<EventWhereInput>;
 };
 
 
 export type BlockExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
   where?: InputMaybe<ExtrinsicWhereInput>;
 };
 
 
 export type BlockLogsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LogOrderByInput>>;
   where?: InputMaybe<LogWhereInput>;
 };
 
 
 export type BlockRewardsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
   where?: InputMaybe<RewardEventWhereInput>;
 };
 
 export type BlockEdge = {
   __typename?: 'BlockEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Block;
 };
 
 export enum BlockOrderByInput {
-  AuthorBlockRewardsTotalAsc = 'author_blockRewardsTotal_ASC',
-  AuthorBlockRewardsTotalDesc = 'author_blockRewardsTotal_DESC',
   AuthorFreeAsc = 'author_free_ASC',
   AuthorFreeDesc = 'author_free_DESC',
   AuthorIdAsc = 'author_id_ASC',
@@ -256,8 +352,6 @@ export enum BlockOrderByInput {
   AuthorTotalDesc = 'author_total_DESC',
   AuthorUpdatedAtAsc = 'author_updatedAt_ASC',
   AuthorUpdatedAtDesc = 'author_updatedAt_DESC',
-  AuthorVoteRewardsTotalAsc = 'author_voteRewardsTotal_ASC',
-  AuthorVoteRewardsTotalDesc = 'author_voteRewardsTotal_DESC',
   BlockchainSizeAsc = 'blockchainSize_ASC',
   BlockchainSizeDesc = 'blockchainSize_DESC',
   EventsCountAsc = 'eventsCount_ASC',
@@ -288,214 +382,214 @@ export type BlockWhereInput = {
   AND?: InputMaybe<Array<BlockWhereInput>>;
   OR?: InputMaybe<Array<BlockWhereInput>>;
   author?: InputMaybe<AccountWhereInput>;
-  author_isNull?: InputMaybe<Scalars['Boolean']>;
-  blockchainSize_eq?: InputMaybe<Scalars['BigInt']>;
-  blockchainSize_gt?: InputMaybe<Scalars['BigInt']>;
-  blockchainSize_gte?: InputMaybe<Scalars['BigInt']>;
-  blockchainSize_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  blockchainSize_isNull?: InputMaybe<Scalars['Boolean']>;
-  blockchainSize_lt?: InputMaybe<Scalars['BigInt']>;
-  blockchainSize_lte?: InputMaybe<Scalars['BigInt']>;
-  blockchainSize_not_eq?: InputMaybe<Scalars['BigInt']>;
-  blockchainSize_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  author_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  blockchainSize_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  blockchainSize_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockchainSize_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockchainSize_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  blockchainSize_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  blockchainSize_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  blockchainSize_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  blockchainSize_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  blockchainSize_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   calls_every?: InputMaybe<CallWhereInput>;
   calls_none?: InputMaybe<CallWhereInput>;
   calls_some?: InputMaybe<CallWhereInput>;
-  eventsCount_eq?: InputMaybe<Scalars['Int']>;
-  eventsCount_gt?: InputMaybe<Scalars['Int']>;
-  eventsCount_gte?: InputMaybe<Scalars['Int']>;
-  eventsCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  eventsCount_isNull?: InputMaybe<Scalars['Boolean']>;
-  eventsCount_lt?: InputMaybe<Scalars['Int']>;
-  eventsCount_lte?: InputMaybe<Scalars['Int']>;
-  eventsCount_not_eq?: InputMaybe<Scalars['Int']>;
-  eventsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  eventsCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  eventsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  eventsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  eventsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   events_every?: InputMaybe<EventWhereInput>;
   events_none?: InputMaybe<EventWhereInput>;
   events_some?: InputMaybe<EventWhereInput>;
-  extrinsicsCount_eq?: InputMaybe<Scalars['Int']>;
-  extrinsicsCount_gt?: InputMaybe<Scalars['Int']>;
-  extrinsicsCount_gte?: InputMaybe<Scalars['Int']>;
-  extrinsicsCount_in?: InputMaybe<Array<Scalars['Int']>>;
-  extrinsicsCount_isNull?: InputMaybe<Scalars['Boolean']>;
-  extrinsicsCount_lt?: InputMaybe<Scalars['Int']>;
-  extrinsicsCount_lte?: InputMaybe<Scalars['Int']>;
-  extrinsicsCount_not_eq?: InputMaybe<Scalars['Int']>;
-  extrinsicsCount_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  extrinsicsRoot_contains?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_containsInsensitive?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_endsWith?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_eq?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_gt?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_gte?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_in?: InputMaybe<Array<Scalars['String']>>;
-  extrinsicsRoot_isNull?: InputMaybe<Scalars['Boolean']>;
-  extrinsicsRoot_lt?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_lte?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_not_contains?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_not_endsWith?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_not_eq?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_not_in?: InputMaybe<Array<Scalars['String']>>;
-  extrinsicsRoot_not_startsWith?: InputMaybe<Scalars['String']>;
-  extrinsicsRoot_startsWith?: InputMaybe<Scalars['String']>;
+  extrinsicsCount_eq?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_gt?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_gte?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  extrinsicsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  extrinsicsCount_lt?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_lte?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  extrinsicsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  extrinsicsRoot_contains?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_endsWith?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_eq?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_gt?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_gte?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  extrinsicsRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  extrinsicsRoot_lt?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_lte?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_not_contains?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_not_eq?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  extrinsicsRoot_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  extrinsicsRoot_startsWith?: InputMaybe<Scalars['String']['input']>;
   extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
   extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
   extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
-  hash_contains?: InputMaybe<Scalars['String']>;
-  hash_containsInsensitive?: InputMaybe<Scalars['String']>;
-  hash_endsWith?: InputMaybe<Scalars['String']>;
-  hash_eq?: InputMaybe<Scalars['String']>;
-  hash_gt?: InputMaybe<Scalars['String']>;
-  hash_gte?: InputMaybe<Scalars['String']>;
-  hash_in?: InputMaybe<Array<Scalars['String']>>;
-  hash_isNull?: InputMaybe<Scalars['Boolean']>;
-  hash_lt?: InputMaybe<Scalars['String']>;
-  hash_lte?: InputMaybe<Scalars['String']>;
-  hash_not_contains?: InputMaybe<Scalars['String']>;
-  hash_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  hash_not_endsWith?: InputMaybe<Scalars['String']>;
-  hash_not_eq?: InputMaybe<Scalars['String']>;
-  hash_not_in?: InputMaybe<Array<Scalars['String']>>;
-  hash_not_startsWith?: InputMaybe<Scalars['String']>;
-  hash_startsWith?: InputMaybe<Scalars['String']>;
-  height_eq?: InputMaybe<Scalars['BigInt']>;
-  height_gt?: InputMaybe<Scalars['BigInt']>;
-  height_gte?: InputMaybe<Scalars['BigInt']>;
-  height_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  height_isNull?: InputMaybe<Scalars['Boolean']>;
-  height_lt?: InputMaybe<Scalars['BigInt']>;
-  height_lte?: InputMaybe<Scalars['BigInt']>;
-  height_not_eq?: InputMaybe<Scalars['BigInt']>;
-  height_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
+  hash_contains?: InputMaybe<Scalars['String']['input']>;
+  hash_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  hash_endsWith?: InputMaybe<Scalars['String']['input']>;
+  hash_eq?: InputMaybe<Scalars['String']['input']>;
+  hash_gt?: InputMaybe<Scalars['String']['input']>;
+  hash_gte?: InputMaybe<Scalars['String']['input']>;
+  hash_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  hash_lt?: InputMaybe<Scalars['String']['input']>;
+  hash_lte?: InputMaybe<Scalars['String']['input']>;
+  hash_not_contains?: InputMaybe<Scalars['String']['input']>;
+  hash_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  hash_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  hash_not_eq?: InputMaybe<Scalars['String']['input']>;
+  hash_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  hash_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  hash_startsWith?: InputMaybe<Scalars['String']['input']>;
+  height_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  height_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  height_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  height_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  height_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  height_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  height_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  height_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  height_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
   logs_every?: InputMaybe<LogWhereInput>;
   logs_none?: InputMaybe<LogWhereInput>;
   logs_some?: InputMaybe<LogWhereInput>;
-  parentHash_contains?: InputMaybe<Scalars['String']>;
-  parentHash_containsInsensitive?: InputMaybe<Scalars['String']>;
-  parentHash_endsWith?: InputMaybe<Scalars['String']>;
-  parentHash_eq?: InputMaybe<Scalars['String']>;
-  parentHash_gt?: InputMaybe<Scalars['String']>;
-  parentHash_gte?: InputMaybe<Scalars['String']>;
-  parentHash_in?: InputMaybe<Array<Scalars['String']>>;
-  parentHash_isNull?: InputMaybe<Scalars['Boolean']>;
-  parentHash_lt?: InputMaybe<Scalars['String']>;
-  parentHash_lte?: InputMaybe<Scalars['String']>;
-  parentHash_not_contains?: InputMaybe<Scalars['String']>;
-  parentHash_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  parentHash_not_endsWith?: InputMaybe<Scalars['String']>;
-  parentHash_not_eq?: InputMaybe<Scalars['String']>;
-  parentHash_not_in?: InputMaybe<Array<Scalars['String']>>;
-  parentHash_not_startsWith?: InputMaybe<Scalars['String']>;
-  parentHash_startsWith?: InputMaybe<Scalars['String']>;
+  parentHash_contains?: InputMaybe<Scalars['String']['input']>;
+  parentHash_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  parentHash_endsWith?: InputMaybe<Scalars['String']['input']>;
+  parentHash_eq?: InputMaybe<Scalars['String']['input']>;
+  parentHash_gt?: InputMaybe<Scalars['String']['input']>;
+  parentHash_gte?: InputMaybe<Scalars['String']['input']>;
+  parentHash_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  parentHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  parentHash_lt?: InputMaybe<Scalars['String']['input']>;
+  parentHash_lte?: InputMaybe<Scalars['String']['input']>;
+  parentHash_not_contains?: InputMaybe<Scalars['String']['input']>;
+  parentHash_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  parentHash_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  parentHash_not_eq?: InputMaybe<Scalars['String']['input']>;
+  parentHash_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  parentHash_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  parentHash_startsWith?: InputMaybe<Scalars['String']['input']>;
   rewards_every?: InputMaybe<RewardEventWhereInput>;
   rewards_none?: InputMaybe<RewardEventWhereInput>;
   rewards_some?: InputMaybe<RewardEventWhereInput>;
-  spacePledged_eq?: InputMaybe<Scalars['BigInt']>;
-  spacePledged_gt?: InputMaybe<Scalars['BigInt']>;
-  spacePledged_gte?: InputMaybe<Scalars['BigInt']>;
-  spacePledged_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  spacePledged_isNull?: InputMaybe<Scalars['Boolean']>;
-  spacePledged_lt?: InputMaybe<Scalars['BigInt']>;
-  spacePledged_lte?: InputMaybe<Scalars['BigInt']>;
-  spacePledged_not_eq?: InputMaybe<Scalars['BigInt']>;
-  spacePledged_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  specId_contains?: InputMaybe<Scalars['String']>;
-  specId_containsInsensitive?: InputMaybe<Scalars['String']>;
-  specId_endsWith?: InputMaybe<Scalars['String']>;
-  specId_eq?: InputMaybe<Scalars['String']>;
-  specId_gt?: InputMaybe<Scalars['String']>;
-  specId_gte?: InputMaybe<Scalars['String']>;
-  specId_in?: InputMaybe<Array<Scalars['String']>>;
-  specId_isNull?: InputMaybe<Scalars['Boolean']>;
-  specId_lt?: InputMaybe<Scalars['String']>;
-  specId_lte?: InputMaybe<Scalars['String']>;
-  specId_not_contains?: InputMaybe<Scalars['String']>;
-  specId_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  specId_not_endsWith?: InputMaybe<Scalars['String']>;
-  specId_not_eq?: InputMaybe<Scalars['String']>;
-  specId_not_in?: InputMaybe<Array<Scalars['String']>>;
-  specId_not_startsWith?: InputMaybe<Scalars['String']>;
-  specId_startsWith?: InputMaybe<Scalars['String']>;
-  stateRoot_contains?: InputMaybe<Scalars['String']>;
-  stateRoot_containsInsensitive?: InputMaybe<Scalars['String']>;
-  stateRoot_endsWith?: InputMaybe<Scalars['String']>;
-  stateRoot_eq?: InputMaybe<Scalars['String']>;
-  stateRoot_gt?: InputMaybe<Scalars['String']>;
-  stateRoot_gte?: InputMaybe<Scalars['String']>;
-  stateRoot_in?: InputMaybe<Array<Scalars['String']>>;
-  stateRoot_isNull?: InputMaybe<Scalars['Boolean']>;
-  stateRoot_lt?: InputMaybe<Scalars['String']>;
-  stateRoot_lte?: InputMaybe<Scalars['String']>;
-  stateRoot_not_contains?: InputMaybe<Scalars['String']>;
-  stateRoot_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  stateRoot_not_endsWith?: InputMaybe<Scalars['String']>;
-  stateRoot_not_eq?: InputMaybe<Scalars['String']>;
-  stateRoot_not_in?: InputMaybe<Array<Scalars['String']>>;
-  stateRoot_not_startsWith?: InputMaybe<Scalars['String']>;
-  stateRoot_startsWith?: InputMaybe<Scalars['String']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
+  spacePledged_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  spacePledged_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  spacePledged_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  spacePledged_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  spacePledged_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  spacePledged_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  spacePledged_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  spacePledged_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  spacePledged_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  specId_contains?: InputMaybe<Scalars['String']['input']>;
+  specId_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  specId_endsWith?: InputMaybe<Scalars['String']['input']>;
+  specId_eq?: InputMaybe<Scalars['String']['input']>;
+  specId_gt?: InputMaybe<Scalars['String']['input']>;
+  specId_gte?: InputMaybe<Scalars['String']['input']>;
+  specId_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  specId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  specId_lt?: InputMaybe<Scalars['String']['input']>;
+  specId_lte?: InputMaybe<Scalars['String']['input']>;
+  specId_not_contains?: InputMaybe<Scalars['String']['input']>;
+  specId_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  specId_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  specId_not_eq?: InputMaybe<Scalars['String']['input']>;
+  specId_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  specId_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  specId_startsWith?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_contains?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_endsWith?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_eq?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_gt?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_gte?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  stateRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  stateRoot_lt?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_lte?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_not_contains?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_not_eq?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  stateRoot_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  stateRoot_startsWith?: InputMaybe<Scalars['String']['input']>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
 export type BlocksConnection = {
   __typename?: 'BlocksConnection';
   edges: Array<BlockEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Call = {
   __typename?: 'Call';
-  args?: Maybe<Scalars['JSON']>;
+  args?: Maybe<Scalars['JSON']['output']>;
   block: Block;
   calls: Array<Call>;
-  error?: Maybe<Scalars['JSON']>;
+  error?: Maybe<Scalars['JSON']['output']>;
   extrinsic: Extrinsic;
-  id: Scalars['String'];
-  name: Scalars['String'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   parent?: Maybe<Call>;
-  pos?: Maybe<Scalars['Int']>;
-  signer?: Maybe<Scalars['String']>;
-  success: Scalars['Boolean'];
-  timestamp: Scalars['DateTime'];
+  pos?: Maybe<Scalars['Int']['output']>;
+  signer?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+  timestamp: Scalars['DateTime']['output'];
 };
 
 
 export type CallCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CallOrderByInput>>;
   where?: InputMaybe<CallWhereInput>;
 };
 
 export type CallEdge = {
   __typename?: 'CallEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Call;
 };
 
@@ -575,135 +669,135 @@ export enum CallOrderByInput {
 export type CallWhereInput = {
   AND?: InputMaybe<Array<CallWhereInput>>;
   OR?: InputMaybe<Array<CallWhereInput>>;
-  args_eq?: InputMaybe<Scalars['JSON']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']>;
+  args_eq?: InputMaybe<Scalars['JSON']['input']>;
+  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
   block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   calls_every?: InputMaybe<CallWhereInput>;
   calls_none?: InputMaybe<CallWhereInput>;
   calls_some?: InputMaybe<CallWhereInput>;
-  error_eq?: InputMaybe<Scalars['JSON']>;
-  error_isNull?: InputMaybe<Scalars['Boolean']>;
-  error_jsonContains?: InputMaybe<Scalars['JSON']>;
-  error_jsonHasKey?: InputMaybe<Scalars['JSON']>;
-  error_not_eq?: InputMaybe<Scalars['JSON']>;
+  error_eq?: InputMaybe<Scalars['JSON']['input']>;
+  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
   extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
+  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
   parent?: InputMaybe<CallWhereInput>;
-  parent_isNull?: InputMaybe<Scalars['Boolean']>;
-  pos_eq?: InputMaybe<Scalars['Int']>;
-  pos_gt?: InputMaybe<Scalars['Int']>;
-  pos_gte?: InputMaybe<Scalars['Int']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']>;
-  pos_lt?: InputMaybe<Scalars['Int']>;
-  pos_lte?: InputMaybe<Scalars['Int']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  signer_contains?: InputMaybe<Scalars['String']>;
-  signer_containsInsensitive?: InputMaybe<Scalars['String']>;
-  signer_endsWith?: InputMaybe<Scalars['String']>;
-  signer_eq?: InputMaybe<Scalars['String']>;
-  signer_gt?: InputMaybe<Scalars['String']>;
-  signer_gte?: InputMaybe<Scalars['String']>;
-  signer_in?: InputMaybe<Array<Scalars['String']>>;
-  signer_isNull?: InputMaybe<Scalars['Boolean']>;
-  signer_lt?: InputMaybe<Scalars['String']>;
-  signer_lte?: InputMaybe<Scalars['String']>;
-  signer_not_contains?: InputMaybe<Scalars['String']>;
-  signer_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  signer_not_endsWith?: InputMaybe<Scalars['String']>;
-  signer_not_eq?: InputMaybe<Scalars['String']>;
-  signer_not_in?: InputMaybe<Array<Scalars['String']>>;
-  signer_not_startsWith?: InputMaybe<Scalars['String']>;
-  signer_startsWith?: InputMaybe<Scalars['String']>;
-  success_eq?: InputMaybe<Scalars['Boolean']>;
-  success_isNull?: InputMaybe<Scalars['Boolean']>;
-  success_not_eq?: InputMaybe<Scalars['Boolean']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
+  parent_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pos_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_gt?: InputMaybe<Scalars['Int']['input']>;
+  pos_gte?: InputMaybe<Scalars['Int']['input']>;
+  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pos_lt?: InputMaybe<Scalars['Int']['input']>;
+  pos_lte?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  signer_contains?: InputMaybe<Scalars['String']['input']>;
+  signer_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signer_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signer_eq?: InputMaybe<Scalars['String']['input']>;
+  signer_gt?: InputMaybe<Scalars['String']['input']>;
+  signer_gte?: InputMaybe<Scalars['String']['input']>;
+  signer_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  signer_lt?: InputMaybe<Scalars['String']['input']>;
+  signer_lte?: InputMaybe<Scalars['String']['input']>;
+  signer_not_contains?: InputMaybe<Scalars['String']['input']>;
+  signer_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signer_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signer_not_eq?: InputMaybe<Scalars['String']['input']>;
+  signer_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signer_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  signer_startsWith?: InputMaybe<Scalars['String']['input']>;
+  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
 export type CallsConnection = {
   __typename?: 'CallsConnection';
   edges: Array<CallEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Event = {
   __typename?: 'Event';
-  args?: Maybe<Scalars['JSON']>;
+  args?: Maybe<Scalars['JSON']['output']>;
   block?: Maybe<Block>;
   call?: Maybe<Call>;
   extrinsic?: Maybe<Extrinsic>;
-  id: Scalars['String'];
-  indexInBlock: Scalars['Int'];
-  name: Scalars['String'];
-  phase: Scalars['String'];
-  pos?: Maybe<Scalars['Int']>;
-  timestamp: Scalars['DateTime'];
+  id: Scalars['String']['output'];
+  indexInBlock: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  phase: Scalars['String']['output'];
+  pos?: Maybe<Scalars['Int']['output']>;
+  timestamp: Scalars['DateTime']['output'];
 };
 
 export type EventEdge = {
   __typename?: 'EventEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Event;
 };
 
 export type EventModuleName = {
   __typename?: 'EventModuleName';
-  id: Scalars['String'];
-  name: Scalars['String'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type EventModuleNameEdge = {
   __typename?: 'EventModuleNameEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: EventModuleName;
 };
 
@@ -717,52 +811,52 @@ export enum EventModuleNameOrderByInput {
 export type EventModuleNameWhereInput = {
   AND?: InputMaybe<Array<EventModuleNameWhereInput>>;
   OR?: InputMaybe<Array<EventModuleNameWhereInput>>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EventModuleNamesConnection = {
   __typename?: 'EventModuleNamesConnection';
   edges: Array<EventModuleNameEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type EventNamesResult = {
   __typename?: 'EventNamesResult';
-  result: Array<Scalars['String']>;
+  result: Array<Scalars['String']['output']>;
 };
 
 export enum EventOrderByInput {
@@ -841,156 +935,156 @@ export enum EventOrderByInput {
 export type EventWhereInput = {
   AND?: InputMaybe<Array<EventWhereInput>>;
   OR?: InputMaybe<Array<EventWhereInput>>;
-  args_eq?: InputMaybe<Scalars['JSON']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']>;
+  args_eq?: InputMaybe<Scalars['JSON']['input']>;
+  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
   block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']>;
+  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
-  phase_contains?: InputMaybe<Scalars['String']>;
-  phase_containsInsensitive?: InputMaybe<Scalars['String']>;
-  phase_endsWith?: InputMaybe<Scalars['String']>;
-  phase_eq?: InputMaybe<Scalars['String']>;
-  phase_gt?: InputMaybe<Scalars['String']>;
-  phase_gte?: InputMaybe<Scalars['String']>;
-  phase_in?: InputMaybe<Array<Scalars['String']>>;
-  phase_isNull?: InputMaybe<Scalars['Boolean']>;
-  phase_lt?: InputMaybe<Scalars['String']>;
-  phase_lte?: InputMaybe<Scalars['String']>;
-  phase_not_contains?: InputMaybe<Scalars['String']>;
-  phase_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  phase_not_endsWith?: InputMaybe<Scalars['String']>;
-  phase_not_eq?: InputMaybe<Scalars['String']>;
-  phase_not_in?: InputMaybe<Array<Scalars['String']>>;
-  phase_not_startsWith?: InputMaybe<Scalars['String']>;
-  phase_startsWith?: InputMaybe<Scalars['String']>;
-  pos_eq?: InputMaybe<Scalars['Int']>;
-  pos_gt?: InputMaybe<Scalars['Int']>;
-  pos_gte?: InputMaybe<Scalars['Int']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']>;
-  pos_lt?: InputMaybe<Scalars['Int']>;
-  pos_lte?: InputMaybe<Scalars['Int']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
+  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  indexInBlock_eq?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_gt?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_gte?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  indexInBlock_lt?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_lte?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_contains?: InputMaybe<Scalars['String']['input']>;
+  phase_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  phase_endsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_eq?: InputMaybe<Scalars['String']['input']>;
+  phase_gt?: InputMaybe<Scalars['String']['input']>;
+  phase_gte?: InputMaybe<Scalars['String']['input']>;
+  phase_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phase_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  phase_lt?: InputMaybe<Scalars['String']['input']>;
+  phase_lte?: InputMaybe<Scalars['String']['input']>;
+  phase_not_contains?: InputMaybe<Scalars['String']['input']>;
+  phase_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  phase_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_not_eq?: InputMaybe<Scalars['String']['input']>;
+  phase_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phase_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_startsWith?: InputMaybe<Scalars['String']['input']>;
+  pos_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_gt?: InputMaybe<Scalars['Int']['input']>;
+  pos_gte?: InputMaybe<Scalars['Int']['input']>;
+  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pos_lt?: InputMaybe<Scalars['Int']['input']>;
+  pos_lte?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
 export type EventsConnection = {
   __typename?: 'EventsConnection';
   edges: Array<EventEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Extrinsic = {
   __typename?: 'Extrinsic';
-  args?: Maybe<Scalars['JSON']>;
+  args?: Maybe<Scalars['JSON']['output']>;
   block: Block;
   calls: Array<Call>;
-  error?: Maybe<Scalars['JSON']>;
+  error?: Maybe<Scalars['JSON']['output']>;
   events: Array<Event>;
-  fee?: Maybe<Scalars['BigInt']>;
-  hash: Scalars['String'];
-  id: Scalars['String'];
-  indexInBlock: Scalars['Int'];
-  name: Scalars['String'];
-  nonce?: Maybe<Scalars['BigInt']>;
-  pos?: Maybe<Scalars['Int']>;
-  signature?: Maybe<Scalars['String']>;
+  fee?: Maybe<Scalars['BigInt']['output']>;
+  hash: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  indexInBlock: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  nonce?: Maybe<Scalars['BigInt']['output']>;
+  pos?: Maybe<Scalars['Int']['output']>;
+  signature?: Maybe<Scalars['String']['output']>;
   signer?: Maybe<Account>;
-  success: Scalars['Boolean'];
-  timestamp: Scalars['DateTime'];
-  tip?: Maybe<Scalars['BigInt']>;
+  success: Scalars['Boolean']['output'];
+  timestamp: Scalars['DateTime']['output'];
+  tip?: Maybe<Scalars['BigInt']['output']>;
 };
 
 
 export type ExtrinsicCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CallOrderByInput>>;
   where?: InputMaybe<CallWhereInput>;
 };
 
 
 export type ExtrinsicEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EventOrderByInput>>;
   where?: InputMaybe<EventWhereInput>;
 };
 
 export type ExtrinsicEdge = {
   __typename?: 'ExtrinsicEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Extrinsic;
 };
 
 export type ExtrinsicModuleName = {
   __typename?: 'ExtrinsicModuleName';
-  id: Scalars['String'];
-  name: Scalars['String'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type ExtrinsicModuleNameEdge = {
   __typename?: 'ExtrinsicModuleNameEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: ExtrinsicModuleName;
 };
 
@@ -1004,52 +1098,52 @@ export enum ExtrinsicModuleNameOrderByInput {
 export type ExtrinsicModuleNameWhereInput = {
   AND?: InputMaybe<Array<ExtrinsicModuleNameWhereInput>>;
   OR?: InputMaybe<Array<ExtrinsicModuleNameWhereInput>>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ExtrinsicModuleNamesConnection = {
   __typename?: 'ExtrinsicModuleNamesConnection';
   edges: Array<ExtrinsicModuleNameEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type ExtrinsicNamesResult = {
   __typename?: 'ExtrinsicNamesResult';
-  result: Array<Scalars['String']>;
+  result: Array<Scalars['String']['output']>;
 };
 
 export enum ExtrinsicOrderByInput {
@@ -1093,8 +1187,6 @@ export enum ExtrinsicOrderByInput {
   PosDesc = 'pos_DESC',
   SignatureAsc = 'signature_ASC',
   SignatureDesc = 'signature_DESC',
-  SignerBlockRewardsTotalAsc = 'signer_blockRewardsTotal_ASC',
-  SignerBlockRewardsTotalDesc = 'signer_blockRewardsTotal_DESC',
   SignerFreeAsc = 'signer_free_ASC',
   SignerFreeDesc = 'signer_free_DESC',
   SignerIdAsc = 'signer_id_ASC',
@@ -1107,8 +1199,6 @@ export enum ExtrinsicOrderByInput {
   SignerTotalDesc = 'signer_total_DESC',
   SignerUpdatedAtAsc = 'signer_updatedAt_ASC',
   SignerUpdatedAtDesc = 'signer_updatedAt_DESC',
-  SignerVoteRewardsTotalAsc = 'signer_voteRewardsTotal_ASC',
-  SignerVoteRewardsTotalDesc = 'signer_voteRewardsTotal_DESC',
   SuccessAsc = 'success_ASC',
   SuccessDesc = 'success_DESC',
   TimestampAsc = 'timestamp_ASC',
@@ -1120,177 +1210,177 @@ export enum ExtrinsicOrderByInput {
 export type ExtrinsicWhereInput = {
   AND?: InputMaybe<Array<ExtrinsicWhereInput>>;
   OR?: InputMaybe<Array<ExtrinsicWhereInput>>;
-  args_eq?: InputMaybe<Scalars['JSON']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']>;
+  args_eq?: InputMaybe<Scalars['JSON']['input']>;
+  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
   block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   calls_every?: InputMaybe<CallWhereInput>;
   calls_none?: InputMaybe<CallWhereInput>;
   calls_some?: InputMaybe<CallWhereInput>;
-  error_eq?: InputMaybe<Scalars['JSON']>;
-  error_isNull?: InputMaybe<Scalars['Boolean']>;
-  error_jsonContains?: InputMaybe<Scalars['JSON']>;
-  error_jsonHasKey?: InputMaybe<Scalars['JSON']>;
-  error_not_eq?: InputMaybe<Scalars['JSON']>;
+  error_eq?: InputMaybe<Scalars['JSON']['input']>;
+  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
   events_every?: InputMaybe<EventWhereInput>;
   events_none?: InputMaybe<EventWhereInput>;
   events_some?: InputMaybe<EventWhereInput>;
-  fee_eq?: InputMaybe<Scalars['BigInt']>;
-  fee_gt?: InputMaybe<Scalars['BigInt']>;
-  fee_gte?: InputMaybe<Scalars['BigInt']>;
-  fee_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  fee_isNull?: InputMaybe<Scalars['Boolean']>;
-  fee_lt?: InputMaybe<Scalars['BigInt']>;
-  fee_lte?: InputMaybe<Scalars['BigInt']>;
-  fee_not_eq?: InputMaybe<Scalars['BigInt']>;
-  fee_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  hash_contains?: InputMaybe<Scalars['String']>;
-  hash_containsInsensitive?: InputMaybe<Scalars['String']>;
-  hash_endsWith?: InputMaybe<Scalars['String']>;
-  hash_eq?: InputMaybe<Scalars['String']>;
-  hash_gt?: InputMaybe<Scalars['String']>;
-  hash_gte?: InputMaybe<Scalars['String']>;
-  hash_in?: InputMaybe<Array<Scalars['String']>>;
-  hash_isNull?: InputMaybe<Scalars['Boolean']>;
-  hash_lt?: InputMaybe<Scalars['String']>;
-  hash_lte?: InputMaybe<Scalars['String']>;
-  hash_not_contains?: InputMaybe<Scalars['String']>;
-  hash_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  hash_not_endsWith?: InputMaybe<Scalars['String']>;
-  hash_not_eq?: InputMaybe<Scalars['String']>;
-  hash_not_in?: InputMaybe<Array<Scalars['String']>>;
-  hash_not_startsWith?: InputMaybe<Scalars['String']>;
-  hash_startsWith?: InputMaybe<Scalars['String']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
-  nonce_eq?: InputMaybe<Scalars['BigInt']>;
-  nonce_gt?: InputMaybe<Scalars['BigInt']>;
-  nonce_gte?: InputMaybe<Scalars['BigInt']>;
-  nonce_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  nonce_isNull?: InputMaybe<Scalars['Boolean']>;
-  nonce_lt?: InputMaybe<Scalars['BigInt']>;
-  nonce_lte?: InputMaybe<Scalars['BigInt']>;
-  nonce_not_eq?: InputMaybe<Scalars['BigInt']>;
-  nonce_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  pos_eq?: InputMaybe<Scalars['Int']>;
-  pos_gt?: InputMaybe<Scalars['Int']>;
-  pos_gte?: InputMaybe<Scalars['Int']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']>;
-  pos_lt?: InputMaybe<Scalars['Int']>;
-  pos_lte?: InputMaybe<Scalars['Int']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  signature_contains?: InputMaybe<Scalars['String']>;
-  signature_containsInsensitive?: InputMaybe<Scalars['String']>;
-  signature_endsWith?: InputMaybe<Scalars['String']>;
-  signature_eq?: InputMaybe<Scalars['String']>;
-  signature_gt?: InputMaybe<Scalars['String']>;
-  signature_gte?: InputMaybe<Scalars['String']>;
-  signature_in?: InputMaybe<Array<Scalars['String']>>;
-  signature_isNull?: InputMaybe<Scalars['Boolean']>;
-  signature_lt?: InputMaybe<Scalars['String']>;
-  signature_lte?: InputMaybe<Scalars['String']>;
-  signature_not_contains?: InputMaybe<Scalars['String']>;
-  signature_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  signature_not_endsWith?: InputMaybe<Scalars['String']>;
-  signature_not_eq?: InputMaybe<Scalars['String']>;
-  signature_not_in?: InputMaybe<Array<Scalars['String']>>;
-  signature_not_startsWith?: InputMaybe<Scalars['String']>;
-  signature_startsWith?: InputMaybe<Scalars['String']>;
+  fee_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  fee_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  fee_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  fee_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  hash_contains?: InputMaybe<Scalars['String']['input']>;
+  hash_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  hash_endsWith?: InputMaybe<Scalars['String']['input']>;
+  hash_eq?: InputMaybe<Scalars['String']['input']>;
+  hash_gt?: InputMaybe<Scalars['String']['input']>;
+  hash_gte?: InputMaybe<Scalars['String']['input']>;
+  hash_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  hash_lt?: InputMaybe<Scalars['String']['input']>;
+  hash_lte?: InputMaybe<Scalars['String']['input']>;
+  hash_not_contains?: InputMaybe<Scalars['String']['input']>;
+  hash_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  hash_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  hash_not_eq?: InputMaybe<Scalars['String']['input']>;
+  hash_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  hash_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  hash_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  indexInBlock_eq?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_gt?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_gte?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  indexInBlock_lt?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_lte?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
+  nonce_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  nonce_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nonce_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  nonce_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  pos_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_gt?: InputMaybe<Scalars['Int']['input']>;
+  pos_gte?: InputMaybe<Scalars['Int']['input']>;
+  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pos_lt?: InputMaybe<Scalars['Int']['input']>;
+  pos_lte?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  signature_contains?: InputMaybe<Scalars['String']['input']>;
+  signature_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signature_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signature_eq?: InputMaybe<Scalars['String']['input']>;
+  signature_gt?: InputMaybe<Scalars['String']['input']>;
+  signature_gte?: InputMaybe<Scalars['String']['input']>;
+  signature_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signature_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  signature_lt?: InputMaybe<Scalars['String']['input']>;
+  signature_lte?: InputMaybe<Scalars['String']['input']>;
+  signature_not_contains?: InputMaybe<Scalars['String']['input']>;
+  signature_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signature_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signature_not_eq?: InputMaybe<Scalars['String']['input']>;
+  signature_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signature_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  signature_startsWith?: InputMaybe<Scalars['String']['input']>;
   signer?: InputMaybe<AccountWhereInput>;
-  signer_isNull?: InputMaybe<Scalars['Boolean']>;
-  success_eq?: InputMaybe<Scalars['Boolean']>;
-  success_isNull?: InputMaybe<Scalars['Boolean']>;
-  success_not_eq?: InputMaybe<Scalars['Boolean']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  tip_eq?: InputMaybe<Scalars['BigInt']>;
-  tip_gt?: InputMaybe<Scalars['BigInt']>;
-  tip_gte?: InputMaybe<Scalars['BigInt']>;
-  tip_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  tip_isNull?: InputMaybe<Scalars['Boolean']>;
-  tip_lt?: InputMaybe<Scalars['BigInt']>;
-  tip_lte?: InputMaybe<Scalars['BigInt']>;
-  tip_not_eq?: InputMaybe<Scalars['BigInt']>;
-  tip_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  signer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  tip_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  tip_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  tip_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  tip_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export type ExtrinsicsConnection = {
   __typename?: 'ExtrinsicsConnection';
   edges: Array<ExtrinsicEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Log = {
   __typename?: 'Log';
   block: Block;
-  id: Scalars['String'];
-  kind: Scalars['String'];
-  value?: Maybe<Scalars['JSON']>;
+  id: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  value?: Maybe<Scalars['JSON']['output']>;
 };
 
 export type LogEdge = {
   __typename?: 'LogEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Log;
 };
 
 export type LogNamesResult = {
   __typename?: 'LogNamesResult';
-  result: Array<Scalars['String']>;
+  result: Array<Scalars['String']['output']>;
 };
 
 export enum LogOrderByInput {
@@ -1328,73 +1418,71 @@ export type LogWhereInput = {
   AND?: InputMaybe<Array<LogWhereInput>>;
   OR?: InputMaybe<Array<LogWhereInput>>;
   block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  kind_contains?: InputMaybe<Scalars['String']>;
-  kind_containsInsensitive?: InputMaybe<Scalars['String']>;
-  kind_endsWith?: InputMaybe<Scalars['String']>;
-  kind_eq?: InputMaybe<Scalars['String']>;
-  kind_gt?: InputMaybe<Scalars['String']>;
-  kind_gte?: InputMaybe<Scalars['String']>;
-  kind_in?: InputMaybe<Array<Scalars['String']>>;
-  kind_isNull?: InputMaybe<Scalars['Boolean']>;
-  kind_lt?: InputMaybe<Scalars['String']>;
-  kind_lte?: InputMaybe<Scalars['String']>;
-  kind_not_contains?: InputMaybe<Scalars['String']>;
-  kind_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  kind_not_endsWith?: InputMaybe<Scalars['String']>;
-  kind_not_eq?: InputMaybe<Scalars['String']>;
-  kind_not_in?: InputMaybe<Array<Scalars['String']>>;
-  kind_not_startsWith?: InputMaybe<Scalars['String']>;
-  kind_startsWith?: InputMaybe<Scalars['String']>;
-  value_eq?: InputMaybe<Scalars['JSON']>;
-  value_isNull?: InputMaybe<Scalars['Boolean']>;
-  value_jsonContains?: InputMaybe<Scalars['JSON']>;
-  value_jsonHasKey?: InputMaybe<Scalars['JSON']>;
-  value_not_eq?: InputMaybe<Scalars['JSON']>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  kind_contains?: InputMaybe<Scalars['String']['input']>;
+  kind_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  kind_endsWith?: InputMaybe<Scalars['String']['input']>;
+  kind_eq?: InputMaybe<Scalars['String']['input']>;
+  kind_gt?: InputMaybe<Scalars['String']['input']>;
+  kind_gte?: InputMaybe<Scalars['String']['input']>;
+  kind_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  kind_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  kind_lt?: InputMaybe<Scalars['String']['input']>;
+  kind_lte?: InputMaybe<Scalars['String']['input']>;
+  kind_not_contains?: InputMaybe<Scalars['String']['input']>;
+  kind_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  kind_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  kind_not_eq?: InputMaybe<Scalars['String']['input']>;
+  kind_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  kind_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  kind_startsWith?: InputMaybe<Scalars['String']['input']>;
+  value_eq?: InputMaybe<Scalars['JSON']['input']>;
+  value_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  value_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
+  value_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
+  value_not_eq?: InputMaybe<Scalars['JSON']['input']>;
 };
 
 export type LogsConnection = {
   __typename?: 'LogsConnection';
   edges: Array<LogEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Nominator = {
   __typename?: 'Nominator';
   account: Account;
-  id: Scalars['String'];
+  id: Scalars['String']['output'];
   operator: Operator;
-  shares?: Maybe<Scalars['BigInt']>;
-  updatedAt?: Maybe<Scalars['BigInt']>;
+  shares?: Maybe<Scalars['BigInt']['output']>;
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
 };
 
 export type NominatorEdge = {
   __typename?: 'NominatorEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Nominator;
 };
 
 export enum NominatorOrderByInput {
-  AccountBlockRewardsTotalAsc = 'account_blockRewardsTotal_ASC',
-  AccountBlockRewardsTotalDesc = 'account_blockRewardsTotal_DESC',
   AccountFreeAsc = 'account_free_ASC',
   AccountFreeDesc = 'account_free_DESC',
   AccountIdAsc = 'account_id_ASC',
@@ -1407,8 +1495,6 @@ export enum NominatorOrderByInput {
   AccountTotalDesc = 'account_total_DESC',
   AccountUpdatedAtAsc = 'account_updatedAt_ASC',
   AccountUpdatedAtDesc = 'account_updatedAt_DESC',
-  AccountVoteRewardsTotalAsc = 'account_voteRewardsTotal_ASC',
-  AccountVoteRewardsTotalDesc = 'account_voteRewardsTotal_DESC',
   IdAsc = 'id_ASC',
   IdDesc = 'id_DESC',
   OperatorCurrentDomainIdAsc = 'operator_currentDomainId_ASC',
@@ -1425,6 +1511,8 @@ export enum NominatorOrderByInput {
   OperatorNextDomainIdDesc = 'operator_nextDomainId_DESC',
   OperatorNominationTaxAsc = 'operator_nominationTax_ASC',
   OperatorNominationTaxDesc = 'operator_nominationTax_DESC',
+  OperatorOperatorOwnerAsc = 'operator_operatorOwner_ASC',
+  OperatorOperatorOwnerDesc = 'operator_operatorOwner_DESC',
   OperatorSigningKeyAsc = 'operator_signingKey_ASC',
   OperatorSigningKeyDesc = 'operator_signingKey_DESC',
   OperatorStatusAsc = 'operator_status_ASC',
@@ -1443,80 +1531,81 @@ export type NominatorWhereInput = {
   AND?: InputMaybe<Array<NominatorWhereInput>>;
   OR?: InputMaybe<Array<NominatorWhereInput>>;
   account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
+  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
   operator?: InputMaybe<OperatorWhereInput>;
-  operator_isNull?: InputMaybe<Scalars['Boolean']>;
-  shares_eq?: InputMaybe<Scalars['BigInt']>;
-  shares_gt?: InputMaybe<Scalars['BigInt']>;
-  shares_gte?: InputMaybe<Scalars['BigInt']>;
-  shares_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  shares_isNull?: InputMaybe<Scalars['Boolean']>;
-  shares_lt?: InputMaybe<Scalars['BigInt']>;
-  shares_lte?: InputMaybe<Scalars['BigInt']>;
-  shares_not_eq?: InputMaybe<Scalars['BigInt']>;
-  shares_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  shares_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  shares_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  shares_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  shares_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export type NominatorsConnection = {
   __typename?: 'NominatorsConnection';
   edges: Array<NominatorEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type Operator = {
   __typename?: 'Operator';
-  currentDomainId?: Maybe<Scalars['Int']>;
-  currentEpochRewards?: Maybe<Scalars['BigInt']>;
-  currentTotalStake?: Maybe<Scalars['BigInt']>;
-  id: Scalars['String'];
-  minimumNominatorStake?: Maybe<Scalars['BigInt']>;
-  nextDomainId?: Maybe<Scalars['Int']>;
-  nominationTax?: Maybe<Scalars['Int']>;
+  currentDomainId?: Maybe<Scalars['Int']['output']>;
+  currentEpochRewards?: Maybe<Scalars['BigInt']['output']>;
+  currentTotalStake?: Maybe<Scalars['BigInt']['output']>;
+  id: Scalars['String']['output'];
+  minimumNominatorStake?: Maybe<Scalars['BigInt']['output']>;
+  nextDomainId?: Maybe<Scalars['Int']['output']>;
+  nominationTax?: Maybe<Scalars['Int']['output']>;
   nominators: Array<Nominator>;
-  signingKey: Scalars['String'];
-  status?: Maybe<Scalars['String']>;
-  totalShares?: Maybe<Scalars['BigInt']>;
-  updatedAt?: Maybe<Scalars['BigInt']>;
+  operatorOwner?: Maybe<Scalars['String']['output']>;
+  signingKey: Scalars['String']['output'];
+  status?: Maybe<Scalars['String']['output']>;
+  totalShares?: Maybe<Scalars['BigInt']['output']>;
+  updatedAt?: Maybe<Scalars['BigInt']['output']>;
 };
 
 
 export type OperatorNominatorsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<NominatorOrderByInput>>;
   where?: InputMaybe<NominatorWhereInput>;
 };
 
 export type OperatorEdge = {
   __typename?: 'OperatorEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: Operator;
 };
 
@@ -1535,6 +1624,8 @@ export enum OperatorOrderByInput {
   NextDomainIdDesc = 'nextDomainId_DESC',
   NominationTaxAsc = 'nominationTax_ASC',
   NominationTaxDesc = 'nominationTax_DESC',
+  OperatorOwnerAsc = 'operatorOwner_ASC',
+  OperatorOwnerDesc = 'operatorOwner_DESC',
   SigningKeyAsc = 'signingKey_ASC',
   SigningKeyDesc = 'signingKey_DESC',
   StatusAsc = 'status_ASC',
@@ -1545,150 +1636,236 @@ export enum OperatorOrderByInput {
   UpdatedAtDesc = 'updatedAt_DESC'
 }
 
+export type OperatorRewards = {
+  __typename?: 'OperatorRewards';
+  amount?: Maybe<Scalars['BigInt']['output']>;
+  id: Scalars['String']['output'];
+  updatedAt: Scalars['BigInt']['output'];
+};
+
+export type OperatorRewardsConnection = {
+  __typename?: 'OperatorRewardsConnection';
+  edges: Array<OperatorRewardsEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+export type OperatorRewardsEdge = {
+  __typename?: 'OperatorRewardsEdge';
+  cursor: Scalars['String']['output'];
+  node: OperatorRewards;
+};
+
+export enum OperatorRewardsOrderByInput {
+  AmountAsc = 'amount_ASC',
+  AmountDesc = 'amount_DESC',
+  IdAsc = 'id_ASC',
+  IdDesc = 'id_DESC',
+  UpdatedAtAsc = 'updatedAt_ASC',
+  UpdatedAtDesc = 'updatedAt_DESC'
+}
+
+export type OperatorRewardsWhereInput = {
+  AND?: InputMaybe<Array<OperatorRewardsWhereInput>>;
+  OR?: InputMaybe<Array<OperatorRewardsWhereInput>>;
+  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+};
+
 export type OperatorWhereInput = {
   AND?: InputMaybe<Array<OperatorWhereInput>>;
   OR?: InputMaybe<Array<OperatorWhereInput>>;
-  currentDomainId_eq?: InputMaybe<Scalars['Int']>;
-  currentDomainId_gt?: InputMaybe<Scalars['Int']>;
-  currentDomainId_gte?: InputMaybe<Scalars['Int']>;
-  currentDomainId_in?: InputMaybe<Array<Scalars['Int']>>;
-  currentDomainId_isNull?: InputMaybe<Scalars['Boolean']>;
-  currentDomainId_lt?: InputMaybe<Scalars['Int']>;
-  currentDomainId_lte?: InputMaybe<Scalars['Int']>;
-  currentDomainId_not_eq?: InputMaybe<Scalars['Int']>;
-  currentDomainId_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  currentEpochRewards_eq?: InputMaybe<Scalars['BigInt']>;
-  currentEpochRewards_gt?: InputMaybe<Scalars['BigInt']>;
-  currentEpochRewards_gte?: InputMaybe<Scalars['BigInt']>;
-  currentEpochRewards_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  currentEpochRewards_isNull?: InputMaybe<Scalars['Boolean']>;
-  currentEpochRewards_lt?: InputMaybe<Scalars['BigInt']>;
-  currentEpochRewards_lte?: InputMaybe<Scalars['BigInt']>;
-  currentEpochRewards_not_eq?: InputMaybe<Scalars['BigInt']>;
-  currentEpochRewards_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  currentTotalStake_eq?: InputMaybe<Scalars['BigInt']>;
-  currentTotalStake_gt?: InputMaybe<Scalars['BigInt']>;
-  currentTotalStake_gte?: InputMaybe<Scalars['BigInt']>;
-  currentTotalStake_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  currentTotalStake_isNull?: InputMaybe<Scalars['Boolean']>;
-  currentTotalStake_lt?: InputMaybe<Scalars['BigInt']>;
-  currentTotalStake_lte?: InputMaybe<Scalars['BigInt']>;
-  currentTotalStake_not_eq?: InputMaybe<Scalars['BigInt']>;
-  currentTotalStake_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  minimumNominatorStake_eq?: InputMaybe<Scalars['BigInt']>;
-  minimumNominatorStake_gt?: InputMaybe<Scalars['BigInt']>;
-  minimumNominatorStake_gte?: InputMaybe<Scalars['BigInt']>;
-  minimumNominatorStake_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  minimumNominatorStake_isNull?: InputMaybe<Scalars['Boolean']>;
-  minimumNominatorStake_lt?: InputMaybe<Scalars['BigInt']>;
-  minimumNominatorStake_lte?: InputMaybe<Scalars['BigInt']>;
-  minimumNominatorStake_not_eq?: InputMaybe<Scalars['BigInt']>;
-  minimumNominatorStake_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  nextDomainId_eq?: InputMaybe<Scalars['Int']>;
-  nextDomainId_gt?: InputMaybe<Scalars['Int']>;
-  nextDomainId_gte?: InputMaybe<Scalars['Int']>;
-  nextDomainId_in?: InputMaybe<Array<Scalars['Int']>>;
-  nextDomainId_isNull?: InputMaybe<Scalars['Boolean']>;
-  nextDomainId_lt?: InputMaybe<Scalars['Int']>;
-  nextDomainId_lte?: InputMaybe<Scalars['Int']>;
-  nextDomainId_not_eq?: InputMaybe<Scalars['Int']>;
-  nextDomainId_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  nominationTax_eq?: InputMaybe<Scalars['Int']>;
-  nominationTax_gt?: InputMaybe<Scalars['Int']>;
-  nominationTax_gte?: InputMaybe<Scalars['Int']>;
-  nominationTax_in?: InputMaybe<Array<Scalars['Int']>>;
-  nominationTax_isNull?: InputMaybe<Scalars['Boolean']>;
-  nominationTax_lt?: InputMaybe<Scalars['Int']>;
-  nominationTax_lte?: InputMaybe<Scalars['Int']>;
-  nominationTax_not_eq?: InputMaybe<Scalars['Int']>;
-  nominationTax_not_in?: InputMaybe<Array<Scalars['Int']>>;
+  currentDomainId_eq?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_gt?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_gte?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  currentDomainId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  currentDomainId_lt?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_lte?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  currentDomainId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  currentEpochRewards_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  currentEpochRewards_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  currentEpochRewards_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentEpochRewards_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  currentTotalStake_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  currentTotalStake_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  currentTotalStake_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  currentTotalStake_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  minimumNominatorStake_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  minimumNominatorStake_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  minimumNominatorStake_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  minimumNominatorStake_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  nextDomainId_eq?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_gt?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_gte?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nextDomainId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nextDomainId_lt?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_lte?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  nextDomainId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nominationTax_eq?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_gt?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_gte?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nominationTax_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nominationTax_lt?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_lte?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  nominationTax_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   nominators_every?: InputMaybe<NominatorWhereInput>;
   nominators_none?: InputMaybe<NominatorWhereInput>;
   nominators_some?: InputMaybe<NominatorWhereInput>;
-  signingKey_contains?: InputMaybe<Scalars['String']>;
-  signingKey_containsInsensitive?: InputMaybe<Scalars['String']>;
-  signingKey_endsWith?: InputMaybe<Scalars['String']>;
-  signingKey_eq?: InputMaybe<Scalars['String']>;
-  signingKey_gt?: InputMaybe<Scalars['String']>;
-  signingKey_gte?: InputMaybe<Scalars['String']>;
-  signingKey_in?: InputMaybe<Array<Scalars['String']>>;
-  signingKey_isNull?: InputMaybe<Scalars['Boolean']>;
-  signingKey_lt?: InputMaybe<Scalars['String']>;
-  signingKey_lte?: InputMaybe<Scalars['String']>;
-  signingKey_not_contains?: InputMaybe<Scalars['String']>;
-  signingKey_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  signingKey_not_endsWith?: InputMaybe<Scalars['String']>;
-  signingKey_not_eq?: InputMaybe<Scalars['String']>;
-  signingKey_not_in?: InputMaybe<Array<Scalars['String']>>;
-  signingKey_not_startsWith?: InputMaybe<Scalars['String']>;
-  signingKey_startsWith?: InputMaybe<Scalars['String']>;
-  status_contains?: InputMaybe<Scalars['String']>;
-  status_containsInsensitive?: InputMaybe<Scalars['String']>;
-  status_endsWith?: InputMaybe<Scalars['String']>;
-  status_eq?: InputMaybe<Scalars['String']>;
-  status_gt?: InputMaybe<Scalars['String']>;
-  status_gte?: InputMaybe<Scalars['String']>;
-  status_in?: InputMaybe<Array<Scalars['String']>>;
-  status_isNull?: InputMaybe<Scalars['Boolean']>;
-  status_lt?: InputMaybe<Scalars['String']>;
-  status_lte?: InputMaybe<Scalars['String']>;
-  status_not_contains?: InputMaybe<Scalars['String']>;
-  status_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  status_not_endsWith?: InputMaybe<Scalars['String']>;
-  status_not_eq?: InputMaybe<Scalars['String']>;
-  status_not_in?: InputMaybe<Array<Scalars['String']>>;
-  status_not_startsWith?: InputMaybe<Scalars['String']>;
-  status_startsWith?: InputMaybe<Scalars['String']>;
-  totalShares_eq?: InputMaybe<Scalars['BigInt']>;
-  totalShares_gt?: InputMaybe<Scalars['BigInt']>;
-  totalShares_gte?: InputMaybe<Scalars['BigInt']>;
-  totalShares_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  totalShares_isNull?: InputMaybe<Scalars['Boolean']>;
-  totalShares_lt?: InputMaybe<Scalars['BigInt']>;
-  totalShares_lte?: InputMaybe<Scalars['BigInt']>;
-  totalShares_not_eq?: InputMaybe<Scalars['BigInt']>;
-  totalShares_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  operatorOwner_contains?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_endsWith?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_eq?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_gt?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_gte?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operatorOwner_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  operatorOwner_lt?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_lte?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_not_contains?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_not_eq?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  operatorOwner_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  operatorOwner_startsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_contains?: InputMaybe<Scalars['String']['input']>;
+  signingKey_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signingKey_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_eq?: InputMaybe<Scalars['String']['input']>;
+  signingKey_gt?: InputMaybe<Scalars['String']['input']>;
+  signingKey_gte?: InputMaybe<Scalars['String']['input']>;
+  signingKey_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signingKey_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  signingKey_lt?: InputMaybe<Scalars['String']['input']>;
+  signingKey_lte?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_contains?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_eq?: InputMaybe<Scalars['String']['input']>;
+  signingKey_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  signingKey_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  signingKey_startsWith?: InputMaybe<Scalars['String']['input']>;
+  status_contains?: InputMaybe<Scalars['String']['input']>;
+  status_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  status_endsWith?: InputMaybe<Scalars['String']['input']>;
+  status_eq?: InputMaybe<Scalars['String']['input']>;
+  status_gt?: InputMaybe<Scalars['String']['input']>;
+  status_gte?: InputMaybe<Scalars['String']['input']>;
+  status_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  status_lt?: InputMaybe<Scalars['String']['input']>;
+  status_lte?: InputMaybe<Scalars['String']['input']>;
+  status_not_contains?: InputMaybe<Scalars['String']['input']>;
+  status_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  status_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  status_not_eq?: InputMaybe<Scalars['String']['input']>;
+  status_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  status_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  status_startsWith?: InputMaybe<Scalars['String']['input']>;
+  totalShares_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  totalShares_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  totalShares_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  totalShares_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
 };
 
 export type OperatorsConnection = {
   __typename?: 'OperatorsConnection';
   edges: Array<OperatorEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type PageInfo = {
   __typename?: 'PageInfo';
-  endCursor: Scalars['String'];
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor: Scalars['String'];
+  endCursor: Scalars['String']['output'];
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  startCursor: Scalars['String']['output'];
 };
 
 export type Query = {
@@ -1696,6 +1873,11 @@ export type Query = {
   accountById?: Maybe<Account>;
   /** @deprecated Use accountById */
   accountByUniqueInput?: Maybe<Account>;
+  accountRewards: Array<AccountRewards>;
+  accountRewardsById?: Maybe<AccountRewards>;
+  /** @deprecated Use accountRewardsById */
+  accountRewardsByUniqueInput?: Maybe<AccountRewards>;
+  accountRewardsConnection: AccountRewardsConnection;
   accounts: Array<Account>;
   accountsConnection: AccountsConnection;
   blockById?: Maybe<Block>;
@@ -1744,6 +1926,11 @@ export type Query = {
   operatorById?: Maybe<Operator>;
   /** @deprecated Use operatorById */
   operatorByUniqueInput?: Maybe<Operator>;
+  operatorRewards: Array<OperatorRewards>;
+  operatorRewardsById?: Maybe<OperatorRewards>;
+  /** @deprecated Use operatorRewardsById */
+  operatorRewardsByUniqueInput?: Maybe<OperatorRewards>;
+  operatorRewardsConnection: OperatorRewardsConnection;
   operators: Array<Operator>;
   operatorsConnection: OperatorsConnection;
   rewardEventById?: Maybe<RewardEvent>;
@@ -1756,7 +1943,7 @@ export type Query = {
 
 
 export type QueryAccountByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1765,24 +1952,50 @@ export type QueryAccountByUniqueInputArgs = {
 };
 
 
+export type QueryAccountRewardsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AccountRewardsOrderByInput>>;
+  where?: InputMaybe<AccountRewardsWhereInput>;
+};
+
+
+export type QueryAccountRewardsByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryAccountRewardsByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryAccountRewardsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<AccountRewardsOrderByInput>;
+  where?: InputMaybe<AccountRewardsWhereInput>;
+};
+
+
 export type QueryAccountsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<AccountOrderByInput>>;
   where?: InputMaybe<AccountWhereInput>;
 };
 
 
 export type QueryAccountsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<AccountOrderByInput>;
   where?: InputMaybe<AccountWhereInput>;
 };
 
 
 export type QueryBlockByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1792,23 +2005,23 @@ export type QueryBlockByUniqueInputArgs = {
 
 
 export type QueryBlocksArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<BlockOrderByInput>>;
   where?: InputMaybe<BlockWhereInput>;
 };
 
 
 export type QueryBlocksConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<BlockOrderByInput>;
   where?: InputMaybe<BlockWhereInput>;
 };
 
 
 export type QueryCallByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1818,23 +2031,23 @@ export type QueryCallByUniqueInputArgs = {
 
 
 export type QueryCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<CallOrderByInput>>;
   where?: InputMaybe<CallWhereInput>;
 };
 
 
 export type QueryCallsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<CallOrderByInput>;
   where?: InputMaybe<CallWhereInput>;
 };
 
 
 export type QueryEventByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1844,7 +2057,7 @@ export type QueryEventByUniqueInputArgs = {
 
 
 export type QueryEventModuleNameByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1854,39 +2067,39 @@ export type QueryEventModuleNameByUniqueInputArgs = {
 
 
 export type QueryEventModuleNamesArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EventModuleNameOrderByInput>>;
   where?: InputMaybe<EventModuleNameWhereInput>;
 };
 
 
 export type QueryEventModuleNamesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<EventModuleNameOrderByInput>;
   where?: InputMaybe<EventModuleNameWhereInput>;
 };
 
 
 export type QueryEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<EventOrderByInput>>;
   where?: InputMaybe<EventWhereInput>;
 };
 
 
 export type QueryEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<EventOrderByInput>;
   where?: InputMaybe<EventWhereInput>;
 };
 
 
 export type QueryExtrinsicByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1896,7 +2109,7 @@ export type QueryExtrinsicByUniqueInputArgs = {
 
 
 export type QueryExtrinsicModuleNameByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1906,39 +2119,39 @@ export type QueryExtrinsicModuleNameByUniqueInputArgs = {
 
 
 export type QueryExtrinsicModuleNamesArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ExtrinsicModuleNameOrderByInput>>;
   where?: InputMaybe<ExtrinsicModuleNameWhereInput>;
 };
 
 
 export type QueryExtrinsicModuleNamesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<ExtrinsicModuleNameOrderByInput>;
   where?: InputMaybe<ExtrinsicModuleNameWhereInput>;
 };
 
 
 export type QueryExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
   where?: InputMaybe<ExtrinsicWhereInput>;
 };
 
 
 export type QueryExtrinsicsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<ExtrinsicOrderByInput>;
   where?: InputMaybe<ExtrinsicWhereInput>;
 };
 
 
 export type QueryLogByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1948,23 +2161,23 @@ export type QueryLogByUniqueInputArgs = {
 
 
 export type QueryLogsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<LogOrderByInput>>;
   where?: InputMaybe<LogWhereInput>;
 };
 
 
 export type QueryLogsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<LogOrderByInput>;
   where?: InputMaybe<LogWhereInput>;
 };
 
 
 export type QueryNominatorByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1974,23 +2187,23 @@ export type QueryNominatorByUniqueInputArgs = {
 
 
 export type QueryNominatorsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<NominatorOrderByInput>>;
   where?: InputMaybe<NominatorWhereInput>;
 };
 
 
 export type QueryNominatorsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<NominatorOrderByInput>;
   where?: InputMaybe<NominatorWhereInput>;
 };
 
 
 export type QueryOperatorByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -1999,24 +2212,50 @@ export type QueryOperatorByUniqueInputArgs = {
 };
 
 
+export type QueryOperatorRewardsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OperatorRewardsOrderByInput>>;
+  where?: InputMaybe<OperatorRewardsWhereInput>;
+};
+
+
+export type QueryOperatorRewardsByIdArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryOperatorRewardsByUniqueInputArgs = {
+  where: WhereIdInput;
+};
+
+
+export type QueryOperatorRewardsConnectionArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<OperatorRewardsOrderByInput>;
+  where?: InputMaybe<OperatorRewardsWhereInput>;
+};
+
+
 export type QueryOperatorsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OperatorOrderByInput>>;
   where?: InputMaybe<OperatorWhereInput>;
 };
 
 
 export type QueryOperatorsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<OperatorOrderByInput>;
   where?: InputMaybe<OperatorWhereInput>;
 };
 
 
 export type QueryRewardEventByIdArgs = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 
@@ -2026,16 +2265,16 @@ export type QueryRewardEventByUniqueInputArgs = {
 
 
 export type QueryRewardEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']>;
-  offset?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
   where?: InputMaybe<RewardEventWhereInput>;
 };
 
 
 export type QueryRewardEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<RewardEventOrderByInput>;
   where?: InputMaybe<RewardEventWhereInput>;
 };
@@ -2043,27 +2282,25 @@ export type QueryRewardEventsConnectionArgs = {
 export type RewardEvent = {
   __typename?: 'RewardEvent';
   account?: Maybe<Account>;
-  amount?: Maybe<Scalars['BigInt']>;
+  amount?: Maybe<Scalars['BigInt']['output']>;
   block?: Maybe<Block>;
   call?: Maybe<Call>;
   extrinsic?: Maybe<Extrinsic>;
-  id: Scalars['String'];
-  indexInBlock: Scalars['Int'];
-  name: Scalars['String'];
-  phase: Scalars['String'];
-  pos?: Maybe<Scalars['Int']>;
-  timestamp: Scalars['DateTime'];
+  id: Scalars['String']['output'];
+  indexInBlock: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  phase: Scalars['String']['output'];
+  pos?: Maybe<Scalars['Int']['output']>;
+  timestamp: Scalars['DateTime']['output'];
 };
 
 export type RewardEventEdge = {
   __typename?: 'RewardEventEdge';
-  cursor: Scalars['String'];
+  cursor: Scalars['String']['output'];
   node: RewardEvent;
 };
 
 export enum RewardEventOrderByInput {
-  AccountBlockRewardsTotalAsc = 'account_blockRewardsTotal_ASC',
-  AccountBlockRewardsTotalDesc = 'account_blockRewardsTotal_DESC',
   AccountFreeAsc = 'account_free_ASC',
   AccountFreeDesc = 'account_free_DESC',
   AccountIdAsc = 'account_id_ASC',
@@ -2076,8 +2313,6 @@ export enum RewardEventOrderByInput {
   AccountTotalDesc = 'account_total_DESC',
   AccountUpdatedAtAsc = 'account_updatedAt_ASC',
   AccountUpdatedAtDesc = 'account_updatedAt_DESC',
-  AccountVoteRewardsTotalAsc = 'account_voteRewardsTotal_ASC',
-  AccountVoteRewardsTotalDesc = 'account_voteRewardsTotal_DESC',
   AmountAsc = 'amount_ASC',
   AmountDesc = 'amount_DESC',
   BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
@@ -2156,176 +2391,176 @@ export type RewardEventWhereInput = {
   AND?: InputMaybe<Array<RewardEventWhereInput>>;
   OR?: InputMaybe<Array<RewardEventWhereInput>>;
   account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']>;
-  amount_eq?: InputMaybe<Scalars['BigInt']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']>;
-  amount_lt?: InputMaybe<Scalars['BigInt']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']>;
-  amount_not_eq?: InputMaybe<Scalars['BigInt']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']>>;
+  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
+  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
   block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']>;
+  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']>;
+  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_contains?: InputMaybe<Scalars['String']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_endsWith?: InputMaybe<Scalars['String']>;
-  id_eq?: InputMaybe<Scalars['String']>;
-  id_gt?: InputMaybe<Scalars['String']>;
-  id_gte?: InputMaybe<Scalars['String']>;
-  id_in?: InputMaybe<Array<Scalars['String']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']>;
-  id_lt?: InputMaybe<Scalars['String']>;
-  id_lte?: InputMaybe<Scalars['String']>;
-  id_not_contains?: InputMaybe<Scalars['String']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']>;
-  id_not_eq?: InputMaybe<Scalars['String']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']>;
-  id_startsWith?: InputMaybe<Scalars['String']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  name_contains?: InputMaybe<Scalars['String']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_endsWith?: InputMaybe<Scalars['String']>;
-  name_eq?: InputMaybe<Scalars['String']>;
-  name_gt?: InputMaybe<Scalars['String']>;
-  name_gte?: InputMaybe<Scalars['String']>;
-  name_in?: InputMaybe<Array<Scalars['String']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']>;
-  name_lt?: InputMaybe<Scalars['String']>;
-  name_lte?: InputMaybe<Scalars['String']>;
-  name_not_contains?: InputMaybe<Scalars['String']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']>;
-  name_not_eq?: InputMaybe<Scalars['String']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']>;
-  name_startsWith?: InputMaybe<Scalars['String']>;
-  phase_contains?: InputMaybe<Scalars['String']>;
-  phase_containsInsensitive?: InputMaybe<Scalars['String']>;
-  phase_endsWith?: InputMaybe<Scalars['String']>;
-  phase_eq?: InputMaybe<Scalars['String']>;
-  phase_gt?: InputMaybe<Scalars['String']>;
-  phase_gte?: InputMaybe<Scalars['String']>;
-  phase_in?: InputMaybe<Array<Scalars['String']>>;
-  phase_isNull?: InputMaybe<Scalars['Boolean']>;
-  phase_lt?: InputMaybe<Scalars['String']>;
-  phase_lte?: InputMaybe<Scalars['String']>;
-  phase_not_contains?: InputMaybe<Scalars['String']>;
-  phase_not_containsInsensitive?: InputMaybe<Scalars['String']>;
-  phase_not_endsWith?: InputMaybe<Scalars['String']>;
-  phase_not_eq?: InputMaybe<Scalars['String']>;
-  phase_not_in?: InputMaybe<Array<Scalars['String']>>;
-  phase_not_startsWith?: InputMaybe<Scalars['String']>;
-  phase_startsWith?: InputMaybe<Scalars['String']>;
-  pos_eq?: InputMaybe<Scalars['Int']>;
-  pos_gt?: InputMaybe<Scalars['Int']>;
-  pos_gte?: InputMaybe<Scalars['Int']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']>;
-  pos_lt?: InputMaybe<Scalars['Int']>;
-  pos_lte?: InputMaybe<Scalars['Int']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']>>;
+  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_eq?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  id_not_eq?: InputMaybe<Scalars['String']['input']>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  id_startsWith?: InputMaybe<Scalars['String']['input']>;
+  indexInBlock_eq?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_gt?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_gte?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  indexInBlock_lt?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_lte?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_eq?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  name_not_eq?: InputMaybe<Scalars['String']['input']>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  name_startsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_contains?: InputMaybe<Scalars['String']['input']>;
+  phase_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  phase_endsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_eq?: InputMaybe<Scalars['String']['input']>;
+  phase_gt?: InputMaybe<Scalars['String']['input']>;
+  phase_gte?: InputMaybe<Scalars['String']['input']>;
+  phase_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phase_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  phase_lt?: InputMaybe<Scalars['String']['input']>;
+  phase_lte?: InputMaybe<Scalars['String']['input']>;
+  phase_not_contains?: InputMaybe<Scalars['String']['input']>;
+  phase_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
+  phase_not_endsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_not_eq?: InputMaybe<Scalars['String']['input']>;
+  phase_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  phase_not_startsWith?: InputMaybe<Scalars['String']['input']>;
+  phase_startsWith?: InputMaybe<Scalars['String']['input']>;
+  pos_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_gt?: InputMaybe<Scalars['Int']['input']>;
+  pos_gte?: InputMaybe<Scalars['Int']['input']>;
+  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  pos_lt?: InputMaybe<Scalars['Int']['input']>;
+  pos_lte?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
+  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
 };
 
 export type RewardEventsConnection = {
   __typename?: 'RewardEventsConnection';
   edges: Array<RewardEventEdge>;
   pageInfo: PageInfo;
-  totalCount: Scalars['Int'];
+  totalCount: Scalars['Int']['output'];
 };
 
 export type SquidStatus = {
   __typename?: 'SquidStatus';
   /** The height of the processed part of the chain */
-  height?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']['output']>;
 };
 
 export type WhereIdInput = {
-  id: Scalars['String'];
+  id: Scalars['String']['input'];
 };
 
 export type AccountQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  offset: Scalars['Int'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
 }>;
 
 
 export type AccountQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', free?: any | null, id: string, reserved?: any | null, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }> }> };
 
 export type AccountsConnectionQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type AccountsConnectionQuery = { __typename?: 'Query', accountsConnection: { __typename?: 'AccountsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountEdge', cursor: string, node: { __typename?: 'Account', free?: any | null, id: string, reserved?: any | null, total?: any | null, nonce?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', id: string, timestamp: any, block: { __typename?: 'Block', height: any, hash: string } }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type AccountsConnectionQuery = { __typename?: 'Query', accountsConnection: { __typename?: 'AccountsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountEdge', cursor: string, node: { __typename?: 'Account', free?: any | null, id: string, reserved?: any | null, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', id: string, timestamp: any, block: { __typename?: 'Block', height: any, hash: string } }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type AccountByIdQueryVariables = Exact<{
-  accountId: Scalars['String'];
+  accountId: Scalars['String']['input'];
 }>;
 
 
 export type AccountByIdQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', free?: any | null, reserved?: any | null, id: string, total?: any | null, nonce?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, indexInBlock: number, name: string, success: boolean, timestamp: any, tip?: any | null, block: { __typename?: 'Block', id: string, height: any } }> } | null, rewardEvents: Array<{ __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', height: any } | null }> };
 
 export type AccountByIdEvmQueryVariables = Exact<{
-  accountId: Scalars['String'];
+  accountId: Scalars['String']['input'];
 }>;
 
 
 export type AccountByIdEvmQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', free?: any | null, reserved?: any | null, id: string, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, indexInBlock: number, name: string, success: boolean, timestamp: any, tip?: any | null, block: { __typename?: 'Block', id: string, height: any } }> } | null, rewardEvents: Array<{ __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', height: any } | null }> };
 
 export type OldAccountByIdQueryVariables = Exact<{
-  accountId: Scalars['String'];
+  accountId: Scalars['String']['input'];
 }>;
 
 
 export type OldAccountByIdQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', free?: any | null, reserved?: any | null, id: string, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, indexInBlock: number, name: string, success: boolean, timestamp: any, tip?: any | null, block: { __typename?: 'Block', id: string, height: any } }> } | null };
 
 export type LatestRewardsWeekQueryVariables = Exact<{
-  accountId: Scalars['String'];
-  gte: Scalars['DateTime'];
+  accountId: Scalars['String']['input'];
+  gte: Scalars['DateTime']['input'];
 }>;
 
 
 export type LatestRewardsWeekQuery = { __typename?: 'Query', rewardEvents: Array<{ __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', height: any } | null }> };
 
 export type RewardsListQueryVariables = Exact<{
-  accountId: Scalars['String'];
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  accountId: Scalars['String']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type RewardsListQuery = { __typename?: 'Query', rewardEventsConnection: { __typename?: 'RewardEventsConnection', totalCount: number, edges: Array<{ __typename?: 'RewardEventEdge', cursor: string, node: { __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', hash: string, id: string, height: any } | null, account?: { __typename?: 'Account', id: string, free?: any | null, reserved?: any | null, total?: any | null, updatedAt?: any | null } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type ExtrinsicsByAccountIdQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
   where?: InputMaybe<ExtrinsicWhereInput>;
 }>;
 
@@ -2333,71 +2568,71 @@ export type ExtrinsicsByAccountIdQueryVariables = Exact<{
 export type ExtrinsicsByAccountIdQuery = { __typename?: 'Query', extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', cursor: string, node: { __typename?: 'Extrinsic', id: string, hash: string, name: string, success: boolean, indexInBlock: number, block: { __typename?: 'Block', height: any, timestamp: any } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string, hasPreviousPage: boolean, startCursor: string } } };
 
 export type BlocksConnectionQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type BlocksConnectionQuery = { __typename?: 'Query', blocksConnection: { __typename?: 'BlocksConnection', totalCount: number, edges: Array<{ __typename?: 'BlockEdge', cursor: string, node: { __typename?: 'Block', blockchainSize: any, extrinsicsRoot: string, hash: string, height: any, id: string, parentHash: string, spacePledged: any, specId: string, stateRoot: string, timestamp: any, events: Array<{ __typename?: 'Event', id: string }>, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }>, author?: { __typename?: 'Account', id: string } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type BlocksConnectionDomainQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type BlocksConnectionDomainQuery = { __typename?: 'Query', blocksConnection: { __typename?: 'BlocksConnection', totalCount: number, edges: Array<{ __typename?: 'BlockEdge', cursor: string, node: { __typename?: 'Block', extrinsicsRoot: string, hash: string, height: any, id: string, parentHash: string, specId: string, stateRoot: string, timestamp: any, events: Array<{ __typename?: 'Event', id: string }>, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type BlockByIdQueryVariables = Exact<{
-  blockId: Scalars['BigInt'];
+  blockId: Scalars['BigInt']['input'];
 }>;
 
 
 export type BlockByIdQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any, hash: string, stateRoot: string, timestamp: any, extrinsicsRoot: string, specId: string, parentHash: string, extrinsicsCount: number, eventsCount: number, logs: Array<{ __typename?: 'Log', kind: string, id: string, block: { __typename?: 'Block', height: any, timestamp: any } }>, author?: { __typename?: 'Account', id: string } | null }> };
 
 export type BlockByIdDomainQueryVariables = Exact<{
-  blockId: Scalars['BigInt'];
+  blockId: Scalars['BigInt']['input'];
 }>;
 
 
 export type BlockByIdDomainQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any, hash: string, stateRoot: string, timestamp: any, extrinsicsRoot: string, specId: string, parentHash: string, extrinsicsCount: number, eventsCount: number, logs: Array<{ __typename?: 'Log', kind: string, id: string, block: { __typename?: 'Block', height: any, timestamp: any } }> }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['BigInt'];
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  blockId: Scalars['BigInt']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type ExtrinsicsByBlockIdQuery = { __typename?: 'Query', extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', cursor: string, node: { __typename?: 'Extrinsic', id: string, hash: string, name: string, success: boolean, indexInBlock: number, block: { __typename?: 'Block', height: any, timestamp: any } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string, hasPreviousPage: boolean, startCursor: string } } };
 
 export type EventsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['BigInt'];
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  blockId: Scalars['BigInt']['input'];
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
 export type EventsByBlockIdQuery = { __typename?: 'Query', eventsConnection: { __typename?: 'EventsConnection', totalCount: number, edges: Array<{ __typename?: 'EventEdge', node: { __typename?: 'Event', id: string, name: string, phase: string, indexInBlock: number, block?: { __typename?: 'Block', height: any, id: string } | null, extrinsic?: { __typename?: 'Extrinsic', indexInBlock: number, block: { __typename?: 'Block', height: any, id: string } } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type BlocksByHashQueryVariables = Exact<{
-  hash: Scalars['String'];
+  hash: Scalars['String']['input'];
 }>;
 
 
 export type BlocksByHashQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any }> };
 
 export type EventsQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  offset: Scalars['Int'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
 }>;
 
 
 export type EventsQuery = { __typename?: 'Query', events: Array<{ __typename?: 'Event', name: string, phase: string, id: string, indexInBlock: number, block?: { __typename?: 'Block', height: any, timestamp: any } | null }> };
 
 export type EventsConnectionQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
   where?: InputMaybe<EventWhereInput>;
 }>;
 
@@ -2405,15 +2640,15 @@ export type EventsConnectionQueryVariables = Exact<{
 export type EventsConnectionQuery = { __typename?: 'Query', eventsConnection: { __typename?: 'EventsConnection', totalCount: number, edges: Array<{ __typename?: 'EventEdge', cursor: string, node: { __typename?: 'Event', args?: any | null, id: string, indexInBlock: number, name: string, phase: string, timestamp: any, block?: { __typename?: 'Block', id: string, timestamp: any, height: any } | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string, hasPreviousPage: boolean, startCursor: string } }, eventModuleNames: Array<{ __typename?: 'EventModuleName', name: string }> };
 
 export type EventByIdQueryVariables = Exact<{
-  eventId: Scalars['String'];
+  eventId: Scalars['String']['input'];
 }>;
 
 
 export type EventByIdQuery = { __typename?: 'Query', eventById?: { __typename?: 'Event', args?: any | null, id: string, indexInBlock: number, name: string, phase: string, timestamp: any, call?: { __typename?: 'Call', args?: any | null, name: string, success: boolean, timestamp: any, id: string } | null, extrinsic?: { __typename?: 'Extrinsic', args?: any | null, success: boolean, tip?: any | null, fee?: any | null, id: string, signer?: { __typename?: 'Account', id: string } | null } | null, block?: { __typename?: 'Block', height: any, id: string, timestamp: any, specId: string, hash: string } | null } | null };
 
 export type ExtrinsicsConnectionQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
   where?: InputMaybe<ExtrinsicWhereInput>;
 }>;
 
@@ -2421,40 +2656,64 @@ export type ExtrinsicsConnectionQueryVariables = Exact<{
 export type ExtrinsicsConnectionQuery = { __typename?: 'Query', extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', cursor: string, node: { __typename?: 'Extrinsic', hash: string, indexInBlock: number, id: string, success: boolean, name: string, nonce?: any | null, block: { __typename?: 'Block', id: string, timestamp: any, height: any } } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string } }, extrinsicModuleNames: Array<{ __typename?: 'ExtrinsicModuleName', name: string }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
-  extrinsicId: Scalars['String'];
+  extrinsicId: Scalars['String']['input'];
 }>;
 
 
 export type ExtrinsicsByIdQuery = { __typename?: 'Query', extrinsicById?: { __typename?: 'Extrinsic', indexInBlock: number, id: string, hash: string, signature?: string | null, success: boolean, tip?: any | null, args?: any | null, name: string, block: { __typename?: 'Block', height: any, id: string, timestamp: any }, signer?: { __typename?: 'Account', id: string } | null, events: Array<{ __typename?: 'Event', id: string, indexInBlock: number, phase: string, timestamp: any, name: string, args?: any | null, block?: { __typename?: 'Block', height: any } | null, extrinsic?: { __typename?: 'Extrinsic', id: string, indexInBlock: number, block: { __typename?: 'Block', height: any } } | null }> } | null };
 
 export type ExtrinsicsByHashQueryVariables = Exact<{
-  hash: Scalars['String'];
+  hash: Scalars['String']['input'];
 }>;
 
 
 export type ExtrinsicsByHashQuery = { __typename?: 'Query', extrinsics: Array<{ __typename?: 'Extrinsic', id: string, hash: string, indexInBlock: number, success: boolean, name: string, nonce?: any | null, block: { __typename?: 'Block', id: string, timestamp: any, height: any } }> };
 
 export type HomeQueryQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  offset: Scalars['Int'];
-  accountTotal: Scalars['BigInt'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  accountTotal: Scalars['BigInt']['input'];
 }>;
 
 
 export type HomeQueryQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, hash: string, height: any, timestamp: any, stateRoot: string, blockchainSize: any, spacePledged: any, extrinsicsCount: number, eventsCount: number }>, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, success: boolean, indexInBlock: number, timestamp: any, name: string, block: { __typename?: 'Block', id: string, height: any } }>, accountsConnection: { __typename?: 'AccountsConnection', totalCount: number }, extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number } };
 
 export type HomeQueryDomainQueryVariables = Exact<{
-  limit: Scalars['Int'];
-  offset: Scalars['Int'];
-  accountTotal: Scalars['BigInt'];
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  accountTotal: Scalars['BigInt']['input'];
 }>;
 
 
 export type HomeQueryDomainQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, hash: string, height: any, timestamp: any, stateRoot: string, extrinsicsCount: number, eventsCount: number }>, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, success: boolean, indexInBlock: number, timestamp: any, name: string, block: { __typename?: 'Block', id: string, height: any } }>, accountsConnection: { __typename?: 'AccountsConnection', totalCount: number }, extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number } };
 
+export type AccountsConnectionRewardsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AccountsConnectionRewardsQuery = { __typename?: 'Query', accountRewardsConnection: { __typename?: 'AccountRewardsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', amount?: any | null, id: string, block?: any | null, operator?: any | null, updatedAt: any, vote?: any | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+
+export type AccountsNominatorsConnectionRewardsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type AccountsNominatorsConnectionRewardsQuery = { __typename?: 'Query', accountRewardsConnection: { __typename?: 'AccountRewardsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', amount?: any | null, id: string, block?: any | null, operator?: any | null, updatedAt: any, vote?: any | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+
+export type OperatorsConnectionRewardsQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type OperatorsConnectionRewardsQuery = { __typename?: 'Query', operatorRewardsConnection: { __typename?: 'OperatorRewardsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorRewardsEdge', cursor: string, node: { __typename?: 'OperatorRewards', amount?: any | null, id: string, updatedAt: any } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+
 export type LogsConnectionQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
   where?: InputMaybe<LogWhereInput>;
 }>;
 
@@ -2462,50 +2721,42 @@ export type LogsConnectionQueryVariables = Exact<{
 export type LogsConnectionQuery = { __typename?: 'Query', logsConnection: { __typename?: 'LogsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string }, edges: Array<{ __typename?: 'LogEdge', cursor: string, node: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any } } }> }, logTypesQuery: { __typename?: 'LogNamesResult', result: Array<string> } };
 
 export type LogByIdQueryVariables = Exact<{
-  logId: Scalars['String'];
+  logId: Scalars['String']['input'];
 }>;
 
 
 export type LogByIdQuery = { __typename?: 'Query', logById?: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'Event', id: string, args?: any | null, name: string, phase: string, indexInBlock: number, timestamp: any, block?: { __typename?: 'Block', height: any, hash: string } | null }> } } | null };
 
 export type OperatorsConnectionQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type OperatorsConnectionQuery = { __typename?: 'Query', operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorEdge', node: { __typename?: 'Operator', id: string, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type OperatorsConnectionQuery = { __typename?: 'Query', operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorEdge', node: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type OperatorByIdQueryVariables = Exact<{
-  operatorId: Scalars['String'];
+  operatorId: Scalars['String']['input'];
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'Query', operatorById?: { __typename?: 'Operator', id: string, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null, nominators: Array<{ __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string } }> } | null };
-
-export type AccountsConnectionRewardsQueryVariables = Exact<{
-  first: Scalars['Int'];
-  after?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type AccountsConnectionRewardsQuery = { __typename?: 'Query', accountsConnection: { __typename?: 'AccountsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string }, edges: Array<{ __typename?: 'AccountEdge', cursor: string, node: { __typename?: 'Account', blockRewardsTotal?: any | null, free?: any | null, id: string, reserved?: any | null, total?: any | null, updatedAt?: any | null, voteRewardsTotal?: any | null } }> } };
+export type OperatorByIdQuery = { __typename?: 'Query', operatorById?: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null, nominators: Array<{ __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string } }> } | null };
 
 export type BlocksAndExtrinsicByHashQueryVariables = Exact<{
-  hash: Scalars['String'];
+  hash: Scalars['String']['input'];
 }>;
 
 
 export type BlocksAndExtrinsicByHashQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any }>, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }> };
 
 export type GetResultsQueryVariables = Exact<{
-  term: Scalars['String'];
-  blockId: Scalars['BigInt'];
-  isAccount: Scalars['Boolean'];
-  isBlock: Scalars['Boolean'];
-  isExtrinsic: Scalars['Boolean'];
-  isExtrinsicHash: Scalars['Boolean'];
-  isEvent: Scalars['Boolean'];
+  term: Scalars['String']['input'];
+  blockId: Scalars['BigInt']['input'];
+  isAccount: Scalars['Boolean']['input'];
+  isBlock: Scalars['Boolean']['input'];
+  isExtrinsic: Scalars['Boolean']['input'];
+  isExtrinsicHash: Scalars['Boolean']['input'];
+  isEvent: Scalars['Boolean']['input'];
 }>;
 
 
@@ -2513,13 +2764,13 @@ export type GetResultsQuery = { __typename?: 'Query', accountById?: { __typename
 
 
 export const AccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Account"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accounts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"total_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"StringValue","value":"0","block":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<AccountQuery, AccountQueryVariables>;
-export const AccountsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"total_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"StringValue","value":"0","block":false}}]}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"300"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsConnectionQuery, AccountsConnectionQueryVariables>;
-export const AccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AccountByIdQuery, AccountByIdQueryVariables>;
-export const AccountByIdEvmDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountByIdEVM"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AccountByIdEvmQuery, AccountByIdEvmQueryVariables>;
-export const OldAccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OldAccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OldAccountByIdQuery, OldAccountByIdQueryVariables>;
-export const LatestRewardsWeekDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LatestRewardsWeek"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gte"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"500"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"timestamp_gte"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gte"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
-export const RewardsListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RewardsList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rewardEventsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<RewardsListQuery, RewardsListQueryVariables>;
-export const ExtrinsicsByAccountIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsByAccountId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExtrinsicWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"indexInBlock_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>;
+export const AccountsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"total_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"StringValue","value":"0","block":false}}]}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"300"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsConnectionQuery, AccountsConnectionQueryVariables>;
+export const AccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AccountByIdQuery, AccountByIdQueryVariables>;
+export const AccountByIdEvmDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountByIdEVM"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AccountByIdEvmQuery, AccountByIdEvmQueryVariables>;
+export const OldAccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OldAccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OldAccountByIdQuery, OldAccountByIdQueryVariables>;
+export const LatestRewardsWeekDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LatestRewardsWeek"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gte"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"500"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"timestamp_gte"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gte"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
+export const RewardsListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RewardsList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rewardEventsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<RewardsListQuery, RewardsListQueryVariables>;
+export const ExtrinsicsByAccountIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsByAccountId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExtrinsicWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>;
 export const BlocksConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocksConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blockchainSize"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"spacePledged"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<BlocksConnectionQuery, BlocksConnectionQueryVariables>;
 export const BlocksConnectionDomainDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksConnectionDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocksConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<BlocksConnectionDomainQuery, BlocksConnectionDomainQueryVariables>;
 export const BlockByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlockById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<BlockByIdQuery, BlockByIdQueryVariables>;
@@ -2535,10 +2786,12 @@ export const ExtrinsicsByIdDocument = {"kind":"Document","definitions":[{"kind":
 export const ExtrinsicsByHashDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsByHash"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
 export const HomeQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"HomeQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"blockchainSize"}},{"kind":"Field","name":{"kind":"Name","value":"spacePledged"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"timestamp_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"signature_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<HomeQueryQuery, HomeQueryQueryVariables>;
 export const HomeQueryDomainDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"HomeQueryDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"timestamp_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"signature_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<HomeQueryDomainQuery, HomeQueryDomainQueryVariables>;
+export const AccountsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"amount_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"vote_gt"},"value":{"kind":"StringValue","value":"0","block":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"vote_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"OR"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"block_gt"},"value":{"kind":"StringValue","value":"0","block":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"block_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"operator"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"vote"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsConnectionRewardsQuery, AccountsConnectionRewardsQueryVariables>;
+export const AccountsNominatorsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsNominatorsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"operator_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"operator_gt"},"value":{"kind":"StringValue","value":"0","block":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"operator_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"operator"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"vote"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsNominatorsConnectionRewardsQuery, AccountsNominatorsConnectionRewardsQueryVariables>;
+export const OperatorsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"amount_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<OperatorsConnectionRewardsQuery, OperatorsConnectionRewardsQueryVariables>;
 export const LogsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LogsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"LogWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"logTypesQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"result"}}]}}]}}]} as unknown as DocumentNode<LogsConnectionQuery, LogsConnectionQueryVariables>;
 export const LogByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LogById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"logId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"logId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<LogByIdQuery, LogByIdQueryVariables>;
-export const OperatorsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<OperatorsConnectionQuery, OperatorsConnectionQueryVariables>;
-export const OperatorByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"operatorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"operatorId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"nominators"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OperatorByIdQuery, OperatorByIdQueryVariables>;
-export const AccountsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"voteRewardsTotal_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"voteRewardsTotal_gt"},"value":{"kind":"StringValue","value":"0","block":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"voteRewardsTotal_isNull"},"value":{"kind":"BooleanValue","value":false}}]}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blockRewardsTotal"}},{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"voteRewardsTotal"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}}]}}]}}]} as unknown as DocumentNode<AccountsConnectionRewardsQuery, AccountsConnectionRewardsQueryVariables>;
+export const OperatorsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<OperatorsConnectionQuery, OperatorsConnectionQueryVariables>;
+export const OperatorByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"operatorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"operatorId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"nominators"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OperatorByIdQuery, OperatorByIdQueryVariables>;
 export const BlocksAndExtrinsicByHashDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksAndExtrinsicByHash"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<BlocksAndExtrinsicByHashQuery, BlocksAndExtrinsicByHashQueryVariables>;
 export const GetResultsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetResults"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"term"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isAccount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isBlock"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsic"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsicHash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isEvent"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isAccount"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isBlock"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsic"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}]}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsicHash"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isEvent"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]} as unknown as DocumentNode<GetResultsQuery, GetResultsQueryVariables>;

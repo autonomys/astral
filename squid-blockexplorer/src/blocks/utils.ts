@@ -13,6 +13,8 @@ import {
   EventModuleName,
   Operator,
   Nominator,
+  AccountRewards,
+  OperatorRewards,
 } from "../model";
 import { CallItem, EventItem, Context } from "../processor";
 import { randomUUID } from "crypto";
@@ -207,16 +209,23 @@ export function getOrCreateAccountFactory(ctx: Context) {
     accountId: string
   ): Promise<Account> {
     const storage = createSystemAccountStorage(ctx, header);
-    const accountBufferId = decodeHex(accountId);
-    const id = encodeId(accountBufferId);
-    let account = await ctx.store.get(Account, id);
+    const isHex = accountId.startsWith("0x");
+    let account, accountInfo, convertedId;
+    if (isHex) {
+      const accountBufferId = decodeHex(accountId);
+      convertedId = encodeId(accountBufferId);
+      account = await ctx.store.get(Account, convertedId);
+      // update account nonce if it exists
+      accountInfo = await storage.asV0.get(accountBufferId);
+    }
 
-    // update account nonce if it exists
-    const accountInfo = await storage.asV0.get(accountBufferId);
+    if (!account) {
+      account = await ctx.store.get(Account, accountId);
+    }
 
     if (!account) {
       account = new Account({
-        id: id,
+        id: isHex ? convertedId : accountId,
         updatedAt: BigInt(header.height),
         nonce: accountInfo ? BigInt(accountInfo.nonce) : 0n,
       });
@@ -225,6 +234,52 @@ export function getOrCreateAccountFactory(ctx: Context) {
     }
 
     return account;
+  };
+}
+
+export function getOrCreateAccountRewardsFactory(ctx: Context) {
+  return async function getOrCreateAccountRewards(
+    header: SubstrateBlock,
+    account: Account
+  ): Promise<AccountRewards> {
+    let accountRewards = await ctx.store.get(AccountRewards, account.id);
+
+    if (!accountRewards) {
+      accountRewards = new AccountRewards({
+        id: account.id,
+        account: account,
+        vote: BigInt(0),
+        block: BigInt(0),
+        operator: BigInt(0),
+        amount: BigInt(0),
+        updatedAt: BigInt(header.height),
+      });
+
+      await ctx.store.insert(accountRewards);
+    }
+
+    return accountRewards;
+  };
+}
+
+export function getOrCreateOperatorRewardsFactory(ctx: Context) {
+  return async function getOrCreateOperatorRewards(
+    header: SubstrateBlock,
+    operator: Operator
+  ): Promise<OperatorRewards> {
+    let operatorRewards = await ctx.store.get(OperatorRewards, operator.id);
+
+    if (!operatorRewards) {
+      operatorRewards = new OperatorRewards({
+        id: operator.id,
+        amount: BigInt(0),
+        updatedAt: BigInt(header.height),
+      });
+
+      await ctx.store.insert(operatorRewards);
+    }
+
+    return operatorRewards;
   };
 }
 
@@ -294,9 +349,11 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
         await api.query.domains.operators(operatorId)
       ).toJSON() as any;
 
+      const ownerAccount =  (await api.query.domains.operatorIdOwner(operatorId)).toJSON();
       if (operatorInfo) {
         operator = new Operator({
           id: operatorId.toString(),
+          operatorOwner: ownerAccount?.toString(),
           status: operatorInfo.status.toString(),
           signingKey: operatorInfo.signingKey,
           totalShares: BigInt(operatorInfo.totalShares),
@@ -350,28 +407,26 @@ export function getOrCreateNominatorsFactory(
         `${operator.id}-${nominatorId}`
       );
 
-      if (!nominator) {
-        const nominatorInfo = nominators[i][1].toJSON() as any;
+      const nominatorInfo = nominators[i][1].toJSON() as any;
 
-        const existingNominator = await ctx.store.get(Nominator, nominatorId);
-        const hexAccountId = api.registry
-          .createType("AccountId", nominatorId)
-          .toHex();
-        const account = await getOrCreateAccount(block.header, hexAccountId);
+      const existingNominator = await ctx.store.get(Nominator, nominatorId);
+      const hexAccountId = api.registry
+        .createType("AccountId", nominatorId)
+        .toHex();
+      const account = await getOrCreateAccount(block.header, hexAccountId);
 
-        nominator = new Nominator({
-          ...existingNominator,
-          id: `${operator.id}-${nominatorId}`,
-          operator: operator,
-          account: account,
-          shares: BigInt(nominatorInfo.shares),
-          updatedAt: blockHeight,
-        });
+      nominator = new Nominator({
+        ...existingNominator,
+        id: `${operator.id}-${nominatorId}`,
+        operator: operator,
+        account: account,
+        shares: BigInt(nominatorInfo.shares),
+        updatedAt: blockHeight,
+      });
 
-        nominatorsList.push(nominator);
+      await ctx.store.save(nominator);
 
-        await ctx.store.save(nominator);
-      }
+      nominatorsList.push(nominator);
     }
 
     return nominatorsList;

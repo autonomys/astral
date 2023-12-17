@@ -18,7 +18,7 @@ interface Props {
 }
 
 const ExtrinsicAndEventResultCard: FC<Props> = ({ result }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const blockDate = dayjs(result.timestamp).fromNow(true)
 
   const body = [
@@ -30,8 +30,8 @@ const ExtrinsicAndEventResultCard: FC<Props> = ({ result }) => {
 
   const link =
     result.type === 'Extrinsic'
-      ? INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, result.id)
-      : INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, result.id)
+      ? INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, result.id)
+      : INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, result.id)
 
   return (
     <MobileCard

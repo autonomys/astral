@@ -17,6 +17,8 @@ export type Chain = {
 export type ChainContextValue = {
   selectedChain: Chain
   setSelectedChain: (children: Chain) => void
+  selectedDomain: string
+  setSelectedDomain: (children: string) => void
   chains: Chain[]
 }
 
@@ -31,6 +33,7 @@ type Props = {
 
 export const ChainProvider: FC<Props> = ({ children }) => {
   const [selectedChain, setSelectedChain] = useState(chains[0])
+  const [selectedDomain, setSelectedDomain] = useState('consensus')
 
   const client = new ApolloClient({
     link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
@@ -42,6 +45,8 @@ export const ChainProvider: FC<Props> = ({ children }) => {
       value={{
         setSelectedChain,
         selectedChain,
+        selectedDomain,
+        setSelectedDomain,
         chains,
       }}
     >

@@ -25,14 +25,6 @@ export class Account {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     updatedAt!: bigint | undefined | null
 
-    @Index_()
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    voteRewardsTotal!: bigint | undefined | null
-
-    @Index_()
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    blockRewardsTotal!: bigint | undefined | null
-
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     nonce!: bigint | undefined | null
 

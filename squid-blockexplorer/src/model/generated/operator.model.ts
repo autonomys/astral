@@ -15,6 +15,10 @@ export class Operator {
     @Column_("text", {nullable: false})
     signingKey!: string
 
+    @Index_()
+    @Column_("text", {nullable: true})
+    operatorOwner!: string | undefined | null
+
     @Column_("int4", {nullable: true})
     currentDomainId!: number | undefined | null
 

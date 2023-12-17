@@ -10,10 +10,10 @@ import ExportButton from 'common/components/ExportButton'
 import NotAllowed from 'common/components/NotAllowed'
 
 // reward
-import RewardTable from './RewardTable'
-import { QUERY_REWARDS_LIST } from 'Rewards/querys'
+import VoteBlockRewardTable from './VoteBlockRewardTable'
+import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
 
-const RewardList = () => {
+const VoteBlockRewardList = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const { selectedChain } = useDomains()
@@ -33,11 +33,13 @@ const RewardList = () => {
     return <NotAllowed />
   }
 
-  const accountsConnection = data.accountsConnection.edges.map((account) => account.node)
-  const totalCount = data.accountsConnection.totalCount
+  const accountRewardsConnection = data.accountRewardsConnection.edges.map(
+    (accountRewards) => accountRewards.node,
+  )
+  const totalCount = data.accountRewardsConnection.totalCount
   // const totalLabel = numberWithCommas(Number(totalCount))
 
-  const pageInfo = data.accountsConnection.pageInfo
+  const pageInfo = data.accountRewardsConnection.pageInfo
 
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1)
@@ -63,20 +65,10 @@ const RewardList = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='w-full grid lg:grid-cols-2'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>
-          Testnet Leaderboard
-        </div>
-      </div>
-      <div className='w-full flex justify-between mt-7'>
-        <div className='text-[#282929] text-base font-thin dark:text-white'>
-          Subspace Network Block and Vote rewards leaderboard
-        </div>
-      </div>
-      <div className='w-full flex flex-col mt-t sm:mt-0'>
-        <RewardTable accounts={accountsConnection} page={currentPage} />
+      <div className='w-full flex flex-col sm:mt-0'>
+        <VoteBlockRewardTable accounts={accountRewardsConnection} page={currentPage} />
         <div className='w-full flex justify-between gap-2'>
-          <ExportButton data={accountsConnection} filename='account-list' />
+          <ExportButton data={accountRewardsConnection} filename='account-list' />
           <Pagination
             nextPage={handleNextPage}
             previousPage={handlePreviousPage}
@@ -93,4 +85,4 @@ const RewardList = () => {
   )
 }
 
-export default RewardList
+export default VoteBlockRewardList

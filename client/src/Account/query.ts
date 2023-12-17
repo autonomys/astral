@@ -30,7 +30,6 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           id
           reserved
           total
-          nonce
           updatedAt
           extrinsics(limit: 300) {
             id
@@ -62,7 +61,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       total
       nonce
       updatedAt
-      extrinsics(limit: 10) {
+      extrinsics(limit: 10, orderBy: block_height_DESC) {
         hash
         id
         indexInBlock
@@ -99,7 +98,7 @@ export const QUERY_ACCOUNT_BY_ID_EVM = gql`
       id
       total
       updatedAt
-      extrinsics(limit: 10) {
+      extrinsics(limit: 10, orderBy: block_height_DESC) {
         hash
         id
         indexInBlock
@@ -137,7 +136,7 @@ export const OLD_QUERY_ACCOUNT_BY_ID = gql`
       id
       total
       updatedAt
-      extrinsics(limit: 10) {
+      extrinsics(limit: 10, orderBy: block_height_DESC) {
         hash
         id
         indexInBlock
@@ -156,7 +155,11 @@ export const OLD_QUERY_ACCOUNT_BY_ID = gql`
 
 export const QUERY_LAST_WEEK_REWARDS = gql`
   query LatestRewardsWeek($accountId: String!, $gte: DateTime!) {
-    rewardEvents(limit: 500, where: { timestamp_gte: $gte, account: { id_eq: $accountId } }) {
+    rewardEvents(
+      limit: 500
+      orderBy: id_DESC
+      where: { timestamp_gte: $gte, account: { id_eq: $accountId } }
+    ) {
       amount
       id
       indexInBlock
@@ -216,7 +219,7 @@ export const QUERY_REWARDS_LIST = gql`
 
 export const QUERY_ACCOUNT_EXTRINSICS = gql`
   query ExtrinsicsByAccountId($first: Int!, $after: String, $where: ExtrinsicWhereInput) {
-    extrinsicsConnection(orderBy: indexInBlock_ASC, first: $first, after: $after, where: $where) {
+    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after, where: $where) {
       edges {
         node {
           id

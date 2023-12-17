@@ -23,7 +23,7 @@ interface Props {
 }
 
 const AccountRewardTable: FC<Props> = ({ rewards }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
 
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
@@ -37,7 +37,11 @@ const AccountRewardTable: FC<Props> = ({ rewards }) => {
         <Link
           key={`${id}-account-index`}
           className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, block?.height)}
+          to={INTERNAL_ROUTES.blocks.id.page(
+            selectedChain.urls.page,
+            selectedDomain,
+            block?.height,
+          )}
         >
           <div>{block?.height}</div>
         </Link>

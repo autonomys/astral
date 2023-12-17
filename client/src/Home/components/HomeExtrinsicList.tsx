@@ -43,7 +43,7 @@ const HomeExtrinsicListHeader = () => (
 )
 
 const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (extrinsics: Extrinsic[]): Column[] => [
     {
@@ -52,7 +52,7 @@ const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
         <Link
           className='hover:text-[#DE67E4]'
           key={`${id}-home-extrinsic-hash`}
-          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, id)}
+          to={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           <div>{shortString(hash)}</div>
         </Link>

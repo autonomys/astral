@@ -22,7 +22,8 @@ export const INTERNAL_ROUTES = {
   blocks: {
     id: {
       path: ':blockId',
-      page: (chain: string, blockId: number): string => `/${chain}/blocks/${blockId}`,
+      page: (chain: string, domain: string, blockId: number): string =>
+        `/${chain}/${domain}/blocks/${blockId}`,
     },
     list: 'blocks',
   },
@@ -30,50 +31,59 @@ export const INTERNAL_ROUTES = {
     list: 'accounts',
     id: {
       path: ':accountId',
-      page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}`,
+      page: (chain: string, domain: string, accountId: string): string =>
+        `/${chain}/${domain}/accounts/${accountId}`,
     },
     rewards: {
       path: ':accountId/rewards',
-      page: (chain: string, accountId: string): string => `/${chain}/accounts/${accountId}/rewards`,
+      page: (chain: string, domain: string, accountId: string): string =>
+        `/${chain}/${domain}/accounts/${accountId}/rewards`,
     },
   },
   events: {
     id: {
       path: ':eventId',
-      page: (chain: string, eventId: string): string => `/${chain}/events/${eventId}`,
+      page: (chain: string, domain: string, eventId: string): string =>
+        `/${chain}/${domain}/events/${eventId}`,
     },
     list: 'events',
   },
   extrinsics: {
     id: {
       path: ':extrinsicId',
-      page: (chain: string, extrinsicId: string): string => `/${chain}/extrinsics/${extrinsicId}`,
+      page: (chain: string, domain: string, extrinsicId: string): string =>
+        `/${chain}/${domain}/extrinsics/${extrinsicId}`,
     },
     list: 'extrinsics',
   },
   logs: {
     id: {
       path: ':logId',
-      page: (chain: string, logId: string): string => `/${chain}/logs/${logId}`,
+      page: (chain: string, domain: string, logId: string): string =>
+        `/${chain}/${domain}/logs/${logId}`,
     },
     list: 'logs',
   },
   operators: {
     id: {
       path: ':operatorId',
-      page: (chain: string, operatorId: string): string => `/${chain}/operators/${operatorId}`,
+      page: (chain: string, domain: string, operatorId: string): string =>
+        `/${chain}/${domain}/operators/${operatorId}`,
     },
     list: 'operators',
   },
   search: {
     result: {
       path: 'search/result/:type',
-      page: (chain: string, type: string): string => `/${chain}/search/result/${type}`,
+      page: (chain: string, domain: string, type: string): string =>
+        `/${chain}/${domain}/search/result/${type}`,
     },
     empty: '/search/no-result-found',
   },
   leaderboard: {
-    list: 'leaderboard',
+    farmers: 'farmers',
+    operators: 'operators',
+    nominators: 'nominators',
   },
   notFound: '/404',
 }
