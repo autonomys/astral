@@ -131,22 +131,21 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
           return formatUnits(total.amount, 18).toFixed(2)
         }
         default:
-          return ''
+          return '0.00'
       }
     }, [previousRewards, rewards])
 
     const rewardsPercentageByPhase = useCallback((phase: string) => {
       switch (phase) {
-        case 'aries':
-          return ''
         case 'geminiI':
           return parseFloat(previousRewards.geminiI.percentage.replace('%', '')).toFixed(2) + '%'
         case 'geminiII.stage1':
           return parseFloat(previousRewards.geminiII.stage1.percentage.replace('%', '')).toFixed(2) + '%'
         case 'geminiII.stage2':
           return parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
+        case 'aries':
         default:
-          break;
+          return '0.00%'
       }
     }, [previousRewards])
 
@@ -165,7 +164,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
             Localized tSSC
           </div>
           <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
-            Percentage of mainnet allocation
+            Mainnet allocation %
           </div>
         </div>
         <div className='w-full'>
