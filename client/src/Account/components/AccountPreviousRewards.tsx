@@ -119,16 +119,16 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
     const rewardsByPhase = useCallback((phase: string) => {
       switch (phase) {
         case 'aries':
-          return previousRewards.aries.blocksWon
+          return parseFloat(previousRewards.aries.blocksWon).toFixed(2)
         case 'geminiI':
-          return previousRewards.geminiI.earnings
+          return parseFloat(previousRewards.geminiI.earnings).toFixed(2)
         case 'geminiII.stage1':
-          return previousRewards.geminiII.stage1.earnings
+          return parseFloat(previousRewards.geminiII.stage1.earnings).toFixed(2)
         case 'geminiII.stage2':
-          return previousRewards.geminiII.stage2.earnings
+          return parseFloat(previousRewards.geminiII.stage2.earnings).toFixed(2)
         case 'gemini3g': {
           const total = rewards.reduce((acc, reward) => acc + reward.amount)
-          return formatUnits(total.amount, 18)
+          return formatUnits(total.amount, 18).toFixed(2)
         }
         default:
           return ''
@@ -140,11 +140,11 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
         case 'aries':
           return ''
         case 'geminiI':
-          return previousRewards.geminiI.percentage
+          return parseFloat(previousRewards.geminiI.percentage.replace('%', '')).toFixed(2) + '%'
         case 'geminiII.stage1':
-          return previousRewards.geminiII.stage1.percentage
+          return parseFloat(previousRewards.geminiII.stage1.percentage.replace('%', '')).toFixed(2) + '%'
         case 'geminiII.stage2':
-          return previousRewards.geminiII.stage2.percentage
+          return parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
         default:
           break;
       }
