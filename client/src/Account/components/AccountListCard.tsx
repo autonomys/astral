@@ -25,8 +25,8 @@ const AccountListCard: FC<Props> = ({ account, index }) => {
   const body = [
     { name: 'Rank', value: index },
     { name: 'Extrinsics', value: account.extrinsics.length },
-    { name: 'Locked (TSSC)', value: bigNumberToNumber(account.reserved || 0, 18) },
-    { name: 'Balance (TSSC)', value: bigNumberToNumber(account.total || 0, 18) },
+    { name: 'Locked (TSSC)', value: bigNumberToNumber(account.reserved || 0) },
+    { name: 'Balance (TSSC)', value: bigNumberToNumber(account.total || 0) },
   ]
   return (
     <MobileCard

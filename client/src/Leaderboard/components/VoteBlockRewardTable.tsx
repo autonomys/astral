@@ -60,7 +60,7 @@ const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
       title: 'Block rewards',
       cells: accounts.map(({ block, id }) => (
         <div key={`${id}-reward-block`}>
-          {block ? `${numberWithCommas(bigNumberToNumber(block, 18))} tSSC` : 0}
+          {block ? `${numberWithCommas(bigNumberToNumber(block))} tSSC` : 0}
         </div>
       )),
     },
@@ -68,7 +68,7 @@ const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
       title: 'Vote rewards',
       cells: accounts.map(({ vote, id }) => (
         <div key={`${id}-reward-vote`}>
-          {vote ? `${numberWithCommas(bigNumberToNumber(vote, 18))} tSSC` : 0}
+          {vote ? `${numberWithCommas(bigNumberToNumber(vote))} tSSC` : 0}
         </div>
       )),
     },
@@ -77,7 +77,7 @@ const VoteBlockRewardTable: FC<Props> = ({ accounts, page }) => {
       cells: accounts.map(({ amount, id }) => {
         return (
           <div key={`${id}-reward-total-percent`}>
-            {amount ? `${numberWithCommas(bigNumberToNumber(amount, 18))} tSSC` : 0}
+            {amount ? `${numberWithCommas(bigNumberToNumber(amount))} tSSC` : 0}
           </div>
         )
       }),

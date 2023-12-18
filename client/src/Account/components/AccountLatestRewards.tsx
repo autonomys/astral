@@ -69,7 +69,7 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
                     .join(' ')}
                 </div>
                 <div className='-mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white'>
-                  {bigNumberToNumber(amount, 18)} tSSC
+                  {bigNumberToNumber(amount)} tSSC
                 </div>
               </li>
             ))}

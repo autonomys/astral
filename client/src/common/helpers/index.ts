@@ -1,4 +1,4 @@
-import BN from 'bn.js'
+import { ethers } from 'ethers'
 
 export const shortString = (value: string, initialLength = 6, endLength = -4): string =>
   `${value.slice(0, initialLength)}...${value.slice(endLength)}`
@@ -7,15 +7,14 @@ export const generateArrayOfNumbers = (length: number): number[] => {
   return Array.from(Array(length).keys())
 }
 
-export const formatUnits = (value: string, decimals: number): number => {
-  const base = new BN(10).pow(new BN(decimals))
-  const dm = new BN(value).divmod(base)
+export const formatUnits = (value: string): number => {
+  const convertedEthers = ethers.formatEther(value)
 
-  return parseFloat(dm.div.toString() + '.' + dm.mod.toString())
+  return parseFloat(convertedEthers)
 }
 
-export const bigNumberToNumber = (bigNumber: string, decimals: number): number => {
-  const number = Number(formatUnits(bigNumber, decimals))
+export const bigNumberToNumber = (bigNumber: string): number => {
+  const number = Number(formatUnits(bigNumber))
 
   return limitNumberDecimals(number)
 }

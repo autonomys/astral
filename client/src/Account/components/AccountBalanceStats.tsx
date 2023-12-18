@@ -14,9 +14,9 @@ type Props = {
 }
 
 const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
-  const accountTotal = bigNumberToNumber(account.total || 0, 18)
-  const accountFree = bigNumberToNumber(account.free || 0, 18)
-  const accountReserved = bigNumberToNumber(account.reserved || 0, 18)
+  const accountTotal = bigNumberToNumber(account.total || 0)
+  const accountFree = bigNumberToNumber(account.free || 0)
+  const accountReserved = bigNumberToNumber(account.reserved || 0)
   const freePercent = accountTotal ? (100 * accountFree) / accountTotal : 0
   const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
 
