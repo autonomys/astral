@@ -19,7 +19,7 @@ export const bigNumberToNumber = (bigNumber: string): number => {
   return limitNumberDecimals(number)
 }
 
-export const limitNumberDecimals = (number: number, precision = 2): number => {
+export const limitNumberDecimals = (number: number, precision = 4): number => {
   if (number === 0) {
     return number
   }
