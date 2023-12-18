@@ -48,5 +48,10 @@ export const formatSpacePledged = (value: number) => {
 }
 
 export const numberWithCommas = (value: number) => {
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const parts = value.toString().split('.')
+  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const decimalPart = parts[1] || ''
+  const formattedNumber = decimalPart ? integerPart + '.' + decimalPart : integerPart
+
+  return formattedNumber
 }
