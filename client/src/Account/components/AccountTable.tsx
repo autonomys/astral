@@ -10,7 +10,7 @@ import { Account } from 'gql/graphql'
 // common
 import { Table, Column } from 'common/components'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { bigNumberToNumber, shortString } from 'common/helpers'
+import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // account
@@ -67,13 +67,17 @@ const AccountTable: FC<Props> = ({ accounts, page }) => {
     {
       title: 'Locked (TSSC)',
       cells: accounts.map(({ reserved, id }) => (
-        <div key={`${id}-account-locked`}>{reserved ? bigNumberToNumber(reserved) : 0}</div>
+        <div key={`${id}-account-locked`}>
+          {reserved ? numberWithCommas(bigNumberToNumber(reserved)) : 0}
+        </div>
       )),
     },
     {
       title: 'Balance (TSSC)',
       cells: accounts.map(({ total, id }) => (
-        <div key={`${id}-account-balance`}>{total ? bigNumberToNumber(total) : 0}</div>
+        <div key={`${id}-account-balance`}>
+          {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
+        </div>
       )),
     },
   ]
