@@ -126,10 +126,8 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
           return parseFloat(previousRewards.geminiII.stage1.earnings).toFixed(2)
         case 'geminiII.stage2':
           return parseFloat(previousRewards.geminiII.stage2.earnings).toFixed(2)
-        case 'gemini3g': {
-          const total = rewards.reduce((acc, reward) => acc + reward.amount)
-          return formatUnits(total.amount, 18).toFixed(2)
-        }
+        case 'gemini3g':
+          return formatUnits(rewards.reduce((acc, reward) => reward.amount ? acc + BigInt(reward.amount) : acc, BigInt(0)).toString(), 18).toFixed(2)
         default:
           return '0.00'
       }
@@ -144,6 +142,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
         case 'geminiII.stage2':
           return parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
         case 'aries':
+        case 'gemini3g':
         default:
           return '0.00%'
       }
