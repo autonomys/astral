@@ -92,16 +92,6 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       title: 'Status',
       cells: operators.map(({ status, id }) => <div key={`${id}-operator-status`}>{status}</div>),
     },
-    {
-      title: 'Nominate',
-      cells: operators.map(({ id }) => (
-        <div key={`${id}-operator-created`}>
-          <div className='flex items-center justify-center w-full h-full px-4 py-2 text-sm font-medium text-white bg-[#DE67E4] rounded-md hover:bg-[#D64FC5]'>
-            Nominate
-          </div>
-        </div>
-      )),
-    },
   ]
 
   // constants
