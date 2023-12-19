@@ -17,6 +17,9 @@ export const QUERY_OPERATOR_CONNECTION_LIST = gql`
           status
           totalShares
           updatedAt
+          nominators(limit: 300) {
+            id
+          }
         }
       }
       pageInfo {
@@ -45,7 +48,7 @@ export const QUERY_OPERATOR_BY_ID = gql`
       status
       totalShares
       updatedAt
-      nominators(limit: 10) {
+      nominators(limit: 300) {
         id
         shares
         account {

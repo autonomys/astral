@@ -76,7 +76,7 @@ const AccountRewardTable: FC<Props> = ({ rewards }) => {
     {
       title: 'Amount',
       cells: rewards.map(({ amount, id }) => (
-        <div key={`${id}-account-balance`}>{amount ? bigNumberToNumber(amount, 18) : 0} tSSC</div>
+        <div key={`${id}-account-balance`}>{amount ? bigNumberToNumber(amount) : 0} tSSC</div>
       )),
     },
   ]

@@ -21,9 +21,7 @@ const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
     { name: 'Rank', value: index },
     {
       name: 'Operator reward',
-      value: operator.amount
-        ? `${numberWithCommas(bigNumberToNumber(operator.amount, 18))} tSSC`
-        : 0,
+      value: operator.amount ? `${numberWithCommas(bigNumberToNumber(operator.amount))} tSSC` : 0,
     },
   ]
   return (

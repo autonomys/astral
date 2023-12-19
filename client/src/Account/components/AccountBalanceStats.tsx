@@ -14,9 +14,9 @@ type Props = {
 }
 
 const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
-  const accountTotal = bigNumberToNumber(account.total || 0, 18)
-  const accountFree = bigNumberToNumber(account.free || 0, 18)
-  const accountReserved = bigNumberToNumber(account.reserved || 0, 18)
+  const accountTotal = bigNumberToNumber(account.total || 0)
+  const accountFree = bigNumberToNumber(account.free || 0)
+  const accountReserved = bigNumberToNumber(account.reserved || 0)
   const freePercent = accountTotal ? (100 * accountFree) / accountTotal : 0
   const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
 
@@ -37,20 +37,20 @@ const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
       <div className='flex w-full h-full justify-center items-center lg:items-end lg:justify-end col-span-2'>
         <AccountBalancePieChart account={account} />
       </div>
-      <div className='flex w-full lg:py-10 items-center lg:gap-5'>
+      <div className='flex w-full lg:py-8 items-center lg:gap-4'>
         <div className='flex flex-row lg:flex-none lg:flex-col gap-8 justify-center'>
           <div className='flex items-center'>
-            <div className='mr-4 w-1 bg-[#E970F8] h-[30px]' />
+            <div className='mr-2 w-1 bg-[#E970F8] h-[30px]' />
             <StatItem
               title='Free'
               value={`${numberWithCommas(accountFree)} tSSC (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
-            <div className='mr-4 w-1 bg-[#D9F0FC] h-[30px]' />
+            <div className='mr-2 w-1 bg-[#D9F0FC] h-[30px]' />
             <StatItem
               title='Reserved'
-              value={`${accountReserved} tSSC (${reservedPercent.toFixed(2)}%)`}
+              value={`${numberWithCommas(accountReserved)} tSSC (${reservedPercent.toFixed(2)}%)`}
             />
           </div>
         </div>

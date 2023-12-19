@@ -25,10 +25,10 @@ const OperatorsListCard: FC<Props> = ({ operator }) => {
     { name: 'Owner', value: shortString(operator.operatorOwner || '') },
     {
       name: 'Minimum Stake',
-      value: `${bigNumberToNumber(operator.minimumNominatorStake, 18)} tSSC`,
+      value: `${bigNumberToNumber(operator.minimumNominatorStake)} tSSC`,
     },
     { name: 'Nominator Tax', value: `${operator.nominationTax}%` },
-    { name: 'Total Stake', value: `${bigNumberToNumber(operator.currentTotalStake, 18)} tSSC` },
+    { name: 'Total Stake', value: `${bigNumberToNumber(operator.currentTotalStake)} tSSC` },
     { name: 'Total Shares', value: numberWithCommas(operator.totalShares) },
     { name: 'Status', value: operator.status ? operator.status : 'unknown' },
   ]
