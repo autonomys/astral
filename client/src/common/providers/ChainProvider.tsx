@@ -1,4 +1,4 @@
-import { FC, createContext, ReactNode, useState, useEffect } from 'react'
+import { FC, createContext, ReactNode, useState, useEffect, useCallback } from 'react'
 import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 import { web3Enable, web3Accounts } from '@polkadot/extension-dapp'
@@ -27,6 +27,9 @@ export type ChainContextValue = {
   selectedAccount: InjectedAccountWithMeta | undefined
   api: ApiPromise | undefined
   injectedExtension: InjectedExtension | undefined
+  availableAccounts: InjectedAccountWithMeta[]
+  setSelectedAccount: React.Dispatch<React.SetStateAction<InjectedAccountWithMeta | undefined>>
+  disconnectWallet: () => void
 }
 
 export const ChainContext = createContext<ChainContextValue>(
@@ -43,12 +46,18 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   const [selectedDomain, setSelectedDomain] = useState('consensus')
   const [selectedAccount, setSelectedAccount] = useState<InjectedAccountWithMeta>()
   const [injectedExtension, setInjectedExtension] = useState<InjectedExtension>()
+  const [availableAccounts, setAvailableAccounts] = useState<InjectedAccountWithMeta[]>([])
   const [api, setApi] = useState<ApiPromise>()
 
   const client = new ApolloClient({
     link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
     cache: new InMemoryCache(),
   })
+
+  const disconnectWallet = useCallback(() => {
+    setInjectedExtension(undefined)
+    setSelectedAccount(undefined)
+  }, [setInjectedExtension, setSelectedAccount])
 
   const setup = async () => {
     const wsProvider = new WsProvider(process.env.REACT_APP_RPC_URL)
@@ -74,6 +83,8 @@ export const ChainProvider: FC<Props> = ({ children }) => {
 
     const allAccounts = await web3Accounts()
 
+    setAvailableAccounts(allAccounts)
+
     if (allAccounts.length === 1) {
       setSelectedAccount(allAccounts[0])
     }
@@ -91,6 +102,9 @@ export const ChainProvider: FC<Props> = ({ children }) => {
         selectedAccount,
         api,
         injectedExtension,
+        availableAccounts,
+        setSelectedAccount,
+        disconnectWallet,
       }}
     >
       <ApolloProvider client={client}>{children}</ApolloProvider>

@@ -8,7 +8,7 @@ import useDomains from 'common/hooks/useDomains'
 // chains
 import domains from 'layout/config/domains.json'
 import chains from 'layout/config/chains.json'
-import { shortString } from 'common/helpers'
+import AccountListDropdown from './AccountListDropdown'
 
 const DomainHeader: FC = () => {
   const location = useLocation()
@@ -65,9 +65,7 @@ const DomainHeader: FC = () => {
               Connect Wallet
             </button>
           ) : (
-            <div className='h-10 w-36 flex text-center justify-center align-middle items-center text-white font-medium  bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full'>
-              {selectedAccount && shortString(selectedAccount.address)}
-            </div>
+            <AccountListDropdown />
           )}
         </div>
       </div>
