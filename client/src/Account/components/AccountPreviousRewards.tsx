@@ -168,7 +168,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
         case 'gemini3f':
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
-          return formatUnits(rewards.reduce((acc, reward) => reward.amount ? acc + BigInt(reward.amount) : acc, BigInt(0)).toString(), 18).toFixed(2)
+          return formatUnits(rewards.reduce((acc, reward) => reward.amount ? acc + BigInt(reward.amount) : acc, BigInt(0)).toString()).toFixed(2)
         case 'gemini3h':
           return 'n/a'
         default:
