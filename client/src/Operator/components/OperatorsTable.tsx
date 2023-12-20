@@ -212,17 +212,20 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
                 )} tSSC`}</div>
               </div>
 
-              <form onSubmit={(event) => handleSubmit(event)}>
-                <div className='flex flex-col gap-4'>
+              <form className='flex gap-6 items-center' onSubmit={(event) => handleSubmit(event)}>
+                <div className='flex flex-col gap-4 items-center'>
                   <input
+                    className='form-control rounded-lg w-36'
                     value={amount}
                     type='number'
-                    className='form-control'
                     placeholder='Amount'
                     onChange={(e) => setAmount(Number(e.target.value))}
                   />
                 </div>
-                <button type='submit' className='btn btn-primary mt-2'>
+                <button
+                  type='submit'
+                  className='p-2 btn btn-primary text-white font-medium bg-[#DE67E4] rounded-md hover:bg-[#D64FC5]'
+                >
                   Submit
                 </button>
               </form>
