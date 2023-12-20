@@ -34,8 +34,18 @@ const defaultRewards = {
     },
   },
   geminiIII: {
-    earnings: '0',
-    percentage: '0',
+    IIIf: {
+      earnings: '0',
+      percentage: '0',
+    },
+    IIIg: {
+      earnings: '0',
+      percentage: '0',
+    },
+    IIIh: {
+      earnings: '0',
+      percentage: '0',
+    }
   },
   totalMainnet: {
     earnings: '0',
@@ -82,8 +92,37 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
         }
       }
     })
+
+    const fileGeminiIIIf = await fetch('/data/gemini-3f-rewards.csv')
+    const dataGeminiIIIf = await fileGeminiIIIf.text()
+    const rowsGeminiIIIf = dataGeminiIIIf.split('\n').slice(1)
+
+    const totalRewardsGeminiIIIf = rowsGeminiIIIf.reduce((acc, row) => {
+      const amount = parseFloat(row.split(',')[1])
+      if (isNaN(amount)) return acc
+      return acc + amount
+    }, 0)
+    const rewardsGeminiIIIf = rowsGeminiIIIf.map(row => {
+      const columns = row.split(',')
+      return {
+        address: {
+          subspaceFormat: columns[0],
+        },
+        rewards: {
+          geminiIII: {
+            ...defaultRewards.geminiIII,
+            IIIf: {
+              earnings: columns[1],
+              percentage: (parseFloat(columns[1]) / totalRewardsGeminiIIIf * 100).toFixed(2),
+            },
+          }
+        }
+      }
+    })
     const userRewards = rewards.filter(reward => reward.address.subspaceFormat === accountId || reward.address.polkadotFormat === accountId)
-    if (userRewards.length > 0) setRewards(userRewards[0].rewards)
+    const userRewardsGeminiIIIf = rewardsGeminiIIIf.filter(reward => reward.address.subspaceFormat === accountId)
+
+    if (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0) setRewards({ ...userRewards[0].rewards, ...userRewardsGeminiIIIf[0].rewards })
   }, [accountId])
 
   const rewardsPhase = [
@@ -126,8 +165,12 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
           return parseFloat(previousRewards.geminiII.stage1.earnings).toFixed(2)
         case 'geminiII.stage2':
           return parseFloat(previousRewards.geminiII.stage2.earnings).toFixed(2)
+        case 'gemini3f':
+          return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
           return formatUnits(rewards.reduce((acc, reward) => reward.amount ? acc + BigInt(reward.amount) : acc, BigInt(0)).toString(), 18).toFixed(2)
+        case 'gemini3h':
+          return 'n/a'
         default:
           return '0.00'
       }
@@ -141,8 +184,13 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
           return parseFloat(previousRewards.geminiII.stage1.percentage.replace('%', '')).toFixed(2) + '%'
         case 'geminiII.stage2':
           return parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
-        case 'aries':
+        case 'gemini3f':
+          return parseFloat(previousRewards.geminiIII.IIIf.percentage.replace('%', '')).toFixed(2) + '%'
         case 'gemini3g':
+        case 'gemini3h':
+        case 'mainnet':
+          return 'n/a'
+        case 'aries':
         default:
           return '0.00%'
       }
