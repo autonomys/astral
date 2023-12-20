@@ -53,11 +53,13 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       })
     }
 
-    const result = await (await api.query.system.account(selectedAccount.address)).toJSON()
-    console.log('🚀 ~ file: OperatorsTable.tsx:57 ~ handleSubmit ~ result:', result)
+    if (amount <= 0) {
+      return toast.error('Amount must be greater than 0', {
+        position: 'bottom-center',
+      })
+    }
 
     const nominatorMinStake = bigNumberToNumber(operator.minimumNominatorStake)
-    // const accountBalance = bigNumberToNumber(result?.data?.free)
 
     const isNominator = operator?.nominators?.find(
       (nominator) => nominator.id === selectedAccount?.address,
