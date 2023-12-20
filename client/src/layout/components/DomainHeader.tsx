@@ -59,7 +59,7 @@ const DomainHeader: FC = () => {
         <div className='flex gap-4'>
           {selectedAccount === undefined ? (
             <button
-              onClick={() => connectWallet()}
+              onClick={(event) => connectWallet(event)}
               className='h-10 w-36 text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full'
             >
               Connect Wallet

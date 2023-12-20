@@ -47,7 +47,7 @@ function AccountListDropdown() {
                     active && 'bg-gray-100 dark:bg-[#2A345E]'
                   }`
                 }
-                value={account.address}
+                value={account}
               >
                 {({ selected }) => (
                   <>
@@ -64,8 +64,8 @@ function AccountListDropdown() {
               </Listbox.Option>
             ))}
             <button
-              onClick={disconnectWallet}
-              className='relative cursor-default select-none py-2 pl-4 text-gray-900 md:pl-10 pr-4 dark:text-white dark:bg-[#2A345E]'
+              onClick={(event) => disconnectWallet(event)}
+              className='relative cursor-default select-none py-2 text-gray-900 md:pl-10 pr-4 dark:text-white dark:bg-[#2A345E]'
             >
               <span className='block truncate font-normal'>Disconnect wallet</span>
             </button>

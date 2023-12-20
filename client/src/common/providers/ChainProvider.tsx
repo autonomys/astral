@@ -23,13 +23,13 @@ export type ChainContextValue = {
   selectedDomain: string
   setSelectedDomain: (children: string) => void
   chains: Chain[]
-  connectWallet(): Promise<void>
+  connectWallet: (event: any) => Promise<void>
   selectedAccount: InjectedAccountWithMeta | undefined
   api: ApiPromise | undefined
   injectedExtension: InjectedExtension | undefined
   availableAccounts: InjectedAccountWithMeta[]
   setSelectedAccount: React.Dispatch<React.SetStateAction<InjectedAccountWithMeta | undefined>>
-  disconnectWallet: () => void
+  disconnectWallet: (event: any) => void
 }
 
 export const ChainContext = createContext<ChainContextValue>(
@@ -54,10 +54,14 @@ export const ChainProvider: FC<Props> = ({ children }) => {
     cache: new InMemoryCache(),
   })
 
-  const disconnectWallet = useCallback(() => {
-    setInjectedExtension(undefined)
-    setSelectedAccount(undefined)
-  }, [setInjectedExtension, setSelectedAccount])
+  const disconnectWallet = useCallback(
+    () => (event) => {
+      event.preventDefault()
+      setInjectedExtension(undefined)
+      setSelectedAccount(undefined)
+    },
+    [setInjectedExtension, setSelectedAccount],
+  )
 
   const setup = async () => {
     const wsProvider = new WsProvider(process.env.REACT_APP_RPC_URL)
@@ -69,26 +73,31 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   }
 
   useEffect(() => {
+    if (!injectedExtension) return
     setup()
-  }, [])
+  }, [injectedExtension])
 
-  async function connectWallet() {
-    const extensions = await web3Enable('Polki')
+  const connectWallet = useCallback(
+    async (event) => {
+      event.preventDefault()
+      const extensions = await web3Enable('Polki')
 
-    if (!extensions) {
-      throw Error('No Extension Found')
-    }
+      if (!extensions) {
+        throw Error('No Extension Found')
+      }
 
-    setInjectedExtension(extensions[0])
+      setInjectedExtension(extensions[0])
 
-    const allAccounts = await web3Accounts()
+      const allAccounts = await web3Accounts()
 
-    setAvailableAccounts(allAccounts)
+      setAvailableAccounts(allAccounts)
 
-    if (allAccounts.length === 1) {
-      setSelectedAccount(allAccounts[0])
-    }
-  }
+      if (allAccounts.length) {
+        setSelectedAccount(allAccounts[0])
+      }
+    },
+    [setInjectedExtension, setSelectedAccount, setAvailableAccounts],
+  )
 
   return (
     <ChainContext.Provider
