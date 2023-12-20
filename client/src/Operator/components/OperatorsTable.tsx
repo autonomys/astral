@@ -57,10 +57,10 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       )),
     },
     {
-      title: 'Minimun Stake',
+      title: 'Min. Stake',
       cells: operators.map(({ minimumNominatorStake, id }) => (
         <div key={`${id}-operator-minimum-stake`}>
-          {`${bigNumberToNumber(minimumNominatorStake, 18)} tSSC`}
+          {`${bigNumberToNumber(minimumNominatorStake)} tSSC`}
         </div>
       )),
     },
@@ -71,9 +71,9 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       )),
     },
     {
-      title: 'Current Total Stake',
+      title: 'Total Stake',
       cells: operators.map(({ currentTotalStake, id }) => (
-        <div key={`${id}-operator-stake`}>{`${bigNumberToNumber(currentTotalStake, 18)} tSSC`}</div>
+        <div key={`${id}-operator-stake`}>{`${bigNumberToNumber(currentTotalStake)} tSSC`}</div>
       )),
     },
     {
@@ -83,8 +83,14 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       )),
     },
     {
+      title: 'Nominators',
+      cells: operators.map(({ nominators, id }) => (
+        <div key={`${id}-operator-nominator`}>{`${nominators ? nominators.length : 0}/256`}</div>
+      )),
+    },
+    {
       title: 'Status',
-      cells: operators.map(({ status, id }) => <div key={`${id}-account-balance`}>{status}</div>),
+      cells: operators.map(({ status, id }) => <div key={`${id}-operator-status`}>{status}</div>),
     },
   ]
 

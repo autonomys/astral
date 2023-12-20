@@ -53,7 +53,7 @@ const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
     .map((item) => {
       return {
         x: dayjs(item.timestamp).format('YYYY-MM-DD'),
-        y: bigNumberToNumber(item.amount, 18),
+        y: bigNumberToNumber(item.amount),
       }
     })
     .reduce((acc, item) => {
@@ -81,7 +81,7 @@ const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
     <div className='w-full flex flex-col p-5 lg:p-0'>
       <div className='flex lg:hidden gap-4 items-baseline justify-self-start'>
         <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
-          {total ? numberWithCommas(bigNumberToNumber(total, 18)) : 0}
+          {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
         </div>
         <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
       </div>

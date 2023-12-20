@@ -27,20 +27,26 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
     <div className='flex flex-col px-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
       <div className='w-full flex flex-col gap-6 pl-4'>
         <div className='w-full flex justify-between'>
-          <div className='text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+          <div className='flex-1 flex-grow text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
             Block Number
           </div>
-          <div className='text-[13px] font-normal text-[#857EC2] dark:text-white/75'>Type</div>
-          <div className='text-[13px] font-normal text-[#857EC2] dark:text-white/75'>Amount</div>
+          <div className='flex-1 text-center flex-grow text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+            Type
+          </div>
+          <div className='flex-1 flex-grow text-end text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+            Amount
+          </div>
         </div>
         <div className='w-full'>
-          <ol className='relative border-l border-[#E6EAFA] dark:border-[#6C6BCF]'>
+          <ol className='w-full relative border-l border-[#E6EAFA] dark:border-[#6C6BCF]'>
             {rewards.map(({ id, name, block, amount }, index) => (
               <li
                 key={`${id}-account-rewards-block`}
-                className={`flex justify-between ${index !== rewards.length - 1 && 'mb-[26px]'}`}
+                className={`w-full flex justify-between ${
+                  index !== rewards.length - 1 && 'mb-[26px]'
+                }`}
               >
-                <div className=''>
+                <div className='w-full flex-1 flex-grow'>
                   <div
                     className={`absolute w-3 h-3 -left-1.5 rounded-full ${
                       index === 0
@@ -48,7 +54,7 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
                         : 'bg-[#E6EAFA] dark:bg-[#6C6BCF]'
                     }`}
                   ></div>
-                  <div className='ml-4 -mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white '>
+                  <div className='flex-1 flex-grow ml-4 -mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white '>
                     <Link
                       key={`${id}-account-index`}
                       className='hover:text-[#DE67E4]'
@@ -62,14 +68,14 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
                     </Link>
                   </div>
                 </div>
-                <div className='-mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white'>
+                <div className='w-full text-center flex-1 flex-grow -mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white'>
                   {name
                     .split('.')[1]
                     .split(/(?=[A-Z])/)
                     .join(' ')}
                 </div>
-                <div className='-mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white'>
-                  {bigNumberToNumber(amount, 18)} tSSC
+                <div className='w-full text-end flex-1 flex-grow -mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white'>
+                  {bigNumberToNumber(amount)} tSSC
                 </div>
               </li>
             ))}

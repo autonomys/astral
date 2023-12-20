@@ -1,4 +1,4 @@
-import BN from 'bn.js'
+import { ethers } from 'ethers'
 
 export const shortString = (value: string, initialLength = 6, endLength = -4): string =>
   `${value.slice(0, initialLength)}...${value.slice(endLength)}`
@@ -7,20 +7,19 @@ export const generateArrayOfNumbers = (length: number): number[] => {
   return Array.from(Array(length).keys())
 }
 
-export const formatUnits = (value: string, decimals: number): number => {
-  const base = new BN(10).pow(new BN(decimals))
-  const dm = new BN(value).divmod(base)
+export const formatUnits = (value: string): number => {
+  const convertedEthers = ethers.formatEther(value)
 
-  return parseFloat(dm.div.toString() + '.' + dm.mod.toString())
+  return parseFloat(convertedEthers)
 }
 
-export const bigNumberToNumber = (bigNumber: string, decimals: number): number => {
-  const number = Number(formatUnits(bigNumber, decimals))
+export const bigNumberToNumber = (bigNumber: string): number => {
+  const number = Number(formatUnits(bigNumber))
 
   return limitNumberDecimals(number)
 }
 
-export const limitNumberDecimals = (number: number, precision = 2): number => {
+export const limitNumberDecimals = (number: number, precision = 4): number => {
   if (number === 0) {
     return number
   }
@@ -29,7 +28,7 @@ export const limitNumberDecimals = (number: number, precision = 2): number => {
 
   if (!decimals) return Number(integer)
 
-  const decimalsToUse = decimals.slice(0, precision)
+  const decimalsToUse = Number(integer) >= 1 ? decimals.slice(0, 2) : decimals.slice(0, precision)
 
   return Number(integer + '.' + decimalsToUse)
 }
@@ -42,12 +41,17 @@ export const formatSpacePledged = (value: number) => {
   if (value >= TB) {
     return `${Math.round((value * 100) / TB) / 100} TiB`
   } else if (value >= GB) {
-    return `${Math.round((value * 100) / GB) / 100} GB`
+    return `${Math.round((value * 100) / GB) / 100} GiB`
   } else {
-    return `${Math.round((value * 100) / MB) / 100} MB`
+    return `${Math.round((value * 100) / MB) / 100} MiB`
   }
 }
 
 export const numberWithCommas = (value: number) => {
-  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const parts = value.toString().split('.')
+  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  const decimalPart = parts[1] || ''
+  const formattedNumber = decimalPart ? integerPart + '.' + decimalPart : integerPart
+
+  return formattedNumber
 }

@@ -15,9 +15,9 @@ type Props = {
 const AccountBalancePieChart: FC<Props> = ({ account }) => {
   const { isDark } = useTheme()
   const otherNumber = Number(account.total) - Number(account.free) - Number(account.reserved)
-  const transferable = account.free ? bigNumberToNumber(account.free, 18) : 0
-  const staking = account.reserved ? bigNumberToNumber(account.reserved, 18) : 0
-  const other = otherNumber ? bigNumberToNumber(otherNumber.toString(), 18) : 0
+  const transferable = account.free ? bigNumberToNumber(account.free) : 0
+  const staking = account.reserved ? bigNumberToNumber(account.reserved) : 0
+  const other = otherNumber ? bigNumberToNumber(otherNumber.toString()) : 0
 
   const data = [
     {

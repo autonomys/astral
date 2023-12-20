@@ -39,11 +39,11 @@ const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Minimun Stake'>
-              {bigNumberToNumber(operator.minimumNominatorStake, 18)} tSSC
+              {bigNumberToNumber(operator.minimumNominatorStake)} tSSC
             </StyledListItem>
             <StyledListItem title='Nominator Tax'>{operator.nominationTax} %</StyledListItem>
             <StyledListItem title='Current Stake'>
-              {bigNumberToNumber(operator.currentTotalStake, 18)} tSSC
+              {bigNumberToNumber(operator.currentTotalStake)} tSSC
             </StyledListItem>
             <StyledListItem title='Shares'>{numberWithCommas(operator.totalShares)}</StyledListItem>
             <StyledListItem title='Status'>{operator.status}</StyledListItem>

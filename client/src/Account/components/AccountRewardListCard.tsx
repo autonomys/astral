@@ -25,7 +25,7 @@ const AccountRewardListCard: FC<Props> = ({ reward }) => {
     { name: 'Block Hash', value: shortString(reward.block?.hash || '') },
     { name: 'Type', value: reward.name.split('.')[1] },
     { name: 'Time', value: dayjs(reward.timestamp).fromNow(true) },
-    { name: 'Amount', value: bigNumberToNumber(reward.amount || 0, 18) },
+    { name: 'Amount', value: bigNumberToNumber(reward.amount || 0) },
   ]
   return (
     <MobileCard

@@ -54,7 +54,7 @@ const NominatorRewardsListTable: FC<Props> = ({ accounts, page }) => {
       title: 'Nominator rewards',
       cells: accounts.map(({ operator, id }) => (
         <div key={`${id}-reward-block`}>
-          {operator ? `${numberWithCommas(bigNumberToNumber(operator, 18))} tSSC` : 0}
+          {operator ? `${numberWithCommas(bigNumberToNumber(operator))} tSSC` : 0}
         </div>
       )),
     },

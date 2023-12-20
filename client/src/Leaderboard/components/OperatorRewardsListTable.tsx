@@ -52,7 +52,7 @@ const OperatorRewardsListTable: FC<Props> = ({ operators, page }) => {
       title: 'Operator rewards',
       cells: operators.map(({ amount, id }) => (
         <div key={`${id}-reward-block`}>
-          {amount ? `${numberWithCommas(bigNumberToNumber(amount, 18))} tSSC` : 0}
+          {amount ? `${numberWithCommas(bigNumberToNumber(amount))} tSSC` : 0}
         </div>
       )),
     },

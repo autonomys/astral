@@ -28,6 +28,7 @@
     "copy-to-clipboard": "^3.3.3",
     "dayjs": "^1.11.6",
     "eslint": "^8.0.1",
+    "ethers": "^6.9.0",
     "formik": "^2.2.9",
     "graphql": "^16.6.0",
     "lottie-react": "^2.3.1",
