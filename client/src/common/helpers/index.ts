@@ -1,4 +1,4 @@
-import { ethers } from 'ethers'
+import { formatEther } from 'ethers'
 
 export const shortString = (value: string, initialLength = 6, endLength = -4): string =>
   `${value.slice(0, initialLength)}...${value.slice(endLength)}`
@@ -8,7 +8,7 @@ export const generateArrayOfNumbers = (length: number): number[] => {
 }
 
 export const formatUnits = (value: string): number => {
-  const convertedEthers = ethers.formatEther(value)
+  const convertedEthers = formatEther(value)
 
   return parseFloat(convertedEthers)
 }

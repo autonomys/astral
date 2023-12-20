@@ -24,8 +24,8 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
   const navigate = useNavigate()
 
   return (
-    <div className='flex flex-col p-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
-      <div className='w-full flex flex-col gap-6 py-4 pl-4'>
+    <div className='flex flex-col px-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+      <div className='w-full flex flex-col gap-6 pl-4'>
         <div className='w-full flex justify-between'>
           <div className='flex-1 flex-grow text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
             Block Number
@@ -93,7 +93,7 @@ const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
               ),
             )
           }
-          className='w-full bg-[#F3FBFF] rounded-[20px] py-4 mt-5 dark:bg-[#ffffff1a] dark:text-white'
+          className='w-full bg-[#F3FBFF] rounded-[20px] py-4 mt-4 dark:bg-[#ffffff1a] dark:text-white'
         >
           See All Rewards
         </button>
