@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Operator } from 'gql/graphql'
 import toast from 'react-hot-toast'
+import SubspaceIcon from 'common/icons/subspaceIcon.png'
 
 // common
 import { Table, Column } from 'common/components'
@@ -163,9 +164,9 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
         <div key={`${operator.id}-operator-created`}>
           <button
             onClick={() => handleNominate(operator)}
-            className='flex items-center justify-center w-full h-full px-4 py-2 text-sm font-medium text-white bg-[#DE67E4] rounded-md hover:bg-[#D64FC5]'
+            className='flex items-center justify-center text-sm font-medium text-white'
           >
-            Nominate
+            <img src={SubspaceIcon} alt='icon' className='h-12 w-12' />
           </button>
         </div>
       )),
