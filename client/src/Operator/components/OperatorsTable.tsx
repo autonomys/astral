@@ -72,7 +72,7 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       })
     }
 
-    const amountInWei = ethers.parseUnits(amount.toString(), 'wei')
+    const amountInWei = ethers.parseUnits(amount.toString(), 'ether')
 
     try {
       const hash = await api.tx.domains
