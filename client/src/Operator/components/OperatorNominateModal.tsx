@@ -14,7 +14,7 @@ const OperatorNominateModal: FC<Props> = ({ isOpen, onClose, children }) => {
     <div
       onClick={onClose}
       className={`fixed inset-0 flex justify-center items-center transition-colors ${
-        isOpen ? 'visible bg-black/20' : 'invisible'
+        isOpen ? 'visible bg-black/20 z-20' : 'invisible'
       }`}
     >
       <div

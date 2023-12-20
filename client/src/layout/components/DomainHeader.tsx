@@ -19,8 +19,6 @@ const DomainHeader: FC = () => {
   const { setSelectedChain, selectedChain, setSelectedDomain, selectedAccount, connectWallet } =
     useDomains()
 
-  console.log('🚀 ~ file: DomainHeader.tsx:19 ~ selectedAccount:', selectedAccount)
-
   const handleDomainSelected = (domain: string) => {
     if (domain === 'evm') {
       setSelectedDomain(domain)
