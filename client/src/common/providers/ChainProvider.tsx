@@ -55,7 +55,7 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   })
 
   const disconnectWallet = useCallback(
-    () => (event) => {
+    (event) => {
       event.preventDefault()
       setInjectedExtension(undefined)
       setSelectedAccount(undefined)
