@@ -28,15 +28,13 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [operator, setSelectedOperator] = useState<Operator>()
   const [amount, setAmount] = useState(0)
-  const [errorMessage, setErrorMessage] = useState('')
-
   const { selectedChain, selectedDomain, api, selectedAccount, injectedExtension } = useDomains()
 
   const chain = selectedChain.urls.page
 
   const handleNominate = async (operator) => {
     if (!api || !selectedAccount || !injectedExtension) {
-      toast.error('no api, no connected or no address', {
+      toast.error('No wallet connected or no address available', {
         position: 'bottom-center',
       })
       return
@@ -50,8 +48,9 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (!api || !selectedAccount || !injectedExtension || !operator) {
-      setErrorMessage('No wallet connected or no address available')
-      return
+      return toast.error('No wallet connected or no address available', {
+        position: 'bottom-center',
+      })
     }
 
     const result = await (await api.query.system.account(selectedAccount.address)).toJSON()
@@ -65,16 +64,12 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
     )
 
     if (!isNominator && amount < nominatorMinStake) {
-      setErrorMessage('Amount is less than minimum stake')
-      return
+      return toast.error('Amount is less than minimum stake', {
+        position: 'bottom-center',
+      })
     }
-    setErrorMessage('')
-
-    const block = await api.rpc.chain.getBlock()
-    console.log('🚀 ~ file: OperatorsTable.tsx:72 ~ handleSubmit ~ block:', block)
 
     const amountInWei = ethers.parseUnits(amount.toString(), 'wei')
-    console.log('🚀 ~ file: OperatorsTable.tsx:77 ~ handleSubmit ~ amountInWei:', amountInWei)
 
     try {
       const hash = await api.tx.domains
@@ -87,10 +82,9 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
         position: 'bottom-center',
       })
 
-      console.log('🚀 ~ file: OperatorsTable.tsx:78 ~ handleSubmit ~ hash:', hash)
+      setIsOpen(false)
     } catch (err) {
-      console.log(err)
-      toast.error('Something went wrong', {
+      toast.error(`Something went wrong ${err}`, {
         position: 'bottom-center',
       })
     }
@@ -227,9 +221,6 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
                     placeholder='Amount'
                     onChange={(e) => setAmount(Number(e.target.value))}
                   />
-                  <div>
-                    {errorMessage && <p className='text-sm text-red-400'>{errorMessage}</p>}
-                  </div>
                 </div>
                 <button type='submit' className='btn btn-primary mt-2'>
                   Submit

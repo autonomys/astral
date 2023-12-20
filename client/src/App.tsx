@@ -1,4 +1,6 @@
+import { Fragment, ReactNode, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation, HashRouter } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
 
 // common
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -37,7 +39,6 @@ import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
 import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import DomainLayout from 'layout/components/DomainLayout'
-import { Fragment, ReactNode, useEffect } from 'react'
 
 const createDomainRoutes = () => {
   return (
@@ -143,6 +144,7 @@ const App = () => {
           <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
         </Routes>
       </UpdateSelectedChainByPath>
+      <Toaster />
     </HashRouter>
   )
 }
