@@ -1,7 +1,8 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Operator } from 'gql/graphql'
+import toast from 'react-hot-toast'
 
 // common
 import { Table, Column } from 'common/components'
@@ -13,6 +14,8 @@ import OperatorsListCard from 'Operator/components/OperatorsListCard'
 import { Link } from 'react-router-dom'
 import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
+import OperatorNominateModal from './OperatorNominateModal'
+import { ethers } from 'ethers'
 
 dayjs.extend(relativeTime)
 
@@ -22,10 +25,76 @@ interface Props {
 
 const OperatorsTable: FC<Props> = ({ operators }) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const [isOpen, setIsOpen] = useState(false)
+  const [operator, setSelectedOperator] = useState<Operator>()
+  const [amount, setAmount] = useState(0)
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const { selectedChain, selectedDomain } = useDomains()
+  const { selectedChain, selectedDomain, api, selectedAccount, injectedExtension } = useDomains()
 
   const chain = selectedChain.urls.page
+
+  const handleNominate = async (operator) => {
+    if (!api || !selectedAccount || !injectedExtension) {
+      toast.error('no api, no connected or no address', {
+        position: 'bottom-center',
+      })
+      return
+    }
+
+    setSelectedOperator(operator)
+    setAmount(bigNumberToNumber(operator.minimumNominatorStake))
+    setIsOpen(true)
+  }
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    if (!api || !selectedAccount || !injectedExtension || !operator) {
+      setErrorMessage('No wallet connected or no address available')
+      return
+    }
+
+    const result = await (await api.query.system.account(selectedAccount.address)).toJSON()
+    console.log('🚀 ~ file: OperatorsTable.tsx:57 ~ handleSubmit ~ result:', result)
+
+    const nominatorMinStake = bigNumberToNumber(operator.minimumNominatorStake)
+    // const accountBalance = bigNumberToNumber(result?.data?.free)
+
+    const isNominator = operator?.nominators?.find(
+      (nominator) => nominator.id === selectedAccount?.address,
+    )
+
+    if (!isNominator && amount < nominatorMinStake) {
+      setErrorMessage('Amount is less than minimum stake')
+      return
+    }
+    setErrorMessage('')
+
+    const block = await api.rpc.chain.getBlock()
+    console.log('🚀 ~ file: OperatorsTable.tsx:72 ~ handleSubmit ~ block:', block)
+
+    const amountInWei = ethers.parseUnits(amount.toString(), 'wei')
+    console.log('🚀 ~ file: OperatorsTable.tsx:77 ~ handleSubmit ~ amountInWei:', amountInWei)
+
+    try {
+      const hash = await api.tx.domains
+        .nominateOperator(operator.id, amountInWei)
+        .signAndSend(selectedAccount.address, {
+          signer: injectedExtension.signer,
+        })
+
+      toast.success(`Tx sent ${hash}`, {
+        position: 'bottom-center',
+      })
+
+      console.log('🚀 ~ file: OperatorsTable.tsx:78 ~ handleSubmit ~ hash:', hash)
+    } catch (err) {
+      console.log(err)
+      toast.error('Something went wrong', {
+        position: 'bottom-center',
+      })
+    }
+  }
 
   // methods
   const generateColumns = (operators: Operator[]): Column[] => [
@@ -92,6 +161,19 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
       title: 'Status',
       cells: operators.map(({ status, id }) => <div key={`${id}-operator-status`}>{status}</div>),
     },
+    {
+      title: 'Nominate',
+      cells: operators.map((operator) => (
+        <div key={`${operator.id}-operator-created`}>
+          <button
+            onClick={() => handleNominate(operator)}
+            className='flex items-center justify-center w-full h-full px-4 py-2 text-sm font-medium text-white bg-[#DE67E4] rounded-md hover:bg-[#D64FC5]'
+          >
+            Nominate
+          </button>
+        </div>
+      )),
+    },
   ]
 
   // constants
@@ -108,6 +190,55 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
           id='operators-list'
         />
       </div>
+      <OperatorNominateModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <div className='text-center w-80'>
+          <div className='w-full p-10 mx-auto my-4'>
+            <h3 className='font-medium text-[#241235] text-base break-all dark:text-white'>
+              Nominate Operator
+            </h3>
+
+            <div className='w-full mt-4 flex flex-col gap-6'>
+              <div className='flex justify-between'>
+                <div className='flex flex-col justify-between gap-2 text-start'>
+                  <div className='text-[#241235] text-sm  dark:text-white'>Operator </div>
+                  <div className='text-[#857EC2] text-sm  dark:text-white/75'>{operator?.id}</div>
+                </div>
+                <div className='flex flex-col justify-between gap-2 text-start'>
+                  <div className='text-[#241235] text-sm  dark:text-white'>Domain </div>
+                  <div className='text-[#857EC2] text-sm  dark:text-white/75'>
+                    {operator?.currentDomainId === 0 ? 'Subspace' : 'Nova'}
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex justify-between text-start'>
+                <div className='text-[#857EC2] text-xs  dark:text-white/75'>Min Amount</div>
+                <div className='text-[#857EC2] text-xs  dark:text-white/75'>{`${bigNumberToNumber(
+                  operator ? operator.minimumNominatorStake : 0,
+                )} tSSC`}</div>
+              </div>
+
+              <form onSubmit={(event) => handleSubmit(event)}>
+                <div className='flex flex-col gap-4'>
+                  <input
+                    value={amount}
+                    type='number'
+                    className='form-control'
+                    placeholder='Amount'
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                  />
+                  <div>
+                    {errorMessage && <p className='text-sm text-red-400'>{errorMessage}</p>}
+                  </div>
+                </div>
+                <button type='submit' className='btn btn-primary mt-2'>
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </OperatorNominateModal>
     </div>
   ) : (
     <div className='w-full'>

@@ -1,8 +1,9 @@
 import { FC, useEffect, useState } from 'react'
-import Datepicker, { IOptions } from 'tailwind-datepicker-react'
+import Datepicker from 'tailwind-datepicker-react'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { CalendarIcon } from '@heroicons/react/24/outline'
+import { IOptions } from 'tailwind-datepicker-react/types/Options'
 
 dayjs.extend(utc)
 
@@ -17,6 +18,12 @@ const defaultOptions = {
     background: 'bg-white dark:bg-[#1E254E] dark:text-white',
     disabledText: 'text-gray-500/75 dark:text-gray-400/75',
     input: 'py-3 w-full rounded-[20px] bg-white dark:bg-[#1E254E] dark:text-white',
+    todayBtn: '',
+    clearBtn: '',
+    icons: '',
+    text: '',
+    inputIcon: '',
+    selected: '',
   },
 }
 
@@ -30,7 +37,7 @@ const BasicDatepicker: FC<Props> = ({ onChange, value, minDate }) => {
 
   useEffect(() => {
     if (minDate) {
-      setOptions({ ...defaultOptions, minDate: new Date(minDate), startDate: new Date(minDate) })
+      setOptions({ ...defaultOptions, minDate: new Date(minDate), maxDate: new Date(minDate) })
     }
   }, [minDate])
 
