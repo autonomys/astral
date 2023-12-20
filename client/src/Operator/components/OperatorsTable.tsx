@@ -166,7 +166,7 @@ const OperatorsTable: FC<Props> = ({ operators }) => {
             onClick={() => handleNominate(operator)}
             className='flex items-center justify-center text-sm font-medium text-white'
           >
-            <img src={SubspaceIcon} alt='icon' className='h-12 w-12' />
+            <img src={SubspaceIcon} alt='icon' className='h-10 w-10' />
           </button>
         </div>
       )),
