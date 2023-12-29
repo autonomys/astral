@@ -10,7 +10,7 @@ type Props = {
 type ButtonStates = 'idle' | 'loading' | 'error'
 
 const textByState: Record<ButtonStates, string> = {
-  idle: 'Download Full Data',
+  idle: 'Download full leaderboard',
   loading: 'Loading...',
   error: 'Error',
 }
