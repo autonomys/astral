@@ -1,66 +1,94 @@
-import { useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useApolloClient, useQuery } from '@apollo/client'
+import { useCallback, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 
 // common
 import { Pagination, Spinner } from 'common/components'
-import { PAGE_SIZE } from 'common/constants'
-import useDomains from 'common/hooks/useDomains'
 import ExportButton from 'common/components/ExportButton'
 import NotAllowed from 'common/components/NotAllowed'
+import { PAGE_SIZE } from 'common/constants'
+import useDomains from 'common/hooks/useDomains'
 
 // reward
-import VoteBlockRewardTable from './VoteBlockRewardTable'
 import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
+import LazyExportButton from '../../common/components/LazyExportButton'
+import VoteBlockRewardTable from './VoteBlockRewardTable'
 
 const VoteBlockRewardList = () => {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const [currentPage, setCurrentPage] = useState( 0 )
+  const [lastCursor, setLastCursor] = useState<string | undefined>( undefined )
   const { selectedChain } = useDomains()
+  const apolloClient = useApolloClient()
 
-  const { data, error, loading } = useQuery(QUERY_REWARDS_LIST, {
+  const { data, error, loading } = useQuery( QUERY_REWARDS_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
     pollInterval: 6000,
-  })
+  } )
 
-  useErrorHandler(error)
+  useErrorHandler( error )
 
-  if (loading) {
+  const extractAccountRewardsConnection = ( data ) => data.accountRewardsConnection.edges.map(
+    ( accountRewards ) => accountRewards.node )
+
+  const fullDataDownloader = useCallback( async () => {
+    const entries: unknown[] = []
+
+    let hasNextPage = true
+    while ( hasNextPage ) {
+      const { data } = await apolloClient.query( {
+        query: QUERY_REWARDS_LIST,
+        variables: { first: 20 * PAGE_SIZE, after: entries.length ? entries.length.toString() : undefined },
+      } )
+
+      const accounts = extractAccountRewardsConnection( data )
+
+      entries.push( ...accounts )
+
+      hasNextPage = entries.length < data.accountRewardsConnection.totalCount
+    }
+
+
+
+    return entries
+  }, [apolloClient] )
+
+  if ( loading ) {
     return <Spinner />
   }
 
-  if (selectedChain.title !== 'Gemini 3g' || selectedChain.isDomain) {
+  if ( selectedChain.title !== 'Gemini 3g' || selectedChain.isDomain ) {
     return <NotAllowed />
   }
 
-  const accountRewardsConnection = data.accountRewardsConnection.edges.map(
-    (accountRewards) => accountRewards.node,
-  )
+
+
+  const accountRewardsConnection = extractAccountRewardsConnection( data )
+
   const totalCount = data.accountRewardsConnection.totalCount
   // const totalLabel = numberWithCommas(Number(totalCount))
 
   const pageInfo = data.accountRewardsConnection.pageInfo
 
   const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
+    setCurrentPage( ( prev ) => prev + 1 )
+    setLastCursor( pageInfo.endCursor )
   }
 
   const handlePreviousPage = () => {
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
+    setCurrentPage( ( prev ) => prev - 1 )
+    setLastCursor( pageInfo.endCursor )
   }
 
-  const onChange = (page: number) => {
-    setCurrentPage(Number(page))
+  const onChange = ( page: number ) => {
+    setCurrentPage( Number( page ) )
 
-    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
+    const newCount = page > 0 ? PAGE_SIZE * Number( page + 1 ) : PAGE_SIZE
     const endCursor = newCount - PAGE_SIZE
 
-    if (endCursor === 0 || endCursor < 0) {
-      return setLastCursor(undefined)
+    if ( endCursor === 0 || endCursor < 0 ) {
+      return setLastCursor( undefined )
     }
-    setLastCursor(endCursor.toString())
+    setLastCursor( endCursor.toString() )
   }
 
   return (
@@ -79,6 +107,9 @@ const VoteBlockRewardList = () => {
             hasPreviousPage={pageInfo.hasPreviousPage}
             onChange={onChange}
           />
+        </div>
+        <div className='w-full flex mt-2 justify-center md:justify-end'>
+          <LazyExportButton query={fullDataDownloader} filename='account-list' />
         </div>
       </div>
     </div>

@@ -1,5 +1,7 @@
 export const PAGE_SIZE = 10
 
+export const MAX_DOWNLOADER_BATCH_SIZE = 100
+
 export type SearchType = {
   id: number
   name: string

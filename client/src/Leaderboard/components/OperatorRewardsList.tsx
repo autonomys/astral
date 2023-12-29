@@ -1,22 +1,24 @@
-import React, { useState } from 'react'
+import { useApolloClient, useQuery } from '@apollo/client'
+import React, { useCallback, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
-import { useQuery } from '@apollo/client'
 
 // common
 import { Pagination, Spinner } from 'common/components'
 import ExportButton from 'common/components/ExportButton'
-import { PAGE_SIZE } from 'common/constants'
 import NotAllowed from 'common/components/NotAllowed'
+import { MAX_DOWNLOADER_BATCH_SIZE, PAGE_SIZE } from 'common/constants'
 import useDomains from 'common/hooks/useDomains'
 
 // leaderboard
 import { QUERY_OPERATORS_REWARDS_LIST } from 'Leaderboard/querys'
+import LazyExportButton from '../../common/components/LazyExportButton'
 import OperatorRewardsListTable from './OperatorRewardsListTable'
 
 const OperatorRewardsList = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const { selectedChain } = useDomains()
+  const apolloClient = useApolloClient()
 
   const { data, error, loading } = useQuery(QUERY_OPERATORS_REWARDS_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor },
@@ -25,7 +27,34 @@ const OperatorRewardsList = () => {
 
   useErrorHandler(error)
 
-  if (loading) {
+  const extractOperatorRewardsConnection = data => data.operatorRewardsConnection.edges.map(
+    ( accountRewards ) => accountRewards.node,
+  )
+
+  const fullDataDownloader = useCallback( async () => {
+    const entries: unknown[] = []
+
+    let hasNextPage = true
+    while ( hasNextPage ) {
+      const { data } = await apolloClient.query( {
+        query: QUERY_OPERATORS_REWARDS_LIST,
+        variables: { first: MAX_DOWNLOADER_BATCH_SIZE, after: entries.length ? entries.length.toString() : undefined },
+      } )
+
+      const accounts = extractOperatorRewardsConnection( data )
+
+      entries.push( ...accounts )
+
+      hasNextPage = entries.length < data.operatorRewardsConnection.totalCount
+    }
+
+
+
+    return entries
+  }, [apolloClient] )
+
+
+  if ( loading ) {
     return <Spinner />
   }
 
@@ -33,9 +62,7 @@ const OperatorRewardsList = () => {
     return <NotAllowed />
   }
 
-  const operatorRewardsConnection = data.operatorRewardsConnection.edges.map(
-    (accountRewards) => accountRewards.node,
-  )
+  const operatorRewardsConnection = extractOperatorRewardsConnection( data )
   const totalCount = data.operatorRewardsConnection.totalCount
 
   const pageInfo = data.operatorRewardsConnection.pageInfo
@@ -78,6 +105,9 @@ const OperatorRewardsList = () => {
             hasPreviousPage={pageInfo.hasPreviousPage}
             onChange={onChange}
           />
+        </div>
+        <div className='w-full flex mt-2 justify-center md:justify-end'>
+          <LazyExportButton query={fullDataDownloader} filename='account-list' />
         </div>
       </div>
     </div>
