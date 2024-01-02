@@ -1,6 +1,7 @@
 import { FC, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { useQuery } from '@apollo/client'
+import { OperatorOrderByInput } from 'gql/graphql'
 
 // common
 import { Pagination, SearchBar, Spinner } from 'common/components'
@@ -11,13 +12,15 @@ import ExportButton from 'common/components/ExportButton'
 // operator
 import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import OperatorsTable from 'Operator/components/OperatorsTable'
+import OperatorsOrderByDropdown from './OperatorsOrderByDropdown'
 
 const OperatorsList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const [orderBy, setOrderBy] = useState<OperatorOrderByInput[]>([OperatorOrderByInput.IdAsc])
 
   const { data, error, loading } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor },
+    variables: { first: PAGE_SIZE, after: lastCursor, orderBy: orderBy },
     pollInterval: 6000,
   })
 
@@ -62,6 +65,10 @@ const OperatorsList: FC = () => {
       </div>
       <div className='w-full flex justify-between mt-5'>
         <div className='text-[#282929] text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
+        <div className='flex gap-4 items-center'>
+          <div className='text-[#282929] text-base font-medium dark:text-white'>Order By</div>
+          <OperatorsOrderByDropdown setOrderBy={setOrderBy} orderBy={orderBy} />
+        </div>
       </div>
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <OperatorsTable operators={operatorsConnection} />
