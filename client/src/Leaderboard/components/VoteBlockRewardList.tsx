@@ -97,6 +97,9 @@ const VoteBlockRewardList = () => {
         <VoteBlockRewardTable accounts={accountRewardsConnection} page={currentPage} />
         <div className='w-full flex justify-between gap-2'>
           <ExportButton data={accountRewardsConnection} filename='account-list' />
+          <div className='hidden md:flex w-full'>
+            <LazyExportButton query={fullDataDownloader} filename='account-list' />
+          </div>
           <Pagination
             nextPage={handleNextPage}
             previousPage={handlePreviousPage}
@@ -108,7 +111,7 @@ const VoteBlockRewardList = () => {
             onChange={onChange}
           />
         </div>
-        <div className='w-full flex mt-2 justify-center md:justify-end'>
+        <div className='w-full flex md:hidden mt-2 justify-center md:justify-end'>
           <LazyExportButton query={fullDataDownloader} filename='account-list' />
         </div>
       </div>
