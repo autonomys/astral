@@ -2,6 +2,11 @@ export const PAGE_SIZE = 10
 
 export const MAX_DOWNLOADER_BATCH_SIZE = 100
 
+export type Pagination = {
+  pageSize: number
+  pageIndex: number
+}
+
 export type SearchType = {
   id: number
   name: string

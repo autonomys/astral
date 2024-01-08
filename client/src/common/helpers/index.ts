@@ -7,19 +7,31 @@ export const generateArrayOfNumbers = (length: number): number[] => {
   return Array.from(Array(length).keys())
 }
 
-export const formatUnits = (value: string): number => {
+export const formatUnitsToNumber = (value: string): number => {
   const convertedEthers = formatEther(value)
 
   return parseFloat(convertedEthers)
 }
 
-export const bigNumberToNumber = (bigNumber: string): number => {
-  const number = Number(formatUnits(bigNumber))
+export const formatUnits = (value: string): string => {
+  const convertedEthers = formatEther(value)
 
-  return limitNumberDecimals(number)
+  return convertedEthers
 }
 
-export const limitNumberDecimals = (number: number, precision = 4): number => {
+export const bigNumberToNumber = (bigNumber: string, precision = 4): number => {
+  const number = formatUnits(bigNumber)
+
+  return limitNumberDecimals(number, precision)
+}
+
+export const bigNumberToString = (bigNumber: string, precision = 4): string => {
+  const number = formatUnits(bigNumber)
+
+  return limitStringDecimals(number, precision)
+}
+
+export const limitNumberDecimals = (number: number | string, precision = 4): number => {
   if (number === 0) {
     return number
   }
@@ -31,6 +43,20 @@ export const limitNumberDecimals = (number: number, precision = 4): number => {
   const decimalsToUse = Number(integer) >= 1 ? decimals.slice(0, 2) : decimals.slice(0, precision)
 
   return Number(integer + '.' + decimalsToUse)
+}
+
+export const limitStringDecimals = (number: string, precision = 4): string => {
+  if (number === '0') {
+    return number
+  }
+
+  const [integer, decimals] = String(number).split('.')
+
+  if (!decimals) return integer.toString()
+
+  const decimalsToUse = Number(integer) >= 1 ? decimals.slice(0, 2) : decimals.slice(0, precision)
+
+  return integer + '.' + decimalsToUse
 }
 
 export const formatSpacePledged = (value: number) => {
@@ -48,6 +74,10 @@ export const formatSpacePledged = (value: number) => {
 }
 
 export const numberWithCommas = (value: number) => {
+  if (value < 1000) {
+    return value.toString()
+  }
+
   const parts = value.toString().split('.')
   const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
   const decimalPart = parts[1] || ''

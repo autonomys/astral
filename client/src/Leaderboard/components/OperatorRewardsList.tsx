@@ -27,34 +27,33 @@ const OperatorRewardsList = () => {
 
   useErrorHandler(error)
 
-  const extractOperatorRewardsConnection = data => data.operatorRewardsConnection.edges.map(
-    ( accountRewards ) => accountRewards.node,
-  )
+  const extractOperatorRewardsConnection = (data) =>
+    data.operatorRewardsConnection.edges.map((accountRewards) => accountRewards.node)
 
-  const fullDataDownloader = useCallback( async () => {
+  const fullDataDownloader = useCallback(async () => {
     const entries: unknown[] = []
 
     let hasNextPage = true
-    while ( hasNextPage ) {
-      const { data } = await apolloClient.query( {
+    while (hasNextPage) {
+      const { data } = await apolloClient.query({
         query: QUERY_OPERATORS_REWARDS_LIST,
-        variables: { first: MAX_DOWNLOADER_BATCH_SIZE, after: entries.length ? entries.length.toString() : undefined },
-      } )
+        variables: {
+          first: MAX_DOWNLOADER_BATCH_SIZE,
+          after: entries.length ? entries.length.toString() : undefined,
+        },
+      })
 
-      const accounts = extractOperatorRewardsConnection( data )
+      const accounts = extractOperatorRewardsConnection(data)
 
-      entries.push( ...accounts )
+      entries.push(...accounts)
 
       hasNextPage = entries.length < data.operatorRewardsConnection.totalCount
     }
 
-
-
     return entries
-  }, [apolloClient] )
+  }, [apolloClient])
 
-
-  if ( loading ) {
+  if (loading) {
     return <Spinner />
   }
 
@@ -62,7 +61,7 @@ const OperatorRewardsList = () => {
     return <NotAllowed />
   }
 
-  const operatorRewardsConnection = extractOperatorRewardsConnection( data )
+  const operatorRewardsConnection = extractOperatorRewardsConnection(data)
   const totalCount = data.operatorRewardsConnection.totalCount
 
   const pageInfo = data.operatorRewardsConnection.pageInfo

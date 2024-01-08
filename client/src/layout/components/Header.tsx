@@ -1,16 +1,16 @@
+import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { FC, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { MoonIcon, Bars3BottomRightIcon, SunIcon } from '@heroicons/react/24/outline'
 
 // layout
 import { HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 // common
-import { INTERNAL_ROUTES } from 'common/routes'
-import { LogoIcon } from 'common/icons'
-import useMediaQuery from 'common/hooks/useMediaQuery'
-import { useTheme } from 'common/providers/ThemeProvider'
 import useDomains from 'common/hooks/useDomains'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import { LogoIcon } from 'common/icons'
+import { useTheme } from 'common/providers/ThemeProvider'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 const Header: FC = () => {
   const { isDark, toggleTheme } = useTheme()

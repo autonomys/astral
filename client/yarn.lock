@@ -4379,6 +4379,25 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
+"@tanstack/match-sorter-utils@^8.11.3":
+  version "8.11.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/match-sorter-utils/-/match-sorter-utils-8.11.3.tgz#904bf4916bac1338751491de0685151126e5c29b"
+  integrity sha512-2XVYTN6fLFyeIPywDL/HGKIQce3V6oUch1FHweGwxruPKEXip6Z9qg+zWZwNE26WG6CktqJh6NqTq90a42jeEw==
+  dependencies:
+    remove-accents "0.4.2"
+
+"@tanstack/react-table@^8.11.3":
+  version "8.11.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.11.3.tgz#0af6f7d074a319920f5149eba0a64a5b71125368"
+  integrity sha512-Gwwm7po1MaObBguw69L+UiACkaj+eOtThQEArj/3fmUwMPiWaJcXvNG2X5Te5z2hg0HMx8h0T0Q7p5YmQlTUfw==
+  dependencies:
+    "@tanstack/table-core" "8.11.3"
+
+"@tanstack/table-core@8.11.3":
+  version "8.11.3"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.11.3.tgz#89b2914b2bc6f1aaffd31582e268a52273c49179"
+  integrity sha512-nkcFIL696wTf1QMvhGR7dEg60OIRwEZm1OqFTYYDTRc4JOWspgrsJO3IennsOJ7ptumHWLDjV8e5BjPkZcSZAQ==
+
 "@testing-library/dom@^8.3.0", "@testing-library/dom@^8.5.0":
   version "8.20.0"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.20.0.tgz#914aa862cef0f5e89b98cc48e3445c4c921010f6"
@@ -14950,6 +14969,11 @@ remedial@^1.0.7:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/remedial/-/remedial-1.0.8.tgz#a5e4fd52a0e4956adbaf62da63a5a46a78c578a0"
   integrity sha512-/62tYiOe6DzS5BqVsNpH/nkGlX45C/Sp6V+NtiN6JQNS1Viay7cWkazmRkrQrdFj2eshDe96SIQNIoMxqhzBOg==
+
+remove-accents@0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/remove-accents/-/remove-accents-0.4.2.tgz#0a43d3aaae1e80db919e07ae254b285d9e1c7bb5"
+  integrity sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==
 
 remove-trailing-separator@^1.0.1:
   version "1.1.0"

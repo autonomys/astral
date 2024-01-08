@@ -1,11 +1,11 @@
-import { FC, useCallback, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { useParams } from 'react-router-dom'
 import { RewardEvent } from 'gql/graphql'
+import { FC, useCallback, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 // common
-import { formatUnits } from 'common/helpers'
+import { formatUnitsToNumber } from 'common/helpers'
 
 dayjs.extend(relativeTime)
 
@@ -45,7 +45,7 @@ const defaultRewards = {
     IIIh: {
       earnings: '0',
       percentage: '0',
-    }
+    },
   },
   totalMainnet: {
     earnings: '0',
@@ -62,7 +62,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
     const file = await fetch('/data/rewards.csv')
     const data = await file.text()
     const rows = data.split('\n').slice(1)
-    const rewards = rows.map(row => {
+    const rewards = rows.map((row) => {
       const columns = row.split(',')
       return {
         address: {
@@ -89,7 +89,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
               percentage: columns[9],
             },
           },
-        }
+        },
       }
     })
 
@@ -102,7 +102,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
       if (isNaN(amount)) return acc
       return acc + amount
     }, 0)
-    const rewardsGeminiIIIf = rowsGeminiIIIf.map(row => {
+    const rewardsGeminiIIIf = rowsGeminiIIIf.map((row) => {
       const columns = row.split(',')
       return {
         address: {
@@ -113,49 +113,57 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
             ...defaultRewards.geminiIII,
             IIIf: {
               earnings: columns[1],
-              percentage: (parseFloat(columns[1]) / totalRewardsGeminiIIIf * 100).toFixed(2),
+              percentage: ((parseFloat(columns[1]) / totalRewardsGeminiIIIf) * 100).toFixed(2),
             },
-          }
-        }
+          },
+        },
       }
     })
-    const userRewards = rewards.filter(reward => reward.address.subspaceFormat === accountId || reward.address.polkadotFormat === accountId)
-    const userRewardsGeminiIIIf = rewardsGeminiIIIf.filter(reward => reward.address.subspaceFormat === accountId)
+    const userRewards = rewards.filter(
+      (reward) =>
+        reward.address.subspaceFormat === accountId || reward.address.polkadotFormat === accountId,
+    )
+    const userRewardsGeminiIIIf = rewardsGeminiIIIf.filter(
+      (reward) => reward.address.subspaceFormat === accountId,
+    )
 
-    if (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0) setRewards({ ...userRewards[0].rewards, ...userRewardsGeminiIIIf[0].rewards })
+    if (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0)
+      setRewards({ ...userRewards[0].rewards, ...userRewardsGeminiIIIf[0].rewards })
   }, [accountId])
 
   const rewardsPhase = [
     {
       name: 'aries',
-      label: 'Aries'
+      label: 'Aries',
     },
     {
       name: 'geminiI',
-      label: 'Gemini I'
+      label: 'Gemini I',
     },
     {
       name: 'geminiII.stage1',
-      label: 'Gemini II Stage 1'
+      label: 'Gemini II Stage 1',
     },
     {
       name: 'geminiII.stage2',
-      label: 'Gemini II Stage 2'
+      label: 'Gemini II Stage 2',
     },
     {
       name: 'gemini3f',
-      label: 'Gemini 3f'
+      label: 'Gemini 3f',
     },
     {
       name: 'gemini3g',
-      label: 'Gemini 3g'
+      label: 'Gemini 3g',
     },
     {
       name: 'gemini3h',
-      label: 'Gemini 3h'
-    }]
+      label: 'Gemini 3h',
+    },
+  ]
 
-    const rewardsByPhase = useCallback((phase: string) => {
+  const rewardsByPhase = useCallback(
+    (phase: string) => {
       switch (phase) {
         case 'aries':
           return parseFloat(previousRewards.aries.blocksWon).toFixed(2)
@@ -168,24 +176,40 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
         case 'gemini3f':
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
-          return formatUnits(rewards.reduce((acc, reward) => reward.amount ? acc + BigInt(reward.amount) : acc, BigInt(0)).toString()).toFixed(2)
+          return formatUnitsToNumber(
+            rewards
+              .reduce(
+                (acc, reward) => (reward.amount ? acc + BigInt(reward.amount) : acc),
+                BigInt(0),
+              )
+              .toString(),
+          ).toFixed(2)
         case 'gemini3h':
           return 'n/a'
         default:
           return '0.00'
       }
-    }, [previousRewards, rewards])
+    },
+    [previousRewards, rewards],
+  )
 
-    const rewardsPercentageByPhase = useCallback((phase: string) => {
+  const rewardsPercentageByPhase = useCallback(
+    (phase: string) => {
       switch (phase) {
         case 'geminiI':
           return parseFloat(previousRewards.geminiI.percentage.replace('%', '')).toFixed(2) + '%'
         case 'geminiII.stage1':
-          return parseFloat(previousRewards.geminiII.stage1.percentage.replace('%', '')).toFixed(2) + '%'
+          return (
+            parseFloat(previousRewards.geminiII.stage1.percentage.replace('%', '')).toFixed(2) + '%'
+          )
         case 'geminiII.stage2':
-          return parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
+          return (
+            parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
+          )
         case 'gemini3f':
-          return parseFloat(previousRewards.geminiIII.IIIf.percentage.replace('%', '')).toFixed(2) + '%'
+          return (
+            parseFloat(previousRewards.geminiIII.IIIf.percentage.replace('%', '')).toFixed(2) + '%'
+          )
         case 'gemini3g':
         case 'gemini3h':
         case 'mainnet':
@@ -194,12 +218,14 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
         default:
           return '0.00%'
       }
-    }, [previousRewards])
+    },
+    [previousRewards],
+  )
 
-    useEffect(() => {
-      handleSearch()
-    }, [handleSearch])
-    
+  useEffect(() => {
+    handleSearch()
+  }, [handleSearch])
+
   return (
     <div className='flex flex-col p-4 w-full border border-gray-200 dark:border-none rounded-[20px] bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
       <div className='w-full flex flex-col gap-6 py-4 pl-4'>
@@ -232,7 +258,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
                     }`}
                   ></div>
                   <div className='ml-4 -mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white '>
-                  {phase.label}
+                    {phase.label}
                   </div>
                 </div>
                 <div className='-mt-1 text-[13px] font-normal text-[#282929 ] dark:text-white'>
@@ -244,17 +270,17 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
               </li>
             ))}
             <li
-                key={'total-account-rewards-block'}
-                className={'grid grid-cols-3 gap-14 xl:gap-32 mb-[26px]'}
-              >
-                <div className=''></div>
-                <div className='-mt-1 text-[13px] font-bold text-[#4B5563 ] dark:text-white'>
-                  Total Mainnet %
-                </div>
-                <div className='-mt-1 text-[13px] font-bold text-[#4B5563 ] dark:text-white'>
-                  {rewardsPercentageByPhase('mainnet')}
-                </div>
-              </li>
+              key={'total-account-rewards-block'}
+              className={'grid grid-cols-3 gap-14 xl:gap-32 mb-[26px]'}
+            >
+              <div className=''></div>
+              <div className='-mt-1 text-[13px] font-bold text-[#4B5563 ] dark:text-white'>
+                Total Mainnet %
+              </div>
+              <div className='-mt-1 text-[13px] font-bold text-[#4B5563 ] dark:text-white'>
+                {rewardsPercentageByPhase('mainnet')}
+              </div>
+            </li>
           </ol>
         </div>
       </div>
