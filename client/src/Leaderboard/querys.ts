@@ -1,9 +1,13 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_REWARDS_LIST = gql`
-  query AccountsConnectionRewards($first: Int!, $after: String) {
+  query AccountsConnectionRewards(
+    $first: Int!
+    $after: String
+    $orderBy: [AccountRewardsOrderByInput!]!
+  ) {
     accountRewardsConnection(
-      orderBy: amount_DESC
+      orderBy: $orderBy
       first: $first
       after: $after
       where: { vote_gt: "0", vote_isNull: false, OR: { block_gt: "0", block_isNull: false } }
@@ -65,8 +69,12 @@ export const QUERY_NOMINATORS_REWARDS_LIST = gql`
 `
 
 export const QUERY_OPERATORS_REWARDS_LIST = gql`
-  query OperatorsConnectionRewards($first: Int!, $after: String) {
-    operatorRewardsConnection(orderBy: amount_DESC, first: $first, after: $after) {
+  query OperatorsConnectionRewards(
+    $first: Int!
+    $after: String
+    $orderBy: [OperatorRewardsOrderByInput!]!
+  ) {
+    operatorRewardsConnection(orderBy: $orderBy, first: $first, after: $after) {
       edges {
         cursor
         node {

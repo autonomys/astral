@@ -1,3 +1,5 @@
+import { ApolloClient, DocumentNode } from '@apollo/client'
+import { MAX_DOWNLOADER_BATCH_SIZE } from 'common/constants'
 import { formatEther } from 'ethers'
 
 export const shortString = (value: string, initialLength = 6, endLength = -4): string =>
@@ -84,4 +86,41 @@ export const numberWithCommas = (value: number) => {
   const formattedNumber = decimalPart ? integerPart + '.' + decimalPart : integerPart
 
   return formattedNumber
+}
+
+export const downloadFullData = async (apolloClient: ApolloClient<object>, query: DocumentNode) => {
+  const entries: unknown[] = []
+
+  let hasNextPage = true
+  while (hasNextPage) {
+    const { data } = await apolloClient.query({
+      query,
+      variables: {
+        first: MAX_DOWNLOADER_BATCH_SIZE,
+        after: entries.length ? entries.length.toString() : undefined,
+      },
+    })
+
+    const accounts = extractNestedData(data, 'accountRewardsConnection.edges')
+
+    entries.push(...accounts)
+
+    hasNextPage = entries.length < data.accountRewardsConnection.totalCount
+  }
+
+  return entries
+}
+
+export const extractNestedData = (data, path) => {
+  const keys = path.split('.')
+  let result = data
+
+  for (const key of keys) {
+    if (result[key] === undefined) {
+      return []
+    }
+    result = result[key]
+  }
+
+  return Array.isArray(result) ? result.map((item) => item.node) : []
 }

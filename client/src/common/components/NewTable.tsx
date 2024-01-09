@@ -7,6 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { Pagination } from 'common/constants'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import { ReactNode, useMemo } from 'react'
 import DesktopTable from './DesktopTable'
@@ -20,11 +21,9 @@ interface ReactTableProps<T extends object> {
   onSortingChange?: OnChangeFn<SortingState>
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount: number
-  pagination: {
-    pageSize: number
-    pageIndex: number
-  }
+  pagination: Pagination
   mobileComponent: ReactNode
+  fullDataDownloader?: () => Promise<unknown[]>
 }
 
 const NewTable = <T extends object>({
@@ -37,6 +36,7 @@ const NewTable = <T extends object>({
   onSortingChange,
   onPaginationChange,
   mobileComponent,
+  fullDataDownloader,
 }: ReactTableProps<T>) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const memoizedData = useMemo(() => data, [data])
@@ -64,7 +64,9 @@ const NewTable = <T extends object>({
         <div className='inline-block min-w-full py-4 sm:px-6 lg:px-8'>
           <div className='overflow-hidden p-2'>
             {isDesktop ? <DesktopTable table={table} /> : mobileComponent}
-            {showNavigation && <TableNavigation table={table} />}
+            {showNavigation && (
+              <TableNavigation table={table} data={data} fullDataDownloader={fullDataDownloader} />
+            )}
           </div>
         </div>
       </div>
