@@ -11,14 +11,13 @@ import { Spinner } from 'common/components'
 import NewTable from 'common/components/NewTable'
 import NotAllowed from 'common/components/NotAllowed'
 import { PAGE_SIZE } from 'common/constants'
+import { bigNumberToNumber, downloadFullData, numberWithCommas, shortString } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 // reward
 import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
-
-import { bigNumberToNumber, downloadFullData, numberWithCommas, shortString } from 'common/helpers'
-import { INTERNAL_ROUTES } from 'common/routes'
 import VoteBlockRewardListCard from './VoteBlockRewardListCard'
 
 const VoteBlockRewardList = () => {
