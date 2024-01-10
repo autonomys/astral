@@ -1,60 +1,54 @@
 import { useApolloClient, useQuery } from '@apollo/client'
-import React, { useCallback, useState } from 'react'
+import { OperatorRewards } from 'gql/graphql'
+import React, { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { Link } from 'react-router-dom'
 
 // common
-import { Pagination, Spinner } from 'common/components'
-import ExportButton from 'common/components/ExportButton'
+import { Spinner } from 'common/components'
+import NewTable from 'common/components/NewTable'
 import NotAllowed from 'common/components/NotAllowed'
-import { MAX_DOWNLOADER_BATCH_SIZE, PAGE_SIZE } from 'common/constants'
+import { PAGE_SIZE } from 'common/constants'
+import { bigNumberToNumber, downloadFullData, numberWithCommas, shortString } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 // leaderboard
+import { SortingState } from '@tanstack/react-table'
 import { QUERY_OPERATORS_REWARDS_LIST } from 'Leaderboard/querys'
-import LazyExportButton from '../../common/components/LazyExportButton'
-import OperatorRewardsListTable from './OperatorRewardsListTable'
+import OperatorRewardsListCard from './OperatorRewardsListCard'
 
 const OperatorRewardsList = () => {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'amount', desc: true }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+
   const { selectedChain } = useDomains()
   const apolloClient = useApolloClient()
 
+  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+
+  const cols = useMemo(
+    () => createColumns(selectedChain, pagination, isLargeLaptop),
+    [selectedChain, pagination, isLargeLaptop],
+  )
+
   const { data, error, loading } = useQuery(QUERY_OPERATORS_REWARDS_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor },
+    variables: getQueryVariables(sorting, pagination),
     pollInterval: 6000,
   })
 
   useErrorHandler(error)
 
-  const extractOperatorRewardsConnection = data => data.operatorRewardsConnection.edges.map(
-    ( accountRewards ) => accountRewards.node,
+  const fullDataDownloader = useCallback(
+    () => downloadFullData(apolloClient, QUERY_OPERATORS_REWARDS_LIST),
+    [apolloClient],
   )
 
-  const fullDataDownloader = useCallback( async () => {
-    const entries: unknown[] = []
-
-    let hasNextPage = true
-    while ( hasNextPage ) {
-      const { data } = await apolloClient.query( {
-        query: QUERY_OPERATORS_REWARDS_LIST,
-        variables: { first: MAX_DOWNLOADER_BATCH_SIZE, after: entries.length ? entries.length.toString() : undefined },
-      } )
-
-      const accounts = extractOperatorRewardsConnection( data )
-
-      entries.push( ...accounts )
-
-      hasNextPage = entries.length < data.operatorRewardsConnection.totalCount
-    }
-
-
-
-    return entries
-  }, [apolloClient] )
-
-
-  if ( loading ) {
+  if (loading) {
     return <Spinner />
   }
 
@@ -62,58 +56,109 @@ const OperatorRewardsList = () => {
     return <NotAllowed />
   }
 
-  const operatorRewardsConnection = extractOperatorRewardsConnection( data )
   const totalCount = data.operatorRewardsConnection.totalCount
+  const pageCount = Math.floor(totalCount / pagination.pageSize)
 
-  const pageInfo = data.operatorRewardsConnection.pageInfo
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
-  }
-
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
-  }
-
-  const onChange = (page: number) => {
-    setCurrentPage(Number(page))
-
-    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
-    const endCursor = newCount - PAGE_SIZE
-
-    if (endCursor === 0 || endCursor < 0) {
-      return setLastCursor(undefined)
-    }
-    setLastCursor(endCursor.toString())
-  }
+  const operatorRewardsConnection = data.operatorRewardsConnection.edges.map(
+    (operatorRewards) => operatorRewards.node,
+  )
 
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full flex flex-col sm:mt-0'>
-        <OperatorRewardsListTable operators={operatorRewardsConnection} page={currentPage} />
-        <div className='w-full flex justify-between gap-2'>
-          <ExportButton data={operatorRewardsConnection} filename='account-list' />
-          <div className='hidden md:flex w-full'>
-            <LazyExportButton query={fullDataDownloader} filename='account-list' />
-          </div>
-          <Pagination
-            nextPage={handleNextPage}
-            previousPage={handlePreviousPage}
-            currentPage={currentPage}
-            pageSize={PAGE_SIZE}
-            totalCount={totalCount}
-            hasNextPage={pageInfo.hasNextPage}
-            hasPreviousPage={pageInfo.hasPreviousPage}
-            onChange={onChange}
+        <div className='rounded my-6'>
+          <NewTable
+            data={operatorRewardsConnection}
+            columns={cols}
+            showNavigation={true}
+            sorting={sorting}
+            onSortingChange={setSorting}
+            pagination={pagination}
+            pageCount={pageCount}
+            onPaginationChange={setPagination}
+            fullDataDownloader={fullDataDownloader}
+            mobileComponent={<MobileComponent operatorRewards={operatorRewardsConnection} />}
           />
-        </div>
-        <div className='w-full flex md:hidden mt-2 justify-center md:justify-end'>
-          <LazyExportButton query={fullDataDownloader} filename='account-list' />
         </div>
       </div>
     </div>
   )
 }
 export default OperatorRewardsList
+
+const createColumns = (selectedChain, pagination, isLargeLaptop) => {
+  const newCount = PAGE_SIZE * Number(pagination.pageIndex + 1) - 10
+
+  return [
+    {
+      header: 'Rank',
+      enableSorting: false,
+      cell: ({ row }) => {
+        return <div>{pagination.pageIndex + 1 > 1 ? newCount + row.index + 1 : row.index + 1}</div>
+      },
+    },
+    {
+      accessorKey: 'id',
+      header: 'Operator',
+      enableSorting: true,
+      cell: ({ row }) => {
+        return (
+          <div className='flex row items-center gap-3'>
+            <Link
+              data-testid={`account-link-${row.index}`}
+              to={INTERNAL_ROUTES.operators.id.page(
+                selectedChain.urls.page,
+                'consensus',
+                row.original.id,
+              )}
+              className='hover:text-[#DE67E4]'
+            >
+              <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
+            </Link>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'amount',
+      header: 'Operator rewards',
+      enableSorting: true,
+      cell: ({ row }) => (
+        <div>
+          {row.original.amount
+            ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} tSSC`
+            : 0}
+        </div>
+      ),
+    },
+  ]
+}
+
+const getQueryVariables = (sorting, pagination) => {
+  return {
+    first: pagination.pageSize,
+    after:
+      pagination.pageIndex > 0
+        ? (pagination.pageIndex * pagination.pageSize).toString()
+        : undefined,
+    orderBy: sorting.length
+      ? sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',')
+      : 'amount_DESC',
+  }
+}
+
+type MobileComponentProps = {
+  operatorRewards: OperatorRewards[]
+}
+
+const MobileComponent: FC<MobileComponentProps> = ({ operatorRewards }) => (
+  <div className='w-full'>
+    {operatorRewards.map((operator, index) => (
+      <OperatorRewardsListCard
+        index={index}
+        operator={operator}
+        key={`operator-list-card-${operator.id}`}
+      />
+    ))}
+  </div>
+)

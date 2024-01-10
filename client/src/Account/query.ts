@@ -175,9 +175,14 @@ export const QUERY_LAST_WEEK_REWARDS = gql`
 `
 
 export const QUERY_REWARDS_LIST = gql`
-  query RewardsList($accountId: String!, $first: Int!, $after: String) {
+  query RewardsList(
+    $accountId: String!
+    $first: Int!
+    $after: String
+    $sortBy: [RewardEventOrderByInput!]!
+  ) {
     rewardEventsConnection(
-      orderBy: id_DESC
+      orderBy: $sortBy
       first: $first
       after: $after
       where: { account: { id_eq: $accountId } }

@@ -2,13 +2,13 @@ import { FC, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
-import { DOMAINS } from 'layout/constants'
-import BarsLeftIcon from 'common/icons/BarsLeftIcon'
 import useDomains from 'common/hooks/useDomains'
+import BarsLeftIcon from 'common/icons/BarsLeftIcon'
+import { DOMAINS } from 'layout/constants'
 
 // chains
-import domains from 'layout/config/domains.json'
 import chains from 'layout/config/chains.json'
+import domains from 'layout/config/domains.json'
 
 const DomainHeader: FC = () => {
   const [isActive, setIsActive] = useState(true)

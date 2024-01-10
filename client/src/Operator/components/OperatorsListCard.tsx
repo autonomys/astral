@@ -1,17 +1,16 @@
+import { Operator } from 'gql/graphql'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { Operator } from 'gql/graphql'
 
 // common
 import { MobileCard } from 'common/components'
 import { bigNumberToNumber, numberWithCommas, shortString } from 'common/helpers'
-import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 type Props = {
   operator: Operator
   index: number
-  isDesktop?: boolean
 }
 
 const OperatorsListCard: FC<Props> = ({ operator }) => {
