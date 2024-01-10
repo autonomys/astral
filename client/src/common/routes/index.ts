@@ -86,4 +86,5 @@ export const INTERNAL_ROUTES = {
     nominators: 'nominators',
   },
   notFound: '/404',
+  catchAll: '*',
 }

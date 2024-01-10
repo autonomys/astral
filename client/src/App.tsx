@@ -1,8 +1,8 @@
-import { Routes, Route, Navigate, useLocation, HashRouter } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 // common
-import { INTERNAL_ROUTES } from 'common/routes'
 import useDomains from 'common/hooks/useDomains'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 // block
 import { Block, BlockList } from 'Block/components'
@@ -19,7 +19,7 @@ import SearchResult from 'layout/components/SearchResult'
 import Home from 'Home'
 
 // account
-import { AccountList, Account, AccountRewardList } from 'Account/components'
+import { Account, AccountList, AccountRewardList } from 'Account/components'
 
 // event
 import { Event, EventList } from 'Event/components'
@@ -32,11 +32,11 @@ import Operator from 'Operator/components/Operator'
 import OperatorsList from 'Operator/components/OperatorsList'
 
 // leaderboard
-import LeaderboardLayout from 'layout/components/LeaderboardLayout'
-import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
 import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
+import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
 import DomainLayout from 'layout/components/DomainLayout'
+import LeaderboardLayout from 'layout/components/LeaderboardLayout'
 import { Fragment, ReactNode, useEffect } from 'react'
 
 const createDomainRoutes = () => {
@@ -141,6 +141,7 @@ const App = () => {
           ))}
           <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
           <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
+          <Route element={<NotFound />} path={INTERNAL_ROUTES.catchAll} />
         </Routes>
       </UpdateSelectedChainByPath>
     </HashRouter>
