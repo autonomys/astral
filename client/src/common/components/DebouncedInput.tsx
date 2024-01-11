@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
-  value: string | number
+  value?: string | number
   onChange: (val: string | number) => void
   debounceTime?: number
 }
@@ -17,7 +17,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300, ...
   // debounce onChange — triggered on every keypress
   useEffect(() => {
     const timeout = setTimeout(() => {
-      onChange(value)
+      value && onChange(value)
     }, debounceTime)
 
     return () => {
