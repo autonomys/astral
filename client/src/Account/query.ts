@@ -249,3 +249,11 @@ export const QUERY_ACCOUNT_EXTRINSICS = gql`
     }
   }
 `
+
+export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
+  query AllRewardForAccountById($accountId: String!) {
+    rewardEvents(limit: 5999, where: { account: { id_eq: $accountId } }) {
+      amount
+    }
+  }
+`
