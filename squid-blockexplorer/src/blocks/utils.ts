@@ -1,25 +1,25 @@
-import config from "../config";
-import * as ss58 from "@subsquid/ss58";
+import { ApiPromise } from "@polkadot/api";
 import { HexSink } from "@subsquid/scale-codec";
-import { xxhash128 } from "@subsquid/util-xxhash";
+import * as ss58 from "@subsquid/ss58";
 import { SubstrateBlock, decodeHex } from "@subsquid/substrate-processor";
 import { toHex } from "@subsquid/util-internal-hex";
-import {
-  Block,
-  Extrinsic,
-  Call,
-  Account,
-  ExtrinsicModuleName,
-  EventModuleName,
-  Operator,
-  Nominator,
-  AccountRewards,
-  OperatorRewards,
-} from "../model";
-import { CallItem, EventItem, Context } from "../processor";
+import { xxhash128 } from "@subsquid/util-xxhash";
 import { randomUUID } from "crypto";
 import { createSystemAccountStorage } from "../balances/storage";
-import { ApiPromise } from "@polkadot/api";
+import config from "../config";
+import {
+  Account,
+  AccountRewards,
+  Block,
+  Call,
+  EventModuleName,
+  Extrinsic,
+  ExtrinsicModuleName,
+  Nominator,
+  Operator,
+  OperatorRewards,
+} from "../model";
+import { CallItem, Context, EventItem } from "../processor";
 
 /**
  * Takes a predicate and a list of items and returns the
@@ -344,12 +344,17 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
     const block = ctx.blocks[ctx.blocks.length - 1];
     let operator = await ctx.store.get(Operator, operatorId.toString());
 
+    const nominators = await api.query.domains.nominators.entries(operatorId);
+    const nominatorsLength = nominators.length;
+
     if (!operator) {
       const operatorInfo = (
         await api.query.domains.operators(operatorId)
       ).toJSON() as any;
 
-      const ownerAccount =  (await api.query.domains.operatorIdOwner(operatorId)).toJSON();
+      const ownerAccount = (
+        await api.query.domains.operatorIdOwner(operatorId)
+      ).toJSON();
       if (operatorInfo) {
         operator = new Operator({
           id: operatorId.toString(),
@@ -360,6 +365,7 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
           totalShares: BigInt(operatorInfo.totalShares),
           currentEpochRewards: operatorInfo.currentEpochRewards,
           currentTotalStake: BigInt(operatorInfo.currentTotalStake),
+          nominatorAmount: nominatorsLength,
           nominationTax: operatorInfo.nominationTax,
           minimumNominatorStake: BigInt(operatorInfo.minimumNominatorStake),
           nextDomainId: operatorInfo.nextDomainId,

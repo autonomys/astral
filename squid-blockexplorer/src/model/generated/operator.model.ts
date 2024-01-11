@@ -44,6 +44,10 @@ export class Operator {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     totalShares!: bigint | undefined | null
 
+    @Index_()
+    @Column_("int4", {nullable: false})
+    nominatorAmount!: number
+
     @OneToMany_(() => Nominator, e => e.operator)
     nominators!: Nominator[]
 
