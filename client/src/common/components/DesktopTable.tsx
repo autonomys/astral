@@ -1,4 +1,4 @@
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { Table, flexRender } from '@tanstack/react-table'
 
 interface TableProps<T extends object> {
@@ -32,7 +32,12 @@ const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
                     <span className='sr-only'>Up</span>
                     <ChevronDownIcon className='h-5 w-5' aria-hidden='true' />
                   </span>
-                ) : null}
+                ) : (
+                  <span className='cursor-pointer relative inline-flex items-center rounded-full text-sm font-medium text-[#DE67E4]  focus:z-20 mr-[14px] dark:text-white  dark:border-none'>
+                    <span className='sr-only'>Up</span>
+                    <ChevronUpDownIcon className='h-5 w-5' aria-hidden='true' />
+                  </span>
+                )}
               </div>
             </th>
           ))}
