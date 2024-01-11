@@ -31,7 +31,7 @@ export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
           reserved
           total
           updatedAt
-          extrinsics(limit: 300) {
+          extrinsics(limit: 300, orderBy: block_height_DESC) {
             id
             block {
               height
@@ -75,7 +75,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
         }
       }
     }
-    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
+    rewardEvents(limit: 10, orderBy: block_height_DESC, where: { account: { id_eq: $accountId } }) {
       amount
       id
       indexInBlock
@@ -112,7 +112,7 @@ export const QUERY_ACCOUNT_BY_ID_EVM = gql`
         }
       }
     }
-    rewardEvents(limit: 10, where: { account: { id_eq: $accountId } }) {
+    rewardEvents(limit: 10, orderBy: block_height_DESC, where: { account: { id_eq: $accountId } }) {
       amount
       id
       indexInBlock
@@ -157,8 +157,8 @@ export const QUERY_LAST_WEEK_REWARDS = gql`
   query LatestRewardsWeek($accountId: String!, $gte: DateTime!) {
     rewardEvents(
       limit: 500
-      orderBy: id_DESC
-      where: { timestamp_gte: $gte, account: { id_eq: $accountId } }
+      orderBy: block_height_DESC
+      where: { timestamp_gt: $gte, account: { id_eq: $accountId } }
     ) {
       amount
       id
