@@ -1,7 +1,9 @@
+import { useQuery } from '@apollo/client'
+import { QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID } from 'Account/query'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { RewardEvent } from 'gql/graphql'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 // common
@@ -11,7 +13,6 @@ dayjs.extend(relativeTime)
 
 interface AccountPreviousRewardsProps {
   isDesktop: boolean
-  rewards: RewardEvent[]
 }
 
 const defaultRewards = {
@@ -53,10 +54,17 @@ const defaultRewards = {
   },
 }
 
-const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) => {
+const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const [previousRewards, setRewards] = useState(defaultRewards)
 
   const { accountId } = useParams<{ accountId?: string }>()
+  const { data: rewardsData } = useQuery(QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID, {
+    variables: { accountId },
+  })
+  const rewards: RewardEvent[] = useMemo(
+    () => (rewardsData && rewardsData.rewardEvents) || [],
+    [rewardsData],
+  )
 
   const handleSearch = useCallback(async () => {
     const file = await fetch('/data/rewards.csv')
@@ -177,12 +185,14 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = ({ rewards }) =>
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
           return formatUnitsToNumber(
-            rewards
-              .reduce(
-                (acc, reward) => (reward.amount ? acc + BigInt(reward.amount) : acc),
-                BigInt(0),
-              )
-              .toString(),
+            rewards && rewards.length > 0
+              ? rewards
+                  .reduce(
+                    (acc, reward) => (reward.amount ? acc + BigInt(reward.amount) : acc),
+                    BigInt(0),
+                  )
+                  .toString()
+              : '0',
           ).toFixed(2)
         case 'gemini3h':
           return 'n/a'
