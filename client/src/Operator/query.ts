@@ -8,6 +8,7 @@ export const QUERY_OPERATOR_CONNECTION_LIST = gql`
           id
           operatorOwner
           currentDomainId
+          orderingId
           currentEpochRewards
           currentTotalStake
           minimumNominatorStake

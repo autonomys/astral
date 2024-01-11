@@ -86,7 +86,7 @@ export default OperatorsList
 const createColumns = (selectedDomain, chain) => {
   return [
     {
-      accessorKey: 'id',
+      accessorKey: 'orderingId',
       header: 'Id',
       enableSorting: true,
       cell: ({ row }) => (
@@ -95,7 +95,7 @@ const createColumns = (selectedDomain, chain) => {
           className='hover:text-[#DE67E4]'
           to={INTERNAL_ROUTES.operators.id.page(chain, selectedDomain, row.original.id)}
         >
-          <div>{row.original.id}</div>
+          <div>{row.original.orderingId}</div>
         </Link>
       ),
     },
@@ -165,7 +165,7 @@ const getQueryVariables = (sorting, pagination) => {
       pagination.pageIndex > 0
         ? (pagination.pageIndex * pagination.pageSize).toString()
         : undefined,
-    orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+    orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'orderingId_ASC',
   }
 }
 
