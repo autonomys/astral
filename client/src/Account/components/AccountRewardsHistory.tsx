@@ -1,6 +1,6 @@
-import { FC } from 'react'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { FC } from 'react'
 
 // gql
 import { RewardEvent } from 'gql/graphql'
@@ -9,7 +9,11 @@ import { RewardEvent } from 'gql/graphql'
 import { Tab } from 'common/components'
 
 // account
-import { AccountLatestRewards, AccountPreviousRewards, AccountRewardsTabs } from 'Account/components'
+import {
+  AccountLatestRewards,
+  AccountPreviousRewards,
+  AccountRewardsTabs,
+} from 'Account/components'
 
 dayjs.extend(relativeTime)
 
@@ -29,7 +33,7 @@ const AccountRewardsHistory: FC<Props> = ({ isDesktop = false, rewards }) => {
         </Tab>
         <Tab title='Prev. Testnets Rewards'>
           <div className='lg:h-[500px]'>
-            <AccountPreviousRewards rewards={rewards} isDesktop={isDesktop} />
+            <AccountPreviousRewards isDesktop={isDesktop} />
           </div>
         </Tab>
       </AccountRewardsTabs>
