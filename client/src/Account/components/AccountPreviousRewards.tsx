@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID } from 'Account/query'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { RewardEvent } from 'gql/graphql'
+import { AccountRewards } from 'gql/graphql'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
@@ -61,8 +61,11 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const { data: rewardsData } = useQuery(QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID, {
     variables: { accountId },
   })
-  const rewards: RewardEvent[] = useMemo(
-    () => (rewardsData && rewardsData.rewardEvents) || [],
+  const rewards: AccountRewards = useMemo(
+    () =>
+      rewardsData && rewardsData.accountRewards && rewardsData.accountRewards.length === 1
+        ? rewardsData.accountRewards[0]
+        : [],
     [rewardsData],
   )
 
@@ -185,13 +188,8 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
           return formatUnitsToNumber(
-            rewards && rewards.length > 0
-              ? rewards
-                  .reduce(
-                    (acc, reward) => (reward.amount ? acc + BigInt(reward.amount) : acc),
-                    BigInt(0),
-                  )
-                  .toString()
+            rewards && rewards.amount && rewards.operator
+              ? (BigInt(rewards.amount) - BigInt(rewards.operator)).toString()
               : '0',
           ).toFixed(2)
         case 'gemini3h':
