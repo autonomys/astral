@@ -188,9 +188,7 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
           return formatUnitsToNumber(
-            rewards && rewards.amount && rewards.operator
-              ? (BigInt(rewards.amount) - BigInt(rewards.operator)).toString()
-              : '0',
+            (BigInt(rewards.vote ?? 0) - BigInt(rewards.block ?? 0)).toString(),
           ).toFixed(2)
         case 'gemini3h':
           return 'n/a'
