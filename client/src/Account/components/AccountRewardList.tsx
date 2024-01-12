@@ -17,7 +17,7 @@ import { numberWithCommas } from 'common/helpers'
 import { formatAddress } from 'common/helpers/formatAddress'
 
 const AccountRewardList: FC = () => {
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: true }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
@@ -34,7 +34,7 @@ const AccountRewardList: FC = () => {
       accountId: accountId,
       sortBy: sorting.length
         ? sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',')
-        : 'id_DESC',
+        : 'block_height_DESC',
     },
   })
 
