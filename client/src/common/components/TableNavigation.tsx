@@ -6,6 +6,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from '@heroicons/react/20/solid'
+import DebouncedInput from './DebouncedInput'
 import ExportButton from './ExportButton'
 import LazyExportButton from './LazyExportButton'
 
@@ -103,16 +104,17 @@ const TableNavigation = <T extends object>({ table, data, fullDataDownloader }: 
               {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
             </strong>
           </span>
-          <span className='flex items-center gap-1  '>
+          <span className='flex items-center gap-1'>
             <div className='dark:text-white'>| Go to page:</div>
-            <input
+            <DebouncedInput
               type='number'
               defaultValue={table.getState().pagination.pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0
+              onChange={(value) => {
+                const page = value ? Number(value) - 1 : 0
                 table.setPageIndex(page)
               }}
-              className='w-16 rounded-3xl pl-6 border-none'
+              debounceTime={400}
+              className='w-20 rounded-3xl border-none'
             />
           </span>
           <select
