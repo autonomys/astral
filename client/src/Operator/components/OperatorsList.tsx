@@ -6,7 +6,8 @@ import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
 
 // common
-import { SearchBar, Spinner } from 'common/components'
+import { Spinner } from 'common/components'
+import DebouncedInput from 'common/components/DebouncedInput'
 import NewTable from 'common/components/NewTable'
 import { PAGE_SIZE } from 'common/constants'
 import { bigNumberToNumber, downloadFullData, numberWithCommas, shortString } from 'common/helpers'
@@ -18,6 +19,7 @@ import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import OperatorsListCard from './OperatorsListCard'
 
 const OperatorsList: FC = () => {
+  const [searchOperator, setSearch] = useState<string | undefined>(undefined)
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -31,8 +33,13 @@ const OperatorsList: FC = () => {
 
   const cols = useMemo(() => createColumns(selectedDomain, chain), [selectedDomain, chain])
 
+  const variables = useMemo(
+    () => getQueryVariables(sorting, pagination, searchOperator),
+    [sorting, pagination, searchOperator],
+  )
+
   const { data, error, loading } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
-    variables: getQueryVariables(sorting, pagination),
+    variables: variables,
     pollInterval: 6000,
   })
 
@@ -42,6 +49,11 @@ const OperatorsList: FC = () => {
     () => downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST),
     [apolloClient],
   )
+
+  const handleSearch = (value) => {
+    setSearch(value)
+    setPagination({ ...pagination, pageIndex: 0 })
+  }
 
   if (loading) {
     return <Spinner />
@@ -55,12 +67,19 @@ const OperatorsList: FC = () => {
 
   return (
     <div className='w-full flex flex-col align-middle'>
-      <div className='w-full grid lg:grid-cols-2'>
-        <SearchBar />
+      <div className='flex flex-col gap-2'>
+        <div className='w-full flex justify-between mt-5'>
+          <div className='text-[#282929] text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
+        </div>
+        <DebouncedInput
+          type='text'
+          className='max-w-xl dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-3xl bg-white shadow-lg'
+          placeholder='Search by operator id'
+          onChange={handleSearch}
+          value={searchOperator}
+        />
       </div>
-      <div className='w-full flex justify-between mt-5'>
-        <div className='text-[#282929] text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
-      </div>
+
       <div className='w-full flex flex-col mt-5 sm:mt-0'>
         <div className='rounded my-6'>
           <NewTable
@@ -158,7 +177,7 @@ const createColumns = (selectedDomain, chain) => {
   ]
 }
 
-const getQueryVariables = (sorting, pagination) => {
+const getQueryVariables = (sorting, pagination, searchOperator) => {
   return {
     first: pagination.pageSize,
     after:
@@ -166,6 +185,8 @@ const getQueryVariables = (sorting, pagination) => {
         ? (pagination.pageIndex * pagination.pageSize).toString()
         : undefined,
     orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+    // eslint-disable-next-line camelcase
+    where: searchOperator ? { id_eq: searchOperator } : {},
   }
 }
 

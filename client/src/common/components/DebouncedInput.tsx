@@ -2,30 +2,30 @@ import { useEffect, useState } from 'react'
 
 interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   value?: string | number
-  onChange: (val: string | number) => void
+  onChange: (val) => void
   debounceTime?: number
 }
 
 const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300, ...props }: Props) => {
-  const [value, setValue] = useState(initialValue)
+  const [inputValue, setInputValue] = useState(initialValue)
 
   // setValue if any initialValue changes
   useEffect(() => {
-    setValue(initialValue)
+    setInputValue(initialValue)
   }, [initialValue])
 
   // debounce onChange — triggered on every keypress
   useEffect(() => {
     const timeout = setTimeout(() => {
-      value && onChange(value)
+      onChange(inputValue)
     }, debounceTime)
 
     return () => {
       clearTimeout(timeout)
     }
-  }, [value, onChange, debounceTime])
+  }, [inputValue, onChange, debounceTime])
 
-  return <input {...props} value={value} onChange={(e) => setValue(e.target.value)} />
+  return <input {...props} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
 }
 
 export default DebouncedInput
