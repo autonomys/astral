@@ -1,3 +1,4 @@
+import { Fragment, ReactNode, useEffect } from 'react'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 // common
@@ -12,7 +13,10 @@ import { Extrinsic, ExtrinsicList } from 'Extrinsic/components'
 
 // layout
 import { NotFound } from 'layout/components'
+import DomainLayout from 'layout/components/DomainLayout'
+import LeaderboardLayout from 'layout/components/LeaderboardLayout'
 import NotResultsFound from 'layout/components/NotResultsFound'
+import OperatorLayout from 'layout/components/OperatorLayout'
 import SearchResult from 'layout/components/SearchResult'
 
 // home
@@ -28,16 +32,14 @@ import { Event, EventList } from 'Event/components'
 import { Log, LogList } from 'Log/components'
 
 // operator
-import Operator from 'Operator/components/Operator'
+import OperatorNominate from 'Operator/components/OperatorNominate'
+import OperatorStake from 'Operator/components/OperatorStake'
 import OperatorsList from 'Operator/components/OperatorsList'
 
 // leaderboard
 import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
-import DomainLayout from 'layout/components/DomainLayout'
-import LeaderboardLayout from 'layout/components/LeaderboardLayout'
-import { Fragment, ReactNode, useEffect } from 'react'
 
 const createDomainRoutes = () => {
   return (
@@ -63,10 +65,6 @@ const createDomainRoutes = () => {
       <Route path={INTERNAL_ROUTES.logs.list}>
         <Route index element={<LogList />} />
         <Route path={INTERNAL_ROUTES.logs.id.path} element={<Log />} />
-      </Route>
-      <Route path={INTERNAL_ROUTES.operators.list}>
-        <Route index element={<OperatorsList />} />
-        <Route path={INTERNAL_ROUTES.operators.id.path} element={<Operator />} />
       </Route>
       <Route path={INTERNAL_ROUTES.search.result.path}>
         <Route index element={<SearchResult />} />
@@ -136,6 +134,12 @@ const App = () => {
                 <Route path='farmers' element={<VoteBlockRewardList />} />
                 <Route path='nominators' element={<NominatorRewardsList />} />
                 <Route path='operators' element={<OperatorRewardsList />} />
+              </Route>
+              <Route path={`/${network}/operators`} element={<OperatorLayout />}>
+                <Route index element={<OperatorsList />} />
+                <Route path='list' element={<OperatorsList />} />
+                <Route path='stake' element={<OperatorStake />} />
+                <Route path='nominate' element={<OperatorNominate />} />
               </Route>
             </Fragment>
           ))}

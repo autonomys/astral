@@ -1,5 +1,5 @@
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 // layout
@@ -12,7 +12,7 @@ import { LogoIcon } from 'common/icons'
 import { useTheme } from 'common/providers/ThemeProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
 
-const Header: FC = () => {
+const OperatorHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const pathName = location.pathname
@@ -22,24 +22,16 @@ const Header: FC = () => {
 
   const menuList = [
     {
-      title: 'Accounts',
-      link: `${INTERNAL_ROUTES.accounts.list}`,
+      title: 'Operators',
+      link: `/${selectedChain.urls.page}/${selectedDomain}`,
     },
     {
-      title: 'Blocks',
-      link: `${INTERNAL_ROUTES.blocks.list}`,
+      title: 'Stake my Operator',
+      link: `${INTERNAL_ROUTES.operators.stake}`,
     },
     {
-      title: 'Extrinsics',
-      link: `${INTERNAL_ROUTES.extrinsics.list}`,
-    },
-    {
-      title: 'Events',
-      link: `${INTERNAL_ROUTES.events.list}`,
-    },
-    {
-      title: 'Logs',
-      link: `${INTERNAL_ROUTES.logs.list}`,
+      title: 'Nominate',
+      link: `${INTERNAL_ROUTES.operators.nominate}`,
     },
   ]
 
@@ -57,12 +49,15 @@ const Header: FC = () => {
           </Link>
           <nav className='flex flex-wrap gap-10 items-center text-sm justify-center'>
             {menuList.map((item, index) => {
-              const isCurrentPath = pathName.includes(item.link)
+              const isCurrentPath = pathName.includes(item.link) && index !== 0
+              const isInitialPath =
+                pathName === `/${selectedChain.urls.page}/leaderboard` && index === 0
+
               return (
                 <Link
                   key={index}
                   className={
-                    isCurrentPath
+                    isCurrentPath || isInitialPath
                       ? 'leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
                       : 'leading-4 text-[13px] font-semibold text-[#282929] dark:text-white bg-none'
                   }
@@ -102,7 +97,7 @@ const Header: FC = () => {
       ) : (
         <div className='flex flex-row justify-between px-5 items-center'>
           <Link
-            to={`/${selectedChain.urls.page}/${selectedDomain}`}
+            to={INTERNAL_ROUTES.home}
             className='flex title-font font-medium items-center text-gray-900 dark:text-white'
           >
             <LogoIcon fillColor='currentColor' />
@@ -123,4 +118,4 @@ const Header: FC = () => {
   )
 }
 
-export default Header
+export default OperatorHeader

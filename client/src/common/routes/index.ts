@@ -70,7 +70,9 @@ export const INTERNAL_ROUTES = {
       page: (chain: string, domain: string, operatorId: string): string =>
         `/${chain}/${domain}/operators/${operatorId}`,
     },
-    list: 'operators',
+    list: 'list',
+    stake: 'stake',
+    nominate: 'nominate',
   },
   search: {
     result: {
