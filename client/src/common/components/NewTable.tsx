@@ -59,17 +59,11 @@ const NewTable = <T extends object>({
   })
 
   return (
-    <div className='flex flex-col'>
-      <div className='overflow-x-auto sm:-mx-6 lg:-mx-8'>
-        <div className='inline-block min-w-full py-4 sm:px-6 lg:px-8'>
-          <div className='overflow-hidden p-2'>
-            {isDesktop ? <DesktopTable table={table} /> : mobileComponent}
-            {showNavigation && (
-              <TableNavigation table={table} data={data} fullDataDownloader={fullDataDownloader} />
-            )}
-          </div>
-        </div>
-      </div>
+    <div className='w-full flex flex-col'>
+      {isDesktop ? <DesktopTable table={table} /> : mobileComponent}
+      {showNavigation && (
+        <TableNavigation table={table} data={data} fullDataDownloader={fullDataDownloader} />
+      )}
     </div>
   )
 }
