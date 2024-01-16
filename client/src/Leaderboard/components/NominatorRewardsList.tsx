@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { useApolloClient, useQuery } from '@apollo/client'
 import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
@@ -18,9 +19,11 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // leaderboard
 import { QUERY_NOMINATORS_REWARDS_LIST } from 'Leaderboard/querys'
+import DebouncedInput from 'common/components/DebouncedInput'
 import NominatorRewardsListCard from './NominatorRewardsListCard'
 
 const NominatorRewardsList = () => {
+  const [searchAccount, setSearch] = useState<string | undefined>(undefined)
   const [sorting, setSorting] = useState<SortingState>([{ id: 'operator', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -37,8 +40,13 @@ const NominatorRewardsList = () => {
     [selectedChain, pagination, isLargeLaptop],
   )
 
+  const variables = useMemo(
+    () => getQueryVariables(sorting, pagination, searchAccount),
+    [sorting, pagination, searchAccount],
+  )
+
   const { data, error, loading } = useQuery(QUERY_NOMINATORS_REWARDS_LIST, {
-    variables: getQueryVariables(sorting, pagination),
+    variables,
     pollInterval: 6000,
   })
 
@@ -48,6 +56,11 @@ const NominatorRewardsList = () => {
     () => downloadFullData(apolloClient, QUERY_NOMINATORS_REWARDS_LIST),
     [apolloClient],
   )
+
+  const handleSearch = (value) => {
+    setSearch(value)
+    setPagination({ ...pagination, pageIndex: 0 })
+  }
 
   if (loading) {
     return <Spinner />
@@ -67,6 +80,20 @@ const NominatorRewardsList = () => {
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full flex flex-col sm:mt-0'>
+        <div className='w-full flex flex-col gap-4 px-4'>
+          <div className='text-[#282929] text-base font-medium dark:text-white'>
+            Nominators Leaderboard
+          </div>
+          <div className='flex gap-2'>
+            <DebouncedInput
+              type='text'
+              className='max-w-xl dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-3xl bg-white shadow-lg'
+              placeholder='Search by account address'
+              onChange={handleSearch}
+              value={searchAccount}
+            />
+          </div>
+        </div>
         <div className='rounded my-6'>
           <NewTable
             data={accountRewardsConnection}
@@ -135,7 +162,7 @@ const createColumns = (selectedChain, pagination, isLargeLaptop) => {
   ]
 }
 
-const getQueryVariables = (sorting, pagination) => {
+const getQueryVariables = (sorting, pagination, searchAccount) => {
   return {
     first: pagination.pageSize,
     after:
@@ -143,6 +170,7 @@ const getQueryVariables = (sorting, pagination) => {
         ? (pagination.pageIndex * pagination.pageSize).toString()
         : undefined,
     orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'operator_DESC',
+    where: searchAccount ? { id_eq: searchAccount } : { operator_gt: '0', operator_isNull: false },
   }
 }
 

@@ -5,13 +5,9 @@ export const QUERY_REWARDS_LIST = gql`
     $first: Int!
     $after: String
     $orderBy: [AccountRewardsOrderByInput!]!
+    $where: AccountRewardsWhereInput
   ) {
-    accountRewardsConnection(
-      orderBy: $orderBy
-      first: $first
-      after: $after
-      where: { vote_gt: "0", vote_isNull: false, OR: { block_gt: "0", block_isNull: false } }
-    ) {
+    accountRewardsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         cursor
         node {
@@ -39,13 +35,9 @@ export const QUERY_NOMINATORS_REWARDS_LIST = gql`
     $first: Int!
     $after: String
     $orderBy: [AccountRewardsOrderByInput!]!
+    $where: AccountRewardsWhereInput
   ) {
-    accountRewardsConnection(
-      orderBy: $orderBy
-      first: $first
-      after: $after
-      where: { operator_gt: "0", operator_isNull: false }
-    ) {
+    accountRewardsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         cursor
         node {
@@ -73,8 +65,9 @@ export const QUERY_OPERATORS_REWARDS_LIST = gql`
     $first: Int!
     $after: String
     $orderBy: [OperatorRewardsOrderByInput!]!
+    $where: OperatorRewardsWhereInput
   ) {
-    operatorRewardsConnection(orderBy: $orderBy, first: $first, after: $after) {
+    operatorRewardsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         cursor
         node {

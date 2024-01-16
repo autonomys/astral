@@ -1,11 +1,14 @@
+/* eslint-disable camelcase */
 import { useApolloClient, useQuery } from '@apollo/client'
+import { SortingState } from '@tanstack/react-table'
 import { OperatorRewards } from 'gql/graphql'
-import React, { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
 
 // common
 import { Spinner } from 'common/components'
+import DebouncedInput from 'common/components/DebouncedInput'
 import NewTable from 'common/components/NewTable'
 import NotAllowed from 'common/components/NotAllowed'
 import { PAGE_SIZE } from 'common/constants'
@@ -15,11 +18,11 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // leaderboard
-import { SortingState } from '@tanstack/react-table'
 import { QUERY_OPERATORS_REWARDS_LIST } from 'Leaderboard/querys'
 import OperatorRewardsListCard from './OperatorRewardsListCard'
 
 const OperatorRewardsList = () => {
+  const [searchOperator, setSearch] = useState<string | undefined>(undefined)
   const [sorting, setSorting] = useState<SortingState>([{ id: 'amount', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -36,8 +39,13 @@ const OperatorRewardsList = () => {
     [selectedChain, pagination, isLargeLaptop],
   )
 
+  const variables = useMemo(
+    () => getQueryVariables(sorting, pagination, searchOperator),
+    [sorting, pagination, searchOperator],
+  )
+
   const { data, error, loading } = useQuery(QUERY_OPERATORS_REWARDS_LIST, {
-    variables: getQueryVariables(sorting, pagination),
+    variables,
     pollInterval: 6000,
   })
 
@@ -47,6 +55,11 @@ const OperatorRewardsList = () => {
     () => downloadFullData(apolloClient, QUERY_OPERATORS_REWARDS_LIST),
     [apolloClient],
   )
+
+  const handleSearch = (value) => {
+    setSearch(value)
+    setPagination({ ...pagination, pageIndex: 0 })
+  }
 
   if (loading) {
     return <Spinner />
@@ -66,6 +79,20 @@ const OperatorRewardsList = () => {
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full flex flex-col sm:mt-0'>
+        <div className='w-full flex flex-col gap-4 px-4'>
+          <div className='text-[#282929] text-base font-medium dark:text-white'>
+            Operators Leaderboard
+          </div>
+          <div className='flex gap-2'>
+            <DebouncedInput
+              type='text'
+              className='max-w-xl dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] w-full text-sm text-gray-900 rounded-3xl bg-white shadow-lg'
+              placeholder='Search by operator id'
+              onChange={handleSearch}
+              value={searchOperator}
+            />
+          </div>
+        </div>
         <div className='rounded my-6'>
           <NewTable
             data={operatorRewardsConnection}
@@ -134,7 +161,7 @@ const createColumns = (selectedChain, pagination, isLargeLaptop) => {
   ]
 }
 
-const getQueryVariables = (sorting, pagination) => {
+const getQueryVariables = (sorting, pagination, searchOperator) => {
   return {
     first: pagination.pageSize,
     after:
@@ -144,6 +171,7 @@ const getQueryVariables = (sorting, pagination) => {
     orderBy: sorting.length
       ? sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',')
       : 'amount_DESC',
+    where: searchOperator ? { id_eq: searchOperator } : {},
   }
 }
 
