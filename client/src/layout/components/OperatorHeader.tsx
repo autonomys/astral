@@ -25,14 +25,15 @@ const OperatorHeader = () => {
       title: 'Operators',
       link: `/${selectedChain.urls.page}/${selectedDomain}`,
     },
-    {
-      title: 'Stake my Operator',
-      link: `${INTERNAL_ROUTES.operators.stake}`,
-    },
-    {
-      title: 'Nominate',
-      link: `${INTERNAL_ROUTES.operators.nominate}`,
-    },
+    // TODO: remove comment when these pages are added
+    // {
+    //   title: 'Stake my Operator',
+    //   link: `${INTERNAL_ROUTES.operators.stake}`,
+    // },
+    // {
+    //   title: 'Nominate',
+    //   link: `${INTERNAL_ROUTES.operators.nominate}`,
+    // },
   ]
 
   return (
