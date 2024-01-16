@@ -48,7 +48,7 @@ const TableNavigation = <T extends object>({ table, data, fullDataDownloader }: 
           </div>
         </div>
       </div>
-      <div className='hidden sm:flex sm:w-full sm:items-center sm:justify-between '>
+      <div className='hidden sm:flex sm:flex-col lg:flex-row sm:gap-4 sm:w-full sm:items-center sm:justify-between '>
         <div className='hidden sm:flex  sm:flex-1   justify-between gap-2'>
           {data && <ExportButton data={data} filename='account-list' />}
           <div className='flex w-full'>

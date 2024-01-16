@@ -1,8 +1,8 @@
 /* eslint-disable camelcase */
-import { FC, Fragment, useEffect, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckCircleIcon, FunnelIcon } from '@heroicons/react/24/outline'
 import { ExtrinsicWhereInput } from 'gql/graphql'
+import { FC, Fragment, useEffect, useState } from 'react'
 
 // common
 import { EmptyCircleIcon } from 'common/icons'
@@ -54,8 +54,14 @@ const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters }) => {
     setFilters(where)
   }
 
+  const clearFilters = () => {
+    setSelectedPeople([])
+    setWhere({})
+    setFilters({})
+  }
+
   return (
-    <div className='relative '>
+    <div className='relative z-10'>
       <Listbox value={selectedPeople} onChange={handleSelect} multiple>
         <Listbox.Button className='inline-flex w-full justify-center justify-items-end gap-x-1.5 rounded-md px-2 py-1 text-sm font-semibold bg-white dark:bg-[#241235] text-[#DE67E4] dark:text-white shadow-sm'>
           <div className='w-3 h-3'>
@@ -93,12 +99,21 @@ const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters }) => {
                 </Listbox.Option>
               ))}
             </Listbox.Options>
-            <button
-              className='w-20 py-2 bg-white dark:bg-[#1E254E] hover:bg-gray-200 text-gray-800 dark:text-white text-sm font-medium rounded-[20px]'
-              onClick={handleFilter}
-            >
-              Filter
-            </button>
+
+            <div className='flex gap-2'>
+              <button
+                className='w-20 py-2 bg-white dark:bg-[#1E254E] hover:bg-gray-200 text-gray-800 dark:text-white text-sm font-medium rounded-[20px]'
+                onClick={handleFilter}
+              >
+                Filter
+              </button>
+              <button
+                className='w-20 py-2 bg-white dark:bg-[#1E254E] hover:bg-gray-200 text-gray-800 dark:text-white text-sm font-medium rounded-[20px]'
+                onClick={clearFilters}
+              >
+                Clear
+              </button>
+            </div>
           </div>
         </Transition>
       </Listbox>

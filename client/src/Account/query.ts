@@ -223,8 +223,13 @@ export const QUERY_REWARDS_LIST = gql`
 `
 
 export const QUERY_ACCOUNT_EXTRINSICS = gql`
-  query ExtrinsicsByAccountId($first: Int!, $after: String, $where: ExtrinsicWhereInput) {
-    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after, where: $where) {
+  query ExtrinsicsByAccountId(
+    $first: Int!
+    $after: String
+    $where: ExtrinsicWhereInput
+    $orderBy: [ExtrinsicOrderByInput!]!
+  ) {
+    extrinsicsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         node {
           id

@@ -1,8 +1,13 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_OPERATOR_CONNECTION_LIST = gql`
-  query OperatorsConnection($first: Int!, $after: String, $orderBy: [OperatorOrderByInput!]!) {
-    operatorsConnection(orderBy: $orderBy, first: $first, after: $after) {
+  query OperatorsConnection(
+    $first: Int!
+    $after: String
+    $orderBy: [OperatorOrderByInput!]!
+    $where: OperatorWhereInput
+  ) {
+    operatorsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         node {
           id
