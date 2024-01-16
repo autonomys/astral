@@ -11,4 +11,8 @@ export const DOMAINS = [
     name: 'leaderboard',
     title: 'Leaderboard',
   },
+  {
+    name: 'operators',
+    title: 'Operators',
+  },
 ]
