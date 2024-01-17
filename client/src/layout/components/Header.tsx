@@ -44,7 +44,7 @@ const Header: FC = () => {
   ]
 
   return (
-    <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-10">
+    <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-9">
       {isDesktop ? (
         <div className='container mx-auto flex flex-wrap justify-between py-5 md:px-[25px] 2xl:px-0 flex-col md:flex-row items-center'>
           <Link
