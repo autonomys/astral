@@ -19,7 +19,7 @@ import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import OperatorsListCard from './OperatorsListCard'
 
 const OperatorsList: FC = () => {
-  const [searchOperator, setSearch] = useState<string | undefined>(undefined)
+  const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -29,9 +29,10 @@ const OperatorsList: FC = () => {
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
-  const chain = selectedChain.urls.page
-
-  const cols = useMemo(() => createColumns(selectedDomain, chain), [selectedDomain, chain])
+  const cols = useMemo(
+    () => createColumns(selectedDomain, selectedChain.urls.page),
+    [selectedDomain, selectedChain],
+  )
 
   const variables = useMemo(
     () => getQueryVariables(sorting, pagination, searchOperator),

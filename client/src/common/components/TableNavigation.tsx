@@ -108,12 +108,12 @@ const TableNavigation = <T extends object>({ table, data, fullDataDownloader }: 
             <div className='dark:text-white'>| Go to page:</div>
             <DebouncedInput
               type='number'
-              defaultValue={table.getState().pagination.pageIndex + 1}
               onChange={(value) => {
                 const page = value ? Number(value) - 1 : 0
                 table.setPageIndex(page)
               }}
-              debounceTime={400}
+              delay={400}
+              value={table.getState().pagination.pageIndex + 1}
               className='w-20 rounded-3xl border-none'
             />
           </span>

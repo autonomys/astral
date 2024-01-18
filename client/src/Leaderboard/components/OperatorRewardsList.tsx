@@ -22,7 +22,7 @@ import { QUERY_OPERATORS_REWARDS_LIST } from 'Leaderboard/querys'
 import OperatorRewardsListCard from './OperatorRewardsListCard'
 
 const OperatorRewardsList = () => {
-  const [searchOperator, setSearch] = useState<string | undefined>(undefined)
+  const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'amount', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

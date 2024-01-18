@@ -1,29 +1,43 @@
-import { useEffect, useState } from 'react'
+import _ from 'lodash'
+import React, { useCallback, useEffect, useState } from 'react'
 
-interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
-  value?: string | number
-  onChange: (val) => void
-  debounceTime?: number
+interface DebouncedInputProps
+  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
+  value: string | number
+  onChange: (value: string | number) => void
+  delay?: number
 }
 
-const DebouncedInput = ({ value: initialValue, onChange, debounceTime = 300, ...props }: Props) => {
-  const [inputValue, setInputValue] = useState(initialValue)
+const DebouncedInput: React.FC<DebouncedInputProps> = ({
+  value,
+  onChange,
+  delay = 300,
+  ...props
+}) => {
+  const [inputValue, setInputValue] = useState(value)
 
-  // setValue if any initialValue changes
+  // Update local state when value prop changes
   useEffect(() => {
-    setInputValue(initialValue)
-  }, [initialValue])
+    setInputValue(value)
+  }, [value])
 
-  // debounce onChange — triggered on every keypress
+  // Create a debounced version of the passed onChange function
+  const debouncedOnChange = useCallback(
+    _.debounce((value: string | number) => {
+      onChange(value)
+    }, delay),
+    [onChange, delay],
+  )
+
+  // Update debounced value when input changes
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(inputValue)
-    }, debounceTime)
-
-    return () => {
-      clearTimeout(timeout)
+    if (inputValue !== value) {
+      debouncedOnChange(inputValue)
     }
-  }, [inputValue, onChange, debounceTime])
+    return () => {
+      debouncedOnChange.cancel()
+    }
+  }, [inputValue, debouncedOnChange, value])
 
   return <input {...props} value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
 }
