@@ -22,6 +22,7 @@ const DebouncedInput: React.FC<DebouncedInputProps> = ({
   }, [value])
 
   // Create a debounced version of the passed onChange function
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedOnChange = useCallback(
     _.debounce((value: string | number) => {
       onChange(value)
