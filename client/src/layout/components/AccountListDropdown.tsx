@@ -88,7 +88,7 @@ function AccountListDropdown() {
             ))}
             <button
               onClick={(e) => handleDisconnectWallet(e)}
-              className='relative cursor-default select-none py-2 text-gray-900 md:pl-10 pr-4 dark:text-white dark:bg-[#2A345E]'
+              className='relative cursor-default select-none py-2 text-gray-900 md:pl-5 pr-8 dark:text-white dark:bg-[#2A345E]'
             >
               <span className='block truncate font-normal'>Disconnect wallet</span>
             </button>
