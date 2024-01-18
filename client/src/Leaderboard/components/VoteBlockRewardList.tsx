@@ -116,14 +116,13 @@ const VoteBlockRewardList = () => {
 export default VoteBlockRewardList
 
 const createColumns = (selectedChain, pagination, isLargeLaptop) => {
-  const newCount = PAGE_SIZE * Number(pagination.pageIndex + 1) - 10
-
   return [
     {
       header: 'Rank',
       enableSorting: false,
       cell: ({ row }) => {
-        return <div>{pagination.pageIndex + 1 > 1 ? newCount + row.index + 1 : row.index + 1}</div>
+        const newCount = pagination.pageIndex * pagination.pageSize + row.index
+        return <div>{pagination.pageIndex + 1 > 1 ? newCount + 1 : row.index + 1}</div>
       },
     },
     {
