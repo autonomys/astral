@@ -66,18 +66,24 @@ function AccountListDropdown() {
                 }
                 value={account}
               >
-                {({ selected }) => (
-                  <>
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {formatAddress(account.address)}
-                    </span>
-                    {selected ? (
-                      <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
-                        <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
+                {({ selected }) => {
+                  const subAccount = formatAddress(account.address)
+                  const formattedAccount = subAccount && shortString(subAccount)
+                  return (
+                    <>
+                      <span
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                      >
+                        {formattedAccount}
                       </span>
-                    ) : null}
-                  </>
-                )}
+                      {selected ? (
+                        <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
+                          <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
+                        </span>
+                      ) : null}
+                    </>
+                  )
+                }}
               </Listbox.Option>
             ))}
             <button
