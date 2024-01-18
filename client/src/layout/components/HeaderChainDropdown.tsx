@@ -1,20 +1,20 @@
-import { Fragment, FC } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { FC, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // common
-import { Chain } from 'common/providers/ChainProvider'
-import { SubspaceSymbol } from 'common/icons'
 import useDomains from 'common/hooks/useDomains'
+import { SubspaceSymbol } from 'common/icons'
+import { Chain } from 'common/providers/ChainProvider'
 
 const HeaderChainDropdown: FC = () => {
-  const { setSelectedChain, chains, selectedChain } = useDomains()
+  const { setSelectedChain, chains, selectedChain, selectedDomain } = useDomains()
   const navigate = useNavigate()
 
   const handleChainChange = (chain: Chain) => {
     setSelectedChain(chain)
-    navigate(`/${chain.urls.page}`)
+    navigate(`/${chain.urls.page}/${selectedDomain}`)
   }
 
   return (
