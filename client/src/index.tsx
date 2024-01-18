@@ -1,13 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-import './index.css'
 import App from './App'
+import './index.css'
 import reportWebVitals from './reportWebVitals'
 
 // common
 import { ChainProvider } from 'common/providers/ChainProvider'
 import { ThemeProvider } from 'common/providers/ThemeProvider'
+import { WalletProvider } from 'common/providers/WalletProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
@@ -15,7 +16,9 @@ root.render(
   <React.StrictMode>
     <ChainProvider>
       <ThemeProvider>
-        <App />
+        <WalletProvider>
+          <App />
+        </WalletProvider>
       </ThemeProvider>
     </ChainProvider>
   </React.StrictMode>,

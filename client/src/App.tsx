@@ -40,6 +40,7 @@ import OperatorsList from 'Operator/components/OperatorsList'
 import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
+import { Toaster } from 'react-hot-toast'
 
 const createDomainRoutes = () => {
   return (
@@ -148,6 +149,7 @@ const App = () => {
           <Route element={<NotFound />} path={INTERNAL_ROUTES.catchAll} />
         </Routes>
       </UpdateSelectedChainByPath>
+      <Toaster />
     </HashRouter>
   )
 }
