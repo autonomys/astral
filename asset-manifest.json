@@ -1,19 +1,24 @@
 {
   "files": {
-    "main.css": "/static/css/main.2e2d8330.css",
-    "main.js": "/static/js/main.0bd4c04b.js",
+    "main.css": "/static/css/main.c11ab0ea.css",
+    "main.js": "/static/js/main.295ba146.js",
     "static/js/70.d2853615.chunk.js": "/static/js/70.d2853615.chunk.js",
     "static/js/787.e72a8928.chunk.js": "/static/js/787.e72a8928.chunk.js",
     "static/media/img.png": "/static/media/img.237bf3d0ba1513ab2c04.png",
+    "static/media/SubWalletLogo.svg": "/static/media/SubWalletLogo.637b860fce4059c3a3b6b7c876a13601.svg",
+    "static/media/TalismanLogo.svg": "/static/media/TalismanLogo.d2bc76e57d50979e1e7bfa71211ddc6f.svg",
+    "static/media/FearlessWalletLogo.svg": "/static/media/FearlessWalletLogo.de4e8c2ad71364a21d4453e7991a5e5d.svg",
+    "static/media/NovaWalletLogo.svg": "/static/media/NovaWalletLogo.0c5485a4534a3dd59bc2968a490383f8.svg",
+    "static/media/PolkadotLogo.svg": "/static/media/PolkadotLogo.8492330aac9d174faa4886cab4cb5b93.svg",
     "index.html": "/index.html",
     "static/media/backgroundColor.svg": "/static/media/backgroundColor.e318dc9bdabec130f1eb.svg",
-    "main.2e2d8330.css.map": "/static/css/main.2e2d8330.css.map",
-    "main.0bd4c04b.js.map": "/static/js/main.0bd4c04b.js.map",
+    "main.c11ab0ea.css.map": "/static/css/main.c11ab0ea.css.map",
+    "main.295ba146.js.map": "/static/js/main.295ba146.js.map",
     "70.d2853615.chunk.js.map": "/static/js/70.d2853615.chunk.js.map",
     "787.e72a8928.chunk.js.map": "/static/js/787.e72a8928.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.2e2d8330.css",
-    "static/js/main.0bd4c04b.js"
+    "static/css/main.c11ab0ea.css",
+    "static/js/main.295ba146.js"
   ]
 }
