@@ -1,15 +1,16 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
 import useDomains from 'common/hooks/useDomains'
-import { DOMAINS } from 'layout/constants'
-
-// chains
-import useWallet from 'common/hooks/useWallet'
 import chains from 'layout/config/chains.json'
 import domains from 'layout/config/domains.json'
-import toast from 'react-hot-toast'
+import { DOMAINS } from 'layout/constants'
+
+// common
+import useWallet from 'common/hooks/useWallet'
+
+// chains
 import AccountListDropdown from './AccountListDropdown'
 import PreferredExtensionModal from './PreferredExtensionModal'
 
@@ -21,29 +22,7 @@ const DomainHeader: FC = () => {
   const navigate = useNavigate()
 
   const { setSelectedChain, selectedChain, setSelectedDomain } = useDomains()
-  const { actingAccount, extensions } = useWallet()
-
-  useEffect(() => {
-    if (extensions && extensions.length > 1) {
-      toast.custom(
-        <div className='p-6 bg-amber-600 text-white flex flex-col gap-2'>
-          <div>
-            <h1 className='font-bold'>Multiple Wallets Detected</h1>
-          </div>
-          <div>
-            <p className='font-medium'>
-              In some cases, having multiple wallet extensions enabled at the same time can cause
-              issues.
-            </p>
-          </div>
-        </div>,
-        {
-          duration: 3000,
-          position: 'bottom-center',
-        },
-      )
-    }
-  }, [extensions])
+  const { actingAccount } = useWallet()
 
   const handleDomainSelected = (domain: string) => {
     if (domain === 'evm') {

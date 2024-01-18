@@ -1,7 +1,8 @@
+import { LinkIcon } from '@heroicons/react/24/outline'
+import { getWallets } from '@subwallet/wallet-connect/dotsama/wallets'
+
 import Modal from 'common/components/Modal'
 import useWallet from 'common/hooks/useWallet'
-import PolkadotIcon from 'common/icons/PolkadotIcon'
-import SubWalletIcon from 'common/icons/SubWalletIcon'
 
 import React, { FC } from 'react'
 
@@ -11,6 +12,8 @@ type Props = {
 }
 
 const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
+  const dotsamaWallets = getWallets()
+
   const { handleSelectFirstWalletFromExtension } = useWallet()
 
   const handleExtensionSelect = (
@@ -22,39 +25,48 @@ const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
     onClose()
   }
 
+  const supportedWallets = dotsamaWallets.filter((item) => {
+    if (item.extensionName === 'polkadot-js' || item.extensionName === 'subwallet-js') {
+      return item
+    }
+  })
+
   return (
-    <Modal onClose={onClose} isOpen={isOpen}>
+    <Modal title='Select your extension' onClose={onClose} isOpen={isOpen}>
       <div className='flex flex-col gap-4 items-start'>
         <div className='flex flex-col gap-4 items-center'>
-          <div className='leading-relaxed text-xl font-medium text-center dark:text-white mt-5'>
-            Select your preferred extension
+          <div className='grid grid-cols-2 gap-4'>
+            {supportedWallets.map((wallet, index) => (
+              <button
+                onClick={(e) => handleExtensionSelect(e, wallet.extensionName)}
+                key={`${wallet.extensionName}-${index}`}
+                className='flex flex-col gap-3 rounded-md border border-[#DE67E4] px-2 py-2 hover:bg-gray-100 dark:hover:bg-transparent/10'
+              >
+                <div className='flex gap-3 items-center'>
+                  <img alt={wallet.logo?.alt} className='h-5 w-5' src={wallet.logo?.src} />
+                  <div className='text-gray-900 font-normal text-center text-xs dark:text-white '>
+                    {wallet?.title}
+                  </div>
+                </div>
+                {wallet?.installed ? (
+                  <></>
+                ) : (
+                  <div className='text-xs text-indigo-500 dark:text-[#DE67E4] font-medium justify-self-end'>
+                    <div className='flex gap-1 items-center'>
+                      <a href={wallet.installUrl} rel='noreferrer' target='_blank'>
+                        Install
+                      </a>
+                      <LinkIcon className='h-3 w-3' />
+                    </div>
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
-          <button
-            onClick={(e) => handleExtensionSelect(e, 'polkadot-js')}
-            className='flex gap-3 bg-[#d9eef2] dark:bg-white px-4 py-2 rounded-md items-center justify-center'
-          >
-            <div className='h-5 w-5'>
-              <PolkadotIcon />
-            </div>
-            <div className='text-gray-900 font-normal text-center text-xs dark:text-gray-900 '>
-              Polkadot.js
-            </div>
-          </button>
-          <button
-            onClick={(e) => handleExtensionSelect(e, 'subwallet-js')}
-            className='flex gap-3 bg-[#d9eef2] dark:bg-white px-4 py-2 rounded-md items-center justify-center'
-          >
-            <div className='h-6 w-6'>
-              <SubWalletIcon />
-            </div>
-            <div className='text-gray-900 font-normal text-center text-xs dark:text-gray-900'>
-              Subwallet
-            </div>
-          </button>
         </div>
 
         <button
-          className='px-4 py-1 text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-[20px]'
+          className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#1E254E]'
           onClick={onClose}
         >
           Close

@@ -1,9 +1,9 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
 import { Fragment } from 'react'
 
 // common
+import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { shortString } from 'common/helpers'
 import { formatAddress } from 'common/helpers/formatAddress'
 import useWallet from 'common/hooks/useWallet'
@@ -13,7 +13,7 @@ import SubWalletIcon from 'common/icons/SubWalletIcon'
 function AccountListDropdown() {
   const { actingAccount, subspaceAccount, accounts, changeAccount, disconnectWallet } = useWallet()
 
-  const handleAccountChange = (account: InjectedAccountWithMeta) => {
+  const handleAccountChange = (account: WalletAccount) => {
     changeAccount(account)
   }
 
@@ -22,7 +22,7 @@ function AccountListDropdown() {
     disconnectWallet()
   }
 
-  const source = actingAccount?.meta.source
+  const source = actingAccount?.source
 
   return (
     <Listbox value={actingAccount} onChange={handleAccountChange}>
@@ -66,23 +66,29 @@ function AccountListDropdown() {
                 }
                 value={account}
               >
-                {({ selected }) => (
-                  <>
-                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {formatAddress(account.address)}
-                    </span>
-                    {selected ? (
-                      <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
-                        <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
+                {({ selected }) => {
+                  const subAccount = formatAddress(account.address)
+                  const formattedAccount = subAccount && shortString(subAccount)
+                  return (
+                    <>
+                      <span
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                      >
+                        {formattedAccount}
                       </span>
-                    ) : null}
-                  </>
-                )}
+                      {selected ? (
+                        <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
+                          <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
+                        </span>
+                      ) : null}
+                    </>
+                  )
+                }}
               </Listbox.Option>
             ))}
             <button
               onClick={(e) => handleDisconnectWallet(e)}
-              className='relative cursor-default select-none py-2 text-gray-900 md:pl-10 pr-4 dark:text-white dark:bg-[#2A345E]'
+              className='relative cursor-default select-none py-2 text-gray-900 md:pl-5 pr-8 dark:text-white dark:bg-[#2A345E]'
             >
               <span className='block truncate font-normal'>Disconnect wallet</span>
             </button>
