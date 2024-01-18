@@ -1,9 +1,9 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { InjectedAccountWithMeta } from '@polkadot/extension-inject/types'
 import { Fragment } from 'react'
 
 // common
+import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { shortString } from 'common/helpers'
 import { formatAddress } from 'common/helpers/formatAddress'
 import useWallet from 'common/hooks/useWallet'
@@ -13,7 +13,7 @@ import SubWalletIcon from 'common/icons/SubWalletIcon'
 function AccountListDropdown() {
   const { actingAccount, subspaceAccount, accounts, changeAccount, disconnectWallet } = useWallet()
 
-  const handleAccountChange = (account: InjectedAccountWithMeta) => {
+  const handleAccountChange = (account: WalletAccount) => {
     changeAccount(account)
   }
 
@@ -22,7 +22,7 @@ function AccountListDropdown() {
     disconnectWallet()
   }
 
-  const source = actingAccount?.meta.source
+  const source = actingAccount?.source
 
   return (
     <Listbox value={actingAccount} onChange={handleAccountChange}>

@@ -1,26 +1,26 @@
 import { ApiPromise, WsProvider } from '@polkadot/api'
-import { InjectedAccountWithMeta, InjectedExtension } from '@polkadot/extension-inject/types'
+import { InjectedExtension } from '@polkadot/extension-inject/types'
+import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
+import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { formatAddress } from 'common/helpers/formatAddress'
-import { documentReadyPromise } from 'common/hooks/utils'
 import { FC, ReactNode, createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 export type WalletContextValue = {
   api: ApiPromise | undefined
   isReady: boolean
-  accounts: InjectedAccountWithMeta[] | undefined
+  accounts: WalletAccount[] | undefined | null
   error: Error | null
   injector: InjectedExtension | null
-  actingAccount: InjectedAccountWithMeta | undefined
+  actingAccount: WalletAccount | undefined
   extensions: InjectedExtension[] | undefined
   setActingAccountIdx: (idx: number) => void
   disconnectWallet: () => void
-  connectWallet: () => void
-  setActingAccount: (account: InjectedAccountWithMeta) => void
+  setActingAccount: (account: WalletAccount) => void
   setPreferredExtension: (extension: string) => void
   preferredExtension: string | undefined
   subspaceAccount: string | undefined
   handleSelectFirstWalletFromExtension: (source: string) => Promise<void>
-  changeAccount: (account: InjectedAccountWithMeta) => void
+  changeAccount: (account: WalletAccount) => void
 }
 
 export const WalletContext = createContext<WalletContextValue>(
@@ -35,20 +35,22 @@ type Props = {
 export const WalletProvider: FC<Props> = ({ children }) => {
   const [api, setApi] = useState<ApiPromise>()
   const [isReady, setIsReady] = useState(false)
-  const [accounts, setAccounts] = useState<InjectedAccountWithMeta[] | undefined>(undefined)
-  const [extensions, setExtensions] = useState<InjectedExtension[] | undefined>(undefined)
+  const [accounts, setAccounts] = useState<WalletAccount[] | null | undefined>(undefined)
+  const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
   const [preferredExtension, setPreferredExtension] = useState<string | undefined>(undefined)
   const [actingAccountIdx, setActingAccountIdx] = useState<number>(0)
   const [error, setError] = useState<Error | null>(null)
   const [injector, setInjector] = useState<InjectedExtension | null>(null)
-  const [actingAccount, setActingAccount] = useState<InjectedAccountWithMeta | undefined>(undefined)
+  const [actingAccount, setActingAccount] = useState<WalletAccount | undefined>(undefined)
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
 
   useMemo(() => {
     const selectedAccount =
-      accounts && accounts.find((account) => account.meta.source === preferredExtension)
-    setActingAccount(selectedAccount)
-    setSubspaceAccount(formatAddress(selectedAccount?.address))
+      accounts && accounts.find((account) => account.source === preferredExtension)
+    if (selectedAccount) {
+      setActingAccount(selectedAccount)
+      setSubspaceAccount(formatAddress(selectedAccount?.address))
+    }
   }, [accounts, preferredExtension])
 
   const setup = async () => {
@@ -60,10 +62,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setApi(api)
   }
 
-  const changeAccount = (account: InjectedAccountWithMeta) => {
+  const changeAccount = (account: WalletAccount) => {
     setActingAccount(account)
     setSubspaceAccount(formatAddress(account.address))
-    const newInjector = extensions?.find((extension) => extension.name === account.meta.source)
+    const newInjector = extensions?.find((extension) => extension.name === account.source)
     if (newInjector) {
       setInjector(newInjector)
     }
@@ -76,50 +78,25 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setIsReady(false)
   }, [setInjector, setAccounts])
 
-  const connectWallet = useCallback(async () => {
-    // This effect is used to setup the browser extension
-    const extensionSetup = async () => {
-      const extensionDapp = await import('@polkadot/extension-dapp')
-      const { web3AccountsSubscribe, web3Enable } = extensionDapp
-
-      const injectedPromise = documentReadyPromise(() => web3Enable('Subspace Astral'))
-      const extensions = await injectedPromise
-
-      setExtensions(extensions)
-
-      if (extensions.length === 0) {
-        return
-      }
-
-      if (accounts && accounts?.length > 0) {
-        setIsReady(true)
-      } else {
-        // we subscribe to any account change
-        // note that `web3AccountsSubscribe` returns the function to unsubscribe
-        const unsubscribe = await web3AccountsSubscribe((injectedAccounts) => {
-          setAccounts(injectedAccounts)
-        })
-
-        return () => unsubscribe && unsubscribe()
-      }
-    }
-
-    if (!isReady) {
-      extensionSetup()
-    }
-  }, [accounts, isReady])
-
   const handleSelectFirstWalletFromExtension = useCallback(
     async (source: string) => {
+      const wallet = getWalletBySource(source)
+      const walletAccounts = await wallet?.getAccounts()
+      setAccounts(walletAccounts)
+
       setPreferredExtension(source)
-      await connectWallet()
-      const mainAccount = accounts?.find((account) => account.meta.source === source)
+      const mainAccount = walletAccounts?.find((account) => account.source === source)
       if (mainAccount) {
+        const newInjector = extensions?.find((extension) => extension.name === mainAccount.source)
+        if (newInjector) {
+          setInjector(newInjector)
+        }
         setActingAccount(mainAccount)
         setSubspaceAccount(formatAddress(mainAccount.address))
+        setIsReady(true)
       }
     },
-    [accounts, connectWallet],
+    [extensions],
   )
 
   useEffect(() => {
@@ -127,11 +104,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     // and is triggered when the accounts or the actingAccountIdx change
     const getInjector = async () => {
       const { web3FromSource } = await import('@polkadot/extension-dapp')
-      // const actingAccount =
-      //   accounts && actingAccountIdx !== undefined ? accounts[actingAccountIdx] : undefined
-      if (actingAccount?.meta.source) {
+
+      if (actingAccount?.source) {
         try {
-          const injector = await web3FromSource(actingAccount?.meta.source)
+          const injector = await web3FromSource(actingAccount?.source)
 
           setInjector(injector)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -160,7 +136,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         error,
         injector,
         disconnectWallet,
-        connectWallet,
         extensions,
         setActingAccount,
         preferredExtension,
