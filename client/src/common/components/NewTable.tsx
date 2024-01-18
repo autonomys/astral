@@ -41,6 +41,8 @@ const NewTable = <T extends object>({
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const memoizedData = useMemo(() => data, [data])
   const memoizedColumns = useMemo(() => columns, [columns])
+  const memoizedPagination = useMemo(() => pagination, [pagination])
+  const memoizedSorting = useMemo(() => sorting, [sorting])
 
   const table = useReactTable({
     data: memoizedData,
@@ -52,8 +54,8 @@ const NewTable = <T extends object>({
     onSortingChange,
     getSortedRowModel: getSortedRowModel(),
     state: {
-      pagination,
-      sorting,
+      pagination: memoizedPagination,
+      sorting: memoizedSorting,
     },
     pageCount,
   })

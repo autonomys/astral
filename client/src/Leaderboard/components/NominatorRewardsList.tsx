@@ -23,7 +23,7 @@ import DebouncedInput from 'common/components/DebouncedInput'
 import NominatorRewardsListCard from './NominatorRewardsListCard'
 
 const NominatorRewardsList = () => {
-  const [searchAccount, setSearch] = useState<string | undefined>(undefined)
+  const [searchAccount, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'operator', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

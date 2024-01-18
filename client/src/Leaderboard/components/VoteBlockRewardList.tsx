@@ -23,7 +23,7 @@ import { QUERY_REWARDS_LIST } from 'Leaderboard/querys'
 import VoteBlockRewardListCard from './VoteBlockRewardListCard'
 
 const VoteBlockRewardList = () => {
-  const [searchAccount, setSearch] = useState<string | undefined>(undefined)
+  const [searchAccount, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'operator', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
