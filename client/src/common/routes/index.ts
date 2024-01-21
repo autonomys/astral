@@ -4,6 +4,8 @@ export const EXTERNAL_ROUTES = {
   gemini2guide:
     'https://forum.subspace.network/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
   docs: 'https://docs.subspace.network/',
+  operatorDocs:
+    'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
   social: {
     twitter: 'https://twitter.com/NetworkSubspace',
     discord: 'https://discord.gg/subspace-network',

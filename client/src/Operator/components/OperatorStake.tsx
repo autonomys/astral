@@ -4,8 +4,10 @@ import { isHex } from '@polkadot/util'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { WalletIcon } from 'common/icons'
+import { EXTERNAL_ROUTES } from 'common/routes'
 import { Field, Form, Formik, FormikState } from 'formik'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 import PreferredExtensionModal from '../../layout/components/PreferredExtensionModal'
 
@@ -179,7 +181,16 @@ const OperatorStake = () => {
               Step 1: Setup a node
             </div>
 
-            <div className='mt-4 text-xl'>Please follow the docs to setup a node</div>
+            <div className='mt-4 text-xl'>
+              <Link
+                data-testid={'operator-link-documentation'}
+                className='text-[#4524C1] hover:text-[#DE67E4]'
+                to={EXTERNAL_ROUTES.operatorDocs}
+                target='_blank'
+              >
+                Please follow the docs to setup a node
+              </Link>
+            </div>
 
             <div className='text-[#241235] text-2xl mt-4 font-bold leading-tight tracking-tight dark:text-white'>
               Step 2: Register
