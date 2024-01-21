@@ -32,6 +32,7 @@ import { Event, EventList } from 'Event/components'
 import { Log, LogList } from 'Log/components'
 
 // operator
+import OperatorManagement from 'Operator/components/OperatorManagement'
 import OperatorNominate from 'Operator/components/OperatorNominate'
 import OperatorStake from 'Operator/components/OperatorStake'
 import OperatorsList from 'Operator/components/OperatorsList'
@@ -140,6 +141,7 @@ const App = () => {
                 <Route index element={<OperatorsList />} />
                 <Route path='list' element={<OperatorsList />} />
                 <Route path='stake' element={<OperatorStake />} />
+                <Route path='manage' element={<OperatorManagement />} />
                 <Route path='nominate' element={<OperatorNominate />} />
               </Route>
             </Fragment>
