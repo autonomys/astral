@@ -82,6 +82,14 @@ const OperatorStake = () => {
       }),
     [domainsList, actingAccount],
   )
+  const currentDomainLabel = useCallback(
+    (values: FormValues) => {
+      const currentDomain = filteredDomainsList[values.domainId]
+      if (!currentDomain) return 'Domain'
+      return currentDomain.domainName.charAt(0).toUpperCase() + currentDomain.domainName.slice(1)
+    },
+    [filteredDomainsList],
+  )
 
   const registerOperatorValidationSchema = Yup.object().shape({
     domainId: Yup.number()
@@ -204,7 +212,7 @@ const OperatorStake = () => {
                                 <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default mt-4 rounded-full bg-white py-[10px] pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
                                   <div className='flex items-center justify-center'>
                                     <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full '>
-                                      Domain {values.domainId}
+                                      {currentDomainLabel(values)}
                                     </span>
                                     <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                                       <ChevronDownIcon
@@ -239,7 +247,8 @@ const OperatorStake = () => {
                                                   selected ? 'font-medium' : 'font-normal'
                                                 }`}
                                               >
-                                                Domain {domain.domainId}
+                                                {domain.domainName.charAt(0).toUpperCase() +
+                                                  domain.domainName.slice(1)}
                                               </span>
                                               {selected ? (
                                                 <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
