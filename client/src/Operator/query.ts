@@ -22,8 +22,9 @@ export const QUERY_OPERATOR_CONNECTION_LIST = gql`
           status
           totalShares
           updatedAt
-          nominators(limit: 300) {
+          nominators(limit: 256) {
             id
+            shares
           }
         }
       }
