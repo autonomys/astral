@@ -1,69 +1,168 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { isHex } from '@polkadot/util'
-// import useMediaQuery from 'common/hooks/useMediaQuery'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import useWallet from 'common/hooks/useWallet'
 import { WalletIcon } from 'common/icons'
-import { Field, Form, Formik } from 'formik'
-import React, { Fragment, useCallback } from 'react'
+import { Field, Form, Formik, FormikState } from 'formik'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import * as Yup from 'yup'
+import PreferredExtensionModal from '../../layout/components/PreferredExtensionModal'
 
-export interface FormValues {
-  domainId: string
+interface FormValues {
+  domainId: number
   signingKey: string
-  amountToStake: string
-  nominatorTax: string
-  minimumNominatorStake: string
+  amountToStake: number
+  nominatorTax: number
+  minimumNominatorStake: number
+}
+
+type OperatorAllowListRestricted = { operators: string[] }
+type OperatorAllowListOpen = { anyone: null }
+type OperatorAllowList = OperatorAllowListRestricted | OperatorAllowListOpen
+type Domain = {
+  domainId: number
+  domainName: string
+  operatorAllowList: OperatorAllowList
 }
 
 const OperatorStake = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const { api, actingAccount, injector } = useWallet()
+  const [formError, setFormError] = useState<string | null>(null)
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+
+  const [domainsList, setDomainsList] = useState<Domain[]>([])
+  const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
+  const [tokenDecimals, setTokenDecimals] = useState<number>(0)
+  const [tokenSymbol, setTokenSymbol] = useState<string>('')
+
   const initialValues: FormValues = {
-    domainId: '0',
-    signingKey: '0x',
-    amountToStake: '0',
-    nominatorTax: '0',
-    minimumNominatorStake: '0',
+    domainId: 0,
+    signingKey: '',
+    amountToStake: 0,
+    nominatorTax: 0,
+    minimumNominatorStake: 0,
   }
 
-  const DOMAINS = [0, 1]
+  const loadDomains = useCallback(async () => {
+    if (!api) return
 
-  // const isDesktop = useMediaQuery('(min-width: 640px)')
+    const [domains, domainRegistry, properties] = await Promise.all([
+      api.consts.domains,
+      api.query.domains.domainRegistry.entries(),
+      api.rpc.system.properties(),
+    ])
+
+    setDomainsList(
+      domainRegistry.map((domain) => {
+        return {
+          domainId: (domain[0].toPrimitive() as number[])[0],
+          domainName: (domain[1].toJSON() as { domainConfig: { domainName: string } }).domainConfig
+            .domainName,
+          operatorAllowList: (
+            domain[1].toJSON() as { domainConfig: { operatorAllowList: OperatorAllowList } }
+          ).domainConfig.operatorAllowList,
+        } as Domain
+      }),
+    )
+    const _tokenDecimals = (properties.tokenDecimals.toPrimitive() as number[])[0]
+    setTokenDecimals(_tokenDecimals)
+    setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
+    setMinOperatorStake((domains.minOperatorStake.toPrimitive() as number) / 10 ** _tokenDecimals)
+  }, [api])
+
+  const filteredDomainsList = useMemo(
+    () =>
+      domainsList.filter((domain) => {
+        if ((domain.operatorAllowList as OperatorAllowListOpen).anyone === null) return true
+        return (domain.operatorAllowList as OperatorAllowListRestricted).operators.includes(
+          actingAccount?.address as string,
+        )
+      }),
+    [domainsList, actingAccount],
+  )
 
   const registerOperatorValidationSchema = Yup.object().shape({
     domainId: Yup.number()
-      .oneOf(DOMAINS, 'Domain Id need to be a valid domains')
+      .oneOf(
+        filteredDomainsList.map((d) => d.domainId),
+        'Domain Id need to be a valid domains',
+      )
       .required('Domain Id is required'),
     signingKey: Yup.string()
       .trim()
       .test('isHex', 'Signing key is not a valid hex value', (val) => isHex(val))
       .required('Signing key is required'),
     amountToStake: Yup.number()
-      .min(0, 'Amount to stake need to be greater than 0')
+      .min(
+        minOperatorStake,
+        `Amount to stake need to be greater than ${minOperatorStake} ${tokenSymbol}`,
+      )
       .required('Amount to stake is required'),
     nominatorTax: Yup.number()
       .min(0, 'Nominator tax need to be greater than 0')
       .max(100, 'Nominator tax need to be smaller than 100')
       .required('Nominator tax is required'),
     minimumNominatorStake: Yup.number()
-      .min(0, 'Minimum nominator stake need to be greater than 0')
+      .min(0, `Minimum nominator stake need to be greater than 0 ${tokenSymbol}`)
       .required('Minimum nominator stake is required'),
   })
 
-  const handleSubmit = useCallback(async (values: FormValues) => {
-    console.log('values', values)
+  const handleSubmit = useCallback(
+    async (
+      values: FormValues,
+      resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
+    ) => {
+      if (!api || !actingAccount || !injector)
+        return setFormError('We are not able to connect to the blockchain')
+
+      try {
+        const block = await api.rpc.chain.getBlock()
+        const hash = await api.tx.domains
+          .registerOperator(values.domainId, values.amountToStake * 10 ** tokenDecimals, {
+            signingKey: values.signingKey,
+            minimumNominatorStake: values.minimumNominatorStake * 10 ** tokenDecimals,
+            nominationTax: values.nominatorTax,
+          })
+          .signAndSend(actingAccount.address, { signer: injector.signer })
+
+        console.log('block', block)
+        console.log('hash', hash)
+      } catch (error) {
+        setFormError('There was an error while registering the operator')
+        console.error('Error', error)
+      }
+      resetForm()
+    },
+    [actingAccount, api, injector, tokenDecimals],
+  )
+
+  const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    setIsOpen(true)
   }, [])
+
+  useEffect(() => {
+    loadDomains()
+  }, [api, loadDomains])
 
   return (
     <div className='w-full flex flex-col align-middle'>
       <div className='w-full flex flex-col mt-5 pt-20 sm:mt-0'>
-        <div className="min-w-max w-full table-auto font-['Montserrat'] bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none">
+        <div className="w-full font-['Montserrat'] bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none">
           <div className='m-10'>
             <div className='flex items-center'>
               <WalletIcon width='44' height='48' />
-              <div className='text-[#241235] text-4xl font-bold leading-tight tracking-tight dark:text-white'>
+              <div
+                className={`text-[#241235] ${
+                  isDesktop ? 'text-4xl' : 'text-xl'
+                } font-bold leading-tight tracking-tight dark:text-white`}
+              >
                 Staking as a pool operator
               </div>
             </div>
-            <div className='text-[#241235] text-base mt-6 font-medium dark:text-white'>
+            <div className='w-full text-[#241235] text-base mt-6 font-medium break-words dark:text-white'>
               tSSC holders (Gemini 3h testnet network only) can stake their tSSC to add more
               security to the protocol and earn Staking Incentives. Learn more about the risks
               involved.
@@ -81,7 +180,7 @@ const OperatorStake = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={registerOperatorValidationSchema}
-              onSubmit={handleSubmit}
+              onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
             >
               {({ errors, touched, values, handleSubmit, setFieldValue }) => (
                 <Form
@@ -92,7 +191,7 @@ const OperatorStake = () => {
                   <div className='p-5 mt-8 bg-[#DDEFF1] rounded-[20px]'>
                     <div className='ml-4 w-full'>
                       <div className='relative'>
-                        <div className='grid grid-cols-3 gap-4'>
+                        <div className={`grid ${isDesktop ? 'grid-cols-3' : 'grid-cols-1'} gap-4`}>
                           <div className='p-4'>
                             <span className='text-[#241235] text-base font-medium dark:text-white'>
                               Domain
@@ -102,7 +201,7 @@ const OperatorStake = () => {
                               onChange={(val) => setFieldValue('domainId', val)}
                             >
                               <div className='relative'>
-                                <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default mt-4 rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
+                                <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default mt-4 rounded-full bg-white py-[10px] pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
                                   <div className='flex items-center justify-center'>
                                     <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full '>
                                       Domain {values.domainId}
@@ -122,7 +221,7 @@ const OperatorStake = () => {
                                   leaveTo='opacity-0'
                                 >
                                   <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
-                                    {DOMAINS.map((domainId, index) => (
+                                    {filteredDomainsList.map((domain, index) => (
                                       <Listbox.Option
                                         key={index}
                                         className={({ active }) =>
@@ -130,7 +229,7 @@ const OperatorStake = () => {
                                             active && 'bg-gray-100 dark:bg-[#2A345E]'
                                           }`
                                         }
-                                        value={domainId}
+                                        value={domain.domainId}
                                       >
                                         {({ selected }) => {
                                           return (
@@ -140,7 +239,7 @@ const OperatorStake = () => {
                                                   selected ? 'font-medium' : 'font-normal'
                                                 }`}
                                               >
-                                                Domain {domainId}
+                                                Domain {domain.domainId}
                                               </span>
                                               {selected ? (
                                                 <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
@@ -160,7 +259,7 @@ const OperatorStake = () => {
                               </div>
                             </Listbox>
                           </div>
-                          <div className='p-4 col-span-2'>
+                          <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
                             <span className='text-[#241235] text-base font-medium dark:text-white'>
                               Signing key
                             </span>
@@ -194,7 +293,7 @@ const OperatorStake = () => {
                             <Field
                               name='amountToStake'
                               placeholder='Amount to Stake'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-60 text-sm text-gray-900 rounded-full bg-white shadow-lg
+                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-full bg-white shadow-lg
                             ${
                               errors.amountToStake &&
                               touched.amountToStake &&
@@ -220,7 +319,7 @@ const OperatorStake = () => {
                             <Field
                               name='nominatorTax'
                               placeholder='Nominator tax'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-60 text-sm text-gray-900 rounded-xl bg-white shadow-lg
+                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-xl bg-white shadow-lg
                             ${
                               errors.nominatorTax &&
                               touched.nominatorTax &&
@@ -246,7 +345,7 @@ const OperatorStake = () => {
                             <Field
                               name='minimumNominatorStake'
                               placeholder='Minimum Nominator Stake'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-60 text-sm text-gray-900 rounded-xl bg-white shadow-lg
+                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-xl bg-white shadow-lg
                             ${
                               errors.minimumNominatorStake &&
                               touched.minimumNominatorStake &&
@@ -269,19 +368,29 @@ const OperatorStake = () => {
                       </div>
                     </div>
                   </div>
+                  {formError && formError ? (
+                    <div className='text-red-500 text-md mt-2 h-8' data-testid='errorMessage'>
+                      {formError}
+                    </div>
+                  ) : (
+                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                  )}
                   <div className='container mx-auto flex flex-wrap justify-between py-5 md:px-[25px] 2xl:px-0 flex-col md:flex-row items-center'>
-                    <button
-                      className='leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
-                      type='submit'
-                    >
-                      Register
-                    </button>
-                    {/* <Link
-                      className='leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
-                      to={'Somewhere'}
-                    >
-                      Next
-                    </Link> */}
+                    {!actingAccount ? (
+                      <button
+                        onClick={(e) => handleConnectWallet(e)}
+                        className='h-10 w-36 text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full'
+                      >
+                        Connect Wallet
+                      </button>
+                    ) : (
+                      <button
+                        className='leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
+                        type='submit'
+                      >
+                        Register
+                      </button>
+                    )}
                   </div>
                 </Form>
               )}
@@ -289,6 +398,7 @@ const OperatorStake = () => {
           </div>
         </div>
       </div>
+      <PreferredExtensionModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </div>
   )
 }
