@@ -1,9 +1,7 @@
 import { useApolloClient, useQuery } from '@apollo/client'
-import { Listbox, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { SortingState } from '@tanstack/react-table'
 import { Operator } from 'gql/graphql'
-import { FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
 
@@ -21,6 +19,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 // operator
 import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import { NotFound } from 'layout/components'
+import { ActionsDropdown } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import OperatorsListCard from './OperatorsListCard'
 
@@ -53,13 +52,98 @@ const OperatorManagement: FC = () => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
   }, [])
 
-  const cols = useMemo(
-    () => createColumns(selectedDomain, selectedChain.urls.page, action, handleAction),
-    [selectedDomain, selectedChain.urls.page, action, handleAction],
-  )
+  const columns = useMemo(() => {
+    return [
+      {
+        accessorKey: 'id',
+        header: 'Id',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <Link
+            data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
+            className='hover:text-[#DE67E4]'
+            to={INTERNAL_ROUTES.operators.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
+          >
+            <div>{row.original.id}</div>
+          </Link>
+        ),
+      },
+      {
+        accessorKey: 'currentDomainId',
+        header: 'Domain',
+        enableSorting: true,
+        cell: ({ row }) => <div>{row.original.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>,
+      },
+      {
+        accessorKey: 'signingKey',
+        header: 'Signing Key',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <div className='flex row items-center gap-3'>
+            <div>{shortString(row.original.signingKey)}</div>
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'minimumNominatorStake',
+        header: 'Min. Stake',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
+        ),
+      },
+      {
+        accessorKey: 'nominationTax',
+        header: 'Nominator Tax',
+        enableSorting: true,
+        cell: ({ row }) => <div>{`${row.original.nominationTax}%`}</div>,
+      },
+      {
+        accessorKey: 'currentTotalStake',
+        header: 'Total Stake',
+        enableSorting: true,
+        cell: ({ row }) => <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>,
+      },
+      {
+        accessorKey: 'nominators',
+        header: 'Nominators',
+        enableSorting: false,
+        cell: ({ row }) => (
+          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+        ),
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        enableSorting: true,
+        cell: ({ row }) => <div>{row.original.status}</div>,
+      },
+      {
+        accessorKey: 'actions',
+        header: 'Actions',
+        enableSorting: false,
+        cell: ({ row }) => (
+          <ActionsDropdown action={action} handleAction={handleAction} row={row} />
+        ),
+      },
+    ]
+  }, [selectedChain.urls.page, selectedDomain, action, handleAction])
 
   const variables = useMemo(
-    () => getQueryVariables(sorting, pagination, searchOperator),
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      // eslint-disable-next-line camelcase
+      where: searchOperator ? { operatorOwner_eq: searchOperator } : {},
+    }),
     [sorting, pagination, searchOperator],
   )
 
@@ -136,6 +220,11 @@ const OperatorManagement: FC = () => {
     [totalOperatorStake, totalNominatorsStake],
   )
 
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
+
   useEffect(() => {
     if (actingAccount) handleSearch(formatAddress(actingAccount.address))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,8 +232,6 @@ const OperatorManagement: FC = () => {
 
   if (loading) return <Spinner />
   if (!actingAccount) return <NotFound />
-
-  const pageCount = Math.floor(totalCount / pagination.pageSize)
 
   return (
     <div className='w-full flex flex-col align-middle'>
@@ -176,7 +263,7 @@ const OperatorManagement: FC = () => {
         <div className='rounded my-6'>
           <NewTable
             data={operatorsConnection}
-            columns={cols}
+            columns={columns}
             showNavigation={true}
             sorting={sorting}
             onSortingChange={setSorting}
@@ -313,154 +400,6 @@ const OperatorManagement: FC = () => {
 }
 
 export default OperatorManagement
-
-const createColumns = (selectedDomain, chain, action, handleAction) => {
-  return [
-    {
-      accessorKey: 'id',
-      header: 'Id',
-      enableSorting: true,
-      cell: ({ row }) => (
-        <Link
-          data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-          className='hover:text-[#DE67E4]'
-          to={INTERNAL_ROUTES.operators.id.page(chain, selectedDomain, row.original.id)}
-        >
-          <div>{row.original.id}</div>
-        </Link>
-      ),
-    },
-    {
-      accessorKey: 'currentDomainId',
-      header: 'Domain',
-      enableSorting: true,
-      cell: ({ row }) => <div>{row.original.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>,
-    },
-    {
-      accessorKey: 'signingKey',
-      header: 'Signing Key',
-      enableSorting: true,
-      cell: ({ row }) => (
-        <div className='flex row items-center gap-3'>
-          <div>{shortString(row.original.signingKey)}</div>
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'minimumNominatorStake',
-      header: 'Min. Stake',
-      enableSorting: true,
-      cell: ({ row }) => (
-        <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
-      ),
-    },
-    {
-      accessorKey: 'nominationTax',
-      header: 'Nominator Tax',
-      enableSorting: true,
-      cell: ({ row }) => <div>{`${row.original.nominationTax}%`}</div>,
-    },
-    {
-      accessorKey: 'currentTotalStake',
-      header: 'Total Stake',
-      enableSorting: true,
-      cell: ({ row }) => <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>,
-    },
-    {
-      accessorKey: 'nominators',
-      header: 'Nominators',
-      enableSorting: false,
-      cell: ({ row }) => (
-        <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
-      ),
-    },
-    {
-      accessorKey: 'status',
-      header: 'Status',
-      enableSorting: true,
-      cell: ({ row }) => <div>{row.original.status}</div>,
-    },
-    {
-      accessorKey: 'actions',
-      header: 'Actions',
-      enableSorting: false,
-      cell: ({ row }) => (
-        <Listbox
-          value={action.type}
-          onChange={(val) =>
-            handleAction({
-              type: val,
-              operatorId: row.original.id,
-              maxAmount: BigInt(row.original.currentTotalStake),
-            })
-          }
-        >
-          <div className='relative'>
-            <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default mt-4 rounded-full bg-[#DE67E4] text-white py-[10px] pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
-              <div className='flex items-center justify-center'>
-                <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full '>
-                  Actions
-                </span>
-                <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                  <ChevronDownIcon
-                    className='h-5 w-5 text-gray-400 ui-open:rotate-180 ui-open:transform dark:text-[#DE67E4]'
-                    aria-hidden='true'
-                  />
-                </span>
-              </div>
-            </Listbox.Button>
-            <Transition
-              as={Fragment}
-              leave='transition ease-in duration-100'
-              leaveFrom='opacity-100'
-              leaveTo='opacity-0'
-            >
-              <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
-                {Object.keys(OperatorActionType)
-                  .slice(1)
-                  .map((actionType, index) => (
-                    <Listbox.Option
-                      key={index}
-                      className={({ active }) =>
-                        `relative cursor-default select-none py-2 text-gray-900 md:pl-4 pr-4 dark:text-white ${
-                          active && 'bg-gray-100 dark:bg-[#2A345E]'
-                        }`
-                      }
-                      value={actionType}
-                    >
-                      {({ selected }) => (
-                        <span
-                          className={`block truncate ${selected ? 'font-medium' : 'font-normal'} ${
-                            OperatorActionType[actionType] === OperatorActionType.Deregister &&
-                            'text-red-500'
-                          }`}
-                        >
-                          {OperatorActionType[actionType]}
-                        </span>
-                      )}
-                    </Listbox.Option>
-                  ))}
-              </Listbox.Options>
-            </Transition>
-          </div>
-        </Listbox>
-      ),
-    },
-  ]
-}
-
-const getQueryVariables = (sorting, pagination, searchOperator) => {
-  return {
-    first: pagination.pageSize,
-    after:
-      pagination.pageIndex > 0
-        ? (pagination.pageIndex * pagination.pageSize).toString()
-        : undefined,
-    orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
-    // eslint-disable-next-line camelcase
-    where: searchOperator ? { operatorOwner_eq: searchOperator } : {},
-  }
-}
 
 type MobileComponentProps = {
   operators: Operator[]
