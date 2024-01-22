@@ -40,6 +40,7 @@ const OperatorManagement: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
+    maxAmount: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -49,7 +50,7 @@ const OperatorManagement: FC = () => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
   }, [])
 
   const cols = useMemo(
@@ -390,6 +391,7 @@ const createColumns = (selectedDomain, chain, action, handleAction) => {
             handleAction({
               type: val,
               operatorId: row.original.id,
+              maxAmount: BigInt(row.original.currentTotalStake),
             })
           }
         >
