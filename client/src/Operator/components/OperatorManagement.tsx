@@ -1,6 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { Operator } from 'gql/graphql'
+import { Operator, OperatorsConnection } from 'gql/graphql'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
@@ -167,11 +167,11 @@ const OperatorManagement: FC = () => {
     [pagination],
   )
 
-  const operators = useMemo(
+  const operators: OperatorsConnection = useMemo(
     () => (data && data.operatorsConnection ? data.operatorsConnection : []),
     [data],
   )
-  const operatorsConnection = useMemo(
+  const operatorsConnection: Operator[] = useMemo(
     () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
     [operators],
   )
@@ -271,7 +271,13 @@ const OperatorManagement: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
+            mobileComponent={
+              <MobileComponent
+                operators={operatorsConnection}
+                action={action}
+                handleAction={handleAction}
+              />
+            }
           />
         </div>
       </div>
@@ -403,14 +409,18 @@ export default OperatorManagement
 
 type MobileComponentProps = {
   operators: Operator[]
+  action: OperatorAction
+  handleAction: (value: OperatorAction) => void
 }
 
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
+const MobileComponent: FC<MobileComponentProps> = ({ operators, action, handleAction }) => (
   <div className='w-full'>
     {operators.map((operator, index) => (
       <OperatorsListCard
         index={index}
         operator={operator}
+        action={action}
+        handleAction={handleAction}
         key={`operator-list-card-${operator.id}`}
       />
     ))}

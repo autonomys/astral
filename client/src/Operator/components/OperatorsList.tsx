@@ -1,6 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { Operator } from 'gql/graphql'
+import { Operator, OperatorsConnection } from 'gql/graphql'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
@@ -194,11 +194,11 @@ const OperatorsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const operators = useMemo(
+  const operators: OperatorsConnection = useMemo(
     () => (data && data.operatorsConnection ? data.operatorsConnection : []),
     [data],
   )
-  const operatorsConnection = useMemo(
+  const operatorsConnection: Operator[] = useMemo(
     () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
     [operators],
   )
@@ -241,7 +241,14 @@ const OperatorsList: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
+            mobileComponent={
+              <MobileComponent
+                operators={operatorsConnection}
+                action={action}
+                handleAction={handleAction}
+                actingAccountAddress={actingAccount?.address}
+              />
+            }
           />
         </div>
       </div>
@@ -254,16 +261,45 @@ export default OperatorsList
 
 type MobileComponentProps = {
   operators: Operator[]
+  action: OperatorAction
+  handleAction: (value: OperatorAction) => void
+  actingAccountAddress?: string
 }
 
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
+const MobileComponent: FC<MobileComponentProps> = ({
+  operators,
+  action,
+  handleAction,
+  actingAccountAddress,
+}) => (
   <div className='w-full'>
-    {operators.map((operator, index) => (
-      <OperatorsListCard
-        index={index}
-        operator={operator}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
+    {operators.map((operator, index) => {
+      const nominator =
+        actingAccountAddress &&
+        operator.nominators.find(
+          (nominator) => nominator.id === `${operator.id}-${formatAddress(actingAccountAddress)}`,
+        )
+      return (
+        <OperatorsListCard
+          key={`operator-list-card-${operator.id}`}
+          operator={operator}
+          action={action}
+          handleAction={handleAction}
+          index={index}
+          excludeActions={
+            nominator
+              ? [OperatorActionType.Deregister]
+              : [OperatorActionType.Deregister, OperatorActionType.Withdraw]
+          }
+          nominatorMaxStake={
+            nominator &&
+            (
+              (BigInt(operator.currentTotalStake) * BigInt(nominator.shares)) /
+              BigInt(operator.totalShares)
+            ).toString()
+          }
+        />
+      )
+    })}
   </div>
 )
