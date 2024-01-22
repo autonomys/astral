@@ -1,16 +1,20 @@
+import { useQuery } from '@apollo/client'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 // layout
 import { HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 // common
+import { formatAddress } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
+import useWallet from 'common/hooks/useWallet'
 import { LogoIcon } from 'common/icons'
 import { useTheme } from 'common/providers/ThemeProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
+import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 
 const OperatorHeader = () => {
   const { isDark, toggleTheme } = useTheme()
@@ -19,22 +23,52 @@ const OperatorHeader = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain, selectedDomain } = useDomains()
+  const { actingAccount } = useWallet()
 
-  const menuList = [
-    {
-      title: 'Operators',
-      link: `/${selectedChain.urls.page}/${selectedDomain}`,
+  const { data, refetch } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
+    variables: {
+      first: 1,
+      after: undefined,
+      // eslint-disable-next-line camelcase
+      where: { operatorOwner_eq: actingAccount ? formatAddress(actingAccount.address) : '' },
+      orderBy: 'id_ASC',
     },
-    {
-      title: 'Stake My Operator',
-      link: `${INTERNAL_ROUTES.operators.stake}`,
-    },
-    // TODO: remove comment when these pages are added
-    // {
-    //   title: 'Nominate',
-    //   link: `${INTERNAL_ROUTES.operators.nominate}`,
-    // },
-  ]
+    pollInterval: 6000,
+  })
+
+  const operatorsConnection = useMemo(
+    () => (data ? data.operatorsConnection.edges.map((operator) => operator.node) : []),
+    [data],
+  )
+
+  const menuList = useMemo(() => {
+    const general = [
+      {
+        title: 'Operators',
+        link: `/${selectedChain.urls.page}/${selectedDomain}`,
+      },
+      {
+        title: 'Stake My Operator',
+        link: `${INTERNAL_ROUTES.operators.stake}`,
+      },
+      // TODO: remove comment when these pages are added
+      // {
+      //   title: 'Nominate',
+      //   link: `${INTERNAL_ROUTES.operators.nominate}`,
+      // },
+    ]
+    if (operatorsConnection && operatorsConnection.length > 0)
+      general.push({
+        title: 'Manage My Operator',
+        link: `${INTERNAL_ROUTES.operators.manage}`,
+      })
+    return general
+  }, [operatorsConnection, selectedChain.urls.page, selectedDomain])
+
+  useEffect(() => {
+    refetch()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actingAccount])
 
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-10">

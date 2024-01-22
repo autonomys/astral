@@ -74,6 +74,7 @@ export const INTERNAL_ROUTES = {
     },
     list: 'list',
     stake: 'stake',
+    manage: 'manage',
     nominate: 'nominate',
   },
   search: {
