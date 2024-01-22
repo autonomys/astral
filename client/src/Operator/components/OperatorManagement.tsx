@@ -1,6 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { SortingState } from '@tanstack/react-table'
 import { Operator } from 'gql/graphql'
 import { FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
@@ -21,19 +21,8 @@ import { INTERNAL_ROUTES } from 'common/routes'
 // operator
 import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 import { NotFound } from 'layout/components'
+import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import OperatorsListCard from './OperatorsListCard'
-
-enum OperatorActionType {
-  None = 'none',
-  AddFunds = 'Add Funds',
-  Withdraw = 'Withdraw',
-  Deregister = 'Deregister',
-}
-
-type OperatorAction = {
-  type: OperatorActionType
-  operatorId: number | null
-}
 
 const OperatorManagement: FC = () => {
   const [searchOperator, setSearch] = useState<string>('')
@@ -52,10 +41,20 @@ const OperatorManagement: FC = () => {
     type: OperatorActionType.None,
     operatorId: null,
   })
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const handleAction = useCallback((value: OperatorAction) => {
+    setAction(value)
+    if (value.type !== OperatorActionType.None) setIsOpen(true)
+  }, [])
+  const handleActionClose = useCallback(() => {
+    setIsOpen(false)
+    setAction({ type: OperatorActionType.None, operatorId: null })
+  }, [])
 
   const cols = useMemo(
-    () => createColumns(selectedDomain, selectedChain.urls.page, action, setAction),
-    [selectedDomain, selectedChain.urls.page, action],
+    () => createColumns(selectedDomain, selectedChain.urls.page, action, handleAction),
+    [selectedDomain, selectedChain.urls.page, action, handleAction],
   )
 
   const variables = useMemo(
@@ -307,13 +306,14 @@ const OperatorManagement: FC = () => {
           </div>
         </div>
       </div>
+      <ActionsModal isOpen={isOpen} action={action} onClose={handleActionClose} />
     </div>
   )
 }
 
 export default OperatorManagement
 
-const createColumns = (selectedDomain, chain, action, setAction) => {
+const createColumns = (selectedDomain, chain, action, handleAction) => {
   return [
     {
       accessorKey: 'id',
@@ -387,7 +387,7 @@ const createColumns = (selectedDomain, chain, action, setAction) => {
         <Listbox
           value={action.type}
           onChange={(val) =>
-            setAction({
+            handleAction({
               type: val,
               operatorId: row.original.id,
             })
@@ -426,27 +426,16 @@ const createColumns = (selectedDomain, chain, action, setAction) => {
                       }
                       value={actionType}
                     >
-                      {({ selected }) => {
-                        return (
-                          <>
-                            <span
-                              className={`block truncate ${
-                                selected ? 'font-medium' : 'font-normal'
-                              } ${
-                                OperatorActionType[actionType] === OperatorActionType.Deregister &&
-                                'text-red-500'
-                              }`}
-                            >
-                              {OperatorActionType[actionType]}
-                            </span>
-                            {selected ? (
-                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
-                                <CheckIcon className='h-5 w-5 hidden md:block' aria-hidden='true' />
-                              </span>
-                            ) : null}
-                          </>
-                        )
-                      }}
+                      {({ selected }) => (
+                        <span
+                          className={`block truncate ${selected ? 'font-medium' : 'font-normal'} ${
+                            OperatorActionType[actionType] === OperatorActionType.Deregister &&
+                            'text-red-500'
+                          }`}
+                        >
+                          {OperatorActionType[actionType]}
+                        </span>
+                      )}
                     </Listbox.Option>
                   ))}
               </Listbox.Options>
