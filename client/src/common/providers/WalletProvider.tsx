@@ -78,26 +78,22 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setIsReady(false)
   }, [setInjector, setAccounts])
 
-  const handleSelectFirstWalletFromExtension = useCallback(
-    async (source: string) => {
-      const wallet = getWalletBySource(source)
-      const walletAccounts = await wallet?.getAccounts()
+  const handleSelectFirstWalletFromExtension = useCallback(async (source: string) => {
+    const wallet = getWalletBySource(source)
+    if (wallet) {
+      await wallet.enable()
+      if (wallet.extension) setInjector(wallet.extension)
+      const walletAccounts = await wallet.getAccounts()
       setAccounts(walletAccounts)
-
       setPreferredExtension(source)
       const mainAccount = walletAccounts?.find((account) => account.source === source)
       if (mainAccount) {
-        const newInjector = extensions?.find((extension) => extension.name === mainAccount.source)
-        if (newInjector) {
-          setInjector(newInjector)
-        }
         setActingAccount(mainAccount)
         setSubspaceAccount(formatAddress(mainAccount.address))
         setIsReady(true)
       }
-    },
-    [extensions],
-  )
+    }
+  }, [])
 
   useEffect(() => {
     // This effect is used to get the injector from the selected account
