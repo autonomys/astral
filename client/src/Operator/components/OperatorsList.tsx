@@ -133,21 +133,31 @@ const OperatorsList: FC = () => {
         accessorKey: 'actions',
         header: 'Actions',
         enableSorting: false,
-        cell: ({ row }) => (
-          <ActionsDropdown
-            action={action}
-            handleAction={handleAction}
-            row={row}
-            excludeActions={
-              row.original.nominators.find(
-                (nominator) =>
-                  nominator.id === `${row.original.id}-${formatAddress(actingAccount.address)}`,
-              )
-                ? [OperatorActionType.Deregister]
-                : [OperatorActionType.Deregister, OperatorActionType.Withdraw]
-            }
-          />
-        ),
+        cell: ({ row }) => {
+          const nominator = row.original.nominators.find(
+            (nominator) =>
+              nominator.id === `${row.original.id}-${formatAddress(actingAccount.address)}`,
+          )
+          return (
+            <ActionsDropdown
+              action={action}
+              handleAction={handleAction}
+              row={row}
+              excludeActions={
+                nominator
+                  ? [OperatorActionType.Deregister]
+                  : [OperatorActionType.Deregister, OperatorActionType.Withdraw]
+              }
+              nominatorMaxStake={
+                nominator &&
+                (
+                  (BigInt(row.original.currentTotalStake) * BigInt(nominator.shares)) /
+                  BigInt(row.original.totalShares)
+                ).toString()
+              }
+            />
+          )
+        },
       })
     return cols
   }, [actingAccount, selectedChain.urls.page, selectedDomain, action, handleAction])

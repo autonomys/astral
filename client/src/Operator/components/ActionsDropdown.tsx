@@ -13,6 +13,7 @@ interface ActionsDropdownProps {
     }
   }
   excludeActions?: OperatorActionType[]
+  nominatorMaxStake?: string
 }
 
 export const ActionsDropdown: FC<ActionsDropdownProps> = ({
@@ -20,6 +21,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
   handleAction,
   row,
   excludeActions,
+  nominatorMaxStake,
 }) => {
   const actionsAvailable = useMemo(
     () =>
@@ -36,7 +38,9 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
         handleAction({
           type: val,
           operatorId: parseInt(row.original.id),
-          maxAmount: BigInt(row.original.currentTotalStake),
+          maxAmount: nominatorMaxStake
+            ? BigInt(nominatorMaxStake)
+            : BigInt(row.original.currentTotalStake),
         })
       }
     >
