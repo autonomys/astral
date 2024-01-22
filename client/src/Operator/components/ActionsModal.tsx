@@ -98,11 +98,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ) => {
       if (!api || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
+      if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
       try {
         const block = await api.rpc.chain.getBlock()
         const hash = await api.tx.domains
-          .nominateOperator(action.operatorId, values.amount * 10 ** tokenDecimals)
+          .nominateOperator(
+            action.operatorId.toString(),
+            (values.amount * 10 ** tokenDecimals).toString(),
+          )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
         console.log('block', block)
@@ -216,6 +220,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       <div className='relative'>
                         <Field
                           name='amount'
+                          type='number'
                           placeholder={`Amount to ${
                             OperatorActionType[action.type] === OperatorActionType.AddFunds
                               ? 'stake'
