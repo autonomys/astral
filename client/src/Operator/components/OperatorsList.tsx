@@ -17,7 +17,6 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // operator
 import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
-import { formatAddress } from 'common/helpers/formatAddress'
 import { ActionsDropdown } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import OperatorsListCard from './OperatorsListCard'
@@ -29,8 +28,7 @@ const OperatorsList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-
-  const { actingAccount } = useWallet()
+  const { subspaceAccount } = useWallet()
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -128,15 +126,14 @@ const OperatorsList: FC = () => {
         cell: ({ row }) => <div>{row.original.status}</div>,
       },
     ]
-    if (actingAccount)
+    if (subspaceAccount)
       cols.push({
         accessorKey: 'actions',
         header: 'Actions',
         enableSorting: false,
         cell: ({ row }) => {
           const nominator = row.original.nominators.find(
-            (nominator) =>
-              nominator.id === `${row.original.id}-${formatAddress(actingAccount.address)}`,
+            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
           return (
             <ActionsDropdown
@@ -160,7 +157,7 @@ const OperatorsList: FC = () => {
         },
       })
     return cols
-  }, [actingAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
 
   const variables = useMemo(
     () => ({
@@ -246,7 +243,7 @@ const OperatorsList: FC = () => {
                 operators={operatorsConnection}
                 action={action}
                 handleAction={handleAction}
-                actingAccountAddress={actingAccount?.address}
+                subspaceAccount={subspaceAccount}
               />
             }
           />
@@ -263,21 +260,21 @@ type MobileComponentProps = {
   operators: Operator[]
   action: OperatorAction
   handleAction: (value: OperatorAction) => void
-  actingAccountAddress?: string
+  subspaceAccount?: string
 }
 
 const MobileComponent: FC<MobileComponentProps> = ({
   operators,
   action,
   handleAction,
-  actingAccountAddress,
+  subspaceAccount,
 }) => (
   <div className='w-full'>
     {operators.map((operator, index) => {
       const nominator =
-        actingAccountAddress &&
+        subspaceAccount &&
         operator.nominators.find(
-          (nominator) => nominator.id === `${operator.id}-${formatAddress(actingAccountAddress)}`,
+          (nominator) => nominator.id === `${operator.id}-${subspaceAccount}`,
         )
       return (
         <OperatorsListCard
