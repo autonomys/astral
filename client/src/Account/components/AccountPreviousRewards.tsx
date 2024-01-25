@@ -8,6 +8,8 @@ import { useParams } from 'react-router-dom'
 
 // common
 import { formatUnitsToNumber } from 'common/helpers'
+import { formatAddress } from 'common/helpers/formatAddress'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -24,15 +26,8 @@ const defaultRewards = {
     percentage: '0',
   },
   geminiII: {
-    stage1: {
-      earnings: '0',
-      percentage: '0',
-    },
-    stage2: {
-      earnings: '0',
-      percentageFarm: '0',
-      percentage: '0',
-    },
+    earnings: '0',
+    percentage: '0',
   },
   geminiIII: {
     IIIf: {
@@ -58,8 +53,15 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const [previousRewards, setRewards] = useState(defaultRewards)
 
   const { accountId } = useParams<{ accountId?: string }>()
+  const { selectedChain } = useDomains()
+
+  const convertedAddress = useMemo(
+    () => (selectedChain.isDomain ? accountId : formatAddress(accountId)),
+    [accountId, selectedChain],
+  )
+
   const { data: rewardsData } = useQuery(QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID, {
-    variables: { accountId },
+    variables: { convertedAddress },
   })
   const rewards: AccountRewards = useMemo(
     () =>
@@ -90,15 +92,8 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
             percentage: columns[4],
           },
           geminiII: {
-            stage1: {
-              earnings: columns[5],
-              percentage: columns[6],
-            },
-            stage2: {
-              earnings: columns[7],
-              percentageFarm: columns[8],
-              percentage: columns[9],
-            },
+            earnings: columns[5],
+            percentage: columns[6],
           },
         },
       }
@@ -130,17 +125,17 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
         },
       }
     })
+
     const userRewards = rewards.filter(
-      (reward) =>
-        reward.address.subspaceFormat === accountId || reward.address.polkadotFormat === accountId,
+      (reward) => reward.address.subspaceFormat === convertedAddress,
     )
     const userRewardsGeminiIIIf = rewardsGeminiIIIf.filter(
-      (reward) => reward.address.subspaceFormat === accountId,
+      (reward) => reward.address.subspaceFormat === convertedAddress,
     )
 
     if (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0)
       setRewards({ ...userRewards[0].rewards, ...userRewardsGeminiIIIf[0].rewards })
-  }, [accountId])
+  }, [convertedAddress])
 
   const rewardsPhase = [
     {
@@ -152,12 +147,8 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
       label: 'Gemini I',
     },
     {
-      name: 'geminiII.stage1',
-      label: 'Gemini II Stage 1',
-    },
-    {
-      name: 'geminiII.stage2',
-      label: 'Gemini II Stage 2',
+      name: 'geminiII',
+      label: 'Gemini II',
     },
     {
       name: 'gemini3f',
@@ -180,10 +171,8 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
           return parseFloat(previousRewards.aries.blocksWon).toFixed(2)
         case 'geminiI':
           return parseFloat(previousRewards.geminiI.earnings).toFixed(2)
-        case 'geminiII.stage1':
-          return parseFloat(previousRewards.geminiII.stage1.earnings).toFixed(2)
-        case 'geminiII.stage2':
-          return parseFloat(previousRewards.geminiII.stage2.earnings).toFixed(2)
+        case 'geminiII':
+          return parseFloat(previousRewards.geminiII.earnings).toFixed(2)
         case 'gemini3f':
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
@@ -204,14 +193,8 @@ const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
       switch (phase) {
         case 'geminiI':
           return parseFloat(previousRewards.geminiI.percentage.replace('%', '')).toFixed(2) + '%'
-        case 'geminiII.stage1':
-          return (
-            parseFloat(previousRewards.geminiII.stage1.percentage.replace('%', '')).toFixed(2) + '%'
-          )
-        case 'geminiII.stage2':
-          return (
-            parseFloat(previousRewards.geminiII.stage2.percentage.replace('%', '')).toFixed(2) + '%'
-          )
+        case 'geminiII':
+          return parseFloat(previousRewards.geminiII.percentage.replace('%', '')).toFixed(2) + '%'
         case 'gemini3f':
           return (
             parseFloat(previousRewards.geminiIII.IIIf.percentage.replace('%', '')).toFixed(2) + '%'
