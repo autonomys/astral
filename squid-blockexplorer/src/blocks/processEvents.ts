@@ -1,16 +1,16 @@
-import { Context, EventItem } from "../processor";
+import { SubstrateBlock } from "@subsquid/substrate-processor";
 import {
+  Account,
+  AccountRewards,
   Block,
   Event,
-  RewardEvent,
-  Account,
-  Operator,
   Nominator,
-  AccountRewards,
+  Operator,
   OperatorRewards,
+  RewardEvent,
 } from "../model";
-import { ExtrinsicsMap, CallsMap } from "./types";
-import { SubstrateBlock } from "@subsquid/substrate-processor";
+import { Context, EventItem } from "../processor";
+import { CallsMap, ExtrinsicsMap } from "./types";
 
 export function processEventsFactory(
   ctx: Context,
@@ -90,12 +90,13 @@ export function processEventsFactory(
     if (!operator) return;
 
     const operatorRewards = await getOrCreateOperatorRewards(header, operator);
+    const rewardAmount = BigInt(eventItem.event.args?.reward);
 
     const updatedOperatorRewards = new OperatorRewards({
       ...operatorRewards,
       amount: operatorRewards.amount
-        ? operatorRewards.amount + BigInt(eventItem.event.args?.reward)
-        : BigInt(eventItem.event.args?.reward),
+        ? operatorRewards.amount + rewardAmount
+        : rewardAmount,
       updatedAt: BigInt(header.height),
     });
 
@@ -109,7 +110,6 @@ export function processEventsFactory(
       nominators[0].account.id === operator.operatorOwner
     ) {
       const account = await getOrCreateAccount(header, operator.operatorOwner);
-
       const rewardEvent = new RewardEvent({
         ...eventItem.event,
         block,
@@ -117,7 +117,7 @@ export function processEventsFactory(
         call,
         timestamp: block.timestamp,
         account: account,
-        amount: BigInt(eventItem.event.args?.reward),
+        amount: rewardAmount,
       });
 
       const accountRewards = await getOrCreateAccountRewards(header, account);
@@ -125,10 +125,10 @@ export function processEventsFactory(
       const updatedReward = new AccountRewards({
         ...accountRewards,
         account,
-        operator: BigInt(eventItem.event.args?.reward),
+        operator: rewardAmount,
         amount: accountRewards.amount
-          ? accountRewards.amount + BigInt(eventItem.event.args?.reward)
-          : BigInt(eventItem.event.args?.reward),
+          ? accountRewards.amount + rewardAmount
+          : rewardAmount,
         updatedAt: BigInt(header.height),
       });
 
@@ -136,6 +136,32 @@ export function processEventsFactory(
 
       return rewardEvent;
     } else {
+      // add tax amount to operator owner
+      if (operator.operatorOwner) {
+        const rewardTax = operator.nominationTax
+          ? BigInt(operator.nominationTax / 100)
+          : BigInt(0);
+
+        const ownerAccount = await getOrCreateAccount(
+          header,
+          operator.operatorOwner
+        );
+
+        const nominationTaxAmount = rewardAmount * rewardTax;
+
+        const rewardEvent = new RewardEvent({
+          ...eventItem.event,
+          block,
+          extrinsic,
+          call,
+          timestamp: block.timestamp,
+          account: ownerAccount,
+          amount: nominationTaxAmount,
+        });
+
+        await ctx.store.save(rewardEvent);
+      }
+
       for (const nominator of nominators) {
         const account = await getOrCreateAccount(header, nominator.account.id);
         const accountRewards = await getOrCreateAccountRewards(header, account);
@@ -180,10 +206,10 @@ export function processEventsFactory(
     accountRewards: AccountRewards
   ) {
     const rewardTax = operator.nominationTax
-      ? BigInt(operator.nominationTax)
+      ? BigInt(operator.nominationTax / 100)
       : BigInt(0);
     const rewardAmount = BigInt(eventItem.event.args.reward);
-    const reward = rewardAmount - (rewardAmount * rewardTax) / BigInt(10000);
+    const reward = rewardAmount - rewardAmount * rewardTax;
     const totalShares = operator.totalShares
       ? BigInt(operator.totalShares)
       : BigInt(0);
