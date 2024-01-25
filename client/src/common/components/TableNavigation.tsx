@@ -114,11 +114,11 @@ const TableNavigation = <T extends object>({ table, data, fullDataDownloader }: 
               }}
               delay={400}
               value={table.getState().pagination.pageIndex + 1}
-              className='w-20 rounded-3xl border-none'
+              className='w-20 rounded-3xl border-none dark:text-white dark:bg-[#1E254E]'
             />
           </span>
           <select
-            className='rounded-3xl border-none'
+            className='rounded-3xl border-none dark:text-white dark:bg-[#1E254E]'
             value={table.getState().pagination.pageSize}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value))
