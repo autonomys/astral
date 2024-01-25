@@ -252,7 +252,11 @@ const OperatorManagement: FC = () => {
         >
           Information across operators
           {actingAccount && (
-            <span className={`text-base ${isDesktop ? 'text-base' : 'text-xs'} font-normal ml-2`}>
+            <span
+              className={`text-base ${
+                isDesktop ? 'text-base' : 'text-xs'
+              } font-normal ml-2 dark:text-[#1E254E]`}
+            >
               on Account {formatAddress(actingAccount.address)}
             </span>
           )}
@@ -276,7 +280,7 @@ const OperatorManagement: FC = () => {
         </div>
       </div>
 
-      <div className='p-5 mt-8 bg-[#DDEFF1] rounded-[20px]'>
+      <div className='p-5 mt-8 bg-[#DDEFF1] dark:bg-[#2A345E] rounded-[20px]'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>

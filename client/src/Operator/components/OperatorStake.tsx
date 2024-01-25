@@ -185,7 +185,7 @@ const OperatorStake = () => {
             <div className='mt-4 text-xl'>
               <Link
                 data-testid={'operator-link-documentation'}
-                className='text-[#4524C1] hover:text-[#DE67E4]'
+                className='text-[#4524C1] hover:text-[#DE67E4] dark:text-[#DDEFF1] underline cursor-pointer'
                 to={EXTERNAL_ROUTES.operatorDocs}
                 target='_blank'
               >
@@ -208,7 +208,7 @@ const OperatorStake = () => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <div className='p-5 mt-8 bg-[#DDEFF1] rounded-[20px]'>
+                  <div className='p-5 mt-8 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
                     <div className='ml-4 w-full'>
                       <div className='relative'>
                         <div className={`grid ${isDesktop ? 'grid-cols-3' : 'grid-cols-1'} gap-4`}>
@@ -287,11 +287,11 @@ const OperatorStake = () => {
                             <Field
                               name='signingKey'
                               placeholder='Signing Key'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-full bg-white shadow-lg
+                              className={`block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-full bg-white shadow-lg dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white
                             ${
                               errors.signingKey &&
                               touched.signingKey &&
-                              'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-full bg-white shadow-lg'
+                              'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-full bg-white shadow-lg dark:bg-[#2A345E]'
                             }
                           `}
                             />
@@ -314,11 +314,11 @@ const OperatorStake = () => {
                             <Field
                               name='amountToStake'
                               placeholder='Amount to Stake'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-full bg-white shadow-lg
+                              className={`block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-full bg-white shadow-lg dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white
                             ${
                               errors.amountToStake &&
                               touched.amountToStake &&
-                              'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-full bg-white shadow-lg'
+                              'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-full bg-white shadow-lg dark:bg-[#2A345E]'
                             }
                           `}
                             />
@@ -340,7 +340,7 @@ const OperatorStake = () => {
                             <Field
                               name='nominatorTax'
                               placeholder='Nominator tax'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-xl bg-white shadow-lg
+                              className={`block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-xl bg-white shadow-lg dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white
                             ${
                               errors.nominatorTax &&
                               touched.nominatorTax &&
@@ -366,7 +366,7 @@ const OperatorStake = () => {
                             <Field
                               name='minimumNominatorStake'
                               placeholder='Minimum Nominator Stake'
-                              className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-xl bg-white shadow-lg
+                              className={`block px-4 py-[10px] mt-4 w-full text-sm text-gray-900 rounded-xl bg-white shadow-lg dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white
                             ${
                               errors.minimumNominatorStake &&
                               touched.minimumNominatorStake &&
