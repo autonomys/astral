@@ -1,9 +1,8 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 
 // common
-import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { shortString } from 'common/helpers'
 import { formatAddress } from 'common/helpers/formatAddress'
 import useWallet from 'common/hooks/useWallet'
@@ -13,23 +12,20 @@ import SubWalletIcon from 'common/icons/SubWalletIcon'
 function AccountListDropdown() {
   const { actingAccount, subspaceAccount, accounts, changeAccount, disconnectWallet } = useWallet()
 
-  const handleAccountChange = (account: WalletAccount) => {
-    changeAccount(account)
-  }
-
-  const handleDisconnectWallet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    disconnectWallet()
-  }
-
-  const source = actingAccount?.source
+  const handleDisconnectWallet = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
+      disconnectWallet()
+    },
+    [disconnectWallet],
+  )
 
   return (
-    <Listbox value={actingAccount} onChange={handleAccountChange}>
+    <Listbox value={actingAccount} onChange={changeAccount}>
       <div className='relative'>
         <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
           <div className='flex items-center justify-center'>
-            {source === 'polkadot-js' ? (
+            {actingAccount && actingAccount.source === 'polkadot-js' ? (
               <div className='h-5 w-5'>
                 <PolkadotIcon />
               </div>

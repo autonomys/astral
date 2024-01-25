@@ -10,7 +10,6 @@ import { Spinner } from 'common/components'
 import NewTable from 'common/components/NewTable'
 import { PAGE_SIZE } from 'common/constants'
 import { bigNumberToNumber, downloadFullData, numberWithCommas, shortString } from 'common/helpers'
-import { formatAddress } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
@@ -32,7 +31,7 @@ const OperatorManagement: FC = () => {
   })
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
-  const { actingAccount } = useWallet()
+  const { subspaceAccount } = useWallet()
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
@@ -226,12 +225,12 @@ const OperatorManagement: FC = () => {
   )
 
   useEffect(() => {
-    if (actingAccount) handleSearch(formatAddress(actingAccount.address))
+    if (subspaceAccount) handleSearch(subspaceAccount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actingAccount])
+  }, [subspaceAccount])
 
   if (loading) return <Spinner />
-  if (!actingAccount) return <NotFound />
+  if (!subspaceAccount) return <NotFound />
 
   return (
     <div className='w-full flex flex-col align-middle'>
@@ -251,9 +250,9 @@ const OperatorManagement: FC = () => {
           } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
         >
           Information across operators
-          {actingAccount && (
+          {subspaceAccount && (
             <span className={`text-base ${isDesktop ? 'text-base' : 'text-xs'} font-normal ml-2`}>
-              on Account {formatAddress(actingAccount.address)}
+              on Account {subspaceAccount}
             </span>
           )}
         </div>
