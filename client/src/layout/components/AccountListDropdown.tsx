@@ -55,7 +55,7 @@ function AccountListDropdown() {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
+          <Listbox.Options className='absolute mt-1 max-h-80 w-auto md:w-full overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
             {accounts?.map((account, chainIdx) => (
               <Listbox.Option
                 key={chainIdx}
@@ -71,6 +71,11 @@ function AccountListDropdown() {
                   const formattedAccount = subAccount && shortString(subAccount)
                   return (
                     <>
+                      <span
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                      >
+                        {account.name}
+                      </span>
                       <span
                         className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                       >
