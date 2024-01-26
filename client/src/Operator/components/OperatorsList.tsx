@@ -1,9 +1,9 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { Operator } from 'gql/graphql'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 // common
 import { Spinner } from 'common/components'
@@ -31,10 +31,11 @@ const OperatorsList: FC = () => {
   })
 
   const { actingAccount } = useWallet()
+  const { operatorId } = useParams<{ operatorId?: string }>()
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
-    operatorId: null,
+    operatorId: operatorId ? parseInt(operatorId) : null,
     maxAmount: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
@@ -188,8 +189,8 @@ const OperatorsList: FC = () => {
     [apolloClient],
   )
 
-  const handleSearch = useCallback((value) => {
-    setSearch(value)
+  const handleSearch = useCallback((value: string | number) => {
+    setSearch(value.toString())
     setPagination({ ...pagination, pageIndex: 0 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -209,6 +210,10 @@ const OperatorsList: FC = () => {
     () => Math.floor(totalCount / pagination.pageSize),
     [totalCount, pagination],
   )
+
+  useEffect(() => {
+    if (operatorId) handleSearch(operatorId)
+  }, [operatorId, handleSearch])
 
   if (loading) {
     return <Spinner />

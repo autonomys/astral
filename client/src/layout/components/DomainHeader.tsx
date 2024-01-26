@@ -49,7 +49,7 @@ const DomainHeader: FC = () => {
       <div className='w-full flex justify-between container py-3 items-center px-5 md:px-[25px] 2xl:px-0 mx-auto'>
         <div className='flex gap-9'>
           {DOMAINS.map((item, index) => {
-            const isActive = pathName.includes(item.name)
+            const isActive = pathName.includes(`${selectedChain.urls.page}/${item.name}`)
             return (
               <div className='text-[13px] font-semibold items-center flex' key={`${item}-${index}`}>
                 <button

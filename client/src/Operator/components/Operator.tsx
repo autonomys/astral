@@ -1,7 +1,7 @@
-import { FC } from 'react'
-import { useParams } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
+import { FC } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { useParams } from 'react-router-dom'
 
 // layout
 import { NotFound } from 'layout/components'
@@ -11,9 +11,9 @@ import { Spinner } from 'common/components'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 
 // operator
-import { QUERY_OPERATOR_BY_ID } from 'Operator/query'
 import OperatorDetailsCard from 'Operator/components/OperatorDetailsCard'
 import OperatorNominatorList from 'Operator/components/OperatorNominatorList'
+import { QUERY_OPERATOR_BY_ID } from 'Operator/query'
 
 const Operator: FC = () => {
   const { operatorId } = useParams<{ operatorId?: string }>()

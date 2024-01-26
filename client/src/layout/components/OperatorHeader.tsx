@@ -86,7 +86,7 @@ const OperatorHeader = () => {
             {menuList.map((item, index) => {
               const isCurrentPath = pathName.includes(item.link) && index !== 0
               const isInitialPath =
-                pathName === `/${selectedChain.urls.page}/leaderboard` && index === 0
+                pathName === `/${selectedChain.urls.page}/operators` && index === 0
 
               return (
                 <Link
