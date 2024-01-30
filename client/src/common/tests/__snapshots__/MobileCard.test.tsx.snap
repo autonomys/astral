@@ -3,7 +3,7 @@
 exports[`mobileCard renders properly 1`] = `
 <DocumentFragment>
   <div
-    class="w-full bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-lg py-7 px-4 font-['Montserrat'] mb-6"
+    class="w-full bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-lg py-7 px-4 font-['Montserrat'] mb-6"
   >
     <div
       class="flex gap-2 items-center mb-2"

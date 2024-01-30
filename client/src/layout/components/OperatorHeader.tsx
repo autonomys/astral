@@ -7,7 +7,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 // common
-import { formatAddress } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
@@ -23,14 +22,14 @@ const OperatorHeader = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain, selectedDomain } = useDomains()
-  const { actingAccount } = useWallet()
+  const { subspaceAccount } = useWallet()
 
   const { data, refetch } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
     variables: {
       first: 1,
       after: undefined,
       // eslint-disable-next-line camelcase
-      where: { operatorOwner_eq: actingAccount ? formatAddress(actingAccount.address) : '' },
+      where: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
       orderBy: 'id_ASC',
     },
     pollInterval: 6000,
@@ -68,7 +67,7 @@ const OperatorHeader = () => {
   useEffect(() => {
     refetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actingAccount])
+  }, [subspaceAccount])
 
   return (
     <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-10">

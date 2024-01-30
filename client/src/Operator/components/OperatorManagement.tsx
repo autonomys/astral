@@ -1,6 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { Operator } from 'gql/graphql'
+import { Operator, OperatorsConnection } from 'gql/graphql'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
@@ -10,7 +10,6 @@ import { Spinner } from 'common/components'
 import NewTable from 'common/components/NewTable'
 import { PAGE_SIZE } from 'common/constants'
 import { bigNumberToNumber, downloadFullData, numberWithCommas, shortString } from 'common/helpers'
-import { formatAddress } from 'common/helpers/formatAddress'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
@@ -32,7 +31,7 @@ const OperatorManagement: FC = () => {
   })
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
-  const { actingAccount } = useWallet()
+  const { subspaceAccount } = useWallet()
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
@@ -167,11 +166,11 @@ const OperatorManagement: FC = () => {
     [pagination],
   )
 
-  const operators = useMemo(
+  const operators: OperatorsConnection = useMemo(
     () => (data && data.operatorsConnection ? data.operatorsConnection : []),
     [data],
   )
-  const operatorsConnection = useMemo(
+  const operatorsConnection: Operator[] = useMemo(
     () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
     [operators],
   )
@@ -226,12 +225,12 @@ const OperatorManagement: FC = () => {
   )
 
   useEffect(() => {
-    if (actingAccount) handleSearch(formatAddress(actingAccount.address))
+    if (subspaceAccount) handleSearch(subspaceAccount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actingAccount])
+  }, [subspaceAccount])
 
   if (loading) return <Spinner />
-  if (!actingAccount) return <NotFound />
+  if (!subspaceAccount) return <NotFound />
 
   return (
     <div className='w-full flex flex-col align-middle'>
@@ -251,13 +250,12 @@ const OperatorManagement: FC = () => {
           } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
         >
           Information across operators
-          {actingAccount && (
-            <span
+          {subspaceAccount && (
+            <span 
               className={`text-base ${
                 isDesktop ? 'text-base' : 'text-xs'
-              } font-normal ml-2 dark:text-[#1E254E]`}
-            >
-              on Account {formatAddress(actingAccount.address)}
+              } font-normal ml-2 dark:text-[#1E254E]`}>
+              on Account {subspaceAccount}
             </span>
           )}
         </div>
@@ -275,7 +273,13 @@ const OperatorManagement: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
+            mobileComponent={
+              <MobileComponent
+                operators={operatorsConnection}
+                action={action}
+                handleAction={handleAction}
+              />
+            }
           />
         </div>
       </div>
@@ -407,14 +411,18 @@ export default OperatorManagement
 
 type MobileComponentProps = {
   operators: Operator[]
+  action: OperatorAction
+  handleAction: (value: OperatorAction) => void
 }
 
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
+const MobileComponent: FC<MobileComponentProps> = ({ operators, action, handleAction }) => (
   <div className='w-full'>
     {operators.map((operator, index) => (
       <OperatorsListCard
         index={index}
         operator={operator}
+        action={action}
+        handleAction={handleAction}
         key={`operator-list-card-${operator.id}`}
       />
     ))}

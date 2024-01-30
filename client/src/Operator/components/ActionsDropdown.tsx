@@ -45,9 +45,9 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
       }
     >
       <div className='relative'>
-        <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default mt-4 rounded-full bg-[#DE67E4] text-white py-[10px] pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
+        <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default rounded-full bg-[#DE67E4] text-white py-[10px] pl-3 pr-16 md:pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
           <div className='flex items-center justify-center'>
-            <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full '>Actions</span>
+            <span className='ml-2 w-5 text-sm md:w-full '>Actions</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
                 className='h-5 w-5 text-gray-400 ui-open:rotate-180 ui-open:transform dark:text-[#DE67E4]'
@@ -62,7 +62,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
+          <Listbox.Options className='absolute z-40 mt-1 max-h-60 w-auto md:w-full overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm dark:bg-[#1E254E] dark:text-white'>
             {actionsAvailable.map((actionType, index) => (
               <Listbox.Option
                 key={index}

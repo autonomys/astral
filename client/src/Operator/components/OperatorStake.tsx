@@ -1,7 +1,6 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { isHex } from '@polkadot/util'
-import { formatAddress } from 'common/helpers/formatAddress'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { WalletIcon } from 'common/icons'
@@ -31,7 +30,7 @@ type Domain = {
 
 const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const { api, actingAccount, injector } = useWallet()
+  const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
@@ -79,11 +78,13 @@ const OperatorStake = () => {
     () =>
       domainsList.filter((domain) => {
         if ((domain.operatorAllowList as OperatorAllowListOpen).anyone === null) return true
-        return (domain.operatorAllowList as OperatorAllowListRestricted).operators.includes(
-          formatAddress(actingAccount?.address) as string,
-        )
+        else if (subspaceAccount)
+          return (domain.operatorAllowList as OperatorAllowListRestricted).operators.includes(
+            subspaceAccount,
+          )
+        return false
       }),
-    [domainsList, actingAccount],
+    [domainsList, subspaceAccount],
   )
   const currentDomainLabel = useCallback(
     (values: FormValues) => {
