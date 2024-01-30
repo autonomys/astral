@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useEffect } from 'react'
+import { Fragment, ReactNode, useEffect, useMemo } from 'react'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 // common
@@ -90,20 +90,14 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
 
     const match = location.pathname.match(regex)
 
-    if (match && match[2] !== selectedDomain) {
-      setSelectedDomain(match[2])
-    }
+    if (match && match[2] !== selectedDomain) setSelectedDomain(match[2])
 
     if (match && match[1] !== selectedChain.urls.page) {
       const urlSelectedPage = match[1]
 
       const newChain = chains.find((chain) => chain.urls.page === urlSelectedPage)
-
-      if (newChain) {
-        setSelectedChain(newChain)
-      }
+      if (newChain) setSelectedChain(newChain)
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
@@ -112,8 +106,7 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
 
 const App = () => {
   const { chains, selectedChain, selectedDomain } = useDomains()
-
-  const networks = chains.map((chain) => chain.urls.page)
+  const networks = useMemo(() => chains.map((chain) => chain.urls.page), [chains])
 
   return (
     <HashRouter>
@@ -131,18 +124,31 @@ const App = () => {
               <Route path={`/${network}/consensus`} element={<DomainLayout />}>
                 {createDomainRoutes()}
               </Route>
+              <Route path={`/${network}`} element={<DomainLayout />}>
+                {createDomainRoutes()}
+              </Route>
               <Route path={`/${network}/leaderboard`} element={<LeaderboardLayout />}>
                 <Route index element={<VoteBlockRewardList />} />
-                <Route path='farmers' element={<VoteBlockRewardList />} />
-                <Route path='nominators' element={<NominatorRewardsList />} />
-                <Route path='operators' element={<OperatorRewardsList />} />
+                <Route
+                  path={INTERNAL_ROUTES.leaderboard.farmers}
+                  element={<VoteBlockRewardList />}
+                />
+                <Route
+                  path={INTERNAL_ROUTES.leaderboard.operators}
+                  element={<NominatorRewardsList />}
+                />
+                <Route
+                  path={INTERNAL_ROUTES.leaderboard.nominators}
+                  element={<OperatorRewardsList />}
+                />
               </Route>
               <Route path={`/${network}/operators`} element={<OperatorLayout />}>
                 <Route index element={<OperatorsList />} />
-                <Route path='list' element={<OperatorsList />} />
-                <Route path='stake' element={<OperatorStake />} />
-                <Route path='manage' element={<OperatorManagement />} />
-                <Route path='nominate' element={<OperatorNominate />} />
+                <Route path={INTERNAL_ROUTES.operators.id.path} element={<OperatorsList />} />
+                <Route path={INTERNAL_ROUTES.operators.list} element={<OperatorsList />} />
+                <Route path={INTERNAL_ROUTES.operators.stake} element={<OperatorStake />} />
+                <Route path={INTERNAL_ROUTES.operators.manage} element={<OperatorManagement />} />
+                <Route path={INTERNAL_ROUTES.operators.nominate} element={<OperatorNominate />} />
               </Route>
             </Fragment>
           ))}
