@@ -53,23 +53,26 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     }
   }, [accounts, preferredExtension])
 
-  const setup = async () => {
+  const setup = useCallback(async () => {
     const wsProvider = new WsProvider(process.env.REACT_APP_RPC_URL)
     const api = await ApiPromise.create({ provider: wsProvider })
 
     await api.isReady
 
     setApi(api)
-  }
+  }, [])
 
-  const changeAccount = (account: WalletAccount) => {
-    setActingAccount(account)
-    setSubspaceAccount(formatAddress(account.address))
-    const newInjector = extensions?.find((extension) => extension.name === account.source)
-    if (newInjector) {
-      setInjector(newInjector)
-    }
-  }
+  const changeAccount = useCallback(
+    (account: WalletAccount) => {
+      setActingAccount(account)
+      setSubspaceAccount(formatAddress(account.address))
+      const newInjector = extensions?.find((extension) => extension.name === account.source)
+      if (newInjector) {
+        setInjector(newInjector)
+      }
+    },
+    [extensions],
+  )
 
   const disconnectWallet = useCallback(() => {
     setInjector(null)
@@ -119,7 +122,26 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   useEffect(() => {
     if (!injector) return
     setup()
-  }, [injector])
+  }, [injector, setup])
+
+  // This effect is used to mock the wallet when the environment variables are set in the .env file
+  useEffect(() => {
+    if (
+      process.env.REACT_APP_MOCK_WALLET &&
+      process.env.REACT_APP_MOCK_WALLET_ADDRESS &&
+      process.env.REACT_APP_MOCK_WALLET_SOURCE
+    ) {
+      const mockAccount = {
+        address: process.env.REACT_APP_MOCK_WALLET_ADDRESS,
+        source: process.env.REACT_APP_MOCK_WALLET_SOURCE,
+      }
+      setActingAccount(mockAccount)
+      setAccounts([mockAccount])
+      setActingAccountIdx(0)
+      setSubspaceAccount(formatAddress(process.env.REACT_APP_MOCK_WALLET_ADDRESS))
+      setIsReady(true)
+    }
+  }, [])
 
   return (
     <WalletContext.Provider

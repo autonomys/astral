@@ -1,6 +1,6 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { Operator } from 'gql/graphql'
+import { Operator, OperatorsConnection } from 'gql/graphql'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { Link } from 'react-router-dom'
@@ -17,7 +17,6 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // operator
 import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
-import { formatAddress } from 'common/helpers/formatAddress'
 import { ActionsDropdown } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import OperatorsListCard from './OperatorsListCard'
@@ -29,8 +28,7 @@ const OperatorsList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-
-  const { actingAccount } = useWallet()
+  const { subspaceAccount } = useWallet()
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -128,15 +126,14 @@ const OperatorsList: FC = () => {
         cell: ({ row }) => <div>{row.original.status}</div>,
       },
     ]
-    if (actingAccount)
+    if (subspaceAccount)
       cols.push({
         accessorKey: 'actions',
         header: 'Actions',
         enableSorting: false,
         cell: ({ row }) => {
           const nominator = row.original.nominators.find(
-            (nominator) =>
-              nominator.id === `${row.original.id}-${formatAddress(actingAccount.address)}`,
+            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
           return (
             <ActionsDropdown
@@ -160,7 +157,7 @@ const OperatorsList: FC = () => {
         },
       })
     return cols
-  }, [actingAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
 
   const variables = useMemo(
     () => ({
@@ -194,11 +191,11 @@ const OperatorsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const operators = useMemo(
+  const operators: OperatorsConnection = useMemo(
     () => (data && data.operatorsConnection ? data.operatorsConnection : []),
     [data],
   )
-  const operatorsConnection = useMemo(
+  const operatorsConnection: Operator[] = useMemo(
     () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
     [operators],
   )
@@ -241,7 +238,14 @@ const OperatorsList: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
+            mobileComponent={
+              <MobileComponent
+                operators={operatorsConnection}
+                action={action}
+                handleAction={handleAction}
+                subspaceAccount={subspaceAccount}
+              />
+            }
           />
         </div>
       </div>
@@ -254,16 +258,45 @@ export default OperatorsList
 
 type MobileComponentProps = {
   operators: Operator[]
+  action: OperatorAction
+  handleAction: (value: OperatorAction) => void
+  subspaceAccount?: string
 }
 
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
+const MobileComponent: FC<MobileComponentProps> = ({
+  operators,
+  action,
+  handleAction,
+  subspaceAccount,
+}) => (
   <div className='w-full'>
-    {operators.map((operator, index) => (
-      <OperatorsListCard
-        index={index}
-        operator={operator}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
+    {operators.map((operator, index) => {
+      const nominator =
+        subspaceAccount &&
+        operator.nominators.find(
+          (nominator) => nominator.id === `${operator.id}-${subspaceAccount}`,
+        )
+      return (
+        <OperatorsListCard
+          key={`operator-list-card-${operator.id}`}
+          operator={operator}
+          action={action}
+          handleAction={handleAction}
+          index={index}
+          excludeActions={
+            nominator
+              ? [OperatorActionType.Deregister]
+              : [OperatorActionType.Deregister, OperatorActionType.Withdraw]
+          }
+          nominatorMaxStake={
+            nominator &&
+            (
+              (BigInt(operator.currentTotalStake) * BigInt(nominator.shares)) /
+              BigInt(operator.totalShares)
+            ).toString()
+          }
+        />
+      )
+    })}
   </div>
 )
