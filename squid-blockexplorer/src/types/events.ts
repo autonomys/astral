@@ -782,6 +782,29 @@ export class DomainsDomainRuntimeUpgradedEvent {
     }
 }
 
+export class DomainsForceDomainEpochTransitionEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.ForceDomainEpochTransition')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV0(): boolean {
+        return this._chain.getEventHash('Domains.ForceDomainEpochTransition') === '6641f9112d3517683ff0183b2260fcd2e90ac07c3d64e78842dfa8f1305b1a57'
+    }
+
+    get asV0(): {domainId: number, completedEpochIndex: number} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class DomainsFraudProofProcessedEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -803,13 +826,27 @@ export class DomainsFraudProofProcessedEvent {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
+}
 
-    get isV1(): boolean {
-        return this._chain.getEventHash('Domains.FraudProofProcessed') === '22012ca74bcc2bce4c31d06a9f87e122b0b37ecca0dc051969175172f9ca1ae0'
+export class DomainsFundsUnlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.FundsUnlocked')
+        this._chain = ctx._chain
+        this.event = event
     }
 
-    get asV1(): {domainId: number, newHeadReceiptNumber: number} {
-        assert(this.isV1)
+    get isV0(): boolean {
+        return this._chain.getEventHash('Domains.FundsUnlocked') === 'c6ffa5ee1d01f18e9b20b94ef4144bb946f6eed1c628f547a997811965926537'
+    }
+
+    get asV0(): {operatorId: bigint, nominatorId: Uint8Array, amount: bigint} {
+        assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
 }
@@ -906,6 +943,29 @@ export class DomainsOperatorRewardedEvent {
     }
 }
 
+export class DomainsOperatorSlashedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorSlashed')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV0(): boolean {
+        return this._chain.getEventHash('Domains.OperatorSlashed') === 'e00099164eb39983043bcbcbbd6e650df1a72db96920471b6c54daf1bbc36f89'
+    }
+
+    get asV0(): {operatorId: bigint, reason: v0.SlashedReason} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class DomainsOperatorSwitchedDomainEvent {
     private readonly _chain: Chain
     private readonly event: Event
@@ -924,6 +984,52 @@ export class DomainsOperatorSwitchedDomainEvent {
     }
 
     get asV0(): {oldDomainId: number, newDomainId: number} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorTaxCollectedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorTaxCollected')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV0(): boolean {
+        return this._chain.getEventHash('Domains.OperatorTaxCollected') === 'e49dd1ad0347e4063fe244bce2b647fdd2edb53fc51d9dc12aca672b4d3c8fb5'
+    }
+
+    get asV0(): {operatorId: bigint, tax: bigint} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class DomainsOperatorUnlockedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.OperatorUnlocked')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV0(): boolean {
+        return this._chain.getEventHash('Domains.OperatorUnlocked') === '8ffd479fbc1b33b18b9485df09465e8f37e733ec4184266f9bbe335de066f5ec'
+    }
+
+    get asV0(): {operatorId: bigint} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1373,13 +1479,42 @@ export class SudoKeyChangedEvent {
      * The sudo key has been updated.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('Sudo.KeyChanged') === 'b94a7a753f8f0b026120555f1f1c70878235307461e256807cb791dad15244c2'
+        return this._chain.getEventHash('Sudo.KeyChanged') === 'a771bed496e6bee0a887b6ede5584a937b2b84b2386b8e90c5a43687a8485573'
     }
 
     /**
      * The sudo key has been updated.
      */
-    get asV0(): {oldSudoer: (Uint8Array | undefined)} {
+    get asV0(): {old: (Uint8Array | undefined), new: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SudoKeyRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Sudo.KeyRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The key was permanently removed.
+     */
+    get isV0(): boolean {
+        return this._chain.getEventHash('Sudo.KeyRemoved') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * The key was permanently removed.
+     */
+    get asV0(): null {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1408,7 +1543,7 @@ export class SudoSudidEvent {
     /**
      * A sudo call just took place.
      */
-    get asV0(): {sudoResult: v0.Type_47} {
+    get asV0(): {sudoResult: v0.Type_48} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1437,7 +1572,7 @@ export class SudoSudoAsDoneEvent {
     /**
      * A [sudo_as](Pallet::sudo_as) call just took place.
      */
-    get asV0(): {sudoResult: v0.Type_47} {
+    get asV0(): {sudoResult: v0.Type_48} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1617,7 +1752,7 @@ export class SystemRemarkedEvent {
     }
 }
 
-export class TransactionFeesComputeFeesRewardEvent {
+export class SystemUpgradeAuthorizedEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -1625,28 +1760,28 @@ export class TransactionFeesComputeFeesRewardEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TransactionFees.ComputeFeesReward')
+        assert(event.name === 'System.UpgradeAuthorized')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     * Compute fees.
+     * An upgrade was authorized.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('TransactionFees.ComputeFeesReward') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+        return this._chain.getEventHash('System.UpgradeAuthorized') === '5c55d10848d503323d2e442c7afe37bb9673cbd625584442853911cb797f840c'
     }
 
     /**
-     * Compute fees.
+     * An upgrade was authorized.
      */
-    get asV0(): {who: Uint8Array, amount: bigint} {
+    get asV0(): {codeHash: Uint8Array, checkVersion: boolean} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TransactionFeesStorageFeesEscrowChangeEvent {
+export class TransactionFeesBlockFeesEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -1654,36 +1789,7 @@ export class TransactionFeesStorageFeesEscrowChangeEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TransactionFees.StorageFeesEscrowChange')
-        this._chain = ctx._chain
-        this.event = event
-    }
-
-    /**
-     * Storage fees escrow change.
-     */
-    get isV0(): boolean {
-        return this._chain.getEventHash('TransactionFees.StorageFeesEscrowChange') === '500c1a1e72640855fd9d8ee7f3c88e551c4a2190429f05b6681ae847f8ab5fc5'
-    }
-
-    /**
-     * Storage fees escrow change.
-     */
-    get asV0(): {before: bigint, after: bigint} {
-        assert(this.isV0)
-        return this._chain.decodeEvent(this.event)
-    }
-}
-
-export class TransactionFeesStorageFeesRewardEvent {
-    private readonly _chain: Chain
-    private readonly event: Event
-
-    constructor(ctx: EventContext)
-    constructor(ctx: ChainContext, event: Event)
-    constructor(ctx: EventContext, event?: Event) {
-        event = event || ctx.event
-        assert(event.name === 'TransactionFees.StorageFeesReward')
+        assert(event.name === 'TransactionFees.BlockFees')
         this._chain = ctx._chain
         this.event = event
     }
@@ -1692,19 +1798,19 @@ export class TransactionFeesStorageFeesRewardEvent {
      * Storage fees.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('TransactionFees.StorageFeesReward') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+        return this._chain.getEventHash('TransactionFees.BlockFees') === 'db79208cdb6ffd3ede25a3d794427dd954d6b49a1a0b086cf7293893a72fd3a1'
     }
 
     /**
      * Storage fees.
      */
-    get asV0(): {who: Uint8Array, amount: bigint} {
+    get asV0(): {who: Uint8Array, storage: bigint, compute: bigint, tips: bigint} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
 }
 
-export class TransactionFeesTipsRewardEvent {
+export class TransactionFeesBurnedBlockFeesEvent {
     private readonly _chain: Chain
     private readonly event: Event
 
@@ -1712,22 +1818,22 @@ export class TransactionFeesTipsRewardEvent {
     constructor(ctx: ChainContext, event: Event)
     constructor(ctx: EventContext, event?: Event) {
         event = event || ctx.event
-        assert(event.name === 'TransactionFees.TipsReward')
+        assert(event.name === 'TransactionFees.BurnedBlockFees')
         this._chain = ctx._chain
         this.event = event
     }
 
     /**
-     * Tips.
+     * Fees burned due to equivocated block author.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('TransactionFees.TipsReward') === 'e84a34a6a3d577b31f16557bd304282f4fe4cbd7115377f4687635dc48e52ba5'
+        return this._chain.getEventHash('TransactionFees.BurnedBlockFees') === '0d27e5ffd974bd0c42e48ea79214e88c6bf148ba434a5c44c47901f75d1e62b2'
     }
 
     /**
-     * Tips.
+     * Fees burned due to equivocated block author.
      */
-    get asV0(): {who: Uint8Array, amount: bigint} {
+    get asV0(): {storage: bigint, compute: bigint, tips: bigint} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1992,7 +2098,7 @@ export class UtilityDispatchedAsEvent {
     /**
      * A call was dispatched.
      */
-    get asV0(): {result: v0.Type_47} {
+    get asV0(): {result: v0.Type_48} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }

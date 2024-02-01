@@ -1,12 +1,12 @@
-import { SubstrateBlock } from '@subsquid/substrate-processor';
 import { ApiPromise } from "@polkadot/api";
+import { SubstrateBlock } from '@subsquid/substrate-processor';
 
-import { Context } from '../processor';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage, DomainsOperatorsStorage, DomainsNominatorsStorage, TransactionFeesCollectedStorageFeesEscrowStorage, } from '../types/storage';
-import { calcHistorySize, getStorageHash, decodeLog, calcSpacePledged } from './utils';
 import { Account } from '../model';
-import { SubPreDigest } from './types';
+import { Context } from '../processor';
+import { DomainsNominatorCountStorage, DomainsOperatorsStorage, SubspaceSolutionRangesStorage, SystemDigestStorage, TransactionFeesCollectedBlockFeesStorage } from '../types/storage';
 import { DigestItem_PreRuntime } from '../types/v0';
+import { SubPreDigest } from './types';
+import { calcHistorySize, calcSpacePledged, decodeLog, getStorageHash } from './utils';
 
 export function solutionRangesStorageFactory(ctx: Context, header: SubstrateBlock) {
   return new SubspaceSolutionRangesStorage(ctx, header);
@@ -21,11 +21,11 @@ export function domainStorageFactory(ctx: Context, header: SubstrateBlock) {
 }
 
 export function domainNominatorStorageFactory(ctx: Context, header: SubstrateBlock) {
-  return new DomainsNominatorsStorage(ctx, header);
+  return new DomainsNominatorCountStorage(ctx, header);
 }
 
 export function transactionFeesCollectedStorage(ctx: Context, header: SubstrateBlock) {
-  return new TransactionFeesCollectedStorageFeesEscrowStorage(ctx, header);
+  return new TransactionFeesCollectedBlockFeesStorage(ctx, header);
 }
 
 export function getSpacePledgedFactory(ctx: Context, storageFactory: (ctx: Context, header: SubstrateBlock) => SubspaceSolutionRangesStorage) {

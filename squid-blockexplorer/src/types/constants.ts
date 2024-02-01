@@ -528,6 +528,36 @@ export class DomainsMaxPendingStakingOperationConstant {
     }
 }
 
+export class DomainsMinNominatorStakeConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  Minimum nominator stake required to nominate and operator.
+     */
+    get isV0() {
+        return this._chain.getConstantTypeHash('Domains', 'MinNominatorStake') === 'a73c503ad07b8dce07ffc3646a2c7aeacb1280015e3b79887f6a9b11dae120f1'
+    }
+
+    /**
+     *  Minimum nominator stake required to nominate and operator.
+     */
+    get asV0(): bigint {
+        assert(this.isV0)
+        return this._chain.getConstant('Domains', 'MinNominatorStake')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Domains', 'MinNominatorStake') != null
+    }
+}
+
 export class DomainsMinOperatorStakeConstant {
     private readonly _chain: Chain
 
@@ -628,15 +658,15 @@ export class DomainsSudoIdConstant {
     /**
      *  The sudo account id
      */
-    get isV1() {
+    get isV0() {
         return this._chain.getConstantTypeHash('Domains', 'SudoId') === 'cc28a7f7046ec4d0eb3419e4aa142bf25c25992e58d0e8646eb029c7c6b4c0c8'
     }
 
     /**
      *  The sudo account id
      */
-    get asV1(): Uint8Array {
-        assert(this.isV1)
+    get asV0(): Uint8Array {
+        assert(this.isV0)
         return this._chain.getConstant('Domains', 'SudoId')
     }
 
@@ -1321,7 +1351,7 @@ export class SystemVersionConstant {
      *  Get the chain's current version.
      */
     get isV0() {
-        return this._chain.getConstantTypeHash('System', 'Version') === 'f6a7df964a5f6d420bccc7ccc38bd9265b00dc71b74c91dc5848badeeaf0cbb8'
+        return this._chain.getConstantTypeHash('System', 'Version') === 'd382dbbcc7760cd6518839a3223d6b3e27dbdc4d62041d536c52561cd482a48b'
     }
 
     /**
@@ -1348,20 +1378,24 @@ export class TimestampMinimumPeriodConstant {
     }
 
     /**
-     *  The minimum period between blocks. Beware that this is different to the *expected*
-     *  period that the block production apparatus provides. Your chosen consensus system will
-     *  generally work with this to determine a sensible block time. e.g. For Aura, it will be
-     *  double this period on default settings.
+     *  The minimum period between blocks.
+     * 
+     *  Be aware that this is different to the *expected* period that the block production
+     *  apparatus provides. Your chosen consensus system will generally work with this to
+     *  determine a sensible block time. For example, in the Aura pallet it will be double this
+     *  period on default settings.
      */
     get isV0() {
         return this._chain.getConstantTypeHash('Timestamp', 'MinimumPeriod') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
     }
 
     /**
-     *  The minimum period between blocks. Beware that this is different to the *expected*
-     *  period that the block production apparatus provides. Your chosen consensus system will
-     *  generally work with this to determine a sensible block time. e.g. For Aura, it will be
-     *  double this period on default settings.
+     *  The minimum period between blocks.
+     * 
+     *  Be aware that this is different to the *expected* period that the block production
+     *  apparatus provides. Your chosen consensus system will generally work with this to
+     *  determine a sensible block time. For example, in the Aura pallet it will be double this
+     *  period on default settings.
      */
     get asV0(): bigint {
         assert(this.isV0)
@@ -1470,70 +1504,6 @@ export class TransactionFeesMinReplicationFactorConstant {
     }
 }
 
-export class TransactionFeesStorageFeesEscrowBlockRewardConstant {
-    private readonly _chain: Chain
-
-    constructor(ctx: ChainContext) {
-        this._chain = ctx._chain
-    }
-
-    /**
-     *  How much (ratio) of storage fees escrow should be given to farmer each block as a
-     *  reward.
-     */
-    get isV0() {
-        return this._chain.getConstantTypeHash('TransactionFees', 'StorageFeesEscrowBlockReward') === 'ef51d55268ea048d2630ef91aec23cd3a982e0efd12a9169a7d12285ca9c59f4'
-    }
-
-    /**
-     *  How much (ratio) of storage fees escrow should be given to farmer each block as a
-     *  reward.
-     */
-    get asV0(): [bigint, bigint] {
-        assert(this.isV0)
-        return this._chain.getConstant('TransactionFees', 'StorageFeesEscrowBlockReward')
-    }
-
-    /**
-     * Checks whether the constant is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getConstantTypeHash('TransactionFees', 'StorageFeesEscrowBlockReward') != null
-    }
-}
-
-export class TransactionFeesStorageFeesEscrowBlockTaxConstant {
-    private readonly _chain: Chain
-
-    constructor(ctx: ChainContext) {
-        this._chain = ctx._chain
-    }
-
-    /**
-     *  How much (ratio) of storage fees collected in a block should be put into storage fees
-     *  escrow (with remaining issued to farmer immediately).
-     */
-    get isV0() {
-        return this._chain.getConstantTypeHash('TransactionFees', 'StorageFeesEscrowBlockTax') === 'ef51d55268ea048d2630ef91aec23cd3a982e0efd12a9169a7d12285ca9c59f4'
-    }
-
-    /**
-     *  How much (ratio) of storage fees collected in a block should be put into storage fees
-     *  escrow (with remaining issued to farmer immediately).
-     */
-    get asV0(): [bigint, bigint] {
-        assert(this.isV0)
-        return this._chain.getConstant('TransactionFees', 'StorageFeesEscrowBlockTax')
-    }
-
-    /**
-     * Checks whether the constant is defined for the current chain version.
-     */
-    get isExists(): boolean {
-        return this._chain.getConstantTypeHash('TransactionFees', 'StorageFeesEscrowBlockTax') != null
-    }
-}
-
 export class TransactionFeesTotalSpacePledgedConstant {
     private readonly _chain: Chain
 
@@ -1572,10 +1542,10 @@ export class TransactionPaymentOperationalFeeMultiplierConstant {
     }
 
     /**
-     *  A fee mulitplier for `Operational` extrinsics to compute "virtual tip" to boost their
+     *  A fee multiplier for `Operational` extrinsics to compute "virtual tip" to boost their
      *  `priority`
      * 
-     *  This value is multipled by the `final_fee` to obtain a "virtual tip" that is later
+     *  This value is multiplied by the `final_fee` to obtain a "virtual tip" that is later
      *  added to a tip component in regular `priority` calculations.
      *  It means that a `Normal` transaction can front-run a similarly-sized `Operational`
      *  extrinsic (with no tip), by including a tip value greater than the virtual tip.
@@ -1599,10 +1569,10 @@ export class TransactionPaymentOperationalFeeMultiplierConstant {
     }
 
     /**
-     *  A fee mulitplier for `Operational` extrinsics to compute "virtual tip" to boost their
+     *  A fee multiplier for `Operational` extrinsics to compute "virtual tip" to boost their
      *  `priority`
      * 
-     *  This value is multipled by the `final_fee` to obtain a "virtual tip" that is later
+     *  This value is multiplied by the `final_fee` to obtain a "virtual tip" that is later
      *  added to a tip component in regular `priority` calculations.
      *  It means that a `Normal` transaction can front-run a similarly-sized `Operational`
      *  extrinsic (with no tip), by including a tip value greater than the virtual tip.
