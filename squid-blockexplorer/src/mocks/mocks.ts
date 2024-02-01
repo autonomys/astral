@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Chain } from "@subsquid/substrate-processor/lib/chain";
 import { Logger } from "@subsquid/logger";
-import { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from '@subsquid/substrate-processor';
-import { CallItem, Context, EventItem } from '../processor';
-import BlockHeaderMock from './BlockHeader.json';
-import { SystemDigestStorage, SubspaceSolutionRangesStorage, TransactionFeesCollectedStorageFeesEscrowStorage } from '../types/storage';
-import { Account, AccountRewards, Operator, OperatorRewards } from '../model';
+import { Chain } from "@subsquid/substrate-processor/lib/chain";
+import { Store } from "@subsquid/typeorm-store";
 import { createBlock, createCall, createExtrinsic } from '../blocks/utils';
+import { Account, AccountRewards, Operator, OperatorRewards } from '../model';
+import { CallItem, Context, EventItem } from '../processor';
+import { SubspaceSolutionRangesStorage, SystemDigestStorage, TransactionFeesCollectedBlockFeesStorage } from '../types/storage';
+import BlockHeaderMock from './BlockHeader.json';
 
 const callData = {
   id: 'parent call id',
@@ -225,7 +225,7 @@ export const transactionFeesCollectedStorageMock = () => ({
   asV2: {
     get: () => SPACE_PLEDGED
   },
-} as unknown as TransactionFeesCollectedStorageFeesEscrowStorage);
+} as unknown as TransactionFeesCollectedBlockFeesStorage);
 
 export const digestLogs = [
   { __kind: 'Consensus' }, { __kind: 'PreRuntime' },

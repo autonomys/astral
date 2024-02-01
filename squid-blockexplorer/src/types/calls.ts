@@ -205,35 +205,6 @@ export class BalancesUpgradeAccountsCall {
     }
 }
 
-export class DomainsAutoStakeBlockRewardsCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Domains.auto_stake_block_rewards')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * See [`Pallet::auto_stake_block_rewards`].
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Domains.auto_stake_block_rewards') === '8ffd479fbc1b33b18b9485df09465e8f37e733ec4184266f9bbe335de066f5ec'
-    }
-
-    /**
-     * See [`Pallet::auto_stake_block_rewards`].
-     */
-    get asV0(): {operatorId: bigint} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
 export class DomainsDeregisterOperatorCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -258,6 +229,35 @@ export class DomainsDeregisterOperatorCall {
      * See [`Pallet::deregister_operator`].
      */
     get asV0(): {operatorId: bigint} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DomainsForceStakingEpochTransitionCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Domains.force_staking_epoch_transition')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::force_staking_epoch_transition`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('Domains.force_staking_epoch_transition') === '3037d4816636b5c3fb65811d3539dec2cca52f588262804bf1cbf515a78108bb'
+    }
+
+    /**
+     * See [`Pallet::force_staking_epoch_transition`].
+     */
+    get asV0(): {domainId: number} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -396,7 +396,7 @@ export class DomainsSubmitBundleCall {
      * See [`Pallet::submit_bundle`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Domains.submit_bundle') === '82190ee22f41cb4d2097cc4d4ab1116c87db1f0b36c37c1b4565c2623947ba40'
+        return this._chain.getCallHash('Domains.submit_bundle') === '2d832ef0366644e936c9fcd7114f2e9b72f1fd7c860ee678edbb1a9eaa04553d'
     }
 
     /**
@@ -425,7 +425,7 @@ export class DomainsSubmitFraudProofCall {
      * See [`Pallet::submit_fraud_proof`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Domains.submit_fraud_proof') === 'd8ec9676e1c9acc6b1a2238fe0354c9de0b1db12a8badd04f735074d50e0a307'
+        return this._chain.getCallHash('Domains.submit_fraud_proof') === '616f25e845d5a9fa0caa73f5426dac779499c52dc666bf8afa93d3d33fe630ff'
     }
 
     /**
@@ -461,6 +461,64 @@ export class DomainsSwitchDomainCall {
      * See [`Pallet::switch_domain`].
      */
     get asV0(): {operatorId: bigint, newDomainId: number} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DomainsUnlockFundsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Domains.unlock_funds')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::unlock_funds`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('Domains.unlock_funds') === '8ffd479fbc1b33b18b9485df09465e8f37e733ec4184266f9bbe335de066f5ec'
+    }
+
+    /**
+     * See [`Pallet::unlock_funds`].
+     */
+    get asV0(): {operatorId: bigint} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class DomainsUnlockOperatorCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Domains.unlock_operator')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::unlock_operator`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('Domains.unlock_operator') === '8ffd479fbc1b33b18b9485df09465e8f37e733ec4184266f9bbe335de066f5ec'
+    }
+
+    /**
+     * See [`Pallet::unlock_operator`].
+     */
+    get asV0(): {operatorId: bigint} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -541,13 +599,13 @@ export class DomainsWithdrawStakeCall {
      * See [`Pallet::withdraw_stake`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Domains.withdraw_stake') === '79487a357f90f713eb5d2263a90cc8df0fbd35eb9b921e828114a1e85cc61c9d'
+        return this._chain.getCallHash('Domains.withdraw_stake') === 'f2d71d8d43d5bda0d2a990e7f9214542f1b33cfeba62c44b5800db04618db375'
     }
 
     /**
      * See [`Pallet::withdraw_stake`].
      */
-    get asV0(): {operatorId: bigint, withdraw: v0.Withdraw} {
+    get asV0(): {operatorId: bigint, shares: bigint} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -727,6 +785,64 @@ export class RuntimeConfigsSetEnableDomainsCall {
     }
 }
 
+export class RuntimeConfigsSetEnableDynamicCostOfStorageCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'RuntimeConfigs.set_enable_dynamic_cost_of_storage')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_enable_dynamic_cost_of_storage`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('RuntimeConfigs.set_enable_dynamic_cost_of_storage') === '7501bfe3353efbeb13bf1dea0acc87b5a87c80c229e6df97f79e650e4261f2fa'
+    }
+
+    /**
+     * See [`Pallet::set_enable_dynamic_cost_of_storage`].
+     */
+    get asV0(): {enableDynamicCostOfStorage: boolean} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class RuntimeConfigsSetEnableNonRootCallsCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'RuntimeConfigs.set_enable_non_root_calls')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_enable_non_root_calls`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('RuntimeConfigs.set_enable_non_root_calls') === 'c08d033fb3ca017f79045348ecf090ebe1a7ac2d6a4287d2231815d6da823398'
+    }
+
+    /**
+     * See [`Pallet::set_enable_non_root_calls`].
+     */
+    get asV0(): {enableNonRootCalls: boolean} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class SubspaceEnableAuthoringByAnyoneCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -756,7 +872,7 @@ export class SubspaceEnableAuthoringByAnyoneCall {
     }
 }
 
-export class SubspaceEnableRewardsCall {
+export class SubspaceEnableRewardsAtCall {
     private readonly _chain: Chain
     private readonly call: Call
 
@@ -764,22 +880,22 @@ export class SubspaceEnableRewardsCall {
     constructor(ctx: ChainContext, call: Call)
     constructor(ctx: CallContext, call?: Call) {
         call = call || ctx.call
-        assert(call.name === 'Subspace.enable_rewards')
+        assert(call.name === 'Subspace.enable_rewards_at')
         this._chain = ctx._chain
         this.call = call
     }
 
     /**
-     * See [`Pallet::enable_rewards`].
+     * See [`Pallet::enable_rewards_at`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Subspace.enable_rewards') === '1bdaf75fb5be86cd00e96445c81877b4da02821f453e6b767650c5299dd02b65'
+        return this._chain.getCallHash('Subspace.enable_rewards_at') === 'e43296c603c79a1d3231f0971002e356b8f11d65e90d902ee8e58a352db95e38'
     }
 
     /**
-     * See [`Pallet::enable_rewards`].
+     * See [`Pallet::enable_rewards_at`].
      */
-    get asV0(): {height: (number | undefined)} {
+    get asV0(): {enableRewardsAt: v0.EnableRewardsAt} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -809,35 +925,6 @@ export class SubspaceEnableSolutionRangeAdjustmentCall {
      * See [`Pallet::enable_solution_range_adjustment`].
      */
     get asV0(): {solutionRangeOverride: (bigint | undefined), votingSolutionRangeOverride: (bigint | undefined)} {
-        assert(this.isV0)
-        return this._chain.decodeCall(this.call)
-    }
-}
-
-export class SubspaceEnableStorageAccessCall {
-    private readonly _chain: Chain
-    private readonly call: Call
-
-    constructor(ctx: CallContext)
-    constructor(ctx: ChainContext, call: Call)
-    constructor(ctx: CallContext, call?: Call) {
-        call = call || ctx.call
-        assert(call.name === 'Subspace.enable_storage_access')
-        this._chain = ctx._chain
-        this.call = call
-    }
-
-    /**
-     * See [`Pallet::enable_storage_access`].
-     */
-    get isV0(): boolean {
-        return this._chain.getCallHash('Subspace.enable_storage_access') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
-    }
-
-    /**
-     * See [`Pallet::enable_storage_access`].
-     */
-    get asV0(): null {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -930,6 +1017,35 @@ export class SubspaceVoteCall {
     }
 }
 
+export class SudoRemoveKeyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Sudo.remove_key')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::remove_key`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('Sudo.remove_key') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * See [`Pallet::remove_key`].
+     */
+    get asV0(): null {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class SudoSetKeyCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -976,7 +1092,7 @@ export class SudoSudoCall {
      * See [`Pallet::sudo`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === '16a8337df83e8b5d527cfb20a8393bccb700685358b4b60cca4dfb21a8477fd6'
+        return this._chain.getCallHash('Sudo.sudo') === '17bc383b6b213d850f89baad0610bdf7ee2bbf6b522bf6a1ea4749885332cf18'
     }
 
     /**
@@ -1005,7 +1121,7 @@ export class SudoSudoAsCall {
      * See [`Pallet::sudo_as`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === 'cb0b9eafa1c37681e41daa6688a6732f830f26ae8adfafe37875f676425c3bc7'
+        return this._chain.getCallHash('Sudo.sudo_as') === '413945ac977ce12a8eafbef2c3f63a4a733131e4740a01d3e900af683fc8586c'
     }
 
     /**
@@ -1034,13 +1150,100 @@ export class SudoSudoUncheckedWeightCall {
      * See [`Pallet::sudo_unchecked_weight`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'dbe80a02ce3ddf989ecaf7a0400217a8c97f4bcb9b18c4da505ed6524a9e70a8'
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '79fb30bf71f203b7e0ee79e784280b54da40158c1427ed750961b7b40b2a0256'
     }
 
     /**
      * See [`Pallet::sudo_unchecked_weight`].
      */
     get asV0(): {call: v0.Call, weight: v0.Weight} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemApplyAuthorizedUpgradeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.apply_authorized_upgrade')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::apply_authorized_upgrade`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('System.apply_authorized_upgrade') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
+    }
+
+    /**
+     * See [`Pallet::apply_authorized_upgrade`].
+     */
+    get asV0(): {code: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemAuthorizeUpgradeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.authorize_upgrade')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('System.authorize_upgrade') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade`].
+     */
+    get asV0(): {codeHash: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemAuthorizeUpgradeWithoutChecksCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.authorize_upgrade_without_checks')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade_without_checks`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('System.authorize_upgrade_without_checks') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade_without_checks`].
+     */
+    get asV0(): {codeHash: Uint8Array} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
@@ -1353,7 +1556,7 @@ export class UtilityAsDerivativeCall {
      * See [`Pallet::as_derivative`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Utility.as_derivative') === '2abaab44fe983c53be975405627ca2ce9975ad44c3a7439686172e29afc7fd26'
+        return this._chain.getCallHash('Utility.as_derivative') === '2fd63d572a49f9b893c429bacb58aff9b70b0c55556193105f58764fea0cdb7f'
     }
 
     /**
@@ -1382,7 +1585,7 @@ export class UtilityBatchCall {
      * See [`Pallet::batch`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Utility.batch') === '16c66df937c4468041dac45692416241e1813cc58a37a7493c3dd45eda7de5a0'
+        return this._chain.getCallHash('Utility.batch') === 'caa2e2f3b6f3fb2e46da75660bda87731321019eb050cbf54ae632c48d65b7ae'
     }
 
     /**
@@ -1411,7 +1614,7 @@ export class UtilityBatchAllCall {
      * See [`Pallet::batch_all`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Utility.batch_all') === '16c66df937c4468041dac45692416241e1813cc58a37a7493c3dd45eda7de5a0'
+        return this._chain.getCallHash('Utility.batch_all') === 'caa2e2f3b6f3fb2e46da75660bda87731321019eb050cbf54ae632c48d65b7ae'
     }
 
     /**
@@ -1440,7 +1643,7 @@ export class UtilityDispatchAsCall {
      * See [`Pallet::dispatch_as`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Utility.dispatch_as') === '1f0c039a5a63d5cda32f158d0dc9eb0e06ee4b81707f1f2c709ab49f3ab43fef'
+        return this._chain.getCallHash('Utility.dispatch_as') === '6d69fdc2ae85929eda199ab8c78ac1997d64ee46a09eef133d00353e40922ccb'
     }
 
     /**
@@ -1469,7 +1672,7 @@ export class UtilityForceBatchCall {
      * See [`Pallet::force_batch`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Utility.force_batch') === '16c66df937c4468041dac45692416241e1813cc58a37a7493c3dd45eda7de5a0'
+        return this._chain.getCallHash('Utility.force_batch') === 'caa2e2f3b6f3fb2e46da75660bda87731321019eb050cbf54ae632c48d65b7ae'
     }
 
     /**
@@ -1498,7 +1701,7 @@ export class UtilityWithWeightCall {
      * See [`Pallet::with_weight`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Utility.with_weight') === 'dbe80a02ce3ddf989ecaf7a0400217a8c97f4bcb9b18c4da505ed6524a9e70a8'
+        return this._chain.getCallHash('Utility.with_weight') === '79fb30bf71f203b7e0ee79e784280b54da40158c1427ed750961b7b40b2a0256'
     }
 
     /**

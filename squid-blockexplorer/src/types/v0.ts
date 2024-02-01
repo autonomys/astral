@@ -16,6 +16,23 @@ export interface RuntimeType_Evm {
     __kind: 'Evm'
 }
 
+export type SlashedReason = SlashedReason_InvalidBundle | SlashedReason_BadExecutionReceipt | SlashedReason_BundleEquivocation
+
+export interface SlashedReason_InvalidBundle {
+    __kind: 'InvalidBundle'
+    value: number
+}
+
+export interface SlashedReason_BadExecutionReceipt {
+    __kind: 'BadExecutionReceipt'
+    value: Uint8Array
+}
+
+export interface SlashedReason_BundleEquivocation {
+    __kind: 'BundleEquivocation'
+    value: bigint
+}
+
 export type ChainId = ChainId_Consensus | ChainId_Domain
 
 export interface ChainId_Consensus {
@@ -48,13 +65,13 @@ export interface SegmentHeader_V0 {
     lastArchivedBlock: LastArchivedBlock
 }
 
-export type Type_47 = Type_47_Ok | Type_47_Err
+export type Type_48 = Type_48_Ok | Type_48_Err
 
-export interface Type_47_Ok {
+export interface Type_48_Ok {
     __kind: 'Ok'
 }
 
-export interface Type_47_Err {
+export interface Type_48_Err {
     __kind: 'Err'
     value: DispatchError
 }
@@ -182,7 +199,7 @@ export interface Bundle {
     extrinsics: Uint8Array[]
 }
 
-export type FraudProof = FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition | FraudProof_InvalidTotalRewards | FraudProof_InvalidExtrinsicsRoot | FraudProof_ValidBundle | FraudProof_InvalidDomainBlockHash | FraudProof_InvalidBundles
+export type FraudProof = FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition | FraudProof_InvalidBlockFees | FraudProof_InvalidExtrinsicsRoot | FraudProof_ValidBundle | FraudProof_InvalidDomainBlockHash | FraudProof_InvalidBundles
 
 export interface FraudProof_InvalidStateTransition {
     __kind: 'InvalidStateTransition'
@@ -204,9 +221,9 @@ export interface FraudProof_ImproperTransactionSortition {
     value: ImproperTransactionSortitionProof
 }
 
-export interface FraudProof_InvalidTotalRewards {
-    __kind: 'InvalidTotalRewards'
-    value: InvalidTotalRewardsProof
+export interface FraudProof_InvalidBlockFees {
+    __kind: 'InvalidBlockFees'
+    value: InvalidBlockFeesProof
 }
 
 export interface FraudProof_InvalidExtrinsicsRoot {
@@ -240,17 +257,6 @@ export interface OperatorAllowList_Operators {
     value: Uint8Array[]
 }
 
-export type Withdraw = Withdraw_All | Withdraw_Some
-
-export interface Withdraw_All {
-    __kind: 'All'
-}
-
-export interface Withdraw_Some {
-    __kind: 'Some'
-    value: bigint
-}
-
 export interface InitiateChannelParams {
     maxOutgoingMessages: number
     feeModel: FeeModel
@@ -263,6 +269,22 @@ export interface CrossDomainMessage {
     nonce: bigint
     proof: Proof
     weightTag: MessageWeightTag
+}
+
+export type EnableRewardsAt = EnableRewardsAt_Height | EnableRewardsAt_SolutionRange | EnableRewardsAt_Manually
+
+export interface EnableRewardsAt_Height {
+    __kind: 'Height'
+    value: (number | undefined)
+}
+
+export interface EnableRewardsAt_SolutionRange {
+    __kind: 'SolutionRange'
+    value: bigint
+}
+
+export interface EnableRewardsAt_Manually {
+    __kind: 'Manually'
 }
 
 export interface EquivocationProof {
@@ -363,7 +385,7 @@ export interface AccountData {
     flags: bigint
 }
 
-export interface Type_149 {
+export interface Type_152 {
     amount: bigint
 }
 
@@ -388,11 +410,17 @@ export interface BlockTreeNode {
     operatorIds: bigint[]
 }
 
+export interface Deposit {
+    known: KnownDeposit
+    pending: (PendingDeposit | undefined)
+}
+
 export interface DomainObject {
     ownerAccountId: Uint8Array
     createdAt: number
     genesisReceiptHash: Uint8Array
     domainConfig: DomainConfig
+    domainRuntimeInfo: DomainRuntimeInfo
 }
 
 export interface StakingSummary {
@@ -419,10 +447,6 @@ export interface ElectionVerificationParams {
     totalDomainStake: bigint
 }
 
-export interface Nominator {
-    shares: bigint
-}
-
 export interface Operator {
     signingKey: Uint8Array
     currentDomainId: number
@@ -431,17 +455,10 @@ export interface Operator {
     nominationTax: number
     currentTotalStake: bigint
     currentEpochRewards: bigint
-    totalShares: bigint
+    currentTotalShares: bigint
     status: OperatorStatus
-}
-
-export interface PendingNominatorUnlock {
-    nominatorId: Uint8Array
-    balance: bigint
-}
-
-export interface PendingOperatorSlashInfo {
-    unlockingNominators: PendingNominatorUnlock[]
+    depositsInEpoch: bigint
+    withdrawalsInEpoch: bigint
 }
 
 export interface RuntimeObject {
@@ -459,6 +476,12 @@ export interface ScheduledRuntimeUpgrade {
     rawGenesis: RawGenesis
     version: RuntimeVersion
     hash: Uint8Array
+}
+
+export interface Withdrawal {
+    totalWithdrawalAmount: bigint
+    withdrawals: [number, number, bigint][]
+    withdrawalInShares: ([[number, number], number, bigint] | undefined)
 }
 
 export interface BlockMessages {
@@ -525,6 +548,11 @@ export interface AccountInfo {
     data: AccountData
 }
 
+export interface CodeUpgradeAuthorization {
+    codeHash: Uint8Array
+    checkVersion: boolean
+}
+
 export interface PerDispatchClass {
     normal: Weight
     operational: Weight
@@ -567,6 +595,11 @@ export interface CollectedFees {
     tips: bigint
 }
 
+export interface BlockTransactionByteFee {
+    current: bigint
+    next: bigint
+}
+
 export type Releases = Releases_V1Ancient | Releases_V2
 
 export interface Releases_V1Ancient {
@@ -584,13 +617,13 @@ export interface Transfer {
 }
 
 export interface BlockLength {
-    max: Type_82
+    max: Type_85
 }
 
 export interface BlockWeights {
     baseBlock: Weight
     maxBlock: Weight
-    perClass: Type_78
+    perClass: Type_81
 }
 
 export interface RuntimeDbWeight {
@@ -607,6 +640,7 @@ export interface RuntimeVersion {
     apis: [Uint8Array, number][]
     transactionVersion: number
     stateVersion: number
+    extrinsicStateVersion: number
 }
 
 export interface LastArchivedBlock {
@@ -732,7 +766,6 @@ export interface InvalidTransactionProof {
 
 export interface BundleEquivocationProof {
     domainId: number
-    offender: Uint8Array
     slot: bigint
     firstHeader: SealedBundleHeader
     secondHeader: SealedBundleHeader
@@ -743,7 +776,7 @@ export interface ImproperTransactionSortitionProof {
     badReceiptHash: Uint8Array
 }
 
-export interface InvalidTotalRewardsProof {
+export interface InvalidBlockFeesProof {
     domainId: number
     badReceiptHash: Uint8Array
     storageProof: StorageProof
@@ -772,7 +805,7 @@ export interface InvalidBundlesFraudProof {
     domainId: number
     bundleIndex: number
     invalidBundleType: InvalidBundleType
-    extrinsicInclusionProof: StorageProof
+    proofData: StorageProof
     isTrueInvalidFraudProof: boolean
 }
 
@@ -834,7 +867,7 @@ export interface Vote_V0 {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event
+export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event | SystemCall_authorize_upgrade | SystemCall_authorize_upgrade_without_checks | SystemCall_apply_authorized_upgrade
 
 /**
  * See [`Pallet::remark`].
@@ -902,6 +935,30 @@ export interface SystemCall_remark_with_event {
 }
 
 /**
+ * See [`Pallet::authorize_upgrade`].
+ */
+export interface SystemCall_authorize_upgrade {
+    __kind: 'authorize_upgrade'
+    codeHash: Uint8Array
+}
+
+/**
+ * See [`Pallet::authorize_upgrade_without_checks`].
+ */
+export interface SystemCall_authorize_upgrade_without_checks {
+    __kind: 'authorize_upgrade_without_checks'
+    codeHash: Uint8Array
+}
+
+/**
+ * See [`Pallet::apply_authorized_upgrade`].
+ */
+export interface SystemCall_apply_authorized_upgrade {
+    __kind: 'apply_authorized_upgrade'
+    code: Uint8Array
+}
+
+/**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
 export type TimestampCall = TimestampCall_set
@@ -917,7 +974,7 @@ export interface TimestampCall_set {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type SubspaceCall = SubspaceCall_report_equivocation | SubspaceCall_store_segment_headers | SubspaceCall_enable_solution_range_adjustment | SubspaceCall_vote | SubspaceCall_enable_rewards | SubspaceCall_enable_storage_access | SubspaceCall_enable_authoring_by_anyone
+export type SubspaceCall = SubspaceCall_report_equivocation | SubspaceCall_store_segment_headers | SubspaceCall_enable_solution_range_adjustment | SubspaceCall_vote | SubspaceCall_enable_rewards_at | SubspaceCall_enable_authoring_by_anyone
 
 /**
  * See [`Pallet::report_equivocation`].
@@ -953,18 +1010,11 @@ export interface SubspaceCall_vote {
 }
 
 /**
- * See [`Pallet::enable_rewards`].
+ * See [`Pallet::enable_rewards_at`].
  */
-export interface SubspaceCall_enable_rewards {
-    __kind: 'enable_rewards'
-    height: (number | undefined)
-}
-
-/**
- * See [`Pallet::enable_storage_access`].
- */
-export interface SubspaceCall_enable_storage_access {
-    __kind: 'enable_storage_access'
+export interface SubspaceCall_enable_rewards_at {
+    __kind: 'enable_rewards_at'
+    enableRewardsAt: EnableRewardsAt
 }
 
 /**
@@ -1101,7 +1151,7 @@ export interface UtilityCall_with_weight {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_register_domain_runtime | DomainsCall_upgrade_domain_runtime | DomainsCall_register_operator | DomainsCall_nominate_operator | DomainsCall_instantiate_domain | DomainsCall_switch_domain | DomainsCall_deregister_operator | DomainsCall_withdraw_stake | DomainsCall_auto_stake_block_rewards | DomainsCall_update_domain_operator_allow_list
+export type DomainsCall = DomainsCall_submit_bundle | DomainsCall_submit_fraud_proof | DomainsCall_register_domain_runtime | DomainsCall_upgrade_domain_runtime | DomainsCall_register_operator | DomainsCall_nominate_operator | DomainsCall_instantiate_domain | DomainsCall_switch_domain | DomainsCall_deregister_operator | DomainsCall_withdraw_stake | DomainsCall_unlock_funds | DomainsCall_unlock_operator | DomainsCall_update_domain_operator_allow_list | DomainsCall_force_staking_epoch_transition
 
 /**
  * See [`Pallet::submit_bundle`].
@@ -1188,14 +1238,22 @@ export interface DomainsCall_deregister_operator {
 export interface DomainsCall_withdraw_stake {
     __kind: 'withdraw_stake'
     operatorId: bigint
-    withdraw: Withdraw
+    shares: bigint
 }
 
 /**
- * See [`Pallet::auto_stake_block_rewards`].
+ * See [`Pallet::unlock_funds`].
  */
-export interface DomainsCall_auto_stake_block_rewards {
-    __kind: 'auto_stake_block_rewards'
+export interface DomainsCall_unlock_funds {
+    __kind: 'unlock_funds'
+    operatorId: bigint
+}
+
+/**
+ * See [`Pallet::unlock_operator`].
+ */
+export interface DomainsCall_unlock_operator {
+    __kind: 'unlock_operator'
     operatorId: bigint
 }
 
@@ -1209,9 +1267,17 @@ export interface DomainsCall_update_domain_operator_allow_list {
 }
 
 /**
+ * See [`Pallet::force_staking_epoch_transition`].
+ */
+export interface DomainsCall_force_staking_epoch_transition {
+    __kind: 'force_staking_epoch_transition'
+    domainId: number
+}
+
+/**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type RuntimeConfigsCall = RuntimeConfigsCall_set_enable_domains | RuntimeConfigsCall_set_enable_balance_transfers
+export type RuntimeConfigsCall = RuntimeConfigsCall_set_enable_domains | RuntimeConfigsCall_set_enable_dynamic_cost_of_storage | RuntimeConfigsCall_set_enable_balance_transfers | RuntimeConfigsCall_set_enable_non_root_calls
 
 /**
  * See [`Pallet::set_enable_domains`].
@@ -1222,11 +1288,27 @@ export interface RuntimeConfigsCall_set_enable_domains {
 }
 
 /**
+ * See [`Pallet::set_enable_dynamic_cost_of_storage`].
+ */
+export interface RuntimeConfigsCall_set_enable_dynamic_cost_of_storage {
+    __kind: 'set_enable_dynamic_cost_of_storage'
+    enableDynamicCostOfStorage: boolean
+}
+
+/**
  * See [`Pallet::set_enable_balance_transfers`].
  */
 export interface RuntimeConfigsCall_set_enable_balance_transfers {
     __kind: 'set_enable_balance_transfers'
     enableBalanceTransfers: boolean
+}
+
+/**
+ * See [`Pallet::set_enable_non_root_calls`].
+ */
+export interface RuntimeConfigsCall_set_enable_non_root_calls {
+    __kind: 'set_enable_non_root_calls'
+    enableNonRootCalls: boolean
 }
 
 /**
@@ -1323,7 +1405,7 @@ export interface TransporterCall_transfer {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as
+export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as | SudoCall_remove_key
 
 /**
  * See [`Pallet::sudo`].
@@ -1357,6 +1439,13 @@ export interface SudoCall_sudo_as {
     __kind: 'sudo_as'
     who: MultiAddress
     call: Call
+}
+
+/**
+ * See [`Pallet::remove_key`].
+ */
+export interface SudoCall_remove_key {
+    __kind: 'remove_key'
 }
 
 export type MultiAccountId = MultiAccountId_AccountId32 | MultiAccountId_AccountId20 | MultiAccountId_Raw
@@ -1425,7 +1514,23 @@ export interface ExecutionReceipt {
     finalStateRoot: Uint8Array
     executionTrace: Uint8Array[]
     executionTraceRoot: Uint8Array
-    totalRewards: bigint
+    blockFees: BlockFees
+}
+
+export interface KnownDeposit {
+    shares: bigint
+}
+
+export interface PendingDeposit {
+    effectiveDomainEpoch: [number, number]
+    amount: bigint
+}
+
+export type DomainRuntimeInfo = DomainRuntimeInfo_EVM
+
+export interface DomainRuntimeInfo_EVM {
+    __kind: 'EVM'
+    chainId: bigint
 }
 
 export type OperatorStatus = OperatorStatus_Registered | OperatorStatus_Deregistered | OperatorStatus_Slashed
@@ -1436,6 +1541,7 @@ export interface OperatorStatus_Registered {
 
 export interface OperatorStatus_Deregistered {
     __kind: 'Deregistered'
+    value: OperatorDeregisteredInfo
 }
 
 export interface OperatorStatus_Slashed {
@@ -1561,13 +1667,13 @@ export interface Event_Sudo {
     value: SudoEvent
 }
 
-export interface Type_82 {
+export interface Type_85 {
     normal: number
     operational: number
     mandatory: number
 }
 
-export interface Type_78 {
+export interface Type_81 {
     normal: WeightsPerClass
     operational: WeightsPerClass
     mandatory: WeightsPerClass
@@ -1604,13 +1710,13 @@ export interface ExecutionPhase_InitializeBlock {
 
 export interface ExecutionPhase_ApplyExtrinsic {
     __kind: 'ApplyExtrinsic'
-    proofOfInclusion: StorageProof
-    mismatchIndex: number
-    extrinsic: Uint8Array
+    extrinsicProof: StorageProof
+    mismatch: ApplyExtrinsicMismatch
 }
 
 export interface ExecutionPhase_FinalizeBlock {
     __kind: 'FinalizeBlock'
+    mismatch: FinalizeBlockMismatch
 }
 
 export interface ValidBundleDigest {
@@ -1687,6 +1793,16 @@ export interface InboxedBundle {
     extrinsicsRoot: Uint8Array
 }
 
+export interface BlockFees {
+    consensusStorageFee: bigint
+    domainExecutionFee: bigint
+}
+
+export interface OperatorDeregisteredInfo {
+    domainEpoch: [number, number]
+    unlockAtConfirmedDomainBlockNumber: number
+}
+
 export type Payload = Payload_Protocol | Payload_Endpoint
 
 export interface Payload_Protocol {
@@ -1696,13 +1812,13 @@ export interface Payload_Protocol {
 
 export interface Payload_Endpoint {
     __kind: 'Endpoint'
-    value: Type_282
+    value: Type_294
 }
 
 /**
  * Event for the System pallet.
  */
-export type SystemEvent = SystemEvent_ExtrinsicSuccess | SystemEvent_ExtrinsicFailed | SystemEvent_CodeUpdated | SystemEvent_NewAccount | SystemEvent_KilledAccount | SystemEvent_Remarked
+export type SystemEvent = SystemEvent_ExtrinsicSuccess | SystemEvent_ExtrinsicFailed | SystemEvent_CodeUpdated | SystemEvent_NewAccount | SystemEvent_KilledAccount | SystemEvent_Remarked | SystemEvent_UpgradeAuthorized
 
 /**
  * An extrinsic completed successfully.
@@ -1751,6 +1867,15 @@ export interface SystemEvent_Remarked {
     __kind: 'Remarked'
     sender: Uint8Array
     hash: Uint8Array
+}
+
+/**
+ * An upgrade was authorized.
+ */
+export interface SystemEvent_UpgradeAuthorized {
+    __kind: 'UpgradeAuthorized'
+    codeHash: Uint8Array
+    checkVersion: boolean
 }
 
 /**
@@ -2015,66 +2140,48 @@ export interface BalancesEvent_Thawed {
 /**
  * `pallet-transaction-fees` events
  */
-export type TransactionFeesEvent = TransactionFeesEvent_StorageFeesEscrowChange | TransactionFeesEvent_StorageFeesReward | TransactionFeesEvent_ComputeFeesReward | TransactionFeesEvent_TipsReward
-
-/**
- * Storage fees escrow change.
- */
-export interface TransactionFeesEvent_StorageFeesEscrowChange {
-    __kind: 'StorageFeesEscrowChange'
-    /**
-     * State of storage fees escrow before block execution.
-     */
-    before: bigint
-    /**
-     * State of storage fees escrow after block execution.
-     */
-    after: bigint
-}
+export type TransactionFeesEvent = TransactionFeesEvent_BlockFees | TransactionFeesEvent_BurnedBlockFees
 
 /**
  * Storage fees.
  */
-export interface TransactionFeesEvent_StorageFeesReward {
-    __kind: 'StorageFeesReward'
+export interface TransactionFeesEvent_BlockFees {
+    __kind: 'BlockFees'
     /**
-     * Receiver of the storage fees.
+     * Block author that received the fees.
      */
     who: Uint8Array
     /**
      * Amount of collected storage fees.
      */
-    amount: bigint
-}
-
-/**
- * Compute fees.
- */
-export interface TransactionFeesEvent_ComputeFeesReward {
-    __kind: 'ComputeFeesReward'
-    /**
-     * Receiver of the compute fees.
-     */
-    who: Uint8Array
+    storage: bigint
     /**
      * Amount of collected compute fees.
      */
-    amount: bigint
-}
-
-/**
- * Tips.
- */
-export interface TransactionFeesEvent_TipsReward {
-    __kind: 'TipsReward'
-    /**
-     * Receiver of the tip.
-     */
-    who: Uint8Array
+    compute: bigint
     /**
      * Amount of collected tips.
      */
-    amount: bigint
+    tips: bigint
+}
+
+/**
+ * Fees burned due to equivocated block author.
+ */
+export interface TransactionFeesEvent_BurnedBlockFees {
+    __kind: 'BurnedBlockFees'
+    /**
+     * Amount of burned storage fees.
+     */
+    storage: bigint
+    /**
+     * Amount of burned compute fees.
+     */
+    compute: bigint
+    /**
+     * Amount of burned tips.
+     */
+    tips: bigint
 }
 
 /**
@@ -2142,13 +2249,13 @@ export interface UtilityEvent_ItemFailed {
  */
 export interface UtilityEvent_DispatchedAs {
     __kind: 'DispatchedAs'
-    result: Type_47
+    result: Type_48
 }
 
 /**
  * The `Event` enum of this pallet
  */
-export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_DomainRuntimeCreated | DomainsEvent_DomainRuntimeUpgradeScheduled | DomainsEvent_DomainRuntimeUpgraded | DomainsEvent_OperatorRegistered | DomainsEvent_OperatorNominated | DomainsEvent_DomainInstantiated | DomainsEvent_OperatorSwitchedDomain | DomainsEvent_OperatorDeregistered | DomainsEvent_WithdrewStake | DomainsEvent_PreferredOperator | DomainsEvent_OperatorRewarded | DomainsEvent_DomainEpochCompleted | DomainsEvent_FraudProofProcessed | DomainsEvent_DomainOperatorAllowListUpdated
+export type DomainsEvent = DomainsEvent_BundleStored | DomainsEvent_DomainRuntimeCreated | DomainsEvent_DomainRuntimeUpgradeScheduled | DomainsEvent_DomainRuntimeUpgraded | DomainsEvent_OperatorRegistered | DomainsEvent_OperatorNominated | DomainsEvent_DomainInstantiated | DomainsEvent_OperatorSwitchedDomain | DomainsEvent_OperatorDeregistered | DomainsEvent_OperatorUnlocked | DomainsEvent_WithdrewStake | DomainsEvent_FundsUnlocked | DomainsEvent_PreferredOperator | DomainsEvent_OperatorRewarded | DomainsEvent_OperatorTaxCollected | DomainsEvent_DomainEpochCompleted | DomainsEvent_ForceDomainEpochTransition | DomainsEvent_FraudProofProcessed | DomainsEvent_DomainOperatorAllowListUpdated | DomainsEvent_OperatorSlashed
 
 /**
  * A domain bundle was included.
@@ -2205,10 +2312,22 @@ export interface DomainsEvent_OperatorDeregistered {
     operatorId: bigint
 }
 
+export interface DomainsEvent_OperatorUnlocked {
+    __kind: 'OperatorUnlocked'
+    operatorId: bigint
+}
+
 export interface DomainsEvent_WithdrewStake {
     __kind: 'WithdrewStake'
     operatorId: bigint
     nominatorId: Uint8Array
+}
+
+export interface DomainsEvent_FundsUnlocked {
+    __kind: 'FundsUnlocked'
+    operatorId: bigint
+    nominatorId: Uint8Array
+    amount: bigint
 }
 
 export interface DomainsEvent_PreferredOperator {
@@ -2223,8 +2342,20 @@ export interface DomainsEvent_OperatorRewarded {
     reward: bigint
 }
 
+export interface DomainsEvent_OperatorTaxCollected {
+    __kind: 'OperatorTaxCollected'
+    operatorId: bigint
+    tax: bigint
+}
+
 export interface DomainsEvent_DomainEpochCompleted {
     __kind: 'DomainEpochCompleted'
+    domainId: number
+    completedEpochIndex: number
+}
+
+export interface DomainsEvent_ForceDomainEpochTransition {
+    __kind: 'ForceDomainEpochTransition'
     domainId: number
     completedEpochIndex: number
 }
@@ -2238,6 +2369,12 @@ export interface DomainsEvent_FraudProofProcessed {
 export interface DomainsEvent_DomainOperatorAllowListUpdated {
     __kind: 'DomainOperatorAllowListUpdated'
     domainId: number
+}
+
+export interface DomainsEvent_OperatorSlashed {
+    __kind: 'OperatorSlashed'
+    operatorId: bigint
+    reason: SlashedReason
 }
 
 /**
@@ -2457,7 +2594,7 @@ export interface TransporterEvent_IncomingTransferSuccessful {
 /**
  * The `Event` enum of this pallet
  */
-export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
+export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_KeyRemoved | SudoEvent_SudoAsDone
 
 /**
  * A sudo call just took place.
@@ -2467,7 +2604,7 @@ export interface SudoEvent_Sudid {
     /**
      * The result of the call made by the sudo user.
      */
-    sudoResult: Type_47
+    sudoResult: Type_48
 }
 
 /**
@@ -2476,9 +2613,20 @@ export interface SudoEvent_Sudid {
 export interface SudoEvent_KeyChanged {
     __kind: 'KeyChanged'
     /**
-     * The old sudo key if one was previously set.
+     * The old sudo key (if one was previously set).
      */
-    oldSudoer: (Uint8Array | undefined)
+    old: (Uint8Array | undefined)
+    /**
+     * The new sudo key (if one was set).
+     */
+    new: Uint8Array
+}
+
+/**
+ * The key was permanently removed.
+ */
+export interface SudoEvent_KeyRemoved {
+    __kind: 'KeyRemoved'
 }
 
 /**
@@ -2489,7 +2637,7 @@ export interface SudoEvent_SudoAsDone {
     /**
      * The result of the call made by the sudo user.
      */
-    sudoResult: Type_47
+    sudoResult: Type_48
 }
 
 export interface WeightsPerClass {
@@ -2505,6 +2653,29 @@ export interface ProofOfElection {
     globalRandomness: Uint8Array
     vrfSignature: VrfSignature
     operatorId: bigint
+    consensusBlockHash: Uint8Array
+}
+
+export type ApplyExtrinsicMismatch = ApplyExtrinsicMismatch_StateRoot | ApplyExtrinsicMismatch_Shorter
+
+export interface ApplyExtrinsicMismatch_StateRoot {
+    __kind: 'StateRoot'
+    value: number
+}
+
+export interface ApplyExtrinsicMismatch_Shorter {
+    __kind: 'Shorter'
+}
+
+export type FinalizeBlockMismatch = FinalizeBlockMismatch_StateRoot | FinalizeBlockMismatch_Longer
+
+export interface FinalizeBlockMismatch_StateRoot {
+    __kind: 'StateRoot'
+}
+
+export interface FinalizeBlockMismatch_Longer {
+    __kind: 'Longer'
+    value: number
 }
 
 export type ExtrinsicDigest = ExtrinsicDigest_Data | ExtrinsicDigest_Hash
@@ -2519,20 +2690,10 @@ export interface ExtrinsicDigest_Hash {
     value: Uint8Array
 }
 
-export type StakingHoldIdentifier = StakingHoldIdentifier_PendingDeposit | StakingHoldIdentifier_Staked | StakingHoldIdentifier_PendingUnlock
-
-export interface StakingHoldIdentifier_PendingDeposit {
-    __kind: 'PendingDeposit'
-    value: bigint
-}
+export type StakingHoldIdentifier = StakingHoldIdentifier_Staked
 
 export interface StakingHoldIdentifier_Staked {
     __kind: 'Staked'
-    value: bigint
-}
-
-export interface StakingHoldIdentifier_PendingUnlock {
-    __kind: 'PendingUnlock'
     value: bigint
 }
 
@@ -2557,23 +2718,23 @@ export interface RequestResponse_Request {
 
 export interface RequestResponse_Response {
     __kind: 'Response'
-    value: Type_47
+    value: Type_48
 }
 
-export type Type_282 = Type_282_Request | Type_282_Response
+export type Type_294 = Type_294_Request | Type_294_Response
 
-export interface Type_282_Request {
+export interface Type_294_Request {
     __kind: 'Request'
     value: EndpointRequest
 }
 
-export interface Type_282_Response {
+export interface Type_294_Response {
     __kind: 'Response'
     value: Result<Uint8Array, DispatchError>
 }
 
 export interface VrfSignature {
-    output: Uint8Array
+    preOutput: Uint8Array
     proof: Uint8Array
 }
 
