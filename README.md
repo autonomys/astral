@@ -2,7 +2,7 @@
 
 # Astral
 
-- [Astral](https://subspace.network/) Subspace Block Explorer
+- [Astral](https://explorer.subspace.network/) Subspace Block Explorer
 - [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid
 
 <table width="100%" border="0">
