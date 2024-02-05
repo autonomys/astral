@@ -15,8 +15,8 @@ The app is a React app built with [React.js](https://reactjs.org/) + TypeScript.
 To start local development:
 
 ```bash
-git clone git@github.com:subspace/blockexplorer.git
-cd blockexplorer/client
+git clone git@github.com:subspace/astral.git
+cd astral/client
 # OPTIONAL: when using nvm to manage Node.js versions
 nvm use stable
 yarn
