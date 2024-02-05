@@ -1511,8 +1511,12 @@ export enum NominatorOrderByInput {
   OperatorNextDomainIdDesc = 'operator_nextDomainId_DESC',
   OperatorNominationTaxAsc = 'operator_nominationTax_ASC',
   OperatorNominationTaxDesc = 'operator_nominationTax_DESC',
+  OperatorNominatorAmountAsc = 'operator_nominatorAmount_ASC',
+  OperatorNominatorAmountDesc = 'operator_nominatorAmount_DESC',
   OperatorOperatorOwnerAsc = 'operator_operatorOwner_ASC',
   OperatorOperatorOwnerDesc = 'operator_operatorOwner_DESC',
+  OperatorOrderingIdAsc = 'operator_orderingId_ASC',
+  OperatorOrderingIdDesc = 'operator_orderingId_DESC',
   OperatorSigningKeyAsc = 'operator_signingKey_ASC',
   OperatorSigningKeyDesc = 'operator_signingKey_DESC',
   OperatorStatusAsc = 'operator_status_ASC',
@@ -1587,8 +1591,10 @@ export type Operator = {
   minimumNominatorStake?: Maybe<Scalars['BigInt']['output']>;
   nextDomainId?: Maybe<Scalars['Int']['output']>;
   nominationTax?: Maybe<Scalars['Int']['output']>;
+  nominatorAmount: Scalars['Int']['output'];
   nominators: Array<Nominator>;
   operatorOwner?: Maybe<Scalars['String']['output']>;
+  orderingId: Scalars['Int']['output'];
   signingKey: Scalars['String']['output'];
   status?: Maybe<Scalars['String']['output']>;
   totalShares?: Maybe<Scalars['BigInt']['output']>;
@@ -1624,8 +1630,12 @@ export enum OperatorOrderByInput {
   NextDomainIdDesc = 'nextDomainId_DESC',
   NominationTaxAsc = 'nominationTax_ASC',
   NominationTaxDesc = 'nominationTax_DESC',
+  NominatorAmountAsc = 'nominatorAmount_ASC',
+  NominatorAmountDesc = 'nominatorAmount_DESC',
   OperatorOwnerAsc = 'operatorOwner_ASC',
   OperatorOwnerDesc = 'operatorOwner_DESC',
+  OrderingIdAsc = 'orderingId_ASC',
+  OrderingIdDesc = 'orderingId_DESC',
   SigningKeyAsc = 'signingKey_ASC',
   SigningKeyDesc = 'signingKey_DESC',
   StatusAsc = 'status_ASC',
@@ -1779,6 +1789,15 @@ export type OperatorWhereInput = {
   nominationTax_lte?: InputMaybe<Scalars['Int']['input']>;
   nominationTax_not_eq?: InputMaybe<Scalars['Int']['input']>;
   nominationTax_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nominatorAmount_eq?: InputMaybe<Scalars['Int']['input']>;
+  nominatorAmount_gt?: InputMaybe<Scalars['Int']['input']>;
+  nominatorAmount_gte?: InputMaybe<Scalars['Int']['input']>;
+  nominatorAmount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  nominatorAmount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  nominatorAmount_lt?: InputMaybe<Scalars['Int']['input']>;
+  nominatorAmount_lte?: InputMaybe<Scalars['Int']['input']>;
+  nominatorAmount_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  nominatorAmount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   nominators_every?: InputMaybe<NominatorWhereInput>;
   nominators_none?: InputMaybe<NominatorWhereInput>;
   nominators_some?: InputMaybe<NominatorWhereInput>;
@@ -1799,6 +1818,15 @@ export type OperatorWhereInput = {
   operatorOwner_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
   operatorOwner_not_startsWith?: InputMaybe<Scalars['String']['input']>;
   operatorOwner_startsWith?: InputMaybe<Scalars['String']['input']>;
+  orderingId_eq?: InputMaybe<Scalars['Int']['input']>;
+  orderingId_gt?: InputMaybe<Scalars['Int']['input']>;
+  orderingId_gte?: InputMaybe<Scalars['Int']['input']>;
+  orderingId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  orderingId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  orderingId_lt?: InputMaybe<Scalars['Int']['input']>;
+  orderingId_lte?: InputMaybe<Scalars['Int']['input']>;
+  orderingId_not_eq?: InputMaybe<Scalars['Int']['input']>;
+  orderingId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   signingKey_contains?: InputMaybe<Scalars['String']['input']>;
   signingKey_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
   signingKey_endsWith?: InputMaybe<Scalars['String']['input']>;

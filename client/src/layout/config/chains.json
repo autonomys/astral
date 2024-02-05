@@ -1,5 +1,13 @@
 [
   {
+    "title": "Gemini 3h",
+    "urls": {
+      "api": "https://squid.gemini-3h.subspace.network/graphql",
+      "page": "gemini-3h"
+    },
+    "isDomain": false
+  },
+  {
     "title": "Gemini 3g",
     "urls": {
       "api": "https://squid.gemini-3g.subspace.network/graphql",
