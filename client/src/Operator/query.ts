@@ -64,3 +64,46 @@ export const QUERY_OPERATOR_BY_ID = gql`
     }
   }
 `
+
+export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
+  query NominatorsConnection(
+    $first: Int!
+    $after: String
+    $orderBy: [NominatorOrderByInput!]!
+    $where: NominatorWhereInput
+  ) {
+    nominatorsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
+      edges {
+        node {
+          id
+          shares
+          account {
+            id
+          }
+          operator {
+            id
+            operatorOwner
+            currentDomainId
+            currentEpochRewards
+            currentTotalStake
+            minimumNominatorStake
+            nextDomainId
+            nominationTax
+            signingKey
+            status
+            totalShares
+            updatedAt
+          }
+          updatedAt
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
+  }
+`
