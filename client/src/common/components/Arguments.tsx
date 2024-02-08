@@ -32,6 +32,7 @@ const Arguments: FC<Props> = ({ args }) => {
         src={args || {}}
         iconStyle='circle'
         theme={theme}
+        collapseStringsAfterLength={100}
         shouldCollapse={(field) => {
           return field.type === 'object' && Object.entries(field.src).length > 5 ? true : false
         }}
