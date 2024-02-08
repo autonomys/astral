@@ -32,8 +32,8 @@ import { Event, EventList } from 'Event/components'
 import { Log, LogList } from 'Log/components'
 
 // operator
+import NominationManagement from 'Operator/components/NominationManagement'
 import OperatorManagement from 'Operator/components/OperatorManagement'
-import OperatorNominate from 'Operator/components/OperatorNominate'
 import OperatorStake from 'Operator/components/OperatorStake'
 import OperatorsList from 'Operator/components/OperatorsList'
 
@@ -148,7 +148,10 @@ const App = () => {
                 <Route path={INTERNAL_ROUTES.operators.list} element={<OperatorsList />} />
                 <Route path={INTERNAL_ROUTES.operators.stake} element={<OperatorStake />} />
                 <Route path={INTERNAL_ROUTES.operators.manage} element={<OperatorManagement />} />
-                <Route path={INTERNAL_ROUTES.operators.nominate} element={<OperatorNominate />} />
+                <Route
+                  path={INTERNAL_ROUTES.operators.nomination}
+                  element={<NominationManagement />}
+                />
               </Route>
             </Fragment>
           ))}

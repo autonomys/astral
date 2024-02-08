@@ -13,7 +13,7 @@ import useWallet from 'common/hooks/useWallet'
 import { LogoIcon } from 'common/icons'
 import { useTheme } from 'common/providers/ThemeProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
-import { QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
+import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_LIST } from 'Operator/query'
 
 const OperatorHeader = () => {
   const { isDark, toggleTheme } = useTheme()
@@ -24,20 +24,48 @@ const OperatorHeader = () => {
   const { selectedChain, selectedDomain } = useDomains()
   const { subspaceAccount } = useWallet()
 
-  const { data, refetch } = useQuery(QUERY_OPERATOR_CONNECTION_LIST, {
-    variables: {
-      first: 1,
-      after: undefined,
-      // eslint-disable-next-line camelcase
-      where: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
-      orderBy: 'id_ASC',
+  const { data: dataOperators, refetch: refetchOperators } = useQuery(
+    QUERY_OPERATOR_CONNECTION_LIST,
+    {
+      variables: {
+        first: 1,
+        after: undefined,
+        // eslint-disable-next-line camelcase
+        where: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
+        orderBy: 'id_ASC',
+      },
+      pollInterval: 6000,
     },
-    pollInterval: 6000,
-  })
+  )
+
+  const { data: dataNominators, refetch: refetchNominators } = useQuery(
+    QUERY_NOMINATOR_CONNECTION_LIST,
+    {
+      variables: {
+        first: 1,
+        after: undefined,
+        // eslint-disable-next-line camelcase
+        where: subspaceAccount ? { account: { id_eq: subspaceAccount } } : {},
+        orderBy: 'id_ASC',
+      },
+      pollInterval: 6000,
+    },
+  )
 
   const operatorsConnection = useMemo(
-    () => (data ? data.operatorsConnection.edges.map((operator) => operator.node) : []),
-    [data],
+    () =>
+      dataOperators && dataOperators.operatorsConnection
+        ? dataOperators.operatorsConnection.edges.map((operator) => operator.node)
+        : [],
+    [dataOperators],
+  )
+
+  const nominatorsConnection = useMemo(
+    () =>
+      dataNominators && dataNominators.nominatorsConnection
+        ? dataNominators.nominatorsConnection.edges.map((operator) => operator.node)
+        : [],
+    [dataNominators],
   )
 
   const menuList = useMemo(() => {
@@ -61,11 +89,17 @@ const OperatorHeader = () => {
         title: 'Manage My Operator',
         link: `${INTERNAL_ROUTES.operators.manage}`,
       })
+    if (nominatorsConnection && nominatorsConnection.length > 0)
+      general.push({
+        title: 'Manage My Nomination',
+        link: `${INTERNAL_ROUTES.operators.nomination}`,
+      })
     return general
-  }, [operatorsConnection, selectedChain.urls.page, selectedDomain])
+  }, [operatorsConnection, nominatorsConnection, selectedChain.urls.page, selectedDomain])
 
   useEffect(() => {
-    refetch()
+    refetchOperators()
+    refetchNominators()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subspaceAccount])
 
