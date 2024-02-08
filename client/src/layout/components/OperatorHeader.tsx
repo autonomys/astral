@@ -78,17 +78,16 @@ const OperatorHeader = () => {
         title: 'Stake My Operator',
         link: `${INTERNAL_ROUTES.operators.stake}`,
       },
-      // TODO: remove comment when these pages are added
-      // {
-      //   title: 'Nominate',
-      //   link: `${INTERNAL_ROUTES.operators.nominate}`,
-      // },
     ]
     if (operatorsConnection && operatorsConnection.length > 0)
       general.push({
         title: 'Manage My Operator',
         link: `${INTERNAL_ROUTES.operators.manage}`,
       })
+    general.push({
+      title: 'Nominators',
+      link: `${INTERNAL_ROUTES.operators.nominators}`,
+    })
     if (nominatorsConnection && nominatorsConnection.length > 0)
       general.push({
         title: 'Manage My Nomination',
