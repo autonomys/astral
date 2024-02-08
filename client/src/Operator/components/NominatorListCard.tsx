@@ -1,19 +1,34 @@
-import { FC } from 'react'
-import { Link } from 'react-router-dom'
 import Identicon from '@polkadot/react-identicon'
 import { Nominator } from 'gql/graphql'
+import { FC } from 'react'
+import { Link } from 'react-router-dom'
 
 // common
 import { MobileCard } from 'common/components'
-import useDomains from 'common/hooks/useDomains'
 import { numberWithCommas, shortString } from 'common/helpers'
+import useDomains from 'common/hooks/useDomains'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// operator
+import { ActionsDropdown } from './ActionsDropdown'
+import { OperatorAction, OperatorActionType } from './ActionsModal'
 
 type Props = {
   nominator: Nominator
+  action?: OperatorAction
+  handleAction?: (value: OperatorAction) => void
+  index?: number
+  excludeActions?: OperatorActionType[]
+  nominatorMaxStake?: string
 }
 
-const NominatorListCard: FC<Props> = ({ nominator }) => {
+const NominatorListCard: FC<Props> = ({
+  nominator,
+  action,
+  handleAction,
+  excludeActions,
+  nominatorMaxStake,
+}) => {
   const { selectedChain, selectedDomain } = useDomains()
 
   const body = [
@@ -40,6 +55,23 @@ const NominatorListCard: FC<Props> = ({ nominator }) => {
               {nominator.account.id}
             </p>
           </Link>
+          {action && handleAction && (
+            <ActionsDropdown
+              action={action}
+              handleAction={handleAction}
+              excludeActions={excludeActions}
+              row={{
+                original: {
+                  id: nominator.account.id,
+                  currentTotalStake: (
+                    (BigInt(nominator.operator.currentTotalStake) * BigInt(nominator.shares)) /
+                    BigInt(nominator.operator.totalShares)
+                  ).toString(),
+                },
+              }}
+              nominatorMaxStake={nominatorMaxStake}
+            />
+          )}
         </div>
       }
       body={body}
