@@ -1,6 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { FC, Fragment } from 'react'
+import domains from 'layout/config/domains.json'
+import { FC, Fragment, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // common
@@ -10,6 +11,8 @@ import { Chain } from 'common/providers/ChainProvider'
 
 const HeaderChainDropdown: FC = () => {
   const { setSelectedChain, chains, selectedChain, selectedDomain } = useDomains()
+  const [disableDropdown, setDisableDropdown] = useState(false)
+  console.log('🚀 ~ disableDropdown:', disableDropdown)
   const navigate = useNavigate()
 
   const handleChainChange = (chain: Chain) => {
@@ -17,8 +20,21 @@ const HeaderChainDropdown: FC = () => {
     navigate(`/${chain.urls.page}/${selectedDomain}`)
   }
 
+  // TODO: remove when nova is applied
+  useEffect(() => {
+    if (selectedDomain === 'evm') {
+      setSelectedChain(domains[0])
+      setDisableDropdown(true)
+    }
+
+    if (selectedDomain === 'consensus') {
+      setSelectedChain(selectedChain)
+      setDisableDropdown(false)
+    }
+  }, [setSelectedChain, selectedDomain, selectedChain])
+
   return (
-    <Listbox value={selectedChain} disabled={selectedChain.isDomain} onChange={handleChainChange}>
+    <Listbox value={selectedChain} disabled={disableDropdown} onChange={handleChainChange}>
       <div className='relative'>
         <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-[#1E254E] dark:text-white'>
           <div className='flex items-center justify-center'>
