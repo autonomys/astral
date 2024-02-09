@@ -12,7 +12,6 @@ import { Chain } from 'common/providers/ChainProvider'
 const HeaderChainDropdown: FC = () => {
   const { setSelectedChain, chains, selectedChain, selectedDomain } = useDomains()
   const [disableDropdown, setDisableDropdown] = useState(false)
-  console.log('🚀 ~ disableDropdown:', disableDropdown)
   const navigate = useNavigate()
 
   const handleChainChange = (chain: Chain) => {
