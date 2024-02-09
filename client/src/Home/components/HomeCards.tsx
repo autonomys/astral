@@ -60,7 +60,7 @@ const HomeCards: FC<Props> = ({
       //   darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
       // },
       {
-        title: 'Blockchain History Size',
+        title: 'Archived History Size',
         icon: <WalletIcon />,
         value: historySize,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-[#AC70E1] dark:to-[#E6ADDC]',
