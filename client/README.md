@@ -1,6 +1,8 @@
 # Subspace block explorer frontend
 
-Blockexplorer frontend that uses the Subsquid API to get the network information and display it for easy user interaction.
+[Astral](../README.md)
+
+Block explorer frontend that uses the Subsquid API to get the network information and display it for easy user interaction.
 
 ## Table of content
 
@@ -46,3 +48,14 @@ yarn build
 # serve production build
 yarn serve
 ```
+
+## Environment Variables
+
+| Variables                       | Required | Default Value or Description                                                      |
+| ------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `REACT_APP_PUBLIC_URL`          | yes      | `/`                                                                               |
+| `REACT_APP_RPC_URL`             | yes      | `wss://rpc-0.<chainName>.subspace.network/ws`                                     |
+|                                 |          |                                                                                   |
+| `REACT_APP_MOCK_WALLET`         | no       | Set to `true` if you want to mock a specific connected wallet to ease development |
+| `REACT_APP_MOCK_WALLET_ADDRESS` | no       | Set the wallet address (Subspace format) to mock                                  |
+| `REACT_APP_MOCK_WALLET_SOURCE`  | no       | Set the source (wallet extension) to mock                                         |
