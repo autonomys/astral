@@ -84,7 +84,7 @@ export const INTERNAL_ROUTES = {
       page: (chain: string, domain: string, type: string): string =>
         `/${chain}/${domain}/search/result/${type}`,
     },
-    empty: '/search/no-result-found',
+    empty: (chain: string, domain: string): string => `/${chain}/${domain}/search/no-result-found`,
   },
   leaderboard: {
     farmers: 'farmers',

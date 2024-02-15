@@ -1,14 +1,14 @@
 import { FC } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 // common
-import { INTERNAL_ROUTES } from 'common/routes'
 import { ArrowButton } from 'common/components'
-
+import useDomains from 'common/hooks/useDomains'
+// layout
 import NotFoundImage from './NotFoundImage'
 
 const NotFound: FC = () => {
-  const navigate = useNavigate()
+  const { selectedChain, selectedDomain } = useDomains()
 
   return (
     <section className='flex items-center h-full p-16'>
@@ -18,7 +18,9 @@ const NotFound: FC = () => {
           <h2 className='mt-8 mb-8 text-[#282929] text-xl dark:text-white'>
             The page you are looking for could not be found.
           </h2>
-          <ArrowButton onClick={() => navigate(INTERNAL_ROUTES.home)}>Take Me Home</ArrowButton>
+          <Link to={`/${selectedChain.urls.page}/${selectedDomain}`}>
+            <ArrowButton>Take Me Home</ArrowButton>
+          </Link>
         </div>
       </div>
     </section>

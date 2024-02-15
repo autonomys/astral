@@ -1,12 +1,12 @@
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 // common
-import { INTERNAL_ROUTES } from 'common/routes'
-import AstronautImage from 'common/components/ErrorFallback/AstronautImage'
 import { ArrowButton } from 'common/components'
+import AstronautImage from 'common/components/ErrorFallback/AstronautImage'
+import useDomains from 'common/hooks/useDomains'
 
 const NotResultsFound = () => {
-  const navigate = useNavigate()
+  const { selectedChain, selectedDomain } = useDomains()
 
   return (
     <div className='flex items-center justify-center px-5 pt-12 pb-32 w-full'>
@@ -18,7 +18,9 @@ const NotResultsFound = () => {
         <div className=' flex flex-col gap-8 text-slate-600 mt-4 mb-8 lg:text-lg w-1/2 dark:text-white'>
           No related data found. Please try again with different search criteria.{' '}
         </div>
-        <ArrowButton onClick={() => navigate(INTERNAL_ROUTES.home)}>Take Me Home</ArrowButton>
+        <Link to={`/${selectedChain.urls.page}/${selectedDomain}`}>
+          <ArrowButton>Take Me Home</ArrowButton>
+        </Link>
       </div>
     </div>
   )
