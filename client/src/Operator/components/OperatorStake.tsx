@@ -1,14 +1,19 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { isHex } from '@polkadot/util'
+import { Field, Form, Formik, FormikState } from 'formik'
+import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import ReactGA from 'react-ga'
+import { Link } from 'react-router-dom'
+import * as Yup from 'yup'
+
+// common
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { WalletIcon } from 'common/icons'
 import { EXTERNAL_ROUTES } from 'common/routes'
-import { Field, Form, Formik, FormikState } from 'formik'
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
-import * as Yup from 'yup'
+
+// layout
 import PreferredExtensionModal from '../../layout/components/PreferredExtensionModal'
 
 interface FormValues {
@@ -141,9 +146,19 @@ const OperatorStake = () => {
 
         console.log('block', block)
         console.log('hash', hash)
+        ReactGA.event({
+          category: 'Register Operator',
+          action: 'Clicked on Register Operator',
+          label: 'Operator Stake page',
+        })
       } catch (error) {
         setFormError('There was an error while registering the operator')
         console.error('Error', error)
+        ReactGA.event({
+          category: 'Register Operator Error',
+          action: 'Clicked on Register Operator',
+          label: 'Operator Stake page',
+        })
       }
       resetForm()
     },

@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import ReactGA from 'react-ga'
 
 import App from './App'
 import './index.css'
@@ -11,6 +12,7 @@ import { ThemeProvider } from 'common/providers/ThemeProvider'
 import { WalletProvider } from 'common/providers/WalletProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_ID)
 
 root.render(
   <React.StrictMode>
