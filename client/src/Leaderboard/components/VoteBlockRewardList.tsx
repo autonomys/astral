@@ -66,7 +66,7 @@ const VoteBlockRewardList = () => {
     return <Spinner />
   }
 
-  if (selectedChain.title !== 'Gemini 3g' || selectedChain.isDomain) {
+  if (selectedChain.isDomain) {
     return <NotAllowed />
   }
 
