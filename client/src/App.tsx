@@ -1,6 +1,5 @@
 import { Fragment, ReactNode, useEffect, useMemo } from 'react'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import ReactGA from 'react-ga';
 
 // common
 import useDomains from 'common/hooks/useDomains'
@@ -109,11 +108,6 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
 const App = () => {
   const { chains, selectedChain, selectedDomain } = useDomains()
   const networks = useMemo(() => chains.map((chain) => chain.urls.page), [chains])
-  const location = useLocation();
-
-  useEffect(() => {
-    ReactGA.pageview(location.pathname + location.search);
-  }, [location]);
 
   return (
     <HashRouter>
