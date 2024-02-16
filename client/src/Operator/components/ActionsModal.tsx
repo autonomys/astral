@@ -242,10 +242,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       </div>
                     )}
                   />
-                  {errors.amount && touched.amount ? (
-                    <div className='text-red-500 text-md mt-2 h-8' data-testid='errorMessage'>
-                      {errors.amount}
-                    </div>
+                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
+                    maxAmountToAdd === 0 ? (
+                      <span className='text-red-500 text-md h-8' data-testid='errorMessage'>
+                        You don&apos;t have enough balance to stake
+                      </span>
+                    ) : (
+                      <div className='text-red-500 text-md mt-2 h-8' data-testid='errorMessage'>
+                        {errors.amount}
+                      </div>
+                    )
                   ) : (
                     <div className='text-md mt-2 h-8' data-testid='placeHolder' />
                   )}
@@ -289,6 +295,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ErrorPlaceholder,
     actingAccount,
     action.type,
+    maxAmountToAdd,
     fundsFormValidationSchema,
     handleAddFunds,
     handleDeregister,
