@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useLazyQuery } from '@apollo/client'
 import { isHex } from '@polkadot/util'
 import { isAddress } from '@polkadot/util-crypto'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 // common
-import { INTERNAL_ROUTES } from 'common/routes'
-import useDomains from 'common/hooks/useDomains'
 import { formatAddress } from 'common/helpers/formatAddress'
-import { GET_RESULTS } from 'common/queries'
 import { formatSearchResult } from 'common/helpers/formatSearchResult'
+import useDomains from 'common/hooks/useDomains'
+import { GET_RESULTS } from 'common/queries'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
@@ -91,7 +91,7 @@ const useSearch = (): Values => {
         } else if (data?.eventById) {
           navigate(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, term))
         } else {
-          navigate(INTERNAL_ROUTES.search.empty)
+          navigate(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
         }
 
         if (error) {
@@ -105,7 +105,7 @@ const useSearch = (): Values => {
       case 2: {
         const blockId = Number(term)
         if (isNaN(blockId)) {
-          return navigate(INTERNAL_ROUTES.search.empty)
+          return navigate(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
         }
         navigate(
           INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, Number(term)),
@@ -118,7 +118,7 @@ const useSearch = (): Values => {
         )
       case 4:
         if (!isAddress(term)) {
-          return navigate(INTERNAL_ROUTES.search.empty)
+          return navigate(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
         }
         return navigate(
           INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, term),
@@ -128,7 +128,7 @@ const useSearch = (): Values => {
           INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, term),
         )
       default:
-        return navigate(INTERNAL_ROUTES.search.empty)
+        return navigate(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
     }
   }
 

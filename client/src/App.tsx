@@ -12,7 +12,7 @@ import { Block, BlockList } from 'Block/components'
 import { Extrinsic, ExtrinsicList } from 'Extrinsic/components'
 
 // layout
-import { NotFound } from 'layout/components'
+import { Layout, NotFound } from 'layout/components'
 import DomainLayout from 'layout/components/DomainLayout'
 import LeaderboardLayout from 'layout/components/LeaderboardLayout'
 import NotResultsFound from 'layout/components/NotResultsFound'
@@ -157,9 +157,30 @@ const App = () => {
               </Route>
             </Fragment>
           ))}
-          <Route element={<NotFound />} path={INTERNAL_ROUTES.notFound} />
-          <Route element={<NotResultsFound />} path={INTERNAL_ROUTES.search.empty} />
-          <Route element={<NotFound />} path={INTERNAL_ROUTES.catchAll} />
+          <Route
+            element={
+              <Layout>
+                <NotFound />
+              </Layout>
+            }
+            path={INTERNAL_ROUTES.notFound}
+          />
+          <Route
+            element={
+              <Layout>
+                <NotResultsFound />
+              </Layout>
+            }
+            path={INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain)}
+          />
+          <Route
+            element={
+              <Layout>
+                <NotFound />
+              </Layout>
+            }
+            path={INTERNAL_ROUTES.catchAll}
+          />
         </Routes>
       </UpdateSelectedChainByPath>
       <Toaster />
