@@ -1,11 +1,12 @@
-import {TypeormDatabase, Store} from '@subsquid/typeorm-store'
-import {In} from 'typeorm'
 import * as ss58 from '@subsquid/ss58'
+import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
 import assert from 'assert'
+import { In } from 'typeorm'
 
-import {processor, ProcessorContext} from './processor'
-import {Account, Transfer} from './model'
-import {events} from './types'
+import { PROCESSOR_CONFIG } from './config'
+import { Account, Transfer } from './model'
+import { processor, ProcessorContext } from './processor'
+import { events } from './types'
 
 processor.run(new TypeormDatabase({supportHotBlocks: true}), async (ctx) => {
     let transferEvents: TransferEvent[] = getTransferEvents(ctx)
@@ -35,16 +36,14 @@ function getTransferEvents(ctx: ProcessorContext<Store>): TransferEvent[] {
         for (let event of block.events) {
             if (event.name == events.balances.transfer.name) {
                 let rec: {from: string; to: string; amount: bigint}
-                if (events.balances.transfer.v1020.is(event)) {
-                    let [from, to, amount] = events.balances.transfer.v1020.decode(event)
-                    rec = {from, to, amount}
+                if (events.balances.transfer.v0.is(event)) {
+                    rec = events.balances.transfer.v0.decode(event)
                 }
-                else if (events.balances.transfer.v1050.is(event)) {
-                    let [from, to, amount] = events.balances.transfer.v1050.decode(event)
-                    rec = {from, to, amount}
+                else if (events.balances.transfer.v0.is(event)) {
+                    rec = events.balances.transfer.v0.decode(event)
                 }
-                else if (events.balances.transfer.v9130.is(event)) {
-                    rec = events.balances.transfer.v9130.decode(event)
+                else if (events.balances.transfer.v0.is(event)) {
+                    rec = events.balances.transfer.v0.decode(event)
                 }
                 else {
                     throw new Error('Unsupported spec')
@@ -57,8 +56,8 @@ function getTransferEvents(ctx: ProcessorContext<Store>): TransferEvent[] {
                     blockNumber: block.header.height,
                     timestamp: new Date(block.header.timestamp),
                     extrinsicHash: event.extrinsic?.hash,
-                    from: ss58.codec('kusama').encode(rec.from),
-                    to: ss58.codec('kusama').encode(rec.to),
+                    from: ss58.codec(PROCESSOR_CONFIG.prefix).encode(rec.from),
+                    to: ss58.codec(PROCESSOR_CONFIG.prefix).encode(rec.to),
                     amount: rec.amount,
                     fee: event.extrinsic?.fee || 0n,
                 })
