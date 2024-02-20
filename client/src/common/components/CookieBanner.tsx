@@ -13,7 +13,7 @@ const CookieBanner = () => {
   }
 
   return (
-    <div className='w-full flex items-end'>
+    <div className='w-full flex items-end bg-gray-600/40 p-5 '>
       <div className='w-full flex justify-between align-middle text-gray-600 text-sm font-medium dark:text-white'>
         <p>
           By clicking <b>“Accept Cookies”</b>, you agree to the storing of cookies on your device to
