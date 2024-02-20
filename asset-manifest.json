@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.9307df37.css",
-    "main.js": "/static/js/main.ba15f5a5.js",
+    "main.css": "/static/css/main.22335055.css",
+    "main.js": "/static/js/main.24b7c9c0.js",
     "static/js/70.d2853615.chunk.js": "/static/js/70.d2853615.chunk.js",
     "static/js/787.e72a8928.chunk.js": "/static/js/787.e72a8928.chunk.js",
     "static/media/img.png": "/static/media/img.237bf3d0ba1513ab2c04.png",
@@ -12,13 +12,13 @@
     "static/media/PolkadotLogo.svg": "/static/media/PolkadotLogo.8492330aac9d174faa4886cab4cb5b93.svg",
     "index.html": "/index.html",
     "static/media/backgroundColor.svg": "/static/media/backgroundColor.e318dc9bdabec130f1eb.svg",
-    "main.9307df37.css.map": "/static/css/main.9307df37.css.map",
-    "main.ba15f5a5.js.map": "/static/js/main.ba15f5a5.js.map",
+    "main.22335055.css.map": "/static/css/main.22335055.css.map",
+    "main.24b7c9c0.js.map": "/static/js/main.24b7c9c0.js.map",
     "70.d2853615.chunk.js.map": "/static/js/70.d2853615.chunk.js.map",
     "787.e72a8928.chunk.js.map": "/static/js/787.e72a8928.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9307df37.css",
-    "static/js/main.ba15f5a5.js"
+    "static/css/main.22335055.css",
+    "static/js/main.24b7c9c0.js"
   ]
 }
