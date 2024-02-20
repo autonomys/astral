@@ -1,5 +1,6 @@
 export const EXTERNAL_ROUTES = {
   subspace: 'https://subspace.network/',
+  subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
   forum: 'https://forum.subspace.network/',
   gemini2guide:
     'https://forum.subspace.network/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
