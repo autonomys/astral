@@ -23,7 +23,6 @@ export const processor = new SubstrateBatchProcessor()
   .setBlockRange({from : 341619})
   .addEvent({
     name: [
-      events.balances.transfer.name,
       events.domains.operatorRegistered.name,
       events.domains.operatorDeregistered.name,
       events.domains.operatorNominated.name,
@@ -34,7 +33,6 @@ export const processor = new SubstrateBatchProcessor()
       events.domains.withdrewStake.name,
     ],
     extrinsic: true,
-    call: true,
   })
   .setFields({
     event: {
