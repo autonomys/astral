@@ -22,9 +22,9 @@ jobs:
           yarn build
         env:
           REACT_APP_PUBLIC_URL: ${{secrets.REACT_APP_PUBLIC_URL}}
+          REACT_APP_GOOGLE_ANALYTICS_ID: ${{secrets.REACT_APP_GOOGLE_ANALYTICS_ID}}
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./client/build
-        
