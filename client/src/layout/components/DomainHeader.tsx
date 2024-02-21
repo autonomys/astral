@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import useDomains from 'common/hooks/useDomains'
 import chains from 'layout/config/chains.json'
 import domains from 'layout/config/domains.json'
-import { DOMAINS } from 'layout/constants'
+import { DOMAINS, DOMAINS_NAMES } from 'layout/constants'
 
 // common
 import useWallet from 'common/hooks/useWallet'
@@ -25,7 +25,7 @@ const DomainHeader: FC = () => {
   const { actingAccount } = useWallet()
 
   const handleDomainSelected = (domain: string) => {
-    if (domain === 'nova') {
+    if (domain === DOMAINS_NAMES.nova) {
       setSelectedDomain(domain)
       setSelectedChain(domains[0])
     } else {

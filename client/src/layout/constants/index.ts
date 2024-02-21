@@ -16,3 +16,10 @@ export const DOMAINS = [
     title: 'Operators',
   },
 ]
+
+export const DOMAINS_NAMES = {
+  nova: 'nova',
+  consensus: 'consensus',
+  leaderboard: 'leaderboard',
+  operators: 'operators',
+}
