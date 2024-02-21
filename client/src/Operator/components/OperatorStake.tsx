@@ -129,7 +129,7 @@ const OperatorStake = () => {
       .required('Minimum nominator stake is required'),
   })
 
-  const handleSubmit = useCallback(
+  const handleRegister = useCallback(
     async (
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
@@ -142,8 +142,8 @@ const OperatorStake = () => {
         const hash = await api[selectedChain.urls.page].tx.domains
           .registerOperator(values.domainId, values.amountToStake * 10 ** tokenDecimals, {
             signingKey: values.signingKey,
-            minimumNominatorStake: values.minimumNominatorStake * 10 ** tokenDecimals,
-            nominationTax: values.nominatorTax,
+            minimumNominatorStake: (values.minimumNominatorStake * 10 ** tokenDecimals).toString(),
+            nominationTax: values.nominatorTax.toString(),
           })
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -219,9 +219,9 @@ const OperatorStake = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={registerOperatorValidationSchema}
-              onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
+              onSubmit={(values, { resetForm }) => handleRegister(values, resetForm)}
             >
-              {({ errors, touched, values, handleSubmit, setFieldValue }) => (
+              {({ errors, touched, values, handleSubmit, setFieldValue, resetForm }) => (
                 <Form
                   className='w-full my-8'
                   onSubmit={handleSubmit}
@@ -425,6 +425,7 @@ const OperatorStake = () => {
                       </button>
                     ) : (
                       <button
+                        onClick={() => handleRegister(values, resetForm)}
                         className='leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
                         type='submit'
                       >
