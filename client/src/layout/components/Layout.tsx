@@ -1,6 +1,6 @@
 import CookieBanner from 'common/components/CookieBanner'
 import { FC, ReactNode, useEffect } from 'react'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { useLocation } from 'react-router-dom'
 
 type Props = {
@@ -11,7 +11,7 @@ const MainLayout: FC<Props> = ({ children }) => {
   const location = useLocation()
 
   useEffect(() => {
-    ReactGA.pageview(location.pathname + location.search)
+    ReactGA.send({ hitType: 'pageview', page: location.pathname })
   }, [location])
 
   return (
