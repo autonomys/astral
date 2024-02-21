@@ -136,11 +136,11 @@ const App = () => {
                 />
                 <Route
                   path={INTERNAL_ROUTES.leaderboard.operators}
-                  element={<NominatorRewardsList />}
+                  element={<OperatorRewardsList />}
                 />
                 <Route
                   path={INTERNAL_ROUTES.leaderboard.nominators}
-                  element={<OperatorRewardsList />}
+                  element={<NominatorRewardsList />}
                 />
               </Route>
               <Route path={`/${network}/operators`} element={<OperatorLayout />}>
