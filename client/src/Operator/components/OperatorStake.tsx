@@ -3,7 +3,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { isHex } from '@polkadot/util'
 import { Field, Form, Formik, FormikState } from 'formik'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 
