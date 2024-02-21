@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 
 // common
+import { floatToStringWithDecimals } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
@@ -140,11 +141,18 @@ const OperatorStake = () => {
       try {
         const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
         const hash = await api[selectedChain.urls.page].tx.domains
-          .registerOperator(values.domainId, values.amountToStake * 10 ** tokenDecimals, {
-            signingKey: values.signingKey,
-            minimumNominatorStake: (values.minimumNominatorStake * 10 ** tokenDecimals).toString(),
-            nominationTax: values.nominatorTax.toString(),
-          })
+          .registerOperator(
+            values.domainId,
+            floatToStringWithDecimals(values.amountToStake, tokenDecimals),
+            {
+              signingKey: values.signingKey,
+              minimumNominatorStake: floatToStringWithDecimals(
+                values.minimumNominatorStake,
+                tokenDecimals,
+              ),
+              nominationTax: values.nominatorTax.toString(),
+            },
+          )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
         console.log('block', block)

@@ -1,5 +1,5 @@
 import Modal from 'common/components/Modal'
-import { bigNumberToNumber, formatUnitsToNumber } from 'common/helpers'
+import { bigNumberToNumber, floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useWallet from 'common/hooks/useWallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
@@ -107,7 +107,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         const hash = await api[selectedChain.urls.page].tx.domains
           .nominateOperator(
             action.operatorId.toString(),
-            (values.amount * 10 ** tokenDecimals).toString(),
+            floatToStringWithDecimals(values.amount, tokenDecimals),
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -139,7 +139,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             action.operatorId,
             maxAmount === values.amount
               ? { All: null }
-              : { Some: values.amount * 10 ** tokenDecimals },
+              : { Some: floatToStringWithDecimals(values.amount, tokenDecimals) },
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
