@@ -21,12 +21,6 @@ export class RewardEvent {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
-    @Column_("text", {nullable: false})
-    phase!: string
-
-    @Column_("int4", {nullable: true})
-    pos!: number | undefined | null
-
     @Index_()
     @Column_("int4", {nullable: false})
     blockNumber!: number
@@ -41,4 +35,10 @@ export class RewardEvent {
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     amount!: bigint | undefined | null
+
+    @Column_("bool", {nullable: true})
+    isOperator!: boolean | undefined | null
+
+    @Column_("int4", {nullable: true})
+    operatorId!: number | undefined | null
 }

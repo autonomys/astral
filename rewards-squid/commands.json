@@ -98,7 +98,7 @@
         "npx",
         "substrate-metadata-explorer",
         "--rpc=https://rpc-1.gemini-3g.subspace.network",
-        "--out=gemini3h.jsonl"
+        "--out=gemini3g.jsonl"
       ]
     }
   }

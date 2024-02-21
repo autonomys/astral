@@ -8,6 +8,7 @@
     "build": "rm -rf lib && tsc"
   },
   "dependencies": {
+    "@polkadot/api": "^10.11.2",
     "@subsquid/archive-registry": "^3.3.0",
     "@subsquid/graphql-server": "^4.5.0",
     "@subsquid/ss58": "^2.0.2",
