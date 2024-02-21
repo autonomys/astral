@@ -42,6 +42,7 @@ import OperatorsList from 'Operator/components/OperatorsList'
 import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
+import { GoogleAnalytics } from 'common/components/GoogleAnalytics'
 import { Toaster } from 'react-hot-toast'
 
 const createDomainRoutes = () => {
@@ -111,78 +112,80 @@ const App = () => {
 
   return (
     <HashRouter>
-      <UpdateSelectedChainByPath>
-        <Routes>
-          <Route
-            path={INTERNAL_ROUTES.home}
-            element={<Navigate to={`${selectedChain.urls.page}/${selectedDomain}`} />}
-          />
-          {networks.map((network, index) => (
-            <Fragment key={`${network}-${index}`}>
-              <Route path={`/${network}/evm`} element={<DomainLayout />}>
-                {createDomainRoutes()}
-              </Route>
-              <Route path={`/${network}/consensus`} element={<DomainLayout />}>
-                {createDomainRoutes()}
-              </Route>
-              <Route path={`/${network}`} element={<DomainLayout />}>
-                {createDomainRoutes()}
-              </Route>
-              <Route path={`/${network}/leaderboard`} element={<LeaderboardLayout />}>
-                <Route index element={<VoteBlockRewardList />} />
-                <Route
-                  path={INTERNAL_ROUTES.leaderboard.farmers}
-                  element={<VoteBlockRewardList />}
-                />
-                <Route
-                  path={INTERNAL_ROUTES.leaderboard.operators}
-                  element={<OperatorRewardsList />}
-                />
-                <Route
-                  path={INTERNAL_ROUTES.leaderboard.nominators}
-                  element={<NominatorRewardsList />}
-                />
-              </Route>
-              <Route path={`/${network}/operators`} element={<OperatorLayout />}>
-                <Route index element={<OperatorsList />} />
-                <Route path={INTERNAL_ROUTES.operators.id.path} element={<OperatorsList />} />
-                <Route path={INTERNAL_ROUTES.operators.list} element={<OperatorsList />} />
-                <Route path={INTERNAL_ROUTES.operators.stake} element={<OperatorStake />} />
-                <Route path={INTERNAL_ROUTES.operators.manage} element={<OperatorManagement />} />
-                <Route path={INTERNAL_ROUTES.operators.nominators} element={<NominatorsList />} />
-                <Route
-                  path={INTERNAL_ROUTES.operators.nomination}
-                  element={<NominationManagement />}
-                />
-              </Route>
-            </Fragment>
-          ))}
-          <Route
-            element={
-              <Layout>
-                <NotFound />
-              </Layout>
-            }
-            path={INTERNAL_ROUTES.notFound}
-          />
-          <Route
-            element={
-              <Layout>
-                <NotResultsFound />
-              </Layout>
-            }
-            path={INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain)}
-          />
-          <Route
-            element={
-              <Layout>
-                <NotFound />
-              </Layout>
-            }
-            path={INTERNAL_ROUTES.catchAll}
-          />
-        </Routes>
-      </UpdateSelectedChainByPath>
+      <GoogleAnalytics>
+        <UpdateSelectedChainByPath>
+          <Routes>
+            <Route
+              path={INTERNAL_ROUTES.home}
+              element={<Navigate to={`${selectedChain.urls.page}/${selectedDomain}`} />}
+            />
+            {networks.map((network, index) => (
+              <Fragment key={`${network}-${index}`}>
+                <Route path={`/${network}/evm`} element={<DomainLayout />}>
+                  {createDomainRoutes()}
+                </Route>
+                <Route path={`/${network}/consensus`} element={<DomainLayout />}>
+                  {createDomainRoutes()}
+                </Route>
+                <Route path={`/${network}`} element={<DomainLayout />}>
+                  {createDomainRoutes()}
+                </Route>
+                <Route path={`/${network}/leaderboard`} element={<LeaderboardLayout />}>
+                  <Route index element={<VoteBlockRewardList />} />
+                  <Route
+                    path={INTERNAL_ROUTES.leaderboard.farmers}
+                    element={<VoteBlockRewardList />}
+                  />
+                  <Route
+                    path={INTERNAL_ROUTES.leaderboard.operators}
+                    element={<OperatorRewardsList />}
+                  />
+                  <Route
+                    path={INTERNAL_ROUTES.leaderboard.nominators}
+                    element={<NominatorRewardsList />}
+                  />
+                </Route>
+                <Route path={`/${network}/operators`} element={<OperatorLayout />}>
+                  <Route index element={<OperatorsList />} />
+                  <Route path={INTERNAL_ROUTES.operators.id.path} element={<OperatorsList />} />
+                  <Route path={INTERNAL_ROUTES.operators.list} element={<OperatorsList />} />
+                  <Route path={INTERNAL_ROUTES.operators.stake} element={<OperatorStake />} />
+                  <Route path={INTERNAL_ROUTES.operators.manage} element={<OperatorManagement />} />
+                  <Route path={INTERNAL_ROUTES.operators.nominators} element={<NominatorsList />} />
+                  <Route
+                    path={INTERNAL_ROUTES.operators.nomination}
+                    element={<NominationManagement />}
+                  />
+                </Route>
+              </Fragment>
+            ))}
+            <Route
+              element={
+                <Layout>
+                  <NotFound />
+                </Layout>
+              }
+              path={INTERNAL_ROUTES.notFound}
+            />
+            <Route
+              element={
+                <Layout>
+                  <NotResultsFound />
+                </Layout>
+              }
+              path={INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain)}
+            />
+            <Route
+              element={
+                <Layout>
+                  <NotFound />
+                </Layout>
+              }
+              path={INTERNAL_ROUTES.catchAll}
+            />
+          </Routes>
+        </UpdateSelectedChainByPath>
+      </GoogleAnalytics>
       <Toaster />
     </HashRouter>
   )
