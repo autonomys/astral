@@ -21,7 +21,7 @@ const HeaderChainDropdown: FC = () => {
 
   // TODO: remove when nova is applied
   useEffect(() => {
-    if (selectedDomain === 'evm') {
+    if (selectedDomain === 'nova') {
       setSelectedChain(domains[0])
       setDisableDropdown(true)
     }

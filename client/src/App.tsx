@@ -119,7 +119,7 @@ const App = () => {
           />
           {networks.map((network, index) => (
             <Fragment key={`${network}-${index}`}>
-              <Route path={`/${network}/evm`} element={<DomainLayout />}>
+              <Route path={`/${network}/nova`} element={<DomainLayout />}>
                 {createDomainRoutes()}
               </Route>
               <Route path={`/${network}/consensus`} element={<DomainLayout />}>

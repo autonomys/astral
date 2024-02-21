@@ -25,7 +25,7 @@ const DomainHeader: FC = () => {
   const { actingAccount } = useWallet()
 
   const handleDomainSelected = (domain: string) => {
-    if (domain === 'evm') {
+    if (domain === 'nova') {
       setSelectedDomain(domain)
       setSelectedChain(domains[0])
     } else {

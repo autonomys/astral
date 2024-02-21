@@ -40,7 +40,7 @@ const HomeCards: FC<Props> = ({
         darkBgClass: 'dark:bg-gradient-to-b dark:from-[#5649A3] dark:to-[#8EABE4]',
       },
       {
-        title: selectedDomain === 'evm' ? 'Wallet addresses' : 'Qualified Reward Addresses',
+        title: selectedDomain === 'nova' ? 'Wallet addresses' : 'Qualified Reward Addresses',
         icon: <WalletIcon />,
         value: rewardAddresses,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-[#AC70E1] dark:to-[#E6ADDC]',
@@ -71,7 +71,7 @@ const HomeCards: FC<Props> = ({
 
   const visibleCards = useMemo(
     () =>
-      selectedDomain === 'evm'
+      selectedDomain === 'nova'
         ? listOfCards.filter(
             (card) =>
               card.title !== 'Total Space Pledged' && card.title !== 'Blockchain History Size',
