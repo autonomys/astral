@@ -60,13 +60,13 @@ export interface OutboxMessageResult_Err {
     value: DispatchError
 }
 
-export type Type_59 = Type_59_Ok | Type_59_Err
+export type Type_60 = Type_60_Ok | Type_60_Err
 
-export interface Type_59_Ok {
+export interface Type_60_Ok {
     __kind: 'Ok'
 }
 
-export interface Type_59_Err {
+export interface Type_60_Err {
     __kind: 'Err'
     value: DispatchError
 }
@@ -170,7 +170,7 @@ export interface CrossDomainMessage {
     weightTag: MessageWeightTag
 }
 
-export type Call = Call_System | Call_Timestamp | Call_ExecutivePallet | Call_Balances | Call_Messenger | Call_Transporter | Call_Ethereum | Call_EVM | Call_BaseFee | Call_Sudo
+export type Call = Call_System | Call_Timestamp | Call_ExecutivePallet | Call_Balances | Call_Messenger | Call_Transporter | Call_Ethereum | Call_EVM | Call_BaseFee | Call_BlockFees | Call_Sudo
 
 export interface Call_System {
     __kind: 'System'
@@ -217,6 +217,11 @@ export interface Call_BaseFee {
     value: BaseFeeCall
 }
 
+export interface Call_BlockFees {
+    __kind: 'BlockFees'
+    value: BlockFeesCall
+}
+
 export interface Call_Sudo {
     __kind: 'Sudo'
     value: SudoCall
@@ -252,6 +257,12 @@ export interface BalanceLock {
 export interface ReserveData {
     id: Uint8Array
     amount: bigint
+}
+
+export interface BlockFees {
+    consensusStorageFee: bigint
+    domainExecutionFee: bigint
+    burnedBalance: bigint
 }
 
 export interface CodeMetadata {
@@ -324,6 +335,11 @@ export interface AccountInfo {
     data: AccountData
 }
 
+export interface CodeUpgradeAuthorization {
+    codeHash: Uint8Array
+    checkVersion: boolean
+}
+
 export interface PerDispatchClass {
     normal: Weight
     operational: Weight
@@ -370,6 +386,13 @@ export interface Releases_V2 {
     __kind: 'V2'
 }
 
+export interface Transfers {
+    transfersIn: [ChainId, bigint][]
+    transfersOut: [ChainId, bigint][]
+    rejectedTransfersClaimed: [ChainId, bigint][]
+    transfersRejected: [ChainId, bigint][]
+}
+
 export interface Transfer {
     amount: bigint
     sender: Location
@@ -377,13 +400,13 @@ export interface Transfer {
 }
 
 export interface BlockLength {
-    max: Type_77
+    max: Type_78
 }
 
 export interface BlockWeights {
     baseBlock: Weight
     maxBlock: Weight
-    perClass: Type_73
+    perClass: Type_74
 }
 
 export interface RuntimeDbWeight {
@@ -400,6 +423,7 @@ export interface RuntimeVersion {
     apis: [Uint8Array, number][]
     transactionVersion: number
     stateVersion: number
+    extrinsicStateVersion: number
 }
 
 export type ExitSucceed = ExitSucceed_Stopped | ExitSucceed_Returned | ExitSucceed_Suicided
@@ -682,7 +706,7 @@ export interface MessageWeightTag_None {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event
+export type SystemCall = SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_remark_with_event | SystemCall_authorize_upgrade | SystemCall_authorize_upgrade_without_checks | SystemCall_apply_authorized_upgrade
 
 /**
  * See [`Pallet::remark`].
@@ -747,6 +771,30 @@ export interface SystemCall_kill_prefix {
 export interface SystemCall_remark_with_event {
     __kind: 'remark_with_event'
     remark: Uint8Array
+}
+
+/**
+ * See [`Pallet::authorize_upgrade`].
+ */
+export interface SystemCall_authorize_upgrade {
+    __kind: 'authorize_upgrade'
+    codeHash: Uint8Array
+}
+
+/**
+ * See [`Pallet::authorize_upgrade_without_checks`].
+ */
+export interface SystemCall_authorize_upgrade_without_checks {
+    __kind: 'authorize_upgrade_without_checks'
+    codeHash: Uint8Array
+}
+
+/**
+ * See [`Pallet::apply_authorized_upgrade`].
+ */
+export interface SystemCall_apply_authorized_upgrade {
+    __kind: 'apply_authorized_upgrade'
+    code: Uint8Array
 }
 
 /**
@@ -994,7 +1042,20 @@ export interface BaseFeeCall_set_elasticity {
 /**
  * Contains a variant per dispatchable extrinsic that this pallet has.
  */
-export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as
+export type BlockFeesCall = BlockFeesCall_set_next_consensus_chain_byte_fee
+
+/**
+ * See [`Pallet::set_next_consensus_chain_byte_fee`].
+ */
+export interface BlockFeesCall_set_next_consensus_chain_byte_fee {
+    __kind: 'set_next_consensus_chain_byte_fee'
+    transactionByteFee: bigint
+}
+
+/**
+ * Contains a variant per dispatchable extrinsic that this pallet has.
+ */
+export type SudoCall = SudoCall_sudo | SudoCall_sudo_unchecked_weight | SudoCall_set_key | SudoCall_sudo_as | SudoCall_remove_key
 
 /**
  * See [`Pallet::sudo`].
@@ -1028,6 +1089,13 @@ export interface SudoCall_sudo_as {
     __kind: 'sudo_as'
     who: Uint8Array
     call: Call
+}
+
+/**
+ * See [`Pallet::remove_key`].
+ */
+export interface SudoCall_remove_key {
+    __kind: 'remove_key'
 }
 
 export type MultiAccountId = MultiAccountId_AccountId32 | MultiAccountId_AccountId20 | MultiAccountId_Raw
@@ -1185,13 +1253,13 @@ export interface Event_Sudo {
     value: SudoEvent
 }
 
-export interface Type_77 {
+export interface Type_78 {
     normal: number
     operational: number
     mandatory: number
 }
 
-export interface Type_73 {
+export interface Type_74 {
     normal: WeightsPerClass
     operational: WeightsPerClass
     mandatory: WeightsPerClass
@@ -1244,13 +1312,13 @@ export interface Payload_Protocol {
 
 export interface Payload_Endpoint {
     __kind: 'Endpoint'
-    value: Type_116
+    value: Type_117
 }
 
 /**
  * Event for the System pallet.
  */
-export type SystemEvent = SystemEvent_ExtrinsicSuccess | SystemEvent_ExtrinsicFailed | SystemEvent_CodeUpdated | SystemEvent_NewAccount | SystemEvent_KilledAccount | SystemEvent_Remarked
+export type SystemEvent = SystemEvent_ExtrinsicSuccess | SystemEvent_ExtrinsicFailed | SystemEvent_CodeUpdated | SystemEvent_NewAccount | SystemEvent_KilledAccount | SystemEvent_Remarked | SystemEvent_UpgradeAuthorized
 
 /**
  * An extrinsic completed successfully.
@@ -1299,6 +1367,15 @@ export interface SystemEvent_Remarked {
     __kind: 'Remarked'
     sender: Uint8Array
     hash: Uint8Array
+}
+
+/**
+ * An upgrade was authorized.
+ */
+export interface SystemEvent_UpgradeAuthorized {
+    __kind: 'UpgradeAuthorized'
+    codeHash: Uint8Array
+    checkVersion: boolean
 }
 
 /**
@@ -1784,7 +1861,7 @@ export interface BaseFeeEvent_NewElasticity {
 /**
  * The `Event` enum of this pallet
  */
-export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_SudoAsDone
+export type SudoEvent = SudoEvent_Sudid | SudoEvent_KeyChanged | SudoEvent_KeyRemoved | SudoEvent_SudoAsDone
 
 /**
  * A sudo call just took place.
@@ -1794,7 +1871,7 @@ export interface SudoEvent_Sudid {
     /**
      * The result of the call made by the sudo user.
      */
-    sudoResult: Type_59
+    sudoResult: Type_60
 }
 
 /**
@@ -1803,9 +1880,20 @@ export interface SudoEvent_Sudid {
 export interface SudoEvent_KeyChanged {
     __kind: 'KeyChanged'
     /**
-     * The old sudo key if one was previously set.
+     * The old sudo key (if one was previously set).
      */
-    oldSudoer: (Uint8Array | undefined)
+    old: (Uint8Array | undefined)
+    /**
+     * The new sudo key (if one was set).
+     */
+    new: Uint8Array
+}
+
+/**
+ * The key was permanently removed.
+ */
+export interface SudoEvent_KeyRemoved {
+    __kind: 'KeyRemoved'
 }
 
 /**
@@ -1816,7 +1904,7 @@ export interface SudoEvent_SudoAsDone {
     /**
      * The result of the call made by the sudo user.
      */
-    sudoResult: Type_59
+    sudoResult: Type_60
 }
 
 export interface WeightsPerClass {
@@ -1835,17 +1923,17 @@ export interface RequestResponse_Request {
 
 export interface RequestResponse_Response {
     __kind: 'Response'
-    value: Type_59
+    value: Type_60
 }
 
-export type Type_116 = Type_116_Request | Type_116_Response
+export type Type_117 = Type_117_Request | Type_117_Response
 
-export interface Type_116_Request {
+export interface Type_117_Request {
     __kind: 'Request'
     value: EndpointRequest
 }
 
-export interface Type_116_Response {
+export interface Type_117_Response {
     __kind: 'Response'
     value: Result<Uint8Array, DispatchError>
 }

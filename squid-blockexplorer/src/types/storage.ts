@@ -394,6 +394,123 @@ export interface BaseFeeElasticityStorageV0 {
     get(): Promise<number>
 }
 
+export class BlockFeesCollectedBlockFeesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'BlockFees'
+    }
+
+    protected getName() {
+        return 'CollectedBlockFees'
+    }
+
+    /**
+     *  The accumulated rewards of the current block
+     * 
+     *  Currently, the only source of rewards is the transaction fees, in the future it
+     *  will include the XDM reward.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '4286e0b60586063f88a9c41ad9d2935186858a39957783b013ff7a2dc6aefbfc'
+    }
+
+    /**
+     *  The accumulated rewards of the current block
+     * 
+     *  Currently, the only source of rewards is the transaction fees, in the future it
+     *  will include the XDM reward.
+     */
+    get asV0(): BlockFeesCollectedBlockFeesStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  The accumulated rewards of the current block
+ * 
+ *  Currently, the only source of rewards is the transaction fees, in the future it
+ *  will include the XDM reward.
+ */
+export interface BlockFeesCollectedBlockFeesStorageV0 {
+    get(): Promise<v0.BlockFees>
+}
+
+export class BlockFeesConsensusChainByteFeeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'BlockFees'
+    }
+
+    protected getName() {
+        return 'ConsensusChainByteFee'
+    }
+
+    /**
+     *  The consensus chain byte fee
+     * 
+     *  NOTE: we are using `ValueQuery` for convenience, which means the transactions in the domain block #1
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
+    }
+
+    /**
+     *  The consensus chain byte fee
+     * 
+     *  NOTE: we are using `ValueQuery` for convenience, which means the transactions in the domain block #1
+     */
+    get asV0(): BlockFeesConsensusChainByteFeeStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  The consensus chain byte fee
+ * 
+ *  NOTE: we are using `ValueQuery` for convenience, which means the transactions in the domain block #1
+ */
+export interface BlockFeesConsensusChainByteFeeStorageV0 {
+    get(): Promise<bigint>
+}
+
+export class BlockFeesNextConsensusChainByteFeeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'BlockFees'
+    }
+
+    protected getName() {
+        return 'NextConsensusChainByteFee'
+    }
+
+    /**
+     *  The next consensus chain byte fee, it will take affect after the execution of the current
+     *  block to ensure the operator are using the same fee for both validating and executing the domain
+     *  transaction in the next block.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
+    }
+
+    /**
+     *  The next consensus chain byte fee, it will take affect after the execution of the current
+     *  block to ensure the operator are using the same fee for both validating and executing the domain
+     *  transaction in the next block.
+     */
+    get asV0(): BlockFeesNextConsensusChainByteFeeStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  The next consensus chain byte fee, it will take affect after the execution of the current
+ *  block to ensure the operator are using the same fee for both validating and executing the domain
+ *  transaction in the next block.
+ */
+export interface BlockFeesNextConsensusChainByteFeeStorageV0 {
+    get(): Promise<bigint>
+}
+
 export class EVMAccountCodesStorage extends StorageBase {
     protected getPrefix() {
         return 'EVM'
@@ -495,6 +612,39 @@ export interface EVMAccountStoragesStorageV0 {
     getPairsPaged(pageSize: number): AsyncIterable<[k: [Uint8Array, Uint8Array], v: Uint8Array][]>
     getPairsPaged(pageSize: number, key1: Uint8Array): AsyncIterable<[k: [Uint8Array, Uint8Array], v: Uint8Array][]>
     getPairsPaged(pageSize: number, key1: Uint8Array, key2: Uint8Array): AsyncIterable<[k: [Uint8Array, Uint8Array], v: Uint8Array][]>
+}
+
+export class EVMSuicidedStorage extends StorageBase {
+    protected getPrefix() {
+        return 'EVM'
+    }
+
+    protected getName() {
+        return 'Suicided'
+    }
+
+    get isV0(): boolean {
+        return this.getTypeHash() === '38797e2de9f8f94e738f58ec584f9de96f378dfa5348b82ba307ea7cacec468b'
+    }
+
+    get asV0(): EVMSuicidedStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+export interface EVMSuicidedStorageV0 {
+    get(key: Uint8Array): Promise<(null | undefined)>
+    getAll(): Promise<null[]>
+    getMany(keys: Uint8Array[]): Promise<(null | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: null][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: null][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: null][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: null][]>
 }
 
 export class EVMChainIdChainIdStorage extends StorageBase {
@@ -1165,47 +1315,6 @@ export interface MessengerOutboxResponsesStorageV0 {
     get(): Promise<(v0.Message | undefined)>
 }
 
-export class OperatorRewardsBlockRewardsStorage extends StorageBase {
-    protected getPrefix() {
-        return 'OperatorRewards'
-    }
-
-    protected getName() {
-        return 'BlockRewards'
-    }
-
-    /**
-     *  The accumulated rewards of the current block
-     * 
-     *  Currently, the only source of rewards is the transaction fees, in the future it
-     *  will include the XDM reward.
-     */
-    get isV0(): boolean {
-        return this.getTypeHash() === 'f8ebe28eb30158172c0ccf672f7747c46a244f892d08ef2ebcbaadde34a26bc0'
-    }
-
-    /**
-     *  The accumulated rewards of the current block
-     * 
-     *  Currently, the only source of rewards is the transaction fees, in the future it
-     *  will include the XDM reward.
-     */
-    get asV0(): OperatorRewardsBlockRewardsStorageV0 {
-        assert(this.isV0)
-        return this as any
-    }
-}
-
-/**
- *  The accumulated rewards of the current block
- * 
- *  Currently, the only source of rewards is the transaction fees, in the future it
- *  will include the XDM reward.
- */
-export interface OperatorRewardsBlockRewardsStorageV0 {
-    get(): Promise<bigint>
-}
-
 export class SelfDomainIdSelfDomainIdStorage extends StorageBase {
     protected getPrefix() {
         return 'SelfDomainId'
@@ -1333,6 +1442,38 @@ export class SystemAllExtrinsicsLenStorage extends StorageBase {
  */
 export interface SystemAllExtrinsicsLenStorageV0 {
     get(): Promise<(number | undefined)>
+}
+
+export class SystemAuthorizedUpgradeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'System'
+    }
+
+    protected getName() {
+        return 'AuthorizedUpgrade'
+    }
+
+    /**
+     *  `Some` if a code upgrade has been authorized.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '901f6f87c9fafe3d3f61c36b45b24a63a90d51ae151f2b4a361d3c5611ffb723'
+    }
+
+    /**
+     *  `Some` if a code upgrade has been authorized.
+     */
+    get asV0(): SystemAuthorizedUpgradeStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  `Some` if a code upgrade has been authorized.
+ */
+export interface SystemAuthorizedUpgradeStorageV0 {
+    get(): Promise<(v0.CodeUpgradeAuthorization | undefined)>
 }
 
 export class SystemBlockHashStorage extends StorageBase {
@@ -1561,7 +1702,7 @@ export class SystemEventsStorage extends StorageBase {
      *  just in case someone still reads them from within the runtime.
      */
     get isV0(): boolean {
-        return this.getTypeHash() === '23624d32723ccf1f66f5a522c53da280cdc0ff4db50ea34f65440327cbd5abca'
+        return this.getTypeHash() === '75d22a9f67ae45fb438e77a93a2a917b7ef3ac2a980edf33841ecbbc90d5cd86'
     }
 
     /**
@@ -1871,14 +2012,20 @@ export class TimestampDidUpdateStorage extends StorageBase {
     }
 
     /**
-     *  Did the timestamp get updated in this block?
+     *  Whether the timestamp has been updated in this block.
+     * 
+     *  This value is updated to `true` upon successful submission of a timestamp by a node.
+     *  It is then checked at the end of each block execution in the `on_finalize` hook.
      */
     get isV0(): boolean {
         return this.getTypeHash() === '1b6fbf1674d189f761a7ac63093bf5c755bf073dd9d9f0dbe657289f92575db5'
     }
 
     /**
-     *  Did the timestamp get updated in this block?
+     *  Whether the timestamp has been updated in this block.
+     * 
+     *  This value is updated to `true` upon successful submission of a timestamp by a node.
+     *  It is then checked at the end of each block execution in the `on_finalize` hook.
      */
     get asV0(): TimestampDidUpdateStorageV0 {
         assert(this.isV0)
@@ -1887,7 +2034,10 @@ export class TimestampDidUpdateStorage extends StorageBase {
 }
 
 /**
- *  Did the timestamp get updated in this block?
+ *  Whether the timestamp has been updated in this block.
+ * 
+ *  This value is updated to `true` upon successful submission of a timestamp by a node.
+ *  It is then checked at the end of each block execution in the `on_finalize` hook.
  */
 export interface TimestampDidUpdateStorageV0 {
     get(): Promise<boolean>
@@ -1903,14 +2053,14 @@ export class TimestampNowStorage extends StorageBase {
     }
 
     /**
-     *  Current time for the current block.
+     *  The current time for the current block.
      */
     get isV0(): boolean {
         return this.getTypeHash() === '95ff4f914f08e149ddbe1ae2dcb1743bbf9aaae69d04c486e1a398cacfcca06a'
     }
 
     /**
-     *  Current time for the current block.
+     *  The current time for the current block.
      */
     get asV0(): TimestampNowStorageV0 {
         assert(this.isV0)
@@ -1919,7 +2069,7 @@ export class TimestampNowStorage extends StorageBase {
 }
 
 /**
- *  Current time for the current block.
+ *  The current time for the current block.
  */
 export interface TimestampNowStorageV0 {
     get(): Promise<bigint>
@@ -1971,6 +2121,129 @@ export interface TransactionPaymentStorageVersionStorageV0 {
     get(): Promise<v0.Releases>
 }
 
+export class TransporterCancelledTransfersStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Transporter'
+    }
+
+    protected getName() {
+        return 'CancelledTransfers'
+    }
+
+    /**
+     *  Storage to track cancelled transfers between different chains.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'a711f4ede5fb550d1d0a30657e1567566f5d9e3630aa7e837ce6e2f98a8a14aa'
+    }
+
+    /**
+     *  Storage to track cancelled transfers between different chains.
+     */
+    get asV0(): TransporterCancelledTransfersStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  Storage to track cancelled transfers between different chains.
+ */
+export interface TransporterCancelledTransfersStorageV0 {
+    get(key1: v0.ChainId, key2: v0.ChainId): Promise<bigint>
+    getAll(): Promise<bigint[]>
+    getMany(keys: [v0.ChainId, v0.ChainId][]): Promise<bigint[]>
+    getKeys(): Promise<[v0.ChainId, v0.ChainId][]>
+    getKeys(key1: v0.ChainId): Promise<[v0.ChainId, v0.ChainId][]>
+    getKeys(key1: v0.ChainId, key2: v0.ChainId): Promise<[v0.ChainId, v0.ChainId][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[v0.ChainId, v0.ChainId][]>
+    getKeysPaged(pageSize: number, key1: v0.ChainId): AsyncIterable<[v0.ChainId, v0.ChainId][]>
+    getKeysPaged(pageSize: number, key1: v0.ChainId, key2: v0.ChainId): AsyncIterable<[v0.ChainId, v0.ChainId][]>
+    getPairs(): Promise<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairs(key1: v0.ChainId): Promise<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairs(key1: v0.ChainId, key2: v0.ChainId): Promise<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: v0.ChainId): AsyncIterable<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: v0.ChainId, key2: v0.ChainId): AsyncIterable<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+}
+
+export class TransporterChainTransfersStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Transporter'
+    }
+
+    protected getName() {
+        return 'ChainTransfers'
+    }
+
+    /**
+     *  A temporary storage that tracks total transfers from this chain.
+     *  Clears on on_initialize for every block.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'e65a4fcb9e4113581f8fba5d64dcd5264f255d41d2a8c6b84b7d2c1948e240db'
+    }
+
+    /**
+     *  A temporary storage that tracks total transfers from this chain.
+     *  Clears on on_initialize for every block.
+     */
+    get asV0(): TransporterChainTransfersStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  A temporary storage that tracks total transfers from this chain.
+ *  Clears on on_initialize for every block.
+ */
+export interface TransporterChainTransfersStorageV0 {
+    get(): Promise<v0.Transfers>
+}
+
+export class TransporterDomainBalancesStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Transporter'
+    }
+
+    protected getName() {
+        return 'DomainBalances'
+    }
+
+    /**
+     *  Domain balances.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'd4b0e776f9f1d19233fe32cd062ab41a912af3d15ceb9d02d9ebc8fbe7b1cda4'
+    }
+
+    /**
+     *  Domain balances.
+     */
+    get asV0(): TransporterDomainBalancesStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  Domain balances.
+ */
+export interface TransporterDomainBalancesStorageV0 {
+    get(key: number): Promise<bigint>
+    getAll(): Promise<bigint[]>
+    getMany(keys: number[]): Promise<bigint[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: bigint][]>
+    getPairs(key: number): Promise<[k: number, v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: bigint][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: bigint][]>
+}
+
 export class TransporterOutgoingTransfersStorage extends StorageBase {
     protected getPrefix() {
         return 'Transporter'
@@ -2015,4 +2288,50 @@ export interface TransporterOutgoingTransfersStorageV0 {
     getPairsPaged(pageSize: number): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: v0.Transfer][]>
     getPairsPaged(pageSize: number, key1: v0.ChainId): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: v0.Transfer][]>
     getPairsPaged(pageSize: number, key1: v0.ChainId, key2: [bigint, bigint]): AsyncIterable<[k: [v0.ChainId, [bigint, bigint]], v: v0.Transfer][]>
+}
+
+export class TransporterUnconfirmedTransfersStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Transporter'
+    }
+
+    protected getName() {
+        return 'UnconfirmedTransfers'
+    }
+
+    /**
+     *  Storage to track unconfirmed transfers between different chains.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'a711f4ede5fb550d1d0a30657e1567566f5d9e3630aa7e837ce6e2f98a8a14aa'
+    }
+
+    /**
+     *  Storage to track unconfirmed transfers between different chains.
+     */
+    get asV0(): TransporterUnconfirmedTransfersStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  Storage to track unconfirmed transfers between different chains.
+ */
+export interface TransporterUnconfirmedTransfersStorageV0 {
+    get(key1: v0.ChainId, key2: v0.ChainId): Promise<bigint>
+    getAll(): Promise<bigint[]>
+    getMany(keys: [v0.ChainId, v0.ChainId][]): Promise<bigint[]>
+    getKeys(): Promise<[v0.ChainId, v0.ChainId][]>
+    getKeys(key1: v0.ChainId): Promise<[v0.ChainId, v0.ChainId][]>
+    getKeys(key1: v0.ChainId, key2: v0.ChainId): Promise<[v0.ChainId, v0.ChainId][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[v0.ChainId, v0.ChainId][]>
+    getKeysPaged(pageSize: number, key1: v0.ChainId): AsyncIterable<[v0.ChainId, v0.ChainId][]>
+    getKeysPaged(pageSize: number, key1: v0.ChainId, key2: v0.ChainId): AsyncIterable<[v0.ChainId, v0.ChainId][]>
+    getPairs(): Promise<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairs(key1: v0.ChainId): Promise<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairs(key1: v0.ChainId, key2: v0.ChainId): Promise<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: v0.ChainId): AsyncIterable<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
+    getPairsPaged(pageSize: number, key1: v0.ChainId, key2: v0.ChainId): AsyncIterable<[k: [v0.ChainId, v0.ChainId], v: bigint][]>
 }
