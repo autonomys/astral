@@ -56,7 +56,7 @@ const OperatorStake = () => {
   }
 
   const loadDomains = useCallback(async () => {
-    if (!api) return
+    if (!api || !api[selectedChain.urls.page]) return
 
     const [domains, domainRegistry, properties] = await Promise.all([
       api[selectedChain.urls.page].consts.domains,
@@ -135,7 +135,7 @@ const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
 
       try {

@@ -72,7 +72,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   })
 
   const loadData = useCallback(async () => {
-    if (!api) return
+    if (!api || !api[selectedChain.urls.page]) return
 
     const properties = await api[selectedChain.urls.page].rpc.system.properties()
     setTokenDecimals((properties.tokenDecimals.toPrimitive() as number[])[0])
@@ -80,7 +80,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   }, [api, selectedChain])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!api || !actingAccount) return
+    if (!api || !actingAccount || !api[selectedChain.urls.page]) return
 
     const balance = await api[selectedChain.urls.page].query.system.account(actingAccount.address)
     setWalletBalance(
@@ -98,7 +98,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
       if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
@@ -129,7 +129,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
 
       try {
@@ -166,7 +166,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   )
 
   const handleDeregister = useCallback(async () => {
-    if (!api || !actingAccount || !injector)
+    if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
       return setFormError('We are not able to connect to the blockchain')
 
     try {
