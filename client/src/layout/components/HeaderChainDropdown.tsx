@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import useDomains from 'common/hooks/useDomains'
 import { SubspaceSymbol } from 'common/icons'
 import { Chain } from 'common/providers/ChainProvider'
+import { DOMAINS_NAMES } from 'layout/constants'
 
 const HeaderChainDropdown: FC = () => {
   const { setSelectedChain, chains, selectedChain, selectedDomain } = useDomains()
@@ -21,7 +22,7 @@ const HeaderChainDropdown: FC = () => {
 
   // TODO: remove when nova is applied
   useEffect(() => {
-    if (selectedDomain === 'evm') {
+    if (selectedDomain === DOMAINS_NAMES.nova) {
       setSelectedChain(domains[0])
       setDisableDropdown(true)
     }

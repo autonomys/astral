@@ -4,8 +4,8 @@ export const DOMAINS = [
     title: 'Consensus Chain',
   },
   {
-    name: 'evm',
-    title: 'EVM',
+    name: 'nova',
+    title: 'Nova',
   },
   {
     name: 'leaderboard',
@@ -16,3 +16,10 @@ export const DOMAINS = [
     title: 'Operators',
   },
 ]
+
+export const DOMAINS_NAMES = {
+  nova: 'nova',
+  consensus: 'consensus',
+  leaderboard: 'leaderboard',
+  operators: 'operators',
+}

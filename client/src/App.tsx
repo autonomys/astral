@@ -43,6 +43,7 @@ import NominatorRewardsList from 'Leaderboard/components/NominatorRewardsList'
 import OperatorRewardsList from 'Leaderboard/components/OperatorRewardsList'
 import VoteBlockRewardList from 'Leaderboard/components/VoteBlockRewardList'
 import { GoogleAnalytics } from 'common/components/GoogleAnalytics'
+import { DOMAINS_NAMES } from 'layout/constants'
 import { Toaster } from 'react-hot-toast'
 
 const createDomainRoutes = () => {
@@ -121,7 +122,7 @@ const App = () => {
             />
             {networks.map((network, index) => (
               <Fragment key={`${network}-${index}`}>
-                <Route path={`/${network}/evm`} element={<DomainLayout />}>
+                <Route path={`/${network}/${DOMAINS_NAMES.nova}`} element={<DomainLayout />}>
                   {createDomainRoutes()}
                 </Route>
                 <Route path={`/${network}/consensus`} element={<DomainLayout />}>
