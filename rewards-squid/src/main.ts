@@ -38,8 +38,7 @@ async function getOperatorEvents(ctx: ProcessorContext<Store>,  api: ApiPromise)
     for (let block of ctx.blocks) {
         for (let event of block.events) {
             if(event.name === events.domains.operatorRegistered.name) {
-                console.log("🚀 ~ getOperatorEvents ~ event:", event)
-                const operatorId = event.args[0].toString();
+                const {operatorId}= events.domains.operatorRegistered.v0.decode(event);
                 const operator = await getOrCreateOperator(ctx, operatorId, block.header.height, api);
                 if(operator) {
                     await ctx.store.save(operator);
@@ -47,7 +46,7 @@ async function getOperatorEvents(ctx: ProcessorContext<Store>,  api: ApiPromise)
             }
 
             if(updateEvents.includes(event.name)) {
-                const operatorId = event.args[0].toString();
+                const {operatorId}= events.domains.operatorDeregistered.v0.decode(event);
                 let operator = await getOrCreateOperator(ctx, operatorId, block.header.height, api);
                 const operatorInfo = (
                     await api.query.domains.operators(operatorId)
@@ -93,7 +92,7 @@ async function getOperatorEvents(ctx: ProcessorContext<Store>,  api: ApiPromise)
                             blockNumber: block.header.height,
                             extrinsicHash: event.extrinsic?.hash,
                             account: nominator.account,
-                            amount: event.args[1],
+                            amount: reward,
                             isOperator: false,
                             operatorId: Number(operator.id),
                         });
