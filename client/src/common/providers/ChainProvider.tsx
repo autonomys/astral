@@ -1,6 +1,6 @@
-import { FC, createContext, ReactNode, useState } from 'react'
 import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
+import { FC, ReactNode, createContext, useState } from 'react'
 
 // chains
 import chains from 'layout/config/chains.json'
@@ -10,6 +10,7 @@ export type Chain = {
   urls: {
     api: string
     page: string
+    rpc?: string
   }
   isDomain: boolean
 }
@@ -32,7 +33,7 @@ type Props = {
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useState(chains[0])
+  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
   const [selectedDomain, setSelectedDomain] = useState('consensus')
 
   const client = new ApolloClient({
@@ -43,8 +44,8 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   return (
     <ChainContext.Provider
       value={{
-        setSelectedChain,
         selectedChain,
+        setSelectedChain,
         selectedDomain,
         setSelectedDomain,
         chains,

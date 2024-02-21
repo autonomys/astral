@@ -3,10 +3,11 @@ import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { formatAddress } from 'common/helpers/formatAddress'
+import Chains from 'layout/config/chains.json'
 import { FC, ReactNode, createContext, useCallback, useEffect, useMemo, useState } from 'react'
 
 export type WalletContextValue = {
-  api: ApiPromise | undefined
+  api: { [key: string]: ApiPromise } | undefined
   isReady: boolean
   accounts: WalletAccount[] | undefined | null
   error: Error | null
@@ -33,7 +34,7 @@ type Props = {
 }
 
 export const WalletProvider: FC<Props> = ({ children }) => {
-  const [api, setApi] = useState<ApiPromise>()
+  const [api, setApi] = useState<{ [key: string]: ApiPromise }>()
   const [isReady, setIsReady] = useState(false)
   const [accounts, setAccounts] = useState<WalletAccount[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
@@ -53,14 +54,27 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     }
   }, [accounts, preferredExtension])
 
-  const setup = useCallback(async () => {
-    const wsProvider = new WsProvider(process.env.REACT_APP_RPC_URL)
+  const prepareApi = useCallback(async (chain: (typeof Chains)[0]) => {
+    const wsProvider = new WsProvider(chain.urls.rpc)
     const api = await ApiPromise.create({ provider: wsProvider })
-
     await api.isReady
-
-    setApi(api)
+    return api
   }, [])
+
+  const setup = useCallback(async () => {
+    console.log('Chains', Chains)
+    const rpcSupportedChains = Chains.filter((chain) => chain.urls.rpc)
+
+    const apis = await Promise.all(
+      rpcSupportedChains.map(async (chain) => {
+        return {
+          [chain.urls.page]: await prepareApi(chain),
+        }
+      }),
+    )
+
+    setApi(apis.reduce((acc, cur) => ({ ...acc, ...cur }), {}))
+  }, [prepareApi])
 
   const changeAccount = useCallback(
     (account: WalletAccount) => {

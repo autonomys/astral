@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 
 // common
+import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { WalletIcon } from 'common/icons'
@@ -35,6 +36,7 @@ type Domain = {
 
 const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -56,9 +58,9 @@ const OperatorStake = () => {
     if (!api) return
 
     const [domains, domainRegistry, properties] = await Promise.all([
-      api.consts.domains,
-      api.query.domains.domainRegistry.entries(),
-      api.rpc.system.properties(),
+      api[selectedChain.urls.page].consts.domains,
+      api[selectedChain.urls.page].query.domains.domainRegistry.entries(),
+      api[selectedChain.urls.page].rpc.system.properties(),
     ])
 
     setDomainsList(
@@ -77,7 +79,7 @@ const OperatorStake = () => {
     setTokenDecimals(_tokenDecimals)
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
     setMinOperatorStake((domains.minOperatorStake.toPrimitive() as number) / 10 ** _tokenDecimals)
-  }, [api])
+  }, [api, selectedChain])
 
   const filteredDomainsList = useMemo(
     () =>
@@ -91,6 +93,7 @@ const OperatorStake = () => {
       }),
     [domainsList, subspaceAccount],
   )
+
   const currentDomainLabel = useCallback(
     (values: FormValues) => {
       const currentDomain = filteredDomainsList[values.domainId]
@@ -135,8 +138,8 @@ const OperatorStake = () => {
         return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
+        const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+        const hash = await api[selectedChain.urls.page].tx.domains
           .registerOperator(values.domainId, values.amountToStake * 10 ** tokenDecimals, {
             signingKey: values.signingKey,
             minimumNominatorStake: values.minimumNominatorStake * 10 ** tokenDecimals,
@@ -162,7 +165,7 @@ const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, api, injector, tokenDecimals],
+    [actingAccount, api, injector, tokenDecimals, selectedChain],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
