@@ -39,6 +39,7 @@
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
     "lottie-react": "^2.3.1",
+    "minidenticons": "^4.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
