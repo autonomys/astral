@@ -1,5 +1,6 @@
 import Modal from 'common/components/Modal'
-import { bigNumberToNumber, formatUnitsToNumber } from 'common/helpers'
+import { bigNumberToNumber, floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
+import useDomains from 'common/hooks/useDomains'
 import useWallet from 'common/hooks/useWallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -31,6 +32,7 @@ interface FormValues {
 const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
+  const { selectedChain } = useDomains()
   const { api, actingAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
@@ -70,21 +72,21 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   })
 
   const loadData = useCallback(async () => {
-    if (!api) return
+    if (!api || !api[selectedChain.urls.page]) return
 
-    const properties = await api.rpc.system.properties()
+    const properties = await api[selectedChain.urls.page].rpc.system.properties()
     setTokenDecimals((properties.tokenDecimals.toPrimitive() as number[])[0])
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
-  }, [api])
+  }, [api, selectedChain])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!api || !actingAccount) return
+    if (!api || !actingAccount || !api[selectedChain.urls.page]) return
 
-    const balance = await api.query.system.account(actingAccount.address)
+    const balance = await api[selectedChain.urls.page].query.system.account(actingAccount.address)
     setWalletBalance(
       formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
     )
-  }, [api, actingAccount])
+  }, [api, actingAccount, selectedChain])
 
   const handleClose = useCallback(() => {
     setFormError(null)
@@ -96,16 +98,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
       if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
+        const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+        const hash = await api[selectedChain.urls.page].tx.domains
           .nominateOperator(
             action.operatorId.toString(),
-            (values.amount * 10 ** tokenDecimals).toString(),
+            floatToStringWithDecimals(values.amount, tokenDecimals),
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -119,7 +121,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         console.error('Error', error)
       }
     },
-    [api, actingAccount, injector, action.operatorId, tokenDecimals, handleClose],
+    [api, actingAccount, injector, action.operatorId, tokenDecimals, handleClose, selectedChain],
   )
 
   const handleWithdraw = useCallback(
@@ -127,17 +129,17 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
+        const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+        const hash = await api[selectedChain.urls.page].tx.domains
           .withdrawStake(
             action.operatorId,
             maxAmount === values.amount
               ? { All: null }
-              : { Some: values.amount * 10 ** tokenDecimals },
+              : { Some: floatToStringWithDecimals(values.amount, tokenDecimals) },
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -151,16 +153,25 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         console.error('Error', error)
       }
     },
-    [api, actingAccount, injector, action.operatorId, maxAmount, tokenDecimals, handleClose],
+    [
+      api,
+      actingAccount,
+      injector,
+      action.operatorId,
+      maxAmount,
+      tokenDecimals,
+      handleClose,
+      selectedChain,
+    ],
   )
 
   const handleDeregister = useCallback(async () => {
-    if (!api || !actingAccount || !injector)
+    if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
       return setFormError('We are not able to connect to the blockchain')
 
     try {
-      const block = await api.rpc.chain.getBlock()
-      const hash = await api.tx.domains
+      const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+      const hash = await api[selectedChain.urls.page].tx.domains
         .deregisterOperator(action.operatorId)
         .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -172,7 +183,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
     }
-  }, [actingAccount, action.operatorId, api, injector, handleClose])
+  }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
 
   const ErrorPlaceholder = useMemo(
     () =>

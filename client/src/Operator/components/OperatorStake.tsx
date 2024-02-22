@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
 
 // common
+import { floatToStringWithDecimals } from 'common/helpers'
+import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { WalletIcon } from 'common/icons'
@@ -35,6 +37,7 @@ type Domain = {
 
 const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -53,12 +56,12 @@ const OperatorStake = () => {
   }
 
   const loadDomains = useCallback(async () => {
-    if (!api) return
+    if (!api || !api[selectedChain.urls.page]) return
 
     const [domains, domainRegistry, properties] = await Promise.all([
-      api.consts.domains,
-      api.query.domains.domainRegistry.entries(),
-      api.rpc.system.properties(),
+      api[selectedChain.urls.page].consts.domains,
+      api[selectedChain.urls.page].query.domains.domainRegistry.entries(),
+      api[selectedChain.urls.page].rpc.system.properties(),
     ])
 
     setDomainsList(
@@ -77,7 +80,7 @@ const OperatorStake = () => {
     setTokenDecimals(_tokenDecimals)
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
     setMinOperatorStake((domains.minOperatorStake.toPrimitive() as number) / 10 ** _tokenDecimals)
-  }, [api])
+  }, [api, selectedChain])
 
   const filteredDomainsList = useMemo(
     () =>
@@ -91,6 +94,7 @@ const OperatorStake = () => {
       }),
     [domainsList, subspaceAccount],
   )
+
   const currentDomainLabel = useCallback(
     (values: FormValues) => {
       const currentDomain = filteredDomainsList[values.domainId]
@@ -126,22 +130,29 @@ const OperatorStake = () => {
       .required('Minimum nominator stake is required'),
   })
 
-  const handleSubmit = useCallback(
+  const handleRegister = useCallback(
     async (
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
-          .registerOperator(values.domainId, values.amountToStake * 10 ** tokenDecimals, {
-            signingKey: values.signingKey,
-            minimumNominatorStake: values.minimumNominatorStake * 10 ** tokenDecimals,
-            nominationTax: values.nominatorTax,
-          })
+        const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+        const hash = await api[selectedChain.urls.page].tx.domains
+          .registerOperator(
+            values.domainId,
+            floatToStringWithDecimals(values.amountToStake, tokenDecimals),
+            {
+              signingKey: values.signingKey,
+              minimumNominatorStake: floatToStringWithDecimals(
+                values.minimumNominatorStake,
+                tokenDecimals,
+              ),
+              nominationTax: values.nominatorTax.toString(),
+            },
+          )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
         console.log('block', block)
@@ -158,7 +169,7 @@ const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, api, injector, tokenDecimals],
+    [actingAccount, api, injector, tokenDecimals, selectedChain],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -212,9 +223,9 @@ const OperatorStake = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={registerOperatorValidationSchema}
-              onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
+              onSubmit={(values, { resetForm }) => handleRegister(values, resetForm)}
             >
-              {({ errors, touched, values, handleSubmit, setFieldValue }) => (
+              {({ errors, touched, values, handleSubmit, setFieldValue, resetForm }) => (
                 <Form
                   className='w-full my-8'
                   onSubmit={handleSubmit}
@@ -418,6 +429,7 @@ const OperatorStake = () => {
                       </button>
                     ) : (
                       <button
+                        onClick={() => handleRegister(values, resetForm)}
                         className='leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
                         type='submit'
                       >

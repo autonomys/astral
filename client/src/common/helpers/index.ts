@@ -21,6 +21,9 @@ export const formatUnits = (value: string): string => {
   return convertedEthers
 }
 
+export const floatToStringWithDecimals = (value: number, decimals = 4): string =>
+  BigInt(value * 10 ** decimals).toString()
+
 export const bigNumberToNumber = (bigNumber: string, precision = 4): number => {
   const number = formatUnits(bigNumber)
 
