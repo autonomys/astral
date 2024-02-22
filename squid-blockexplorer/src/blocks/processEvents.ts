@@ -59,7 +59,6 @@ export function processEventsFactory(
       case "Domains.OperatorRegistered":
       case "Domains.OperatorDeregistered":
       case "Domains.OperatorSlashed":
-      case "Domains.OperatorSwitchedDomain":
         await createOrUpdateOperator(eventItem);
         return null;
       case "Domains.OperatorRewarded":
