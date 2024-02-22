@@ -56,6 +56,12 @@ export function processEventsFactory(
     await addEventModuleName(eventItem.event.name);
 
     switch (eventItem.name) {
+      case "Domains.OperatorRegistered":
+      case "Domains.OperatorDeregistered":
+      case "Domains.OperatorSlashed":
+      case "Domains.OperatorSwitchedDomain":
+        await createOrUpdateOperator(eventItem);
+        return null;
       case "Domains.OperatorRewarded":
         return await processOperatorRewardedEvent(
           eventItem,
@@ -76,6 +82,11 @@ export function processEventsFactory(
       default:
         return null;
     }
+  }
+
+  async function createOrUpdateOperator(eventItem: EventItem){
+    const operatorId = BigInt(eventItem.event.args?.operatorId);
+    await getOrCreateOperator(operatorId);
   }
 
   async function processOperatorRewardedEvent(
