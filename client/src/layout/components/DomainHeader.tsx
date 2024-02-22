@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
@@ -13,9 +13,11 @@ import useWallet from 'common/hooks/useWallet'
 // chains
 import AccountListDropdown from './AccountListDropdown'
 import PreferredExtensionModal from './PreferredExtensionModal'
+import { WalletSidekick } from './WalletSidekick'
 
 const DomainHeader: FC = () => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [walletModalIsOpen, setWalletModalIsOpen] = useState(false)
+  const [walletSidekickIsOpen, setWalletSidekickIsOpen] = useState(false)
   const location = useLocation()
   const pathName = location.pathname
 
@@ -24,21 +26,35 @@ const DomainHeader: FC = () => {
   const { setSelectedChain, selectedChain, setSelectedDomain } = useDomains()
   const { actingAccount } = useWallet()
 
-  const handleDomainSelected = (domain: string) => {
-    if (domain === DOMAINS_NAMES.nova) {
-      setSelectedDomain(domain)
-      setSelectedChain(domains[0])
-    } else {
-      setSelectedDomain(domain)
-      setSelectedChain(chains[0])
-    }
-    navigate(`/${selectedChain.urls.page}/${domain}`)
-  }
+  const handleDomainSelected = useCallback(
+    (domain: string) => {
+      if (domain === DOMAINS_NAMES.nova) {
+        setSelectedDomain(domain)
+        setSelectedChain(domains[0])
+      } else {
+        setSelectedDomain(domain)
+        setSelectedChain(chains[0])
+      }
+      navigate(`/${selectedChain.urls.page}/${domain}`)
+    },
+    [navigate, setSelectedDomain, setSelectedChain, selectedChain.urls.page],
+  )
 
-  const handleConnectWallet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    setIsOpen(true)
-  }
+  const handleConnectWallet = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
+      setWalletModalIsOpen(true)
+    },
+    [setWalletModalIsOpen],
+  )
+
+  const handleWalletSidekick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
+      setWalletSidekickIsOpen(true)
+    },
+    [setWalletSidekickIsOpen],
+  )
 
   return (
     <div
@@ -69,17 +85,27 @@ const DomainHeader: FC = () => {
         <div className='flex gap-4'>
           {!actingAccount ? (
             <button
-              onClick={(e) => handleConnectWallet(e)}
+              onClick={handleConnectWallet}
               className='h-10 w-36 text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full'
             >
               Connect Wallet
             </button>
           ) : (
-            <AccountListDropdown />
+            <>
+              <AccountListDropdown />
+              <WalletSidekick
+                onClick={handleWalletSidekick}
+                isOpen={walletSidekickIsOpen}
+                setIsOpen={setWalletSidekickIsOpen}
+              />
+            </>
           )}
         </div>
       </div>
-      <PreferredExtensionModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <PreferredExtensionModal
+        isOpen={walletModalIsOpen}
+        onClose={() => setWalletModalIsOpen(false)}
+      />
     </div>
   )
 }
