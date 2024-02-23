@@ -375,6 +375,29 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
 
         await ctx.store.insert(operator);
       }
+    } else {
+      const operatorInfo = (
+        await api.query.domains.operators(operatorId)
+      ).toJSON() as any;
+
+      if (operatorInfo) {
+        operator = new Operator({
+          ...operator,
+          status: operatorInfo.status.toString(),
+          signingKey: operatorInfo.signingKey,
+          totalShares: BigInt(operatorInfo.totalShares),
+          currentEpochRewards: operatorInfo.currentEpochRewards,
+          currentTotalStake: BigInt(operatorInfo.currentTotalStake),
+          nominatorAmount: nominatorsLength,
+          nominationTax: operatorInfo.nominationTax,
+          minimumNominatorStake: BigInt(operatorInfo.minimumNominatorStake),
+          nextDomainId: operatorInfo.nextDomainId,
+          currentDomainId: operatorInfo.currentDomainId,
+          updatedAt: BigInt(block.header.height),
+        });
+
+        await ctx.store.save(operator);
+      }
     }
 
     return operator;
