@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client'
+import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import Identicon from '@polkadot/react-identicon'
 import dayjs from 'dayjs'
 import {
@@ -19,6 +20,7 @@ import {
   bigNumberToNumber,
   formatUnitsToNumber,
   limitNumberDecimals,
+  numberPositionSuffix,
   shortString,
 } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
@@ -26,8 +28,13 @@ import useWallet from 'common/hooks/useWallet'
 import { LogoIcon, WalletIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
 
-// operator
+// query
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
+import {
+  QUERY_NOMINATORS_REWARDS_LIST,
+  QUERY_OPERATORS_REWARDS_LIST,
+  QUERY_REWARDS_LIST,
+} from 'Leaderboard/querys'
 import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_SUMMARY } from 'Operator/query'
 
 type DrawerProps = {
@@ -115,6 +122,36 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     }),
     [subspaceAccount],
   )
+  const topFarmersVariables = useMemo(
+    () => ({
+      first: 100,
+      after: undefined,
+      orderBy: 'amount_DESC',
+      // eslint-disable-next-line camelcase
+      where: { vote_gt: '0', vote_isNull: false, OR: { block_gt: '0', block_isNull: false } },
+    }),
+    [],
+  )
+  const topOperatorsVariables = useMemo(
+    () => ({
+      first: 100,
+      after: undefined,
+      orderBy: 'amount_DESC',
+      // eslint-disable-next-line camelcase
+      where: {},
+    }),
+    [],
+  )
+  const topNominatorsVariables = useMemo(
+    () => ({
+      first: 100,
+      after: undefined,
+      orderBy: 'operator_DESC',
+      // eslint-disable-next-line camelcase
+      where: { operator_gt: '0', operator_isNull: false },
+    }),
+    [],
+  )
 
   const {
     data: operatorsConnectionData,
@@ -124,7 +161,6 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     variables: operatorsConnectionVariables,
     pollInterval: 6000,
   })
-
   const {
     data: nominatorsConnectionData,
     error: nominatorsConnectionError,
@@ -133,13 +169,36 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     variables: nominatorsConnectionVariables,
     pollInterval: 6000,
   })
-
   const {
     data: lastExtrinsicsData,
     error: lastExtrinsicsError,
     loading: lastExtrinsicsLoading,
   } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
     variables: lastExtrinsicsVariables,
+    pollInterval: 6000,
+  })
+  const {
+    data: topFarmersData,
+    error: topFarmersError,
+    loading: topFarmersLoading,
+  } = useQuery(QUERY_REWARDS_LIST, {
+    variables: topFarmersVariables,
+    pollInterval: 6000,
+  })
+  const {
+    data: topOperatorsData,
+    error: topOperatorsError,
+    loading: topOperatorsLoading,
+  } = useQuery(QUERY_OPERATORS_REWARDS_LIST, {
+    variables: topOperatorsVariables,
+    pollInterval: 6000,
+  })
+  const {
+    data: topNominatorsData,
+    error: topNominatorsError,
+    loading: topNominatorsLoading,
+  } = useQuery(QUERY_NOMINATORS_REWARDS_LIST, {
+    variables: topNominatorsVariables,
     pollInterval: 6000,
   })
 
@@ -202,6 +261,38 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
         ? lastExtrinsicsData.extrinsicsConnection.edges
         : [],
     [lastExtrinsicsData],
+  )
+
+  const topFarmers = useMemo(() => {
+    if (!topFarmersData || !topFarmersData.accountRewardsConnection) return 0
+    const account = topFarmersData.accountRewardsConnection.edges.find(
+      (edge) => edge.node.id === subspaceAccount,
+    )
+    if (!account) return 0
+    return account.cursor
+  }, [topFarmersData, subspaceAccount])
+
+  const topOperators = useMemo(() => {
+    if (!topOperatorsData || !topOperatorsData.accountRewardsConnection) return 0
+    const account = topOperatorsData.accountRewardsConnection.edges.find(
+      (edge) => edge.node.id === subspaceAccount,
+    )
+    if (!account) return 0
+    return account.cursor
+  }, [topOperatorsData, subspaceAccount])
+
+  const topNominators = useMemo(() => {
+    if (!topNominatorsData || !topNominatorsData.accountRewardsConnection) return 0
+    const account = topNominatorsData.accountRewardsConnection.edges.find(
+      (edge) => edge.node.id === subspaceAccount,
+    )
+    if (!account) return 0
+    return account.cursor
+  }, [topNominatorsData, subspaceAccount])
+
+  const hasTopPositions = useMemo(
+    () => topFarmers > 0 || topOperators > 0 || topNominators > 0,
+    [topFarmers, topOperators, topNominators],
   )
 
   useEffect(() => {
@@ -276,6 +367,40 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                   </Link>
                 }
               >
+                {topFarmersLoading ? (
+                  <Spinner />
+                ) : (
+                  topFarmers > 0 && (
+                    <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                      Top {Math.ceil(topFarmers / 10) * 10} Farmer
+                    </span>
+                  )
+                )}
+                {topFarmersError && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
+                {topOperatorsLoading ? (
+                  <Spinner />
+                ) : (
+                  topOperators > 0 && (
+                    <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                      Top {Math.ceil(topOperators / 10) * 10} Operator
+                    </span>
+                  )
+                )}
+                {topOperatorsError && (
+                  <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
+                )}
+                {topNominatorsLoading ? (
+                  <Spinner />
+                ) : (
+                  topNominators > 0 && (
+                    <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                      Top {Math.ceil(topNominators / 10) * 10} Nominator
+                    </span>
+                  )
+                )}
+                {topNominatorsError && (
+                  <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
+                )}
                 {operatorsConnectionLoading ||
                 nominatorsConnectionLoading ||
                 operatorsConnectionError ||
@@ -430,6 +555,68 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       'We are unable to load your extrinsics data'}
                     {lastExtrinsicsLoading && <Spinner />}
                     {!lastExtrinsicsError && !lastExtrinsicsLoading && 'No extrinsics to show'}
+                  </span>
+                </div>
+              )}
+            </Accordion>
+          </div>
+
+          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+            <Accordion
+              title={
+                <div className='flex items-center m-2 mb-0 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Leaderboard
+                  </span>
+                </div>
+              }
+            >
+              {hasTopPositions ? (
+                <List>
+                  {topFarmers > 0 && (
+                    <li key='topFarmers'>
+                      <Link
+                        data-testid='topFarmers-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.leaderboard.farmers}
+                      >
+                        <StyledListItem title='Top Farmer'>
+                          {numberPositionSuffix(topFarmers)} place
+                        </StyledListItem>
+                      </Link>
+                    </li>
+                  )}
+                  {topOperators > 0 && (
+                    <li key='topOperators'>
+                      <Link
+                        data-testid='topOperators-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.leaderboard.operators}
+                      >
+                        <StyledListItem title='Top Farmer'>
+                          {numberPositionSuffix(topOperators)} place
+                        </StyledListItem>
+                      </Link>
+                    </li>
+                  )}
+                  {topNominators > 0 && (
+                    <li key='topNominators'>
+                      <Link
+                        data-testid='topNominators-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.leaderboard.nominators}
+                      >
+                        <StyledListItem title='Top Farmer'>
+                          {numberPositionSuffix(topNominators)} place
+                        </StyledListItem>
+                      </Link>
+                    </li>
+                  )}
+                </List>
+              ) : (
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Your wallet is not in any of the top 100 leaderboard positions
                   </span>
                 </div>
               )}
