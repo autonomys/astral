@@ -593,7 +593,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                         className='hover:text-[#DE67E4]'
                         to={INTERNAL_ROUTES.leaderboard.operators}
                       >
-                        <StyledListItem title='Top Farmer'>
+                        <StyledListItem title='Top Operator'>
                           {numberPositionSuffix(topOperators)} place
                         </StyledListItem>
                       </Link>
@@ -606,7 +606,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                         className='hover:text-[#DE67E4]'
                         to={INTERNAL_ROUTES.leaderboard.nominators}
                       >
-                        <StyledListItem title='Top Farmer'>
+                        <StyledListItem title='Top Nominator'>
                           {numberPositionSuffix(topNominators)} place
                         </StyledListItem>
                       </Link>
