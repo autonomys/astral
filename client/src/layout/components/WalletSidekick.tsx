@@ -335,24 +335,56 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                     {bigNumberToNumber(totalStake)} {tokenSymbol}
                   </StyledListItem>
                   {totalOperatorStake !== '0' && (
-                    <StyledListItem title='Your total staked in your own operators'>
-                      {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
-                    </StyledListItem>
+                    <li key={'totalOperatorStake'}>
+                      <Link
+                        data-testid='totalOperatorStake-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.operators.manage}
+                      >
+                        <StyledListItem title='Your total staked in your own operators'>
+                          {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
+                        </StyledListItem>
+                      </Link>
+                    </li>
                   )}
                   {totalNominatedStake !== '0' && (
-                    <StyledListItem title='Your total nominated to other operators'>
-                      {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
-                    </StyledListItem>
+                    <li key={'totalNominatedStake'}>
+                      <Link
+                        data-testid='totalNominatedStake-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.operators.nomination}
+                      >
+                        <StyledListItem title='Your total nominated to other operators'>
+                          {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
+                        </StyledListItem>
+                      </Link>
+                    </li>
                   )}
                   {totalOperatorCount > 0 && (
-                    <StyledListItem title='Amount of operators you control'>
-                      {totalOperatorCount}
-                    </StyledListItem>
+                    <li key={'totalOperatorCount'}>
+                      <Link
+                        data-testid='totalOperatorCount-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.operators.manage}
+                      >
+                        <StyledListItem title='Amount of operators you control'>
+                          {totalOperatorCount}
+                        </StyledListItem>
+                      </Link>
+                    </li>
                   )}
                   {totalNominatedCount > 0 && (
-                    <StyledListItem title='Amount of nomination'>
-                      {totalNominatedCount}
-                    </StyledListItem>
+                    <li key={'totalNominatedCount'}>
+                      <Link
+                        data-testid='totalNominatedCount-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.operators.nomination}
+                      >
+                        <StyledListItem title='Amount of nomination'>
+                          {totalNominatedCount}
+                        </StyledListItem>
+                      </Link>
+                    </li>
                   )}
                 </List>
               </Accordion>
@@ -372,21 +404,22 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               {lastExtrinsics && lastExtrinsics.length > 0 ? (
                 <List>
                   {lastExtrinsics.map((extrinsic, index) => (
-                    <Link
-                      key={index}
-                      data-testid='extrinsic-link'
-                      className='hover:text-[#DE67E4]'
-                      to={INTERNAL_ROUTES.extrinsics.id.page(
-                        selectedChain.urls.page,
-                        'consensus',
-                        extrinsic.node.id,
-                      )}
-                    >
-                      <StyledListItem title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}>
-                        {extrinsic.node.name.split('.')[1].toUpperCase()}
-                        <StatusIcon status={extrinsic.node.success} />
-                      </StyledListItem>
-                    </Link>
+                    <li key={index}>
+                      <Link
+                        data-testid='extrinsic-link'
+                        className='hover:text-[#DE67E4]'
+                        to={INTERNAL_ROUTES.extrinsics.id.page(
+                          selectedChain.urls.page,
+                          'consensus',
+                          extrinsic.node.id,
+                        )}
+                      >
+                        <StyledListItem title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}>
+                          {extrinsic.node.name.split('.')[1].toUpperCase()}
+                          <StatusIcon status={extrinsic.node.success} />
+                        </StyledListItem>
+                      </Link>
+                    </li>
                   ))}
                 </List>
               ) : (
