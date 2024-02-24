@@ -371,9 +371,15 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                   <Spinner />
                 ) : (
                   topFarmers > 0 && (
-                    <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
-                      Top {Math.ceil(topFarmers / 10) * 10} Farmer
-                    </span>
+                    <Link
+                      data-testid='topFarmers-link'
+                      className='hover:text-[#DE67E4]'
+                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                    >
+                      <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                        Top {Math.ceil(topFarmers / 10) * 10} Farmer
+                      </span>
+                    </Link>
                   )
                 )}
                 {topFarmersError && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
@@ -381,9 +387,15 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                   <Spinner />
                 ) : (
                   topOperators > 0 && (
-                    <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
-                      Top {Math.ceil(topOperators / 10) * 10} Operator
-                    </span>
+                    <Link
+                      data-testid='topOperators-link'
+                      className='hover:text-[#DE67E4]'
+                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.operators}`}
+                    >
+                      <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                        Top {Math.ceil(topOperators / 10) * 10} Operator
+                      </span>
+                    </Link>
                   )
                 )}
                 {topOperatorsError && (
@@ -393,9 +405,15 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                   <Spinner />
                 ) : (
                   topNominators > 0 && (
-                    <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
-                      Top {Math.ceil(topNominators / 10) * 10} Nominator
-                    </span>
+                    <Link
+                      data-testid='topNominators-link'
+                      className='hover:text-[#DE67E4]'
+                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.nominators}`}
+                    >
+                      <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                        Top {Math.ceil(topNominators / 10) * 10} Nominator
+                      </span>
+                    </Link>
                   )
                 )}
                 {topNominatorsError && (
@@ -464,7 +482,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='totalOperatorStake-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.operators.manage}
+                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
                       >
                         <StyledListItem title='Your total staked in your own operators'>
                           {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
@@ -477,7 +495,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='totalNominatedStake-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.operators.nomination}
+                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
                       >
                         <StyledListItem title='Your total nominated to other operators'>
                           {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
@@ -490,7 +508,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='totalOperatorCount-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.operators.manage}
+                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
                       >
                         <StyledListItem title='Amount of operators you control'>
                           {totalOperatorCount}
@@ -503,7 +521,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='totalNominatedCount-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.operators.nomination}
+                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
                       >
                         <StyledListItem title='Amount of nomination'>
                           {totalNominatedCount}
@@ -578,7 +596,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='topFarmers-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.leaderboard.farmers}
+                        to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
                       >
                         <StyledListItem title='Top Farmer'>
                           {numberPositionSuffix(topFarmers)} place
@@ -591,7 +609,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='topOperators-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.leaderboard.operators}
+                        to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.operators}`}
                       >
                         <StyledListItem title='Top Operator'>
                           {numberPositionSuffix(topOperators)} place
@@ -604,7 +622,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       <Link
                         data-testid='topNominators-link'
                         className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.leaderboard.nominators}
+                        to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.nominators}`}
                       >
                         <StyledListItem title='Top Nominator'>
                           {numberPositionSuffix(topNominators)} place
