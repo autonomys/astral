@@ -1,5 +1,4 @@
 import BlockIcon from 'common/icons/BlockIcon'
-import CopyIcon from 'common/icons/CopyIcon'
 import DocIcon from 'common/icons/DocIcon'
 import EmptyCircleIcon from 'common/icons/EmptyCircleIcon'
 import FilterIcon from 'common/icons/FilterIcon'
@@ -10,7 +9,6 @@ import WalletIcon from 'common/icons/WalletIcon'
 
 export {
   BlockIcon,
-  CopyIcon,
   DocIcon,
   EmptyCircleIcon,
   FilterIcon,

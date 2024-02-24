@@ -17,12 +17,12 @@ import {
 } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useWallet from 'common/hooks/useWallet'
-import { CopyIcon, LogoIcon, WalletIcon } from 'common/icons'
+import { LogoIcon, WalletIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // operator
 import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_SUMMARY } from 'Operator/query'
-import { Spinner } from 'common/components'
+import { CopyButton, Spinner } from 'common/components'
 
 type DrawerProps = {
   isOpen: boolean
@@ -271,10 +271,13 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                   </span>
                 </div>
                 <div className='flex items-center m-2'>
-                  <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
-                    {subspaceAccount && subspaceAccount}
-                  </span>
-                  <CopyIcon onClick={handleCopyWallet} fill='white' />
+                  {subspaceAccount && (
+                    <CopyButton value={subspaceAccount} message='Wallet address copied'>
+                      <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
+                        {subspaceAccount}
+                      </span>
+                    </CopyButton>
+                  )}
                 </div>
                 <div className='flex items-center m-2 pt-4'>
                   <span className='text-[#241235] text-base font-medium dark:text-white'>
@@ -284,34 +287,35 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                 <div className='flex items-center m-2'>
                   {limitNumberDecimals(walletBalance)} {tokenSymbol}
                 </div>
-                <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Your total staked
-                  </span>
-                </div>
-                <div className='flex items-center m-2'>
-                  {bigNumberToNumber(totalStake)} {tokenSymbol}
-                </div>
-                <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Your total staked in your own operators
-                  </span>
-                </div>
-                <div className='flex items-center m-2'>
-                  {bigNumberToNumber(totalOperatorStake)} {tokenSymbol} - {totalOperatorCount}{' '}
-                  operators
-                </div>
-                <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Your total staked nominated to other operators
-                  </span>
-                </div>
-                <div className='flex items-center m-2'>
-                  {bigNumberToNumber(totalNominatedStake)} {tokenSymbol} - {totalNominatedCount}{' '}
-                  nomination
-                </div>
               </>
             )}
+          </div>
+          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+            <div className='flex items-center m-2 pt-4'>
+              <span className='text-[#241235] text-base font-medium dark:text-white'>
+                Your total staked
+              </span>
+            </div>
+            <div className='flex items-center m-2'>
+              {bigNumberToNumber(totalStake)} {tokenSymbol}
+            </div>
+            <div className='flex items-center m-2 pt-4'>
+              <span className='text-[#241235] text-base font-medium dark:text-white'>
+                Your total staked in your own operators
+              </span>
+            </div>
+            <div className='flex items-center m-2'>
+              {bigNumberToNumber(totalOperatorStake)} {tokenSymbol} - {totalOperatorCount} operators
+            </div>
+            <div className='flex items-center m-2 pt-4'>
+              <span className='text-[#241235] text-base font-medium dark:text-white'>
+                Your total staked nominated to other operators
+              </span>
+            </div>
+            <div className='flex items-center m-2'>
+              {bigNumberToNumber(totalNominatedStake)} {tokenSymbol} - {totalNominatedCount}{' '}
+              nomination
+            </div>
           </div>
           <div className='flex'>
             <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
