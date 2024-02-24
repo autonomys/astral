@@ -1,17 +1,28 @@
+import { useQuery } from '@apollo/client'
 import dayjs from 'dayjs'
+import { Nominator, NominatorsConnection, OperatorsConnection } from 'gql/graphql'
 import { minidenticon } from 'minidenticons'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 // layout
 import { HeaderBackground } from 'layout/components'
 
 // common
-import { shortString } from 'common/helpers'
+import {
+  bigNumberToNumber,
+  formatUnitsToNumber,
+  limitNumberDecimals,
+  shortString,
+} from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useWallet from 'common/hooks/useWallet'
 import { CopyIcon, LogoIcon, WalletIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// operator
+import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_SUMMARY } from 'Operator/query'
+import { Spinner } from 'common/components'
 
 type DrawerProps = {
   isOpen: boolean
@@ -39,7 +50,10 @@ export const WalletSidekick: FC<WalletSidekickProps> = ({ onClick, isOpen, setIs
 const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate()
   const { selectedChain, selectedDomain } = useDomains()
+  const { api, actingAccount } = useWallet()
   const { subspaceAccount } = useWallet()
+  const [tokenSymbol, setTokenSymbol] = useState<string>('')
+  const [walletBalance, setWalletBalance] = useState<number>(0)
 
   const avatar = useMemo(
     () =>
@@ -62,6 +76,120 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     }
   }, [subspaceAccount])
 
+  const loadData = useCallback(async () => {
+    if (!api || !api[selectedChain.urls.page]) return
+
+    const properties = await api[selectedChain.urls.page].rpc.system.properties()
+    setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
+  }, [api, selectedChain])
+
+  const loadWalletBalance = useCallback(async () => {
+    if (!api || !actingAccount || !api[selectedChain.urls.page]) return
+
+    const balance = await api[selectedChain.urls.page].query.system.account(actingAccount.address)
+    setWalletBalance(
+      formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+    )
+  }, [api, actingAccount, selectedChain])
+
+  const operatorsConnectionVariables = useMemo(
+    () => ({
+      first: 1000,
+      orderBy: 'id_ASC',
+      // eslint-disable-next-line camelcase
+      where: subspaceAccount ? { operatorOwner_eq: subspaceAccount } : {},
+    }),
+    [subspaceAccount],
+  )
+  const nominatorsConnectionVariables = useMemo(
+    () => ({
+      first: 1000,
+      after: undefined,
+      orderBy: 'id_ASC',
+      // eslint-disable-next-line camelcase
+      where: subspaceAccount ? { account: { id_eq: subspaceAccount } } : {},
+    }),
+    [subspaceAccount],
+  )
+
+  const {
+    data: operatorsConnectionData,
+    error: operatorsConnectionError,
+    loading: operatorsConnectionLoading,
+  } = useQuery(QUERY_OPERATOR_CONNECTION_SUMMARY, {
+    variables: operatorsConnectionVariables,
+    pollInterval: 6000,
+  })
+
+  const {
+    data: nominatorsConnectionData,
+    error: nominatorsConnectionError,
+    loading: nominatorsConnectionLoading,
+  } = useQuery(QUERY_NOMINATOR_CONNECTION_LIST, {
+    variables: nominatorsConnectionVariables,
+    pollInterval: 6000,
+  })
+
+  const operators: OperatorsConnection = useMemo(
+    () =>
+      operatorsConnectionData && operatorsConnectionData.operatorsConnection
+        ? operatorsConnectionData.operatorsConnection
+        : [],
+    [operatorsConnectionData],
+  )
+  const totalOperatorCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
+  const totalOperatorStake = useMemo(
+    () =>
+      operators && operators.edges
+        ? operators.edges
+            .reduce((acc, operator) => acc + BigInt(operator.node.currentTotalStake), BigInt(0))
+            .toString()
+        : '0',
+    [operators],
+  )
+
+  const nominators: NominatorsConnection = useMemo(
+    () =>
+      nominatorsConnectionData && nominatorsConnectionData.nominatorsConnection
+        ? nominatorsConnectionData.nominatorsConnection
+        : [],
+    [nominatorsConnectionData],
+  )
+  const nominatorsConnection: Nominator[] = useMemo(
+    () =>
+      nominators && nominators.edges ? nominators.edges.map((nominator) => nominator.node) : [],
+    [nominators],
+  )
+  const totalNominatedCount = useMemo(() => (nominators ? nominators.totalCount : 0), [nominators])
+  const totalNominatedStake = useMemo(
+    () =>
+      nominatorsConnection
+        .reduce(
+          (acc, nominator) =>
+            acc +
+            (BigInt(nominator.operator.currentTotalStake) /
+              BigInt(nominator.operator.totalShares)) *
+              BigInt(nominator.shares),
+          BigInt(0),
+        )
+        .toString(),
+    [nominatorsConnection],
+  )
+  const totalStake = useMemo(
+    () => (BigInt(totalOperatorStake) + BigInt(totalNominatedStake)).toString(),
+    [totalOperatorStake, totalNominatedStake],
+  )
+
+  useEffect(() => {
+    loadData()
+  }, [api, loadData])
+
+  useEffect(() => {
+    loadWalletBalance()
+  }, [api, actingAccount, loadWalletBalance])
+
+  if (operatorsConnectionLoading) return <Spinner />
+
   return (
     <nav
       className={
@@ -79,10 +207,10 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
       >
         <HeaderBackground />
         <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-10'>
-          <div className='flex items-center align-middle justify-between p-5'>
+          <div className='flex items-center align-middle justify-between p-5 mb-6'>
             <button
               onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
-              className='flex title-font font-medium items-center text-gray-900 text-[#282929] dark:text-white'
+              className='flex title-font font-medium items-center text-gray-900 dark:text-white'
             >
               <LogoIcon fillColor='currentColor' />
             </button>
@@ -114,16 +242,69 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                 </div>
               </Link>
             )}
-
-            <span className='text-[#241235] text-base font-medium dark:text-white'>
-              Your Subspace Wallet Address
-            </span>
-            <div className='flex items-center m-2'>
-              <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-white'>
-                {subspaceAccount && subspaceAccount}
-              </span>
-              <CopyIcon onClick={handleCopyWallet} fill='white' />
-            </div>
+            {operatorsConnectionLoading ||
+            nominatorsConnectionLoading ||
+            operatorsConnectionError ||
+            nominatorsConnectionError ? (
+              <>
+                {(operatorsConnectionLoading || nominatorsConnectionLoading) && <Spinner />}
+                {(operatorsConnectionError || nominatorsConnectionError) && (
+                  <div className='flex items-center m-2 pt-4'>
+                    <span className='text-[#241235] text-base font-medium dark:text-white'>
+                      We are unable to load your wallet data
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Your Subspace Wallet Address
+                  </span>
+                </div>
+                <div className='flex items-center m-2'>
+                  <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-white'>
+                    {subspaceAccount && subspaceAccount}
+                  </span>
+                  <CopyIcon onClick={handleCopyWallet} fill='white' />
+                </div>
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Your Subspace Wallet Balance
+                  </span>
+                </div>
+                <div className='flex items-center m-2'>
+                  {limitNumberDecimals(walletBalance)} {tokenSymbol}
+                </div>
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Your total staked
+                  </span>
+                </div>
+                <div className='flex items-center m-2'>
+                  {bigNumberToNumber(totalStake)} {tokenSymbol}
+                </div>
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Your total staked in your own operators
+                  </span>
+                </div>
+                <div className='flex items-center m-2'>
+                  {bigNumberToNumber(totalOperatorStake)} {tokenSymbol} - {totalOperatorCount}{' '}
+                  operators
+                </div>
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Your total staked nominated to other operators
+                  </span>
+                </div>
+                <div className='flex items-center m-2'>
+                  {bigNumberToNumber(totalNominatedStake)} {tokenSymbol} - {totalNominatedCount}{' '}
+                  nomination
+                </div>
+              </>
+            )}
           </div>
           <div className='flex'>
             <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
