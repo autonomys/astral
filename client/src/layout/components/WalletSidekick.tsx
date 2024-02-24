@@ -462,17 +462,17 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               </Accordion>
             )}
           </div>
-          {totalStake !== '0' && (
-            <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
-              <Accordion
-                title={
-                  <div className='flex items-center m-2 mb-0 pt-4'>
-                    <span className='text-[#241235] text-base font-medium dark:text-white'>
-                      Staking Summary
-                    </span>
-                  </div>
-                }
-              >
+          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+            <Accordion
+              title={
+                <div className='flex items-center m-2 mb-0 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Staking Summary
+                  </span>
+                </div>
+              }
+            >
+              {totalStake !== '0' ? (
                 <List>
                   <StyledListItem title='Your total staked'>
                     {bigNumberToNumber(totalStake)} {tokenSymbol}
@@ -530,9 +530,22 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                     </li>
                   )}
                 </List>
-              </Accordion>
-            </div>
-          )}
+              ) : (
+                <div className='flex items-center m-2 pt-4'>
+                  <Link
+                    data-testid='totalNominatedCount-link'
+                    className='hover:text-[#DE67E4]'
+                    to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.list}`}
+                  >
+                    <span className='text-[#241235] text-sm font-medium dark:text-white'>
+                      Your wallet has not staked any {tokenSymbol} yet! Head over to the operators
+                      page to stake your {tokenSymbol}
+                    </span>
+                  </Link>
+                </div>
+              )}
+            </Accordion>
+          </div>
 
           <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
             <Accordion
@@ -567,7 +580,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                 </List>
               ) : (
                 <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                  <span className='text-[#241235] text-sm font-medium dark:text-white'>
                     {!lastExtrinsicsLoading &&
                       lastExtrinsicsError &&
                       'We are unable to load your extrinsics data'}
@@ -633,9 +646,15 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                 </List>
               ) : (
                 <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Your wallet is not in any of the top 100 leaderboard positions
-                  </span>
+                  <Link
+                    data-testid='totalNominatedCount-link'
+                    className='hover:text-[#DE67E4]'
+                    to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                  >
+                    <span className='text-[#241235] text-sm font-medium dark:text-white'>
+                      Your wallet is not in any of the top 100 leaderboard positions!
+                    </span>
+                  </Link>
                 </div>
               )}
             </Accordion>
