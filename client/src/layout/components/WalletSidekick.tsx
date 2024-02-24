@@ -372,13 +372,21 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               {lastExtrinsics && lastExtrinsics.length > 0 ? (
                 <List>
                   {lastExtrinsics.map((extrinsic, index) => (
-                    <StyledListItem
+                    <Link
                       key={index}
-                      title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}
+                      data-testid='extrinsic-link'
+                      className='hover:text-[#DE67E4]'
+                      to={INTERNAL_ROUTES.extrinsics.id.page(
+                        selectedChain.urls.page,
+                        'consensus',
+                        extrinsic.node.id,
+                      )}
                     >
-                      {extrinsic.node.name.split('.')[1].toUpperCase()}
-                      <StatusIcon status={extrinsic.node.success} />
-                    </StyledListItem>
+                      <StyledListItem title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}>
+                        {extrinsic.node.name.split('.')[1].toUpperCase()}
+                        <StatusIcon status={extrinsic.node.success} />
+                      </StyledListItem>
+                    </Link>
                   ))}
                 </List>
               ) : (
