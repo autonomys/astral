@@ -1,7 +1,12 @@
 import { useQuery } from '@apollo/client'
 import Identicon from '@polkadot/react-identicon'
 import dayjs from 'dayjs'
-import { Nominator, NominatorsConnection, OperatorsConnection } from 'gql/graphql'
+import {
+  ExtrinsicsConnection,
+  Nominator,
+  NominatorsConnection,
+  OperatorsConnection,
+} from 'gql/graphql'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -9,7 +14,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HeaderBackground } from 'layout/components'
 
 // common
-import { Accordion, CopyButton, List, Spinner, StyledListItem } from 'common/components'
+import { Accordion, CopyButton, List, Spinner, StatusIcon, StyledListItem } from 'common/components'
 import {
   bigNumberToNumber,
   formatUnitsToNumber,
@@ -22,6 +27,7 @@ import { LogoIcon, WalletIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // operator
+import { QUERY_EXTRINSIC_LIST_CONNECTION } from 'Extrinsic/query'
 import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_SUMMARY } from 'Operator/query'
 
 type DrawerProps = {
@@ -99,6 +105,16 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     }),
     [subspaceAccount],
   )
+  const lastExtrinsicsVariables = useMemo(
+    () => ({
+      first: 10,
+      after: undefined,
+      orderBy: 'id_ASC',
+      // eslint-disable-next-line camelcase
+      where: subspaceAccount ? { signer: { id_eq: subspaceAccount } } : {},
+    }),
+    [subspaceAccount],
+  )
 
   const {
     data: operatorsConnectionData,
@@ -115,6 +131,15 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     loading: nominatorsConnectionLoading,
   } = useQuery(QUERY_NOMINATOR_CONNECTION_LIST, {
     variables: nominatorsConnectionVariables,
+    pollInterval: 6000,
+  })
+
+  const {
+    data: lastExtrinsicsData,
+    error: lastExtrinsicsError,
+    loading: lastExtrinsicsLoading,
+  } = useQuery(QUERY_EXTRINSIC_LIST_CONNECTION, {
+    variables: lastExtrinsicsVariables,
     pollInterval: 6000,
   })
 
@@ -163,9 +188,20 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
         .toString(),
     [nominatorsConnection],
   )
+
   const totalStake = useMemo(
     () => (BigInt(totalOperatorStake) + BigInt(totalNominatedStake)).toString(),
     [totalOperatorStake, totalNominatedStake],
+  )
+
+  const lastExtrinsics: ExtrinsicsConnection['edges'] = useMemo(
+    () =>
+      lastExtrinsicsData &&
+      lastExtrinsicsData.extrinsicsConnection &&
+      lastExtrinsicsData.extrinsicsConnection.edges
+        ? lastExtrinsicsData.extrinsicsConnection.edges
+        : [],
+    [lastExtrinsicsData],
   )
 
   useEffect(() => {
@@ -194,8 +230,8 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
         }
       >
         <HeaderBackground />
-        <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-10'>
-          <div className='flex items-center align-middle justify-between p-5 mb-6'>
+        <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-6'>
+          <div className='flex items-center align-middle justify-between p-5'>
             <button
               onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
               className='flex title-font font-medium items-center text-gray-900 dark:text-white'
@@ -211,71 +247,76 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               </button>
             </div>
           </div>
-          <div className='p-5 m-2 mt-8 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+          <div className='p-5 m-2 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
             {subspaceAccount && (
-              <Link
-                data-testid='wallet-link'
-                className='hover:text-[#DE67E4]'
-                to={INTERNAL_ROUTES.accounts.id.page(
-                  selectedChain.urls.page,
-                  'consensus',
-                  subspaceAccount,
-                )}
-              >
-                <div className='flex items-center m-2'>
-                  <Identicon value={subspaceAccount} size={48} theme={theme} />
-                  <div className='relative'>
-                    {actingAccount && (
-                      <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
-                        {actingAccount.name}
-                      </span>
+              <Accordion
+                title={
+                  <Link
+                    data-testid='wallet-link'
+                    className='hover:text-[#DE67E4]'
+                    to={INTERNAL_ROUTES.accounts.id.page(
+                      selectedChain.urls.page,
+                      'consensus',
+                      subspaceAccount,
                     )}
-                    <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
-                      {shortString(subspaceAccount)}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            )}
-            {operatorsConnectionLoading ||
-            nominatorsConnectionLoading ||
-            operatorsConnectionError ||
-            nominatorsConnectionError ? (
-              <>
-                {(operatorsConnectionLoading || nominatorsConnectionLoading) && <Spinner />}
-                {(operatorsConnectionError || nominatorsConnectionError) && (
-                  <div className='flex items-center m-2 pt-4'>
-                    <span className='text-[#241235] text-base font-medium dark:text-white'>
-                      We are unable to load your wallet data
-                    </span>
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Your Subspace Wallet Address
-                  </span>
-                </div>
-                <div className='flex items-center m-2'>
-                  {subspaceAccount && (
-                    <CopyButton value={subspaceAccount} message='Wallet address copied'>
-                      <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
-                        {subspaceAccount}
+                  >
+                    <div className='flex items-center m-2'>
+                      <Identicon value={subspaceAccount} size={48} theme={theme} />
+                      <div className='relative'>
+                        {actingAccount && (
+                          <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
+                            {actingAccount.name}
+                          </span>
+                        )}
+                        <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
+                          {shortString(subspaceAccount)}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                }
+              >
+                {operatorsConnectionLoading ||
+                nominatorsConnectionLoading ||
+                operatorsConnectionError ||
+                nominatorsConnectionError ? (
+                  <>
+                    {(operatorsConnectionLoading || nominatorsConnectionLoading) && <Spinner />}
+                    {(operatorsConnectionError || nominatorsConnectionError) && (
+                      <div className='flex items-center m-2 pt-4'>
+                        <span className='text-[#241235] text-base font-medium dark:text-white'>
+                          We are unable to load your wallet data
+                        </span>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className='flex items-center m-2 pt-4'>
+                      <span className='text-[#241235] text-base font-medium dark:text-white'>
+                        Your Subspace Wallet Address
                       </span>
-                    </CopyButton>
-                  )}
-                </div>
-                <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Your Subspace Wallet Balance
-                  </span>
-                </div>
-                <div className='flex items-center m-2'>
-                  {limitNumberDecimals(walletBalance)} {tokenSymbol}
-                </div>
-              </>
+                    </div>
+                    <div className='flex items-center m-2'>
+                      {subspaceAccount && (
+                        <CopyButton value={subspaceAccount} message='Wallet address copied'>
+                          <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
+                            {subspaceAccount}
+                          </span>
+                        </CopyButton>
+                      )}
+                    </div>
+                    <div className='flex items-center m-2 pt-4'>
+                      <span className='text-[#241235] text-base font-medium dark:text-white'>
+                        Your Subspace Wallet Balance
+                      </span>
+                    </div>
+                    <div className='flex items-center m-2'>
+                      {limitNumberDecimals(walletBalance)} {tokenSymbol}
+                    </div>
+                  </>
+                )}
+              </Accordion>
             )}
           </div>
           {totalStake !== '0' && (
@@ -317,6 +358,42 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               </Accordion>
             </div>
           )}
+
+          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+            <Accordion
+              title={
+                <div className='flex items-center m-2 mb-0 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Last extrinsics
+                  </span>
+                </div>
+              }
+            >
+              {lastExtrinsics && lastExtrinsics.length > 0 ? (
+                <List>
+                  {lastExtrinsics.map((extrinsic, index) => (
+                    <StyledListItem
+                      key={index}
+                      title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}
+                    >
+                      {extrinsic.node.name.split('.')[1].toUpperCase()}
+                      <StatusIcon status={extrinsic.node.success} />
+                    </StyledListItem>
+                  ))}
+                </List>
+              ) : (
+                <div className='flex items-center m-2 pt-4'>
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    {!lastExtrinsicsLoading &&
+                      lastExtrinsicsError &&
+                      'We are unable to load your extrinsics data'}
+                    {lastExtrinsicsLoading && <Spinner />}
+                    {!lastExtrinsicsError && !lastExtrinsicsLoading && 'No extrinsics to show'}
+                  </span>
+                </div>
+              )}
+            </Accordion>
+          </div>
 
           <div className='flex'>
             <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
