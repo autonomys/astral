@@ -585,7 +585,9 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                       lastExtrinsicsError &&
                       'We are unable to load your extrinsics data'}
                     {lastExtrinsicsLoading && <Spinner />}
-                    {!lastExtrinsicsError && !lastExtrinsicsLoading && 'No extrinsics to show'}
+                    {!lastExtrinsicsError &&
+                      !lastExtrinsicsLoading &&
+                      'Your wallet has no extrinsics!'}
                   </span>
                 </div>
               )}
