@@ -9,7 +9,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HeaderBackground } from 'layout/components'
 
 // common
-import { CopyButton, Spinner } from 'common/components'
+import { Accordion, CopyButton, List, Spinner, StyledListItem } from 'common/components'
 import {
   bigNumberToNumber,
   formatUnitsToNumber,
@@ -278,33 +278,46 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               </>
             )}
           </div>
-          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
-            <div className='flex items-center m-2 pt-4'>
-              <span className='text-[#241235] text-base font-medium dark:text-white'>
-                Your total staked
-              </span>
+          {totalStake !== '0' && (
+            <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+              <Accordion
+                title={
+                  <div className='flex items-center m-2 mb-0 pt-4'>
+                    <span className='text-[#241235] text-base font-medium dark:text-white'>
+                      Staking Summary
+                    </span>
+                  </div>
+                }
+              >
+                <List>
+                  <StyledListItem title='Your total staked'>
+                    {bigNumberToNumber(totalStake)} {tokenSymbol}
+                  </StyledListItem>
+                  {totalOperatorStake !== '0' && (
+                    <StyledListItem title='Your total staked in your own operators'>
+                      {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
+                    </StyledListItem>
+                  )}
+                  {totalNominatedStake !== '0' && (
+                    <StyledListItem title='Your total nominated to other operators'>
+                      {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
+                    </StyledListItem>
+                  )}
+                  {totalOperatorCount > 0 && (
+                    <StyledListItem title='Amount of operators you control'>
+                      {totalOperatorCount}
+                    </StyledListItem>
+                  )}
+                  {totalNominatedCount > 0 && (
+                    <StyledListItem title='Amount of nomination'>
+                      {totalNominatedCount}
+                    </StyledListItem>
+                  )}
+                </List>
+              </Accordion>
             </div>
-            <div className='flex items-center m-2'>
-              {bigNumberToNumber(totalStake)} {tokenSymbol}
-            </div>
-            <div className='flex items-center m-2 pt-4'>
-              <span className='text-[#241235] text-base font-medium dark:text-white'>
-                Your total staked in your own operators
-              </span>
-            </div>
-            <div className='flex items-center m-2'>
-              {bigNumberToNumber(totalOperatorStake)} {tokenSymbol} - {totalOperatorCount} operators
-            </div>
-            <div className='flex items-center m-2 pt-4'>
-              <span className='text-[#241235] text-base font-medium dark:text-white'>
-                Your total staked nominated to other operators
-              </span>
-            </div>
-            <div className='flex items-center m-2'>
-              {bigNumberToNumber(totalNominatedStake)} {tokenSymbol} - {totalNominatedCount}{' '}
-              nomination
-            </div>
-          </div>
+          )}
+
           <div className='flex'>
             <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
               <p className='text-gray text-sm text-center sm:text-left'>
