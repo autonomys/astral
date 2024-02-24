@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
+import Identicon from '@polkadot/react-identicon'
 import dayjs from 'dayjs'
 import { Nominator, NominatorsConnection, OperatorsConnection } from 'gql/graphql'
-import { minidenticon } from 'minidenticons'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HeaderBackground } from 'layout/components'
 
 // common
+import { CopyButton, Spinner } from 'common/components'
 import {
   bigNumberToNumber,
   formatUnitsToNumber,
@@ -22,7 +23,6 @@ import { INTERNAL_ROUTES } from 'common/routes'
 
 // operator
 import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_SUMMARY } from 'Operator/query'
-import { CopyButton, Spinner } from 'common/components'
 
 type DrawerProps = {
   isOpen: boolean
@@ -55,13 +55,6 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
 
-  const avatar = useMemo(
-    () =>
-      'data:image/svg+xml;utf8,' +
-      encodeURIComponent(minidenticon(subspaceAccount ?? 'no-wallet', 50, 50)),
-    [subspaceAccount],
-  )
-
   const handleNavigate = useCallback(
     (url: string) => {
       setIsOpen(false)
@@ -69,12 +62,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
     },
     [setIsOpen, navigate],
   )
-
-  const handleCopyWallet = useCallback(() => {
-    if (subspaceAccount) {
-      navigator.clipboard.writeText(subspaceAccount)
-    }
-  }, [subspaceAccount])
+  const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
 
   const loadData = useCallback(async () => {
     if (!api || !api[selectedChain.urls.page]) return
@@ -235,7 +223,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                 )}
               >
                 <div className='flex items-center m-2'>
-                  <img src={avatar} alt={subspaceAccount} width={60} />
+                  <Identicon value={subspaceAccount} size={48} theme={theme} />
                   <div className='relative'>
                     {actingAccount && (
                       <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
