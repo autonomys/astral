@@ -94,7 +94,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
 
   const operatorsConnectionVariables = useMemo(
     () => ({
-      first: 1000,
+      first: 100,
       orderBy: 'id_ASC',
       // eslint-disable-next-line camelcase
       where: subspaceAccount ? { operatorOwner_eq: subspaceAccount } : {},
@@ -103,7 +103,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
   )
   const nominatorsConnectionVariables = useMemo(
     () => ({
-      first: 1000,
+      first: 100,
       after: undefined,
       orderBy: 'id_ASC',
       // eslint-disable-next-line camelcase
@@ -236,9 +236,16 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
               >
                 <div className='flex items-center m-2'>
                   <img src={avatar} alt={subspaceAccount} width={60} />
-                  <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-white'>
-                    {shortString(subspaceAccount)}
-                  </span>
+                  <div className='relative'>
+                    {actingAccount && (
+                      <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
+                        {actingAccount.name}
+                      </span>
+                    )}
+                    <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
+                      {shortString(subspaceAccount)}
+                    </span>
+                  </div>
                 </div>
               </Link>
             )}
@@ -264,7 +271,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
                   </span>
                 </div>
                 <div className='flex items-center m-2'>
-                  <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-white'>
+                  <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
                     {subspaceAccount && subspaceAccount}
                   </span>
                   <CopyIcon onClick={handleCopyWallet} fill='white' />
