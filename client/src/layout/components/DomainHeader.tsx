@@ -8,6 +8,7 @@ import domains from 'layout/config/domains.json'
 import { DOMAINS, DOMAINS_NAMES } from 'layout/constants'
 
 // common
+import IndexingError from 'common/components/IndexingError'
 import useWallet from 'common/hooks/useWallet'
 
 // chains
@@ -84,7 +85,7 @@ const DomainHeader: FC = () => {
       id='accordion-open'
       data-accordion='open'
     >
-      <div className='w-full flex justify-between container py-3 items-center px-5 md:px-[25px] 2xl:px-0 mx-auto'>
+      <div className='w-full flex justify-between container py-3 items-center px-5 md:px-[25px] 2xl:px-0 mx-auto pb-2'>
         <div className='flex gap-9'>{domainsOptions}</div>
         <div className='flex gap-4'>
           {!actingAccount ? (
@@ -106,10 +107,12 @@ const DomainHeader: FC = () => {
           )}
         </div>
       </div>
-      <PreferredExtensionModal
-        isOpen={walletModalIsOpen}
-        onClose={() => setWalletModalIsOpen(false)}
-      />
+      {(pathName.includes('gemini-3h/operators') ||
+        pathName.includes('gemini-3h/leaderboard/')) && (
+        <div className='w-full sticky'>
+          <IndexingError />
+        </div>
+      )}
     </div>
   )
 }
