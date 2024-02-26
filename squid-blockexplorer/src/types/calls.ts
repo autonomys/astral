@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
 import * as v0 from './v0'
+import * as v1 from './v1'
 
 export class BalancesForceSetBalanceCall {
     private readonly _chain: Chain
@@ -290,6 +291,21 @@ export class DomainsInstantiateDomainCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::instantiate_domain`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Domains.instantiate_domain') === 'bdc7edfdeb1a0ab4c49451e1ffbcfe18c5cebbfb0753b532e1f017df25fbaa05'
+    }
+
+    /**
+     * See [`Pallet::instantiate_domain`].
+     */
+    get asV1(): {domainConfig: v1.DomainConfig} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class DomainsNominateOperatorCall {
@@ -406,6 +422,21 @@ export class DomainsSubmitBundleCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::submit_bundle`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Domains.submit_bundle') === '03ef368be38b0a97509d84f0700d8e3b2872614e5a1cd6a1e405ccc77619a28a'
+    }
+
+    /**
+     * See [`Pallet::submit_bundle`].
+     */
+    get asV1(): {opaqueBundle: v1.Bundle} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class DomainsSubmitFraudProofCall {
@@ -433,6 +464,21 @@ export class DomainsSubmitFraudProofCall {
      */
     get asV0(): {fraudProof: v0.FraudProof} {
         assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::submit_fraud_proof`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Domains.submit_fraud_proof') === '29d21ab25fbb24a3b7ae276fb276c055bced4f008c7cb814d75f80a9f61cebd1'
+    }
+
+    /**
+     * See [`Pallet::submit_fraud_proof`].
+     */
+    get asV1(): {fraudProof: v1.FraudProof} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1102,6 +1148,21 @@ export class SudoSudoCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::sudo`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.sudo') === '7cf410fbeae08cd6b3b68d98a06c7987deb51f852d4ca63c8b8dc9f7b6656aad'
+    }
+
+    /**
+     * See [`Pallet::sudo`].
+     */
+    get asV1(): {call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoAsCall {
@@ -1131,6 +1192,21 @@ export class SudoSudoAsCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::sudo_as`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_as') === '9827e964abdce480b7408487432821761374dfa88ae43fba082502dabc2bfc6c'
+    }
+
+    /**
+     * See [`Pallet::sudo_as`].
+     */
+    get asV1(): {who: v1.MultiAddress, call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class SudoSudoUncheckedWeightCall {
@@ -1158,6 +1234,21 @@ export class SudoSudoUncheckedWeightCall {
      */
     get asV0(): {call: v0.Call, weight: v0.Weight} {
         assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::sudo_unchecked_weight`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '98114e16790cca8be1b6b3826b7539374939e7e5752d49578cd48d2ac5fd9a2e'
+    }
+
+    /**
+     * See [`Pallet::sudo_unchecked_weight`].
+     */
+    get asV1(): {call: v1.Call, weight: v1.Weight} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1566,6 +1657,21 @@ export class UtilityAsDerivativeCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.as_derivative') === 'eca5d10c882a847f278aa84c535a40d394e5b1adde52a1291eb03f92f2338691'
+    }
+
+    /**
+     * See [`Pallet::as_derivative`].
+     */
+    get asV1(): {index: number, call: v1.Call} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityBatchCall {
@@ -1593,6 +1699,21 @@ export class UtilityBatchCall {
      */
     get asV0(): {calls: v0.Call[]} {
         assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.batch') === '1d74d4b6aceb83bcf854e0b817a37839ee62eaa04f932729cc711da5540e0e9b'
+    }
+
+    /**
+     * See [`Pallet::batch`].
+     */
+    get asV1(): {calls: v1.Call[]} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1624,6 +1745,21 @@ export class UtilityBatchAllCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.batch_all') === '1d74d4b6aceb83bcf854e0b817a37839ee62eaa04f932729cc711da5540e0e9b'
+    }
+
+    /**
+     * See [`Pallet::batch_all`].
+     */
+    get asV1(): {calls: v1.Call[]} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityDispatchAsCall {
@@ -1651,6 +1787,21 @@ export class UtilityDispatchAsCall {
      */
     get asV0(): {asOrigin: v0.OriginCaller, call: v0.Call} {
         assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.dispatch_as') === 'a2206d064d3c25be2b31f7f7a91c9d1e07d959e7f5e3b46677bfe047f7bf7e2f'
+    }
+
+    /**
+     * See [`Pallet::dispatch_as`].
+     */
+    get asV1(): {asOrigin: v1.OriginCaller, call: v1.Call} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }
@@ -1682,6 +1833,21 @@ export class UtilityForceBatchCall {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.force_batch') === '1d74d4b6aceb83bcf854e0b817a37839ee62eaa04f932729cc711da5540e0e9b'
+    }
+
+    /**
+     * See [`Pallet::force_batch`].
+     */
+    get asV1(): {calls: v1.Call[]} {
+        assert(this.isV1)
+        return this._chain.decodeCall(this.call)
+    }
 }
 
 export class UtilityWithWeightCall {
@@ -1709,6 +1875,21 @@ export class UtilityWithWeightCall {
      */
     get asV0(): {call: v0.Call, weight: v0.Weight} {
         assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get isV1(): boolean {
+        return this._chain.getCallHash('Utility.with_weight') === '98114e16790cca8be1b6b3826b7539374939e7e5752d49578cd48d2ac5fd9a2e'
+    }
+
+    /**
+     * See [`Pallet::with_weight`].
+     */
+    get asV1(): {call: v1.Call, weight: v1.Weight} {
+        assert(this.isV1)
         return this._chain.decodeCall(this.call)
     }
 }

@@ -1058,6 +1058,29 @@ export class DomainsPreferredOperatorEvent {
     }
 }
 
+export class DomainsStorageFeeDepositedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Domains.StorageFeeDeposited')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    get isV1(): boolean {
+        return this._chain.getEventHash('Domains.StorageFeeDeposited') === 'c6ffa5ee1d01f18e9b20b94ef4144bb946f6eed1c628f547a997811965926537'
+    }
+
+    get asV1(): {operatorId: bigint, nominatorId: Uint8Array, amount: bigint} {
+        assert(this.isV1)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
 export class DomainsWithdrewStakeEvent {
     private readonly _chain: Chain
     private readonly event: Event

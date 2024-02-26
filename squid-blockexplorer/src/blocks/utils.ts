@@ -344,7 +344,8 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
     const block = ctx.blocks[ctx.blocks.length - 1];
     let operator = await ctx.store.get(Operator, operatorId.toString());
 
-    const nominators = await api.query.domains.nominators.entries(operatorId);
+    const nominators = await api.query.domains.deposits.entries(operatorId);
+
     const nominatorsLength = nominators.length;
 
     if (!operator) {
@@ -360,9 +361,9 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
           id: operatorId.toString(),
           orderingId: Number(operatorId),
           operatorOwner: ownerAccount?.toString(),
-          status: operatorInfo.status.toString(),
+          status: JSON.stringify(operatorInfo.status),
           signingKey: operatorInfo.signingKey,
-          totalShares: BigInt(operatorInfo.totalShares),
+          totalShares: BigInt(operatorInfo.currentTotalShares),
           currentEpochRewards: operatorInfo.currentEpochRewards,
           currentTotalStake: BigInt(operatorInfo.currentTotalStake),
           nominatorAmount: nominatorsLength,
@@ -383,9 +384,9 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
       if (operatorInfo) {
         operator = new Operator({
           ...operator,
-          status: operatorInfo.status.toString(),
+          status: JSON.stringify(operatorInfo.status),
           signingKey: operatorInfo.signingKey,
-          totalShares: BigInt(operatorInfo.totalShares),
+          totalShares: BigInt(operatorInfo.currentTotalShares),
           currentEpochRewards: operatorInfo.currentEpochRewards,
           currentTotalStake: BigInt(operatorInfo.currentTotalStake),
           nominatorAmount: nominatorsLength,
@@ -426,7 +427,7 @@ export function getOrCreateNominatorsFactory(
     const block = ctx.blocks[ctx.blocks.length - 1];
     const blockHeight = BigInt(block.header.height);
 
-    const nominators = await api.query.domains.nominators.entries(operatorId);
+    const nominators = await api.query.domains.deposits.entries(operatorId);
     const nominatorsLength = nominators.length;
 
     for (let i = 0; i < nominatorsLength; i++) {
@@ -450,7 +451,7 @@ export function getOrCreateNominatorsFactory(
         id: `${operator.id}-${nominatorId}`,
         operator: operator,
         account: account,
-        shares: BigInt(nominatorInfo.shares),
+        shares: BigInt(nominatorInfo.known.shares),
         updatedAt: blockHeight,
       });
 

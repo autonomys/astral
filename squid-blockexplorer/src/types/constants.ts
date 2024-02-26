@@ -588,6 +588,36 @@ export class DomainsMinOperatorStakeConstant {
     }
 }
 
+export class DomainsPalletIdConstant {
+    private readonly _chain: Chain
+
+    constructor(ctx: ChainContext) {
+        this._chain = ctx._chain
+    }
+
+    /**
+     *  The pallet-domains's pallet id.
+     */
+    get isV1() {
+        return this._chain.getConstantTypeHash('Domains', 'PalletId') === 'c963e59c8e5b7d761234cd0f2cb1f219effb76c998fa93783afd994aed82a434'
+    }
+
+    /**
+     *  The pallet-domains's pallet id.
+     */
+    get asV1(): Uint8Array {
+        assert(this.isV1)
+        return this._chain.getConstant('Domains', 'PalletId')
+    }
+
+    /**
+     * Checks whether the constant is defined for the current chain version.
+     */
+    get isExists(): boolean {
+        return this._chain.getConstantTypeHash('Domains', 'PalletId') != null
+    }
+}
+
 export class DomainsStakeEpochDurationConstant {
     private readonly _chain: Chain
 
