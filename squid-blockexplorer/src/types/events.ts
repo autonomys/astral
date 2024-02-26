@@ -1107,13 +1107,42 @@ export class SudoKeyChangedEvent {
      * The sudo key has been updated.
      */
     get isV0(): boolean {
-        return this._chain.getEventHash('Sudo.KeyChanged') === 'a51e68bb9e434ef786a7be512f2eaf348c198352ad5831f5d74cdbb9f17ba1a0'
+        return this._chain.getEventHash('Sudo.KeyChanged') === '41d2f0df424ef3e52e1af44ec56518d7b5afc0ce4513fe1b54a9f40344bfe598'
     }
 
     /**
      * The sudo key has been updated.
      */
-    get asV0(): {oldSudoer: (Uint8Array | undefined)} {
+    get asV0(): {old: (Uint8Array | undefined), new: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SudoKeyRemovedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'Sudo.KeyRemoved')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * The key was permanently removed.
+     */
+    get isV0(): boolean {
+        return this._chain.getEventHash('Sudo.KeyRemoved') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * The key was permanently removed.
+     */
+    get asV0(): null {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1142,7 +1171,7 @@ export class SudoSudidEvent {
     /**
      * A sudo call just took place.
      */
-    get asV0(): {sudoResult: v0.Type_59} {
+    get asV0(): {sudoResult: v0.Type_60} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1171,7 +1200,7 @@ export class SudoSudoAsDoneEvent {
     /**
      * A [sudo_as](Pallet::sudo_as) call just took place.
      */
-    get asV0(): {sudoResult: v0.Type_59} {
+    get asV0(): {sudoResult: v0.Type_60} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }
@@ -1346,6 +1375,35 @@ export class SystemRemarkedEvent {
      * On on-chain remark happened.
      */
     get asV0(): {sender: Uint8Array, hash: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeEvent(this.event)
+    }
+}
+
+export class SystemUpgradeAuthorizedEvent {
+    private readonly _chain: Chain
+    private readonly event: Event
+
+    constructor(ctx: EventContext)
+    constructor(ctx: ChainContext, event: Event)
+    constructor(ctx: EventContext, event?: Event) {
+        event = event || ctx.event
+        assert(event.name === 'System.UpgradeAuthorized')
+        this._chain = ctx._chain
+        this.event = event
+    }
+
+    /**
+     * An upgrade was authorized.
+     */
+    get isV0(): boolean {
+        return this._chain.getEventHash('System.UpgradeAuthorized') === '5c55d10848d503323d2e442c7afe37bb9673cbd625584442853911cb797f840c'
+    }
+
+    /**
+     * An upgrade was authorized.
+     */
+    get asV0(): {codeHash: Uint8Array, checkVersion: boolean} {
         assert(this.isV0)
         return this._chain.decodeEvent(this.event)
     }

@@ -337,7 +337,7 @@ export class SystemVersionConstant {
      *  Get the chain's current version.
      */
     get isV0() {
-        return this._chain.getConstantTypeHash('System', 'Version') === 'f6a7df964a5f6d420bccc7ccc38bd9265b00dc71b74c91dc5848badeeaf0cbb8'
+        return this._chain.getConstantTypeHash('System', 'Version') === 'd382dbbcc7760cd6518839a3223d6b3e27dbdc4d62041d536c52561cd482a48b'
     }
 
     /**
@@ -364,20 +364,24 @@ export class TimestampMinimumPeriodConstant {
     }
 
     /**
-     *  The minimum period between blocks. Beware that this is different to the *expected*
-     *  period that the block production apparatus provides. Your chosen consensus system will
-     *  generally work with this to determine a sensible block time. e.g. For Aura, it will be
-     *  double this period on default settings.
+     *  The minimum period between blocks.
+     * 
+     *  Be aware that this is different to the *expected* period that the block production
+     *  apparatus provides. Your chosen consensus system will generally work with this to
+     *  determine a sensible block time. For example, in the Aura pallet it will be double this
+     *  period on default settings.
      */
     get isV0() {
         return this._chain.getConstantTypeHash('Timestamp', 'MinimumPeriod') === '2e8052d0ae8d237ad263438f986208df52f4f0e9f529557036c3b179dfb42f21'
     }
 
     /**
-     *  The minimum period between blocks. Beware that this is different to the *expected*
-     *  period that the block production apparatus provides. Your chosen consensus system will
-     *  generally work with this to determine a sensible block time. e.g. For Aura, it will be
-     *  double this period on default settings.
+     *  The minimum period between blocks.
+     * 
+     *  Be aware that this is different to the *expected* period that the block production
+     *  apparatus provides. Your chosen consensus system will generally work with this to
+     *  determine a sensible block time. For example, in the Aura pallet it will be double this
+     *  period on default settings.
      */
     get asV0(): bigint {
         assert(this.isV0)
@@ -400,10 +404,10 @@ export class TransactionPaymentOperationalFeeMultiplierConstant {
     }
 
     /**
-     *  A fee mulitplier for `Operational` extrinsics to compute "virtual tip" to boost their
+     *  A fee multiplier for `Operational` extrinsics to compute "virtual tip" to boost their
      *  `priority`
      * 
-     *  This value is multipled by the `final_fee` to obtain a "virtual tip" that is later
+     *  This value is multiplied by the `final_fee` to obtain a "virtual tip" that is later
      *  added to a tip component in regular `priority` calculations.
      *  It means that a `Normal` transaction can front-run a similarly-sized `Operational`
      *  extrinsic (with no tip), by including a tip value greater than the virtual tip.
@@ -427,10 +431,10 @@ export class TransactionPaymentOperationalFeeMultiplierConstant {
     }
 
     /**
-     *  A fee mulitplier for `Operational` extrinsics to compute "virtual tip" to boost their
+     *  A fee multiplier for `Operational` extrinsics to compute "virtual tip" to boost their
      *  `priority`
      * 
-     *  This value is multipled by the `final_fee` to obtain a "virtual tip" that is later
+     *  This value is multiplied by the `final_fee` to obtain a "virtual tip" that is later
      *  added to a tip component in regular `priority` calculations.
      *  It means that a `Normal` transaction can front-run a similarly-sized `Operational`
      *  extrinsic (with no tip), by including a tip value greater than the virtual tip.

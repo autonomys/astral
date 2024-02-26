@@ -263,6 +263,35 @@ export class BaseFeeSetElasticityCall {
     }
 }
 
+export class BlockFeesSetNextConsensusChainByteFeeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'BlockFees.set_next_consensus_chain_byte_fee')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::set_next_consensus_chain_byte_fee`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('BlockFees.set_next_consensus_chain_byte_fee') === 'cad5cb73b04d18b8804c6fa5732a999e45aed9adb05b19680eee4714bed16c14'
+    }
+
+    /**
+     * See [`Pallet::set_next_consensus_chain_byte_fee`].
+     */
+    get asV0(): {transactionByteFee: bigint} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class EvmCallCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -553,6 +582,35 @@ export class MessengerRelayMessageResponseCall {
     }
 }
 
+export class SudoRemoveKeyCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'Sudo.remove_key')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::remove_key`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('Sudo.remove_key') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    }
+
+    /**
+     * See [`Pallet::remove_key`].
+     */
+    get asV0(): null {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
 export class SudoSetKeyCall {
     private readonly _chain: Chain
     private readonly call: Call
@@ -599,7 +657,7 @@ export class SudoSudoCall {
      * See [`Pallet::sudo`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo') === '221a37c7b6c4d95e6fba51fde0c0262eea1e800659a87edc6bd72be3fdb68bb0'
+        return this._chain.getCallHash('Sudo.sudo') === '26b1bb84993a46d2ae640798e38f7be0d3d50bc9941915f1117293e06217b6ba'
     }
 
     /**
@@ -628,7 +686,7 @@ export class SudoSudoAsCall {
      * See [`Pallet::sudo_as`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_as') === 'e4ebddaaab727fd1b02cf5b9656cc3e257ada10209efbe6bd841c5ea323f1977'
+        return this._chain.getCallHash('Sudo.sudo_as') === '233e96cd29f9885512d96849432a3e29c2d68f32916f25e580531eb5d95624f1'
     }
 
     /**
@@ -657,13 +715,100 @@ export class SudoSudoUncheckedWeightCall {
      * See [`Pallet::sudo_unchecked_weight`].
      */
     get isV0(): boolean {
-        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === 'e90f3b37ed28bb541ecdf643d3bffc724a7f1faa5c00cc43e6911cf7e344b1d0'
+        return this._chain.getCallHash('Sudo.sudo_unchecked_weight') === '2d1bc3162a881c87544c99bbeee69d42ea8440f081ef2f87cf9c57e7f7581b11'
     }
 
     /**
      * See [`Pallet::sudo_unchecked_weight`].
      */
     get asV0(): {call: v0.Call, weight: v0.Weight} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemApplyAuthorizedUpgradeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.apply_authorized_upgrade')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::apply_authorized_upgrade`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('System.apply_authorized_upgrade') === '7bf3d4785d9be7a4872f39cbd3702a66e16f7ee01e4446fb4a05624dc0ec4c93'
+    }
+
+    /**
+     * See [`Pallet::apply_authorized_upgrade`].
+     */
+    get asV0(): {code: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemAuthorizeUpgradeCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.authorize_upgrade')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('System.authorize_upgrade') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade`].
+     */
+    get asV0(): {codeHash: Uint8Array} {
+        assert(this.isV0)
+        return this._chain.decodeCall(this.call)
+    }
+}
+
+export class SystemAuthorizeUpgradeWithoutChecksCall {
+    private readonly _chain: Chain
+    private readonly call: Call
+
+    constructor(ctx: CallContext)
+    constructor(ctx: ChainContext, call: Call)
+    constructor(ctx: CallContext, call?: Call) {
+        call = call || ctx.call
+        assert(call.name === 'System.authorize_upgrade_without_checks')
+        this._chain = ctx._chain
+        this.call = call
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade_without_checks`].
+     */
+    get isV0(): boolean {
+        return this._chain.getCallHash('System.authorize_upgrade_without_checks') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+    }
+
+    /**
+     * See [`Pallet::authorize_upgrade_without_checks`].
+     */
+    get asV0(): {codeHash: Uint8Array} {
         assert(this.isV0)
         return this._chain.decodeCall(this.call)
     }
