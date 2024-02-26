@@ -15,22 +15,17 @@ client.subscribe(
   {
     query: `
     subscription {
-        transfers(limit: 5, orderBy: timestamp_DESC) {
-            amount
-            blockNumber
-            from {
-              id
-            }
-            to {
-              id
-            }
+        operators(limit: 5, orderBy: updatedAt_DESC) {
+            id
+            signingKey
+            operatorOwner
         }
     }  
     `,
   },
   {
     next: (data) => {
-      console.log(`New transfers: ${JSON.stringify(data)}`);
+      console.log(`New operators: ${JSON.stringify(data)}`);
     },
     error: (error) => {
       console.error('error', error);
