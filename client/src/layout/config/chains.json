@@ -2,7 +2,7 @@
   {
     "title": "Gemini 3f",
     "urls": {
-      "api": "https://squid.gemini-3g.subspace.network/graphql",
+      "api": "https://squid.gemini-3h.subspace.network/graphql",
       "page": "gemini-3f"
     },
     "isDomain": false
