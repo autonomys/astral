@@ -81,8 +81,7 @@ const DomainHeader: FC = () => {
         </div>
       </div>
       <PreferredExtensionModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
-      {(pathName.includes('gemini-3h/operators') ||
-        pathName.includes('gemini-3h/leaderboard/')) && (
+      {pathName.includes('gemini-3h') && (
         <div className='w-full sticky'>
           <IndexingError />
         </div>
