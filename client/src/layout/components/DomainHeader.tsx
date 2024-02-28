@@ -8,6 +8,7 @@ import domains from 'layout/config/domains.json'
 import { DOMAINS, DOMAINS_NAMES } from 'layout/constants'
 
 // common
+import IndexingError from 'common/components/IndexingError'
 import useWallet from 'common/hooks/useWallet'
 
 // chains
@@ -110,6 +111,11 @@ const DomainHeader: FC = () => {
         isOpen={walletModalIsOpen}
         onClose={() => setWalletModalIsOpen(false)}
       />
+      {pathName.includes('gemini-3h') && (
+        <div className='w-full sticky'>
+          <IndexingError />
+        </div>
+      )}
     </div>
   )
 }
