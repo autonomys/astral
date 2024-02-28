@@ -32,14 +32,22 @@ type Props = {
   children?: ReactNode
 }
 
-export const ChainProvider: FC<Props> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
-  const [selectedDomain, setSelectedDomain] = useState('consensus')
+interface SelectedChainProps extends Props {
+  selectedChain: Chain
+}
 
+export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {
   const client = new ApolloClient({
     link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
     cache: new InMemoryCache(),
   })
+
+  return <ApolloProvider client={client}>{children}</ApolloProvider>
+}
+
+export const ChainProvider: FC<Props> = ({ children }) => {
+  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
+  const [selectedDomain, setSelectedDomain] = useState('consensus')
 
   return (
     <ChainContext.Provider
@@ -51,7 +59,7 @@ export const ChainProvider: FC<Props> = ({ children }) => {
         chains,
       }}
     >
-      <ApolloProvider client={client}>{children}</ApolloProvider>
+      <SelectedChainProvider selectedChain={selectedChain}>{children}</SelectedChainProvider>
     </ChainContext.Provider>
   )
 }
