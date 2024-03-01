@@ -1,0 +1,46 @@
+type Account @entity {
+  "Account address"
+  id: ID!
+  rewards: [RewardEvent!]! @derivedFrom(field: "account")
+}
+
+type Operator @entity {
+  id: ID! @index
+  signingKey: String! @index
+  operatorOwner: String @index
+  orderingId: Int! @index
+  currentDomainId: Int
+  nextDomainId: Int
+  minimumNominatorStake: BigInt
+  nominationTax: Int
+  currentTotalStake: BigInt
+  currentEpochRewards: BigInt
+  totalShares: BigInt
+  nominatorAmount: Int! @index
+  nominators: [Nominator!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000)
+  status: String
+  updatedAt: BigInt @index
+}
+
+type Nominator @entity {
+  id: ID! @index
+  operator: Operator!
+  account: Account!
+  shares: BigInt
+  updatedAt: BigInt
+}
+
+type RewardEvent @entity {
+  id: ID! @index
+  indexInBlock: Int!
+  name: String!
+  timestamp: DateTime! @index
+  blockNumber: Int! @index
+  extrinsicHash: String @index
+  account: Account
+  amount: BigInt
+  isOperator: Boolean
+  operatorId: Int
+}
