@@ -97,8 +97,8 @@
       "cmd": [
         "npx",
         "substrate-metadata-explorer",
-        "--rpc=https://rpc-1.gemini-3g.subspace.network",
-        "--out=gemini3g.jsonl"
+        "--rpc=https://rpc-0.gemini-3h.subspace.network/ws",
+        "--out=gemini3h.jsonl"
       ]
     }
   }

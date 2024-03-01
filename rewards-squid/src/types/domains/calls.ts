@@ -1,7 +1,6 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
-import * as v2 from '../v2'
-import * as v3 from '../v3'
+import * as v1 from '../v1'
 
 export const submitBundle =  {
     name: 'Domains.submit_bundle',
@@ -12,6 +11,15 @@ export const submitBundle =  {
         'Domains.submit_bundle',
         sts.struct({
             opaqueBundle: v0.Bundle,
+        })
+    ),
+    /**
+     * See [`Pallet::submit_bundle`].
+     */
+    v1: new CallType(
+        'Domains.submit_bundle',
+        sts.struct({
+            opaqueBundle: v1.Bundle,
         })
     ),
 }
@@ -30,10 +38,10 @@ export const submitFraudProof =  {
     /**
      * See [`Pallet::submit_fraud_proof`].
      */
-    v2: new CallType(
+    v1: new CallType(
         'Domains.submit_fraud_proof',
         sts.struct({
-            fraudProof: v2.FraudProof,
+            fraudProof: v1.FraudProof,
         })
     ),
 }
@@ -107,6 +115,15 @@ export const instantiateDomain =  {
             domainConfig: v0.DomainConfig,
         })
     ),
+    /**
+     * See [`Pallet::instantiate_domain`].
+     */
+    v1: new CallType(
+        'Domains.instantiate_domain',
+        sts.struct({
+            domainConfig: v1.DomainConfig,
+        })
+    ),
 }
 
 export const switchDomain =  {
@@ -145,18 +162,31 @@ export const withdrawStake =  {
         'Domains.withdraw_stake',
         sts.struct({
             operatorId: sts.bigint(),
-            withdraw: v0.Withdraw,
+            shares: sts.bigint(),
         })
     ),
 }
 
-export const autoStakeBlockRewards =  {
-    name: 'Domains.auto_stake_block_rewards',
+export const unlockFunds =  {
+    name: 'Domains.unlock_funds',
     /**
-     * See [`Pallet::auto_stake_block_rewards`].
+     * See [`Pallet::unlock_funds`].
      */
     v0: new CallType(
-        'Domains.auto_stake_block_rewards',
+        'Domains.unlock_funds',
+        sts.struct({
+            operatorId: sts.bigint(),
+        })
+    ),
+}
+
+export const unlockOperator =  {
+    name: 'Domains.unlock_operator',
+    /**
+     * See [`Pallet::unlock_operator`].
+     */
+    v0: new CallType(
+        'Domains.unlock_operator',
         sts.struct({
             operatorId: sts.bigint(),
         })
@@ -182,10 +212,10 @@ export const forceStakingEpochTransition =  {
     /**
      * See [`Pallet::force_staking_epoch_transition`].
      */
-    v3: new CallType(
+    v0: new CallType(
         'Domains.force_staking_epoch_transition',
         sts.struct({
-            domainId: v3.DomainId,
+            domainId: v0.DomainId,
         })
     ),
 }

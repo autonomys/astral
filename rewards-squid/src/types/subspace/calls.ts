@@ -54,27 +54,16 @@ export const vote =  {
     ),
 }
 
-export const enableRewards =  {
-    name: 'Subspace.enable_rewards',
+export const enableRewardsAt =  {
+    name: 'Subspace.enable_rewards_at',
     /**
-     * See [`Pallet::enable_rewards`].
+     * See [`Pallet::enable_rewards_at`].
      */
     v0: new CallType(
-        'Subspace.enable_rewards',
+        'Subspace.enable_rewards_at',
         sts.struct({
-            height: sts.option(() => sts.number()),
+            enableRewardsAt: v0.EnableRewardsAt,
         })
-    ),
-}
-
-export const enableStorageAccess =  {
-    name: 'Subspace.enable_storage_access',
-    /**
-     * See [`Pallet::enable_storage_access`].
-     */
-    v0: new CallType(
-        'Subspace.enable_storage_access',
-        sts.unit()
     ),
 }
 

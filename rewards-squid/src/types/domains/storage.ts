@@ -1,8 +1,6 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
-import * as v2 from '../v2'
-import * as v3 from '../v3'
 
 export const successfulBundles =  {
     /**
@@ -15,6 +13,31 @@ export const successfulBundles =  {
  *  Bundles submitted successfully in current block.
  */
 export interface SuccessfulBundlesV0  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v0.H256[]
+    get(block: Block, key: v0.DomainId): Promise<(v0.H256[] | undefined)>
+    getMany(block: Block, keys: v0.DomainId[]): Promise<(v0.H256[] | undefined)[]>
+    getKeys(block: Block): Promise<v0.DomainId[]>
+    getKeys(block: Block, key: v0.DomainId): Promise<v0.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<v0.DomainId[]>
+    getPairs(block: Block): Promise<[k: v0.DomainId, v: (v0.H256[] | undefined)][]>
+    getPairs(block: Block, key: v0.DomainId): Promise<[k: v0.DomainId, v: (v0.H256[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.DomainId, v: (v0.H256[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (v0.H256[] | undefined)][]>
+}
+
+export const successfulFraudProofs =  {
+    /**
+     *  Fraud proofs submitted successfully in current block.
+     */
+    v0: new StorageType('Domains.SuccessfulFraudProofs', 'Default', [v0.DomainId], sts.array(() => v0.H256)) as SuccessfulFraudProofsV0,
+}
+
+/**
+ *  Fraud proofs submitted successfully in current block.
+ */
+export interface SuccessfulFraudProofsV0  {
     is(block: RuntimeCtx): boolean
     getDefault(block: Block): v0.H256[]
     get(block: Block, key: v0.DomainId): Promise<(v0.H256[] | undefined)>
@@ -43,6 +66,22 @@ export interface NextRuntimeIdV0  {
     is(block: RuntimeCtx): boolean
     getDefault(block: Block): number
     get(block: Block): Promise<(number | undefined)>
+}
+
+export const nextEvmChainId =  {
+    /**
+     *  Stores the next evm chain id.
+     */
+    v0: new StorageType('Domains.NextEVMChainId', 'Default', [], sts.bigint()) as NextEvmChainIdV0,
+}
+
+/**
+ *  Stores the next evm chain id.
+ */
+export interface NextEvmChainIdV0  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): bigint
+    get(block: Block): Promise<(bigint | undefined)>
 }
 
 export const runtimeRegistry =  {
@@ -113,6 +152,30 @@ export interface OperatorIdOwnerV0  {
     getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (v0.AccountId32 | undefined)][]>
 }
 
+export const operatorSigningKey =  {
+    /**
+     *  Indexes operator signing key against OperatorId.
+     */
+    v0: new StorageType('Domains.OperatorSigningKey', 'Optional', [sts.bytes()], sts.bigint()) as OperatorSigningKeyV0,
+}
+
+/**
+ *  Indexes operator signing key against OperatorId.
+ */
+export interface OperatorSigningKeyV0  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: Bytes): Promise<(bigint | undefined)>
+    getMany(block: Block, keys: Bytes[]): Promise<(bigint | undefined)[]>
+    getKeys(block: Block): Promise<Bytes[]>
+    getKeys(block: Block, key: Bytes): Promise<Bytes[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<Bytes[]>
+    getKeysPaged(pageSize: number, block: Block, key: Bytes): AsyncIterable<Bytes[]>
+    getPairs(block: Block): Promise<[k: Bytes, v: (bigint | undefined)][]>
+    getPairs(block: Block, key: Bytes): Promise<[k: Bytes, v: (bigint | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: Bytes, v: (bigint | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: Bytes): AsyncIterable<[k: Bytes, v: (bigint | undefined)][]>
+}
+
 export const domainStakingSummary =  {
     v0: new StorageType('Domains.DomainStakingSummary', 'Optional', [v0.DomainId], v0.StakingSummary) as DomainStakingSummaryV0,
 }
@@ -136,6 +199,10 @@ export const operators =  {
      *  List of all registered operators and their configuration.
      */
     v0: new StorageType('Domains.Operators', 'Optional', [sts.bigint()], v0.Operator) as OperatorsV0,
+    /**
+     *  List of all registered operators and their configuration.
+     */
+    v1: new StorageType('Domains.Operators', 'Optional', [sts.bigint()], v1.Operator) as OperatorsV1,
 }
 
 /**
@@ -153,6 +220,23 @@ export interface OperatorsV0  {
     getPairs(block: Block, key: bigint): Promise<[k: bigint, v: (v0.Operator | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: bigint, v: (v0.Operator | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (v0.Operator | undefined)][]>
+}
+
+/**
+ *  List of all registered operators and their configuration.
+ */
+export interface OperatorsV1  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: bigint): Promise<(v1.Operator | undefined)>
+    getMany(block: Block, keys: bigint[]): Promise<(v1.Operator | undefined)[]>
+    getKeys(block: Block): Promise<bigint[]>
+    getKeys(block: Block, key: bigint): Promise<bigint[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<bigint[]>
+    getKeysPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<bigint[]>
+    getPairs(block: Block): Promise<[k: bigint, v: (v1.Operator | undefined)][]>
+    getPairs(block: Block, key: bigint): Promise<[k: bigint, v: (v1.Operator | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: bigint, v: (v1.Operator | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (v1.Operator | undefined)][]>
 }
 
 export const pendingOperatorSwitches =  {
@@ -181,32 +265,138 @@ export interface PendingOperatorSwitchesV0  {
     getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (bigint[] | undefined)][]>
 }
 
-export const nominators =  {
+export const operatorEpochSharePrice =  {
     /**
-     *  List of all current epoch's nominators and their shares under a given operator,
+     *  Share price for the operator pool at the end of Domain epoch.
      */
-    v0: new StorageType('Domains.Nominators', 'Optional', [sts.bigint(), v0.AccountId32], v0.Nominator) as NominatorsV0,
+    v0: new StorageType('Domains.OperatorEpochSharePrice', 'Optional', [sts.bigint(), v0.DomainEpoch], v0.SharePrice) as OperatorEpochSharePriceV0,
 }
 
 /**
- *  List of all current epoch's nominators and their shares under a given operator,
+ *  Share price for the operator pool at the end of Domain epoch.
  */
-export interface NominatorsV0  {
+export interface OperatorEpochSharePriceV0  {
     is(block: RuntimeCtx): boolean
-    get(block: Block, key1: bigint, key2: v0.AccountId32): Promise<(v0.Nominator | undefined)>
-    getMany(block: Block, keys: [bigint, v0.AccountId32][]): Promise<(v0.Nominator | undefined)[]>
+    get(block: Block, key1: bigint, key2: v0.DomainEpoch): Promise<(v0.SharePrice | undefined)>
+    getMany(block: Block, keys: [bigint, v0.DomainEpoch][]): Promise<(v0.SharePrice | undefined)[]>
+    getKeys(block: Block): Promise<[bigint, v0.DomainEpoch][]>
+    getKeys(block: Block, key1: bigint): Promise<[bigint, v0.DomainEpoch][]>
+    getKeys(block: Block, key1: bigint, key2: v0.DomainEpoch): Promise<[bigint, v0.DomainEpoch][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v0.DomainEpoch][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v0.DomainEpoch][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v0.DomainEpoch): AsyncIterable<[bigint, v0.DomainEpoch][]>
+    getPairs(block: Block): Promise<[k: [bigint, v0.DomainEpoch], v: (v0.SharePrice | undefined)][]>
+    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v0.DomainEpoch], v: (v0.SharePrice | undefined)][]>
+    getPairs(block: Block, key1: bigint, key2: v0.DomainEpoch): Promise<[k: [bigint, v0.DomainEpoch], v: (v0.SharePrice | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v0.DomainEpoch], v: (v0.SharePrice | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v0.DomainEpoch], v: (v0.SharePrice | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v0.DomainEpoch): AsyncIterable<[k: [bigint, v0.DomainEpoch], v: (v0.SharePrice | undefined)][]>
+}
+
+export const deposits =  {
+    /**
+     *  List of all deposits for given Operator.
+     */
+    v0: new StorageType('Domains.Deposits', 'Optional', [sts.bigint(), v0.AccountId32], v0.Deposit) as DepositsV0,
+    /**
+     *  List of all deposits for given Operator.
+     */
+    v1: new StorageType('Domains.Deposits', 'Optional', [sts.bigint(), v1.AccountId32], v1.Deposit) as DepositsV1,
+}
+
+/**
+ *  List of all deposits for given Operator.
+ */
+export interface DepositsV0  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key1: bigint, key2: v0.AccountId32): Promise<(v0.Deposit | undefined)>
+    getMany(block: Block, keys: [bigint, v0.AccountId32][]): Promise<(v0.Deposit | undefined)[]>
     getKeys(block: Block): Promise<[bigint, v0.AccountId32][]>
     getKeys(block: Block, key1: bigint): Promise<[bigint, v0.AccountId32][]>
     getKeys(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[bigint, v0.AccountId32][]>
     getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v0.AccountId32][]>
     getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v0.AccountId32][]>
     getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[bigint, v0.AccountId32][]>
-    getPairs(block: Block): Promise<[k: [bigint, v0.AccountId32], v: (v0.Nominator | undefined)][]>
-    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v0.AccountId32], v: (v0.Nominator | undefined)][]>
-    getPairs(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[k: [bigint, v0.AccountId32], v: (v0.Nominator | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Nominator | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Nominator | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Nominator | undefined)][]>
+    getPairs(block: Block): Promise<[k: [bigint, v0.AccountId32], v: (v0.Deposit | undefined)][]>
+    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v0.AccountId32], v: (v0.Deposit | undefined)][]>
+    getPairs(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[k: [bigint, v0.AccountId32], v: (v0.Deposit | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Deposit | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Deposit | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Deposit | undefined)][]>
+}
+
+/**
+ *  List of all deposits for given Operator.
+ */
+export interface DepositsV1  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key1: bigint, key2: v1.AccountId32): Promise<(v1.Deposit | undefined)>
+    getMany(block: Block, keys: [bigint, v1.AccountId32][]): Promise<(v1.Deposit | undefined)[]>
+    getKeys(block: Block): Promise<[bigint, v1.AccountId32][]>
+    getKeys(block: Block, key1: bigint): Promise<[bigint, v1.AccountId32][]>
+    getKeys(block: Block, key1: bigint, key2: v1.AccountId32): Promise<[bigint, v1.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v1.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v1.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v1.AccountId32): AsyncIterable<[bigint, v1.AccountId32][]>
+    getPairs(block: Block): Promise<[k: [bigint, v1.AccountId32], v: (v1.Deposit | undefined)][]>
+    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v1.AccountId32], v: (v1.Deposit | undefined)][]>
+    getPairs(block: Block, key1: bigint, key2: v1.AccountId32): Promise<[k: [bigint, v1.AccountId32], v: (v1.Deposit | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v1.AccountId32], v: (v1.Deposit | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v1.AccountId32], v: (v1.Deposit | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v1.AccountId32): AsyncIterable<[k: [bigint, v1.AccountId32], v: (v1.Deposit | undefined)][]>
+}
+
+export const withdrawals =  {
+    /**
+     *  List of all withdrawals for a given operator.
+     */
+    v0: new StorageType('Domains.Withdrawals', 'Optional', [sts.bigint(), v0.AccountId32], v0.Withdrawal) as WithdrawalsV0,
+    /**
+     *  List of all withdrawals for a given operator.
+     */
+    v1: new StorageType('Domains.Withdrawals', 'Optional', [sts.bigint(), v1.AccountId32], v1.Withdrawal) as WithdrawalsV1,
+}
+
+/**
+ *  List of all withdrawals for a given operator.
+ */
+export interface WithdrawalsV0  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key1: bigint, key2: v0.AccountId32): Promise<(v0.Withdrawal | undefined)>
+    getMany(block: Block, keys: [bigint, v0.AccountId32][]): Promise<(v0.Withdrawal | undefined)[]>
+    getKeys(block: Block): Promise<[bigint, v0.AccountId32][]>
+    getKeys(block: Block, key1: bigint): Promise<[bigint, v0.AccountId32][]>
+    getKeys(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[bigint, v0.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v0.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v0.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[bigint, v0.AccountId32][]>
+    getPairs(block: Block): Promise<[k: [bigint, v0.AccountId32], v: (v0.Withdrawal | undefined)][]>
+    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v0.AccountId32], v: (v0.Withdrawal | undefined)][]>
+    getPairs(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[k: [bigint, v0.AccountId32], v: (v0.Withdrawal | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Withdrawal | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Withdrawal | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Withdrawal | undefined)][]>
+}
+
+/**
+ *  List of all withdrawals for a given operator.
+ */
+export interface WithdrawalsV1  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key1: bigint, key2: v1.AccountId32): Promise<(v1.Withdrawal | undefined)>
+    getMany(block: Block, keys: [bigint, v1.AccountId32][]): Promise<(v1.Withdrawal | undefined)[]>
+    getKeys(block: Block): Promise<[bigint, v1.AccountId32][]>
+    getKeys(block: Block, key1: bigint): Promise<[bigint, v1.AccountId32][]>
+    getKeys(block: Block, key1: bigint, key2: v1.AccountId32): Promise<[bigint, v1.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v1.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v1.AccountId32][]>
+    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v1.AccountId32): AsyncIterable<[bigint, v1.AccountId32][]>
+    getPairs(block: Block): Promise<[k: [bigint, v1.AccountId32], v: (v1.Withdrawal | undefined)][]>
+    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v1.AccountId32], v: (v1.Withdrawal | undefined)][]>
+    getPairs(block: Block, key1: bigint, key2: v1.AccountId32): Promise<[k: [bigint, v1.AccountId32], v: (v1.Withdrawal | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v1.AccountId32], v: (v1.Withdrawal | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v1.AccountId32], v: (v1.Withdrawal | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v1.AccountId32): AsyncIterable<[k: [bigint, v1.AccountId32], v: (v1.Withdrawal | undefined)][]>
 }
 
 export const nominatorCount =  {
@@ -244,83 +434,21 @@ export interface NominatorCountV0  {
     getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (number | undefined)][]>
 }
 
-export const pendingDeposits =  {
+export const pendingSlashes =  {
     /**
-     *  Deposits initiated a nominator under this operator.
-     *  Will be stored temporarily until the current epoch is complete.
-     *  Once, epoch is complete, these deposits are staked beginning next epoch.
+     *  A list operators who were slashed during the current epoch associated with the domain.
+     *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
+     *  then deleted.
      */
-    v0: new StorageType('Domains.PendingDeposits', 'Optional', [sts.bigint(), v0.AccountId32], sts.bigint()) as PendingDepositsV0,
+    v0: new StorageType('Domains.PendingSlashes', 'Optional', [v0.DomainId], sts.array(() => sts.bigint())) as PendingSlashesV0,
 }
 
 /**
- *  Deposits initiated a nominator under this operator.
- *  Will be stored temporarily until the current epoch is complete.
- *  Once, epoch is complete, these deposits are staked beginning next epoch.
+ *  A list operators who were slashed during the current epoch associated with the domain.
+ *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
+ *  then deleted.
  */
-export interface PendingDepositsV0  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key1: bigint, key2: v0.AccountId32): Promise<(bigint | undefined)>
-    getMany(block: Block, keys: [bigint, v0.AccountId32][]): Promise<(bigint | undefined)[]>
-    getKeys(block: Block): Promise<[bigint, v0.AccountId32][]>
-    getKeys(block: Block, key1: bigint): Promise<[bigint, v0.AccountId32][]>
-    getKeys(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[bigint, v0.AccountId32][]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v0.AccountId32][]>
-    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v0.AccountId32][]>
-    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[bigint, v0.AccountId32][]>
-    getPairs(block: Block): Promise<[k: [bigint, v0.AccountId32], v: (bigint | undefined)][]>
-    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v0.AccountId32], v: (bigint | undefined)][]>
-    getPairs(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[k: [bigint, v0.AccountId32], v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v0.AccountId32], v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v0.AccountId32], v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[k: [bigint, v0.AccountId32], v: (bigint | undefined)][]>
-}
-
-export const pendingWithdrawals =  {
-    /**
-     *  Withdrawals initiated a nominator under this operator.
-     *  Will be stored temporarily until the current epoch is complete.
-     *  Once, epoch is complete, these will be moved to PendingNominatorUnlocks.
-     */
-    v0: new StorageType('Domains.PendingWithdrawals', 'Optional', [sts.bigint(), v0.AccountId32], v0.Withdraw) as PendingWithdrawalsV0,
-}
-
-/**
- *  Withdrawals initiated a nominator under this operator.
- *  Will be stored temporarily until the current epoch is complete.
- *  Once, epoch is complete, these will be moved to PendingNominatorUnlocks.
- */
-export interface PendingWithdrawalsV0  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key1: bigint, key2: v0.AccountId32): Promise<(v0.Withdraw | undefined)>
-    getMany(block: Block, keys: [bigint, v0.AccountId32][]): Promise<(v0.Withdraw | undefined)[]>
-    getKeys(block: Block): Promise<[bigint, v0.AccountId32][]>
-    getKeys(block: Block, key1: bigint): Promise<[bigint, v0.AccountId32][]>
-    getKeys(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[bigint, v0.AccountId32][]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, v0.AccountId32][]>
-    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, v0.AccountId32][]>
-    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[bigint, v0.AccountId32][]>
-    getPairs(block: Block): Promise<[k: [bigint, v0.AccountId32], v: (v0.Withdraw | undefined)][]>
-    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, v0.AccountId32], v: (v0.Withdraw | undefined)][]>
-    getPairs(block: Block, key1: bigint, key2: v0.AccountId32): Promise<[k: [bigint, v0.AccountId32], v: (v0.Withdraw | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Withdraw | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Withdraw | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: v0.AccountId32): AsyncIterable<[k: [bigint, v0.AccountId32], v: (v0.Withdraw | undefined)][]>
-}
-
-export const pendingOperatorDeregistrations =  {
-    /**
-     *  Operators who chose to deregister from a domain.
-     *  Stored here temporarily until domain epoch is complete.
-     */
-    v0: new StorageType('Domains.PendingOperatorDeregistrations', 'Optional', [v0.DomainId], sts.array(() => sts.bigint())) as PendingOperatorDeregistrationsV0,
-}
-
-/**
- *  Operators who chose to deregister from a domain.
- *  Stored here temporarily until domain epoch is complete.
- */
-export interface PendingOperatorDeregistrationsV0  {
+export interface PendingSlashesV0  {
     is(block: RuntimeCtx): boolean
     get(block: Block, key: v0.DomainId): Promise<(bigint[] | undefined)>
     getMany(block: Block, keys: v0.DomainId[]): Promise<(bigint[] | undefined)[]>
@@ -332,110 +460,6 @@ export interface PendingOperatorDeregistrationsV0  {
     getPairs(block: Block, key: v0.DomainId): Promise<[k: v0.DomainId, v: (bigint[] | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.DomainId, v: (bigint[] | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (bigint[] | undefined)][]>
-}
-
-export const pendingOperatorUnlocks =  {
-    /**
-     *  Stores a list of operators who are unlocking in the coming blocks.
-     *  The operator will be removed when the wait period is over
-     *  or when the operator is slashed.
-     */
-    v0: new StorageType('Domains.PendingOperatorUnlocks', 'Default', [], sts.array(() => sts.bigint())) as PendingOperatorUnlocksV0,
-}
-
-/**
- *  Stores a list of operators who are unlocking in the coming blocks.
- *  The operator will be removed when the wait period is over
- *  or when the operator is slashed.
- */
-export interface PendingOperatorUnlocksV0  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): bigint[]
-    get(block: Block): Promise<(bigint[] | undefined)>
-}
-
-export const pendingNominatorUnlocks =  {
-    /**
-     *  All the pending unlocks for the nominators.
-     *  We use this storage to fetch all the pending unlocks under a operator pool at the time of slashing.
-     */
-    v0: new StorageType('Domains.PendingNominatorUnlocks', 'Optional', [sts.bigint(), sts.number()], sts.array(() => v0.PendingNominatorUnlock)) as PendingNominatorUnlocksV0,
-}
-
-/**
- *  All the pending unlocks for the nominators.
- *  We use this storage to fetch all the pending unlocks under a operator pool at the time of slashing.
- */
-export interface PendingNominatorUnlocksV0  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key1: bigint, key2: number): Promise<(v0.PendingNominatorUnlock[] | undefined)>
-    getMany(block: Block, keys: [bigint, number][]): Promise<(v0.PendingNominatorUnlock[] | undefined)[]>
-    getKeys(block: Block): Promise<[bigint, number][]>
-    getKeys(block: Block, key1: bigint): Promise<[bigint, number][]>
-    getKeys(block: Block, key1: bigint, key2: number): Promise<[bigint, number][]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[bigint, number][]>
-    getKeysPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[bigint, number][]>
-    getKeysPaged(pageSize: number, block: Block, key1: bigint, key2: number): AsyncIterable<[bigint, number][]>
-    getPairs(block: Block): Promise<[k: [bigint, number], v: (v0.PendingNominatorUnlock[] | undefined)][]>
-    getPairs(block: Block, key1: bigint): Promise<[k: [bigint, number], v: (v0.PendingNominatorUnlock[] | undefined)][]>
-    getPairs(block: Block, key1: bigint, key2: number): Promise<[k: [bigint, number], v: (v0.PendingNominatorUnlock[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [bigint, number], v: (v0.PendingNominatorUnlock[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint): AsyncIterable<[k: [bigint, number], v: (v0.PendingNominatorUnlock[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: bigint, key2: number): AsyncIterable<[k: [bigint, number], v: (v0.PendingNominatorUnlock[] | undefined)][]>
-}
-
-export const pendingUnlocks =  {
-    /**
-     *  A list of operators that are either unregistering or one more of the nominators
-     *  are withdrawing some staked funds.
-     */
-    v0: new StorageType('Domains.PendingUnlocks', 'Optional', [sts.tuple(() => [v0.DomainId, sts.number()])], sts.array(() => sts.bigint())) as PendingUnlocksV0,
-}
-
-/**
- *  A list of operators that are either unregistering or one more of the nominators
- *  are withdrawing some staked funds.
- */
-export interface PendingUnlocksV0  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: [v0.DomainId, number]): Promise<(bigint[] | undefined)>
-    getMany(block: Block, keys: [v0.DomainId, number][]): Promise<(bigint[] | undefined)[]>
-    getKeys(block: Block): Promise<[v0.DomainId, number][]>
-    getKeys(block: Block, key: [v0.DomainId, number]): Promise<[v0.DomainId, number][]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[v0.DomainId, number][]>
-    getKeysPaged(pageSize: number, block: Block, key: [v0.DomainId, number]): AsyncIterable<[v0.DomainId, number][]>
-    getPairs(block: Block): Promise<[k: [v0.DomainId, number], v: (bigint[] | undefined)][]>
-    getPairs(block: Block, key: [v0.DomainId, number]): Promise<[k: [v0.DomainId, number], v: (bigint[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v0.DomainId, number], v: (bigint[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: [v0.DomainId, number]): AsyncIterable<[k: [v0.DomainId, number], v: (bigint[] | undefined)][]>
-}
-
-export const pendingSlashes =  {
-    /**
-     *  A list operators who were slashed during the current epoch associated with the domain.
-     *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
-     *  then deleted.
-     */
-    v0: new StorageType('Domains.PendingSlashes', 'Optional', [v0.DomainId], sts.array(() => sts.tuple(() => [sts.bigint(), v0.PendingOperatorSlashInfo]))) as PendingSlashesV0,
-}
-
-/**
- *  A list operators who were slashed during the current epoch associated with the domain.
- *  When the epoch for a given domain is complete, operator total stake is moved to treasury and
- *  then deleted.
- */
-export interface PendingSlashesV0  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: v0.DomainId): Promise<([bigint, v0.PendingOperatorSlashInfo][] | undefined)>
-    getMany(block: Block, keys: v0.DomainId[]): Promise<([bigint, v0.PendingOperatorSlashInfo][] | undefined)[]>
-    getKeys(block: Block): Promise<v0.DomainId[]>
-    getKeys(block: Block, key: v0.DomainId): Promise<v0.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<v0.DomainId[]>
-    getPairs(block: Block): Promise<[k: v0.DomainId, v: ([bigint, v0.PendingOperatorSlashInfo][] | undefined)][]>
-    getPairs(block: Block, key: v0.DomainId): Promise<[k: v0.DomainId, v: ([bigint, v0.PendingOperatorSlashInfo][] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.DomainId, v: ([bigint, v0.PendingOperatorSlashInfo][] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: ([bigint, v0.PendingOperatorSlashInfo][] | undefined)][]>
 }
 
 export const pendingStakingOperationCount =  {
@@ -489,7 +513,7 @@ export const domainRegistry =  {
     /**
      *  The domain registry
      */
-    v3: new StorageType('Domains.DomainRegistry', 'Optional', [v3.DomainId], v3.DomainObject) as DomainRegistryV3,
+    v1: new StorageType('Domains.DomainRegistry', 'Optional', [v1.DomainId], v1.DomainObject) as DomainRegistryV1,
 }
 
 /**
@@ -512,18 +536,18 @@ export interface DomainRegistryV0  {
 /**
  *  The domain registry
  */
-export interface DomainRegistryV3  {
+export interface DomainRegistryV1  {
     is(block: RuntimeCtx): boolean
-    get(block: Block, key: v3.DomainId): Promise<(v3.DomainObject | undefined)>
-    getMany(block: Block, keys: v3.DomainId[]): Promise<(v3.DomainObject | undefined)[]>
-    getKeys(block: Block): Promise<v3.DomainId[]>
-    getKeys(block: Block, key: v3.DomainId): Promise<v3.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v3.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block, key: v3.DomainId): AsyncIterable<v3.DomainId[]>
-    getPairs(block: Block): Promise<[k: v3.DomainId, v: (v3.DomainObject | undefined)][]>
-    getPairs(block: Block, key: v3.DomainId): Promise<[k: v3.DomainId, v: (v3.DomainObject | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v3.DomainId, v: (v3.DomainObject | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v3.DomainId): AsyncIterable<[k: v3.DomainId, v: (v3.DomainObject | undefined)][]>
+    get(block: Block, key: v1.DomainId): Promise<(v1.DomainObject | undefined)>
+    getMany(block: Block, keys: v1.DomainId[]): Promise<(v1.DomainObject | undefined)[]>
+    getKeys(block: Block): Promise<v1.DomainId[]>
+    getKeys(block: Block, key: v1.DomainId): Promise<v1.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v1.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<v1.DomainId[]>
+    getPairs(block: Block): Promise<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
+    getPairs(block: Block, key: v1.DomainId): Promise<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
 }
 
 export const blockTree =  {
@@ -531,12 +555,7 @@ export const blockTree =  {
      *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of ER,
      *  which can be used get the block tree node in `BlockTreeNodes`
      */
-    v0: new StorageType('Domains.BlockTree', 'Default', [v0.DomainId, sts.number()], sts.array(() => v0.H256)) as BlockTreeV0,
-    /**
-     *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of ER,
-     *  which can be used get the block tree node in `BlockTreeNodes`
-     */
-    v1: new StorageType('Domains.BlockTree', 'Optional', [v1.DomainId, sts.number()], v1.H256) as BlockTreeV1,
+    v0: new StorageType('Domains.BlockTree', 'Optional', [v0.DomainId, sts.number()], v0.H256) as BlockTreeV0,
 }
 
 /**
@@ -545,43 +564,20 @@ export const blockTree =  {
  */
 export interface BlockTreeV0  {
     is(block: RuntimeCtx): boolean
-    getDefault(block: Block): v0.H256[]
-    get(block: Block, key1: v0.DomainId, key2: number): Promise<(v0.H256[] | undefined)>
-    getMany(block: Block, keys: [v0.DomainId, number][]): Promise<(v0.H256[] | undefined)[]>
+    get(block: Block, key1: v0.DomainId, key2: number): Promise<(v0.H256 | undefined)>
+    getMany(block: Block, keys: [v0.DomainId, number][]): Promise<(v0.H256 | undefined)[]>
     getKeys(block: Block): Promise<[v0.DomainId, number][]>
     getKeys(block: Block, key1: v0.DomainId): Promise<[v0.DomainId, number][]>
     getKeys(block: Block, key1: v0.DomainId, key2: number): Promise<[v0.DomainId, number][]>
     getKeysPaged(pageSize: number, block: Block): AsyncIterable<[v0.DomainId, number][]>
     getKeysPaged(pageSize: number, block: Block, key1: v0.DomainId): AsyncIterable<[v0.DomainId, number][]>
     getKeysPaged(pageSize: number, block: Block, key1: v0.DomainId, key2: number): AsyncIterable<[v0.DomainId, number][]>
-    getPairs(block: Block): Promise<[k: [v0.DomainId, number], v: (v0.H256[] | undefined)][]>
-    getPairs(block: Block, key1: v0.DomainId): Promise<[k: [v0.DomainId, number], v: (v0.H256[] | undefined)][]>
-    getPairs(block: Block, key1: v0.DomainId, key2: number): Promise<[k: [v0.DomainId, number], v: (v0.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v0.DomainId, number], v: (v0.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId): AsyncIterable<[k: [v0.DomainId, number], v: (v0.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId, key2: number): AsyncIterable<[k: [v0.DomainId, number], v: (v0.H256[] | undefined)][]>
-}
-
-/**
- *  The domain block tree, map (`domain_id`, `domain_block_number`) to the hash of ER,
- *  which can be used get the block tree node in `BlockTreeNodes`
- */
-export interface BlockTreeV1  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key1: v1.DomainId, key2: number): Promise<(v1.H256 | undefined)>
-    getMany(block: Block, keys: [v1.DomainId, number][]): Promise<(v1.H256 | undefined)[]>
-    getKeys(block: Block): Promise<[v1.DomainId, number][]>
-    getKeys(block: Block, key1: v1.DomainId): Promise<[v1.DomainId, number][]>
-    getKeys(block: Block, key1: v1.DomainId, key2: number): Promise<[v1.DomainId, number][]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[v1.DomainId, number][]>
-    getKeysPaged(pageSize: number, block: Block, key1: v1.DomainId): AsyncIterable<[v1.DomainId, number][]>
-    getKeysPaged(pageSize: number, block: Block, key1: v1.DomainId, key2: number): AsyncIterable<[v1.DomainId, number][]>
-    getPairs(block: Block): Promise<[k: [v1.DomainId, number], v: (v1.H256 | undefined)][]>
-    getPairs(block: Block, key1: v1.DomainId): Promise<[k: [v1.DomainId, number], v: (v1.H256 | undefined)][]>
-    getPairs(block: Block, key1: v1.DomainId, key2: number): Promise<[k: [v1.DomainId, number], v: (v1.H256 | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v1.DomainId, number], v: (v1.H256 | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: v1.DomainId): AsyncIterable<[k: [v1.DomainId, number], v: (v1.H256 | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key1: v1.DomainId, key2: number): AsyncIterable<[k: [v1.DomainId, number], v: (v1.H256 | undefined)][]>
+    getPairs(block: Block): Promise<[k: [v0.DomainId, number], v: (v0.H256 | undefined)][]>
+    getPairs(block: Block, key1: v0.DomainId): Promise<[k: [v0.DomainId, number], v: (v0.H256 | undefined)][]>
+    getPairs(block: Block, key1: v0.DomainId, key2: number): Promise<[k: [v0.DomainId, number], v: (v0.H256 | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v0.DomainId, number], v: (v0.H256 | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId): AsyncIterable<[k: [v0.DomainId, number], v: (v0.H256 | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId, key2: number): AsyncIterable<[k: [v0.DomainId, number], v: (v0.H256 | undefined)][]>
 }
 
 export const blockTreeNodes =  {
@@ -589,6 +585,10 @@ export const blockTreeNodes =  {
      *  Mapping of block tree node hash to the node, each node represent a domain block
      */
     v0: new StorageType('Domains.BlockTreeNodes', 'Optional', [v0.H256], v0.BlockTreeNode) as BlockTreeNodesV0,
+    /**
+     *  Mapping of block tree node hash to the node, each node represent a domain block
+     */
+    v1: new StorageType('Domains.BlockTreeNodes', 'Optional', [v1.H256], v1.BlockTreeNode) as BlockTreeNodesV1,
 }
 
 /**
@@ -608,23 +608,21 @@ export interface BlockTreeNodesV0  {
     getPairsPaged(pageSize: number, block: Block, key: v0.H256): AsyncIterable<[k: v0.H256, v: (v0.BlockTreeNode | undefined)][]>
 }
 
-export const domainBlockDescendants =  {
-    v0: new StorageType('Domains.DomainBlockDescendants', 'Default', [v0.H256], sts.array(() => v0.H256)) as DomainBlockDescendantsV0,
-}
-
-export interface DomainBlockDescendantsV0  {
+/**
+ *  Mapping of block tree node hash to the node, each node represent a domain block
+ */
+export interface BlockTreeNodesV1  {
     is(block: RuntimeCtx): boolean
-    getDefault(block: Block): v0.H256[]
-    get(block: Block, key: v0.H256): Promise<(v0.H256[] | undefined)>
-    getMany(block: Block, keys: v0.H256[]): Promise<(v0.H256[] | undefined)[]>
-    getKeys(block: Block): Promise<v0.H256[]>
-    getKeys(block: Block, key: v0.H256): Promise<v0.H256[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.H256[]>
-    getKeysPaged(pageSize: number, block: Block, key: v0.H256): AsyncIterable<v0.H256[]>
-    getPairs(block: Block): Promise<[k: v0.H256, v: (v0.H256[] | undefined)][]>
-    getPairs(block: Block, key: v0.H256): Promise<[k: v0.H256, v: (v0.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.H256, v: (v0.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v0.H256): AsyncIterable<[k: v0.H256, v: (v0.H256[] | undefined)][]>
+    get(block: Block, key: v1.H256): Promise<(v1.BlockTreeNode | undefined)>
+    getMany(block: Block, keys: v1.H256[]): Promise<(v1.BlockTreeNode | undefined)[]>
+    getKeys(block: Block): Promise<v1.H256[]>
+    getKeys(block: Block, key: v1.H256): Promise<v1.H256[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v1.H256[]>
+    getKeysPaged(pageSize: number, block: Block, key: v1.H256): AsyncIterable<v1.H256[]>
+    getPairs(block: Block): Promise<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
+    getPairs(block: Block, key: v1.H256): Promise<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v1.H256): AsyncIterable<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
 }
 
 export const headReceiptNumber =  {
@@ -650,6 +648,60 @@ export interface HeadReceiptNumberV0  {
     getPairs(block: Block, key: v0.DomainId): Promise<[k: v0.DomainId, v: (number | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.DomainId, v: (number | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (number | undefined)][]>
+}
+
+export const latestConfirmedDomainBlockNumber =  {
+    /**
+     *  The latest confirmed block number of each domain.
+     */
+    v0: new StorageType('Domains.LatestConfirmedDomainBlockNumber', 'Default', [v0.DomainId], sts.number()) as LatestConfirmedDomainBlockNumberV0,
+}
+
+/**
+ *  The latest confirmed block number of each domain.
+ */
+export interface LatestConfirmedDomainBlockNumberV0  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): number
+    get(block: Block, key: v0.DomainId): Promise<(number | undefined)>
+    getMany(block: Block, keys: v0.DomainId[]): Promise<(number | undefined)[]>
+    getKeys(block: Block): Promise<v0.DomainId[]>
+    getKeys(block: Block, key: v0.DomainId): Promise<v0.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<v0.DomainId[]>
+    getPairs(block: Block): Promise<[k: v0.DomainId, v: (number | undefined)][]>
+    getPairs(block: Block, key: v0.DomainId): Promise<[k: v0.DomainId, v: (number | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.DomainId, v: (number | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (number | undefined)][]>
+}
+
+export const headReceiptExtended =  {
+    /**
+     *  Whether the head receipt have extended in the current consensus block
+     * 
+     *  Temporary storage only exist during block execution
+     */
+    v0: new StorageType('Domains.HeadReceiptExtended', 'Default', [v0.DomainId], sts.boolean()) as HeadReceiptExtendedV0,
+}
+
+/**
+ *  Whether the head receipt have extended in the current consensus block
+ * 
+ *  Temporary storage only exist during block execution
+ */
+export interface HeadReceiptExtendedV0  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): boolean
+    get(block: Block, key: v0.DomainId): Promise<(boolean | undefined)>
+    getMany(block: Block, keys: v0.DomainId[]): Promise<(boolean | undefined)[]>
+    getKeys(block: Block): Promise<v0.DomainId[]>
+    getKeys(block: Block, key: v0.DomainId): Promise<v0.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<v0.DomainId[]>
+    getPairs(block: Block): Promise<[k: v0.DomainId, v: (boolean | undefined)][]>
+    getPairs(block: Block, key: v0.DomainId): Promise<[k: v0.DomainId, v: (boolean | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.DomainId, v: (boolean | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (boolean | undefined)][]>
 }
 
 export const stateRoots =  {
@@ -727,6 +779,14 @@ export const executionInbox =  {
      *  2. Index the `InboxedBundleAuthor` and pruned its value when the corresponding `ExecutionInbox` is pruned
      */
     v0: new StorageType('Domains.ExecutionInbox', 'Default', [v0.DomainId, sts.number(), sts.number()], sts.array(() => v0.BundleDigest)) as ExecutionInboxV0,
+    /**
+     *  A set of `BundleDigest` from all bundles that successfully submitted to the consensus block,
+     *  these bundles will be used to construct the domain block and `ExecutionInbox` is used to:
+     * 
+     *  1. Ensure subsequent ERs of that domain block include all pre-validated extrinsic bundles
+     *  2. Index the `InboxedBundleAuthor` and pruned its value when the corresponding `ExecutionInbox` is pruned
+     */
+    v1: new StorageType('Domains.ExecutionInbox', 'Default', [v1.DomainId, sts.number(), sts.number()], sts.array(() => v1.BundleDigest)) as ExecutionInboxV1,
 }
 
 /**
@@ -757,6 +817,36 @@ export interface ExecutionInboxV0  {
     getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId): AsyncIterable<[k: [v0.DomainId, number, number], v: (v0.BundleDigest[] | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId, key2: number): AsyncIterable<[k: [v0.DomainId, number, number], v: (v0.BundleDigest[] | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key1: v0.DomainId, key2: number, key3: number): AsyncIterable<[k: [v0.DomainId, number, number], v: (v0.BundleDigest[] | undefined)][]>
+}
+
+/**
+ *  A set of `BundleDigest` from all bundles that successfully submitted to the consensus block,
+ *  these bundles will be used to construct the domain block and `ExecutionInbox` is used to:
+ * 
+ *  1. Ensure subsequent ERs of that domain block include all pre-validated extrinsic bundles
+ *  2. Index the `InboxedBundleAuthor` and pruned its value when the corresponding `ExecutionInbox` is pruned
+ */
+export interface ExecutionInboxV1  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v1.BundleDigest[]
+    get(block: Block, key1: v1.DomainId, key2: number, key3: number): Promise<(v1.BundleDigest[] | undefined)>
+    getMany(block: Block, keys: [v1.DomainId, number, number][]): Promise<(v1.BundleDigest[] | undefined)[]>
+    getKeys(block: Block): Promise<[v1.DomainId, number, number][]>
+    getKeys(block: Block, key1: v1.DomainId): Promise<[v1.DomainId, number, number][]>
+    getKeys(block: Block, key1: v1.DomainId, key2: number): Promise<[v1.DomainId, number, number][]>
+    getKeys(block: Block, key1: v1.DomainId, key2: number, key3: number): Promise<[v1.DomainId, number, number][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[v1.DomainId, number, number][]>
+    getKeysPaged(pageSize: number, block: Block, key1: v1.DomainId): AsyncIterable<[v1.DomainId, number, number][]>
+    getKeysPaged(pageSize: number, block: Block, key1: v1.DomainId, key2: number): AsyncIterable<[v1.DomainId, number, number][]>
+    getKeysPaged(pageSize: number, block: Block, key1: v1.DomainId, key2: number, key3: number): AsyncIterable<[v1.DomainId, number, number][]>
+    getPairs(block: Block): Promise<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairs(block: Block, key1: v1.DomainId): Promise<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairs(block: Block, key1: v1.DomainId, key2: number): Promise<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairs(block: Block, key1: v1.DomainId, key2: number, key3: number): Promise<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v1.DomainId): AsyncIterable<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v1.DomainId, key2: number): AsyncIterable<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v1.DomainId, key2: number, key3: number): AsyncIterable<[k: [v1.DomainId, number, number], v: (v1.BundleDigest[] | undefined)][]>
 }
 
 export const inboxedBundleAuthor =  {
@@ -850,32 +940,6 @@ export interface LastEpochStakingDistributionV0  {
     getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (v0.ElectionVerificationParams | undefined)][]>
 }
 
-export const preferredOperator =  {
-    /**
-     *  A preferred Operator for a given Farmer, enabling automatic staking of block rewards.
-     *  For the auto-staking to succeed, the Farmer must also be a Nominator of the preferred Operator.
-     */
-    v0: new StorageType('Domains.PreferredOperator', 'Optional', [v0.AccountId32], sts.bigint()) as PreferredOperatorV0,
-}
-
-/**
- *  A preferred Operator for a given Farmer, enabling automatic staking of block rewards.
- *  For the auto-staking to succeed, the Farmer must also be a Nominator of the preferred Operator.
- */
-export interface PreferredOperatorV0  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: v0.AccountId32): Promise<(bigint | undefined)>
-    getMany(block: Block, keys: v0.AccountId32[]): Promise<(bigint | undefined)[]>
-    getKeys(block: Block): Promise<v0.AccountId32[]>
-    getKeys(block: Block, key: v0.AccountId32): Promise<v0.AccountId32[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.AccountId32[]>
-    getKeysPaged(pageSize: number, block: Block, key: v0.AccountId32): AsyncIterable<v0.AccountId32[]>
-    getPairs(block: Block): Promise<[k: v0.AccountId32, v: (bigint | undefined)][]>
-    getPairs(block: Block, key: v0.AccountId32): Promise<[k: v0.AccountId32, v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.AccountId32, v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v0.AccountId32): AsyncIterable<[k: v0.AccountId32, v: (bigint | undefined)][]>
-}
-
 export const domainTxRangeState =  {
     v0: new StorageType('Domains.DomainTxRangeState', 'Optional', [v0.DomainId], v0.TxRangeState) as DomainTxRangeStateV0,
 }
@@ -894,117 +958,26 @@ export interface DomainTxRangeStateV0  {
     getPairsPaged(pageSize: number, block: Block, key: v0.DomainId): AsyncIterable<[k: v0.DomainId, v: (v0.TxRangeState | undefined)][]>
 }
 
-export const headReceiptExtended =  {
+export const latestConfirmedDomainBlock =  {
     /**
-     *  Whether the head receipt have extended in the current consensus block
-     * 
-     *  Temporary storage only exist during block execution
+     *  Storage to hold all the domain's latest confirmed block.
      */
-    v1: new StorageType('Domains.HeadReceiptExtended', 'Default', [v1.DomainId], sts.boolean()) as HeadReceiptExtendedV1,
+    v1: new StorageType('Domains.LatestConfirmedDomainBlock', 'Optional', [v1.DomainId], v1.ConfirmedDomainBlock) as LatestConfirmedDomainBlockV1,
 }
 
 /**
- *  Whether the head receipt have extended in the current consensus block
- * 
- *  Temporary storage only exist during block execution
+ *  Storage to hold all the domain's latest confirmed block.
  */
-export interface HeadReceiptExtendedV1  {
+export interface LatestConfirmedDomainBlockV1  {
     is(block: RuntimeCtx): boolean
-    getDefault(block: Block): boolean
-    get(block: Block, key: v1.DomainId): Promise<(boolean | undefined)>
-    getMany(block: Block, keys: v1.DomainId[]): Promise<(boolean | undefined)[]>
+    get(block: Block, key: v1.DomainId): Promise<(v1.ConfirmedDomainBlock | undefined)>
+    getMany(block: Block, keys: v1.DomainId[]): Promise<(v1.ConfirmedDomainBlock | undefined)[]>
     getKeys(block: Block): Promise<v1.DomainId[]>
     getKeys(block: Block, key: v1.DomainId): Promise<v1.DomainId[]>
     getKeysPaged(pageSize: number, block: Block): AsyncIterable<v1.DomainId[]>
     getKeysPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<v1.DomainId[]>
-    getPairs(block: Block): Promise<[k: v1.DomainId, v: (boolean | undefined)][]>
-    getPairs(block: Block, key: v1.DomainId): Promise<[k: v1.DomainId, v: (boolean | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.DomainId, v: (boolean | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<[k: v1.DomainId, v: (boolean | undefined)][]>
-}
-
-export const successfulFraudProofs =  {
-    /**
-     *  Fraud proofs submitted successfully in current block.
-     */
-    v2: new StorageType('Domains.SuccessfulFraudProofs', 'Default', [v2.DomainId], sts.array(() => v2.H256)) as SuccessfulFraudProofsV2,
-}
-
-/**
- *  Fraud proofs submitted successfully in current block.
- */
-export interface SuccessfulFraudProofsV2  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): v2.H256[]
-    get(block: Block, key: v2.DomainId): Promise<(v2.H256[] | undefined)>
-    getMany(block: Block, keys: v2.DomainId[]): Promise<(v2.H256[] | undefined)[]>
-    getKeys(block: Block): Promise<v2.DomainId[]>
-    getKeys(block: Block, key: v2.DomainId): Promise<v2.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v2.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block, key: v2.DomainId): AsyncIterable<v2.DomainId[]>
-    getPairs(block: Block): Promise<[k: v2.DomainId, v: (v2.H256[] | undefined)][]>
-    getPairs(block: Block, key: v2.DomainId): Promise<[k: v2.DomainId, v: (v2.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v2.DomainId, v: (v2.H256[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v2.DomainId): AsyncIterable<[k: v2.DomainId, v: (v2.H256[] | undefined)][]>
-}
-
-export const nextEvmChainId =  {
-    /**
-     *  Stores the next evm chain id.
-     */
-    v3: new StorageType('Domains.NextEVMChainId', 'Default', [], sts.bigint()) as NextEvmChainIdV3,
-}
-
-/**
- *  Stores the next evm chain id.
- */
-export interface NextEvmChainIdV3  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): bigint
-    get(block: Block): Promise<(bigint | undefined)>
-}
-
-export const operatorSigningKey =  {
-    /**
-     *  Indexes operator signing key against OperatorId.
-     */
-    v4: new StorageType('Domains.OperatorSigningKey', 'Optional', [sts.bytes()], sts.array(() => sts.bigint())) as OperatorSigningKeyV4,
-    /**
-     *  Indexes operator signing key against OperatorId.
-     */
-    v5: new StorageType('Domains.OperatorSigningKey', 'Optional', [sts.bytes()], sts.bigint()) as OperatorSigningKeyV5,
-}
-
-/**
- *  Indexes operator signing key against OperatorId.
- */
-export interface OperatorSigningKeyV4  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: Bytes): Promise<(bigint[] | undefined)>
-    getMany(block: Block, keys: Bytes[]): Promise<(bigint[] | undefined)[]>
-    getKeys(block: Block): Promise<Bytes[]>
-    getKeys(block: Block, key: Bytes): Promise<Bytes[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<Bytes[]>
-    getKeysPaged(pageSize: number, block: Block, key: Bytes): AsyncIterable<Bytes[]>
-    getPairs(block: Block): Promise<[k: Bytes, v: (bigint[] | undefined)][]>
-    getPairs(block: Block, key: Bytes): Promise<[k: Bytes, v: (bigint[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: Bytes, v: (bigint[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: Bytes): AsyncIterable<[k: Bytes, v: (bigint[] | undefined)][]>
-}
-
-/**
- *  Indexes operator signing key against OperatorId.
- */
-export interface OperatorSigningKeyV5  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: Bytes): Promise<(bigint | undefined)>
-    getMany(block: Block, keys: Bytes[]): Promise<(bigint | undefined)[]>
-    getKeys(block: Block): Promise<Bytes[]>
-    getKeys(block: Block, key: Bytes): Promise<Bytes[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<Bytes[]>
-    getKeysPaged(pageSize: number, block: Block, key: Bytes): AsyncIterable<Bytes[]>
-    getPairs(block: Block): Promise<[k: Bytes, v: (bigint | undefined)][]>
-    getPairs(block: Block, key: Bytes): Promise<[k: Bytes, v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: Bytes, v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: Bytes): AsyncIterable<[k: Bytes, v: (bigint | undefined)][]>
+    getPairs(block: Block): Promise<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
+    getPairs(block: Block, key: v1.DomainId): Promise<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
 }

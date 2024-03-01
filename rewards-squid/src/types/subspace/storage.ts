@@ -241,6 +241,21 @@ export interface EnableRewardsV0  {
     get(block: Block): Promise<(number | undefined)>
 }
 
+export const enableRewardsBelowSolutionRange =  {
+    /**
+     *  Enable rewards when solution range is below this threshold.
+     */
+    v0: new StorageType('Subspace.EnableRewardsBelowSolutionRange', 'Optional', [], sts.bigint()) as EnableRewardsBelowSolutionRangeV0,
+}
+
+/**
+ *  Enable rewards when solution range is below this threshold.
+ */
+export interface EnableRewardsBelowSolutionRangeV0  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block): Promise<(bigint | undefined)>
+}
+
 export const currentBlockAuthorInfo =  {
     /**
      *  Temporary value (cleared at block finalization) with block author information.
@@ -320,22 +335,6 @@ export const blockRandomness =  {
 export interface BlockRandomnessV0  {
     is(block: RuntimeCtx): boolean
     get(block: Block): Promise<(v0.Randomness | undefined)>
-}
-
-export const isStorageAccessEnabled =  {
-    /**
-     *  Enable storage access for all users.
-     */
-    v0: new StorageType('Subspace.IsStorageAccessEnabled', 'Default', [], sts.boolean()) as IsStorageAccessEnabledV0,
-}
-
-/**
- *  Enable storage access for all users.
- */
-export interface IsStorageAccessEnabledV0  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): boolean
-    get(block: Block): Promise<(boolean | undefined)>
 }
 
 export const allowAuthoringByAnyone =  {

@@ -93,7 +93,7 @@ export type Payload = Payload_Endpoint | Payload_Protocol
 
 export interface Payload_Endpoint {
     __kind: 'Endpoint'
-    value: Type_282
+    value: Type_294
 }
 
 export interface Payload_Protocol {
@@ -266,14 +266,14 @@ export interface FeeModel {
     relayFee: bigint
 }
 
-export type Type_282 = Type_282_Request | Type_282_Response
+export type Type_294 = Type_294_Request | Type_294_Response
 
-export interface Type_282_Request {
+export interface Type_294_Request {
     __kind: 'Request'
     value: EndpointRequest
 }
 
-export interface Type_282_Response {
+export interface Type_294_Response {
     __kind: 'Response'
     value: Result<Bytes, DispatchError>
 }
@@ -303,7 +303,7 @@ export const VersionedPayload: sts.Type<VersionedPayload> = sts.closedEnum(() =>
 
 export const Payload: sts.Type<Payload> = sts.closedEnum(() => {
     return  {
-        Endpoint: Type_282,
+        Endpoint: Type_294,
         Protocol: RequestResponse,
     }
 })
@@ -322,7 +322,7 @@ export const ProtocolMessageRequest: sts.Type<ProtocolMessageRequest> = sts.clos
     }
 })
 
-export const Type_282: sts.Type<Type_282> = sts.closedEnum(() => {
+export const Type_294: sts.Type<Type_294> = sts.closedEnum(() => {
     return  {
         Request: EndpointRequest,
         Response: sts.result(() => sts.bytes(), () => DispatchError),
@@ -456,7 +456,12 @@ export interface ExecutionReceipt {
     finalStateRoot: H256
     executionTrace: H256[]
     executionTraceRoot: H256
-    totalRewards: bigint
+    blockFees: BlockFees
+}
+
+export interface BlockFees {
+    consensusStorageFee: bigint
+    domainExecutionFee: bigint
 }
 
 export interface InboxedBundle {
@@ -522,7 +527,14 @@ export const ExecutionReceipt: sts.Type<ExecutionReceipt> = sts.struct(() => {
         finalStateRoot: H256,
         executionTrace: sts.array(() => H256),
         executionTraceRoot: H256,
-        totalRewards: sts.bigint(),
+        blockFees: BlockFees,
+    }
+})
+
+export const BlockFees: sts.Type<BlockFees> = sts.struct(() => {
+    return  {
+        consensusStorageFee: sts.bigint(),
+        domainExecutionFee: sts.bigint(),
     }
 })
 
@@ -555,6 +567,14 @@ export interface DomainObject {
     createdAt: number
     genesisReceiptHash: H256
     domainConfig: DomainConfig
+    domainRuntimeInfo: DomainRuntimeInfo
+}
+
+export type DomainRuntimeInfo = DomainRuntimeInfo_EVM
+
+export interface DomainRuntimeInfo_EVM {
+    __kind: 'EVM'
+    chainId: bigint
 }
 
 export interface DomainConfig {
@@ -584,51 +604,73 @@ export const DomainObject: sts.Type<DomainObject> = sts.struct(() => {
         createdAt: sts.number(),
         genesisReceiptHash: H256,
         domainConfig: DomainConfig,
+        domainRuntimeInfo: DomainRuntimeInfo,
     }
 })
 
-export interface PendingOperatorSlashInfo {
-    unlockingNominators: PendingNominatorUnlock[]
-}
-
-export const PendingOperatorSlashInfo: sts.Type<PendingOperatorSlashInfo> = sts.struct(() => {
+export const DomainRuntimeInfo: sts.Type<DomainRuntimeInfo> = sts.closedEnum(() => {
     return  {
-        unlockingNominators: sts.array(() => PendingNominatorUnlock),
+        EVM: sts.enumStruct({
+            chainId: sts.bigint(),
+        }),
     }
 })
 
-export interface PendingNominatorUnlock {
-    nominatorId: AccountId32
-    balance: bigint
+export interface Withdrawal {
+    totalWithdrawalAmount: bigint
+    withdrawals: [DomainId, number, bigint][]
+    withdrawalInShares?: ([DomainEpoch, number, bigint] | undefined)
 }
 
-export const PendingNominatorUnlock: sts.Type<PendingNominatorUnlock> = sts.struct(() => {
+export const Withdrawal: sts.Type<Withdrawal> = sts.struct(() => {
     return  {
-        nominatorId: AccountId32,
-        balance: sts.bigint(),
+        totalWithdrawalAmount: sts.bigint(),
+        withdrawals: sts.array(() => sts.tuple(() => [DomainId, sts.number(), sts.bigint()])),
+        withdrawalInShares: sts.option(() => sts.tuple(() => [DomainEpoch, sts.number(), sts.bigint()])),
     }
 })
 
-export type Withdraw = Withdraw_All | Withdraw_Some
-
-export interface Withdraw_All {
-    __kind: 'All'
+export interface Deposit {
+    known: KnownDeposit
+    pending?: (PendingDeposit | undefined)
 }
 
-export interface Withdraw_Some {
-    __kind: 'Some'
-    value: bigint
+export interface PendingDeposit {
+    effectiveDomainEpoch: DomainEpoch
+    amount: bigint
 }
 
-export interface Nominator {
+export interface KnownDeposit {
     shares: bigint
 }
 
-export const Nominator: sts.Type<Nominator> = sts.struct(() => {
+export const Deposit: sts.Type<Deposit> = sts.struct(() => {
+    return  {
+        known: KnownDeposit,
+        pending: sts.option(() => PendingDeposit),
+    }
+})
+
+export const PendingDeposit: sts.Type<PendingDeposit> = sts.struct(() => {
+    return  {
+        effectiveDomainEpoch: DomainEpoch,
+        amount: sts.bigint(),
+    }
+})
+
+export const KnownDeposit: sts.Type<KnownDeposit> = sts.struct(() => {
     return  {
         shares: sts.bigint(),
     }
 })
+
+export type DomainEpoch = [DomainId, number]
+
+export type SharePrice = number
+
+export const SharePrice = sts.number()
+
+export const DomainEpoch = sts.tuple(() => [DomainId, sts.number()])
 
 export interface Operator {
     signingKey: Bytes
@@ -638,14 +680,17 @@ export interface Operator {
     nominationTax: Percent
     currentTotalStake: bigint
     currentEpochRewards: bigint
-    totalShares: bigint
+    currentTotalShares: bigint
     status: OperatorStatus
+    depositsInEpoch: bigint
+    withdrawalsInEpoch: bigint
 }
 
 export type OperatorStatus = OperatorStatus_Deregistered | OperatorStatus_Registered | OperatorStatus_Slashed
 
 export interface OperatorStatus_Deregistered {
     __kind: 'Deregistered'
+    value: OperatorDeregisteredInfo
 }
 
 export interface OperatorStatus_Registered {
@@ -654,6 +699,11 @@ export interface OperatorStatus_Registered {
 
 export interface OperatorStatus_Slashed {
     __kind: 'Slashed'
+}
+
+export interface OperatorDeregisteredInfo {
+    domainEpoch: DomainEpoch
+    unlockAtConfirmedDomainBlockNumber: number
 }
 
 export type Percent = number
@@ -667,16 +717,25 @@ export const Operator: sts.Type<Operator> = sts.struct(() => {
         nominationTax: Percent,
         currentTotalStake: sts.bigint(),
         currentEpochRewards: sts.bigint(),
-        totalShares: sts.bigint(),
+        currentTotalShares: sts.bigint(),
         status: OperatorStatus,
+        depositsInEpoch: sts.bigint(),
+        withdrawalsInEpoch: sts.bigint(),
     }
 })
 
 export const OperatorStatus: sts.Type<OperatorStatus> = sts.closedEnum(() => {
     return  {
-        Deregistered: sts.unit(),
+        Deregistered: OperatorDeregisteredInfo,
         Registered: sts.unit(),
         Slashed: sts.unit(),
+    }
+})
+
+export const OperatorDeregisteredInfo: sts.Type<OperatorDeregisteredInfo> = sts.struct(() => {
+    return  {
+        domainEpoch: DomainEpoch,
+        unlockAtConfirmedDomainBlockNumber: sts.number(),
     }
 })
 
@@ -715,6 +774,7 @@ export interface RuntimeVersion {
     apis: [Bytes, number][]
     transactionVersion: number
     stateVersion: number
+    extrinsicStateVersion: number
 }
 
 export interface RawGenesis {
@@ -744,6 +804,7 @@ export const RuntimeVersion: sts.Type<RuntimeVersion> = sts.struct(() => {
         apis: sts.array(() => sts.tuple(() => [sts.bytes(), sts.number()])),
         transactionVersion: sts.number(),
         stateVersion: sts.number(),
+        extrinsicStateVersion: sts.number(),
     }
 })
 
@@ -792,11 +853,11 @@ export type DomainId = number
 
 export type H256 = Bytes
 
-export interface Type_149 {
+export interface Type_152 {
     amount: bigint
 }
 
-export const Type_149: sts.Type<Type_149> = sts.struct(() => {
+export const Type_152: sts.Type<Type_152> = sts.struct(() => {
     return  {
         amount: sts.bigint(),
     }
@@ -826,17 +887,7 @@ export interface DomainsHoldIdentifier_Staking {
     value: StakingHoldIdentifier
 }
 
-export type StakingHoldIdentifier = StakingHoldIdentifier_PendingDeposit | StakingHoldIdentifier_PendingUnlock | StakingHoldIdentifier_Staked
-
-export interface StakingHoldIdentifier_PendingDeposit {
-    __kind: 'PendingDeposit'
-    value: bigint
-}
-
-export interface StakingHoldIdentifier_PendingUnlock {
-    __kind: 'PendingUnlock'
-    value: bigint
-}
+export type StakingHoldIdentifier = StakingHoldIdentifier_Staked
 
 export interface StakingHoldIdentifier_Staked {
     __kind: 'Staked'
@@ -865,8 +916,6 @@ export const DomainsHoldIdentifier: sts.Type<DomainsHoldIdentifier> = sts.closed
 
 export const StakingHoldIdentifier: sts.Type<StakingHoldIdentifier> = sts.closedEnum(() => {
     return  {
-        PendingDeposit: sts.bigint(),
-        PendingUnlock: sts.bigint(),
         Staked: sts.bigint(),
     }
 })
@@ -1109,13 +1158,6 @@ export const OperatorAllowList: sts.Type<OperatorAllowList> = sts.closedEnum(() 
     }
 })
 
-export const Withdraw: sts.Type<Withdraw> = sts.closedEnum(() => {
-    return  {
-        All: sts.unit(),
-        Some: sts.bigint(),
-    }
-})
-
 export const DomainConfig: sts.Type<DomainConfig> = sts.struct(() => {
     return  {
         domainName: sts.string(),
@@ -1146,11 +1188,11 @@ export const FraudProof: sts.Type<FraudProof> = sts.closedEnum(() => {
     return  {
         BundleEquivocation: BundleEquivocationProof,
         ImproperTransactionSortition: ImproperTransactionSortitionProof,
+        InvalidBlockFees: InvalidBlockFeesProof,
         InvalidBundles: InvalidBundlesFraudProof,
         InvalidDomainBlockHash: InvalidDomainBlockHashProof,
         InvalidExtrinsicsRoot: InvalidExtrinsicsRootProof,
         InvalidStateTransition: InvalidStateTransitionProof,
-        InvalidTotalRewards: InvalidTotalRewardsProof,
         InvalidTransaction: InvalidTransactionProof,
         ValidBundle: ValidBundleProof,
     }
@@ -1190,20 +1232,6 @@ export interface InvalidTransactionProof {
     storageProof: StorageProof
 }
 
-export const InvalidTotalRewardsProof: sts.Type<InvalidTotalRewardsProof> = sts.struct(() => {
-    return  {
-        domainId: DomainId,
-        badReceiptHash: H256,
-        storageProof: StorageProof,
-    }
-})
-
-export interface InvalidTotalRewardsProof {
-    domainId: DomainId
-    badReceiptHash: H256
-    storageProof: StorageProof
-}
-
 export const InvalidStateTransitionProof: sts.Type<InvalidStateTransitionProof> = sts.struct(() => {
     return  {
         domainId: DomainId,
@@ -1216,26 +1244,63 @@ export const InvalidStateTransitionProof: sts.Type<InvalidStateTransitionProof> 
 export const ExecutionPhase: sts.Type<ExecutionPhase> = sts.closedEnum(() => {
     return  {
         ApplyExtrinsic: sts.enumStruct({
-            proofOfInclusion: StorageProof,
-            mismatchIndex: sts.number(),
-            extrinsic: sts.bytes(),
+            extrinsicProof: StorageProof,
+            mismatch: ApplyExtrinsicMismatch,
         }),
-        FinalizeBlock: sts.unit(),
+        FinalizeBlock: sts.enumStruct({
+            mismatch: FinalizeBlockMismatch,
+        }),
         InitializeBlock: sts.unit(),
     }
 })
+
+export const FinalizeBlockMismatch: sts.Type<FinalizeBlockMismatch> = sts.closedEnum(() => {
+    return  {
+        Longer: sts.number(),
+        StateRoot: sts.unit(),
+    }
+})
+
+export type FinalizeBlockMismatch = FinalizeBlockMismatch_Longer | FinalizeBlockMismatch_StateRoot
+
+export interface FinalizeBlockMismatch_Longer {
+    __kind: 'Longer'
+    value: number
+}
+
+export interface FinalizeBlockMismatch_StateRoot {
+    __kind: 'StateRoot'
+}
+
+export const ApplyExtrinsicMismatch: sts.Type<ApplyExtrinsicMismatch> = sts.closedEnum(() => {
+    return  {
+        Shorter: sts.unit(),
+        StateRoot: sts.number(),
+    }
+})
+
+export type ApplyExtrinsicMismatch = ApplyExtrinsicMismatch_Shorter | ApplyExtrinsicMismatch_StateRoot
+
+export interface ApplyExtrinsicMismatch_Shorter {
+    __kind: 'Shorter'
+}
+
+export interface ApplyExtrinsicMismatch_StateRoot {
+    __kind: 'StateRoot'
+    value: number
+}
 
 export type ExecutionPhase = ExecutionPhase_ApplyExtrinsic | ExecutionPhase_FinalizeBlock | ExecutionPhase_InitializeBlock
 
 export interface ExecutionPhase_ApplyExtrinsic {
     __kind: 'ApplyExtrinsic'
-    proofOfInclusion: StorageProof
-    mismatchIndex: number
-    extrinsic: Bytes
+    extrinsicProof: StorageProof
+    mismatch: ApplyExtrinsicMismatch
 }
 
 export interface ExecutionPhase_FinalizeBlock {
     __kind: 'FinalizeBlock'
+    mismatch: FinalizeBlockMismatch
 }
 
 export interface ExecutionPhase_InitializeBlock {
@@ -1314,7 +1379,7 @@ export const InvalidBundlesFraudProof: sts.Type<InvalidBundlesFraudProof> = sts.
         domainId: DomainId,
         bundleIndex: sts.number(),
         invalidBundleType: InvalidBundleType,
-        extrinsicInclusionProof: StorageProof,
+        proofData: StorageProof,
         isTrueInvalidFraudProof: sts.boolean(),
     }
 })
@@ -1324,8 +1389,22 @@ export interface InvalidBundlesFraudProof {
     domainId: DomainId
     bundleIndex: number
     invalidBundleType: InvalidBundleType
-    extrinsicInclusionProof: StorageProof
+    proofData: StorageProof
     isTrueInvalidFraudProof: boolean
+}
+
+export const InvalidBlockFeesProof: sts.Type<InvalidBlockFeesProof> = sts.struct(() => {
+    return  {
+        domainId: DomainId,
+        badReceiptHash: H256,
+        storageProof: StorageProof,
+    }
+})
+
+export interface InvalidBlockFeesProof {
+    domainId: DomainId
+    badReceiptHash: H256
+    storageProof: StorageProof
 }
 
 export const ImproperTransactionSortitionProof: sts.Type<ImproperTransactionSortitionProof> = sts.struct(() => {
@@ -1343,7 +1422,6 @@ export interface ImproperTransactionSortitionProof {
 export const BundleEquivocationProof: sts.Type<BundleEquivocationProof> = sts.struct(() => {
     return  {
         domainId: DomainId,
-        offender: AccountId32,
         slot: Slot,
         firstHeader: SealedBundleHeader,
         secondHeader: SealedBundleHeader,
@@ -1374,18 +1452,19 @@ export const ProofOfElection: sts.Type<ProofOfElection> = sts.struct(() => {
         globalRandomness: Randomness,
         vrfSignature: VrfSignature,
         operatorId: sts.bigint(),
+        consensusBlockHash: H256,
     }
 })
 
 export const VrfSignature: sts.Type<VrfSignature> = sts.struct(() => {
     return  {
-        output: sts.bytes(),
+        preOutput: sts.bytes(),
         proof: sts.bytes(),
     }
 })
 
 export interface VrfSignature {
-    output: Bytes
+    preOutput: Bytes
     proof: Bytes
 }
 
@@ -1395,6 +1474,7 @@ export interface ProofOfElection {
     globalRandomness: Randomness
     vrfSignature: VrfSignature
     operatorId: bigint
+    consensusBlockHash: H256
 }
 
 export interface BundleHeader {
@@ -1412,13 +1492,12 @@ export interface SealedBundleHeader {
 
 export interface BundleEquivocationProof {
     domainId: DomainId
-    offender: AccountId32
     slot: Slot
     firstHeader: SealedBundleHeader
     secondHeader: SealedBundleHeader
 }
 
-export type FraudProof = FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition | FraudProof_InvalidBundles | FraudProof_InvalidDomainBlockHash | FraudProof_InvalidExtrinsicsRoot | FraudProof_InvalidStateTransition | FraudProof_InvalidTotalRewards | FraudProof_InvalidTransaction | FraudProof_ValidBundle
+export type FraudProof = FraudProof_BundleEquivocation | FraudProof_ImproperTransactionSortition | FraudProof_InvalidBlockFees | FraudProof_InvalidBundles | FraudProof_InvalidDomainBlockHash | FraudProof_InvalidExtrinsicsRoot | FraudProof_InvalidStateTransition | FraudProof_InvalidTransaction | FraudProof_ValidBundle
 
 export interface FraudProof_BundleEquivocation {
     __kind: 'BundleEquivocation'
@@ -1428,6 +1507,11 @@ export interface FraudProof_BundleEquivocation {
 export interface FraudProof_ImproperTransactionSortition {
     __kind: 'ImproperTransactionSortition'
     value: ImproperTransactionSortitionProof
+}
+
+export interface FraudProof_InvalidBlockFees {
+    __kind: 'InvalidBlockFees'
+    value: InvalidBlockFeesProof
 }
 
 export interface FraudProof_InvalidBundles {
@@ -1448,11 +1532,6 @@ export interface FraudProof_InvalidExtrinsicsRoot {
 export interface FraudProof_InvalidStateTransition {
     __kind: 'InvalidStateTransition'
     value: InvalidStateTransitionProof
-}
-
-export interface FraudProof_InvalidTotalRewards {
-    __kind: 'InvalidTotalRewards'
-    value: InvalidTotalRewardsProof
 }
 
 export interface FraudProof_InvalidTransaction {
@@ -1515,6 +1594,30 @@ export interface MultiAddress_Index {
 export interface MultiAddress_Raw {
     __kind: 'Raw'
     value: Bytes
+}
+
+export const EnableRewardsAt: sts.Type<EnableRewardsAt> = sts.closedEnum(() => {
+    return  {
+        Height: sts.option(() => sts.number()),
+        Manually: sts.unit(),
+        SolutionRange: sts.bigint(),
+    }
+})
+
+export type EnableRewardsAt = EnableRewardsAt_Height | EnableRewardsAt_Manually | EnableRewardsAt_SolutionRange
+
+export interface EnableRewardsAt_Height {
+    __kind: 'Height'
+    value?: (number | undefined)
+}
+
+export interface EnableRewardsAt_Manually {
+    __kind: 'Manually'
+}
+
+export interface EnableRewardsAt_SolutionRange {
+    __kind: 'SolutionRange'
+    value: bigint
 }
 
 export const SignedVote: sts.Type<SignedVote> = sts.struct(() => {
@@ -1748,6 +1851,31 @@ export const ChainId: sts.Type<ChainId> = sts.closedEnum(() => {
         Domain: DomainId,
     }
 })
+
+export const SlashedReason: sts.Type<SlashedReason> = sts.closedEnum(() => {
+    return  {
+        BadExecutionReceipt: H256,
+        BundleEquivocation: Slot,
+        InvalidBundle: sts.number(),
+    }
+})
+
+export type SlashedReason = SlashedReason_BadExecutionReceipt | SlashedReason_BundleEquivocation | SlashedReason_InvalidBundle
+
+export interface SlashedReason_BadExecutionReceipt {
+    __kind: 'BadExecutionReceipt'
+    value: H256
+}
+
+export interface SlashedReason_BundleEquivocation {
+    __kind: 'BundleEquivocation'
+    value: Slot
+}
+
+export interface SlashedReason_InvalidBundle {
+    __kind: 'InvalidBundle'
+    value: number
+}
 
 export const RuntimeType: sts.Type<RuntimeType> = sts.closedEnum(() => {
     return  {
