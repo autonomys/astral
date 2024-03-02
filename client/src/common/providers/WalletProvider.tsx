@@ -3,8 +3,9 @@ import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { formatAddress } from 'common/helpers/formatAddress'
+import { useSafeLocalStorage } from 'common/hooks/useSafeLocalStorage'
 import Chains from 'layout/config/chains.json'
-import { FC, ReactNode, createContext, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 
 export type WalletContextValue = {
   api: { [key: string]: ApiPromise } | undefined
@@ -14,7 +15,6 @@ export type WalletContextValue = {
   injector: InjectedExtension | null
   actingAccount: WalletAccount | undefined
   extensions: InjectedExtension[] | undefined
-  setActingAccountIdx: (idx: number) => void
   disconnectWallet: () => void
   setActingAccount: (account: WalletAccount) => void
   setPreferredExtension: (extension: string) => void
@@ -38,21 +38,12 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [isReady, setIsReady] = useState(false)
   const [accounts, setAccounts] = useState<WalletAccount[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
-  const [preferredExtension, setPreferredExtension] = useState<string | undefined>(undefined)
-  const [actingAccountIdx, setActingAccountIdx] = useState<number>(0)
   const [error, setError] = useState<Error | null>(null)
   const [injector, setInjector] = useState<InjectedExtension | null>(null)
   const [actingAccount, setActingAccount] = useState<WalletAccount | undefined>(undefined)
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
-
-  useMemo(() => {
-    const selectedAccount =
-      accounts && accounts.find((account) => account.source === preferredExtension)
-    if (selectedAccount) {
-      setActingAccount(selectedAccount)
-      setSubspaceAccount(formatAddress(selectedAccount?.address))
-    }
-  }, [accounts, preferredExtension])
+  const [preferredAccount, setPreferredAccount] = useSafeLocalStorage('localAccount', null)
+  const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
 
   const prepareApi = useCallback(async (chain: (typeof Chains)[0]) => {
     const wsProvider = new WsProvider(chain.urls.rpc)
@@ -80,37 +71,58 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     (account: WalletAccount) => {
       setActingAccount(account)
       setSubspaceAccount(formatAddress(account.address))
+      setPreferredAccount(account.address)
       const newInjector = extensions?.find((extension) => extension.name === account.source)
-      if (newInjector) {
-        setInjector(newInjector)
-      }
+      if (newInjector) setInjector(newInjector)
+      setIsReady(true)
     },
-    [extensions],
+    [extensions, setPreferredAccount],
   )
 
   const disconnectWallet = useCallback(() => {
     setInjector(null)
     setAccounts([])
     setActingAccount(undefined)
+    setSubspaceAccount(undefined)
+    setPreferredAccount(null)
+    setPreferredExtension(null)
     setIsReady(false)
-  }, [setInjector, setAccounts])
+  }, [setInjector, setAccounts, setPreferredAccount, setPreferredExtension])
 
-  const handleSelectFirstWalletFromExtension = useCallback(async (source: string) => {
-    const wallet = getWalletBySource(source)
-    if (wallet) {
-      await wallet.enable()
-      if (wallet.extension) setInjector(wallet.extension)
-      const walletAccounts = await wallet.getAccounts()
-      setAccounts(walletAccounts)
-      setPreferredExtension(source)
-      const mainAccount = walletAccounts?.find((account) => account.source === source)
-      if (mainAccount) {
-        setActingAccount(mainAccount)
-        setSubspaceAccount(formatAddress(mainAccount.address))
-        setIsReady(true)
+  const handleGetWalletFromExtension = useCallback(
+    async (source: string) => {
+      const wallet = getWalletBySource(source)
+      if (wallet) {
+        await wallet.enable()
+        if (wallet.extension) setInjector(wallet.extension)
+        const walletAccounts = await wallet.getAccounts()
+        setAccounts(walletAccounts)
+        setPreferredExtension(source)
+        return walletAccounts
       }
-    }
-  }, [])
+    },
+    [setPreferredExtension],
+  )
+
+  const handleSelectFirstWalletFromExtension = useCallback(
+    async (source: string) => {
+      const walletAccounts = await handleGetWalletFromExtension(source)
+      if (!walletAccounts || walletAccounts.length === 0) return
+      const mainAccount = walletAccounts.find((account) => account.source === source)
+      if (mainAccount) changeAccount(mainAccount)
+    },
+    [handleGetWalletFromExtension, changeAccount],
+  )
+
+  const handleConnectToExtensionAndAccount = useCallback(
+    async (address: string, source: string) => {
+      const walletAccounts = await handleGetWalletFromExtension(source)
+      if (!walletAccounts || walletAccounts.length === 0) return
+      const mainAccount = walletAccounts.find((account) => account.address === address)
+      if (mainAccount) changeAccount(mainAccount)
+    },
+    [handleGetWalletFromExtension, changeAccount],
+  )
 
   useEffect(() => {
     // This effect is used to get the injector from the selected account
@@ -131,12 +143,17 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     }
 
     getInjector()
-  }, [actingAccountIdx, accounts, actingAccount])
+  }, [actingAccount])
 
   useEffect(() => {
     if (!injector) return
     setup()
   }, [injector, setup])
+
+  useEffect(() => {
+    if (!actingAccount && preferredExtension && preferredAccount)
+      handleConnectToExtensionAndAccount(preferredAccount, preferredExtension)
+  }, [actingAccount, preferredAccount, preferredExtension, handleConnectToExtensionAndAccount])
 
   // This effect is used to mock the wallet when the environment variables are set in the .env file
   useEffect(() => {
@@ -151,7 +168,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       }
       setActingAccount(mockAccount)
       setAccounts([mockAccount])
-      setActingAccountIdx(0)
       setSubspaceAccount(formatAddress(process.env.REACT_APP_MOCK_WALLET_ADDRESS))
       setIsReady(true)
     }
@@ -163,7 +179,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         api,
         accounts,
         actingAccount,
-        setActingAccountIdx,
         isReady,
         error,
         injector,

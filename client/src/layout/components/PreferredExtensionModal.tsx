@@ -1,10 +1,8 @@
 import { LinkIcon } from '@heroicons/react/24/outline'
 import { getWallets } from '@subwallet/wallet-connect/dotsama/wallets'
-
 import Modal from 'common/components/Modal'
 import useWallet from 'common/hooks/useWallet'
-
-import React, { FC } from 'react'
+import React, { FC, useCallback, useMemo } from 'react'
 
 type Props = {
   isOpen: boolean
@@ -12,24 +10,25 @@ type Props = {
 }
 
 const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
+  const { handleSelectFirstWalletFromExtension } = useWallet()
   const dotsamaWallets = getWallets()
 
-  const { handleSelectFirstWalletFromExtension } = useWallet()
+  const handleExtensionSelect = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, extension: string) => {
+      e.preventDefault()
+      handleSelectFirstWalletFromExtension(extension)
+      onClose()
+    },
+    [handleSelectFirstWalletFromExtension, onClose],
+  )
 
-  const handleExtensionSelect = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    extension: string,
-  ) => {
-    e.preventDefault()
-    handleSelectFirstWalletFromExtension(extension)
-    onClose()
-  }
-
-  const supportedWallets = dotsamaWallets.filter((item) => {
-    if (item.extensionName === 'polkadot-js' || item.extensionName === 'subwallet-js') {
-      return item
-    }
-  })
+  const supportedWallets = useMemo(
+    () =>
+      dotsamaWallets.filter(
+        (item) => ['polkadot-js', 'subwallet-js'].includes(item.extensionName) && item,
+      ),
+    [dotsamaWallets],
+  )
 
   return (
     <Modal title='Select your extension' onClose={onClose} isOpen={isOpen}>
