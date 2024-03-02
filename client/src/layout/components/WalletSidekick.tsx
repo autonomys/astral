@@ -39,14 +39,14 @@ import { QUERY_NOMINATOR_CONNECTION_LIST, QUERY_OPERATOR_CONNECTION_SUMMARY } fr
 
 type DrawerProps = {
   isOpen: boolean
-  setIsOpen: (update: boolean | ((prevState: boolean) => boolean)) => void
+  onClose: () => void
 }
 
 interface WalletSidekickProps extends DrawerProps {
   onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }
 
-export const WalletSidekick: FC<WalletSidekickProps> = ({ onClick, isOpen, setIsOpen }) => {
+export const WalletSidekick: FC<WalletSidekickProps> = ({ onClick, isOpen, onClose }) => {
   return (
     <>
       <button
@@ -55,12 +55,12 @@ export const WalletSidekick: FC<WalletSidekickProps> = ({ onClick, isOpen, setIs
       >
         <WalletIcon width='24' height='24' />
       </button>
-      <Drawer isOpen={isOpen} setIsOpen={setIsOpen} />
+      <Drawer isOpen={isOpen} onClose={onClose} />
     </>
   )
 }
 
-const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
+const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const navigate = useNavigate()
   const { selectedChain, selectedDomain } = useDomains()
   const { api, actingAccount } = useWallet()
@@ -70,10 +70,10 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
 
   const handleNavigate = useCallback(
     (url: string) => {
-      setIsOpen(false)
+      onClose()
       navigate(url)
     },
-    [setIsOpen, navigate],
+    [onClose, navigate],
   )
   const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
 
@@ -332,7 +332,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, setIsOpen }) => {
             <div className='flex gap-3 items-center'>
               <button
                 className='bg-white px-4 py-2 items-center rounded-full dark:bg-[#1E254E] dark:text-white'
-                onClick={() => setIsOpen(false)}
+                onClick={onClose}
               >
                 x
               </button>
