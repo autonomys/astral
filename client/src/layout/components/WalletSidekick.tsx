@@ -42,11 +42,15 @@ type DrawerProps = {
   onClose: () => void
 }
 
-interface WalletSidekickProps extends DrawerProps {
-  onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
-}
+export const WalletSidekick: FC = () => {
+  const [isOpen, setIsOpen] = useState(false)
 
-export const WalletSidekick: FC<WalletSidekickProps> = ({ onClick, isOpen, onClose }) => {
+  const onClick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault()
+    setIsOpen(true)
+  }, [])
+  const onClose = useCallback(() => setIsOpen(false), [])
+
   return (
     <>
       <button

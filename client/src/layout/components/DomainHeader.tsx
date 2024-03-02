@@ -1,5 +1,5 @@
 import { CpuChipIcon, GlobeAltIcon, QueueListIcon, TrophyIcon } from '@heroicons/react/24/outline'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
@@ -19,7 +19,6 @@ import AccountListDropdown from './AccountListDropdown'
 import { WalletSidekick } from './WalletSidekick'
 
 const DomainHeader: FC = () => {
-  const [walletSidekickIsOpen, setWalletSidekickIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const location = useLocation()
   const pathName = location.pathname
@@ -38,12 +37,6 @@ const DomainHeader: FC = () => {
     },
     [navigate, setSelectedChain, setSelectedDomain, selectedChain.urls.page],
   )
-
-  const handleWalletSidekick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    setWalletSidekickIsOpen(true)
-  }, [])
-  const handleWalletSidekickOnClose = useCallback(() => setWalletSidekickIsOpen(false), [])
 
   const domainIcon = useCallback((domain: (typeof DOMAINS)[0]) => {
     const className = 'w-6 h-6 text-[#282929] dark:text-white'
@@ -97,11 +90,7 @@ const DomainHeader: FC = () => {
           ) : (
             <>
               <AccountListDropdown />
-              <WalletSidekick
-                onClick={handleWalletSidekick}
-                isOpen={walletSidekickIsOpen}
-                onClose={handleWalletSidekickOnClose}
-              />
+              <WalletSidekick />
             </>
           )}
         </div>
