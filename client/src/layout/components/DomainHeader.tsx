@@ -88,10 +88,10 @@ const DomainHeader: FC = () => {
           {!actingAccount ? (
             <ConnectWalletButton />
           ) : (
-            <>
+            <div className='flex'>
               <AccountListDropdown />
               <WalletSidekick />
-            </>
+            </div>
           )}
         </div>
       </div>

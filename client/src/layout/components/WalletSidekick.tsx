@@ -24,6 +24,7 @@ import {
   shortString,
 } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { LogoIcon, WalletIcon } from 'common/icons'
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -44,6 +45,7 @@ type DrawerProps = {
 
 export const WalletSidekick: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const onClick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
@@ -55,7 +57,9 @@ export const WalletSidekick: FC = () => {
     <>
       <button
         onClick={onClick}
-        className='inline-flex items-center bg-white py-2 px-2 focus:outline-none hover:bg-gray-200 text-base rounded-full dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A]'
+        className={`inline-flex items-center bg-white py-2 px-2 focus:outline-none hover:bg-gray-200 text-base ${
+          isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
+        } dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A]`}
       >
         <WalletIcon width='24' height='24' />
       </button>

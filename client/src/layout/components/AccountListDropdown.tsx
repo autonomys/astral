@@ -5,12 +5,14 @@ import { Fragment, useCallback, useMemo } from 'react'
 // common
 import { shortString } from 'common/helpers'
 import { formatAddress } from 'common/helpers/formatAddress'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import PolkadotIcon from 'common/icons/PolkadotIcon'
 import SubWalletIcon from 'common/icons/SubWalletIcon'
 
 function AccountListDropdown() {
   const { actingAccount, subspaceAccount, accounts, changeAccount, disconnectWallet } = useWallet()
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   const extensionIcon = useMemo(() => {
     if (!actingAccount) return null
@@ -79,7 +81,13 @@ function AccountListDropdown() {
   return (
     <Listbox value={actingAccount} onChange={changeAccount}>
       <div className='relative'>
-        <Listbox.Button className='font-["Montserrat"] relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A] dark:text-white'>
+        <Listbox.Button
+          className={`font-["Montserrat"] relative w-full cursor-default ${
+            isDesktop
+              ? 'pr-10 rounded-full dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A]'
+              : 'pr-6 rounded-l-full dark:bg-[#EA71F9]'
+          } bg-white py-2 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm dark:text-white`}
+        >
           <div className='flex items-center justify-center'>
             {extensionIcon}
             <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full '>
@@ -87,7 +95,9 @@ function AccountListDropdown() {
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
-                className='h-5 w-5 text-gray-400 ui-open:rotate-180 ui-open:transform dark:text-[#DE67E4]'
+                className={`h-5 w-5 text-gray-400 ui-open:rotate-180 ui-open:transform ${
+                  isDesktop ? 'dark:text-[#DE67E4]' : 'dark:text-white'
+                }`}
                 aria-hidden='true'
               />
             </span>
