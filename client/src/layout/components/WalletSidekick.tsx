@@ -59,7 +59,7 @@ export const WalletSidekick: FC = () => {
         onClick={onClick}
         className={`inline-flex items-center bg-white py-2 px-2 focus:outline-none hover:bg-gray-200 text-base ${
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
-        } dark:bg-gradient-to-r from-[#EA71F9] to-[#4D397A]`}
+        } dark:bg-gradient-to-r shadow-md from-[#EA71F9] to-[#4D397A]`}
       >
         <WalletIcon width='24' height='24' />
       </button>
