@@ -1,4 +1,11 @@
-import { FC, useState } from 'react'
+import {
+  CpuChipIcon,
+  GlobeAltIcon,
+  QueueListIcon,
+  TrophyIcon,
+  WalletIcon,
+} from '@heroicons/react/24/outline'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 // layout
@@ -9,6 +16,7 @@ import { DOMAINS, DOMAINS_NAMES } from 'layout/constants'
 
 // common
 import IndexingError from 'common/components/IndexingError'
+import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 
 // chains
@@ -17,6 +25,7 @@ import PreferredExtensionModal from './PreferredExtensionModal'
 
 const DomainHeader: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
   const location = useLocation()
   const pathName = location.pathname
 
@@ -25,21 +34,42 @@ const DomainHeader: FC = () => {
   const { setSelectedChain, selectedChain, setSelectedDomain } = useDomains()
   const { actingAccount } = useWallet()
 
-  const handleDomainSelected = (domain: string) => {
-    if (domain === DOMAINS_NAMES.nova) {
+  const handleDomainSelected = useCallback(
+    (domain: string) => {
       setSelectedDomain(domain)
-      setSelectedChain(domains[0])
-    } else {
-      setSelectedDomain(domain)
-      setSelectedChain(chains[0])
-    }
-    navigate(`/${selectedChain.urls.page}/${domain}`)
-  }
+      if (domain === DOMAINS_NAMES.nova) setSelectedChain(domains[0])
+      else setSelectedChain(chains[0])
+      navigate(`/${selectedChain.urls.page}/${domain}`)
+    },
+    [navigate, setSelectedChain, setSelectedDomain, selectedChain.urls.page],
+  )
 
-  const handleConnectWallet = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     setIsOpen(true)
-  }
+  }, [])
+
+  const handleOnClose = useCallback(() => {
+    setIsOpen(false)
+  }, [])
+
+  const walletIcon = useMemo(() => <WalletIcon className='w-6 h-6' />, [])
+
+  const domainIcon = useCallback((domain: (typeof DOMAINS)[0]) => {
+    const className = 'w-6 h-6 text-[#282929] dark:text-white'
+    switch (domain.name) {
+      case DOMAINS_NAMES.nova:
+        return <GlobeAltIcon className={className} />
+      case DOMAINS_NAMES.consensus:
+        return <QueueListIcon className={className} />
+      case DOMAINS_NAMES.leaderboard:
+        return <TrophyIcon className={className} />
+      case DOMAINS_NAMES.operators:
+        return <CpuChipIcon className={className} />
+      default:
+        return null
+    }
+  }, [])
 
   return (
     <div
@@ -61,7 +91,7 @@ const DomainHeader: FC = () => {
                       : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
                   }
                 >
-                  {item.title}
+                  {isDesktop ? item.title : domainIcon(item)}
                 </button>
               </div>
             )
@@ -70,17 +100,19 @@ const DomainHeader: FC = () => {
         <div className='flex gap-4'>
           {!actingAccount ? (
             <button
-              onClick={(e) => handleConnectWallet(e)}
-              className='h-10 w-36 text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full'
+              onClick={handleConnectWallet}
+              className={`h-10 ${
+                isDesktop ? 'w-36' : 'w-10 py-2 px-2'
+              } text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full`}
             >
-              Connect Wallet
+              {isDesktop ? 'Connect Wallet' : walletIcon}
             </button>
           ) : (
             <AccountListDropdown />
           )}
         </div>
       </div>
-      <PreferredExtensionModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <PreferredExtensionModal isOpen={isOpen} onClose={handleOnClose} />
       {pathName.includes('gemini-3h') && (
         <div className='w-full sticky'>
           <IndexingError />
