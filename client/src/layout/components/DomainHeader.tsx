@@ -55,8 +55,8 @@ const DomainHeader: FC = () => {
 
   const walletIcon = useMemo(() => <WalletIcon className='w-6 h-6' />, [])
 
-  const domainIcon = useCallback((domain: (typeof DOMAINS)[0]) => {
-    const className = 'w-6 h-6 text-[#282929] dark:text-white'
+  const domainIcon = useCallback((domain: (typeof DOMAINS)[0], isActive: boolean) => {
+    const className = `w-6 h-6 ${isActive ? 'text-white' : 'text-[#282929]'} dark:text-white`
     switch (domain.name) {
       case DOMAINS_NAMES.nova:
         return <GlobeAltIcon className={className} />
@@ -91,7 +91,7 @@ const DomainHeader: FC = () => {
                       : 'bg-white text-[#282929] dark:text-white dark:bg-[#1E254E]'
                   }
                 >
-                  {isDesktop ? item.title : domainIcon(item)}
+                  {isDesktop ? item.title : domainIcon(item, isActive)}
                 </button>
               </div>
             )
