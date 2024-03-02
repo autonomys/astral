@@ -1,10 +1,4 @@
-import {
-  CpuChipIcon,
-  GlobeAltIcon,
-  QueueListIcon,
-  TrophyIcon,
-  WalletIcon,
-} from '@heroicons/react/24/outline'
+import { CpuChipIcon, GlobeAltIcon, QueueListIcon, TrophyIcon } from '@heroicons/react/24/outline'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
@@ -15,17 +9,16 @@ import domains from 'layout/config/domains.json'
 import { DOMAINS, DOMAINS_NAMES } from 'layout/constants'
 
 // common
+import { ConnectWalletButton } from 'common/components/ConnectWalletButton'
 import IndexingError from 'common/components/IndexingError'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 
 // chains
 import AccountListDropdown from './AccountListDropdown'
-import PreferredExtensionModal from './PreferredExtensionModal'
 import { WalletSidekick } from './WalletSidekick'
 
 const DomainHeader: FC = () => {
-  const [walletModalIsOpen, setWalletModalIsOpen] = useState(false)
   const [walletSidekickIsOpen, setWalletSidekickIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const location = useLocation()
@@ -46,22 +39,11 @@ const DomainHeader: FC = () => {
     [navigate, setSelectedChain, setSelectedDomain, selectedChain.urls.page],
   )
 
-  const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleWalletSidekick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
-    setWalletModalIsOpen(true)
+    setWalletSidekickIsOpen(true)
   }, [])
-  const handleWalletModalOnClose = useCallback(() => setWalletModalIsOpen(false), [])
-
-  const handleWalletSidekick = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      e.preventDefault()
-      setWalletSidekickIsOpen(true)
-    },
-    [setWalletSidekickIsOpen],
-  )
   const handleWalletSidekickOnClose = useCallback(() => setWalletSidekickIsOpen(false), [])
-
-  const walletIcon = useMemo(() => <WalletIcon className='w-6 h-6' />, [])
 
   const domainIcon = useCallback((domain: (typeof DOMAINS)[0]) => {
     const className = 'w-6 h-6 text-[#282929] dark:text-white'
@@ -111,14 +93,7 @@ const DomainHeader: FC = () => {
         <div className='flex gap-9'>{domainsOptions}</div>
         <div className='flex gap-4'>
           {!actingAccount ? (
-            <button
-              onClick={handleConnectWallet}
-              className={`h-10 ${
-                isDesktop ? 'w-36' : 'w-10 py-2 px-2'
-              } text-white font-medium bg-gradient-to-r from-[#EA71F9] to-[#4D397A] rounded-full`}
-            >
-              {isDesktop ? 'Connect Wallet' : walletIcon}
-            </button>
+            <ConnectWalletButton />
           ) : (
             <>
               <AccountListDropdown />
@@ -131,7 +106,6 @@ const DomainHeader: FC = () => {
           )}
         </div>
       </div>
-      <PreferredExtensionModal isOpen={walletModalIsOpen} onClose={handleWalletModalOnClose} />
       {pathName.includes('gemini-3h') && (
         <div className='w-full sticky'>
           <IndexingError />
