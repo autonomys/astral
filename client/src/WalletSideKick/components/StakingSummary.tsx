@@ -7,20 +7,26 @@ import { Link } from 'react-router-dom'
 // common
 import { Accordion, List, StyledListItem } from 'common/components'
 import { bigNumberToNumber } from 'common/helpers'
-import useDomains from 'common/hooks/useDomains'
+import type { Chain } from 'common/providers/ChainProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // query
 import { QUERY_STAKING_SUMMARY } from '../querys'
 
+// layout
+import { DOMAINS_NAMES } from 'layout/constants'
+
 interface StakingSummaryProps {
   subspaceAccount: string
+  selectedChain: Chain
   tokenSymbol: string
 }
 
-export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, tokenSymbol }) => {
-  const { selectedChain } = useDomains()
-
+export const StakingSummary: FC<StakingSummaryProps> = ({
+  subspaceAccount,
+  selectedChain,
+  tokenSymbol,
+}) => {
   const summaryVariables = useMemo(
     () => ({
       first: 10,
@@ -28,20 +34,14 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     }),
     [subspaceAccount],
   )
-
-  const {
-    data: stackingSummaryData,
-    error: stackingSummaryError,
-    loading: stackingSummaryLoading,
-  } = useQuery(QUERY_STAKING_SUMMARY, {
+  const { data, error, loading } = useQuery(QUERY_STAKING_SUMMARY, {
     variables: summaryVariables,
     pollInterval: 6000,
   })
 
   const operators: OperatorsConnection = useMemo(
-    () =>
-      stackingSummaryData && stackingSummaryData.operators ? stackingSummaryData.operators : [],
-    [stackingSummaryData],
+    () => (data && data.operators ? data.operators : []),
+    [data],
   )
   const totalOperatorCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
   const totalOperatorStake = useMemo(
@@ -55,9 +55,8 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
   )
 
   const nominators: NominatorsConnection = useMemo(
-    () =>
-      stackingSummaryData && stackingSummaryData.nominators ? stackingSummaryData.nominators : [],
-    [stackingSummaryData],
+    () => (data && data.nominators ? data.nominators : []),
+    [data],
   )
   const nominatorsConnection: Nominator[] = useMemo(
     () =>
@@ -96,8 +95,8 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
           </div>
         }
       >
-        {stackingSummaryLoading && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
-        {stackingSummaryError && (
+        {loading && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
+        {error && (
           <div className='flex items-center m-2 pt-4'>
             <span className='text-[#241235] text-base font-medium dark:text-white'>
               We are unable to load your wallet data
@@ -114,7 +113,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   data-testid='totalOperatorStake-link'
                   className='hover:text-[#DE67E4]'
-                  to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
+                  to={`../${selectedChain.urls.page}/${DOMAINS_NAMES.operators}/${INTERNAL_ROUTES.operators.manage}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
                     {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
@@ -127,7 +126,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   data-testid='totalNominatedStake-link'
                   className='hover:text-[#DE67E4]'
-                  to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
+                  to={`../${selectedChain.urls.page}/${DOMAINS_NAMES.operators}/${INTERNAL_ROUTES.operators.nomination}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
                     {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
@@ -140,7 +139,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   data-testid='totalOperatorCount-link'
                   className='hover:text-[#DE67E4]'
-                  to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
+                  to={`../${selectedChain.urls.page}/${DOMAINS_NAMES.operators}/${INTERNAL_ROUTES.operators.manage}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
                     {totalOperatorCount}
@@ -153,7 +152,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   data-testid='totalNominatedCount-link'
                   className='hover:text-[#DE67E4]'
-                  to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
+                  to={`../${selectedChain.urls.page}/${DOMAINS_NAMES.operators}/${INTERNAL_ROUTES.operators.nomination}`}
                 >
                   <StyledListItem title='Amount of nomination'>
                     {totalNominatedCount}
@@ -167,7 +166,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
             <Link
               data-testid='totalNominatedCount-link'
               className='hover:text-[#DE67E4]'
-              to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.list}`}
+              to={`../${selectedChain.urls.page}/${DOMAINS_NAMES.operators}/${INTERNAL_ROUTES.operators.list}`}
             >
               <span className='text-[#241235] text-sm font-medium dark:text-white'>
                 Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page to

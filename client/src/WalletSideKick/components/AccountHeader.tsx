@@ -1,7 +1,10 @@
 import { FC } from 'react'
 
+// common
 import { CopyButton, Tooltip } from 'common/components'
 import { limitNumberDecimals } from 'common/helpers'
+
+// wallet sidekick
 import { WalletActionsButtons } from './WalletActionsButtons'
 
 interface AccountHeaderProps {

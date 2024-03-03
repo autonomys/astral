@@ -8,6 +8,7 @@ import { Tooltip } from 'common/components'
 import useWallet from 'common/hooks/useWallet'
 import { FC, useCallback, useState } from 'react'
 
+// wallet sidekick
 import { ActionsModal, WalletActionType } from './ActionsModal'
 
 interface WalletActionsButtonsProps {

@@ -7,19 +7,21 @@ import { Link } from 'react-router-dom'
 
 // common
 import { Accordion, List, StatusIcon, StyledListItem, Tooltip } from 'common/components'
-import useDomains from 'common/hooks/useDomains'
+import type { Chain } from 'common/providers/ChainProvider'
 import { INTERNAL_ROUTES } from 'common/routes'
+
+// layout
+import { DOMAINS_NAMES } from 'layout/constants'
 
 // query
 import { QUERY_EXTRINSIC_SUMMARY } from '../querys'
 
 interface LastExtrinsicsProps {
   subspaceAccount: string
+  selectedChain: Chain
 }
 
-export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => {
-  const { selectedChain } = useDomains()
-
+export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selectedChain }) => {
   const summaryVariables = useMemo(
     () => ({
       first: 10,
@@ -27,22 +29,13 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
     }),
     [subspaceAccount],
   )
-
-  const {
-    data: lastExtrinsicsData,
-    error: lastExtrinsicsError,
-    loading: lastExtrinsicsLoading,
-  } = useQuery(QUERY_EXTRINSIC_SUMMARY, {
+  const { data, error, loading } = useQuery(QUERY_EXTRINSIC_SUMMARY, {
     variables: summaryVariables,
     pollInterval: 6000,
   })
-
   const lastExtrinsics: ExtrinsicsConnection['edges'] = useMemo(
-    () =>
-      lastExtrinsicsData && lastExtrinsicsData.extrinsics && lastExtrinsicsData.extrinsics.edges
-        ? lastExtrinsicsData.extrinsics.edges
-        : [],
-    [lastExtrinsicsData],
+    () => (data && data.extrinsics && data.extrinsics.edges ? data.extrinsics.edges : []),
+    [data],
   )
 
   return (
@@ -56,8 +49,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
           </div>
         }
       >
-        {lastExtrinsicsLoading && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
-        {lastExtrinsicsError && (
+        {loading && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
+        {error && (
           <div className='flex items-center m-2 pt-4'>
             <span className='text-[#241235] text-base font-medium dark:text-white'>
               We are unable to load your wallet data
@@ -75,7 +68,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                       className='hover:text-[#DE67E4]'
                       to={INTERNAL_ROUTES.extrinsics.id.page(
                         selectedChain.urls.page,
-                        'consensus',
+                        DOMAINS_NAMES.consensus,
                         extrinsic.node.id,
                       )}
                     >
@@ -90,7 +83,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                     className='hover:text-[#DE67E4]'
                     to={INTERNAL_ROUTES.extrinsics.id.page(
                       selectedChain.urls.page,
-                      'consensus',
+                      DOMAINS_NAMES.consensus,
                       extrinsic.node.id,
                     )}
                   >
@@ -105,7 +98,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                     className='hover:text-[#DE67E4] px-2'
                     to={INTERNAL_ROUTES.blocks.id.page(
                       selectedChain.urls.page,
-                      'consensus',
+                      DOMAINS_NAMES.consensus,
                       extrinsic.node.block.height,
                     )}
                   >
@@ -123,7 +116,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
         ) : (
           <div className='flex items-center m-2 pt-4'>
             <span className='text-[#241235] text-sm font-medium dark:text-white'>
-              {!lastExtrinsicsLoading && !lastExtrinsicsError && 'You have no extrinsics yet'}
+              {!loading && !error && 'You have no extrinsics yet'}
             </span>
           </div>
         )}

@@ -4,10 +4,6 @@ import dayjs from 'dayjs'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// layout
-import { HeaderBackground } from 'layout/components'
-import chains from 'layout/config/chains.json'
-
 // common
 import { formatUnitsToNumber } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
@@ -16,7 +12,11 @@ import useWallet from 'common/hooks/useWallet'
 import { LogoIcon, WalletIcon } from 'common/icons'
 import { SelectedChainProvider } from 'common/providers/ChainProvider'
 
-// walletSidekick
+// layout
+import { HeaderBackground } from 'layout/components'
+import chains from 'layout/config/chains.json'
+
+// wallet sidekick
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { LastExtrinsics } from './LastExtrinsics'
@@ -64,6 +64,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
     () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
     [selectedChain],
   )
+  const consensusApi = useMemo(() => api && api[consensusChain.urls.page], [api, consensusChain])
 
   const handleNavigate = useCallback(
     (url: string) => {
@@ -74,28 +75,28 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   )
 
   const loadData = useCallback(async () => {
-    if (!api || !api[selectedChain.urls.page]) return
+    if (!consensusApi) return
 
-    const properties = await api[selectedChain.urls.page].rpc.system.properties()
+    const properties = await consensusApi.rpc.system.properties()
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
-  }, [api, selectedChain])
+  }, [consensusApi])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!api || !actingAccount || !api[selectedChain.urls.page]) return
+    if (!consensusApi || !actingAccount) return
 
-    const balance = await api[selectedChain.urls.page].query.system.account(actingAccount.address)
+    const balance = await consensusApi.query.system.account(actingAccount.address)
     setWalletBalance(
       formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
     )
-  }, [api, actingAccount, selectedChain])
+  }, [consensusApi, actingAccount])
 
   useEffect(() => {
     loadData()
-  }, [api, loadData])
+  }, [consensusApi, loadData])
 
   useEffect(() => {
     loadWalletBalance()
-  }, [api, actingAccount, loadWalletBalance])
+  }, [consensusApi, actingAccount, loadWalletBalance])
 
   if (!subspaceAccount || !actingAccount) return null
 
@@ -143,12 +144,17 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               />
               <AccountSummary
                 subspaceAccount={subspaceAccount}
+                selectedChain={consensusChain}
                 actingAccountName={actingAccount.name}
                 walletBalance={walletBalance}
                 tokenSymbol={tokenSymbol}
               />
-              <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
-              <LastExtrinsics subspaceAccount={subspaceAccount} />
+              <StakingSummary
+                subspaceAccount={subspaceAccount}
+                selectedChain={consensusChain}
+                tokenSymbol={tokenSymbol}
+              />
+              <LastExtrinsics subspaceAccount={subspaceAccount} selectedChain={consensusChain} />
               <Leaderboard subspaceAccount={subspaceAccount} />
             </SelectedChainProvider>
             <div className='flex'>

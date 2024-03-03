@@ -1,17 +1,19 @@
 import { SignerResult } from '@polkadot/api/types'
 import { Hash } from '@polkadot/types/interfaces'
-import { CopyButton, Tooltip } from 'common/components'
-import Modal from 'common/components/Modal'
-import { floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
-import useDomains from 'common/hooks/useDomains'
-import useWallet from 'common/hooks/useWallet'
-import { INTERNAL_ROUTES } from 'common/routes'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import { QRCodeSVG } from 'qrcode.react'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import * as Yup from 'yup'
+
+// common
+import { CopyButton, Tooltip } from 'common/components'
+import Modal from 'common/components/Modal'
+import { floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
+import useDomains from 'common/hooks/useDomains'
+import useWallet from 'common/hooks/useWallet'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 export enum WalletActionType {
   None = 'none',
