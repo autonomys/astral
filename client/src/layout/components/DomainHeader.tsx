@@ -15,8 +15,8 @@ import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 
 // chains
+import { WalletSidekick } from '../../WalletSideKick/components/WalletSidekick'
 import AccountListDropdown from './AccountListDropdown'
-import { WalletSidekick } from './WalletSidekick'
 
 const DomainHeader: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
