@@ -1,7 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useQuery } from '@apollo/client'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import {
+  ExclamationTriangleIcon,
+  LockClosedIcon,
+  PaperAirplaneIcon,
+  PencilIcon,
+  QrCodeIcon,
+} from '@heroicons/react/24/outline'
 import Identicon from '@polkadot/react-identicon'
 import dayjs from 'dayjs'
 import {
@@ -17,7 +23,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HeaderBackground } from 'layout/components'
 
 // common
-import { Accordion, CopyButton, List, Spinner, StatusIcon, StyledListItem } from 'common/components'
+import {
+  Accordion,
+  CopyButton,
+  List,
+  Spinner,
+  StatusIcon,
+  StyledListItem,
+  Tooltip,
+} from 'common/components'
 import {
   bigNumberToNumber,
   formatUnitsToNumber,
@@ -334,7 +348,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
           }
         >
           <HeaderBackground />
-          <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-6'>
+          <article className='relative w-screen max-w-lg pb-10 flex flex-col overflow-y-scroll h-full gap-2'>
             <div className='flex items-center align-middle justify-between p-5'>
               <button
                 onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
@@ -351,6 +365,30 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
             </div>
+            {subspaceAccount && (
+              <div className='flex gap-3 items-center justify-center'>
+                <Tooltip text='Send tSSC'>
+                  <button className='flex items-center justify-center cursor-default m-2 p-2 rounded-full bg-[#DE67E4]'>
+                    <PaperAirplaneIcon className='w-8 text-white' />
+                  </button>
+                </Tooltip>
+                <Tooltip text='Receive tSSC'>
+                  <button className='flex items-center justify-center cursor-default m-2 p-2 rounded-full bg-[#DE67E4]'>
+                    <QrCodeIcon className='w-8 text-white' />
+                  </button>
+                </Tooltip>
+                <Tooltip text='Sign Message'>
+                  <button className='flex items-center justify-center cursor-default m-2 p-2 rounded-full bg-[#DE67E4]'>
+                    <LockClosedIcon className='w-8 text-white' />
+                  </button>
+                </Tooltip>
+                <Tooltip text='Send Remark'>
+                  <button className='flex items-center justify-center cursor-default m-2 p-2 rounded-full bg-[#DE67E4]'>
+                    <PencilIcon className='w-8 text-white' />
+                  </button>
+                </Tooltip>
+              </div>
+            )}
             <div className='p-5 m-2 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
               {subspaceAccount && (
                 <Accordion
@@ -561,7 +599,6 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 )}
               </Accordion>
             </div>
-
             <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
               <Accordion
                 title={
@@ -610,7 +647,6 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 )}
               </Accordion>
             </div>
-
             <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
               <Accordion
                 title={
@@ -678,7 +714,6 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 )}
               </Accordion>
             </div>
-
             <div className='flex'>
               <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
                 <p className='text-gray text-sm text-center sm:text-left'>
