@@ -4,6 +4,9 @@ import { SubmittableModuleExtrinsics } from '@polkadot/api/types'
 import { Field, FieldArray } from 'formik'
 import { FC, Fragment, useCallback, useMemo, useState } from 'react'
 
+// common
+import { camelToNormal } from 'common/helpers'
+
 export type ExtrinsicModule = SubmittableModuleExtrinsics<'promise'>
 export type ExtrinsicsList = { [key: string]: ExtrinsicModule }
 export type ExtrinsicsMethodFields = { name: string; type: string; typeName: string }
@@ -71,7 +74,7 @@ export const ExtrinsicsCategorySelector: FC<ExtrinsicsCategorySelectorProps> = (
                         selected ? 'font-medium' : 'font-normal'
                       }`}
                     >
-                      {category}
+                      {camelToNormal(category)}
                     </span>
                     {selected ? (
                       <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
@@ -96,7 +99,7 @@ export const ExtrinsicsCategorySelector: FC<ExtrinsicsCategorySelectorProps> = (
         >
           <div className='flex items-center justify-center'>
             <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full capitalize'>
-              {selectedCategory}
+              {camelToNormal(selectedCategory)}
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
@@ -159,7 +162,7 @@ export const ExtrinsicsMethodSelector: FC<ExtrinsicsMethodSelectorProps> = ({
                         selected ? 'font-medium' : 'font-normal'
                       }`}
                     >
-                      {method}
+                      {camelToNormal(method)}
                     </span>
                     {selected ? (
                       <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
@@ -184,7 +187,7 @@ export const ExtrinsicsMethodSelector: FC<ExtrinsicsMethodSelectorProps> = ({
         >
           <div className='flex items-center justify-center'>
             <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full capitalize'>
-              {selectedMethod}
+              {camelToNormal(selectedMethod)}
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
@@ -241,7 +244,7 @@ export const ExtrinsicsInputs: FC<ExtrinsicsInputsProps> = ({
       method.fields.map((field, fieldIdx) => (
         <div key={fieldIdx} className='mt-2'>
           <span className='text-[#241235] text-base font-medium dark:text-white capitalize'>
-            {field.name}
+            {camelToNormal(field.name)}
           </span>
           <FieldArray
             name='field'
@@ -250,7 +253,9 @@ export const ExtrinsicsInputs: FC<ExtrinsicsInputsProps> = ({
                 <Field
                   name={field.name}
                   type='text'
-                  placeholder={`${field.name} (${method.args[fieldIdx].typeName})`}
+                  placeholder={`${camelToNormal(field.name)} (${camelToNormal(
+                    method.args[fieldIdx].typeName,
+                  )})`}
                   value={selectedValues && selectedValues[field.name]}
                   onChange={handleSetValues}
                   className='dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-[400px] text-sm text-gray-900 rounded-xl bg-white shadow-lg capitalize'
