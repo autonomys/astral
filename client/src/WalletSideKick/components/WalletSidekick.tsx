@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import dayjs from 'dayjs'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // layout
 import { HeaderBackground } from 'layout/components'
+import chains from 'layout/config/chains.json'
 
 // common
 import { formatUnitsToNumber } from 'common/helpers'
@@ -13,6 +14,7 @@ import useDomains from 'common/hooks/useDomains'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 import { LogoIcon, WalletIcon } from 'common/icons'
+import { SelectedChainProvider } from 'common/providers/ChainProvider'
 
 // walletSidekick
 import { AccountHeader } from './AccountHeader'
@@ -57,6 +59,11 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { api, actingAccount, subspaceAccount } = useWallet()
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
+
+  const consensusChain = useMemo(
+    () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
+    [selectedChain],
+  )
 
   const handleNavigate = useCallback(
     (url: string) => {
@@ -128,20 +135,22 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
             </div>
-            <AccountHeader
-              subspaceAccount={subspaceAccount}
-              walletBalance={walletBalance}
-              tokenSymbol={tokenSymbol}
-            />
-            <AccountSummary
-              subspaceAccount={subspaceAccount}
-              actingAccountName={actingAccount.name}
-              walletBalance={walletBalance}
-              tokenSymbol={tokenSymbol}
-            />
-            <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
-            <LastExtrinsics subspaceAccount={subspaceAccount} />
-            <Leaderboard subspaceAccount={subspaceAccount} />
+            <SelectedChainProvider selectedChain={consensusChain}>
+              <AccountHeader
+                subspaceAccount={subspaceAccount}
+                walletBalance={walletBalance}
+                tokenSymbol={tokenSymbol}
+              />
+              <AccountSummary
+                subspaceAccount={subspaceAccount}
+                actingAccountName={actingAccount.name}
+                walletBalance={walletBalance}
+                tokenSymbol={tokenSymbol}
+              />
+              <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
+              <LastExtrinsics subspaceAccount={subspaceAccount} />
+              <Leaderboard subspaceAccount={subspaceAccount} />
+            </SelectedChainProvider>
             <div className='flex'>
               <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
                 <p className='text-gray text-sm text-center sm:text-left'>
