@@ -8,19 +8,18 @@ import { Link } from 'react-router-dom'
 import { Accordion, List, StyledListItem } from 'common/components'
 import { bigNumberToNumber } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
-import useWallet from 'common/hooks/useWallet'
 import { INTERNAL_ROUTES } from 'common/routes'
 
 // query
 import { QUERY_STAKING_SUMMARY } from '../querys'
 
 interface StakingSummaryProps {
+  subspaceAccount: string
   tokenSymbol: string
 }
 
-export const StakingSummary: FC<StakingSummaryProps> = ({ tokenSymbol }) => {
+export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, tokenSymbol }) => {
   const { selectedChain } = useDomains()
-  const { subspaceAccount } = useWallet()
 
   const summaryVariables = useMemo(
     () => ({

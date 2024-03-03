@@ -13,10 +13,10 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import { QUERY_TOP_LEADERBOARD } from '../querys'
 
 interface LeaderboardProps {
-  subspaceAccount: string | undefined
+  subspaceAccount: string
 }
 
-export const useLeaderboard = (subspaceAccount: string | undefined) => {
+export const useLeaderboard = (subspaceAccount: string) => {
   const topLeaderboardVariables = useMemo(
     () => ({
       first: 100,

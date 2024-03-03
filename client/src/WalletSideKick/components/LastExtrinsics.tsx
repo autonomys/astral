@@ -14,7 +14,7 @@ import { INTERNAL_ROUTES } from 'common/routes'
 import { QUERY_EXTRINSIC_SUMMARY } from '../querys'
 
 interface LastExtrinsicsProps {
-  subspaceAccount: string | undefined
+  subspaceAccount: string
 }
 
 export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => {

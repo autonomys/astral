@@ -65,27 +65,6 @@ export const QUERY_OPERATOR_BY_ID = gql`
   }
 `
 
-export const QUERY_OPERATOR_CONNECTION_SUMMARY = gql`
-  query OperatorsConnectionSummary(
-    $first: Int!
-    $orderBy: [OperatorOrderByInput!]!
-    $where: OperatorWhereInput
-  ) {
-    operatorsConnection(orderBy: $orderBy, first: $first, where: $where) {
-      edges {
-        node {
-          id
-          operatorOwner
-          currentDomainId
-          currentTotalStake
-          totalShares
-        }
-      }
-      totalCount
-    }
-  }
-`
-
 export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
   query NominatorsConnection(
     $first: Int!

@@ -90,6 +90,8 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
     loadWalletBalance()
   }, [api, actingAccount, loadWalletBalance])
 
+  if (!subspaceAccount || !actingAccount) return null
+
   return (
     // backdrop
     <div onClick={onClose}>
@@ -133,11 +135,11 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
             />
             <AccountSummary
               subspaceAccount={subspaceAccount}
-              actingAccountName={actingAccount?.name}
+              actingAccountName={actingAccount.name}
               walletBalance={walletBalance}
               tokenSymbol={tokenSymbol}
             />
-            <StakingSummary tokenSymbol={tokenSymbol} />
+            <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
             <LastExtrinsics subspaceAccount={subspaceAccount} />
             <Leaderboard subspaceAccount={subspaceAccount} />
             <div className='flex'>
