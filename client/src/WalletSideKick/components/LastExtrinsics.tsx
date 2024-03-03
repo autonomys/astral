@@ -6,7 +6,7 @@ import { FC, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
 // common
-import { Accordion, List, StatusIcon, StyledListItem } from 'common/components'
+import { Accordion, List, StatusIcon, StyledListItem, Tooltip } from 'common/components'
 import useDomains from 'common/hooks/useDomains'
 import { INTERNAL_ROUTES } from 'common/routes'
 
@@ -68,20 +68,55 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
           <List>
             {lastExtrinsics.map((extrinsic, index) => (
               <li key={index}>
-                <Link
-                  data-testid='extrinsic-link'
-                  className='hover:text-[#DE67E4]'
-                  to={INTERNAL_ROUTES.extrinsics.id.page(
-                    selectedChain.urls.page,
-                    'consensus',
-                    extrinsic.node.id,
-                  )}
+                <StyledListItem
+                  title={
+                    <Link
+                      data-testid='extrinsic-link'
+                      className='hover:text-[#DE67E4]'
+                      to={INTERNAL_ROUTES.extrinsics.id.page(
+                        selectedChain.urls.page,
+                        'consensus',
+                        extrinsic.node.id,
+                      )}
+                    >
+                      <Tooltip text={dayjs(extrinsic.node.block.timestamp).toString()}>
+                        {dayjs(extrinsic.node.block.timestamp).fromNow(true)}
+                      </Tooltip>
+                    </Link>
+                  }
                 >
-                  <StyledListItem title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}>
-                    {extrinsic.node.name.split('.')[1].toUpperCase()}
-                    <StatusIcon status={extrinsic.node.success} />
-                  </StyledListItem>
-                </Link>
+                  <Link
+                    data-testid='extrinsic-link'
+                    className='hover:text-[#DE67E4]'
+                    to={INTERNAL_ROUTES.extrinsics.id.page(
+                      selectedChain.urls.page,
+                      'consensus',
+                      extrinsic.node.id,
+                    )}
+                  >
+                    <Tooltip text={extrinsic.node.name.split('.')[1].toUpperCase()}>
+                      <span className='text-[#241235] text-sm font-medium dark:text-gray-400'>
+                        {extrinsic.node.name.split('.')[1].toUpperCase()}
+                      </span>
+                    </Tooltip>
+                  </Link>
+                  <Link
+                    data-testid='extrinsic-link'
+                    className='hover:text-[#DE67E4] px-2'
+                    to={INTERNAL_ROUTES.blocks.id.page(
+                      selectedChain.urls.page,
+                      'consensus',
+                      extrinsic.node.block.height,
+                    )}
+                  >
+                    <Tooltip text={extrinsic.node.block.id}>
+                      <span className='text-[#241235] text-sm font-medium dark:text-gray-400'>
+                        #{extrinsic.node.block.height}
+                      </span>
+                    </Tooltip>
+                  </Link>
+                  <StatusIcon status={extrinsic.node.success} />
+                </StyledListItem>
               </li>
             ))}
           </List>

@@ -50,7 +50,9 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
           id
           success
           block {
+            id
             timestamp
+            height
           }
           name
         }
