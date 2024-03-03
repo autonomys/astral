@@ -1,4 +1,5 @@
 import {
+  AdjustmentsVerticalIcon,
   LockClosedIcon,
   PaperAirplaneIcon,
   PencilIcon,
@@ -9,7 +10,8 @@ import useWallet from 'common/hooks/useWallet'
 import { FC, useCallback, useState } from 'react'
 
 // wallet sidekick
-import { ActionsModal, ActionType } from './ActionsModal'
+import { ActionType } from '../constants'
+import { ActionsModal } from './ActionsModal'
 
 interface ActionsButtonsProps {
   tokenSymbol: string
@@ -28,6 +30,7 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
   const onReceiveToken = useCallback(() => onAction(ActionType.ReceiveToken), [onAction])
   const onSignMessage = useCallback(() => onAction(ActionType.SignMessage), [onAction])
   const onSendRemark = useCallback(() => onAction(ActionType.SendRemark), [onAction])
+  const onExtrinsicsLab = useCallback(() => onAction(ActionType.ExtrinsicsLab), [onAction])
   const onClose = useCallback(() => setIsOpen(false), [])
 
   if (!subspaceAccount) return null
@@ -64,6 +67,14 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
           className='flex items-center justify-center cursor-default m-2 p-2 rounded-full bg-[#DE67E4]'
         >
           <PencilIcon className='w-8 text-white' />
+        </button>
+      </Tooltip>
+      <Tooltip text='Custom extrinsic'>
+        <button
+          onClick={onExtrinsicsLab}
+          className='flex items-center justify-center cursor-default m-2 p-2 rounded-full bg-[#DE67E4]'
+        >
+          <AdjustmentsVerticalIcon className='w-8 text-white' />
         </button>
       </Tooltip>
       <ActionsModal isOpen={isOpen} action={action} onClose={onClose} />
