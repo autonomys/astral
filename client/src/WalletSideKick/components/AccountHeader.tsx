@@ -32,7 +32,7 @@ export const AccountHeader: FC<AccountHeaderProps> = ({
         </div>
       </div>
       <div className='flex items-center justify-center m-2'>
-        <div className='flex items-center text-3xl'>
+        <div className='flex items-center text-3xl dark:text-white text-gray-900 '>
           {limitNumberDecimals(walletBalance)} {tokenSymbol}
         </div>
       </div>
