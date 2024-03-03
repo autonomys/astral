@@ -1,4 +1,5 @@
 import { SignerResult } from '@polkadot/api/types'
+import { Hash } from '@polkadot/types/interfaces'
 import { CopyButton, Tooltip } from 'common/components'
 import Modal from 'common/components/Modal'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
@@ -44,6 +45,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [signature, setSignature] = useState<SignerResult | undefined>(undefined)
+  const [hash, setHash] = useState<Hash | undefined>(undefined)
 
   const initialSendTokenValues: SendTokenFormValues = useMemo(
     () => ({
@@ -104,6 +106,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const handleClose = useCallback(() => {
     setFormError(null)
     setSignature(undefined)
+    setHash(undefined)
     onClose()
   }, [onClose])
 
@@ -124,12 +127,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
+        setHash(hash)
         console.log('block', block)
         console.log('hash', hash)
 
         toast.success('The transaction was sent successfully', { position: 'bottom-center' })
         resetForm()
-        handleClose()
       } catch (error) {
         const reason = 'There was an error while sending the transaction'
         setFormError(reason)
@@ -137,7 +140,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         console.error('Error', error)
       }
     },
-    [api, actingAccount, injector, tokenDecimals, handleClose, selectedChain],
+    [api, actingAccount, injector, tokenDecimals, selectedChain],
   )
 
   const handleSignMessage = useCallback(
@@ -183,12 +186,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           .remark(values.message)
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
+        setHash(hash)
         console.log('block', block)
         console.log('hash', hash)
 
         toast.success('The remark was sent', { position: 'bottom-center' })
         resetForm()
-        handleClose()
       } catch (error) {
         const reason = 'There was an error while sending the remark'
         setFormError(reason)
@@ -196,7 +199,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         console.error('Error', error)
       }
     },
-    [actingAccount, api, injector, handleClose, selectedChain],
+    [actingAccount, api, injector, selectedChain],
   )
 
   const handleCopy = useCallback((value: string) => {
@@ -215,6 +218,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       ),
     [formError],
   )
+
+  const result = useMemo(() => {
+    switch (WalletActionType[action]) {
+      case WalletActionType.SendRemark:
+        return hash && hash.toString()
+      case WalletActionType.SignMessage:
+        return signature && signature.signature
+    }
+  }, [action, hash, signature])
 
   const ActionBody = useMemo(() => {
     switch (WalletActionType[action]) {
@@ -322,18 +334,25 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case WalletActionType.SignMessage:
         return (
           <div className='flex flex-col gap-4 items-start'>
-            {signature && WalletActionType[action] === WalletActionType.SignMessage ? (
+            {result ? (
               <>
-                <span className='text-[#241235] text-base font-medium dark:text-white'>
-                  Signature # {signature.id}
-                </span>
+                {hash && WalletActionType[action] === WalletActionType.SendRemark && (
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Extrinsic Hash
+                  </span>
+                )}
+                {signature && WalletActionType[action] === WalletActionType.SignMessage && (
+                  <span className='text-[#241235] text-base font-medium dark:text-white'>
+                    Signature # {signature.id}
+                  </span>
+                )}
                 <textarea
                   name='signature'
-                  value={signature.signature}
+                  value={result}
                   className='dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-[400px] h-[80px] text-sm text-gray-900 rounded-xl bg-white shadow-lg'
                 />
                 <button
-                  onClick={() => handleCopy(signature.signature)}
+                  onClick={() => handleCopy(result)}
                   className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4]'
                   type='submit'
                 >
@@ -462,6 +481,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     selectedChain.urls.page,
     handleCopy,
     signature,
+    hash,
+    result,
   ])
 
   useEffect(() => {
