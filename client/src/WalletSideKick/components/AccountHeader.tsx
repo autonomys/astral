@@ -5,7 +5,7 @@ import { CopyButton, Tooltip } from 'common/components'
 import { limitNumberDecimals } from 'common/helpers'
 
 // wallet sidekick
-import { WalletActionsButtons } from './WalletActionsButtons'
+import { ActionsButtons } from './ActionsButtons'
 
 interface AccountHeaderProps {
   subspaceAccount: string
@@ -39,7 +39,7 @@ export const AccountHeader: FC<AccountHeaderProps> = ({
           {limitNumberDecimals(walletBalance)} {tokenSymbol}
         </div>
       </div>
-      <WalletActionsButtons tokenSymbol={tokenSymbol} />
+      <ActionsButtons tokenSymbol={tokenSymbol} />
     </>
   )
 }

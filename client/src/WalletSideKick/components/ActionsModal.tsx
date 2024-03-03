@@ -15,7 +15,7 @@ import useDomains from 'common/hooks/useDomains'
 import useWallet from 'common/hooks/useWallet'
 import { INTERNAL_ROUTES } from 'common/routes'
 
-export enum WalletActionType {
+export enum ActionType {
   None = 'none',
   SendToken = 'SendToken',
   ReceiveToken = 'ReceiveToken',
@@ -25,7 +25,7 @@ export enum WalletActionType {
 
 type Props = {
   isOpen: boolean
-  action: WalletActionType
+  action: ActionType
   onClose: () => void
 }
 
@@ -222,17 +222,17 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   )
 
   const result = useMemo(() => {
-    switch (WalletActionType[action]) {
-      case WalletActionType.SendRemark:
+    switch (ActionType[action]) {
+      case ActionType.SendRemark:
         return hash && hash.toString()
-      case WalletActionType.SignMessage:
+      case ActionType.SignMessage:
         return signature && signature.signature
     }
   }, [action, hash, signature])
 
   const ActionBody = useMemo(() => {
-    switch (WalletActionType[action]) {
-      case WalletActionType.SendToken:
+    switch (ActionType[action]) {
+      case ActionType.SendToken:
         return (
           <div className='flex flex-col gap-4 items-start'>
             <Formik
@@ -270,7 +270,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   )}
                   <span className='text-[#241235] text-base font-medium dark:text-white'>
                     {`Amount to ${
-                      WalletActionType[action] === WalletActionType.SendToken ? 'send' : 'withdraw'
+                      ActionType[action] === ActionType.SendToken ? 'send' : 'withdraw'
                     }`}
                   </span>
                   <FieldArray
@@ -281,9 +281,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           name='amount'
                           type='number'
                           placeholder={`Amount to ${
-                            WalletActionType[action] === WalletActionType.SendToken
-                              ? 'stake'
-                              : 'withdraw'
+                            ActionType[action] === ActionType.SendToken ? 'stake' : 'withdraw'
                           }`}
                           className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-[400px] text-sm text-gray-900 rounded-xl bg-white shadow-lg ${
                             errors.amount &&
@@ -324,7 +322,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4]'
                       type='submit'
                     >
-                      {WalletActionType[action]}
+                      {ActionType[action]}
                     </button>
                   )}
                 </Form>
@@ -332,18 +330,18 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             </Formik>
           </div>
         )
-      case WalletActionType.SendRemark:
-      case WalletActionType.SignMessage:
+      case ActionType.SendRemark:
+      case ActionType.SignMessage:
         return (
           <div className='flex flex-col gap-4 items-start'>
             {result ? (
               <>
-                {hash && WalletActionType[action] === WalletActionType.SendRemark && (
+                {hash && ActionType[action] === ActionType.SendRemark && (
                   <span className='text-[#241235] text-base font-medium dark:text-white'>
                     Extrinsic Hash
                   </span>
                 )}
-                {signature && WalletActionType[action] === WalletActionType.SignMessage && (
+                {signature && ActionType[action] === ActionType.SignMessage && (
                   <span className='text-[#241235] text-base font-medium dark:text-white'>
                     Signature # {signature.id}
                   </span>
@@ -366,7 +364,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                 initialValues={initialMessageValues}
                 validationSchema={messageFormValidationSchema}
                 onSubmit={(values, { resetForm }) =>
-                  WalletActionType[action] === WalletActionType.SendRemark
+                  ActionType[action] === ActionType.SendRemark
                     ? handleSendRemark(values, resetForm)
                     : handleSignMessage(values, resetForm)
                 }
@@ -374,9 +372,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                 {({ errors, touched, handleSubmit }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
                     <span className='text-[#241235] text-base font-medium dark:text-white'>
-                      {WalletActionType[action] === WalletActionType.SendRemark
-                        ? 'Remark'
-                        : 'Message'}
+                      {ActionType[action] === ActionType.SendRemark ? 'Remark' : 'Message'}
                     </span>
                     <FieldArray
                       name='dischargeNorms'
@@ -420,7 +416,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                         className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4]'
                         type='submit'
                       >
-                        {WalletActionType[action]}
+                        {ActionType[action]}
                       </button>
                     )}
                   </Form>
@@ -429,7 +425,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             )}
           </div>
         )
-      case WalletActionType.ReceiveToken:
+      case ActionType.ReceiveToken:
         return (
           <div className='flex flex-col gap-4 items-start'>
             {subspaceAccount && actingAccount && (

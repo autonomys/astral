@@ -9,25 +9,25 @@ import useWallet from 'common/hooks/useWallet'
 import { FC, useCallback, useState } from 'react'
 
 // wallet sidekick
-import { ActionsModal, WalletActionType } from './ActionsModal'
+import { ActionsModal, ActionType } from './ActionsModal'
 
-interface WalletActionsButtonsProps {
+interface ActionsButtonsProps {
   tokenSymbol: string
 }
 
-export const WalletActionsButtons: FC<WalletActionsButtonsProps> = ({ tokenSymbol }) => {
+export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
   const { subspaceAccount } = useWallet()
   const [isOpen, setIsOpen] = useState(false)
-  const [action, setAction] = useState<WalletActionType>(WalletActionType.None)
+  const [action, setAction] = useState<ActionType>(ActionType.None)
 
-  const onAction = useCallback((action: WalletActionType) => {
+  const onAction = useCallback((action: ActionType) => {
     setAction(action)
     setIsOpen(true)
   }, [])
-  const onSendToken = useCallback(() => onAction(WalletActionType.SendToken), [onAction])
-  const onReceiveToken = useCallback(() => onAction(WalletActionType.ReceiveToken), [onAction])
-  const onSignMessage = useCallback(() => onAction(WalletActionType.SignMessage), [onAction])
-  const onSendRemark = useCallback(() => onAction(WalletActionType.SendRemark), [onAction])
+  const onSendToken = useCallback(() => onAction(ActionType.SendToken), [onAction])
+  const onReceiveToken = useCallback(() => onAction(ActionType.ReceiveToken), [onAction])
+  const onSignMessage = useCallback(() => onAction(ActionType.SignMessage), [onAction])
+  const onSendRemark = useCallback(() => onAction(ActionType.SendRemark), [onAction])
   const onClose = useCallback(() => setIsOpen(false), [])
 
   if (!subspaceAccount) return null
