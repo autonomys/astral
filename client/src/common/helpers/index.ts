@@ -136,3 +136,5 @@ export const numberPositionSuffix = (number: number) => {
   if (j === 3 && k !== 13) return number + 'rd'
   return number + 'th'
 }
+
+export const camelToNormal = (text: string) => text.replace(/([A-Z])/g, ' $1').trim()

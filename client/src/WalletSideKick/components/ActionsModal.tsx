@@ -10,7 +10,7 @@ import * as Yup from 'yup'
 // common
 import { CopyButton, Tooltip } from 'common/components'
 import Modal from 'common/components/Modal'
-import { floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
+import { camelToNormal, floatToStringWithDecimals, formatUnitsToNumber } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
 import useWallet from 'common/hooks/useWallet'
 import { INTERNAL_ROUTES } from 'common/routes'
@@ -392,10 +392,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4]'
+                        className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4] capitalize'
                         type='submit'
                       >
-                        {ActionType[action]}
+                        {camelToNormal(ActionType[action])}
                       </button>
                     )}
                   </Form>
@@ -487,10 +487,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4]'
+                        className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4] capitalize'
                         type='submit'
                       >
-                        {ActionType[action]}
+                        {camelToNormal(ActionType[action])}
                       </button>
                     )}
                   </Form>
@@ -596,10 +596,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4]'
+                        className='w-full max-w-fit flex px-2 gap-2 text-sm md:text-base items-center md:space-x-4 rounded-full bg-[#241235] text-white font-medium dark:bg-[#DE67E4] capitalize'
                         type='submit'
                       >
-                        {selectedMethod}
+                        {camelToNormal(selectedMethod)}
                       </button>
                     )}
                   </Form>
