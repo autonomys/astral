@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useQuery } from '@apollo/client'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import Identicon from '@polkadot/react-identicon'
@@ -314,371 +316,379 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   if (operatorsConnectionLoading) return <Spinner />
 
   return (
-    <nav
-      className={
-        ' fixed overflow-hidden z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out ' +
-        (isOpen
-          ? ' transition-opacity opacity-100 duration-500 translate-x-0 z-max '
-          : ' transition-all delay-500 opacity-0 translate-x-full  ')
-      }
-    >
-      <section
+    // backdrop
+    <div onClick={onClose}>
+      <nav
         className={
-          'w-screen max-w-lg right-0 absolute bg-light dark:bg-dark h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform -z-10' +
-          (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
+          'fixed overflow-hidden z-10 bg-gray-900 bg-opacity-25 inset-0 transform ease-in-out ' +
+          (isOpen
+            ? ' transition-opacity opacity-100 duration-500 translate-x-0 z-max'
+            : ' transition-all delay-500 opacity-0 translate-x-full')
         }
       >
-        <HeaderBackground />
-        <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-6'>
-          <div className='flex items-center align-middle justify-between p-5'>
-            <button
-              onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
-              className='flex title-font font-medium items-center text-gray-900 dark:text-white'
-            >
-              <LogoIcon fillColor='currentColor' />
-            </button>
-            <div className='flex gap-3 items-center'>
+        <section
+          onClick={(e) => e.stopPropagation()}
+          className={
+            'w-screen max-w-lg right-0 absolute bg-light dark:bg-dark h-full shadow-xl delay-400 duration-500 ease-in-out transition-all transform -z-10' +
+            (isOpen ? ' translate-x-0 ' : ' translate-x-full ')
+          }
+        >
+          <HeaderBackground />
+          <article className='relative w-screen max-w-lg pb-10 flex flex-col space-y-6 overflow-y-scroll h-full gap-6'>
+            <div className='flex items-center align-middle justify-between p-5'>
               <button
-                className='bg-white px-4 py-2 items-center rounded-full dark:bg-[#1E254E] dark:text-white'
-                onClick={onClose}
+                onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
+                className='flex title-font font-medium items-center text-gray-900 dark:text-white'
               >
-                x
+                <LogoIcon fillColor='currentColor' />
               </button>
+              <div className='flex gap-3 items-center'>
+                <button
+                  className='bg-white px-4 py-2 items-center rounded-full dark:bg-[#1E254E] dark:text-white'
+                  onClick={onClose}
+                >
+                  x
+                </button>
+              </div>
             </div>
-          </div>
-          <div className='p-5 m-2 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
-            {subspaceAccount && (
-              <Accordion
-                title={
-                  <Link
-                    data-testid='wallet-link'
-                    className='hover:text-[#DE67E4]'
-                    to={INTERNAL_ROUTES.accounts.id.page(
-                      selectedChain.urls.page,
-                      'consensus',
-                      subspaceAccount,
-                    )}
-                  >
-                    <div className='flex items-center m-2'>
-                      <Identicon value={subspaceAccount} size={48} theme={theme} />
-                      <div className='relative'>
-                        {actingAccount && (
-                          <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
-                            {actingAccount.name}
-                          </span>
-                        )}
-                        <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
-                          {shortString(subspaceAccount)}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                }
-              >
-                {topFarmersLoading ? (
-                  <Spinner />
-                ) : (
-                  topFarmers > 0 && (
+            <div className='p-5 m-2 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+              {subspaceAccount && (
+                <Accordion
+                  title={
                     <Link
-                      data-testid='topFarmers-link'
+                      data-testid='wallet-link'
                       className='hover:text-[#DE67E4]'
-                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
-                    >
-                      <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
-                        Top {Math.ceil(topFarmers / 10) * 10} Farmer
-                      </span>
-                    </Link>
-                  )
-                )}
-                {topFarmersError && <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />}
-                {topOperatorsLoading ? (
-                  <Spinner />
-                ) : (
-                  topOperators > 0 && (
-                    <Link
-                      data-testid='topOperators-link'
-                      className='hover:text-[#DE67E4]'
-                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.operators}`}
-                    >
-                      <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
-                        Top {Math.ceil(topOperators / 10) * 10} Operator
-                      </span>
-                    </Link>
-                  )
-                )}
-                {topOperatorsError && (
-                  <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
-                )}
-                {topNominatorsLoading ? (
-                  <Spinner />
-                ) : (
-                  topNominators > 0 && (
-                    <Link
-                      data-testid='topNominators-link'
-                      className='hover:text-[#DE67E4]'
-                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.nominators}`}
-                    >
-                      <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
-                        Top {Math.ceil(topNominators / 10) * 10} Nominator
-                      </span>
-                    </Link>
-                  )
-                )}
-                {topNominatorsError && (
-                  <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
-                )}
-                {operatorsConnectionLoading ||
-                nominatorsConnectionLoading ||
-                operatorsConnectionError ||
-                nominatorsConnectionError ? (
-                  <>
-                    {(operatorsConnectionLoading || nominatorsConnectionLoading) && <Spinner />}
-                    {(operatorsConnectionError || nominatorsConnectionError) && (
-                      <div className='flex items-center m-2 pt-4'>
-                        <span className='text-[#241235] text-base font-medium dark:text-white'>
-                          We are unable to load your wallet data
-                        </span>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <div className='flex items-center m-2 pt-4'>
-                      <span className='text-[#241235] text-base font-medium dark:text-white'>
-                        Your Subspace Wallet Address
-                      </span>
-                    </div>
-                    <div className='flex items-center m-2'>
-                      {subspaceAccount && (
-                        <CopyButton value={subspaceAccount} message='Wallet address copied'>
-                          <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
-                            {subspaceAccount}
-                          </span>
-                        </CopyButton>
+                      to={INTERNAL_ROUTES.accounts.id.page(
+                        selectedChain.urls.page,
+                        'consensus',
+                        subspaceAccount,
                       )}
-                    </div>
-                    <div className='flex items-center m-2 pt-4'>
-                      <span className='text-[#241235] text-base font-medium dark:text-white'>
-                        Your Subspace Wallet Balance
-                      </span>
-                    </div>
-                    <div className='flex items-center m-2'>
-                      {limitNumberDecimals(walletBalance)} {tokenSymbol}
-                    </div>
-                  </>
-                )}
-              </Accordion>
-            )}
-          </div>
-          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
-            <Accordion
-              title={
-                <div className='flex items-center m-2 mb-0 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Staking Summary
-                  </span>
-                </div>
-              }
-            >
-              {totalStake !== '0' ? (
-                <List>
-                  <StyledListItem title='Your total staked'>
-                    {bigNumberToNumber(totalStake)} {tokenSymbol}
-                  </StyledListItem>
-                  {totalOperatorStake !== '0' && (
-                    <li key={'totalOperatorStake'}>
-                      <Link
-                        data-testid='totalOperatorStake-link'
-                        className='hover:text-[#DE67E4]'
-                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
-                      >
-                        <StyledListItem title='Your total staked in your own operators'>
-                          {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
-                        </StyledListItem>
-                      </Link>
-                    </li>
-                  )}
-                  {totalNominatedStake !== '0' && (
-                    <li key={'totalNominatedStake'}>
-                      <Link
-                        data-testid='totalNominatedStake-link'
-                        className='hover:text-[#DE67E4]'
-                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
-                      >
-                        <StyledListItem title='Your total nominated to other operators'>
-                          {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
-                        </StyledListItem>
-                      </Link>
-                    </li>
-                  )}
-                  {totalOperatorCount > 0 && (
-                    <li key={'totalOperatorCount'}>
-                      <Link
-                        data-testid='totalOperatorCount-link'
-                        className='hover:text-[#DE67E4]'
-                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
-                      >
-                        <StyledListItem title='Amount of operators you control'>
-                          {totalOperatorCount}
-                        </StyledListItem>
-                      </Link>
-                    </li>
-                  )}
-                  {totalNominatedCount > 0 && (
-                    <li key={'totalNominatedCount'}>
-                      <Link
-                        data-testid='totalNominatedCount-link'
-                        className='hover:text-[#DE67E4]'
-                        to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
-                      >
-                        <StyledListItem title='Amount of nomination'>
-                          {totalNominatedCount}
-                        </StyledListItem>
-                      </Link>
-                    </li>
-                  )}
-                </List>
-              ) : (
-                <div className='flex items-center m-2 pt-4'>
-                  <Link
-                    data-testid='totalNominatedCount-link'
-                    className='hover:text-[#DE67E4]'
-                    to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.list}`}
-                  >
-                    <span className='text-[#241235] text-sm font-medium dark:text-white'>
-                      Your wallet has not staked any {tokenSymbol} yet! Head over to the operators
-                      page to stake your {tokenSymbol}
-                    </span>
-                  </Link>
-                </div>
-              )}
-            </Accordion>
-          </div>
-
-          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
-            <Accordion
-              title={
-                <div className='flex items-center m-2 mb-0 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Last extrinsics
-                  </span>
-                </div>
-              }
-            >
-              {lastExtrinsics && lastExtrinsics.length > 0 ? (
-                <List>
-                  {lastExtrinsics.map((extrinsic, index) => (
-                    <li key={index}>
-                      <Link
-                        data-testid='extrinsic-link'
-                        className='hover:text-[#DE67E4]'
-                        to={INTERNAL_ROUTES.extrinsics.id.page(
-                          selectedChain.urls.page,
-                          'consensus',
-                          extrinsic.node.id,
-                        )}
-                      >
-                        <StyledListItem title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}>
-                          {extrinsic.node.name.split('.')[1].toUpperCase()}
-                          <StatusIcon status={extrinsic.node.success} />
-                        </StyledListItem>
-                      </Link>
-                    </li>
-                  ))}
-                </List>
-              ) : (
-                <div className='flex items-center m-2 pt-4'>
-                  <span className='text-[#241235] text-sm font-medium dark:text-white'>
-                    {!lastExtrinsicsLoading &&
-                      lastExtrinsicsError &&
-                      'We are unable to load your extrinsics data'}
-                    {lastExtrinsicsLoading && <Spinner />}
-                    {!lastExtrinsicsError &&
-                      !lastExtrinsicsLoading &&
-                      'Your wallet has no extrinsics!'}
-                  </span>
-                </div>
-              )}
-            </Accordion>
-          </div>
-
-          <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
-            <Accordion
-              title={
-                <div className='flex items-center m-2 mb-0 pt-4'>
-                  <span className='text-[#241235] text-base font-medium dark:text-white'>
-                    Leaderboard
-                  </span>
-                </div>
-              }
-            >
-              {hasTopPositions ? (
-                <List>
-                  {topFarmers > 0 && (
-                    <li key='topFarmers'>
+                    >
+                      <div className='flex items-center m-2'>
+                        <Identicon value={subspaceAccount} size={48} theme={theme} />
+                        <div className='relative'>
+                          {actingAccount && (
+                            <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
+                              {actingAccount.name}
+                            </span>
+                          )}
+                          <span className='hidden sm:block ml-2 truncate w-5 text-lg underline md:w-full text-[#241235] font-medium dark:text-white'>
+                            {shortString(subspaceAccount)}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  }
+                >
+                  {topFarmersLoading ? (
+                    <Spinner />
+                  ) : (
+                    topFarmers > 0 && (
                       <Link
                         data-testid='topFarmers-link'
                         className='hover:text-[#DE67E4]'
                         to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
                       >
-                        <StyledListItem title='Top Farmer'>
-                          {numberPositionSuffix(topFarmers)} place
-                        </StyledListItem>
+                        <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                          Top {Math.ceil(topFarmers / 10) * 10} Farmer
+                        </span>
                       </Link>
-                    </li>
+                    )
                   )}
-                  {topOperators > 0 && (
-                    <li key='topOperators'>
+                  {topFarmersError && (
+                    <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
+                  )}
+                  {topOperatorsLoading ? (
+                    <Spinner />
+                  ) : (
+                    topOperators > 0 && (
                       <Link
                         data-testid='topOperators-link'
                         className='hover:text-[#DE67E4]'
                         to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.operators}`}
                       >
-                        <StyledListItem title='Top Operator'>
-                          {numberPositionSuffix(topOperators)} place
-                        </StyledListItem>
+                        <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                          Top {Math.ceil(topOperators / 10) * 10} Operator
+                        </span>
                       </Link>
-                    </li>
+                    )
                   )}
-                  {topNominators > 0 && (
-                    <li key='topNominators'>
+                  {topOperatorsError && (
+                    <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
+                  )}
+                  {topNominatorsLoading ? (
+                    <Spinner />
+                  ) : (
+                    topNominators > 0 && (
                       <Link
                         data-testid='topNominators-link'
                         className='hover:text-[#DE67E4]'
                         to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.nominators}`}
                       >
-                        <StyledListItem title='Top Nominator'>
-                          {numberPositionSuffix(topNominators)} place
-                        </StyledListItem>
+                        <span className='bg-[#DE67E4] rounded-full p-2 text-[#241235] text-base font-medium dark:text-white'>
+                          Top {Math.ceil(topNominators / 10) * 10} Nominator
+                        </span>
                       </Link>
-                    </li>
+                    )
                   )}
-                </List>
-              ) : (
-                <div className='flex items-center m-2 pt-4'>
-                  <Link
-                    data-testid='totalNominatedCount-link'
-                    className='hover:text-[#DE67E4]'
-                    to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
-                  >
-                    <span className='text-[#241235] text-sm font-medium dark:text-white'>
-                      Your wallet is not in any of the top 100 leaderboard positions!
-                    </span>
-                  </Link>
-                </div>
+                  {topNominatorsError && (
+                    <ExclamationTriangleIcon className='h-5 w-5' stroke='orange' />
+                  )}
+                  {operatorsConnectionLoading ||
+                  nominatorsConnectionLoading ||
+                  operatorsConnectionError ||
+                  nominatorsConnectionError ? (
+                    <>
+                      {(operatorsConnectionLoading || nominatorsConnectionLoading) && <Spinner />}
+                      {(operatorsConnectionError || nominatorsConnectionError) && (
+                        <div className='flex items-center m-2 pt-4'>
+                          <span className='text-[#241235] text-base font-medium dark:text-white'>
+                            We are unable to load your wallet data
+                          </span>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className='flex items-center m-2 pt-4'>
+                        <span className='text-[#241235] text-base font-medium dark:text-white'>
+                          Your Subspace Wallet Address
+                        </span>
+                      </div>
+                      <div className='flex items-center m-2'>
+                        {subspaceAccount && (
+                          <CopyButton value={subspaceAccount} message='Wallet address copied'>
+                            <span className='hidden sm:block ml-2 truncate w-5 text-sm md:w-full text-[#241235] font-medium dark:text-white'>
+                              {subspaceAccount}
+                            </span>
+                          </CopyButton>
+                        )}
+                      </div>
+                      <div className='flex items-center m-2 pt-4'>
+                        <span className='text-[#241235] text-base font-medium dark:text-white'>
+                          Your Subspace Wallet Balance
+                        </span>
+                      </div>
+                      <div className='flex items-center m-2'>
+                        {limitNumberDecimals(walletBalance)} {tokenSymbol}
+                      </div>
+                    </>
+                  )}
+                </Accordion>
               )}
-            </Accordion>
-          </div>
-
-          <div className='flex'>
-            <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
-              <p className='text-gray text-sm text-center sm:text-left'>
-                © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
-              </p>
             </div>
-          </div>
-        </article>
-      </section>
-    </nav>
+            <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+              <Accordion
+                title={
+                  <div className='flex items-center m-2 mb-0 pt-4'>
+                    <span className='text-[#241235] text-base font-medium dark:text-white'>
+                      Staking Summary
+                    </span>
+                  </div>
+                }
+              >
+                {totalStake !== '0' ? (
+                  <List>
+                    <StyledListItem title='Your total staked'>
+                      {bigNumberToNumber(totalStake)} {tokenSymbol}
+                    </StyledListItem>
+                    {totalOperatorStake !== '0' && (
+                      <li key={'totalOperatorStake'}>
+                        <Link
+                          data-testid='totalOperatorStake-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
+                        >
+                          <StyledListItem title='Your total staked in your own operators'>
+                            {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                    {totalNominatedStake !== '0' && (
+                      <li key={'totalNominatedStake'}>
+                        <Link
+                          data-testid='totalNominatedStake-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
+                        >
+                          <StyledListItem title='Your total nominated to other operators'>
+                            {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                    {totalOperatorCount > 0 && (
+                      <li key={'totalOperatorCount'}>
+                        <Link
+                          data-testid='totalOperatorCount-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.manage}`}
+                        >
+                          <StyledListItem title='Amount of operators you control'>
+                            {totalOperatorCount}
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                    {totalNominatedCount > 0 && (
+                      <li key={'totalNominatedCount'}>
+                        <Link
+                          data-testid='totalNominatedCount-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.nomination}`}
+                        >
+                          <StyledListItem title='Amount of nomination'>
+                            {totalNominatedCount}
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                  </List>
+                ) : (
+                  <div className='flex items-center m-2 pt-4'>
+                    <Link
+                      data-testid='totalNominatedCount-link'
+                      className='hover:text-[#DE67E4]'
+                      to={`../${selectedChain.urls.page}/operators/${INTERNAL_ROUTES.operators.list}`}
+                    >
+                      <span className='text-[#241235] text-sm font-medium dark:text-white'>
+                        Your wallet has not staked any {tokenSymbol} yet! Head over to the operators
+                        page to stake your {tokenSymbol}
+                      </span>
+                    </Link>
+                  </div>
+                )}
+              </Accordion>
+            </div>
+
+            <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+              <Accordion
+                title={
+                  <div className='flex items-center m-2 mb-0 pt-4'>
+                    <span className='text-[#241235] text-base font-medium dark:text-white'>
+                      Last extrinsics
+                    </span>
+                  </div>
+                }
+              >
+                {lastExtrinsics && lastExtrinsics.length > 0 ? (
+                  <List>
+                    {lastExtrinsics.map((extrinsic, index) => (
+                      <li key={index}>
+                        <Link
+                          data-testid='extrinsic-link'
+                          className='hover:text-[#DE67E4]'
+                          to={INTERNAL_ROUTES.extrinsics.id.page(
+                            selectedChain.urls.page,
+                            'consensus',
+                            extrinsic.node.id,
+                          )}
+                        >
+                          <StyledListItem
+                            title={dayjs(extrinsic.node.block.timestamp).fromNow(true)}
+                          >
+                            {extrinsic.node.name.split('.')[1].toUpperCase()}
+                            <StatusIcon status={extrinsic.node.success} />
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    ))}
+                  </List>
+                ) : (
+                  <div className='flex items-center m-2 pt-4'>
+                    <span className='text-[#241235] text-sm font-medium dark:text-white'>
+                      {!lastExtrinsicsLoading &&
+                        lastExtrinsicsError &&
+                        'We are unable to load your extrinsics data'}
+                      {lastExtrinsicsLoading && <Spinner />}
+                      {!lastExtrinsicsError &&
+                        !lastExtrinsicsLoading &&
+                        'Your wallet has no extrinsics!'}
+                    </span>
+                  </div>
+                )}
+              </Accordion>
+            </div>
+
+            <div className='p-5 m-2 mt-0 bg-[#DDEFF1] rounded-[20px] dark:bg-[#1E254E] dark:text-white'>
+              <Accordion
+                title={
+                  <div className='flex items-center m-2 mb-0 pt-4'>
+                    <span className='text-[#241235] text-base font-medium dark:text-white'>
+                      Leaderboard
+                    </span>
+                  </div>
+                }
+              >
+                {hasTopPositions ? (
+                  <List>
+                    {topFarmers > 0 && (
+                      <li key='topFarmers'>
+                        <Link
+                          data-testid='topFarmers-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                        >
+                          <StyledListItem title='Top Farmer'>
+                            {numberPositionSuffix(topFarmers)} place
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                    {topOperators > 0 && (
+                      <li key='topOperators'>
+                        <Link
+                          data-testid='topOperators-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.operators}`}
+                        >
+                          <StyledListItem title='Top Operator'>
+                            {numberPositionSuffix(topOperators)} place
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                    {topNominators > 0 && (
+                      <li key='topNominators'>
+                        <Link
+                          data-testid='topNominators-link'
+                          className='hover:text-[#DE67E4]'
+                          to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.nominators}`}
+                        >
+                          <StyledListItem title='Top Nominator'>
+                            {numberPositionSuffix(topNominators)} place
+                          </StyledListItem>
+                        </Link>
+                      </li>
+                    )}
+                  </List>
+                ) : (
+                  <div className='flex items-center m-2 pt-4'>
+                    <Link
+                      data-testid='totalNominatedCount-link'
+                      className='hover:text-[#DE67E4]'
+                      to={`../${selectedChain.urls.page}/leaderboard/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                    >
+                      <span className='text-[#241235] text-sm font-medium dark:text-white'>
+                        Your wallet is not in any of the top 100 leaderboard positions!
+                      </span>
+                    </Link>
+                  </div>
+                )}
+              </Accordion>
+            </div>
+
+            <div className='flex'>
+              <div className='justify-items-end pt-10 pb-1 pl-5 flex flex-wrap sm:hidden flex-col sm:flex-row'>
+                <p className='text-gray text-sm text-center sm:text-left'>
+                  © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                </p>
+              </div>
+            </div>
+          </article>
+        </section>
+      </nav>
+    </div>
   )
 }
