@@ -25,6 +25,7 @@ import {
   ExtrinsicsSupportedModule,
 } from '../constants'
 import {
+  CustomExtrinsicFormValues,
   ExtrinsicModule,
   ExtrinsicsCategorySelector,
   ExtrinsicsInputs,
@@ -58,16 +59,15 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
-  const [selectedValues, setSelectedValues] = useState<{ [key: string]: string }>({})
 
-  const resetCategory = useCallback(() => {
+  const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
     setSelectedMethod(null)
-    setSelectedValues({})
+    extra && extra()
   }, [])
-  const resetMethod = useCallback(() => {
+  const resetMethod = useCallback((extra?: () => void) => {
     setSelectedMethod(null)
-    setSelectedValues({})
+    extra && extra()
   }, [])
 
   const initialSendTokenValues: SendTokenFormValues = useMemo(
@@ -82,6 +82,19 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       message: '',
     }),
     [],
+  )
+  const initialCustomExtrinsicValues: CustomExtrinsicFormValues = useMemo(
+    () =>
+      selectedCategory &&
+      selectedMethod &&
+      extrinsicsList[selectedCategory][selectedMethod] &&
+      extrinsicsList[selectedCategory][selectedMethod].args
+        ? Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
+            (acc, key) => ({ ...acc, [key]: '' }),
+            {},
+          )
+        : {},
+    [selectedCategory, selectedMethod, extrinsicsList],
   )
   const maxAmount = useMemo(
     () =>
@@ -107,6 +120,20 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         message: Yup.string().required('Message is required'),
       }),
     [],
+  )
+  const customExtrinsicFormValidationSchema = useMemo(
+    () =>
+      selectedCategory &&
+      selectedMethod &&
+      extrinsicsList[selectedCategory][selectedMethod] &&
+      extrinsicsList[selectedCategory][selectedMethod].args &&
+      Yup.object().shape(
+        Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
+          (acc, key) => ({ ...acc, [key]: Yup.string().required('This field is required') }),
+          {},
+        ),
+      ),
+    [selectedCategory, selectedMethod, extrinsicsList],
   )
   const consensusChain = useMemo(
     () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
@@ -232,27 +259,34 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     [actingAccount, consensusApi, injector],
   )
 
-  const handleCustomExtrinsic = useCallback(async () => {
-    if (!actingAccount || !injector || !consensusApi)
-      return setFormError('We are not able to connect to the blockchain')
+  const handleCustomExtrinsic = useCallback(
+    async (
+      values: CustomExtrinsicFormValues,
+      resetForm: (nextState?: Partial<FormikState<CustomExtrinsicFormValues>> | undefined) => void,
+    ) => {
+      if (!actingAccount || !injector || !consensusApi)
+        return setFormError('We are not able to connect to the blockchain')
 
-    if (!selectedCategory) return setFormError('You need to select a category')
-    if (!selectedMethod) return setFormError('You need to select a method')
+      if (!selectedCategory) return setFormError('You need to select a category')
+      if (!selectedMethod) return setFormError('You need to select a method')
 
-    try {
-      const hash = await consensusApi.tx[selectedCategory][selectedMethod](
-        selectedValues,
-      ).signAndSend(actingAccount.address, { signer: injector.signer })
-      setHash(hash)
-      toast.success('The extrinsic was sent', { position: 'bottom-center' })
-      setSelectedValues({})
-    } catch (error) {
-      const reason = 'There was an error while sending the extrinsic'
-      setFormError(reason)
-      toast.error(reason, { position: 'bottom-center' })
-      console.error('Error', error)
-    }
-  }, [actingAccount, consensusApi, injector, selectedCategory, selectedMethod, selectedValues])
+      try {
+        const hash = await consensusApi.tx[selectedCategory][selectedMethod](
+          ...Object.keys(values).map((key) => values[key]),
+        ).signAndSend(actingAccount.address, { signer: injector.signer })
+        setHash(hash)
+        toast.success('The extrinsic was sent', { position: 'bottom-center' })
+        resetCategory()
+        resetForm()
+      } catch (error) {
+        const reason = 'There was an error while sending the extrinsic'
+        setFormError(reason)
+        toast.error(reason, { position: 'bottom-center' })
+        console.error('Error', error)
+      }
+    },
+    [actingAccount, consensusApi, injector, selectedCategory, selectedMethod, resetCategory],
+  )
 
   const handleCopy = useCallback((value: string) => {
     navigator.clipboard.writeText(value)
@@ -557,11 +591,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               </>
             ) : (
               <Formik
-                initialValues={initialSendTokenValues}
-                validationSchema={sendTokenFormValidationSchema}
-                onSubmit={() => handleCustomExtrinsic()}
+                initialValues={initialCustomExtrinsicValues}
+                validationSchema={customExtrinsicFormValidationSchema}
+                onSubmit={(values, { resetForm }) => handleCustomExtrinsic(values, resetForm)}
               >
-                {({ handleSubmit }) => (
+                {({ errors, touched, handleSubmit, setFieldValue, resetForm }) => (
                   <Form
                     className='w-[400px]'
                     onSubmit={handleSubmit}
@@ -570,14 +604,14 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     <ExtrinsicsCategorySelector
                       extrinsicsList={extrinsicsList}
                       setSelectedCategory={setSelectedCategory}
-                      resetCategory={resetCategory}
+                      resetCategory={() => resetCategory(resetForm)}
                     />
                     {selectedCategory && (
                       <ExtrinsicsMethodSelector
                         extrinsicsList={extrinsicsList}
                         selectedCategory={selectedCategory}
                         setSelectedMethod={setSelectedMethod}
-                        resetMethod={resetMethod}
+                        resetMethod={() => resetMethod(resetForm)}
                       />
                     )}
                     {selectedCategory && selectedMethod && (
@@ -585,7 +619,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                         extrinsicsList={extrinsicsList}
                         selectedCategory={selectedCategory}
                         selectedMethod={selectedMethod}
-                        setSelectedValues={setSelectedValues}
+                        errors={errors}
+                        touched={touched}
+                        setSelectedValues={setFieldValue}
                       />
                     )}
                     {ErrorPlaceholder}
@@ -636,6 +672,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     handleCustomExtrinsic,
     resetCategory,
     resetMethod,
+    customExtrinsicFormValidationSchema,
+    initialCustomExtrinsicValues,
   ])
 
   useEffect(() => {

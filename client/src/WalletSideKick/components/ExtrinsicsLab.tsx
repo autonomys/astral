@@ -1,7 +1,7 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { SubmittableModuleExtrinsics } from '@polkadot/api/types'
-import { Field, FieldArray } from 'formik'
+import { Field, FieldArray, FormikErrors, FormikTouched } from 'formik'
 import { FC, Fragment, useCallback, useMemo, useState } from 'react'
 
 // common
@@ -17,6 +17,9 @@ export type ExtrinsicsMethod = {
   docs: string[]
   fields: ExtrinsicsMethodFields[]
   args: ExtrinsicsMethodArgs[]
+}
+export interface CustomExtrinsicFormValues {
+  [key: string]: string
 }
 
 type ExtrinsicsCategorySelectorProps = {
@@ -36,7 +39,9 @@ type ExtrinsicsInputsProps = {
   extrinsicsList: ExtrinsicsList | undefined
   selectedCategory: string
   selectedMethod: string
-  setSelectedValues: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>
+  errors?: FormikErrors<CustomExtrinsicFormValues>
+  touched: FormikTouched<CustomExtrinsicFormValues>
+  setSelectedValues: (field: string, value: string, shouldValidate?: boolean | undefined) => void
 }
 
 export const ExtrinsicsCategorySelector: FC<ExtrinsicsCategorySelectorProps> = ({
@@ -216,6 +221,8 @@ export const ExtrinsicsInputs: FC<ExtrinsicsInputsProps> = ({
   extrinsicsList,
   selectedCategory,
   selectedMethod,
+  errors,
+  touched,
   setSelectedValues,
 }) => {
   const [selectedValues, _setSelectedValues] = useState<{ [key: string]: string }>({})
@@ -232,7 +239,7 @@ export const ExtrinsicsInputs: FC<ExtrinsicsInputsProps> = ({
   const handleSetValues = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       _setSelectedValues((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-      setSelectedValues((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+      setSelectedValues(e.target.name, e.target.value, true)
     },
     [setSelectedValues],
   )
@@ -258,14 +265,20 @@ export const ExtrinsicsInputs: FC<ExtrinsicsInputsProps> = ({
                   )})`}
                   value={selectedValues && selectedValues[field.name]}
                   onChange={handleSetValues}
-                  className='dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-[400px] text-sm text-gray-900 rounded-xl bg-white shadow-lg capitalize'
+                  className={`dark:bg-[#1E254E] dark:text-white block px-4 py-[10px] mt-4 w-[400px] text-sm text-gray-900 rounded-xl bg-white shadow-lg capitalize ${
+                    errors &&
+                    errors[field.name] &&
+                    touched &&
+                    touched[field.name] &&
+                    'block px-4 py-[10px] w-full text-sm text-gray-900 rounded-full bg-white shadow-lg dark:bg-[#2A345E]'
+                  }`}
                 />
               </div>
             )}
           />
         </div>
       )),
-    [method, handleSetValues, selectedValues],
+    [method, handleSetValues, selectedValues, errors, touched],
   )
 
   return <div className='relative'>{fields}</div>
