@@ -1,7 +1,7 @@
+import { ApiPromise } from "@polkadot/api";
+import { Store } from "@subsquid/typeorm-store";
 import { Account, Nominator, Operator } from "../model";
 import { ProcessorContext } from "../processor";
-import { Store } from '@subsquid/typeorm-store';
-import { ApiPromise } from "@polkadot/api";
 
 /**
  *
@@ -9,109 +9,110 @@ import { ApiPromise } from "@polkadot/api";
  * @param api
  * @returns
  */
-  export async function getOrCreateOperator(
-    ctx: ProcessorContext<Store>,
-    operatorId: bigint,
-    blockNumber: number,
-    api: ApiPromise
-  ): Promise<Operator | undefined> {
-    let operator = await ctx.store.get(Operator, operatorId.toString());
+export async function getOrCreateOperator(
+  ctx: ProcessorContext<Store>,
+  operatorId: bigint,
+  blockNumber: number,
+  api: ApiPromise
+): Promise<Operator | undefined> {
+  let operator = await ctx.store.get(Operator, operatorId.toString());
 
-    const nominators = await api.query.domains.nominators.entries(operatorId);
-    const nominatorsLength = nominators.length;
+  const nominators = await api.query.domains.deposits.entries(operatorId);
+  const nominatorsLength = nominators.length;
 
-    if (!operator) {
-      const operatorInfo = (
-        await api.query.domains.operators(operatorId)
-      ).toJSON() as any;
+  if (!operator) {
+    const operatorInfo = (
+      await api.query.domains.operators(operatorId)
+    ).toJSON() as any;
 
-      const ownerAccount = (
-        await api.query.domains.operatorIdOwner(operatorId)
-      ).toJSON();
-      if (operatorInfo) {
-        operator = new Operator({
-          id: operatorId.toString(),
-          orderingId: Number(operatorId),
-          operatorOwner: ownerAccount?.toString(),
-          status: operatorInfo.status.toString(),
-          signingKey: operatorInfo.signingKey,
-          totalShares: BigInt(operatorInfo.totalShares),
-          currentEpochRewards: operatorInfo.currentEpochRewards,
-          currentTotalStake: BigInt(operatorInfo.currentTotalStake),
-          nominatorAmount: nominatorsLength,
-          nominationTax: operatorInfo.nominationTax,
-          minimumNominatorStake: BigInt(operatorInfo.minimumNominatorStake),
-          nextDomainId: operatorInfo.nextDomainId,
-          currentDomainId: operatorInfo.currentDomainId,
-          updatedAt: BigInt(blockNumber),
-        });
+    const ownerAccount = (
+      await api.query.domains.operatorIdOwner(operatorId)
+    ).toJSON();
+    if (operatorInfo) {
+      operator = new Operator({
+        id: operatorId.toString(),
+        orderingId: Number(operatorId),
+        operatorOwner: ownerAccount?.toString(),
+        status: JSON.stringify(operatorInfo.status),
+        signingKey: operatorInfo.signingKey,
+        totalShares: BigInt(operatorInfo.currentTotalShares),
+        currentEpochRewards: operatorInfo.currentEpochRewards,
+        currentTotalStake: BigInt(operatorInfo.currentTotalStake),
+        nominatorAmount: nominatorsLength,
+        nominationTax: operatorInfo.nominationTax,
+        minimumNominatorStake: BigInt(operatorInfo.minimumNominatorStake),
+        nextDomainId: operatorInfo.nextDomainId,
+        currentDomainId: operatorInfo.currentDomainId,
+        updatedAt: BigInt(blockNumber),
+      });
 
-        await ctx.store.insert(operator);
-      }
-    } 
+      await ctx.store.insert(operator);
+    }
+  }
 
-    return operator;
-  };
+  return operator;
+}
 
 export async function getOrCreateNominators(
-    ctx: ProcessorContext<Store>,
-    api: ApiPromise,
-    operator: Operator
-  ): Promise<Nominator[]> {
-    const nominatorsList: Nominator[] = [];
-    const operatorId = BigInt(operator.id);
-    const block = ctx.blocks[ctx.blocks.length - 1];
-    const blockHeight = BigInt(block.header.height);
+  ctx: ProcessorContext<Store>,
+  api: ApiPromise,
+  operator: Operator
+): Promise<Nominator[]> {
+  const nominatorsList: Nominator[] = [];
+  const operatorId = BigInt(operator.id);
+  const block = ctx.blocks[ctx.blocks.length - 1];
+  const blockHeight = BigInt(block.header.height);
 
-    const nominators = await api.query.domains.nominators.entries(operatorId);
-    const nominatorsLength = nominators.length;
+  const nominators = await api.query.domains.deposits.entries(operatorId);
+  const nominatorsLength = nominators.length;
+  console.log("🚀 ~ nominatorsLength:", nominatorsLength);
 
-    for (let i = 0; i < nominatorsLength; i++) {
-      const nominatorId = nominators[i][0].args[1].toString();
+  for (let i = 0; i < nominatorsLength; i++) {
+    const nominatorId = nominators[i][0].args[1].toString();
 
-      let nominator = await ctx.store.get(
-        Nominator,
-        `${operator.id}-${nominatorId}`
-      );
+    let nominator = await ctx.store.get(
+      Nominator,
+      `${operator.id}-${nominatorId}`
+    );
 
-      const nominatorInfo = nominators[i][1].toJSON() as any;
+    const nominatorInfo = nominators[i][1].toJSON() as any;
 
-      const existingNominator = await ctx.store.get(Nominator, nominatorId);
-      const hexAccountId = api.registry
-        .createType("AccountId", nominatorId)
-        .toHex();
-      const account = await getOrCreateAccount(ctx, hexAccountId);
+    const existingNominator = await ctx.store.get(Nominator, nominatorId);
+    const hexAccountId = api.registry
+      .createType("AccountId", nominatorId)
+      .toHex();
+    const account = await getOrCreateAccount(ctx, hexAccountId);
 
-      nominator = new Nominator({
-        ...existingNominator,
-        id: `${operator.id}-${nominatorId}`,
-        operator: operator,
-        account: account,
-        shares: BigInt(nominatorInfo.shares),
-        updatedAt: blockHeight,
-      });
+    nominator = new Nominator({
+      ...existingNominator,
+      id: `${operator.id}-${nominatorId}`,
+      operator: operator,
+      account: account,
+      shares: BigInt(nominatorInfo.known.shares),
+      updatedAt: blockHeight,
+    });
 
-      await ctx.store.save(nominator);
+    await ctx.store.save(nominator);
 
-      nominatorsList.push(nominator);
-    }
+    nominatorsList.push(nominator);
+  }
 
-    return nominatorsList;
-  };
+  return nominatorsList;
+}
 
 export async function getOrCreateAccount(
-    ctx: ProcessorContext<Store>, 
-    accountId: string
-  ): Promise<Account> {
-    let account = await ctx.store.get(Account, accountId);
+  ctx: ProcessorContext<Store>,
+  accountId: string
+): Promise<Account> {
+  let account = await ctx.store.get(Account, accountId);
 
-    if (!account) {
-      account = new Account({
-        id: accountId,
-      });
+  if (!account) {
+    account = new Account({
+      id: accountId,
+    });
 
-      await ctx.store.insert(account);
-    }
+    await ctx.store.insert(account);
+  }
 
-    return account;
-  };
+  return account;
+}
