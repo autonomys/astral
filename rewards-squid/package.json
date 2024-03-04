@@ -1,5 +1,5 @@
 {
-  "name": "squid",
+  "name": "rewards-squid",
   "private": true,
   "engines": {
     "node": ">=16"
