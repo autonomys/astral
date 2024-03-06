@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "db:migrate": "npx squid-typeorm-migration apply",
-    "processor:start": "node lib/processor.js",
+    "processor:start": "node lib/processor.js"
   },
   "dependencies": {
     "@polkadot/api": "^10.11.2",
