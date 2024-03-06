@@ -1,5 +1,6 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
+import * as v1 from '../v1'
 
 export const totalIssuance =  {
     /**
@@ -161,6 +162,10 @@ export const holds =  {
      *  Holds on account balances.
      */
     v0: new StorageType('Balances.Holds', 'Default', [v0.AccountId32], sts.array(() => v0.IdAmount)) as HoldsV0,
+    /**
+     *  Holds on account balances.
+     */
+    v1: new StorageType('Balances.Holds', 'Default', [v1.AccountId32], sts.array(() => v1.IdAmount)) as HoldsV1,
 }
 
 /**
@@ -181,11 +186,29 @@ export interface HoldsV0  {
     getPairsPaged(pageSize: number, block: Block, key: v0.AccountId32): AsyncIterable<[k: v0.AccountId32, v: (v0.IdAmount[] | undefined)][]>
 }
 
+/**
+ *  Holds on account balances.
+ */
+export interface HoldsV1  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v1.IdAmount[]
+    get(block: Block, key: v1.AccountId32): Promise<(v1.IdAmount[] | undefined)>
+    getMany(block: Block, keys: v1.AccountId32[]): Promise<(v1.IdAmount[] | undefined)[]>
+    getKeys(block: Block): Promise<v1.AccountId32[]>
+    getKeys(block: Block, key: v1.AccountId32): Promise<v1.AccountId32[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v1.AccountId32[]>
+    getKeysPaged(pageSize: number, block: Block, key: v1.AccountId32): AsyncIterable<v1.AccountId32[]>
+    getPairs(block: Block): Promise<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
+    getPairs(block: Block, key: v1.AccountId32): Promise<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v1.AccountId32): AsyncIterable<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
+}
+
 export const freezes =  {
     /**
      *  Freeze locks on account balances.
      */
-    v0: new StorageType('Balances.Freezes', 'Default', [v0.AccountId32], sts.array(() => v0.Type_149)) as FreezesV0,
+    v0: new StorageType('Balances.Freezes', 'Default', [v0.AccountId32], sts.array(() => v0.Type_152)) as FreezesV0,
 }
 
 /**
@@ -193,15 +216,15 @@ export const freezes =  {
  */
 export interface FreezesV0  {
     is(block: RuntimeCtx): boolean
-    getDefault(block: Block): v0.Type_149[]
-    get(block: Block, key: v0.AccountId32): Promise<(v0.Type_149[] | undefined)>
-    getMany(block: Block, keys: v0.AccountId32[]): Promise<(v0.Type_149[] | undefined)[]>
+    getDefault(block: Block): v0.Type_152[]
+    get(block: Block, key: v0.AccountId32): Promise<(v0.Type_152[] | undefined)>
+    getMany(block: Block, keys: v0.AccountId32[]): Promise<(v0.Type_152[] | undefined)[]>
     getKeys(block: Block): Promise<v0.AccountId32[]>
     getKeys(block: Block, key: v0.AccountId32): Promise<v0.AccountId32[]>
     getKeysPaged(pageSize: number, block: Block): AsyncIterable<v0.AccountId32[]>
     getKeysPaged(pageSize: number, block: Block, key: v0.AccountId32): AsyncIterable<v0.AccountId32[]>
-    getPairs(block: Block): Promise<[k: v0.AccountId32, v: (v0.Type_149[] | undefined)][]>
-    getPairs(block: Block, key: v0.AccountId32): Promise<[k: v0.AccountId32, v: (v0.Type_149[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.AccountId32, v: (v0.Type_149[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v0.AccountId32): AsyncIterable<[k: v0.AccountId32, v: (v0.Type_149[] | undefined)][]>
+    getPairs(block: Block): Promise<[k: v0.AccountId32, v: (v0.Type_152[] | undefined)][]>
+    getPairs(block: Block, key: v0.AccountId32): Promise<[k: v0.AccountId32, v: (v0.Type_152[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v0.AccountId32, v: (v0.Type_152[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v0.AccountId32): AsyncIterable<[k: v0.AccountId32, v: (v0.Type_152[] | undefined)][]>
 }

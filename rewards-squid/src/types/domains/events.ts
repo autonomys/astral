@@ -1,8 +1,6 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
-import * as v2 from '../v2'
-import * as v3 from '../v3'
 
 export const bundleStored =  {
     name: 'Domains.BundleStored',
@@ -104,6 +102,16 @@ export const operatorDeregistered =  {
     ),
 }
 
+export const operatorUnlocked =  {
+    name: 'Domains.OperatorUnlocked',
+    v0: new EventType(
+        'Domains.OperatorUnlocked',
+        sts.struct({
+            operatorId: sts.bigint(),
+        })
+    ),
+}
+
 export const withdrewStake =  {
     name: 'Domains.WithdrewStake',
     v0: new EventType(
@@ -111,6 +119,18 @@ export const withdrewStake =  {
         sts.struct({
             operatorId: sts.bigint(),
             nominatorId: v0.AccountId32,
+        })
+    ),
+}
+
+export const fundsUnlocked =  {
+    name: 'Domains.FundsUnlocked',
+    v0: new EventType(
+        'Domains.FundsUnlocked',
+        sts.struct({
+            operatorId: sts.bigint(),
+            nominatorId: v0.AccountId32,
+            amount: sts.bigint(),
         })
     ),
 }
@@ -137,10 +157,32 @@ export const operatorRewarded =  {
     ),
 }
 
+export const operatorTaxCollected =  {
+    name: 'Domains.OperatorTaxCollected',
+    v0: new EventType(
+        'Domains.OperatorTaxCollected',
+        sts.struct({
+            operatorId: sts.bigint(),
+            tax: sts.bigint(),
+        })
+    ),
+}
+
 export const domainEpochCompleted =  {
     name: 'Domains.DomainEpochCompleted',
     v0: new EventType(
         'Domains.DomainEpochCompleted',
+        sts.struct({
+            domainId: v0.DomainId,
+            completedEpochIndex: sts.number(),
+        })
+    ),
+}
+
+export const forceDomainEpochTransition =  {
+    name: 'Domains.ForceDomainEpochTransition',
+    v0: new EventType(
+        'Domains.ForceDomainEpochTransition',
         sts.struct({
             domainId: v0.DomainId,
             completedEpochIndex: sts.number(),
@@ -157,20 +199,6 @@ export const fraudProofProcessed =  {
             newHeadReceiptNumber: sts.option(() => sts.number()),
         })
     ),
-    v1: new EventType(
-        'Domains.FraudProofProcessed',
-        sts.struct({
-            domainId: v1.DomainId,
-            newHeadReceiptNumber: sts.number(),
-        })
-    ),
-    v2: new EventType(
-        'Domains.FraudProofProcessed',
-        sts.struct({
-            domainId: v2.DomainId,
-            newHeadReceiptNumber: sts.option(() => sts.number()),
-        })
-    ),
 }
 
 export const domainOperatorAllowListUpdated =  {
@@ -183,24 +211,25 @@ export const domainOperatorAllowListUpdated =  {
     ),
 }
 
-export const forceDomainEpochTransition =  {
-    name: 'Domains.ForceDomainEpochTransition',
-    v3: new EventType(
-        'Domains.ForceDomainEpochTransition',
+export const operatorSlashed =  {
+    name: 'Domains.OperatorSlashed',
+    v0: new EventType(
+        'Domains.OperatorSlashed',
         sts.struct({
-            domainId: v3.DomainId,
-            completedEpochIndex: sts.number(),
+            operatorId: sts.bigint(),
+            reason: v0.SlashedReason,
         })
     ),
 }
 
-export const operatorSlashed =  {
-    name: 'Domains.OperatorSlashed',
-    v3: new EventType(
-        'Domains.OperatorSlashed',
+export const storageFeeDeposited =  {
+    name: 'Domains.StorageFeeDeposited',
+    v1: new EventType(
+        'Domains.StorageFeeDeposited',
         sts.struct({
             operatorId: sts.bigint(),
-            reason: v3.SlashedReason,
+            nominatorId: v1.AccountId32,
+            amount: sts.bigint(),
         })
     ),
 }

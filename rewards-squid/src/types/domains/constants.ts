@@ -112,6 +112,16 @@ export const minOperatorStake =  {
     ),
 }
 
+export const minNominatorStake =  {
+    /**
+     *  Minimum nominator stake required to nominate and operator.
+     */
+    v0: new ConstantType(
+        'Domains.MinNominatorStake',
+        sts.bigint()
+    ),
+}
+
 export const stakeWithdrawalLockingPeriod =  {
     /**
      *  Minimum number of blocks after which any finalized withdrawals are released to nominators.
@@ -166,8 +176,18 @@ export const sudoId =  {
     /**
      *  The sudo account id
      */
-    v1: new ConstantType(
+    v0: new ConstantType(
         'Domains.SudoId',
-        v1.AccountId32
+        v0.AccountId32
+    ),
+}
+
+export const palletId =  {
+    /**
+     *  The pallet-domains's pallet id.
+     */
+    v1: new ConstantType(
+        'Domains.PalletId',
+        v1.PalletId
     ),
 }
