@@ -78,7 +78,6 @@ async function getOperatorEvents(
       if (event.name === events.domains.operatorRewarded.name) {
         const { operatorId, reward } =
           events.domains.operatorRewarded.v0.decode(event);
-        console.log("🚀 ~ getOperatorEvents ~ reward:", reward);
 
         let operator = await getOrCreateOperator(
           ctx,
