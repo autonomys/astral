@@ -10,7 +10,6 @@ import { DOMAINS, DOMAINS_NAMES } from 'layout/constants'
 
 // common
 import { ConnectWalletButton } from 'common/components/ConnectWalletButton'
-import IndexingError from 'common/components/IndexingError'
 import useMediaQuery from 'common/hooks/useMediaQuery'
 import useWallet from 'common/hooks/useWallet'
 
@@ -95,11 +94,6 @@ const DomainHeader: FC = () => {
           )}
         </div>
       </div>
-      {pathName.includes('gemini-3h') && (
-        <div className='w-full sticky'>
-          <IndexingError />
-        </div>
-      )}
     </div>
   )
 }
