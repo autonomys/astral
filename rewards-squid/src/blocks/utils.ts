@@ -65,7 +65,6 @@ export async function getOrCreateNominators(
 
   const nominators = await api.query.domains.deposits.entries(operatorId);
   const nominatorsLength = nominators.length;
-  console.log("🚀 ~ nominatorsLength:", nominatorsLength);
 
   for (let i = 0; i < nominatorsLength; i++) {
     const nominatorId = nominators[i][0].args[1].toString();
