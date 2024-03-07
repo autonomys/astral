@@ -18,6 +18,9 @@ export const EXTERNAL_ROUTES = {
     linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
+  polkadot:
+    'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
+  subscan: 'https://subspace.subscan.io/',
 }
 
 export const INTERNAL_ROUTES = {
