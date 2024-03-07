@@ -1,4 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/24/outline'
+import { EXTERNAL_ROUTES } from 'common/routes'
 import { FC, useCallback, useState } from 'react'
 
 const IndexingError: FC = () => {
@@ -15,7 +16,25 @@ const IndexingError: FC = () => {
       <div className='text-gray-600 text-sm font-medium dark:text-white'>
         <p>
           We are currently experiencing issues with our indexing service. Please bear with us as we
-          work to resolve this issue.
+          work to resolve this issue. You can check{' '}
+          <a
+            href={EXTERNAL_ROUTES.subscan}
+            target='_blank'
+            className='text-[#ffffffb3] text-md hover:text-[#DE67E4]'
+            rel='noreferrer'
+          >
+            Subscan
+          </a>{' '}
+          or{' '}
+          <a
+            href={EXTERNAL_ROUTES.polkadot}
+            target='_blank'
+            className='text-[#ffffffb3] text-md hover:text-[#DE67E4]'
+            rel='noreferrer'
+          >
+            Polkadot
+          </a>{' '}
+          while we complete the fix.
         </p>
       </div>
       <button
