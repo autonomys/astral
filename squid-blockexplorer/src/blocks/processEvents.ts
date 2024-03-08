@@ -83,7 +83,7 @@ export function processEventsFactory(
     }
   }
 
-  async function createOrUpdateOperator(eventItem: EventItem){
+  async function createOrUpdateOperator(eventItem: EventItem) {
     const operatorId = BigInt(eventItem.event.args?.operatorId);
     await getOrCreateOperator(operatorId);
   }
@@ -149,7 +149,7 @@ export function processEventsFactory(
       // add tax amount to operator owner
       if (operator.operatorOwner) {
         const rewardTax = operator.nominationTax
-          ? BigInt(operator.nominationTax / 100)
+          ? BigInt(operator.nominationTax)
           : BigInt(0);
 
         const ownerAccount = await getOrCreateAccount(
@@ -157,7 +157,7 @@ export function processEventsFactory(
           operator.operatorOwner
         );
 
-        const nominationTaxAmount = rewardAmount * rewardTax;
+        const nominationTaxAmount = rewardAmount * (rewardTax / BigInt(100));
 
         const rewardEvent = new RewardEvent({
           ...eventItem.event,
@@ -216,10 +216,10 @@ export function processEventsFactory(
     accountRewards: AccountRewards
   ) {
     const rewardTax = operator.nominationTax
-      ? BigInt(operator.nominationTax / 100)
+      ? BigInt(operator.nominationTax)
       : BigInt(0);
     const rewardAmount = BigInt(eventItem.event.args.reward);
-    const reward = rewardAmount - rewardAmount * rewardTax;
+    const reward = rewardAmount - rewardAmount * (rewardTax / BigInt(100));
     const totalShares = operator.totalShares
       ? BigInt(operator.totalShares)
       : BigInt(0);
