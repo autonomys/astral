@@ -95,6 +95,8 @@ export function processEventsFactory(
     extrinsic: any,
     call: any
   ) {
+    const operatorEvents: RewardEvent[] = [];
+  
     const operatorId = BigInt(eventItem.event.args?.operatorId);
     const operator = await getOrCreateOperator(operatorId);
     if (!operator) return;
@@ -122,6 +124,7 @@ export function processEventsFactory(
       const account = await getOrCreateAccount(header, operator.operatorOwner);
       const rewardEvent = new RewardEvent({
         ...eventItem.event,
+        id: `${eventItem.event.id}-${account.id}`,
         block,
         extrinsic,
         call,
@@ -144,7 +147,9 @@ export function processEventsFactory(
 
       await ctx.store.save(updatedReward);
 
-      return rewardEvent;
+      operatorEvents.push(rewardEvent);
+
+      return operatorEvents;
     } else {
       // add tax amount to operator owner
       if (operator.operatorOwner) {
@@ -161,6 +166,7 @@ export function processEventsFactory(
 
         const rewardEvent = new RewardEvent({
           ...eventItem.event,
+          id: `${eventItem.event.id}-${operator.id}`,
           block,
           extrinsic,
           call,
@@ -169,7 +175,7 @@ export function processEventsFactory(
           amount: nominationTaxAmount,
         });
 
-        await ctx.store.save(rewardEvent);
+        operatorEvents.push(rewardEvent);
       }
 
       for (const nominator of nominators) {
@@ -196,6 +202,7 @@ export function processEventsFactory(
 
         const rewardEvent = new RewardEvent({
           ...eventItem.event,
+          id: `${eventItem.event.id}-${nominator.id}`,
           block,
           extrinsic,
           call,
@@ -204,8 +211,10 @@ export function processEventsFactory(
           amount: rewardDetails.nominatorReward,
         });
 
-        return rewardEvent;
+        operatorEvents.push(rewardEvent);
       }
+
+      return operatorEvents;
     }
   }
 
@@ -326,7 +335,7 @@ export function processEventsFactory(
       );
 
       if (rewardEvent) {
-        rewardEvents.push(rewardEvent);
+        Array.isArray(rewardEvent) ? rewardEvents.push(...rewardEvent) : rewardEvents.push(rewardEvent);
       }
 
       const genericEvent = new Event({
