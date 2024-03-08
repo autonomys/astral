@@ -19,7 +19,7 @@ else
 
     npm i -g @subsquid/cli@latest
 
-    ln -s ~/opt/node-v20.11.1-linux-x64/bin/sqd sqd
+    ln -s ~/opt/node-v${NODE_VERSION}-linux-x64/bin/sqd sqd
 
     echo "export PATH=$HOME/bin:$PATH" >> ~/.bash_profile
 
