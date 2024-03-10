@@ -1,0 +1,8 @@
+node_modules
+public
+build
+gql
+
+# types
+*d.ts
+*.js
