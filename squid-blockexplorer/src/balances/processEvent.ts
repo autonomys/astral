@@ -24,8 +24,8 @@ export class BalanceEventHandler {
   getTransferAccounts(event: Event) {
     const data = new BalancesTransferEvent(this.ctx, event);
 
-    if (data.isV3) {
-      return [toHex(data.asV3.from), toHex(data.asV3.to)];
+    if (data.isV0) {
+      return [toHex(data.asV0.from), toHex(data.asV0.to)];
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -34,8 +34,8 @@ export class BalanceEventHandler {
   getEndowedAccount(event: Event) {
     const data = new BalancesEndowedEvent(this.ctx, event);
 
-    if (data.isV3) {
-      return toHex(data.asV3.account);
+    if (data.isV0) {
+      return toHex(data.asV0.account);
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -44,8 +44,8 @@ export class BalanceEventHandler {
   getReserveRepatriatedAccounts(event: Event) {
     const data = new BalancesReserveRepatriatedEvent(this.ctx, event);
 
-    if (data.isV3) {
-      return [toHex(data.asV3.from), toHex(data.asV3.to)];
+    if (data.isV0) {
+      return [toHex(data.asV0.from), toHex(data.asV0.to)];
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -56,8 +56,8 @@ export class BalanceEventHandler {
     const EventType = eventTypes[event.name];
     const data = new EventType(this.ctx, event);
 
-    if (data.isV3) {
-      return toHex(data.asV3.who);
+    if (data.isV0) {
+      return toHex(data.asV0.who);
     } else {
       throw new UnknownVersionError(data.constructor.name);
     }
@@ -77,7 +77,7 @@ const eventTypes = {
   [BALANCE_EVENTS.Unreserved]: BalancesUnreservedEvent,
   [BALANCE_EVENTS.Withdraw]: BalancesWithdrawEvent,
   [BALANCE_EVENTS.Slashed]: BalancesSlashedEvent,
-}
+};
 
 export function processEventFactory(balanceEventHandler: BalanceEventHandler) {
   return function processEvent(item: EventItem, accountIdsHex: Set<string>) {
@@ -110,5 +110,5 @@ export function processEventFactory(balanceEventHandler: BalanceEventHandler) {
         break;
       }
     }
-  }
+  };
 }

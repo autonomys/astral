@@ -1,62 +1,124 @@
-import { FC } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import { FC, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+
+// layout
+import { HeaderChainDropdown, MobileHeader } from 'layout/components'
 
 // common
-import { INTERNAL_ROUTES } from 'common/routes';
-import LogoIcon from 'common/icons/LogoIcon';
-import HeaderDropdownMenu from './HeaderDropdownMenu';
-import HeaderChainDropdown from './HeaderChainDropdown';
+import useDomains from 'common/hooks/useDomains'
+import useMediaQuery from 'common/hooks/useMediaQuery'
+import { LogoIcon } from 'common/icons'
+import { useTheme } from 'common/providers/ThemeProvider'
+import { INTERNAL_ROUTES } from 'common/routes'
 
 const Header: FC = () => {
-  const location = useLocation();
-  const pathName = location.pathname;
+  const { isDark, toggleTheme } = useTheme()
+  const location = useLocation()
+  const pathName = location.pathname
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain, selectedDomain } = useDomains()
 
-  const isHomeActive = pathName === '/';
+  const menuList = [
+    {
+      title: 'Accounts',
+      link: `${INTERNAL_ROUTES.accounts.list}`,
+    },
+    {
+      title: 'Blocks',
+      link: `${INTERNAL_ROUTES.blocks.list}`,
+    },
+    {
+      title: 'Extrinsics',
+      link: `${INTERNAL_ROUTES.extrinsics.list}`,
+    },
+    {
+      title: 'Events',
+      link: `${INTERNAL_ROUTES.events.list}`,
+    },
+    {
+      title: 'Logs',
+      link: `${INTERNAL_ROUTES.logs.list}`,
+    },
+  ]
+
   return (
-    <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] mx-[50px] z-10">
-      <div className="container mx-auto flex flex-wrap py-5 flex-col md:flex-row items-center">
-        <Link
-          to={INTERNAL_ROUTES.home}
-          className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0"
-        >
-          <span className="text-xl">
-            <LogoIcon fillColor="#282929" />
-          </span>
-        </Link>
-        <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+    <header className="text-gray-600 body-font font-['Montserrat'] py-[30px] z-9">
+      {isDesktop ? (
+        <div className='container mx-auto flex flex-wrap justify-between py-5 md:px-[25px] 2xl:px-0 flex-col md:flex-row items-center'>
           <Link
-            to={INTERNAL_ROUTES.home}
-            className={
-              isHomeActive
-                ? 'text-white font-semibold mr-5 text-xs px-5 py-3 rounded-full block bg-[#241235] '
-                : 'text-[#282929] font-semibold mr-5 hover:text-gray-900'
-            }
+            to={`/${selectedChain.urls.page}/${selectedDomain}`}
+            className='flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0'
           >
-            Home
+            <span className='text-xl text-[#282929] dark:text-white'>
+              <LogoIcon fillColor='currentColor' />
+            </span>
           </Link>
-          <HeaderDropdownMenu />
-        </nav>
-        <div className="flex">
-          <HeaderChainDropdown />
-          <button className="ml-4 inline-flex items-center bg-[#241235] py-2 px-2 focus:outline-none hover:bg-gray-200 text-base rounded-full">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="white"
-              className="w-6 h-6"
+          <nav className='flex flex-wrap gap-10 items-center text-sm justify-center'>
+            {menuList.map((item, index) => {
+              const isCurrentPath = pathName.includes(item.link)
+              return (
+                <Link
+                  key={index}
+                  className={
+                    isCurrentPath
+                      ? 'leading-4 text-[13px] font-semibold text-white rounded-full px-5 py-3 block bg-[#241235] dark:bg-[#DE67E4]'
+                      : 'leading-4 text-[13px] font-semibold text-[#282929] dark:text-white bg-none'
+                  }
+                  to={item.link}
+                >
+                  {item.title}
+                </Link>
+              )
+            })}
+          </nav>
+          <div className='flex justify-center'>
+            <HeaderChainDropdown />
+            <button
+              onClick={toggleTheme}
+              className='ml-4 inline-flex items-center dark:bg-[#FFFFFF] bg-[#241235] py-2 px-2 focus:outline-none hover:bg-gray-200 text-base rounded-full'
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"
-                fill="white"
-              />
-            </svg>
-          </button>
+              {isDark ? (
+                <SunIcon
+                  viewBox='0 0 24 24'
+                  strokeWidth={1}
+                  fill='black'
+                  stroke='black'
+                  className='w-6 h-6'
+                />
+              ) : (
+                <MoonIcon
+                  viewBox='0 0 24 24'
+                  strokeWidth={1}
+                  fill='white'
+                  stroke='white'
+                  className='w-6 h-6'
+                />
+              )}
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className='flex flex-row justify-between px-5 items-center'>
+          <Link
+            to={`/${selectedChain.urls.page}/${selectedDomain}`}
+            className='flex title-font font-medium items-center text-gray-900 dark:text-white'
+          >
+            <LogoIcon fillColor='currentColor' />
+          </Link>
+          <div className='flex gap-4 items-center'>
+            <HeaderChainDropdown />
+            <button
+              className='bg-[#241235] text-white p-3 items-center rounded-full dark:bg-white dark:text-[#1E254E]'
+              onClick={() => setIsOpen(true)}
+            >
+              <Bars3BottomRightIcon className='w-4 h-4' fill='currentColor' stroke='currentColor' />
+            </button>
+          </div>
+          <MobileHeader menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
+        </div>
+      )}
     </header>
   )
 }

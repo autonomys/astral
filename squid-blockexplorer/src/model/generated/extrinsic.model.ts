@@ -7,60 +7,62 @@ import {Call} from "./call.model"
 
 @Entity_()
 export class Extrinsic {
-  constructor(props?: Partial<Extrinsic>) {
-    Object.assign(this, props)
-  }
+    constructor(props?: Partial<Extrinsic>) {
+        Object.assign(this, props)
+    }
 
-  @PrimaryColumn_()
-  id!: string
+    @PrimaryColumn_()
+    id!: string
 
-  @Column_("text", {nullable: false})
-  hash!: string
+    @Column_("text", {nullable: false})
+    hash!: string
 
-  @Column_("int4", {nullable: false})
-  indexInBlock!: number
+    @Column_("int4", {nullable: false})
+    indexInBlock!: number
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  nonce!: bigint | undefined | null
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    nonce!: bigint | undefined | null
 
-  @Column_("text", {nullable: false})
-  name!: string
+    @Column_("text", {nullable: false})
+    name!: string
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  signer!: Account | undefined | null
+    @Index_()
+    @ManyToOne_(() => Account, {nullable: true})
+    signer!: Account | undefined | null
 
-  @Column_("text", {nullable: true})
-  signature!: string | undefined | null
+    @Index_()
+    @Column_("text", {nullable: true})
+    signature!: string | undefined | null
 
-  @Column_("jsonb", {nullable: true})
-  error!: unknown | undefined | null
+    @Column_("jsonb", {nullable: true})
+    error!: unknown | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  tip!: bigint | undefined | null
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    tip!: bigint | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  fee!: bigint | undefined | null
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    fee!: bigint | undefined | null
 
-  @Column_("bool", {nullable: false})
-  success!: boolean
+    @Column_("bool", {nullable: false})
+    success!: boolean
 
-  @Index_()
-  @ManyToOne_(() => Block, {nullable: true})
-  block!: Block
+    @Index_()
+    @ManyToOne_(() => Block, {nullable: true})
+    block!: Block
 
-  @Column_("int4", {nullable: true})
-  pos!: number | undefined | null
+    @Column_("int4", {nullable: true})
+    pos!: number | undefined | null
 
-  @Column_("timestamp with time zone", {nullable: false})
-  timestamp!: Date
+    @Index_()
+    @Column_("timestamp with time zone", {nullable: false})
+    timestamp!: Date
 
-  @Column_("jsonb", {nullable: true})
-  args!: unknown | undefined | null
+    @Column_("jsonb", {nullable: true})
+    args!: unknown | undefined | null
 
-  @OneToMany_(() => Event, e => e.extrinsic)
-  events!: Event[]
+    @OneToMany_(() => Event, e => e.extrinsic)
+    events!: Event[]
 
-  @OneToMany_(() => Call, e => e.extrinsic)
-  calls!: Call[]
+    @OneToMany_(() => Call, e => e.extrinsic)
+    calls!: Call[]
 }

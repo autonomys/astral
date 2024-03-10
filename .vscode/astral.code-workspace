@@ -1,0 +1,44 @@
+{
+  "folders": [
+    {
+      "name": "root",
+      "path": ".."
+    },
+    {
+      "name": "client",
+      "path": "../client"
+    },
+    {
+      "name": "health-check",
+      "path": "../health-check"
+    },
+    {
+      "name": "squid-blockexplorer",
+      "path": "../squid-blockexplorer"
+    }
+  ],
+  "settings": {
+    "editor.codeActionsOnSave": {
+      "source.sortImports": true,
+      "source.fixAll.eslint": true,
+      "source.fixAll.tslint": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "eslint.workingDirectories": [{ "mode": "auto" }],
+    "javascript.format.enable": false,
+    "editor.tabSize": 2,
+    "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+    "editor.formatOnSave": true,
+    "cSpell.words": [
+      "subspace",
+      "gemini",
+      "graphiql",
+      "leaderboard",
+      "subscan",
+      "extrinsics",
+      "subsquid",
+      "typegen"
+    ]
+  }
+}

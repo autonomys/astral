@@ -9,6 +9,7 @@ import {
   parentCallItem,
 } from '../../mocks/mocks';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
+import { Account } from '../../model';
 
 tap.test('processBlocks should process blocks and items from the Context and save them to store', async (t) => {
   const processBlocks = processBlocksFactory({
@@ -16,7 +17,9 @@ tap.test('processBlocks should process blocks and items from the Context and sav
     getHistorySize: () => Promise.resolve(BigInt(2)),
     processExtrinsics: () => Promise.resolve(),
     processCalls: () => Promise.resolve(),
-    processEvents: () => Promise.resolve(),
+    processEvents: () => Promise.resolve([[], []]),
+    getLogs: () => Promise.resolve([]),
+    getBlockAuthor: () => Promise.resolve(new Account({ id: 'author' }))
   });
 
   const blocks = [
@@ -39,7 +42,7 @@ tap.test('processBlocks should process blocks and items from the Context and sav
         parentCallItem,
       ]
     }
-  ]
+  ];
 
   const context = {
     ...contextMock,
@@ -50,11 +53,12 @@ tap.test('processBlocks should process blocks and items from the Context and sav
 
   await processBlocks(context);
 
-  // expect store.save method calls: blocks, extrinsics, calls, events
-  t.equal(saveSpy.callCount, blocks[0].items.length + blocks[1].items.length); // 4
+  // expect store.save method calls: authors, blocks, extrinsics, calls, events, rewardEvents, logs
+  t.equal(saveSpy.callCount, 8);
 
   // check stored block ids against block ids in the context
-  const storedBlocks = saveSpy.firstCall.firstArg;
+  // first two calls are for authors
+  const storedBlocks = saveSpy.thirdCall.firstArg;
   t.equal(storedBlocks[0].id, blocks[0].header.id);
   t.equal(storedBlocks[1].id, blocks[1].header.id);
 

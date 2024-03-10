@@ -1,30 +1,13 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_EXTRINSIC_LIST = gql`
-  query Extrinsics($limit: Int!, $offset: Int!) {
-    extrinsics(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
-      hash
-      id
-      success
-      pos
-      block {
-        id
-        height
-        timestamp
-      }
-      name
-    }
-  }
-`
-
 export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
-  query ExtrinsicsConnection($first: Int!, $after: String) {
-    extrinsicsConnection(orderBy: block_height_DESC, first: $first, after: $after) {
+  query ExtrinsicsConnection($first: Int!, $after: String, $where: ExtrinsicWhereInput) {
+    extrinsicsConnection(orderBy: id_DESC, first: $first, after: $after, where: $where) {
       edges {
         cursor
         node {
           hash
-          pos
+          indexInBlock
           id
           success
           block {
@@ -44,42 +27,68 @@ export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
       }
       totalCount
     }
+    extrinsicModuleNames(limit: 300) {
+      name
+    }
   }
 `
 
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
     extrinsicById(id: $extrinsicId) {
-      pos
+      indexInBlock
       id
       hash
       signature
       success
       tip
+      args
       block {
         height
         id
-        events(limit: 10) {
-          id
-          name
-          phase
-          pos
-          block {
-            height
-            id
-          }
-          extrinsic {
-            id
-            pos
-            block {
-              height
-              id
-            }
-          }
-        }
         timestamp
       }
+      signer {
+        id
+      }
+      events(limit: 10) {
+        id
+        indexInBlock
+        phase
+        indexInBlock
+        timestamp
+        name
+        args
+        block {
+          height
+        }
+        extrinsic {
+          id
+          indexInBlock
+          block {
+            height
+          }
+        }
+      }
       name
+    }
+  }
+`
+
+export const QUERY_EXTRINSIC_BY_HASH = gql`
+  query ExtrinsicsByHash($hash: String!) {
+    extrinsics(limit: 10, where: { hash_eq: $hash }) {
+      id
+      hash
+      indexInBlock
+      success
+      block {
+        id
+        timestamp
+        height
+      }
+      name
+      nonce
     }
   }
 `

@@ -8,28 +8,52 @@ import { Balance } from '../../balances/types';
 const systemAccountBalance: Balance = {
   free: BigInt(60),
   reserved: BigInt(30),
-}
+};
 
 const defaultStorageDependencies = {
   ctx: contextMock,
   createSystemAccountStorage: () => ({
     isExists: false,
-    getAsV3: () => Promise.resolve(undefined),
+    asV3: {
+      get: () => Promise.resolve(undefined),
+    }
   } as unknown as SystemAccountStorage),
   createBalanceAccountStorage: () => ({
     isExists: false,
-    getAsV3: () => Promise.resolve(undefined),
+    asV3: {
+      get: () => Promise.resolve(undefined),
+    },
+    asV0: {
+      get: () => Promise.resolve(undefined),
+    },
+    asV1: {
+      get: () => Promise.resolve(undefined),
+    },
+    asV2: {
+      get: () => Promise.resolve(undefined),
+    }
   } as unknown as BalancesAccountStorage),
-}
+};
 
 tap.test('getBalance should return balance for given account id from SystemAccountStorage if storage exists', async (t) => {
   const dependencies = {
     ...defaultStorageDependencies,
     createSystemAccountStorage: () => ({
       isExists: true,
-      getAsV3: () => Promise.resolve({ data: systemAccountBalance }),
+      asV3: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      },
+      asV0: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      },
+      asV1: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      },
+      asV2: {
+        get: () => Promise.resolve({ data: systemAccountBalance }),
+      }
     } as unknown as SystemAccountStorage),
-  }
+  };
 
   const storage = new BalanceStorage(dependencies);
 
@@ -45,13 +69,35 @@ tap.test('getBalance should return balance for given account id from BalancesAcc
     ...defaultStorageDependencies,
     createSystemAccountStorage: () => ({
       isExists: false,
-      getAsV3: () => Promise.resolve(undefined),
+      asV3: {
+        get: () => Promise.resolve(undefined),
+      },
+      asV0: {
+        get: () => Promise.resolve(undefined),
+      },
+      asV1: {
+        get: () => Promise.resolve(undefined),
+      },
+      asV2: {
+        get: () => Promise.resolve(undefined),
+      }
     } as unknown as SystemAccountStorage),
     createBalanceAccountStorage: () => ({
       isExists: true,
-      getAsV3: () => Promise.resolve(systemAccountBalance),
+      asV3: {
+        get: () => Promise.resolve(systemAccountBalance),
+      },
+      asV0: {
+        get: () => Promise.resolve(systemAccountBalance),
+      },
+      asV1: {
+        get: () => Promise.resolve(systemAccountBalance),
+      },
+      asV2: {
+        get: () => Promise.resolve(systemAccountBalance),
+      }
     } as unknown as BalancesAccountStorage),
-  }
+  };
 
   const storage = new BalanceStorage(dependencies);
 

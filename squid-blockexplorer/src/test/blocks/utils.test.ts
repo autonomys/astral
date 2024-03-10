@@ -1,14 +1,55 @@
 import tap from 'tap';
 import { createBlock, createCall, createExtrinsic } from '../../blocks/utils';
-import { Block, Call, Extrinsic } from '../../model';
+import { Account, Block, Call, Extrinsic } from '../../model';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { callItemWithSignature } from '../../mocks/mocks';
+import { callItemWithSignature, contextMock } from '../../mocks/mocks';
+import { getOrCreateAccountFactory } from '../../blocks/utils';
+import { Context } from '../../processor';
 
 const spacePledged = BigInt(1);
 const blockchainSize = BigInt(2);
 
+// tap.test('getOrCreateAccount should get Account if store has one', async (t) => {
+//   const accountId = 'random account id';
+
+//   const contextWithAccount = {
+//     ...contextMock,
+//     store: {
+//       ...contextMock.store,
+//       get: () => Promise.resolve(new Account({ id: accountId })),
+//     }
+//   } as unknown as Context;
+
+//   const getOrCreateAccount = getOrCreateAccountFactory(contextWithAccount);
+
+//   const result = await getOrCreateAccount(BlockHeaderMock, accountId);
+
+//   t.equal(result.id, accountId);
+
+//   t.end();
+// });
+
+// tap.test('getOrCreateAccount should create new Account if store has none', async (t) => {
+//   const accountId = 'new account id';
+
+//   const getOrCreateAccount = getOrCreateAccountFactory(contextMock);
+
+//   const result = await getOrCreateAccount(BlockHeaderMock, accountId);
+
+//   t.equal(result.id, accountId);
+
+//   t.end();
+// });
+
 tap.test('createBlock should create instance of a Block', (t) => {
-  const result = createBlock(BlockHeaderMock, spacePledged, blockchainSize);
+  const result = createBlock({
+    header: BlockHeaderMock, 
+    spacePledged, 
+    blockchainSize,
+    extrinsicsCount: 2,
+    eventsCount: 5,
+    author: new Account({ id: 'author' }),
+  });
 
   t.type(result, Block);
   t.has(result, {
@@ -21,12 +62,19 @@ tap.test('createBlock should create instance of a Block', (t) => {
     stateRoot: BlockHeaderMock.stateRoot,
     spacePledged,
     blockchainSize,
-  })
+  });
   t.end();
 });
 
 tap.test('createCall should create instance of Call without parent Call', (t) => {
-  const block = createBlock(BlockHeaderMock, spacePledged, blockchainSize);
+  const block = createBlock({
+    header: BlockHeaderMock, 
+    spacePledged, 
+    blockchainSize,
+    extrinsicsCount: 2,
+    eventsCount: 5,
+    author: new Account({ id: 'author' }),
+  });
   const extrinsic = createExtrinsic(callItemWithSignature, block, null, null);
   const result = createCall(callItemWithSignature, block, extrinsic, null);
   t.type(result, Call);
@@ -36,7 +84,14 @@ tap.test('createCall should create instance of Call without parent Call', (t) =>
 tap.todo('createCall should create instance of Call with parent Call');
 
 tap.test('createExtrinsic should create instance of Extrinsic without signature', (t) => {
-  const block = createBlock(BlockHeaderMock, spacePledged, blockchainSize);
+  const block = createBlock({
+    header: BlockHeaderMock, 
+    spacePledged, 
+    blockchainSize,
+    extrinsicsCount: 2,
+    eventsCount: 5,
+    author: new Account({ id: 'author' }),
+  });
   const result = createExtrinsic(callItemWithSignature, block, null, null);
 
   t.type(result, Extrinsic);
@@ -53,7 +108,7 @@ tap.test('createExtrinsic should create instance of Extrinsic without signature'
     success: callItemWithSignature.extrinsic.success,
     block,
     pos: callItemWithSignature.extrinsic.pos,
-  })
+  });
   t.end();
 });
 

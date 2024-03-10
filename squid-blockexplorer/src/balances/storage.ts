@@ -37,8 +37,14 @@ export class BalanceStorage {
   private async getSystemAccountBalance(header: SubstrateBlock, accountId: Buffer): Promise<Balance | undefined> {
     const storage = this.createSystemAccountStorage(this.ctx, header);
     if (!storage.isExists) return undefined;
+    
+    if (storage.isV0) {
+      const balance = await storage.asV0.get(accountId);
+      const { free, reserved } = balance.data;
+      return { free, reserved };
+    }
     // TODO: consider converting account to Buffer within this func
-    const balance = await storage.getAsV3(accountId);
+    const balance = await storage.asV0.get(accountId);
     const { free, reserved } = balance.data;
     return { free, reserved };
   }
@@ -46,8 +52,13 @@ export class BalanceStorage {
   private async getBalancesAccountBalance(header: SubstrateBlock, accountId: Buffer): Promise<Balance | undefined> {
     const storage = this.createBalanceAccountStorage(this.ctx, header);
     if (!storage.isExists) return undefined;
+    if (storage.isV0) {
+      const balance = await storage.asV0.get(accountId);
+      const { free, reserved } = balance;
+      return { free, reserved };
+    }
     // TODO: consider converting account to Buffer within this func
-    const balance = await storage.getAsV3(accountId);
+    const balance = await storage.asV0.get(accountId);
     const { free, reserved } = balance;
     return { free, reserved };
   }

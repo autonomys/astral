@@ -1,37 +1,52 @@
-import Accordion from 'common/components/Accordion';
-import { List, ListItem, StyledListItem } from 'common/components/List';
-import { bigNumberToNumber } from 'common/helpers';
-import { Account } from 'gql/graphql';
-import { FC } from 'react';
-import AccountBalanceStats from './AccountBalanceStats';
+import { FC } from 'react'
+import Identicon from '@polkadot/react-identicon'
+
+// gql
+import { Account } from 'gql/graphql'
+
+// common
+import { Accordion, CopyButton, List, StyledListItem } from 'common/components'
+import { shortString } from 'common/helpers'
+import { accountIdToHex } from 'common/helpers/formatAddress'
+import useDomains from 'common/hooks/useDomains'
 
 type Props = {
-  account: Account;
-};
+  account: Account
+  accountAddress: string
+  isDesktop?: boolean
+}
 
-const AccountDetailsCard: FC<Props> = ({ account }) => {
-  const accountTotal = bigNumberToNumber(account.total || 0, 18);
+const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = false }) => {
+  const publicKey = accountIdToHex(accountAddress)
+  const { selectedChain } = useDomains()
+
+  const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
   return (
-    <div className="border border-slate-100 bg-white shadow rounded-lg mb-4 p-4 sm:p-6">
-      <div className="flex items-center justify-between mb-10">
-        <h3 className="font-medium leading-none text-[#282929] text-sm">
-          {account.id}
-        </h3>
-      </div>
-      <div className="flow-root">
-        <List>
-          <StyledListItem title="Public key">{account.id}</StyledListItem>
-          <StyledListItem title="Account index">-</StyledListItem>
-          <StyledListItem title="Nonce">{account.updatedAt}</StyledListItem>
-          <ListItem>
-            <Accordion title="Balance" value={`${accountTotal}`}>
-              <AccountBalanceStats account={account} />
-            </Accordion>
-          </ListItem>
-        </List>
+    <div className='border border-slate-100 bg-white shadow rounded-[20px] mb-4 md:p-4 p-6 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'>
+      <div className='flex items-center gap-3 w-full'>
+        <Accordion
+          title={
+            <div className='w-full flex items-center gap-3'>
+              <Identicon value={accountAddress} size={48} theme={theme} />
+
+              <h3 className='font-medium leading-none text-[#282929] text-sm break-all dark:text-white'>
+                {accountAddress}
+              </h3>
+            </div>
+          }
+        >
+          <List>
+            <StyledListItem title='Public key'>
+              <CopyButton value={publicKey.toString()} message='Public key copied'>
+                {!isDesktop ? shortString(publicKey) : publicKey}
+              </CopyButton>
+            </StyledListItem>
+            <StyledListItem title='Nonce'>{account.nonce}</StyledListItem>
+          </List>
+        </Accordion>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AccountDetailsCard;
+export default AccountDetailsCard

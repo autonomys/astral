@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://archive.subspace.network/api",
+  "specVersions": "https://archive.gemini-3g.subspace.network/graphql",
   "constants": true,
   "events": true,
   "calls": true,

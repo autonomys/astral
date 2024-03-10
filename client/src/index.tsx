@@ -1,23 +1,26 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 
-import './index.css'
 import App from './App'
+import './index.css'
 import reportWebVitals from './reportWebVitals'
 
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_GRAPHQL_API_URL,
-  cache: new InMemoryCache(),
-})
+// common
+import { ChainProvider } from 'common/providers/ChainProvider'
+import { ThemeProvider } from 'common/providers/ThemeProvider'
+import { WalletProvider } from 'common/providers/WalletProvider'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
 root.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    <ChainProvider>
+      <ThemeProvider>
+        <WalletProvider>
+          <App />
+        </WalletProvider>
+      </ThemeProvider>
+    </ChainProvider>
   </React.StrictMode>,
 )
 

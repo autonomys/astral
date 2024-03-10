@@ -1,5 +1,5 @@
-import tap from 'tap';
-import { Extrinsic, Call, Event } from '../../model';
+import tap from "tap";
+import { Extrinsic, Call } from "../../model";
 import {
   parentCallItem,
   eventItemWithoutExtrinsic,
@@ -7,56 +7,102 @@ import {
   blockMock,
   extrinsicMock,
   parentCallMock,
-} from '../../mocks/mocks';
-import { processEvents } from '../../blocks/processEvents';
+  rewardEvent,
+  getOrCreateAccountMock,
+  addModuleNameMock,
+  contextMock,
+  getOrCreateOperatorMock,
+  getOrCreateNominatorsMock,
+  getOrCreateAccountRewardsMock,
+  getOrCreateOperatorRewardsMock,
+} from "../../mocks/mocks";
+import BlockHeaderMock from "../../mocks/BlockHeader.json";
+import { processEventsFactory } from "../../blocks/processEvents";
 
-tap.test('processEvents should create instances of Event and push into events list', async (t) => {
-  const eventsStored: Event[] = [];
+tap.test(
+  "processEvents should return a tuple including a list of Events and a list of RewardEvents",
+  async (t) => {
+    const extrinsicsMap = new Map<string, Extrinsic>();
+    const callsMap = new Map<string, Call>();
+    const processEvents = processEventsFactory(
+      contextMock,
+      getOrCreateAccountMock,
+      addModuleNameMock,
+      getOrCreateOperatorMock,
+      getOrCreateNominatorsMock,
+      getOrCreateAccountRewardsMock,
+      getOrCreateOperatorRewardsMock
+    );
+
+    const eventItems = [eventItemWithoutExtrinsic, rewardEvent];
+
+    const [events, rewardEvents] = await processEvents(
+      extrinsicsMap,
+      callsMap,
+      eventItems,
+      blockMock,
+      BlockHeaderMock
+    );
+    t.equal(events.length, 2); // all events
+    t.equal(rewardEvents.length, 1); // reward events
+
+    t.end();
+  }
+);
+
+tap.test("processEvents should map Event to a Block", async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
+  const processEvents = processEventsFactory(
+    contextMock,
+    getOrCreateAccountMock,
+    addModuleNameMock,
+    getOrCreateOperatorMock,
+    getOrCreateNominatorsMock,
+    getOrCreateAccountRewardsMock,
+    getOrCreateOperatorRewardsMock
+  );
 
-  const eventItems = [
-    eventItemWithoutExtrinsic,
-  ];
+  const eventItems = [eventItemWithoutExtrinsic];
 
-  t.equal(eventsStored.length, 0);
-
-  await processEvents(extrinsicsMap, callsMap, eventsStored, eventItems, blockMock);
-
-  t.equal(eventsStored.length, eventItems.length);
-
-  t.end();
-});
-
-tap.test('processEvents should map Event to a Block', async (t) => {
-  const eventsStored: Event[] = [];
-  const extrinsicsMap = new Map<string, Extrinsic>();
-  const callsMap = new Map<string, Call>();
-
-  const eventItems = [
-    eventItemWithoutExtrinsic,
-  ];
-
-  await processEvents(extrinsicsMap, callsMap, eventsStored, eventItems, blockMock);
+  const [eventsStored] = await processEvents(
+    extrinsicsMap,
+    callsMap,
+    eventItems,
+    blockMock,
+    BlockHeaderMock
+  );
 
   t.equal(eventsStored[0].block, blockMock);
 
   t.end();
 });
 
-tap.test('processEvents should map Event to Call and Extrinsic', async (t) => {
-  const eventsStored: Event[] = [];
+tap.test("processEvents should map Event to Call and Extrinsic", async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
+  const processEvents = processEventsFactory(
+    contextMock,
+    getOrCreateAccountMock,
+    addModuleNameMock,
+    getOrCreateOperatorMock,
+    getOrCreateNominatorsMock,
+    getOrCreateAccountRewardsMock,
+    getOrCreateOperatorRewardsMock
+  );
 
   extrinsicsMap.set(extrinsicMock.id, extrinsicMock);
   callsMap.set(parentCallItem.call.id, parentCallMock);
 
-  const eventItems = [
-    eventItemWithExtrinsic,
-  ];
+  const eventItems = [eventItemWithExtrinsic];
 
-  await processEvents(extrinsicsMap, callsMap, eventsStored, eventItems, blockMock);
+  const [eventsStored] = await processEvents(
+    extrinsicsMap,
+    callsMap,
+    eventItems,
+    blockMock,
+    BlockHeaderMock
+  );
 
   const savedExtrinsic = extrinsicsMap.get(extrinsicMock.id);
 

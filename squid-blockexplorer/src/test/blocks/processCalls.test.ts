@@ -1,60 +1,28 @@
 import tap from 'tap';
 import { Extrinsic, Call, Account } from '../../model';
-import { Context } from '../../processor';
 import {
   parentCallItem,
   childCallItem,
   callItemWithSignature,
-  contextMock,
   callsItems,
   getOrCreateAccountMock,
   blockMock,
   extrinsicMock,
   parentCallMock,
+  addModuleNameMock,
 } from '../../mocks/mocks';
-import { getOrCreateAccountFactory, processCalls, processExtrinsicsFactory } from '../../blocks/processCalls';
-
-tap.test('getOrCreateAccount should get Account if store has one', async (t) => {
-  const accountId = 'random account id';
-
-  const contextWithAccount = {
-    ...contextMock,
-    store: {
-      ...contextMock.store,
-      get: () => Promise.resolve(new Account({ id: accountId })),
-    }
-  } as unknown as Context;
-
-  const getOrCreateAccount = getOrCreateAccountFactory(contextWithAccount);
-
-  const result = await getOrCreateAccount(BigInt(1), accountId);
-
-  t.equal(result.id, accountId);
-
-  t.end();
-});
-
-tap.test('getOrCreateAccount should create new Account if store has none', async (t) => {
-  const accountId = 'new account id';
-
-  const getOrCreateAccount = getOrCreateAccountFactory(contextMock);
-
-  const result = await getOrCreateAccount(BigInt(1), accountId);
-
-  t.equal(result.id, accountId);
-
-  t.end();
-});
+import BlockHeaderMock from '../../mocks/BlockHeader.json';
+import { processCalls, processExtrinsicsFactory } from '../../blocks/processCalls';
 
 tap.test('processExtrinsics should save Extrinsics and Calls to extrinsics map and calls map respectively', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock);
+  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   t.equal(extrinsicsMap.size, 0);
   t.equal(callsMap.size, 0);
 
-  await processExtrinsics(extrinsicsMap, callsMap, callsItems, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, callsItems, blockMock, BlockHeaderMock);
 
   t.equal(extrinsicsMap.size, callsItems.length); // 2
   t.equal(callsMap.size, callsItems.length); // 2
@@ -65,13 +33,13 @@ tap.test('processExtrinsics should save Extrinsics and Calls to extrinsics map a
 tap.test('processExtrinsics should map Extrinsics and Calls to a Block', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock);
+  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   const calls = [
     callItemWithSignature,
   ];
 
-  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock, BlockHeaderMock);
 
   t.equal(extrinsicsMap.get(callItemWithSignature.extrinsic.id)?.block, blockMock);
   t.equal(callsMap.get(callItemWithSignature.call.id)?.block, blockMock);
@@ -82,13 +50,13 @@ tap.test('processExtrinsics should map Extrinsics and Calls to a Block', async (
 tap.test('processExtrinsics should add signer (Account) and signature if original extrinsic has signature', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock);
+  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   const calls = [
     callItemWithSignature,
   ];
 
-  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock, BlockHeaderMock);
 
   const savedExtrinsic = extrinsicsMap.get(callItemWithSignature.extrinsic.id);
 
@@ -101,13 +69,13 @@ tap.test('processExtrinsics should add signer (Account) and signature if origina
 tap.test('processExtrinsics should not add signer (Account) and signature if original extrinsic has no signature', async (t) => {
   const extrinsicsMap = new Map<string, Extrinsic>();
   const callsMap = new Map<string, Call>();
-  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock);
+  const processExtrinsics = processExtrinsicsFactory(getOrCreateAccountMock, addModuleNameMock);
 
   const calls = [
     parentCallItem,
   ];
 
-  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock);
+  await processExtrinsics(extrinsicsMap, callsMap, calls, blockMock, BlockHeaderMock);
 
   const savedExtrinsic = extrinsicsMap.get(callItemWithSignature.extrinsic.id);
 

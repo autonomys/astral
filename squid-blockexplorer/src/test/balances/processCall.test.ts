@@ -23,7 +23,7 @@ tap.test('processCall should add account id to set of ids', async (t) => {
         __kind: 'system',
       }
     }
-  }
+  };
 
   processCall(callWithDifferentOriginAccountId, ids);
 
@@ -53,7 +53,7 @@ tap.test('processCall should ignore call if call has no origin account id', asyn
       ...callItemWithSignature.call,
       origin: undefined
     }
-  }
+  };
 
   t.equal(ids.size, 0);
 

@@ -1,0 +1,8 @@
+## Ignore all files
+*
+## Do not ignore
+!src/
+!package.json
+!package-lock.json
+!tsconfig.json
+!entrypoint.sh

@@ -1,53 +1,78 @@
 type Account @entity {
-  id: ID!
+  id: ID! @index
   free: BigInt
   reserved: BigInt
-  total: BigInt
+  total: BigInt @index
   updatedAt: BigInt
-  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer")
+  nonce: BigInt
+  extrinsics: [Extrinsic!]!
+    @derivedFrom(field: "signer")
+    @cardinality(value: 10)
+  rewards: [RewardEvent!]!
+    @derivedFrom(field: "account")
+    @cardinality(value: 10)
 }
 
 type Block @entity {
-  id: ID!
-  height: BigInt!
+  id: ID! @index
+  height: BigInt! @index
   timestamp: DateTime!
   hash: String!
   parentHash: String!
   specId: String!
   stateRoot: String!
-  extrinsicRoot: String
-  extrinsics: [Extrinsic!]! @derivedFrom(field: "block")
-  events: [Event!]! @derivedFrom(field: "block")
-  calls: [Call!]! @derivedFrom(field: "block")
+  extrinsicsRoot: String!
+  extrinsics: [Extrinsic!]!
+    @derivedFrom(field: "block")
+    @cardinality(value: 1000)
+  events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  rewards: [RewardEvent!]!
+    @derivedFrom(field: "block")
+    @cardinality(value: 1000)
+  calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   spacePledged: BigInt!
   blockchainSize: BigInt!
+  extrinsicsCount: Int!
+  eventsCount: Int!
+  author: Account
+}
+
+type ExtrinsicModuleName @entity {
+  id: ID! @index
+  name: String! @index
 }
 
 type Extrinsic @entity {
-  id: ID!
+  id: ID! @index
   hash: String!
   indexInBlock: Int!
   nonce: BigInt
   name: String!
   signer: Account
-  signature: String
+  signature: String @index
   error: JSON
   tip: BigInt
   fee: BigInt
   success: Boolean!
   block: Block!
   pos: Int
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   args: JSON
-  events: [Event] @derivedFrom(field: "extrinsic")
-  calls: [Call!] @derivedFrom(field: "extrinsic")
+  events: [Event] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+  calls: [Call!] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+}
+
+type EventModuleName @entity {
+  id: ID! @index
+  name: String! @index
 }
 
 type Event @entity {
-  id: ID!
-  indexInBlock: Int!
+  id: ID! @index
+  indexInBlock: Int! @index
   name: String!
-  timestamp: DateTime!
+  timestamp: DateTime! @index
   phase: String!
   pos: Int
   args: JSON
@@ -56,17 +81,81 @@ type Event @entity {
   call: Call
 }
 
-type Call @entity {
-  id: ID!
+type RewardEvent @entity {
+  id: ID! @index
+  indexInBlock: Int!
   name: String!
-  timestamp: DateTime!
+  timestamp: DateTime! @index
+  phase: String!
+  pos: Int
+  block: Block
+  extrinsic: Extrinsic
+  call: Call
+  account: Account
+  amount: BigInt
+}
+
+type Call @entity {
+  id: ID! @index
+  name: String!
+  timestamp: DateTime! @index
   success: Boolean!
   args: JSON
   block: Block!
   extrinsic: Extrinsic!
   error: JSON
-  signer: String
+  signer: String @index
   parent: Call
-  calls: [Call] @derivedFrom(field: "parent")
+  calls: [Call] @derivedFrom(field: "parent") @cardinality(value: 10)
   pos: Int
+}
+
+type Log @entity {
+  kind: String! @index
+  value: JSON
+  block: Block!
+}
+
+type Operator @entity {
+  id: ID! @index
+  signingKey: String! @index
+  operatorOwner: String @index
+  orderingId: Int! @index
+  currentDomainId: Int
+  nextDomainId: Int
+  minimumNominatorStake: BigInt
+  nominationTax: Int
+  currentTotalStake: BigInt
+  currentEpochRewards: BigInt
+  totalShares: BigInt
+  nominatorAmount: Int! @index
+  nominators: [Nominator!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000)
+  status: String
+  updatedAt: BigInt @index
+}
+
+type Nominator @entity {
+  id: ID! @index
+  operator: Operator!
+  account: Account!
+  shares: BigInt
+  updatedAt: BigInt
+}
+
+type AccountRewards @entity {
+  id: ID! @index
+  account: Account!
+  amount: BigInt
+  block: BigInt @index
+  vote: BigInt @index
+  operator: BigInt @index
+  updatedAt: BigInt!
+}
+
+type OperatorRewards @entity {
+  id: ID! @index
+  amount: BigInt
+  updatedAt: BigInt!
 }

@@ -9,4 +9,3 @@ services:
       POSTGRES_PASSWORD: squid
     ports:
       - "${DB_PORT}:5432"
-

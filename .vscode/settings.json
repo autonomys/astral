@@ -1,0 +1,24 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.sortImports": "explicit",
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.tslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "javascript.format.enable": false,
+  "editor.tabSize": 2,
+  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "subspace",
+    "gemini",
+    "graphiql",
+    "leaderboard",
+    "subscan",
+    "extrinsics",
+    "subsquid",
+    "typegen"
+  ]
+}

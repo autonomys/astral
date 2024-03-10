@@ -1,52 +1,56 @@
-import tap from 'tap';
-import { SubspaceRecordsRootStorage, SubspaceSolutionRangesStorage } from '../../types/storage';
-import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { calcSpacePledged, calcHistorySize } from '../../blocks/utils';
+import tap from "tap";
+import { SubspaceSolutionRangesStorage } from "../../types/storage";
+import BlockHeaderMock from "../../mocks/BlockHeader.json";
+import { calcHistorySize } from "../../blocks/utils";
 import {
   contextMock,
   solutionRangesStorageFactoryMock,
-  historySizeStorageFactoryMock,
-  SOLUTION_RANGES,
-  SEGMENTS_COUNT,
-} from '../../mocks/mocks';
-import { solutionRangesStorageFactory, historySizeStorageFactory, getSpacePledgedFactory, getHistorySizeFactory } from '../../blocks/storage';
+} from "../../mocks/mocks";
+import {
+  solutionRangesStorageFactory,
+  getSpacePledgedFactory,
+  getHistorySizeFactory,
+} from "../../blocks/storage";
 
-tap.test('solutionRangesStorageFactory should create instance of SubspaceSolutionRangesStorage', (t) => {
-  const result = solutionRangesStorageFactory(contextMock, BlockHeaderMock);
+tap.test(
+  "solutionRangesStorageFactory should create instance of SubspaceSolutionRangesStorage",
+  (t) => {
+    const result = solutionRangesStorageFactory(contextMock, BlockHeaderMock);
 
-  t.type(result, SubspaceSolutionRangesStorage);
+    t.type(result, SubspaceSolutionRangesStorage);
 
-  t.end();
-});
+    t.end();
+  }
+);
 
-tap.test('historySizeStorageFactory should create instance of SubspaceRecordsRootStorage', (t) => {
-  const result = historySizeStorageFactory(contextMock, BlockHeaderMock);
+tap.test(
+  "getSpacePledgedFactory should create getSpacePledged method, which returns space pledged (bigint)",
+  async (t) => {
+    const getSpacePledged = getSpacePledgedFactory(
+      contextMock,
+      solutionRangesStorageFactoryMock
+    );
 
-  t.type(result, SubspaceRecordsRootStorage);
+    const result = await getSpacePledged(BlockHeaderMock);
 
-  t.end();
-});
+    t.type(result, "bigint");
+    t.equal(result, 52419547733967241216000n);
 
-tap.test('getSpacePledgedFactory should create getSpacePledged method, which returns space pledged (bigint)', async (t) => {
-  const getSpacePledged = getSpacePledgedFactory(contextMock, solutionRangesStorageFactoryMock);
+    t.end();
+  }
+);
 
-  const result = await getSpacePledged(BlockHeaderMock);
-  const expected = calcSpacePledged(SOLUTION_RANGES);
+tap.test(
+  "getHistorySizeFactory should create getHistorySize method, which returns history size (bigint)",
+  async (t) => {
+    const getHistorySize = getHistorySizeFactory(contextMock);
 
-  t.type(result, 'bigint');
-  t.equal(result, expected);
+    const result = await getHistorySize(BlockHeaderMock);
+    const expected = calcHistorySize(0);
 
-  t.end();
-});
+    t.type(result, "bigint");
+    t.equal(result, expected);
 
-tap.test('getHistorySizeFactory should create getHistorySize method, which returns history size (bigint)', async (t) => {
-  const getHistorySize = getHistorySizeFactory(contextMock, historySizeStorageFactoryMock);
-
-  const result = await getHistorySize(BlockHeaderMock);
-  const expected = calcHistorySize(SEGMENTS_COUNT);
-
-  t.type(result, 'bigint');
-  t.equal(result, expected);
-
-  t.end();
-});
+    t.end();
+  }
+);

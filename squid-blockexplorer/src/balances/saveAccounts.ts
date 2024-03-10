@@ -1,16 +1,14 @@
-import * as ss58 from '@subsquid/ss58';
-import config from '../config';
-import { SubstrateBlock } from '@subsquid/substrate-processor';
-import { Account } from '../model';
-import { Context } from '../processor';
-import { BalanceStorage } from './storage';
-
-function encodeId(id: Uint8Array) {
-  return ss58.codec(config.prefix).encode(id);
-}
+import { SubstrateBlock } from "@subsquid/substrate-processor";
+import { Account } from "../model";
+import { Context } from "../processor";
+import { BalanceStorage, createSystemAccountStorage } from "./storage";
+import { encodeId } from "../blocks/utils";
 
 export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
-  return async function saveAccounts(header: SubstrateBlock, accountIds: Buffer[]) {
+  return async function saveAccounts(
+    header: SubstrateBlock,
+    accountIds: Buffer[]
+  ) {
     const accounts: Account[] = [];
 
     for (let i = 0; i < accountIds.length; i++) {
@@ -26,6 +24,10 @@ export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
       // check if there is an existing account created earlier (i.e. when processing blocks)
       const existingAccount = await ctx.store.get(Account, id);
 
+      // update account nonce if it exists
+      const systemStorage = createSystemAccountStorage(ctx, header);
+      const accountInfo =  await systemStorage.asV0.get(accountIds[i]);
+
       const account = new Account({
         ...existingAccount,
         id,
@@ -33,6 +35,7 @@ export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
         reserved: balance.reserved,
         total,
         updatedAt: BigInt(header.height),
+        nonce: BigInt(accountInfo.nonce),
       });
 
       accounts.push(account);
@@ -42,8 +45,6 @@ export function saveAccountsFactory(ctx: Context, storage: BalanceStorage) {
       await ctx.store.save(accounts);
     }
 
-    ctx.log
-      .child('accounts')
-      .info(`updated: ${accounts.length}`);
-  }
+    ctx.log.child("accounts").info(`updated: ${accounts.length}`);
+  };
 }

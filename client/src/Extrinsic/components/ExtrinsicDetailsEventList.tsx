@@ -2,9 +2,12 @@ import { FC } from 'react'
 import { Event } from 'gql/graphql'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { Link } from 'react-router-dom'
 
 // common
-import Table, { Column } from 'common/components/Table'
+import { Table, Column } from 'common/components'
+import { INTERNAL_ROUTES } from 'common/routes'
+import useDomains from 'common/hooks/useDomains'
 
 dayjs.extend(relativeTime)
 
@@ -13,20 +16,27 @@ type Props = {
 }
 
 const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
+  const { selectedChain, selectedDomain } = useDomains()
   // methods
   const generateColumns = (events: Event[]): Column[] => [
     {
       title: 'Event Id',
-      cells: events.map(({ block, pos, id }, index) => (
-        <div key={`${id}-extrinsic-event-id`}>{`${block?.height || index}-${pos}`}</div>
+      cells: events.map(({ block, indexInBlock, id }) => (
+        <Link
+          key={`${id}-extrinsic-event-id`}
+          className='w-full hover:text-[#DE67E4]'
+          to={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
+        >
+          <div>{`${block?.height}-${indexInBlock}`}</div>
+        </Link>
       )),
     },
     {
       title: 'Extrinsic Id',
-      cells: events.map(({ extrinsic, id }) => (
-        <div key={`${id}-extrinsic-event-extrinsic`}>
-          {extrinsic ? `${extrinsic.block.height}-${extrinsic.pos}` : ''}
-        </div>
+      cells: events.map(({ block, id, extrinsic }) => (
+        <div
+          key={`${id}-extrinsic-event-extrinsic`}
+        >{`${block?.height}-${extrinsic?.indexInBlock}`}</div>
       )),
     },
     {
@@ -50,7 +60,7 @@ const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
     <Table
       columns={columns}
       emptyMessage='There are no events to show'
-      id='block-details-event-list'
+      id='extrinsic-details-event-list'
     />
   )
 }
