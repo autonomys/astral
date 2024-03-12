@@ -20,18 +20,8 @@ export const processor = new SubstrateBatchProcessor()
     // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
     rateLimit: 10,
   })
-  .setBlockRange({ from: 0 })
   .addEvent({
-    name: [
-      events.domains.operatorRegistered.name,
-      events.domains.operatorDeregistered.name,
-      events.domains.operatorNominated.name,
-      events.domains.operatorRewarded.name,
-      events.domains.operatorSlashed.name,
-      events.domains.domainEpochCompleted.name,
-      events.domains.operatorSwitchedDomain.name,
-      events.domains.withdrewStake.name,
-    ],
+    name: [events.balances.transfer.name],
     extrinsic: true,
   })
   .setFields({
@@ -46,8 +36,6 @@ export const processor = new SubstrateBatchProcessor()
       timestamp: true,
     },
   });
-// Uncomment to disable RPC ingestion and drastically reduce no of RPC calls
-//.useArchiveOnly()
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
