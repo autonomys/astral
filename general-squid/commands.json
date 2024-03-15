@@ -61,14 +61,26 @@
     },
     "serve:prod": {
       "description": "Start the GraphQL API server with caching and limits",
-      "cmd": ["squid-graphql-server",
-        "--dumb-cache", "in-memory",
-        "--dumb-cache-ttl", "1000",
-        "--dumb-cache-size", "100",
-        "--dumb-cache-max-age", "1000" ]
+      "cmd": [
+        "squid-graphql-server",
+        "--dumb-cache",
+        "in-memory",
+        "--dumb-cache-ttl",
+        "1000",
+        "--dumb-cache-size",
+        "100",
+        "--dumb-cache-max-age",
+        "1000"
+      ]
     },
     "check-updates": {
-      "cmd": ["npx", "--yes", "npm-check-updates", "--filter=/subsquid/", "--upgrade"],
+      "cmd": [
+        "npx",
+        "--yes",
+        "npm-check-updates",
+        "--filter=/subsquid/",
+        "--upgrade"
+      ],
       "hidden": true
     },
     "bump": {
@@ -79,6 +91,15 @@
     "open": {
       "description": "Open a local browser window",
       "cmd": ["npx", "--yes", "opener"]
+    },
+    "metadata:explore": {
+      "description": "Explore the metadata of a Substrate chain",
+      "cmd": [
+        "npx",
+        "substrate-metadata-explorer",
+        "--rpc=https://rpc-0.gemini-3h.subspace.network/ws",
+        "--out=gemini3h.jsonl"
+      ]
     }
   }
 }

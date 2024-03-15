@@ -9,8 +9,6 @@ import {
 } from "@subsquid/substrate-processor";
 import { assertNotNull } from "@subsquid/util-internal";
 
-import { events } from "./types";
-
 export const processor = new SubstrateBatchProcessor()
   // Chain RPC endpoint is required on Substrate for metadata and real-time updates
   .setRpcEndpoint({
@@ -20,22 +18,11 @@ export const processor = new SubstrateBatchProcessor()
     // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
     rateLimit: 10,
   })
-  .addEvent({
-    name: [events.balances.transfer.name],
-    extrinsic: true,
-  })
-  .setFields({
-    event: {
-      args: true,
-    },
-    extrinsic: {
-      hash: true,
-      fee: true,
-    },
-    block: {
-      timestamp: true,
-    },
-  });
+  .setBlockRange({ from: 0 })
+  .includeAllBlocks()
+  .addEvent({})
+  .addCall({})
+  .setFields({});
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;

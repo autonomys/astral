@@ -1,17 +1,85 @@
-type Account @entity {
-  "Account address"
-  id: ID!
-  transfersTo: [Transfer!] @derivedFrom(field: "to")
-  transfersFrom: [Transfer!] @derivedFrom(field: "from")
+type Block @entity {
+  id: ID! @index
+  height: Int! @index
+  timestamp: DateTime!
+  hash: String!
+  parentHash: String!
+  specId: String!
+  stateRoot: String!
+  extrinsicsRoot: String!
+  extrinsics: [Extrinsic!]!
+    @derivedFrom(field: "block")
+    @cardinality(value: 1000)
+  events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
+  spacePledged: BigInt!
+  blockchainSize: BigInt!
+  extrinsicsCount: Int!
+  eventsCount: Int!
+  author: String
 }
 
-type Transfer @entity {
-  id: ID!
-  blockNumber: Int! @index
+type ExtrinsicModuleName @entity {
+  id: ID! @index
+  name: String! @index
+}
+
+type Extrinsic @entity {
+  id: ID! @index
+  hash: String!
+  indexInBlock: Int!
+  nonce: Int
+  name: String!
+  signer: String
+  signature: String @index
+  error: JSON
+  tip: BigInt
+  fee: BigInt
+  success: Boolean!
+  block: Block!
+  pos: Int
   timestamp: DateTime! @index
-  extrinsicHash: String @index
-  from: Account!
-  to: Account!
-  amount: BigInt! @index
-  fee: BigInt! # fee is calculated at the best effort and may be zero for some old extrinsics
+  args: JSON
+  events: [Event] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+  calls: [Call!] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+}
+
+type EventModuleName @entity {
+  id: ID! @index
+  name: String! @index
+}
+
+type Event @entity {
+  id: ID! @index
+  indexInBlock: Int! @index
+  name: String!
+  timestamp: DateTime! @index
+  phase: String!
+  pos: Int
+  args: JSON
+  block: Block
+  extrinsic: Extrinsic
+  call: Call
+}
+
+type Call @entity {
+  id: ID! @index
+  name: String!
+  timestamp: DateTime! @index
+  success: Boolean!
+  args: JSON
+  block: Block!
+  extrinsic: Extrinsic!
+  error: JSON
+  signer: String @index
+  parent: Call
+  calls: [Call] @derivedFrom(field: "parent") @cardinality(value: 10)
+  pos: Int
+}
+
+type Log @entity {
+  kind: String! @index
+  value: JSON
+  block: Block!
 }

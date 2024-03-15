@@ -1,14 +1,36 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://v2.archive.subsquid.io/metadata/kusama",
+  "specVersions": "gemini3h.jsonl",
   "pallets": {
     "Balances": {
-      "events": [
-        "Transfer"
-      ],
-      "calls": [],
-      "storage": [],
-      "constants": []
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Domains": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Rewards": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Messenger": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Subspace": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
     }
   }
 }
