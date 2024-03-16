@@ -1,6 +1,5 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
 import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
@@ -8,6 +7,7 @@ import { SortingState } from '@tanstack/react-table'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
+import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import type { NominatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
@@ -19,6 +19,7 @@ import { useErrorHandler } from 'react-error-boundary'
 import type { OperatorIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { NominatorListCard } from './NominatorListCard'
@@ -52,6 +53,13 @@ export const NominatorsList: FC = () => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
+
+  const getStatus = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (status: any) =>
+      typeof status === 'string' ? Object.keys(JSON.parse(status))[0] : Object.keys(status)[0],
+    [],
+  )
 
   const columns = useMemo(() => {
     const cols = [
@@ -190,7 +198,11 @@ export const NominatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.operator.status}</div>
+          <div>
+            {selectedChain.urls.page === Chains.gemini3g
+              ? row.original.operator.status
+              : capitalizeFirstLetter(getStatus(row.original.operator.status))}
+          </div>
         ),
       },
     ]

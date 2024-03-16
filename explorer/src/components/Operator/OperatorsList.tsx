@@ -1,6 +1,5 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
@@ -8,6 +7,7 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
+import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import type { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
@@ -18,6 +18,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { capitalizeFirstLetter } from 'utils/string'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -52,6 +53,13 @@ export const OperatorsList: FC = () => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
+
+  const getStatus = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (status: any) =>
+      typeof status === 'string' ? Object.keys(JSON.parse(status))[0] : Object.keys(status)[0],
+    [],
+  )
 
   const columns = useMemo(() => {
     const cols = [
@@ -154,7 +162,11 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.status}</div>
+          <div>
+            {selectedChain.urls.page === Chains.gemini3g
+              ? row.original.status
+              : capitalizeFirstLetter(getStatus(row.original.status))}
+          </div>
         ),
       },
     ]
@@ -191,7 +203,7 @@ export const OperatorsList: FC = () => {
         },
       })
     return cols
-  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction, getStatus])
 
   const variables = useMemo(
     () => ({
