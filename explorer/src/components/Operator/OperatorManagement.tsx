@@ -18,6 +18,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -52,13 +53,6 @@ export const OperatorManagement: FC = () => {
     setIsOpen(false)
     setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
   }, [])
-
-  const getStatus = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (status: any) =>
-      typeof status === 'string' ? Object.keys(JSON.parse(status))[0] : Object.keys(status)[0],
-    [],
-  )
 
   const columns = useMemo(() => {
     return [
@@ -152,7 +146,7 @@ export const OperatorManagement: FC = () => {
           <div>
             {selectedChain.urls.page === Chains.gemini3g
               ? row.original.status
-              : capitalizeFirstLetter(getStatus(row.original.status))}
+              : capitalizeFirstLetter(operatorStatus(row.original.status))}
           </div>
         ),
       },

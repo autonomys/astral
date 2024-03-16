@@ -18,6 +18,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter } from 'utils/string'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -53,13 +54,6 @@ export const OperatorsList: FC = () => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
-
-  const getStatus = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (status: any) =>
-      typeof status === 'string' ? Object.keys(JSON.parse(status))[0] : Object.keys(status)[0],
-    [],
-  )
 
   const columns = useMemo(() => {
     const cols = [
@@ -165,7 +159,7 @@ export const OperatorsList: FC = () => {
           <div>
             {selectedChain.urls.page === Chains.gemini3g
               ? row.original.status
-              : capitalizeFirstLetter(getStatus(row.original.status))}
+              : capitalizeFirstLetter(operatorStatus(row.original.status))}
           </div>
         ),
       },
@@ -203,7 +197,7 @@ export const OperatorsList: FC = () => {
         },
       })
     return cols
-  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction, getStatus])
+  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
 
   const variables = useMemo(
     () => ({

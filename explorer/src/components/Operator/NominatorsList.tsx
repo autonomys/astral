@@ -19,6 +19,7 @@ import { useErrorHandler } from 'react-error-boundary'
 import type { OperatorIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -53,13 +54,6 @@ export const NominatorsList: FC = () => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
-
-  const getStatus = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (status: any) =>
-      typeof status === 'string' ? Object.keys(JSON.parse(status))[0] : Object.keys(status)[0],
-    [],
-  )
 
   const columns = useMemo(() => {
     const cols = [
@@ -201,7 +195,7 @@ export const NominatorsList: FC = () => {
           <div>
             {selectedChain.urls.page === Chains.gemini3g
               ? row.original.operator.status
-              : capitalizeFirstLetter(getStatus(row.original.operator.status))}
+              : capitalizeFirstLetter(operatorStatus(row.original.operator.status))}
           </div>
         ),
       },
