@@ -19,17 +19,17 @@ export class Block {
     height!: number
 
     @Index_()
-    @Column_("bytea", {nullable: false})
-    hash!: Uint8Array
+    @Column_("text", {nullable: false})
+    hash!: string
 
-    @Column_("bytea", {nullable: false})
-    parentHash!: Uint8Array
+    @Column_("text", {nullable: false})
+    parentHash!: string
 
-    @Column_("bytea", {nullable: false})
-    stateRoot!: Uint8Array
+    @Column_("text", {nullable: false})
+    stateRoot!: string
 
-    @Column_("bytea", {nullable: false})
-    extrinsicsRoot!: Uint8Array
+    @Column_("text", {nullable: false})
+    extrinsicsRoot!: string
 
     @Column_("text", {nullable: false})
     specId!: string

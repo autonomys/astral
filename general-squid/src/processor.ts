@@ -23,6 +23,7 @@ export const processor = new SubstrateBatchProcessor()
       extrinsicsRoot: true,
       stateRoot: true,
       validator: true,
+      author: true,
     },
     call: {
       name: true,

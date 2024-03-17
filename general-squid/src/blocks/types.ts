@@ -10,3 +10,14 @@ export interface SubPreDigest extends Struct {
   readonly slot: u64;
   readonly solution: Solution;
 }
+
+export const BlockChainTypes = {
+  Solution: {
+    public_key: "AccountId32",
+    reward_address: "AccountId32",
+  },
+  SubPreDigest: {
+    slot: "u64",
+    solution: "Solution",
+  },
+};

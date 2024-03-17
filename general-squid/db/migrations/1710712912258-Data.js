@@ -1,5 +1,5 @@
-module.exports = class Data1710631489789 {
-    name = 'Data1710631489789'
+module.exports = class Data1710712912258 {
+    name = 'Data1710712912258'
 
     async up(db) {
         await db.query(`CREATE TABLE "event" ("id" character varying NOT NULL, "index" integer NOT NULL, "phase" text NOT NULL, "pallet" text NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "pos" integer, "args" jsonb, "args_str" text array, "block_id" character varying, "extrinsic_id" character varying, "call_id" character varying, CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`)
@@ -19,7 +19,7 @@ module.exports = class Data1710631489789 {
         await db.query(`CREATE INDEX "IDX_a032945f45cacda2d30f4286df" ON "call" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_2f0d3e5417d523daf6f5220599" ON "call" ("signer") `)
         await db.query(`CREATE INDEX "IDX_f1e953379e1b3c453cd896bcd4" ON "call" ("id", "pallet", "name") `)
-        await db.query(`CREATE TABLE "extrinsic" ("id" character varying NOT NULL, "index" integer NOT NULL, "version" integer NOT NULL, "signature" jsonb, "tip" numeric, "fee" numeric, "success" boolean NOT NULL, "error" jsonb, "hash" bytea NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "signer" text, "args" jsonb, "block_id" character varying, "call_id" character varying, CONSTRAINT "PK_80d7db0e4b1e83e30336bc76755" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "extrinsic" ("id" character varying NOT NULL, "index" integer NOT NULL, "version" integer NOT NULL, "signature" jsonb, "tip" numeric, "fee" numeric, "success" boolean NOT NULL, "error" jsonb, "hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "signer" text, "args" jsonb, "block_id" character varying, "call_id" character varying, CONSTRAINT "PK_80d7db0e4b1e83e30336bc76755" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_a3b99daba1259dab0dd040d4f7" ON "extrinsic" ("block_id") `)
         await db.query(`CREATE INDEX "IDX_824d47cc4b2cda726405aa507c" ON "extrinsic" ("call_id") `)
         await db.query(`CREATE INDEX "IDX_1f45de0713a55049009e8e8127" ON "extrinsic" ("hash") `)
@@ -27,7 +27,7 @@ module.exports = class Data1710631489789 {
         await db.query(`CREATE TABLE "log" ("id" character varying NOT NULL, "kind" text NOT NULL, "value" jsonb, "block_id" character varying, CONSTRAINT "PK_350604cbdf991d5930d9e618fbd" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_110007d6221b41e46fcada62a9" ON "log" ("kind") `)
         await db.query(`CREATE INDEX "IDX_7d3f5ac68148194ee7ced3032e" ON "log" ("block_id") `)
-        await db.query(`CREATE TABLE "block" ("id" character varying NOT NULL, "height" integer NOT NULL, "hash" bytea NOT NULL, "parent_hash" bytea NOT NULL, "state_root" bytea NOT NULL, "extrinsics_root" bytea NOT NULL, "spec_id" text NOT NULL, "spec_name" text NOT NULL, "spec_version" integer NOT NULL, "impl_name" text NOT NULL, "impl_version" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "validator" bytea, "extrinsics_count" integer NOT NULL, "calls_count" integer NOT NULL, "events_count" integer NOT NULL, "logs_count" integer NOT NULL, "space_pledged" numeric NOT NULL, "blockchain_size" numeric NOT NULL, "author" text, CONSTRAINT "PK_d0925763efb591c2e2ffb267572" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "block" ("id" character varying NOT NULL, "height" integer NOT NULL, "hash" text NOT NULL, "parent_hash" text NOT NULL, "state_root" text NOT NULL, "extrinsics_root" text NOT NULL, "spec_id" text NOT NULL, "spec_name" text NOT NULL, "spec_version" integer NOT NULL, "impl_name" text NOT NULL, "impl_version" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "validator" bytea, "extrinsics_count" integer NOT NULL, "calls_count" integer NOT NULL, "events_count" integer NOT NULL, "logs_count" integer NOT NULL, "space_pledged" numeric NOT NULL, "blockchain_size" numeric NOT NULL, "author" text, CONSTRAINT "PK_d0925763efb591c2e2ffb267572" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_bce676e2b005104ccb768495db" ON "block" ("height") `)
         await db.query(`CREATE INDEX "IDX_f8fba63d7965bfee9f304c487a" ON "block" ("hash") `)
         await db.query(`CREATE INDEX "IDX_5b79d140fa8e2c64a7ef223598" ON "block" ("spec_version") `)

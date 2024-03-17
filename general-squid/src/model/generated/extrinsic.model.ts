@@ -44,8 +44,8 @@ export class Extrinsic {
     error!: unknown | undefined | null
 
     @Index_()
-    @Column_("bytea", {nullable: false})
-    hash!: Uint8Array
+    @Column_("text", {nullable: false})
+    hash!: string
 
     @Index_()
     @Column_("timestamp with time zone", {nullable: false})
