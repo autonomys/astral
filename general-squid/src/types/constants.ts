@@ -1,4 +1,8 @@
+export * as system from './system/constants'
+export * as timestamp from './timestamp/constants'
 export * as subspace from './subspace/constants'
 export * as rewards from './rewards/constants'
 export * as balances from './balances/constants'
+export * as transactionFees from './transaction-fees/constants'
+export * as utility from './utility/constants'
 export * as domains from './domains/constants'

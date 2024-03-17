@@ -15,26 +15,66 @@ export class Block {
     id!: string
 
     @Index_()
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-    height!: bigint
+    @Column_("int4", {nullable: false})
+    height!: number
 
-    @Column_("timestamp with time zone", {nullable: false})
-    timestamp!: Date
+    @Index_()
+    @Column_("bytea", {nullable: false})
+    hash!: Uint8Array
 
-    @Column_("text", {nullable: false})
-    hash!: string
+    @Column_("bytea", {nullable: false})
+    parentHash!: Uint8Array
 
-    @Column_("text", {nullable: false})
-    parentHash!: string
+    @Column_("bytea", {nullable: false})
+    stateRoot!: Uint8Array
+
+    @Column_("bytea", {nullable: false})
+    extrinsicsRoot!: Uint8Array
 
     @Column_("text", {nullable: false})
     specId!: string
 
     @Column_("text", {nullable: false})
-    stateRoot!: string
+    specName!: string
+
+    @Index_()
+    @Column_("int4", {nullable: false})
+    specVersion!: number
 
     @Column_("text", {nullable: false})
-    extrinsicsRoot!: string
+    implName!: string
+
+    @Column_("int4", {nullable: false})
+    implVersion!: number
+
+    @Index_()
+    @Column_("timestamp with time zone", {nullable: false})
+    timestamp!: Date
+
+    @Index_()
+    @Column_("bytea", {nullable: true})
+    validator!: Uint8Array | undefined | null
+
+    @Column_("int4", {nullable: false})
+    extrinsicsCount!: number
+
+    @Column_("int4", {nullable: false})
+    callsCount!: number
+
+    @Column_("int4", {nullable: false})
+    eventsCount!: number
+
+    @Column_("int4", {nullable: false})
+    logsCount!: number
+
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    spacePledged!: bigint
+
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    blockchainSize!: bigint
+
+    @Column_("text", {nullable: true})
+    author!: string | undefined | null
 
     @OneToMany_(() => Extrinsic, e => e.block)
     extrinsics!: Extrinsic[]
@@ -47,19 +87,4 @@ export class Block {
 
     @OneToMany_(() => Log, e => e.block)
     logs!: Log[]
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-    spacePledged!: bigint
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-    blockchainSize!: bigint
-
-    @Column_("int4", {nullable: false})
-    extrinsicsCount!: number
-
-    @Column_("int4", {nullable: false})
-    eventsCount!: number
-
-    @Column_("text", {nullable: true})
-    author!: string | undefined | null
 }

@@ -1,23 +1,36 @@
 type Block @entity {
   id: ID! @index
   height: Int! @index
-  timestamp: DateTime!
-  hash: String!
-  parentHash: String!
+  hash: Bytes! @index
+  parentHash: Bytes!
+  stateRoot: Bytes!
+  extrinsicsRoot: Bytes!
   specId: String!
-  stateRoot: String!
-  extrinsicsRoot: String!
+  specName: String!
+  specVersion: Int! @index
+  implName: String!
+  implVersion: Int!
+  timestamp: DateTime! @index
+  validator: Bytes @index
+  extrinsicsCount: Int!
+  callsCount: Int!
+  eventsCount: Int!
+  logsCount: Int!
+  spacePledged: BigInt!
+  blockchainSize: BigInt!
+  author: String
   extrinsics: [Extrinsic!]!
     @derivedFrom(field: "block")
     @cardinality(value: 1000)
   events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
-  spacePledged: BigInt!
-  blockchainSize: BigInt!
-  extrinsicsCount: Int!
-  eventsCount: Int!
-  author: String
+}
+
+type ExtrinsicSignature {
+  address: JSON
+  signature: JSON
+  signedExtensions: JSON
 }
 
 type ExtrinsicModuleName @entity {
@@ -27,22 +40,22 @@ type ExtrinsicModuleName @entity {
 
 type Extrinsic @entity {
   id: ID! @index
-  hash: String!
-  indexInBlock: Int!
-  nonce: Int
-  name: String!
-  signer: String
-  signature: String @index
-  error: JSON
+  block: Block!
+  call: Call
+  index: Int!
+  version: Int!
+  signature: ExtrinsicSignature
   tip: BigInt
   fee: BigInt
   success: Boolean!
-  block: Block!
-  pos: Int
+  error: JSON
+  hash: Bytes! @index
   timestamp: DateTime! @index
+  name: String!
+  signer: String
   args: JSON
-  events: [Event] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
-  calls: [Call!] @derivedFrom(field: "extrinsic") @cardinality(value: 10)
+  events: [Event] @derivedFrom(field: "extrinsic")
+  calls: [Call!] @derivedFrom(field: "extrinsic")
 }
 
 type EventModuleName @entity {
@@ -50,31 +63,37 @@ type EventModuleName @entity {
   name: String! @index
 }
 
-type Event @entity {
+type Event @entity @index(fields: ["id", "pallet", "name", "timestamp"]) {
   id: ID! @index
-  indexInBlock: Int! @index
-  name: String!
-  timestamp: DateTime! @index
-  phase: String!
-  pos: Int
-  args: JSON
   block: Block
   extrinsic: Extrinsic
   call: Call
+  index: Int!
+  phase: String!
+  pallet: String! @index
+  name: String! @index
+  timestamp: DateTime! @index
+  pos: Int
+  args: JSON
+  argsStr: [String]
 }
 
-type Call @entity {
+type Call @entity @index(fields: ["id", "pallet", "name"]) {
   id: ID! @index
-  name: String!
-  timestamp: DateTime! @index
-  success: Boolean!
-  args: JSON
   block: Block!
   extrinsic: Extrinsic!
-  error: JSON
-  signer: String @index
   parent: Call
-  calls: [Call] @derivedFrom(field: "parent") @cardinality(value: 10)
+  address: [Int!]!
+  success: Boolean! @index
+  error: JSON
+  pallet: String! @index
+  name: String!
+  timestamp: DateTime! @index
+  signer: String @index
+  args: JSON
+  argsStr: [String]
+  subcalls: [Call]! @derivedFrom(field: "parent")
+  events: [Event]! @derivedFrom(field: "call")
   pos: Int
 }
 
@@ -82,4 +101,23 @@ type Log @entity {
   kind: String! @index
   value: JSON
   block: Block!
+}
+
+enum CounterLevel {
+  Global
+  Pallet
+  Item
+}
+
+enum ItemType {
+  Extrinsics
+  Calls
+  Events
+}
+
+type ItemsCounter @entity {
+  id: ID!
+  type: ItemType! @index
+  level: CounterLevel! @index
+  total: Int! @index
 }

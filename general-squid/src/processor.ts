@@ -1,32 +1,65 @@
 import {
-  BlockHeader,
+  Block as Block_,
+  BlockHeader as BlockHeader_,
+  Call as Call_,
   DataHandlerContext,
+  Event as Event_,
+  Extrinsic as Extrinsic_,
   SubstrateBatchProcessor,
   SubstrateBatchProcessorFields,
-  Call as _Call,
-  Event as _Event,
-  Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { assertNotNull } from "@subsquid/util-internal";
 
 export const processor = new SubstrateBatchProcessor()
-  // Chain RPC endpoint is required on Substrate for metadata and real-time updates
   .setRpcEndpoint({
-    // Set via .env for local runs or via secrets when deploying to Subsquid Cloud
-    // https://docs.subsquid.io/deploy-squid/env-variables/
     url: assertNotNull(process.env.RPC_ENDPOINT),
-    // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
     rateLimit: 10,
   })
   .setBlockRange({ from: 0 })
-  .includeAllBlocks()
-  .addEvent({})
-  .addCall({})
-  .setFields({});
+  .setFields({
+    block: {
+      timestamp: true,
+      digest: true,
+      extrinsicsRoot: true,
+      stateRoot: true,
+      validator: true,
+    },
+    call: {
+      name: true,
+      args: true,
+      origin: true,
+      success: true,
+      error: true,
+    },
+    event: {
+      name: true,
+      args: true,
+      phase: true,
+    },
+    extrinsic: {
+      hash: true,
+      success: true,
+      error: true,
+      fee: true,
+      signature: true,
+      tip: true,
+      version: true,
+    },
+  })
+  .addCall({
+    extrinsic: true,
+    stack: true,
+  })
+  .addEvent({
+    call: true,
+    extrinsic: true,
+  })
+  .includeAllBlocks();
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
-export type Block = BlockHeader<Fields>;
-export type Event = _Event<Fields>;
-export type Call = _Call<Fields>;
-export type Extrinsic = _Extrinsic<Fields>;
+export type Call = Call_<Fields>;
+export type Event = Event_<Fields>;
+export type Extrinsic = Extrinsic_<Fields>;
+export type Block = Block_<Fields>;
+export type BlockHeader = BlockHeader_<Fields>;
 export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>;

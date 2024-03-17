@@ -2,6 +2,30 @@
   "outDir": "src/types",
   "specVersions": "gemini3h.jsonl",
   "pallets": {
+    "System": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Utility": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Timestamp": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "TransactionFees": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
     "Balances": {
       "events": true,
       "calls": true,

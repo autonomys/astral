@@ -1,8 +1,9 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Block} from "./block.model"
-import {Event} from "./event.model"
 import {Call} from "./call.model"
+import {ExtrinsicSignature} from "./_extrinsicSignature"
+import {Event} from "./event.model"
 
 @Entity_()
 export class Extrinsic {
@@ -13,27 +14,22 @@ export class Extrinsic {
     @PrimaryColumn_()
     id!: string
 
-    @Column_("text", {nullable: false})
-    hash!: string
-
-    @Column_("int4", {nullable: false})
-    indexInBlock!: number
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    nonce!: bigint | undefined | null
-
-    @Column_("text", {nullable: false})
-    name!: string
-
-    @Column_("text", {nullable: true})
-    signer!: string | undefined | null
+    @Index_()
+    @ManyToOne_(() => Block, {nullable: true})
+    block!: Block
 
     @Index_()
-    @Column_("text", {nullable: true})
-    signature!: string | undefined | null
+    @ManyToOne_(() => Call, {nullable: true})
+    call!: Call | undefined | null
 
-    @Column_("jsonb", {nullable: true})
-    error!: unknown | undefined | null
+    @Column_("int4", {nullable: false})
+    index!: number
+
+    @Column_("int4", {nullable: false})
+    version!: number
+
+    @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new ExtrinsicSignature(undefined, obj)}, nullable: true})
+    signature!: ExtrinsicSignature | undefined | null
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     tip!: bigint | undefined | null
@@ -44,16 +40,22 @@ export class Extrinsic {
     @Column_("bool", {nullable: false})
     success!: boolean
 
-    @Index_()
-    @ManyToOne_(() => Block, {nullable: true})
-    block!: Block
+    @Column_("jsonb", {nullable: true})
+    error!: unknown | undefined | null
 
-    @Column_("int4", {nullable: true})
-    pos!: number | undefined | null
+    @Index_()
+    @Column_("bytea", {nullable: false})
+    hash!: Uint8Array
 
     @Index_()
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
+
+    @Column_("text", {nullable: false})
+    name!: string
+
+    @Column_("text", {nullable: true})
+    signer!: string | undefined | null
 
     @Column_("jsonb", {nullable: true})
     args!: unknown | undefined | null
