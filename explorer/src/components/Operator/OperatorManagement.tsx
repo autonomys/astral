@@ -1,6 +1,5 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
@@ -8,6 +7,7 @@ import { SortingState } from '@tanstack/react-table'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
+import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
@@ -18,6 +18,8 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { operatorStatus } from 'utils/operator'
+import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { OperatorsListCard } from './OperatorsListCard'
@@ -141,7 +143,11 @@ export const OperatorManagement: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.status}</div>
+          <div>
+            {selectedChain.urls.page === Chains.gemini3g
+              ? row.original.status
+              : capitalizeFirstLetter(operatorStatus(row.original.status))}
+          </div>
         ),
       },
       {

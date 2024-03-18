@@ -5,6 +5,10 @@
       "path": ".."
     },
     {
+      "name": "explorer",
+      "path": "../explorer"
+    },
+    {
       "name": "client",
       "path": "../client"
     },
