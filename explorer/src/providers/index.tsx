@@ -4,6 +4,7 @@ import { ChainProvider } from '@/providers/ChainProvider'
 import { ThemeProvider } from '@/providers/ThemeProvider'
 import { Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
+import { SessionProvider } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
 import { FC, ReactNode, useEffect } from 'react'
@@ -54,7 +55,9 @@ export const Provider: FC<ProviderProps> = ({ children }) => {
     <ChainProvider>
       <ThemeProvider>
         <WalletProvider>
-          <UpdateSelectedChainByPath>{children}</UpdateSelectedChainByPath>
+          <SessionProvider>
+            <UpdateSelectedChainByPath>{children}</UpdateSelectedChainByPath>
+          </SessionProvider>
         </WalletProvider>
       </ThemeProvider>
     </ChainProvider>
