@@ -104,3 +104,16 @@ export const QUERY_STAKING_SUMMARY = gql`
     }
   }
 `
+
+export const QUERY_CHECK_ROLE = gql`
+  query CheckRole($subspaceAccount: String!) {
+    isFarmer: rewardEvents(
+      where: { name_eq: "Rewards.VoteReward", account: { id_eq: $subspaceAccount } }
+      limit: 1
+    ) {
+      account {
+        id
+      }
+    }
+  }
+`
