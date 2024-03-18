@@ -16,18 +16,8 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setBlockRange({ from: 0 })
   .addEvent({
-    name: [
-      events.domains.operatorRegistered.name,
-      events.domains.operatorDeregistered.name,
-      events.domains.operatorNominated.name,
-      events.domains.operatorRewarded.name,
-      events.domains.operatorSlashed.name,
-      events.domains.domainEpochCompleted.name,
-      events.domains.operatorSwitchedDomain.name,
-      events.domains.withdrewStake.name,
-    ],
+    name: [events.balances.transfer.name],
     extrinsic: true,
   })
   .setFields({
