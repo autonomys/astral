@@ -1,0 +1,33 @@
+name: Update rewards container image
+
+on:
+  push:
+    branches:
+      - staging
+
+env:
+  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-general:latest
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Log into registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Build processor image
+        run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
+        working-directory: general-squid
+
+      - name: Push processor image
+        run: docker push $PROCESSOR_NAME
