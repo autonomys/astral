@@ -1,0 +1,18 @@
+manifestVersion: subsquid.io/v0.1
+name: general-squid
+version: 1
+description: Substrate squid template
+build: 
+deploy:
+  addons:
+    postgres: 
+  processor:
+    cmd:
+      - sqd
+      - process:prod
+    env:
+      RPC_ENDPOINT: ${{ secrets.RPC_ENDPOINT }}
+  api:
+    cmd:
+      - sqd
+      - serve:prod

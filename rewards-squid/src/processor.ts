@@ -20,7 +20,7 @@ export const processor = new SubstrateBatchProcessor()
     // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
     rateLimit: 10,
   })
-  .setBlockRange({from : 341619})
+  .setBlockRange({ from: 0 })
   .addEvent({
     name: [
       events.domains.operatorRegistered.name,
