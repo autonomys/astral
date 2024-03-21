@@ -59,10 +59,6 @@ const ExtrinsicList: FC<Props> = ({ accountId }) => {
     return <Spinner />
   }
 
-  if (selectedChain.title !== 'Gemini 3g' || selectedChain.isDomain) {
-    return <NotAllowed />
-  }
-
   const extrinsicsConnection = data.extrinsicsConnection.edges.map((extrinsic) => extrinsic.node)
   const totalCount = data.extrinsicsConnection.totalCount
 
