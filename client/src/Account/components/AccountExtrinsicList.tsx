@@ -17,7 +17,6 @@ import { ExtrinsicListCard } from 'Extrinsic/components'
 // common
 import { CopyButton, Spinner, StatusIcon } from 'common/components'
 import NewTable from 'common/components/NewTable'
-import NotAllowed from 'common/components/NotAllowed'
 import { PAGE_SIZE } from 'common/constants'
 import { downloadFullData, shortString } from 'common/helpers'
 import useDomains from 'common/hooks/useDomains'
