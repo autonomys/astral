@@ -3,7 +3,6 @@ import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { NewTable } from 'components/common/NewTable'
-import { NotAllowed } from 'components/common/NotAllowed'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { NotFound } from 'components/layout/NotFound'
@@ -171,7 +170,6 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   if (loading) return <Spinner />
-  if (selectedChain.urls.page !== Chains.gemini3g || selectedChain.isDomain) return <NotAllowed />
   if (!data || !extrinsics) return <NotFound />
 
   return (
