@@ -5,6 +5,7 @@ type Account @entity {
   reserved: BigInt!
   total: BigInt!
   updatedAtBlock: Int!
+  nonce: Int!
   transfersTo: [Transfer!] @derivedFrom(field: "to")
   transfersFrom: [Transfer!] @derivedFrom(field: "from")
 }

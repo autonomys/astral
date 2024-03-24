@@ -4,7 +4,7 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: squid
+      POSTGRES_DB: general-squid
       POSTGRES_PASSWORD: postgres
     shm_size: 1gb
     ports:

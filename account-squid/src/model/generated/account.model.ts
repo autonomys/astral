@@ -26,6 +26,9 @@ export class Account {
     @Column_("int4", {nullable: false})
     updatedAtBlock!: number
 
+    @Column_("int4", {nullable: false})
+    nonce!: number
+
     @OneToMany_(() => Transfer, e => e.to)
     transfersTo!: Transfer[]
 

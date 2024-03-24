@@ -1,8 +1,9 @@
 import {
-  BlockHeader,
   DataHandlerContext,
   SubstrateBatchProcessor,
   SubstrateBatchProcessorFields,
+  Block as _Block,
+  BlockHeader as _BlockHeader,
   Call as _Call,
   Event as _Event,
   Extrinsic as _Extrinsic,
@@ -16,13 +17,36 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
+  .setBlockRange({ from: 609023 })
   .addEvent({
-    name: [events.balances.transfer.name],
+    name: [
+      events.balances.balanceSet.v0.name,
+      events.balances.deposit.v0.name,
+      events.balances.endowed.v0.name,
+      events.balances.reserved.v0.name,
+      events.balances.reserveRepatriated.v0.name,
+      events.balances.slashed.v0.name,
+      events.balances.transfer.v0.name,
+      events.balances.withdraw.v0.name,
+      events.balances.unreserved.v0.name,
+      events.balances.burned.v0.name,
+      events.balances.restored.v0.name,
+    ],
     extrinsic: true,
   })
+  .addCall({})
   .setFields({
-    event: {
+    call: {
+      name: true,
       args: true,
+      origin: true,
+      success: true,
+      error: true,
+    },
+    event: {
+      name: true,
+      args: true,
+      phase: true,
     },
     extrinsic: {
       hash: true,
@@ -36,7 +60,8 @@ export const processor = new SubstrateBatchProcessor()
 //.useArchiveOnly()
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
-export type Block = BlockHeader<Fields>;
+export type Block = _Block<Fields>;
+export type BlockHeader = _BlockHeader<Fields>;
 export type Event = _Event<Fields>;
 export type Call = _Call<Fields>;
 export type Extrinsic = _Extrinsic<Fields>;
