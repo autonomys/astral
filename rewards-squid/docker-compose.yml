@@ -10,5 +10,5 @@ services:
     ports:
       - "0.0.0.0:${DB_PORT}:5432"
       # command: ["postgres", "-c", "log_statement=all"]
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
+    # volumes:
+    #   - ./data/db:/var/lib/postgresql/data

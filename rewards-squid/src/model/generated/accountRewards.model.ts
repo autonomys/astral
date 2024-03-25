@@ -1,11 +1,10 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
-import {Operator} from "./operator.model"
 import {Account} from "./account.model"
 
 @Entity_()
-export class Nominator {
-    constructor(props?: Partial<Nominator>) {
+export class AccountRewards {
+    constructor(props?: Partial<AccountRewards>) {
         Object.assign(this, props)
     }
 
@@ -13,16 +12,24 @@ export class Nominator {
     id!: string
 
     @Index_()
-    @ManyToOne_(() => Operator, {nullable: true})
-    operator!: Operator
-
-    @Index_()
     @ManyToOne_(() => Account, {nullable: true})
     account!: Account
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    shares!: bigint | undefined | null
+    amount!: bigint | undefined | null
 
+    @Index_()
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    block!: bigint | undefined | null
+
+    @Index_()
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    vote!: bigint | undefined | null
+
+    @Index_()
     @Column_("int4", {nullable: true})
-    updatedAt!: number | undefined | null
+    operator!: number | undefined | null
+
+    @Column_("int4", {nullable: false})
+    updatedAt!: number
 }

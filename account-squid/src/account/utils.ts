@@ -1,5 +1,5 @@
+import { StoreWithCache } from "@belopash/typeorm-store";
 import * as ss58 from "@subsquid/ss58";
-import { Store } from "@subsquid/typeorm-store";
 import { In } from "typeorm";
 import { Account } from "../model";
 import { Call, Event, ProcessorContext } from "../processor";
@@ -58,7 +58,7 @@ export function handleEndowedEvent(
 }
 
 export async function ensureAccountsExist(
-  ctx: ProcessorContext<Store>,
+  ctx: ProcessorContext<StoreWithCache>,
   accountIds: string[]
 ): Promise<Map<string, Account>> {
   const accounts = new Map();

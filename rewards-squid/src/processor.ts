@@ -1,8 +1,9 @@
 import {
-  BlockHeader,
   DataHandlerContext,
   SubstrateBatchProcessor,
   SubstrateBatchProcessorFields,
+  Block as _Block,
+  BlockHeader as _BlockHeader,
   Call as _Call,
   Event as _Event,
   Extrinsic as _Extrinsic,
@@ -16,17 +17,19 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setBlockRange({ from: 0 })
+  .setBlockRange({ from: 341619 })
   .addEvent({
     name: [
+      events.domains.storageFeeDeposited.name,
       events.domains.operatorRegistered.name,
       events.domains.operatorDeregistered.name,
       events.domains.operatorNominated.name,
       events.domains.operatorRewarded.name,
       events.domains.operatorSlashed.name,
       events.domains.domainEpochCompleted.name,
-      events.domains.operatorSwitchedDomain.name,
       events.domains.withdrewStake.name,
+      events.rewards.blockReward.name,
+      events.rewards.voteReward.name,
     ],
     extrinsic: true,
   })
@@ -46,7 +49,8 @@ export const processor = new SubstrateBatchProcessor()
 //.useArchiveOnly()
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
-export type Block = BlockHeader<Fields>;
+export type BlockHeader = _BlockHeader<Fields>;
+export type Block = _Block<Fields>;
 export type Event = _Event<Fields>;
 export type Call = _Call<Fields>;
 export type Extrinsic = _Extrinsic<Fields>;

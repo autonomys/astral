@@ -1,4 +1,7 @@
-import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
+import {
+  StoreWithCache,
+  TypeormDatabaseWithCache,
+} from "@belopash/typeorm-store";
 import {
   TransferEvent,
   callIsValid,
@@ -18,29 +21,32 @@ import {
 } from "./processor";
 import { events, storage } from "./types";
 
-processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
-  const transfers: Transfer[] = [];
-  const accountsToUpdate = new Set<string>();
+processor.run(
+  new TypeormDatabaseWithCache({ supportHotBlocks: true }),
+  async (ctx) => {
+    const transfers: Transfer[] = [];
+    const accountsToUpdate = new Set<string>();
 
-  const blocksLength = ctx.blocks.length;
+    const blocksLength = ctx.blocks.length;
 
-  for (let block of ctx.blocks) {
-    gatherAccountsToUpdateFromCalls(block, accountsToUpdate);
-    await processEvents(ctx, block, accountsToUpdate, transfers);
+    for (let block of ctx.blocks) {
+      gatherAccountsToUpdateFromCalls(block, accountsToUpdate);
+      await processEvents(ctx, block, accountsToUpdate, transfers);
+    }
+
+    const updatedAccounts = await updateAccounts(
+      ctx,
+      ctx.blocks[blocksLength - 1].header,
+      Array.from(accountsToUpdate)
+    );
+
+    await ctx.store.upsert(updatedAccounts);
+    await ctx.store.insert(transfers);
+
+    ctx.log.child("accounts").info(`updated: ${updatedAccounts?.length}`);
+    ctx.log.child("transfers").info(`updated: ${transfers.length}`);
   }
-
-  const updatedAccounts = await updateAccounts(
-    ctx,
-    ctx.blocks[blocksLength - 1].header,
-    Array.from(accountsToUpdate)
-  );
-
-  await ctx.store.upsert(updatedAccounts);
-  await ctx.store.insert(transfers);
-
-  ctx.log.child("accounts").info(`updated: ${updatedAccounts?.length}`);
-  ctx.log.child("transfers").info(`updated: ${transfers.length}`);
-});
+);
 
 function gatherAccountsToUpdateFromCalls(
   block: Block,
@@ -55,7 +61,7 @@ function gatherAccountsToUpdateFromCalls(
 }
 
 async function processEvents(
-  ctx: ProcessorContext<Store>,
+  ctx: ProcessorContext<StoreWithCache>,
   block: Block,
   accountsToUpdate: Set<string>,
   transfers: Transfer[]
@@ -87,7 +93,7 @@ async function processEvents(
 async function handleTransferEvent(
   header: BlockHeader,
   event: Event,
-  ctx: ProcessorContext<Store>,
+  ctx: ProcessorContext<StoreWithCache>,
   accountsToUpdate: Set<string>,
   transfers: Transfer[]
 ) {
@@ -142,7 +148,7 @@ async function getAccountBalance(header: BlockHeader, accountId: string) {
 }
 
 async function updateAccounts(
-  ctx: ProcessorContext<Store>,
+  ctx: ProcessorContext<StoreWithCache>,
   header: BlockHeader,
   accountIds: string[]
 ) {

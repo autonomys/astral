@@ -1,15 +1,19 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
-import {Account} from "./account.model"
+import {Operator} from "./operator.model"
 
 @Entity_()
-export class RewardEvent {
-    constructor(props?: Partial<RewardEvent>) {
+export class OperatorRewardEvent {
+    constructor(props?: Partial<OperatorRewardEvent>) {
         Object.assign(this, props)
     }
 
     @PrimaryColumn_()
     id!: string
+
+    @Index_()
+    @ManyToOne_(() => Operator, {nullable: true})
+    operator!: Operator
 
     @Column_("int4", {nullable: false})
     indexInBlock!: number
@@ -29,10 +33,6 @@ export class RewardEvent {
     @Column_("text", {nullable: true})
     extrinsicHash!: string | undefined | null
 
-    @Index_()
-    @ManyToOne_(() => Account, {nullable: true})
-    account!: Account
-
-    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-    amount!: bigint | undefined | null
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    amount!: bigint
 }

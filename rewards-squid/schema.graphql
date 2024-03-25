@@ -4,6 +4,13 @@ type Account @entity {
   rewards: [RewardEvent!]! @derivedFrom(field: "account")
 }
 
+type DomainEpoch @entity {
+  id: ID! @index
+  domainId: Int! @index
+  epoch: Int! @index
+  updatedAt: Int @index
+}
+
 type Operator @entity {
   id: ID! @index
   signingKey: String! @index
@@ -21,7 +28,10 @@ type Operator @entity {
     @derivedFrom(field: "operator")
     @cardinality(value: 1000)
   status: String
-  updatedAt: BigInt @index
+  updatedAt: Int @index
+  operatorRewards: [OperatorRewardEvent!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000)
 }
 
 type Nominator @entity {
@@ -29,7 +39,18 @@ type Nominator @entity {
   operator: Operator!
   account: Account!
   shares: BigInt
-  updatedAt: BigInt
+  updatedAt: Int
+}
+
+type OperatorRewardEvent @entity {
+  id: ID! @index
+  operator: Operator!
+  indexInBlock: Int!
+  name: String!
+  timestamp: DateTime! @index
+  blockNumber: Int! @index
+  extrinsicHash: String @index
+  amount: BigInt!
 }
 
 type RewardEvent @entity {
@@ -39,8 +60,22 @@ type RewardEvent @entity {
   timestamp: DateTime! @index
   blockNumber: Int! @index
   extrinsicHash: String @index
-  account: Account
+  account: Account!
   amount: BigInt
-  isOperator: Boolean
-  operatorId: Int
+}
+
+type AccountRewards @entity {
+  id: ID! @index
+  account: Account!
+  amount: BigInt
+  block: BigInt @index
+  vote: BigInt @index
+  operator: Int @index
+  updatedAt: Int!
+}
+
+type OperatorRewards @entity {
+  id: ID! @index
+  amount: BigInt
+  updatedAt: Int!
 }
