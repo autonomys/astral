@@ -17,7 +17,7 @@ export const processor = new SubstrateBatchProcessor()
     url: assertNotNull(process.env.RPC_ENDPOINT),
     rateLimit: 10,
   })
-  .setBlockRange({ from: 341619 })
+  .setBlockRange({ from: 0 })
   .addEvent({
     name: [
       events.domains.storageFeeDeposited.name,
