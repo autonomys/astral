@@ -20,6 +20,7 @@ import { CONFIG, TYPES } from "./constants";
  * @returns substrate account address properly encoded
  */
 export function encodeId(id: Uint8Array | string) {
+  if (id === "") return "";
   return ss58.codec(CONFIG.prefix).encode(id);
 }
 
@@ -44,15 +45,13 @@ export async function createOperator(
   );
 
   const ownerAccount = await domains.operatorIdOwner.v0.get(header, operatorId);
-  console.log("🚀 ~ ownerAccount:", ownerAccount);
   const encodedOwnerAccount = encodeId(ownerAccount || "");
-  console.log("🚀 ~ encodedOwnerAccount:", encodedOwnerAccount);
 
   if (!operator && operatorInfo) {
     operator = new Operator({
       id: operatorId.toString(),
       orderingId: Number(operatorId),
-      operatorOwner: ownerAccount?.toString(),
+      operatorOwner: encodedOwnerAccount,
       status: JSON.stringify(operatorInfo.status),
       signingKey: operatorInfo.signingKey,
       totalShares: operatorInfo.currentTotalShares,
@@ -78,7 +77,6 @@ export async function getOrCreateNominator(
   operatorId: bigint,
   nominatorId: string
 ): Promise<Nominator> {
-  console.log("🚀 ~ nominatorId:", nominatorId);
   const operatorIdStr = operatorId.toString();
   const encodedNominatorId = encodeId(nominatorId);
   let operator = await ctx.store.get(Operator, operatorIdStr);
@@ -123,13 +121,10 @@ export async function getOrCreateNominators(
   const blockHeight = header.height;
 
   const nominators = await api.query.domains.deposits.entries(operatorId);
-  const indexedNominators = domains.deposits.v0.get(header, operatorId, "");
-  console.log("🚀 ~ indexedNominators:", indexedNominators);
   const nominatorsLength = nominators.length;
 
   for (let i = 0; i < nominatorsLength; i++) {
     const nominatorId = nominators[i][0].args[1].toString();
-    console.log("🚀 ~ nominatorId:", nominatorId);
 
     let nominator = await ctx.store.get(
       Nominator,
@@ -137,7 +132,6 @@ export async function getOrCreateNominators(
     );
 
     const nominatorInfo = nominators[i][1].toJSON() as any;
-    console.log("🚀 ~ nominatorInfo:", nominatorInfo);
 
     const existingNominator = await ctx.store.get(Nominator, nominatorId);
     const hexAccountId = api.registry
