@@ -3,7 +3,7 @@ import {Block} from "./block.model"
 import {Extrinsic} from "./extrinsic.model"
 import {Call} from "./call.model"
 
-@Index_(["id", "pallet", "name", "timestamp"], {unique: false})
+@Index_(["id", "pallet", "name"], {unique: false})
 @Entity_()
 export class Event {
     constructor(props?: Partial<Event>) {

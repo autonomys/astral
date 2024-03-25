@@ -1,0 +1,29 @@
+type Account @entity {
+  "Account address"
+  id: ID! @index
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt!
+  updatedAtBlock: Int! @index
+  nonce: Int!
+  transfersTo: [Transfer!] @derivedFrom(field: "to")
+  transfersFrom: [Transfer!] @derivedFrom(field: "from")
+}
+
+type BackupCounter @entity {
+  id: ID! @index
+  balancesTransfersVolume: BigInt!
+  balancesTransfersAmount: BigInt!
+  chainSignedExtrinsics: BigInt!
+}
+
+type Transfer @entity {
+  id: ID! @index
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  from: Account!
+  to: Account!
+  amount: BigInt! @index
+  fee: BigInt!
+}

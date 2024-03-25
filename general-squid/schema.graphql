@@ -47,11 +47,11 @@ type Extrinsic @entity {
   signature: ExtrinsicSignature
   tip: BigInt
   fee: BigInt
-  success: Boolean!
+  success: Boolean! @index
   error: JSON
   hash: String! @index
   timestamp: DateTime! @index
-  name: String!
+  name: String! @index
   signer: String
   args: JSON
   events: [Event] @derivedFrom(field: "extrinsic")
@@ -63,7 +63,7 @@ type EventModuleName @entity {
   name: String! @index
 }
 
-type Event @entity @index(fields: ["id", "pallet", "name", "timestamp"]) {
+type Event @entity @index(fields: ["id", "pallet", "name"]) {
   id: ID! @index
   block: Block
   extrinsic: Extrinsic
@@ -98,6 +98,7 @@ type Call @entity @index(fields: ["id", "pallet", "name"]) {
 }
 
 type Log @entity {
+  id: ID! @index
   kind: String! @index
   value: JSON
   block: Block!
@@ -116,7 +117,7 @@ enum ItemType {
 }
 
 type ItemsCounter @entity {
-  id: ID!
+  id: ID! @index
   type: ItemType! @index
   level: CounterLevel! @index
   total: Int! @index

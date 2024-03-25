@@ -1,5 +1,5 @@
-module.exports = class Data1710712912258 {
-    name = 'Data1710712912258'
+module.exports = class Data1711387084315 {
+    name = 'Data1711387084315'
 
     async up(db) {
         await db.query(`CREATE TABLE "event" ("id" character varying NOT NULL, "index" integer NOT NULL, "phase" text NOT NULL, "pallet" text NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "pos" integer, "args" jsonb, "args_str" text array, "block_id" character varying, "extrinsic_id" character varying, "call_id" character varying, CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`)
@@ -9,7 +9,7 @@ module.exports = class Data1710712912258 {
         await db.query(`CREATE INDEX "IDX_7723d04c5a2f56c4373b6a4048" ON "event" ("pallet") `)
         await db.query(`CREATE INDEX "IDX_b535fbe8ec6d832dde22065ebd" ON "event" ("name") `)
         await db.query(`CREATE INDEX "IDX_2c15918ff289396205521c5f3c" ON "event" ("timestamp") `)
-        await db.query(`CREATE INDEX "IDX_b924c6dab6f6515dd1bb3d79a6" ON "event" ("id", "pallet", "name", "timestamp") `)
+        await db.query(`CREATE INDEX "IDX_0a00d817e614a91cda40d734cf" ON "event" ("id", "pallet", "name") `)
         await db.query(`CREATE TABLE "call" ("id" character varying NOT NULL, "address" integer array NOT NULL, "success" boolean NOT NULL, "error" jsonb, "pallet" text NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "signer" text, "args" jsonb, "args_str" text array, "pos" integer, "block_id" character varying, "extrinsic_id" character varying, "parent_id" character varying, CONSTRAINT "PK_2098af0169792a34f9cfdd39c47" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_bd3f11fd4110d60ac8b96cd62f" ON "call" ("block_id") `)
         await db.query(`CREATE INDEX "IDX_dde30e4f2c6a80f9236bfdf259" ON "call" ("extrinsic_id") `)
@@ -22,8 +22,10 @@ module.exports = class Data1710712912258 {
         await db.query(`CREATE TABLE "extrinsic" ("id" character varying NOT NULL, "index" integer NOT NULL, "version" integer NOT NULL, "signature" jsonb, "tip" numeric, "fee" numeric, "success" boolean NOT NULL, "error" jsonb, "hash" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "name" text NOT NULL, "signer" text, "args" jsonb, "block_id" character varying, "call_id" character varying, CONSTRAINT "PK_80d7db0e4b1e83e30336bc76755" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_a3b99daba1259dab0dd040d4f7" ON "extrinsic" ("block_id") `)
         await db.query(`CREATE INDEX "IDX_824d47cc4b2cda726405aa507c" ON "extrinsic" ("call_id") `)
+        await db.query(`CREATE INDEX "IDX_21e5db7671dfa1b00dbe6dbbd6" ON "extrinsic" ("success") `)
         await db.query(`CREATE INDEX "IDX_1f45de0713a55049009e8e8127" ON "extrinsic" ("hash") `)
         await db.query(`CREATE INDEX "IDX_6e232918078798b1fade21dcf8" ON "extrinsic" ("timestamp") `)
+        await db.query(`CREATE INDEX "IDX_86604c0ff42c185b99ee69c718" ON "extrinsic" ("name") `)
         await db.query(`CREATE TABLE "log" ("id" character varying NOT NULL, "kind" text NOT NULL, "value" jsonb, "block_id" character varying, CONSTRAINT "PK_350604cbdf991d5930d9e618fbd" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_110007d6221b41e46fcada62a9" ON "log" ("kind") `)
         await db.query(`CREATE INDEX "IDX_7d3f5ac68148194ee7ced3032e" ON "log" ("block_id") `)
@@ -60,7 +62,7 @@ module.exports = class Data1710712912258 {
         await db.query(`DROP INDEX "public"."IDX_7723d04c5a2f56c4373b6a4048"`)
         await db.query(`DROP INDEX "public"."IDX_b535fbe8ec6d832dde22065ebd"`)
         await db.query(`DROP INDEX "public"."IDX_2c15918ff289396205521c5f3c"`)
-        await db.query(`DROP INDEX "public"."IDX_b924c6dab6f6515dd1bb3d79a6"`)
+        await db.query(`DROP INDEX "public"."IDX_0a00d817e614a91cda40d734cf"`)
         await db.query(`DROP TABLE "call"`)
         await db.query(`DROP INDEX "public"."IDX_bd3f11fd4110d60ac8b96cd62f"`)
         await db.query(`DROP INDEX "public"."IDX_dde30e4f2c6a80f9236bfdf259"`)
@@ -73,8 +75,10 @@ module.exports = class Data1710712912258 {
         await db.query(`DROP TABLE "extrinsic"`)
         await db.query(`DROP INDEX "public"."IDX_a3b99daba1259dab0dd040d4f7"`)
         await db.query(`DROP INDEX "public"."IDX_824d47cc4b2cda726405aa507c"`)
+        await db.query(`DROP INDEX "public"."IDX_21e5db7671dfa1b00dbe6dbbd6"`)
         await db.query(`DROP INDEX "public"."IDX_1f45de0713a55049009e8e8127"`)
         await db.query(`DROP INDEX "public"."IDX_6e232918078798b1fade21dcf8"`)
+        await db.query(`DROP INDEX "public"."IDX_86604c0ff42c185b99ee69c718"`)
         await db.query(`DROP TABLE "log"`)
         await db.query(`DROP INDEX "public"."IDX_110007d6221b41e46fcada62a9"`)
         await db.query(`DROP INDEX "public"."IDX_7d3f5ac68148194ee7ced3032e"`)
