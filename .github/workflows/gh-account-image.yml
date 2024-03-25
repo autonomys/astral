@@ -7,7 +7,7 @@ on:
       - staging
 
 env:
-  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-rewards:latest
+  PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-account:latest
 
 jobs:
   push:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Build processor image
         run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
-        working-directory: rewards-squid
+        working-directory: account-squid
 
       - name: Push processor image
         run: docker push $PROCESSOR_NAME
