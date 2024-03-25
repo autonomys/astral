@@ -3,7 +3,7 @@ import {
   TypeormDatabaseWithCache,
 } from "@belopash/typeorm-store";
 import {
-  createOperator,
+  getOrCreateOperator,
   processRewardEvent,
   updateEpochCompleted,
   updateOperatorRewards,
@@ -11,7 +11,7 @@ import {
   updateOperatorStatus,
   updateWithdrewStake,
 } from "./blocks/utils";
-import { OperatorRewardEvent, RewardEvent } from "./model";
+import { DomainEpoch, OperatorRewardEvent, RewardEvent } from "./model";
 import { ProcessorContext, processor } from "./processor";
 import { events } from "./types";
 
@@ -22,12 +22,14 @@ processor.run(
 
     await ctx.store.save([...rewards.operatorEvents]);
     await ctx.store.save([...rewards.rewardEvents]);
+    await ctx.store.save([...rewards.domainEpochEvents]);
   }
 );
 
 type Rewards = {
   rewardEvents: RewardEvent[];
   operatorEvents: OperatorRewardEvent[];
+  domainEpochEvents: DomainEpoch[];
 };
 
 async function getOperatorEvents(
@@ -35,14 +37,21 @@ async function getOperatorEvents(
 ): Promise<Rewards> {
   const rewardEvents: RewardEvent[] = [];
   const operatorEvents: OperatorRewardEvent[] = [];
+  const domainEpochEvents: DomainEpoch[] = [];
 
   for (let block of ctx.blocks) {
     for (let event of block.events) {
       switch (event.name) {
         case events.domains.domainEpochCompleted.name:
-          await updateEpochCompleted(ctx, block.header, event);
+          const domainEpochEvent = await updateEpochCompleted(
+            block.header,
+            event
+          );
+          domainEpochEvents.push(domainEpochEvent);
+          break;
         case events.domains.operatorRegistered.name:
-          await createOperator(ctx, block.header, event);
+          const rec = events.domains.operatorRegistered.v0.decode(event);
+          await getOrCreateOperator(ctx, block.header, rec.operatorId);
           break;
         case events.domains.operatorDeregistered.name:
           const operatorDeregistered =
@@ -91,5 +100,5 @@ async function getOperatorEvents(
     }
   }
 
-  return { rewardEvents, operatorEvents };
+  return { rewardEvents, operatorEvents, domainEpochEvents };
 }

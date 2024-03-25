@@ -1,6 +1,7 @@
 import { StoreWithCache } from "@belopash/typeorm-store";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import * as ss58 from "@subsquid/ss58";
+import { randomUUID } from "crypto";
 import {
   Account,
   DomainEpoch,
@@ -30,42 +31,46 @@ export function encodeId(id: Uint8Array | string) {
  * @param api
  * @returns
  */
-export async function createOperator(
+export async function getOrCreateOperator(
   ctx: ProcessorContext<StoreWithCache>,
   header: BlockHeader,
-  event: Event
+  operatorId: bigint
 ): Promise<Operator | undefined> {
-  const { operatorId } = events.domains.operatorRegistered.v0.decode(event);
   let operator = await ctx.store.get(Operator, operatorId.toString());
 
-  const operatorInfo = await domains.operators.v1.get(header, operatorId);
-  const nominatorsLength = await domains.nominatorCount.v0.get(
-    header,
-    operatorId
-  );
+  if (!operator) {
+    const operatorInfo = await domains.operators.v1.get(header, operatorId);
+    const nominatorsLength = await domains.nominatorCount.v0.get(
+      header,
+      operatorId
+    );
 
-  const ownerAccount = await domains.operatorIdOwner.v0.get(header, operatorId);
-  const encodedOwnerAccount = encodeId(ownerAccount || "");
+    const ownerAccount = await domains.operatorIdOwner.v0.get(
+      header,
+      operatorId
+    );
+    const encodedOwnerAccount = encodeId(ownerAccount || "");
 
-  if (!operator && operatorInfo) {
-    operator = new Operator({
-      id: operatorId.toString(),
-      orderingId: Number(operatorId),
-      operatorOwner: encodedOwnerAccount,
-      status: JSON.stringify(operatorInfo.status),
-      signingKey: operatorInfo.signingKey,
-      totalShares: operatorInfo.currentTotalShares,
-      currentEpochRewards: operatorInfo.currentEpochRewards,
-      currentTotalStake: operatorInfo.currentTotalStake,
-      nominatorAmount: nominatorsLength,
-      nominationTax: operatorInfo.nominationTax,
-      minimumNominatorStake: operatorInfo.minimumNominatorStake,
-      nextDomainId: operatorInfo.nextDomainId,
-      currentDomainId: operatorInfo.currentDomainId,
-      updatedAt: header.height,
-    });
+    if (operatorInfo) {
+      operator = new Operator({
+        id: operatorId.toString(),
+        orderingId: Number(operatorId),
+        operatorOwner: encodedOwnerAccount,
+        status: JSON.stringify(operatorInfo.status),
+        signingKey: operatorInfo.signingKey,
+        totalShares: operatorInfo.currentTotalShares,
+        currentEpochRewards: operatorInfo.currentEpochRewards,
+        currentTotalStake: operatorInfo.currentTotalStake,
+        nominatorAmount: nominatorsLength || 0,
+        nominationTax: operatorInfo.nominationTax,
+        minimumNominatorStake: operatorInfo.minimumNominatorStake,
+        nextDomainId: operatorInfo.nextDomainId,
+        currentDomainId: operatorInfo.currentDomainId,
+        updatedAt: header.height,
+      });
 
-    await ctx.store.insert(operator);
+      await ctx.store.insert(operator);
+    }
   }
 
   return operator;
@@ -79,7 +84,8 @@ export async function getOrCreateNominator(
 ): Promise<Nominator> {
   const operatorIdStr = operatorId.toString();
   const encodedNominatorId = encodeId(nominatorId);
-  let operator = await ctx.store.get(Operator, operatorIdStr);
+  const operator = await getOrCreateOperator(ctx, header, operatorId);
+
   let nominator = await ctx.store.get(
     Nominator,
     `${operatorIdStr}-${encodedNominatorId}`
@@ -95,7 +101,7 @@ export async function getOrCreateNominator(
     const account = await getOrCreateAccount(ctx, nominatorId);
 
     nominator = new Nominator({
-      id: `${operatorIdStr}-${nominatorId}`,
+      id: `${operatorIdStr}-${encodedNominatorId}`,
       operator: operator,
       account: account,
       shares: BigInt(nominatorInfo?.known.shares || 0),
@@ -106,54 +112,6 @@ export async function getOrCreateNominator(
   }
 
   return nominator;
-}
-
-export async function getOrCreateNominators(
-  ctx: ProcessorContext<StoreWithCache>,
-  header: BlockHeader,
-  operator: Operator
-): Promise<Nominator[]> {
-  const provider = new WsProvider(process.env.RPC_ENDPOINT);
-  const api = await ApiPromise.create({ provider, types: TYPES });
-
-  const nominatorsList: Nominator[] = [];
-  const operatorId = BigInt(operator.id);
-  const blockHeight = header.height;
-
-  const nominators = await api.query.domains.deposits.entries(operatorId);
-  const nominatorsLength = nominators.length;
-
-  for (let i = 0; i < nominatorsLength; i++) {
-    const nominatorId = nominators[i][0].args[1].toString();
-
-    let nominator = await ctx.store.get(
-      Nominator,
-      `${operator.id}-${nominatorId}`
-    );
-
-    const nominatorInfo = nominators[i][1].toJSON() as any;
-
-    const existingNominator = await ctx.store.get(Nominator, nominatorId);
-    const hexAccountId = api.registry
-      .createType("AccountId", nominatorId)
-      .toHex();
-    const account = await getOrCreateAccount(ctx, hexAccountId);
-
-    nominator = new Nominator({
-      ...existingNominator,
-      id: `${operator.id}-${nominatorId}`,
-      operator: operator,
-      account: account,
-      shares: BigInt(nominatorInfo.known.shares),
-      updatedAt: blockHeight,
-    });
-
-    await ctx.store.save(nominator);
-
-    nominatorsList.push(nominator);
-  }
-
-  return nominatorsList;
 }
 
 export async function getOrCreateAccount(
@@ -254,22 +212,18 @@ export async function updateOperatorRewards(
   return operatorEvents;
 }
 
-export async function updateEpochCompleted(
-  ctx: ProcessorContext<StoreWithCache>,
-  header: BlockHeader,
-  event: Event
-) {
+export async function updateEpochCompleted(header: BlockHeader, event: Event) {
   const { domainId, completedEpochIndex } =
     events.domains.domainEpochCompleted.v0.decode(event);
 
   const domainEpoch = new DomainEpoch({
-    id: `${domainId}-${completedEpochIndex}-${header.height}`,
+    id: randomUUID(),
     domainId: domainId,
     epoch: completedEpochIndex,
     updatedAt: header.height,
   });
 
-  ctx.store.save(domainEpoch);
+  return domainEpoch;
 }
 
 export async function updateOperatorStake(
