@@ -37,6 +37,7 @@ export class Extrinsic {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     fee!: bigint | undefined | null
 
+    @Index_()
     @Column_("bool", {nullable: false})
     success!: boolean
 
@@ -51,6 +52,7 @@ export class Extrinsic {
     @Column_("timestamp with time zone", {nullable: false})
     timestamp!: Date
 
+    @Index_()
     @Column_("text", {nullable: false})
     name!: string
 

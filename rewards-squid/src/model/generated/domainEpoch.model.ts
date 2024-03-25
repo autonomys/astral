@@ -13,11 +13,9 @@ export class DomainEpoch {
     @Column_("int4", {nullable: false})
     domainId!: number
 
-    @Index_()
     @Column_("int4", {nullable: false})
     epoch!: number
 
-    @Index_()
     @Column_("int4", {nullable: true})
     updatedAt!: number | undefined | null
 }

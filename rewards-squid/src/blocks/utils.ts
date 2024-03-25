@@ -1,19 +1,20 @@
 import { StoreWithCache } from "@belopash/typeorm-store";
-import { ApiPromise, WsProvider } from "@polkadot/api";
 import * as ss58 from "@subsquid/ss58";
 import { randomUUID } from "crypto";
 import {
   Account,
+  AccountReward,
   DomainEpoch,
   Nominator,
   Operator,
+  OperatorReward,
   OperatorRewardEvent,
   RewardEvent,
 } from "../model";
 import { Block, BlockHeader, Event, ProcessorContext } from "../processor";
 import { events } from "../types";
 import { domains } from "../types/storage";
-import { CONFIG, TYPES } from "./constants";
+import { CONFIG } from "./constants";
 
 /**
  *
@@ -306,4 +307,44 @@ export async function processRewardEvent(
   });
 
   return rewardEvent;
+}
+
+export async function getOrCreateAccountRewards(
+  ctx: ProcessorContext<StoreWithCache>,
+  header: BlockHeader,
+  account: Account
+): Promise<AccountReward> {
+  let accountReward = await ctx.store.get(AccountReward, account.id);
+
+  if (!accountReward) {
+    accountReward = new AccountReward({
+      id: account.id,
+      account: account,
+      vote: BigInt(0),
+      block: BigInt(0),
+      operator: BigInt(0),
+      totalRewards: BigInt(0),
+      updatedAt: header.height,
+    });
+  }
+
+  return accountReward;
+}
+
+export async function getOrCreateOperatorRewards(
+  ctx: ProcessorContext<StoreWithCache>,
+  header: BlockHeader,
+  operator: Operator
+): Promise<OperatorReward> {
+  let operatorReward = await ctx.store.get(OperatorReward, operator.id);
+
+  if (!operatorReward) {
+    operatorReward = new OperatorReward({
+      id: operator.id,
+      amount: BigInt(0),
+      updatedAt: header.height,
+    });
+  }
+
+  return operatorReward;
 }
