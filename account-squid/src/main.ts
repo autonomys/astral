@@ -25,79 +25,85 @@ processor.run(
   new TypeormDatabaseWithCache({ supportHotBlocks: true }),
   async (ctx) => {
     const transfers: Transfer[] = [];
-    const accountsToUpdate = new Set<string>();
-
+    const accountsList: string[] = [];
     const blocksLength = ctx.blocks.length;
 
     for (let block of ctx.blocks) {
-      gatherAccountsToUpdateFromCalls(block, accountsToUpdate);
-      await processEvents(ctx, block, accountsToUpdate, transfers);
+      accountsList.push(...gatherAccountsToUpdateFromCalls(block));
+      const eventsResult = await processEvents(ctx, block);
+      accountsList.push(...eventsResult.accountsToUpdate);
+      transfers.push(...eventsResult.transfers);
     }
 
     const updatedAccounts = await updateAccounts(
       ctx,
       ctx.blocks[blocksLength - 1].header,
-      Array.from(accountsToUpdate)
+      Array.from(accountsList)
     );
 
     await ctx.store.upsert(updatedAccounts);
     await ctx.store.insert(transfers);
 
-    ctx.log.child("accounts").info(`updated: ${updatedAccounts?.length}`);
+    ctx.log.child("accounts").info(`updated: ${updatedAccounts.length}`);
     ctx.log.child("transfers").info(`updated: ${transfers.length}`);
   }
 );
 
-function gatherAccountsToUpdateFromCalls(
-  block: Block,
-  accountsToUpdate: Set<string>
-) {
+function gatherAccountsToUpdateFromCalls(block: Block) {
+  const accountsToUpdate = new Set<string>();
+
   for (let call of block.calls) {
     if (callIsValid(call)) {
       const accountId = call.origin.value.value;
       accountsToUpdate.add(accountId);
     }
   }
+
+  return accountsToUpdate.values();
 }
 
 async function processEvents(
   ctx: ProcessorContext<StoreWithCache>,
-  block: Block,
-  accountsToUpdate: Set<string>,
-  transfers: Transfer[]
+  block: Block
 ) {
+  const accountsToUpdate: string[] = [];
+  const transfers: Transfer[] = [];
+
   for (let event of block.events) {
     switch (event.name) {
       case events.balances.transfer.name:
-        await handleTransferEvent(
-          block.header,
-          event,
-          ctx,
-          accountsToUpdate,
-          transfers
-        );
+        const rec = await handleTransferEvent(block.header, event, ctx);
+        accountsToUpdate.push(...rec.accountsToUpdate.values());
+        transfers.push(...rec.transfers);
         break;
       case events.balances.reserveRepatriated.v0.name:
-        handleRepatriatedEvent(event, accountsToUpdate);
+        accountsToUpdate.push(...handleRepatriatedEvent(event));
         break;
       case events.balances.endowed.v0.name:
-        handleEndowedEvent(event, accountsToUpdate);
+        accountsToUpdate.push(...handleEndowedEvent(event));
         break;
       default:
-        if (isBalanceUpdateEvent(event)) accountsToUpdate.add(event.args.who);
+        if (isBalanceUpdateEvent(event)) {
+          accountsToUpdate.push(event.args.who);
+        }
         break;
     }
   }
+
+  return { accountsToUpdate, transfers };
 }
 
 async function handleTransferEvent(
   header: BlockHeader,
   event: Event,
-  ctx: ProcessorContext<StoreWithCache>,
-  accountsToUpdate: Set<string>,
-  transfers: Transfer[]
+  ctx: ProcessorContext<StoreWithCache>
 ) {
+  const transfers: Transfer[] = [];
+  const accountsToUpdate = new Set<string>();
+  const rec = events.balances.transfer.v0.decode(event);
+
   const transferEvent = getTransferEvent(header, event);
+
   const accounts = await ensureAccountsExist(ctx, [
     transferEvent.from,
     transferEvent.to,
@@ -116,8 +122,10 @@ async function handleTransferEvent(
     })
   );
 
-  accountsToUpdate.add(transferEvent.from);
-  accountsToUpdate.add(transferEvent.to);
+  accountsToUpdate.add(rec.from);
+  accountsToUpdate.add(rec.to);
+
+  return { transfers, accountsToUpdate };
 }
 
 function getTransferEvent(header: BlockHeader, event: Event): TransferEvent {
