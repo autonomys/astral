@@ -30,7 +30,8 @@ export function callIsValid(call: Call): boolean {
   return (
     call.parentCall == null &&
     call.origin &&
-    (call.origin.__kind === "system" || call.origin.value.__kind === "Signed")
+    call.origin.__kind === "system" &&
+    call.origin.value.__kind === "Signed"
   );
 }
 
@@ -38,23 +39,25 @@ export function isBalanceUpdateEvent(event: Event): boolean {
   return BALANCE_UPDATE_EVENTS.includes(event.name);
 }
 
-export function handleRepatriatedEvent(
-  event: Event,
-  accountsToUpdate: Set<string>
-) {
+export function handleRepatriatedEvent(event: Event) {
+  const accountsToUpdate = new Set<string>();
+
   const rec = events.balances.reserveRepatriated.v0.decode(event);
 
   accountsToUpdate.add(rec.from);
   accountsToUpdate.add(rec.to);
+
+  return accountsToUpdate.values();
 }
 
-export function handleEndowedEvent(
-  event: Event,
-  accountsToUpdate: Set<string>
-) {
+export function handleEndowedEvent(event: Event) {
+  const accountsToUpdate = new Set<string>();
+
   const rec = events.balances.endowed.v0.decode(event);
 
   accountsToUpdate.add(rec.account);
+
+  return accountsToUpdate.values();
 }
 
 export async function ensureAccountsExist(
