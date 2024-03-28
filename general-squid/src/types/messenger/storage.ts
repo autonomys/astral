@@ -1,5 +1,6 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
+import * as v3 from '../v3'
 
 export const nextChannelId =  {
     /**
@@ -32,6 +33,11 @@ export const channels =  {
      *  Key points to the foreign chain wrt own chain's storage name space
      */
     v0: new StorageType('Messenger.Channels', 'Optional', [v0.ChainId, sts.bigint()], v0.Channel) as ChannelsV0,
+    /**
+     *  Stores channel config between two chains.
+     *  Key points to the foreign chain wrt own chain's storage name space
+     */
+    v3: new StorageType('Messenger.Channels', 'Optional', [v3.ChainId, sts.bigint()], v3.Channel) as ChannelsV3,
 }
 
 /**
@@ -54,6 +60,28 @@ export interface ChannelsV0  {
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v0.ChainId, bigint], v: (v0.Channel | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key1: v0.ChainId): AsyncIterable<[k: [v0.ChainId, bigint], v: (v0.Channel | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key1: v0.ChainId, key2: bigint): AsyncIterable<[k: [v0.ChainId, bigint], v: (v0.Channel | undefined)][]>
+}
+
+/**
+ *  Stores channel config between two chains.
+ *  Key points to the foreign chain wrt own chain's storage name space
+ */
+export interface ChannelsV3  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key1: v3.ChainId, key2: bigint): Promise<(v3.Channel | undefined)>
+    getMany(block: Block, keys: [v3.ChainId, bigint][]): Promise<(v3.Channel | undefined)[]>
+    getKeys(block: Block): Promise<[v3.ChainId, bigint][]>
+    getKeys(block: Block, key1: v3.ChainId): Promise<[v3.ChainId, bigint][]>
+    getKeys(block: Block, key1: v3.ChainId, key2: bigint): Promise<[v3.ChainId, bigint][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[v3.ChainId, bigint][]>
+    getKeysPaged(pageSize: number, block: Block, key1: v3.ChainId): AsyncIterable<[v3.ChainId, bigint][]>
+    getKeysPaged(pageSize: number, block: Block, key1: v3.ChainId, key2: bigint): AsyncIterable<[v3.ChainId, bigint][]>
+    getPairs(block: Block): Promise<[k: [v3.ChainId, bigint], v: (v3.Channel | undefined)][]>
+    getPairs(block: Block, key1: v3.ChainId): Promise<[k: [v3.ChainId, bigint], v: (v3.Channel | undefined)][]>
+    getPairs(block: Block, key1: v3.ChainId, key2: bigint): Promise<[k: [v3.ChainId, bigint], v: (v3.Channel | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v3.ChainId, bigint], v: (v3.Channel | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v3.ChainId): AsyncIterable<[k: [v3.ChainId, bigint], v: (v3.Channel | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key1: v3.ChainId, key2: bigint): AsyncIterable<[k: [v3.ChainId, bigint], v: (v3.Channel | undefined)][]>
 }
 
 export const inbox =  {
@@ -243,4 +271,46 @@ export const blockMessages =  {
 export interface BlockMessagesV0  {
     is(block: RuntimeCtx): boolean
     get(block: Block): Promise<(v0.BlockMessages | undefined)>
+}
+
+export const chainAllowlist =  {
+    /**
+     *  An allowlist of chains that can open channel with this chain.
+     */
+    v3: new StorageType('Messenger.ChainAllowlist', 'Default', [], sts.array(() => v3.ChainId)) as ChainAllowlistV3,
+}
+
+/**
+ *  An allowlist of chains that can open channel with this chain.
+ */
+export interface ChainAllowlistV3  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v3.ChainId[]
+    get(block: Block): Promise<(v3.ChainId[] | undefined)>
+}
+
+export const domainChainAllowlistUpdate =  {
+    /**
+     *  A temporary storage to store any allowlist updates to domain.
+     *  Will be cleared in the next block once the previous block has a domain bundle.
+     */
+    v3: new StorageType('Messenger.DomainChainAllowlistUpdate', 'Optional', [v3.DomainId], v3.DomainAllowlistUpdates) as DomainChainAllowlistUpdateV3,
+}
+
+/**
+ *  A temporary storage to store any allowlist updates to domain.
+ *  Will be cleared in the next block once the previous block has a domain bundle.
+ */
+export interface DomainChainAllowlistUpdateV3  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: v3.DomainId): Promise<(v3.DomainAllowlistUpdates | undefined)>
+    getMany(block: Block, keys: v3.DomainId[]): Promise<(v3.DomainAllowlistUpdates | undefined)[]>
+    getKeys(block: Block): Promise<v3.DomainId[]>
+    getKeys(block: Block, key: v3.DomainId): Promise<v3.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v3.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v3.DomainId): AsyncIterable<v3.DomainId[]>
+    getPairs(block: Block): Promise<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
+    getPairs(block: Block, key: v3.DomainId): Promise<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v3.DomainId): AsyncIterable<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
 }

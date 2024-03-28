@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
+import * as v3 from '../v3'
 
 export const totalIssuance =  {
     /**
@@ -166,6 +167,10 @@ export const holds =  {
      *  Holds on account balances.
      */
     v1: new StorageType('Balances.Holds', 'Default', [v1.AccountId32], sts.array(() => v1.IdAmount)) as HoldsV1,
+    /**
+     *  Holds on account balances.
+     */
+    v3: new StorageType('Balances.Holds', 'Default', [v3.AccountId32], sts.array(() => v3.IdAmount)) as HoldsV3,
 }
 
 /**
@@ -202,6 +207,24 @@ export interface HoldsV1  {
     getPairs(block: Block, key: v1.AccountId32): Promise<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v1.AccountId32): AsyncIterable<[k: v1.AccountId32, v: (v1.IdAmount[] | undefined)][]>
+}
+
+/**
+ *  Holds on account balances.
+ */
+export interface HoldsV3  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v3.IdAmount[]
+    get(block: Block, key: v3.AccountId32): Promise<(v3.IdAmount[] | undefined)>
+    getMany(block: Block, keys: v3.AccountId32[]): Promise<(v3.IdAmount[] | undefined)[]>
+    getKeys(block: Block): Promise<v3.AccountId32[]>
+    getKeys(block: Block, key: v3.AccountId32): Promise<v3.AccountId32[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v3.AccountId32[]>
+    getKeysPaged(pageSize: number, block: Block, key: v3.AccountId32): AsyncIterable<v3.AccountId32[]>
+    getPairs(block: Block): Promise<[k: v3.AccountId32, v: (v3.IdAmount[] | undefined)][]>
+    getPairs(block: Block, key: v3.AccountId32): Promise<[k: v3.AccountId32, v: (v3.IdAmount[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v3.AccountId32, v: (v3.IdAmount[] | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v3.AccountId32): AsyncIterable<[k: v3.AccountId32, v: (v3.IdAmount[] | undefined)][]>
 }
 
 export const freezes =  {

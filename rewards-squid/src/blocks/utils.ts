@@ -40,7 +40,7 @@ export async function getOrCreateOperator(
   let operator = await ctx.store.get(Operator, operatorId.toString());
 
   if (!operator) {
-    const operatorInfo = await domains.operators.v1.get(header, operatorId);
+    const operatorInfo = await domains.operators.v3.get(header, operatorId);
     const nominatorsLength = await domains.nominatorCount.v0.get(
       header,
       operatorId
@@ -93,7 +93,7 @@ export async function getOrCreateNominator(
   );
 
   if (!nominator) {
-    const nominatorInfo = await domains.deposits.v0.get(
+    const nominatorInfo = await domains.deposits.v1.get(
       header,
       operatorId,
       nominatorId
@@ -139,7 +139,8 @@ export async function updateOperatorStatus(
   header: BlockHeader
 ) {
   const operator = await ctx.store.get(Operator, operatorId.toString());
-  const operatorInfo = await domains.operators.v1.get(header, operatorId);
+  const operatorInfo = await domains.operators.v3.get(header, operatorId);
+  const encodedSigningKey = operatorInfo && encodeId(operatorInfo.signingKey);
   const nominatorCount = await domains.nominatorCount.v0.get(
     header,
     operatorId
@@ -166,7 +167,7 @@ export async function updateOperatorStakes(
   header: BlockHeader
 ) {
   const operator = await ctx.store.get(Operator, operatorId.toString());
-  const operatorInfo = await domains.operators.v1.get(header, operatorId);
+  const operatorInfo = await domains.operators.v3.get(header, operatorId);
   const nominatorsLength = await domains.nominatorCount.v0.get(
     header,
     operatorId
@@ -258,7 +259,7 @@ export async function updateWithdrewStake(
   const encodedNominatorId = encodeId(nominatorId);
 
   const operator = await ctx.store.get(Operator, operatorId.toString());
-  const operatorInfo = await domains.operators.v1.get(header, operatorId);
+  const operatorInfo = await domains.operators.v3.get(header, operatorId);
   const nominator = await ctx.store.get(
     Nominator,
     `${operatorId}-${encodedNominatorId}`
