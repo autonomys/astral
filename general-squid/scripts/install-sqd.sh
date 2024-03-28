@@ -27,9 +27,9 @@ else
     cd ~/
     git clone https://github.com/subspace/astral.git
 
-    ln -s astral/rewards-squid rewards-squid
+    ln -s astral/general-squid general-squid
 
-    cd rewards-squid
+    cd general-squid
     npm ci
     sqd up
     sqd build
