@@ -1,5 +1,6 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
+import * as v3 from '../v3'
 
 export const genesisSlot =  {
     /**
@@ -370,4 +371,20 @@ export const rootPlotPublicKey =  {
 export interface RootPlotPublicKeyV0  {
     is(block: RuntimeCtx): boolean
     get(block: Block): Promise<(v0.Public | undefined)>
+}
+
+export const blockSlots =  {
+    /**
+     *  Bounded mapping from block number to slot
+     */
+    v3: new StorageType('Subspace.BlockSlots', 'Default', [], sts.array(() => sts.tuple(() => [sts.number(), v3.Slot]))) as BlockSlotsV3,
+}
+
+/**
+ *  Bounded mapping from block number to slot
+ */
+export interface BlockSlotsV3  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): [number, v3.Slot][]
+    get(block: Block): Promise<([number, v3.Slot][] | undefined)>
 }

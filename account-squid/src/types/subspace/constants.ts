@@ -142,3 +142,13 @@ export const maxPiecesInSector =  {
         sts.number()
     ),
 }
+
+export const blockSlotCount =  {
+    /**
+     *  Maximum number of block number to block slot mappings to keep (oldest pruned first).
+     */
+    v3: new ConstantType(
+        'Subspace.BlockSlotCount',
+        sts.number()
+    ),
+}

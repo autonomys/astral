@@ -191,3 +191,23 @@ export const palletId =  {
         v1.PalletId
     ),
 }
+
+export const consensusSlotProbability =  {
+    /**
+     *  Consensus chain slot probability.
+     */
+    v3: new ConstantType(
+        'Domains.ConsensusSlotProbability',
+        sts.tuple(() => [sts.bigint(), sts.bigint()])
+    ),
+}
+
+export const bundleLongevity =  {
+    /**
+     *  How many block a bundle should still consider as valid after produced
+     */
+    v3: new ConstantType(
+        'Domains.BundleLongevity',
+        sts.number()
+    ),
+}

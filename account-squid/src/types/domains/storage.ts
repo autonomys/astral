@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
+import * as v3 from '../v3'
 
 export const successfulBundles =  {
     /**
@@ -203,6 +204,10 @@ export const operators =  {
      *  List of all registered operators and their configuration.
      */
     v1: new StorageType('Domains.Operators', 'Optional', [sts.bigint()], v1.Operator) as OperatorsV1,
+    /**
+     *  List of all registered operators and their configuration.
+     */
+    v3: new StorageType('Domains.Operators', 'Optional', [sts.bigint()], v3.Operator) as OperatorsV3,
 }
 
 /**
@@ -237,6 +242,23 @@ export interface OperatorsV1  {
     getPairs(block: Block, key: bigint): Promise<[k: bigint, v: (v1.Operator | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: bigint, v: (v1.Operator | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (v1.Operator | undefined)][]>
+}
+
+/**
+ *  List of all registered operators and their configuration.
+ */
+export interface OperatorsV3  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: bigint): Promise<(v3.Operator | undefined)>
+    getMany(block: Block, keys: bigint[]): Promise<(v3.Operator | undefined)[]>
+    getKeys(block: Block): Promise<bigint[]>
+    getKeys(block: Block, key: bigint): Promise<bigint[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<bigint[]>
+    getKeysPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<bigint[]>
+    getPairs(block: Block): Promise<[k: bigint, v: (v3.Operator | undefined)][]>
+    getPairs(block: Block, key: bigint): Promise<[k: bigint, v: (v3.Operator | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: bigint, v: (v3.Operator | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (v3.Operator | undefined)][]>
 }
 
 export const pendingOperatorSwitches =  {
@@ -980,4 +1002,39 @@ export interface LatestConfirmedDomainBlockV1  {
     getPairs(block: Block, key: v1.DomainId): Promise<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<[k: v1.DomainId, v: (v1.ConfirmedDomainBlock | undefined)][]>
+}
+
+export const latestSubmittedEr =  {
+    /**
+     *  The latest ER submitted by the operator for a given domain. It is used to determine if the operator
+     *  has submitted bad ER and is pending to slash.
+     * 
+     *  The storage item of a given `(domain_id, operator_id)` will be pruned after either:
+     *  - All the ERs submitted by the operator for this domain are confirmed and pruned
+     *  - All the bad ERs submitted by the operator for this domain are pruned and the operator is slashed
+     */
+    v3: new StorageType('Domains.LatestSubmittedER', 'Default', [sts.tuple(() => [v3.DomainId, sts.bigint()])], sts.number()) as LatestSubmittedErV3,
+}
+
+/**
+ *  The latest ER submitted by the operator for a given domain. It is used to determine if the operator
+ *  has submitted bad ER and is pending to slash.
+ * 
+ *  The storage item of a given `(domain_id, operator_id)` will be pruned after either:
+ *  - All the ERs submitted by the operator for this domain are confirmed and pruned
+ *  - All the bad ERs submitted by the operator for this domain are pruned and the operator is slashed
+ */
+export interface LatestSubmittedErV3  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): number
+    get(block: Block, key: [v3.DomainId, bigint]): Promise<(number | undefined)>
+    getMany(block: Block, keys: [v3.DomainId, bigint][]): Promise<(number | undefined)[]>
+    getKeys(block: Block): Promise<[v3.DomainId, bigint][]>
+    getKeys(block: Block, key: [v3.DomainId, bigint]): Promise<[v3.DomainId, bigint][]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<[v3.DomainId, bigint][]>
+    getKeysPaged(pageSize: number, block: Block, key: [v3.DomainId, bigint]): AsyncIterable<[v3.DomainId, bigint][]>
+    getPairs(block: Block): Promise<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
+    getPairs(block: Block, key: [v3.DomainId, bigint]): Promise<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: [v3.DomainId, bigint]): AsyncIterable<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
 }
