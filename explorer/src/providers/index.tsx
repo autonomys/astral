@@ -54,11 +54,11 @@ export const Provider: FC<ProviderProps> = ({ children }) => {
   return (
     <ChainProvider>
       <ThemeProvider>
-        <WalletProvider>
-          <SessionProvider>
+        <SessionProvider>
+          <WalletProvider>
             <UpdateSelectedChainByPath>{children}</UpdateSelectedChainByPath>
-          </SessionProvider>
-        </WalletProvider>
+          </WalletProvider>
+        </SessionProvider>
       </ThemeProvider>
     </ChainProvider>
   )

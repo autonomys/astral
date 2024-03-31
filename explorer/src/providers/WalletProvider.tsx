@@ -6,6 +6,7 @@ import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { chains } from 'constants/chains'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
+import { signOut, useSession } from 'next-auth/react'
 import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
 
@@ -36,6 +37,7 @@ type Props = {
 }
 
 export const WalletProvider: FC<Props> = ({ children }) => {
+  const { data: session } = useSession()
   const [api, setApi] = useState<{ [key: string]: ApiPromise }>()
   const [isReady, setIsReady] = useState(false)
   const [accounts, setAccounts] = useState<WalletAccount[] | null | undefined>(undefined)
@@ -142,9 +144,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         }
       }
     }
+    if (session && session.user) signOut({ redirect: false })
 
     getInjector()
-  }, [actingAccount])
+  }, [actingAccount, session])
 
   useEffect(() => {
     if (!injector) return
