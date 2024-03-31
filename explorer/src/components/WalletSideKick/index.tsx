@@ -6,11 +6,12 @@ import { LogoIcon, WalletIcon } from '@/components/icons'
 import { formatUnitsToNumber } from '@/utils/number'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import { chains } from 'constants/chains'
+import { ROUTE_EXTRA_FLAGS, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
 import dayjs from 'dayjs'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { SelectedChainProvider } from 'providers/ChainProvider'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { AccountHeader } from './AccountHeader'
@@ -28,12 +29,27 @@ type DrawerProps = {
 export const WalletSidekick: FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const { replace } = useRouter()
+  const { get } = useSearchParams()
+  const search = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
-  const onClick = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault()
-    setIsOpen(true)
-  }, [])
-  const onClose = useCallback(() => setIsOpen(false), [])
+  const onClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      e.preventDefault()
+      replace(`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_EXTRA_FLAGS.walletSidekick.OPEN}`)
+      setIsOpen(true)
+    },
+    [replace],
+  )
+
+  const onClose = useCallback(() => {
+    replace('?')
+    setIsOpen(false)
+  }, [replace])
+
+  useEffect(() => {
+    if (search === 'open') setIsOpen(true)
+  }, [search])
 
   return (
     <>
