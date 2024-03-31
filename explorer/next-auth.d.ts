@@ -5,9 +5,9 @@ declare module 'next-auth' {
 
   interface User {
     id: string
-    accountType: string
-    isGitHubFollower?: boolean
-    isDiscordGuildMember?: boolean
+    discordHandle: string
+    isDiscordGuildMember: boolean
+    isDiscordFarmerRole: boolean
   }
 
   export interface Session {
@@ -19,9 +19,9 @@ declare module 'next-auth' {
 declare module 'next-auth/client' {
   interface User {
     id: string
-    accountType: string
-    isGitHubFollower?: boolean
-    isDiscordGuildMember?: boolean
+    discordHandle: string
+    isDiscordGuildMember: boolean
+    isDiscordFarmerRole: boolean
   }
 
   export interface Session {
@@ -33,16 +33,16 @@ declare module 'next-auth/client' {
 declare module 'next-auth/jwt' {
   interface User {
     id: string
-    accountType: string
-    isGitHubFollower?: boolean
-    isDiscordGuildMember?: boolean
+    discordHandle: string
+    isDiscordGuildMember: boolean
+    isDiscordFarmerRole: boolean
   }
 
   interface JWT {
     user: User | null
     id: string
-    accountType: string
-    isGitHubFollower?: boolean
-    isDiscordGuildMember?: boolean
+    discordHandle: string
+    isDiscordGuildMember: boolean
+    isDiscordFarmerRole: boolean
   }
 }
