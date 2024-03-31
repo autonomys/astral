@@ -26,17 +26,29 @@ export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => 
     pollInterval: 6000,
   })
 
-  const handleConnectDiscord = useCallback(async () => {
-    console.log('Connect Discord')
-    const liginDiscord = await signIn('discord')
-    console.log('liginDiscord', liginDiscord)
-  }, [])
+  const handleConnectDiscord = useCallback(async () => await signIn('discord'), [])
 
   const handleSignAndSendProof = useCallback(() => {
     console.log('Sign And Send Proof')
   }, [])
 
   const isFarmer = useMemo(() => data && data.isFarmer && data.isFarmer.length > 0, [data])
+
+  if (
+    session &&
+    session.user &&
+    session.user.isDiscordFarmerRole &&
+    session.user.isDiscordFarmerRole
+  )
+    return (
+      <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+        <Accordion title='You are a Farmer on Discord'>
+          <List>
+            <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
+          </List>
+        </Accordion>
+      </div>
+    )
 
   if (isFarmer)
     return (
@@ -76,7 +88,9 @@ export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => 
               title={`${session && session.user && !session.user.isDiscordGuildMember ? 3 : 2}. Sign a message as proof to request role`}
             >
               <button
-                className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                className={
+                  'w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                }
                 onClick={handleSignAndSendProof}
               >
                 Get Role
