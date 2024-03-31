@@ -28,8 +28,9 @@ export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => 
 
   const handleConnectDiscord = useCallback(async () => await signIn('discord'), [])
 
-  const handleSignAndSendProof = useCallback(() => {
+  const handleSignAndSendProof = useCallback(async () => {
     console.log('Sign And Send Proof')
+    await fetch('/api/grant-farmer-role')
   }, [])
 
   const isFarmer = useMemo(() => data && data.isFarmer && data.isFarmer.length > 0, [data])
