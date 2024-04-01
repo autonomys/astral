@@ -72,7 +72,7 @@ export async function ensureAccountsExist(
   existingAccounts.forEach((account) => accounts.set(account.id, account));
 
   accountIds.forEach((id) => {
-    if (!accounts.has(id)) accounts.set(id, new Account({ id: encodeId(id) }));
+    if (!accounts.has(id)) accounts.set(id, new Account({ id }));
   });
 
   return accounts;
