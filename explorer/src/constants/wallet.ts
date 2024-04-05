@@ -1,0 +1,30 @@
+export enum WalletAction {
+  None = 'None',
+  SendToken = 'SendToken',
+  ReceiveToken = 'ReceiveToken',
+  SignMessage = 'SignMessage',
+  SendRemark = 'SendRemark',
+  ExtrinsicsLab = 'ExtrinsicsLab',
+}
+
+export const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
+
+export enum ExtrinsicsSupportedModule {
+  Balances = 'balances',
+  Domains = 'domains',
+  Messenger = 'messenger',
+  RuntimeConfigs = 'runtimeConfigs',
+  Subspace = 'subspace',
+  Sudo = 'sudo',
+  System = 'system',
+  Timestamp = 'timestamp',
+  Transporter = 'transporter',
+  Utility = 'utility',
+  Vesting = 'vesting',
+}
+
+export enum SupportedWalletExtension {
+  PolkadotJs = 'polkadot-js',
+  SubwalletJs = 'subwallet-js',
+  Nova = 'nova',
+}

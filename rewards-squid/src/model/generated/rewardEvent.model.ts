@@ -31,14 +31,8 @@ export class RewardEvent {
 
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})
-    account!: Account | undefined | null
+    account!: Account
 
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     amount!: bigint | undefined | null
-
-    @Column_("bool", {nullable: true})
-    isOperator!: boolean | undefined | null
-
-    @Column_("int4", {nullable: true})
-    operatorId!: number | undefined | null
 }
