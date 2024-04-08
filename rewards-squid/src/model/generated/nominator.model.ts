@@ -23,6 +23,9 @@ export class Nominator {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     shares!: bigint | undefined | null
 
+    @Column_("text", {nullable: false})
+    status!: string
+
     @Column_("int4", {nullable: true})
     updatedAt!: number | undefined | null
 }

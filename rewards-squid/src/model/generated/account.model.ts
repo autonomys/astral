@@ -1,5 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import {RewardEvent} from "./rewardEvent.model"
+import {Nominator} from "./nominator.model"
 
 @Entity_()
 export class Account {
@@ -15,4 +16,7 @@ export class Account {
 
     @OneToMany_(() => RewardEvent, e => e.account)
     rewards!: RewardEvent[]
+
+    @OneToMany_(() => Nominator, e => e.account)
+    nominations!: Nominator[]
 }

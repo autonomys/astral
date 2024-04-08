@@ -85,6 +85,9 @@ async function getOperatorEvents(
           );
           operatorEvents.push(...operatorRewardEvents);
           break;
+        case events.domains.fundsUnlocked.name:
+          await updateOperatorStake(ctx, block.header, event);
+          break;
         case events.rewards.blockReward.name:
         case events.rewards.voteReward.name:
           const rewardEvent = await processRewardEvent(
