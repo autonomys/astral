@@ -25,6 +25,9 @@ type Operator @entity {
   currentEpochRewards: BigInt
   totalShares: BigInt
   nominatorAmount: Int! @index
+  deposits: [Deposit!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000)
   nominators: [Nominator!]!
     @derivedFrom(field: "operator")
     @cardinality(value: 1000)

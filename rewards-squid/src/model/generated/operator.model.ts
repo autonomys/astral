@@ -1,5 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
+import {Deposit} from "./deposit.model"
 import {Nominator} from "./nominator.model"
 import {OperatorRewardEvent} from "./operatorRewardEvent.model"
 
@@ -48,6 +49,9 @@ export class Operator {
     @Index_()
     @Column_("int4", {nullable: false})
     nominatorAmount!: number
+
+    @OneToMany_(() => Deposit, e => e.operator)
+    deposits!: Deposit[]
 
     @OneToMany_(() => Nominator, e => e.operator)
     nominators!: Nominator[]
