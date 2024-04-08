@@ -6,6 +6,7 @@ import {
   getOrCreateOperator,
   processRewardEvent,
   updateEpochCompleted,
+  updateOperatorFundsUnlocked,
   updateOperatorRewards,
   updateOperatorStake,
   updateOperatorStatus,
@@ -86,7 +87,7 @@ async function getOperatorEvents(
           operatorEvents.push(...operatorRewardEvents);
           break;
         case events.domains.fundsUnlocked.name:
-          await updateOperatorStake(ctx, block.header, event);
+          await updateOperatorFundsUnlocked(ctx, block.header, event);
           break;
         case events.rewards.blockReward.name:
         case events.rewards.voteReward.name:
