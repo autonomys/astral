@@ -6,8 +6,8 @@ dotenv.config()
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: defaultChain.urls.api,
-  documents: './src/**/*.{ts,tsx}',
+  schema: [defaultChain.urls.api],
+  documents: ['./src/**/*.{ts,tsx}', '!./src/components/StakeWars/query.ts'],
   generates: {
     './gql/': {
       preset: 'client',

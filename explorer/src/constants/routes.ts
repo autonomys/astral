@@ -3,6 +3,7 @@ export enum Routes {
   consensus = 'consensus',
   leaderboard = 'leaderboard',
   operators = 'operators',
+  stake = 'stake',
 }
 
 export const ROUTES = [
@@ -21,6 +22,10 @@ export const ROUTES = [
   {
     name: Routes.operators,
     title: 'Operators',
+  },
+  {
+    name: Routes.stake,
+    title: 'Stake Wars',
   },
 ]
 
@@ -120,6 +125,11 @@ export const INTERNAL_ROUTES = {
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',
+  },
+  stake: {
+    phases: 'phases',
+    stakeLeaderboard: 'leaderboard',
+    rewardLeaderboard: 'rewards-leaderboard',
   },
   notFound: '/404',
   catchAll: '*',

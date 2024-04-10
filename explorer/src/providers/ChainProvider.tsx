@@ -1,6 +1,13 @@
 'use client'
 
-import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  HttpLink,
+  InMemoryCache,
+  createHttpLink,
+} from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 import { FC, ReactNode, createContext, useState } from 'react'
 
@@ -38,9 +45,26 @@ interface SelectedChainProps extends Props {
   selectedChain: Chain
 }
 
+const squidLinks = {
+  general: 'https://squid.green.gemini-3h.subspace.network/graphql',
+  rewards: 'http://localhost:4550/graphql',
+  account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
+}
+
 export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {
+  const httpLink = createHttpLink({
+    uri: ({ getContext }) => {
+      const { clientName } = getContext()
+
+      if (clientName === 'general') return squidLinks.general
+      if (clientName === 'rewards') return squidLinks.rewards
+      if (clientName === 'account') return squidLinks.account
+      if (!clientName) return selectedChain.urls.api
+    },
+  })
+
   const client = new ApolloClient({
-    link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
+    link: ApolloLink.from([new RetryLink(), httpLink]),
     cache: new InMemoryCache(),
   })
 
