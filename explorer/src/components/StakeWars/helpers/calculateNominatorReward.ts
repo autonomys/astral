@@ -1,4 +1,4 @@
-import { OperatorsConnectionRewardsQuery } from 'gql/graphql'
+import { NominatorsConnectionQuery, OperatorsConnectionRewardsQuery } from 'gql/graphql'
 
 type Operator = OperatorsConnectionRewardsQuery['operatorsConnection']['edges'][0]['node']
 
@@ -9,7 +9,9 @@ export const getOperatorRewards = (operator: Operator) => {
   )
 }
 
-export const getNominatorRewards = (nominator: [], operators: []) => {
+type Nominators = NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']
+
+export const getNominatorRewards = (nominator: Nominators[], operators: Operator[]) => {
   const nominatorsWithRewards = nominator?.map((nominator) => {
     const operator = operators.find((operator) => operator.id === nominator.operator.id)
     const operatorReward = getOperatorRewards(operator)

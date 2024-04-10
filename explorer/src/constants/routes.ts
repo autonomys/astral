@@ -126,11 +126,6 @@ export const INTERNAL_ROUTES = {
     operators: 'operators',
     nominators: 'nominators',
   },
-  stake: {
-    phases: 'phases',
-    stakeLeaderboard: 'leaderboard',
-    rewardLeaderboard: 'rewards-leaderboard',
-  },
   notFound: '/404',
   catchAll: '*',
 }
