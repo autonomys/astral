@@ -1,4 +1,6 @@
-import { Operator } from 'types'
+import { OperatorsConnectionRewardsQuery } from 'gql/graphql'
+
+type Operator = OperatorsConnectionRewardsQuery['operatorsConnection']['edges'][0]['node']
 
 export const getOperatorRewards = (operator: Operator) => {
   return operator.operatorRewards.reduce(
