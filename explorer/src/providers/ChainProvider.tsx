@@ -47,7 +47,7 @@ interface SelectedChainProps extends Props {
 
 const squidLinks = {
   general: 'https://squid.green.gemini-3h.subspace.network/graphql',
-  rewards: 'http://localhost:4550/graphql',
+  rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
   account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
 }
 
