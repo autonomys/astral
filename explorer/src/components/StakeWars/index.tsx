@@ -7,7 +7,6 @@ import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
 import React from 'react'
 import { useErrorHandler } from 'react-error-boundary'
-// import EndGame from './EndGame'
 import Badge from '../common/Badge'
 import { EndGame } from './EndGame'
 import { NominatorList } from './NominatorList'
@@ -112,7 +111,7 @@ const StakeWars = () => {
                     </div>
                     <div className='flex w-full items-center justify-center'>
                       <div className='font-large text-base text-[#282929] dark:text-white'>
-                        <span className='font-bold'>End Game</span> - results of stake wars - From
+                        <span className='font-bold'>End Game</span> - Results of stake wars - From
                         block{' '}
                         <span className='font-bold'>
                           {numberWithCommas(STAKE_WARS_PHASES.endgame.start)}
@@ -121,8 +120,8 @@ const StakeWars = () => {
                     </div>
                   </div>
                   <div className='text-sm font-medium text-[#282929] dark:text-white'>
-                    <div className='flex items-center'>
-                      <EndGame />
+                    <div className='flex w-full items-center justify-center'>
+                      <EndGame currentBlock={data.squidStatus.height} />
                     </div>
                   </div>
                 </div>

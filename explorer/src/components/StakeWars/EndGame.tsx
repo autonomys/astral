@@ -12,9 +12,14 @@ import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
 import Image from 'next/image'
 import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { NotStarted } from '../layout/NotStarted'
 import { getNominatorRewards } from './helpers/calculateNominatorReward'
 
-export const EndGame: FC = () => {
+type Props = {
+  currentBlock: number
+}
+
+export const EndGame: FC<Props> = ({ currentBlock }) => {
   const [sorting] = useState<SortingState>([{ id: 'shares', desc: true }])
   const [pagination] = useState({
     pageSize: STAKE_WARS_PAGE_SIZE,
@@ -80,6 +85,8 @@ export const EndGame: FC = () => {
 
   const operatorHighest = operatorsConnection[0]
   const nominatorHighest = nominatorsWithRewards[0]
+
+  if (currentBlock < STAKE_WARS_PHASES.endgame.start) return <NotStarted />
 
   return (
     <div className='flex w-full flex-col align-middle'>
