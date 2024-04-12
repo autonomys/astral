@@ -1,4 +1,3 @@
-import { NominatorsConnectionQuery, OperatorsConnectionRewardsQuery } from 'gql/graphql'
 import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 
 type Operator = GetAllNominatorsQuery['operatorsConnection']['edges'][0]['node']

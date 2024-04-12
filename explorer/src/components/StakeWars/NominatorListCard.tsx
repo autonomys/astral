@@ -1,11 +1,11 @@
 import { numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { MobileCard, Row } from 'components/common/MobileCard'
-import { NominatorsConnectionQuery } from 'gql/graphql'
+import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 import { FC, useMemo } from 'react'
 
 type Props = {
-  nominator: NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']
+  nominator: GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']
   index: number
 }
 

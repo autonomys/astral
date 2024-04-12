@@ -13,7 +13,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import type { OperatorsConnectionQuery } from 'gql/graphql'
+import { GetAllOperatorsQuery } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
@@ -39,9 +39,7 @@ export const OperatorsList: FC = () => {
         accessorKey: 'id',
         header: 'Id',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
             className='hover:text-[#DE67E4]'
@@ -59,9 +57,7 @@ export const OperatorsList: FC = () => {
         accessorKey: 'currentDomainId',
         header: 'Domain',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <div>{row.original.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>
         ),
       },
@@ -69,9 +65,7 @@ export const OperatorsList: FC = () => {
         accessorKey: 'signingKey',
         header: 'Signing Key',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <div className='row flex items-center gap-3'>
             <div>{shortString(row.original.signingKey)}</div>
           </div>
@@ -81,9 +75,7 @@ export const OperatorsList: FC = () => {
         accessorKey: 'minimumNominatorStake',
         header: 'Min. Stake',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
         ),
       },
@@ -91,9 +83,7 @@ export const OperatorsList: FC = () => {
         accessorKey: 'currentTotalStake',
         header: 'Total Stake',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>
         ),
       },
@@ -101,8 +91,12 @@ export const OperatorsList: FC = () => {
         accessorKey: 'rewards',
         header: 'Total Rewards',
         enableSorting: true,
-        cell: ({ row }) => (
-          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards) : 0} tSSC`}</div>
+        cell: ({
+          row,
+        }: Cell<
+          GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'] & { rewards: bigint }
+        >) => (
+          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} tSSC`}</div>
         ),
       },
     ]
@@ -120,10 +114,10 @@ export const OperatorsList: FC = () => {
       blockNumber_gte: STAKE_WARS_PHASES.phase2.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase2.end,
     }),
-    [pagination],
+    [pagination, sorting],
   )
 
-  const { data, error, loading } = useQuery(GET_ALL_OPERATORS, {
+  const { data, error, loading } = useQuery<GetAllOperatorsQuery>(GET_ALL_OPERATORS, {
     variables: variables,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
@@ -147,16 +141,24 @@ export const OperatorsList: FC = () => {
     () =>
       operators &&
       operators.edges
-        .map((operator: any) => ({
+        .map((operator) => ({
           ...operator.node,
-          rewards: operator.node.operatorRewards.reduce((acc: bigint, reward: any) => {
+          rewards: operator.node.operatorRewards.reduce((acc: bigint, reward) => {
             return acc + BigInt(reward.amount)
           }, BigInt(0)),
           status: operator.node.status
             ? capitalizeFirstLetter(JSON.parse(operator.node.status).__kind)
             : 'Unknown',
         }))
-        .sort((a, b) => b.stake > a.stake || -(b.stake < a.stake)),
+        .sort((a, b) => {
+          if (b.rewards > a.rewards) {
+            return 1
+          } else if (b.rewards < a.rewards) {
+            return -1
+          } else {
+            return 0
+          }
+        }),
     [operators],
   )
 
@@ -206,7 +208,7 @@ export const OperatorsList: FC = () => {
 }
 
 type MobileComponentProps = {
-  operators: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'][]
+  operators: GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'][]
 }
 
 const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (

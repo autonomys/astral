@@ -11,7 +11,6 @@ import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
-import type { NominatorsConnectionQuery } from 'gql/graphql'
 import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -37,7 +36,7 @@ export const NominatorList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <div>{row.original.account.id}</div>
         ),
       },
@@ -47,7 +46,7 @@ export const NominatorList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <div className='row flex items-center gap-3'>
             <div>{shortString(row.original.account.id)}</div>
           </div>
@@ -59,7 +58,7 @@ export const NominatorList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <div>{numberWithCommas(row.original.shares)}</div>
         ),
       },
@@ -67,7 +66,13 @@ export const NominatorList: FC = () => {
         accessorKey: 'nominatorReward',
         header: 'Rewards',
         enableSorting: true,
-        cell: ({ row }) => <div>{bigNumberToNumber(row.original.nominatorReward)}</div>,
+        cell: ({
+          row,
+        }: Cell<
+          GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node'] & {
+            nominatorReward: bigint
+          }
+        >) => <div>{bigNumberToNumber(row.original.nominatorReward.toString())}</div>,
       },
     ]
     return cols

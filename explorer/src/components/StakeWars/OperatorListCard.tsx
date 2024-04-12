@@ -2,20 +2,18 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { MobileCard, Row } from 'components/common/MobileCard'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { OperatorsConnectionQuery } from 'gql/graphql'
+import { GetAllOperatorsQuery } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
-import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 
 type Props = {
-  operator: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+  operator: GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']
   index: number
 }
 
 export const OperatorsListCard: FC<Props> = ({ operator }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  const { actingAccount } = useWallet()
 
   const body = useMemo(() => {
     const rows: Row[] = [
@@ -33,10 +31,8 @@ export const OperatorsListCard: FC<Props> = ({ operator }) => {
     ]
     return rows
   }, [
-    actingAccount,
     operator.currentDomainId,
     operator.currentTotalStake,
-    operator.id,
     operator.minimumNominatorStake,
     operator.nominationTax,
     operator.operatorOwner,

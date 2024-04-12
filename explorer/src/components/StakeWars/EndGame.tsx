@@ -59,7 +59,7 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
       operators &&
       operators.edges.map((operator) => ({
         ...operator.node,
-        rewards: operator.node.operatorRewards.reduce((acc: bigint, reward: any) => {
+        rewards: operator.node.operatorRewards.reduce((acc: bigint, reward) => {
           return acc + BigInt(reward.amount)
         }, BigInt(0)),
         status: operator.node.status
@@ -69,12 +69,20 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
     [operators],
   )
 
-  const highestOperatorWithRewards = useMemo(
-    () =>
+  const highestOperatorWithRewards = useMemo(() => {
+    return (
       operatorsConnection &&
-      operatorsConnection.sort((a, b) => b.rewards > a.rewards || -(b.rewards < a.rewards))[0],
-    [operatorsConnection],
-  )
+      operatorsConnection.sort((a, b) => {
+        if (b.rewards > a.rewards) {
+          return 1
+        } else if (b.rewards < a.rewards) {
+          return -1
+        } else {
+          return 0
+        }
+      })[0]
+    )
+  }, [operatorsConnection])
 
   const nominatorHighest = useMemo(() => {
     const nominators = getNominatorRewards(nominatorsConnection, operatorsConnection)
