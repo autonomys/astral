@@ -5,6 +5,7 @@ import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
 import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
+import { GetCurrentBlockNumberQuery } from 'gql/rewardTypes'
 import React from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import Badge from '../common/Badge'
@@ -12,17 +13,17 @@ import { EndGame } from './EndGame'
 import { NominatorList } from './NominatorList'
 import { OperatorsList } from './OperatorsList'
 import { phaseState } from './helpers/phaseState'
-import { GET_CURRENT_BLOCK_NUMBER } from './query'
+import { GET_CURRENT_BLOCK_NUMBER } from './rewardsQuery'
 
 const StakeWars = () => {
-  const { data, loading, error } = useQuery(GET_CURRENT_BLOCK_NUMBER, {
+  const { data, loading, error } = useQuery<GetCurrentBlockNumberQuery>(GET_CURRENT_BLOCK_NUMBER, {
     context: { clientName: 'rewards' },
   })
 
   useErrorHandler(error)
 
   if (loading) return <Spinner />
-  if (!data.squidStatus) return <NotFound />
+  if (!data?.squidStatus) return <NotFound />
 
   return (
     <div className='flex w-full flex-col space-y-6'>
@@ -38,9 +39,9 @@ const StakeWars = () => {
                   <div className='flex w-full flex-col items-center justify-center space-y-4'>
                     <div className='flex w-full items-center justify-center gap-2 text-base text-[#282929] dark:text-white'>
                       <span>Phase State - Current Block:</span>{' '}
-                      <span> {numberWithCommas(data.squidStatus.height)} </span>
+                      <span> {numberWithCommas(data.squidStatus.height || 0)} </span>
                       <Badge style='bg-gray-100 text-gray-800 me-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500'>
-                        {phaseState('phase2', data.squidStatus.height)}
+                        {phaseState('phase2', data.squidStatus.height || 0)}
                       </Badge>
                     </div>
                     <div className='flex w-full items-center justify-center'>
@@ -70,9 +71,9 @@ const StakeWars = () => {
                   <div className='flex w-full flex-col items-center justify-center space-y-4'>
                     <div className='flex w-full items-center justify-center gap-2 text-base text-[#282929] dark:text-white'>
                       <span>Phase State - Current Block:</span>{' '}
-                      <span> {numberWithCommas(data.squidStatus.height)} </span>
+                      <span> {numberWithCommas(data.squidStatus.height || 0)} </span>
                       <Badge style='border-blue-400 bg-blue-100 text-blue-800 dark:bg-gray-700 dark:text-blue-400'>
-                        {phaseState('phase3', data.squidStatus.height)}
+                        {phaseState('phase3', data.squidStatus.height || 0)}
                       </Badge>
                     </div>
                     <div className='flex w-full items-center justify-center'>
@@ -104,9 +105,9 @@ const StakeWars = () => {
                   <div className='flex w-full flex-col items-center justify-center space-y-4'>
                     <div className='flex w-full items-center justify-center gap-2 text-base text-[#282929] dark:text-white'>
                       <span>Phase State - Current Block:</span>{' '}
-                      <span> {numberWithCommas(data.squidStatus.height)} </span>
+                      <span> {numberWithCommas(data.squidStatus.height || 0)} </span>
                       <Badge style='bg-gray-100 text-gray-800 me-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500'>
-                        {phaseState('endgame', data.squidStatus.height)}
+                        {phaseState('endgame', data.squidStatus.height || 0)}
                       </Badge>
                     </div>
                     <div className='flex w-full items-center justify-center'>
@@ -121,7 +122,7 @@ const StakeWars = () => {
                   </div>
                   <div className='text-sm font-medium text-[#282929] dark:text-white'>
                     <div className='flex w-full items-center justify-center'>
-                      <EndGame currentBlock={data.squidStatus.height} />
+                      <EndGame currentBlock={data.squidStatus.height || 0} />
                     </div>
                   </div>
                 </div>

@@ -112,6 +112,8 @@ export const GET_ALL_NOMINATORS = gql`
           operator {
             id
             currentDomainId
+            currentTotalStake
+            totalShares
           }
           account {
             id

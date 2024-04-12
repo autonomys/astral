@@ -4,7 +4,6 @@ import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
-  HttpLink,
   InMemoryCache,
   createHttpLink,
 } from '@apollo/client'
@@ -12,7 +11,7 @@ import { RetryLink } from '@apollo/client/link/retry'
 import { FC, ReactNode, createContext, useState } from 'react'
 
 // chains
-import { chains } from 'constants/chains'
+import { chains, squidLinks } from 'constants/chains'
 
 export type Chain = {
   title: string
@@ -43,12 +42,6 @@ type Props = {
 
 interface SelectedChainProps extends Props {
   selectedChain: Chain
-}
-
-const squidLinks = {
-  general: 'https://squid.green.gemini-3h.subspace.network/graphql',
-  rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
-  account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
 }
 
 export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {

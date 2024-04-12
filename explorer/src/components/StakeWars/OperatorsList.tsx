@@ -1,12 +1,12 @@
 /* eslint-disable camelcase */
 'use client'
 
+import { GET_ALL_OPERATORS } from '@/components/StakeWars/rewardsQuery'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
-import { GET_ALL_OPERATORS } from 'components/StakeWars/query'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'

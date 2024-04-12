@@ -1,17 +1,18 @@
 /* eslint-disable camelcase */
 'use client'
 
+import { GET_ALL_NOMINATORS } from '@/components/StakeWars/rewardsQuery'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { GET_ALL_NOMINATORS } from 'components/StakeWars/query'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
 import type { NominatorsConnectionQuery } from 'gql/graphql'
+import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
@@ -87,7 +88,7 @@ export const NominatorList: FC = () => {
     [sorting, pagination, searchOperator],
   )
 
-  const { data, error, loading } = useQuery(GET_ALL_NOMINATORS, {
+  const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
     variables: variables,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
@@ -108,13 +109,13 @@ export const NominatorList: FC = () => {
 
   const nominators = useMemo(() => data && data.nominatorsConnection, [data])
   const nominatorsConnection = useMemo(
-    () => nominators && nominators.edges.map((operator: any) => operator.node),
+    () => nominators && nominators.edges.map((operator) => operator.node),
     [nominators],
   )
 
   const operators = useMemo(() => data && data.operatorsConnection, [data])
   const operatorsConnection = useMemo(
-    () => operators && operators.edges.map((operator: any) => operator.node),
+    () => operators && operators.edges.map((operator) => operator.node),
     [operators],
   )
 
@@ -155,18 +156,20 @@ export const NominatorList: FC = () => {
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
-            data={nominatorsWithRewards}
-            columns={columns}
-            showNavigation={false}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent nominators={nominatorsConnection} />}
-          />
+          {nominatorsWithRewards && (
+            <NewTable
+              data={nominatorsWithRewards}
+              columns={columns}
+              showNavigation={false}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              fullDataDownloader={fullDataDownloader}
+              mobileComponent={<MobileComponent nominators={nominatorsConnection} />}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -174,12 +177,12 @@ export const NominatorList: FC = () => {
 }
 
 type MobileComponentProps = {
-  nominators: []
+  nominators: GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node'][] | undefined
 }
 
 const MobileComponent: FC<MobileComponentProps> = ({ nominators }) => (
   <div className='w-full'>
-    {nominators.map((nominator, index) => {
+    {nominators?.map((nominator, index) => {
       return (
         <NominatorListCard
           key={`nominator-list-card-${nominator.id}`}

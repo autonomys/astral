@@ -3,7 +3,7 @@ import { shortString } from '@/utils/string'
 import Identicon from '@polkadot/react-identicon'
 import { MobileCard } from 'components/common/MobileCard'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { NominatorsConnectionQuery } from 'gql/graphql'
+import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -11,7 +11,7 @@ import { ActionsDropdown } from './ActionsDropdown'
 import { OperatorAction, OperatorActionType } from './ActionsModal'
 
 type Props = {
-  nominator: NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']
+  nominator: GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']
   action?: OperatorAction
   handleAction?: (value: OperatorAction) => void
   index?: number

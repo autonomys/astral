@@ -1,14 +1,15 @@
 /* eslint-disable camelcase */
 'use client'
 
+import { GET_ALL_NOMINATORS } from '@/components/StakeWars/rewardsQuery'
 import { bigNumberToNumber } from '@/utils/number'
 import { capitalizeFirstLetter, shortString } from '@/utils/string'
 import { useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { GET_ALL_NOMINATORS } from 'components/StakeWars/query'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
+import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 import Image from 'next/image'
 import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -38,7 +39,7 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
     [sorting, pagination],
   )
 
-  const { data, error, loading } = useQuery(GET_ALL_NOMINATORS, {
+  const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
     variables: variables,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
@@ -48,7 +49,7 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
 
   const nominators = useMemo(() => data && data.nominatorsConnection, [data])
   const nominatorsConnection = useMemo(
-    () => nominators && nominators.edges.map((operator: any) => operator.node),
+    () => nominators && nominators.edges.map((operator) => operator.node),
     [nominators],
   )
 
@@ -56,24 +57,29 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
   const operatorsConnection = useMemo(
     () =>
       operators &&
-      operators.edges
-        .map((operator: any) => ({
-          ...operator.node,
-          rewards: operator.node.operatorRewards.reduce((acc: bigint, reward: any) => {
-            return acc + BigInt(reward.amount)
-          }, BigInt(0)),
-          status: operator.node.status
-            ? capitalizeFirstLetter(JSON.parse(operator.node.status).__kind)
-            : 'Unknown',
-        }))
-        .sort((a, b) => b.rewards > a.rewards || -(b.rewards < a.rewards)),
+      operators.edges.map((operator) => ({
+        ...operator.node,
+        rewards: operator.node.operatorRewards.reduce((acc: bigint, reward: any) => {
+          return acc + BigInt(reward.amount)
+        }, BigInt(0)),
+        status: operator.node.status
+          ? capitalizeFirstLetter(JSON.parse(operator.node.status).__kind)
+          : 'Unknown',
+      })),
     [operators],
   )
 
-  const nominatorsWithRewards = useMemo(
-    () => getNominatorRewards(nominatorsConnection, operatorsConnection),
-    [nominatorsConnection, operatorsConnection],
+  const highestOperatorWithRewards = useMemo(
+    () =>
+      operatorsConnection &&
+      operatorsConnection.sort((a, b) => b.rewards > a.rewards || -(b.rewards < a.rewards))[0],
+    [operatorsConnection],
   )
+
+  const nominatorHighest = useMemo(() => {
+    const nominators = getNominatorRewards(nominatorsConnection, operatorsConnection)
+    return nominators[0]
+  }, [nominatorsConnection, operatorsConnection])
 
   if (loading)
     return (
@@ -81,10 +87,7 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
         <Spinner />
       </div>
     )
-  if (!nominatorsWithRewards) return <NotFound />
-
-  const operatorHighest = operatorsConnection[0]
-  const nominatorHighest = nominatorsWithRewards[0]
+  if (!nominatorHighest || !highestOperatorWithRewards) return <NotFound />
 
   if (currentBlock < STAKE_WARS_PHASES.endgame.start) return <NotStarted />
 
@@ -107,19 +110,20 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
                     Operator with highest rewards
                   </h5>
                   <p className='mb-3 font-normal text-gray-700 dark:text-gray-400'>
-                    Id: {operatorHighest.id}
+                    Id: {highestOperatorWithRewards.id}
                   </p>
                   <p className='mb-3 font-normal text-gray-700 dark:text-gray-400'>
-                    Signing Key: {shortString(operatorHighest.signingKey)}
+                    Signing Key: {shortString(highestOperatorWithRewards.signingKey)}
                   </p>
                   <p className='mb-3 font-normal text-gray-700 dark:text-gray-400'>
-                    Domain: {operatorHighest.currentDomainId === '0' ? 'Subspace' : 'Nova'}
+                    Domain: {highestOperatorWithRewards.currentDomainId === 0 ? 'Subspace' : 'Nova'}
                   </p>
                   <p className='mb-3 font-normal text-gray-700 dark:text-gray-400'>
-                    Status: {operatorHighest.status}
+                    Status: {highestOperatorWithRewards.status}
                   </p>
                   <p className='mb-3 font-bold text-gray-700 dark:text-gray-400'>
-                    Total rewards: {bigNumberToNumber(operatorHighest.rewards)}{' '}
+                    Total rewards:{' '}
+                    {bigNumberToNumber(highestOperatorWithRewards.rewards.toString())}{' '}
                     <span className='text-gray-700 dark:text-gray-400'>TSSC</span>
                   </p>
                 </div>
@@ -148,7 +152,7 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
                     Status: {nominatorHighest.status}
                   </p>
                   <p className='mb-3 font-bold text-gray-700 dark:text-gray-400'>
-                    Total rewards: {bigNumberToNumber(nominatorHighest.nominatorReward)}{' '}
+                    Total rewards: {bigNumberToNumber(nominatorHighest.nominatorReward.toString())}{' '}
                     <span className='text-gray-700  dark:text-gray-400'>TSSC</span>
                   </p>
                 </div>
