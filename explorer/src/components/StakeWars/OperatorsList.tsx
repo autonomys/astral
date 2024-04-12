@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-'use client'
 
 import { GET_ALL_OPERATORS } from '@/components/StakeWars/rewardsQuery'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
