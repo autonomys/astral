@@ -1,5 +1,5 @@
-module.exports = class Data1712574163299 {
-    name = 'Data1712574163299'
+module.exports = class Data1713160183202 {
+    name = 'Data1713160183202'
 
     async up(db) {
         await db.query(`CREATE TABLE "reward_event" ("id" character varying NOT NULL, "index_in_block" integer NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "block_number" integer NOT NULL, "extrinsic_hash" text, "amount" numeric, "account_id" character varying, CONSTRAINT "PK_212058fe00a4e4ad6f433833992" PRIMARY KEY ("id"))`)
@@ -7,7 +7,7 @@ module.exports = class Data1712574163299 {
         await db.query(`CREATE INDEX "IDX_dcefc6529930bf025676463725" ON "reward_event" ("block_number") `)
         await db.query(`CREATE INDEX "IDX_53ac1d5bf31f15640e4d54820a" ON "reward_event" ("extrinsic_hash") `)
         await db.query(`CREATE INDEX "IDX_ff1b646bb31ccbc8e1b2f868bd" ON "reward_event" ("account_id") `)
-        await db.query(`CREATE TABLE "deposit" ("id" character varying NOT NULL, "block_number" integer NOT NULL, "amount" numeric, "operator_id" character varying NOT NULL, "nominator_account" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "extrinsic_hash" text, "nominator_id" character varying, CONSTRAINT "PK_6654b4be449dadfd9d03a324b61" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "deposit" ("id" character varying NOT NULL, "block_number" integer NOT NULL, "amount" numeric, "nominator_account" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "extrinsic_hash" text, "operator_id" character varying, "nominator_id" character varying, CONSTRAINT "PK_6654b4be449dadfd9d03a324b61" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_230a90fc5a10c7ac5ac35397d2" ON "deposit" ("block_number") `)
         await db.query(`CREATE INDEX "IDX_c2f2cfaa2b294c75d38a57e380" ON "deposit" ("operator_id") `)
         await db.query(`CREATE INDEX "IDX_b673efd4ec207b203e4d06abe9" ON "deposit" ("nominator_id") `)
@@ -34,7 +34,7 @@ module.exports = class Data1712574163299 {
         await db.query(`CREATE INDEX "IDX_7771dd1572b239c78e09e06b15" ON "account_reward" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_3f4a43ba0de3315191dac832b8" ON "account_reward" ("updated_at") `)
         await db.query(`CREATE TABLE "operator_reward" ("id" character varying NOT NULL, "amount" numeric, "updated_at" integer NOT NULL, CONSTRAINT "PK_81925489709706b633c09e4a3cb" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE TABLE "operator_unlocked_funds" ("id" character varying NOT NULL, "block_number" integer NOT NULL, "operator_id" character varying NOT NULL, "nominator_account" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "extrinsic_hash" text, "amount" numeric, "nominator_id" character varying, CONSTRAINT "PK_88e0c471830b6c83ae6df8e561a" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "operator_unlocked_funds" ("id" character varying NOT NULL, "block_number" integer NOT NULL, "nominator_account" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "extrinsic_hash" text, "amount" numeric, "operator_id" character varying, "nominator_id" character varying, CONSTRAINT "PK_88e0c471830b6c83ae6df8e561a" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_c5936076e548d50542cf776289" ON "operator_unlocked_funds" ("block_number") `)
         await db.query(`CREATE INDEX "IDX_8d1c61c4fa2cbdf5da095a3ffd" ON "operator_unlocked_funds" ("operator_id") `)
         await db.query(`CREATE INDEX "IDX_2fff22e92b7b71ed2f39466e57" ON "operator_unlocked_funds" ("nominator_id") `)

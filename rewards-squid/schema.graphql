@@ -91,7 +91,6 @@ type Deposit @entity {
   amount: BigInt
   operator: Operator!
   nominator: Nominator!
-  operatorId: Int!
   nominatorAccount: String!
   timestamp: DateTime! @index
   extrinsicHash: String @index
@@ -102,7 +101,6 @@ type OperatorUnlockedFunds @entity {
   blockNumber: Int! @index
   operator: Operator!
   nominator: Nominator!
-  operatorId: Int!
   nominatorAccount: String!
   timestamp: DateTime! @index
   extrinsicHash: String @index

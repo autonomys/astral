@@ -280,7 +280,6 @@ export async function updateOperatorStake(
     operator: nominator.operator,
     nominator: nominator,
     nominatorAccount: encodeId(event.args?.nominatorId),
-    operatorId: Number(event.args?.operatorId),
   });
 
   if (deposit) {
@@ -424,7 +423,6 @@ export async function updateOperatorFundsUnlocked(
     timestamp: new Date(header.timestamp || 0),
     extrinsicHash: event.extrinsic?.hash,
     nominatorAccount: encodeId(event.args?.nominatorId),
-    operatorId: Number(event.args?.operatorId),
     amount: amount,
     operator: nominator.operator,
     nominator: nominator,

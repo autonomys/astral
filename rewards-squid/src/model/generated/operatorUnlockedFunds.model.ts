@@ -24,9 +24,6 @@ export class OperatorUnlockedFunds {
     @ManyToOne_(() => Nominator, {nullable: true})
     nominator!: Nominator
 
-    @Column_("int4", {nullable: false})
-    operatorId!: number
-
     @Column_("text", {nullable: false})
     nominatorAccount!: string
 
