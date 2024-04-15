@@ -1,3 +1,5 @@
+'use client'
+
 /* eslint-disable camelcase */
 import { PAGE_SIZE } from '@/constants/general'
 import { AccountIdParam } from '@/types/app'
