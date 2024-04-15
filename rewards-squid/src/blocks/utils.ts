@@ -4,11 +4,13 @@ import { randomUUID } from "crypto";
 import {
   Account,
   AccountReward,
+  Deposit,
   DomainEpoch,
   Nominator,
   Operator,
   OperatorReward,
   OperatorRewardEvent,
+  OperatorUnlockedFunds,
   RewardEvent,
 } from "../model";
 import { Block, BlockHeader, Event, ProcessorContext } from "../processor";
@@ -40,7 +42,16 @@ export async function getOrCreateOperator(
   let operator = await ctx.store.get(Operator, operatorId.toString());
 
   if (!operator) {
-    const operatorInfo = await domains.operators.v3.get(header, operatorId);
+    let operatorInfo;
+
+    if (domains.operators.v0.is(header)) {
+      operatorInfo = await domains.operators.v0.get(header, operatorId);
+    } else if (domains.operators.v1.is(header)) {
+      operatorInfo = await domains.operators.v1.get(header, operatorId);
+    } else if (domains.operators.v3.is(header)) {
+      operatorInfo = await domains.operators.v3.get(header, operatorId);
+    }
+
     const nominatorsLength = await domains.nominatorCount.v0.get(
       header,
       operatorId
@@ -50,7 +61,8 @@ export async function getOrCreateOperator(
       header,
       operatorId
     );
-    const encodedOwnerAccount = encodeId(ownerAccount || "");
+
+    const encodedOwnerAccount = ownerAccount ? encodeId(ownerAccount) : "";
 
     if (operatorInfo) {
       operator = new Operator({
@@ -106,6 +118,7 @@ export async function getOrCreateNominator(
       operator: operator,
       account: account,
       shares: BigInt(nominatorInfo?.known.shares || 0),
+      status: "Registered",
       updatedAt: header.height,
     });
 
@@ -139,8 +152,15 @@ export async function updateOperatorStatus(
   header: BlockHeader
 ) {
   const operator = await ctx.store.get(Operator, operatorId.toString());
-  const operatorInfo = await domains.operators.v3.get(header, operatorId);
-  const encodedSigningKey = operatorInfo && encodeId(operatorInfo.signingKey);
+  let operatorInfo;
+
+  if (domains.operators.v0.is(header)) {
+    operatorInfo = await domains.operators.v0.get(header, operatorId);
+  } else if (domains.operators.v1.is(header)) {
+    operatorInfo = await domains.operators.v1.get(header, operatorId);
+  } else if (domains.operators.v3.is(header)) {
+    operatorInfo = await domains.operators.v3.get(header, operatorId);
+  }
   const nominatorCount = await domains.nominatorCount.v0.get(
     header,
     operatorId
@@ -167,7 +187,15 @@ export async function updateOperatorStakes(
   header: BlockHeader
 ) {
   const operator = await ctx.store.get(Operator, operatorId.toString());
-  const operatorInfo = await domains.operators.v3.get(header, operatorId);
+  let operatorInfo;
+
+  if (domains.operators.v0.is(header)) {
+    operatorInfo = await domains.operators.v0.get(header, operatorId);
+  } else if (domains.operators.v1.is(header)) {
+    operatorInfo = await domains.operators.v1.get(header, operatorId);
+  } else if (domains.operators.v3.is(header)) {
+    operatorInfo = await domains.operators.v3.get(header, operatorId);
+  }
   const nominatorsLength = await domains.nominatorCount.v0.get(
     header,
     operatorId
@@ -233,7 +261,7 @@ export async function updateOperatorStake(
   header: BlockHeader,
   event: Event
 ) {
-  const { operatorId, nominatorId } =
+  const { operatorId, nominatorId, amount } =
     events.domains.storageFeeDeposited.v1.decode(event);
 
   const nominator = await getOrCreateNominator(
@@ -243,8 +271,19 @@ export async function updateOperatorStake(
     nominatorId
   );
 
-  if (nominator) {
-    ctx.store.save(nominator);
+  const deposit = new Deposit({
+    id: event.id,
+    blockNumber: header.height,
+    timestamp: new Date(header.timestamp || 0),
+    extrinsicHash: event.extrinsic?.hash,
+    amount: amount,
+    operator: nominator.operator,
+    nominator: nominator,
+    nominatorAccount: encodeId(event.args?.nominatorId),
+  });
+
+  if (deposit) {
+    await ctx.store.save(deposit);
   }
 }
 
@@ -259,7 +298,15 @@ export async function updateWithdrewStake(
   const encodedNominatorId = encodeId(nominatorId);
 
   const operator = await ctx.store.get(Operator, operatorId.toString());
-  const operatorInfo = await domains.operators.v3.get(header, operatorId);
+  let operatorInfo;
+
+  if (domains.operators.v0.is(header)) {
+    operatorInfo = await domains.operators.v0.get(header, operatorId);
+  } else if (domains.operators.v1.is(header)) {
+    operatorInfo = await domains.operators.v1.get(header, operatorId);
+  } else if (domains.operators.v3.is(header)) {
+    operatorInfo = await domains.operators.v3.get(header, operatorId);
+  }
   const nominator = await ctx.store.get(
     Nominator,
     `${operatorId}-${encodedNominatorId}`
@@ -281,7 +328,12 @@ export async function updateWithdrewStake(
   }
 
   if (operator && nominator) {
-    await ctx.store.remove(nominator);
+    const newNominator = new Nominator({
+      ...nominator,
+      status: "Stake Withdrawn",
+      updatedAt: header.height,
+    });
+    await ctx.store.save(newNominator);
   }
 }
 
@@ -348,4 +400,35 @@ export async function getOrCreateOperatorRewards(
   }
 
   return operatorReward;
+}
+
+export async function updateOperatorFundsUnlocked(
+  ctx: ProcessorContext<StoreWithCache>,
+  header: BlockHeader,
+  event: Event
+) {
+  const { operatorId, nominatorId, amount } =
+    events.domains.fundsUnlocked.v0.decode(event);
+
+  const nominator = await getOrCreateNominator(
+    ctx,
+    header,
+    operatorId,
+    nominatorId
+  );
+
+  const unlockedFund = new OperatorUnlockedFunds({
+    id: event.id,
+    blockNumber: header.height,
+    timestamp: new Date(header.timestamp || 0),
+    extrinsicHash: event.extrinsic?.hash,
+    nominatorAccount: encodeId(event.args?.nominatorId),
+    amount: amount,
+    operator: nominator.operator,
+    nominator: nominator,
+  });
+
+  if (unlockedFund) {
+    await ctx.store.save(unlockedFund);
+  }
 }
