@@ -221,7 +221,6 @@ export type Deposit = {
   nominator: Nominator;
   nominatorAccount: Scalars['String']['output'];
   operator: Operator;
-  operatorId: Scalars['Int']['output'];
   timestamp: Scalars['DateTime']['output'];
 };
 
@@ -268,10 +267,6 @@ export enum DepositOrderByInput {
   NominatorUpdatedAtAscNullsFirst = 'nominator_updatedAt_ASC_NULLS_FIRST',
   NominatorUpdatedAtDesc = 'nominator_updatedAt_DESC',
   NominatorUpdatedAtDescNullsLast = 'nominator_updatedAt_DESC_NULLS_LAST',
-  OperatorIdAsc = 'operatorId_ASC',
-  OperatorIdAscNullsFirst = 'operatorId_ASC_NULLS_FIRST',
-  OperatorIdDesc = 'operatorId_DESC',
-  OperatorIdDescNullsLast = 'operatorId_DESC_NULLS_LAST',
   OperatorCurrentDomainIdAsc = 'operator_currentDomainId_ASC',
   OperatorCurrentDomainIdAscNullsFirst = 'operator_currentDomainId_ASC_NULLS_FIRST',
   OperatorCurrentDomainIdDesc = 'operator_currentDomainId_DESC',
@@ -409,15 +404,6 @@ export type DepositWhereInput = {
   nominatorAccount_startsWith?: InputMaybe<Scalars['String']['input']>;
   nominator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   operator?: InputMaybe<OperatorWhereInput>;
-  operatorId_eq?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_gt?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_gte?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  operatorId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  operatorId_lt?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_lte?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
   timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
@@ -1089,7 +1075,6 @@ export type OperatorUnlockedFunds = {
   nominator: Nominator;
   nominatorAccount: Scalars['String']['output'];
   operator: Operator;
-  operatorId: Scalars['Int']['output'];
   timestamp: Scalars['DateTime']['output'];
 };
 
@@ -1143,10 +1128,6 @@ export enum OperatorUnlockedFundsOrderByInput {
   NominatorUpdatedAtAscNullsFirst = 'nominator_updatedAt_ASC_NULLS_FIRST',
   NominatorUpdatedAtDesc = 'nominator_updatedAt_DESC',
   NominatorUpdatedAtDescNullsLast = 'nominator_updatedAt_DESC_NULLS_LAST',
-  OperatorIdAsc = 'operatorId_ASC',
-  OperatorIdAscNullsFirst = 'operatorId_ASC_NULLS_FIRST',
-  OperatorIdDesc = 'operatorId_DESC',
-  OperatorIdDescNullsLast = 'operatorId_DESC_NULLS_LAST',
   OperatorCurrentDomainIdAsc = 'operator_currentDomainId_ASC',
   OperatorCurrentDomainIdAscNullsFirst = 'operator_currentDomainId_ASC_NULLS_FIRST',
   OperatorCurrentDomainIdDesc = 'operator_currentDomainId_DESC',
@@ -1284,15 +1265,6 @@ export type OperatorUnlockedFundsWhereInput = {
   nominatorAccount_startsWith?: InputMaybe<Scalars['String']['input']>;
   nominator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   operator?: InputMaybe<OperatorWhereInput>;
-  operatorId_eq?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_gt?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_gte?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  operatorId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  operatorId_lt?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_lte?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  operatorId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
   operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
   timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
   timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
