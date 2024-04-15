@@ -25,10 +25,10 @@ export const Extrinsic: FC = () => {
 
   useErrorHandler(error)
 
-  const extrinsic = data.extrinsicById
-
   if (loading) return <Spinner />
   if (!data.extrinsicById) return <NotFound />
+
+  const extrinsic = data.extrinsicById
 
   return (
     <div className='w-full'>
