@@ -147,15 +147,8 @@ export const NominatorList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
-        <DebouncedInput
-          type='text'
-          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
-          placeholder='Search by operator id'
-          onChange={handleSearch}
-          value={searchOperator}
-        />
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
