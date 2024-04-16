@@ -28,11 +28,14 @@ export const PhaseInformation: FC<Props> = ({ phaseKey, title, children, data })
           <span>{currentBlock}</span>
           <Badge type={badgeStyle}>{phaseState(phaseKey, currentBlockHigh)}</Badge>
         </div>
+        <div className='flex w-full items-center justify-center gap-1 text-sm text-[#282929] dark:text-white'>
+          From block
+          <span className='font-bold'>{numberWithCommas(phase.start)}</span> to
+          <span className='font-bold'>{numberWithCommas(phase.end)}</span>
+        </div>
         <div className='flex w-full items-center justify-center'>
           <div className='font-large  w-full text-base text-[#282929] dark:text-white'>
-            {children} - From block
-            <span className='font-bold'>{numberWithCommas(phase.start)}</span> to
-            <span className='font-bold'>{numberWithCommas(phase.end)}</span>
+            {children}
           </div>
         </div>
       </div>
