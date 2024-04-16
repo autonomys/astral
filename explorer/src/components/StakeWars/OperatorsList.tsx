@@ -6,7 +6,6 @@ import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
-import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
@@ -22,7 +21,6 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { capitalizeFirstLetter } from 'utils/string'
 
 export const OperatorsList: FC = () => {
-  const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'orderingId', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -129,12 +127,6 @@ export const OperatorsList: FC = () => {
     [apolloClient],
   )
 
-  const handleSearch = useCallback((value: string | number) => {
-    setSearch(value.toString())
-    setPagination({ ...pagination, pageIndex: 0 })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   const operators = useMemo(() => data && data.operatorsConnection, [data])
   const operatorsConnection = useMemo(
     () =>
@@ -177,13 +169,6 @@ export const OperatorsList: FC = () => {
         <div className='mt-5 flex w-full justify-between'>
           <div className='text-base font-medium text-[#282929] dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
-        <DebouncedInput
-          type='text'
-          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
-          placeholder='Search by operator id'
-          onChange={handleSearch}
-          value={searchOperator}
-        />
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>

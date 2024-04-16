@@ -15,7 +15,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { NominatorListCard } from '../Operator/NominatorListCard'
+import { NominatorListCard } from './NominatorListCard'
 import { getNominatorRewards } from './helpers/calculateNominatorReward'
 
 export const NominatorList: FC = () => {

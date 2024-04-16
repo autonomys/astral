@@ -9,7 +9,7 @@ type Props = {
   index: number
 }
 
-export const OperatorsListCard: FC<Props> = ({ nominator }) => {
+export const NominatorListCard: FC<Props> = ({ nominator }) => {
   const body = useMemo(() => {
     const rows: Row[] = [
       {

@@ -5,6 +5,7 @@ import {
   ApolloLink,
   ApolloProvider,
   InMemoryCache,
+  Operation,
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
@@ -46,13 +47,14 @@ interface SelectedChainProps extends Props {
 
 export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {
   const httpLink = createHttpLink({
-    uri: ({ getContext }) => {
+    uri: ({ getContext }: Operation) => {
       const { clientName } = getContext()
 
       if (clientName === 'general') return squidLinks.general
       if (clientName === 'rewards') return squidLinks.rewards
       if (clientName === 'account') return squidLinks.account
-      if (!clientName) return selectedChain.urls.api
+
+      return selectedChain.urls.api
     },
   })
 

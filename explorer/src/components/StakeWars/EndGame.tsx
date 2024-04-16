@@ -94,9 +94,10 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
         <Spinner />
       </div>
     )
-  if (!nominatorHighest || !highestOperatorWithRewards) return <NotFound />
 
   if (currentBlock < STAKE_WARS_PHASES.endgame.start) return <NotStarted />
+
+  if (!nominatorHighest || !highestOperatorWithRewards) return <NotFound />
 
   return (
     <div className='flex w-full flex-col align-middle'>
