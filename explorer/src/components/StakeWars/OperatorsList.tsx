@@ -19,8 +19,13 @@ import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { capitalizeFirstLetter } from 'utils/string'
+import { NotStarted } from '../layout/NotStarted'
 
-export const OperatorsList: FC = () => {
+type Props = {
+  currentBlock: number
+}
+
+export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'orderingId', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -161,6 +166,7 @@ export const OperatorsList: FC = () => {
   )
 
   if (loading) return <Spinner />
+  if (currentBlock < STAKE_WARS_PHASES.phase2.start) return <NotStarted />
   if (!operatorsConnection) return <NotFound />
 
   return (

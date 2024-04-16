@@ -5,7 +5,6 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
@@ -15,11 +14,15 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { NotStarted } from '../layout/NotStarted'
 import { NominatorListCard } from './NominatorListCard'
 import { getNominatorRewards } from './helpers/calculateNominatorReward'
 
-export const NominatorList: FC = () => {
-  const [searchOperator, setSearch] = useState<string>('')
+type Props = {
+  currentBlock: number
+}
+
+export const NominatorList: FC<Props> = ({ currentBlock }) => {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'shares', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: STAKE_WARS_PAGE_SIZE,
@@ -85,11 +88,10 @@ export const NominatorList: FC = () => {
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
       orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
-      where: searchOperator ? { id_eq: searchOperator } : {},
       blockNumber_gte: STAKE_WARS_PHASES.phase3.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase3.end,
     }),
-    [sorting, pagination, searchOperator],
+    [sorting, pagination],
   )
 
   const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
@@ -104,12 +106,6 @@ export const NominatorList: FC = () => {
     () => downloadFullData(apolloClient, GET_ALL_NOMINATORS),
     [apolloClient],
   )
-
-  const handleSearch = useCallback((value: string | number) => {
-    setSearch(value.toString())
-    setPagination({ ...pagination, pageIndex: 0 })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const nominators = useMemo(() => data && data.nominatorsConnection, [data])
   const nominatorsConnection = useMemo(
@@ -141,6 +137,7 @@ export const NominatorList: FC = () => {
         <Spinner />
       </div>
     )
+  if (currentBlock < STAKE_WARS_PHASES.phase2.start) return <NotStarted />
   if (!nominatorsWithRewards) return <NotFound />
 
   return (

@@ -19,11 +19,11 @@ const StakeWars = () => {
       <PageTabs isDesktop={true}>
         <PhaseInformation phaseKey='phase2' title='Phase 2 Operators' data={data}>
           Operators with highest rewards in Phase 2
-          <OperatorsList />
+          <OperatorsList currentBlock={data.squidStatus.height || 0} />
         </PhaseInformation>
         <PhaseInformation phaseKey='phase3' title='Phase 3 Nominators' data={data}>
           Nominators with highest rewards in Phase 3
-          <NominatorList />
+          <NominatorList currentBlock={data.squidStatus.height || 0} />
         </PhaseInformation>
         <PhaseInformation phaseKey='endgame' title='End Game' data={data}>
           <EndGame currentBlock={data.squidStatus.height || 0} />

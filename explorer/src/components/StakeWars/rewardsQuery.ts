@@ -62,7 +62,6 @@ export const GET_ALL_NOMINATORS = gql`
     $blockNumber_gte: Int
     $blockNumber_lte: Int
     $orderBy: [NominatorOrderByInput!]!
-    $where: NominatorWhereInput
   ) {
     operatorsConnection(orderBy: orderingId_ASC) {
       totalCount
@@ -101,7 +100,7 @@ export const GET_ALL_NOMINATORS = gql`
         }
       }
     }
-    nominatorsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
+    nominatorsConnection(orderBy: $orderBy, first: $first, after: $after) {
       edges {
         cursor
         node {

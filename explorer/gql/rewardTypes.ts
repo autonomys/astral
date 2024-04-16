@@ -1965,7 +1965,6 @@ export type GetAllNominatorsQueryVariables = Exact<{
   blockNumber_gte?: InputMaybe<Scalars['Int']['input']>;
   blockNumber_lte?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
-  where?: InputMaybe<NominatorWhereInput>;
 }>;
 
 
