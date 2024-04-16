@@ -137,7 +137,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
         <Spinner />
       </div>
     )
-  if (currentBlock < STAKE_WARS_PHASES.phase2.start) return <NotStarted />
+  if (currentBlock < STAKE_WARS_PHASES.phase3.start) return <NotStarted />
   if (!nominatorsWithRewards) return <NotFound />
 
   return (
