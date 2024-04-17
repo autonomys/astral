@@ -35,9 +35,12 @@ jobs:
         mkdir -p ~/.ssh
         ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
         ssh ${SSH_USER}@${{ secrets.SQUID_HOST }} "
-          rm -rf ${DEPLOY_PATH}
-          git clone https://github.com/subspace/astral.git ${DEPLOY_PATH}
-          cd ${DEPLOY_PATH}
+          if [ ! -d ${DEPLOY_PATH} ]; then
+            git clone https://github.com/subspace/astral.git ${DEPLOY_PATH}
+          else
+            cd ${DEPLOY_PATH}
+            git pull
+          fi
           git checkout ${BRANCH_NAME}
           docker-compose -f docker-compose-all-squids.yml pull
           docker-compose -f docker-compose-all-squids.yml up -d
