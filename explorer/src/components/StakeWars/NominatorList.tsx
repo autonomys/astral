@@ -16,7 +16,7 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { NotStarted } from '../layout/NotStarted'
 import { NominatorListCard } from './NominatorListCard'
-import { getNominatorRewards } from './helpers/calculateNominatorReward'
+import { NominatorWithRewards, getNominatorRewards } from './helpers/calculateNominatorReward'
 
 type Props = {
   currentBlock: number
@@ -33,22 +33,15 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
   const columns = useMemo(() => {
     const cols = [
       {
-        accessorKey: 'id',
-        header: 'Id',
-        enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.account.id}</div>
-        ),
+        header: 'Rank',
+        enableSorting: false,
+        cell: ({ row }: Cell<NominatorWithRewards>) => <div>{row.index}</div>,
       },
       {
         accessorKey: 'account',
         header: 'Account',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<NominatorWithRewards>) => (
           <div className='row flex items-center gap-3'>
             <div>{shortString(row.original.account.id)}</div>
           </div>
@@ -58,9 +51,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
         accessorKey: 'shares',
         header: 'Shares',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<NominatorWithRewards>) => (
           <div>{numberWithCommas(row.original.shares)}</div>
         ),
       },
@@ -68,13 +59,25 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
         accessorKey: 'nominatorReward',
         header: 'Rewards',
         enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<
-          GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node'] & {
-            nominatorReward: bigint
-          }
-        >) => <div>{bigNumberToNumber(row.original.nominatorReward.toString())}</div>,
+        cell: ({ row }: Cell<NominatorWithRewards>) => (
+          <div>{bigNumberToNumber(row.original.nominatorReward.toString())}</div>
+        ),
+      },
+      {
+        accessorKey: 'operatorReward',
+        header: 'Operators Rewards',
+        enableSorting: true,
+        cell: ({ row }: Cell<NominatorWithRewards>) => (
+          <div>{bigNumberToNumber(row.original.operatorReward.toString())}</div>
+        ),
+      },
+      {
+        accessorKey: 'operators',
+        header: 'Operators',
+        enableSorting: true,
+        cell: ({ row }: Cell<NominatorWithRewards>) => (
+          <div>{row.original.operators.join(', ')}</div>
+        ),
       },
     ]
     return cols
@@ -127,7 +130,24 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
   )
 
   const nominatorsWithRewards = useMemo(
-    () => getNominatorRewards(nominatorsConnection, operatorsConnection),
+    () =>
+      getNominatorRewards(nominatorsConnection, operatorsConnection).sort((a, b) => {
+        // Compare nominatorRewards first
+        if (a.nominatorReward > b.nominatorReward) {
+          return -1
+        } else if (a.nominatorReward < b.nominatorReward) {
+          return 1
+        } else {
+          // If nominatorRewards are equal, compare operatorRewards
+          if (a.operatorReward > b.operatorReward) {
+            return -1
+          } else if (a.operatorReward < b.operatorReward) {
+            return 1
+          } else {
+            return 0
+          }
+        }
+      }),
     [nominatorsConnection, operatorsConnection],
   )
 

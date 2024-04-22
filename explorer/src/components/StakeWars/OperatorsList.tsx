@@ -9,7 +9,7 @@ import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
+import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { GetAllOperatorsQuery } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
@@ -28,7 +28,7 @@ type Props = {
 export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   const [sorting, setSorting] = useState<SortingState>([{ id: 'orderingId', desc: false }])
   const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
+    pageSize: STAKE_WARS_PAGE_SIZE,
     pageIndex: 0,
   })
   const apolloClient = useApolloClient()

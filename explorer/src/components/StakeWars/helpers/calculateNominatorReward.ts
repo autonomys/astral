@@ -14,17 +14,31 @@ type RewardSums = {
   [key: string]: NominatorWithRewards
 }
 
-type NominatorWithRewards = Nominator & { nominatorReward: bigint }
+export type NominatorWithRewards = Nominator & {
+  nominatorReward: bigint
+  operatorReward: bigint
+  taxes: bigint
+  operators: string[]
+}
 
 export const getNominatorRewards = (
   nominators: Nominator[] | undefined,
   operators: Operator[] | undefined,
 ): NominatorWithRewards[] => {
   if (!nominators) return []
-  const nominatorsWithRewards = nominators.map((nominator) => {
-    const operator = operators?.find((operator) => operator.id === nominator.operator.id)
 
-    if (!operator) return { ...nominator, nominatorReward: BigInt(0), taxes: BigInt(0) }
+  const nominatorsWithRewards = nominators.map((nominator) => {
+    const operator = operators?.find((operator) => {
+      return operator.id === nominator.operator.id
+    })
+    if (!operator)
+      return {
+        ...nominator,
+        nominatorReward: BigInt(0),
+        taxes: BigInt(0),
+        operatorReward: BigInt(0),
+        operators: [],
+      }
 
     const operatorReward = getOperatorRewards(operator)
 
@@ -34,13 +48,22 @@ export const getNominatorRewards = (
         ? (BigInt(nominator.shares) * operatorReward) / BigInt(operator.totalShares)
         : BigInt(0)
 
-    return { ...nominator, nominatorReward, taxes }
+    return {
+      ...nominator,
+      nominatorReward,
+      taxes,
+      operatorReward: operatorReward,
+      operators: [operator.id],
+    }
   })
 
   const rewardSumsById = nominatorsWithRewards.reduce((acc: RewardSums, current) => {
     const id = current.account.id
     if (acc[id]) {
       acc[id].nominatorReward += current.nominatorReward
+      acc[id].taxes += current.taxes
+      acc[id].operatorReward += current.operatorReward
+      acc[id].operators.push(current.operator.id)
     } else {
       acc[id] = { ...current }
     }
