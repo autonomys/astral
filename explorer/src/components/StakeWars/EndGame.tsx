@@ -137,8 +137,6 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
   )
 
   const nominatorHighest = useMemo(() => nominatorsWithRewards[0], [nominatorsWithRewards])
-  console.log('🚀 ~ nominatorsWithRewards:', nominatorsWithRewards)
-
   if (loading || nominatorLoading)
     return (
       <div className='flex w-full items-center justify-center'>

@@ -35,7 +35,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
       {
         header: 'Rank',
         enableSorting: false,
-        cell: ({ row }: Cell<NominatorWithRewards>) => <div>{row.index}</div>,
+        cell: ({ row }: Cell<NominatorWithRewards>) => <div>{row.index + 1}</div>,
       },
       {
         accessorKey: 'account',
@@ -122,13 +122,6 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     [operators],
   )
 
-  const totalCount = useMemo(() => (nominators ? nominators.totalCount : 0), [nominators])
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-  const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
-    [totalCount, pagination],
-  )
-
   const nominatorsWithRewards = useMemo(
     () =>
       getNominatorRewards(nominatorsConnection, operatorsConnection).sort((a, b) => {
@@ -149,6 +142,16 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
         }
       }),
     [nominatorsConnection, operatorsConnection],
+  )
+
+  const totalCount = useMemo(
+    () => (nominatorsWithRewards ? nominatorsWithRewards.length : 0),
+    [nominatorsWithRewards],
+  )
+  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
   )
 
   if (loading)
