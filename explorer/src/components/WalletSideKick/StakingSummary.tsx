@@ -50,7 +50,10 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
     () => nominators && nominators.edges.map((nominator) => nominator.node),
     [nominators],
   )
-  const totalNominatedCount = useMemo(() => (nominators ? nominators.totalCount : 0), [nominators])
+  const totalNominatedCount = useMemo(
+    () => (nominators ? nominators.totalCount - totalOperatorCount : 0),
+    [nominators, totalOperatorCount],
+  )
   const totalNominatedStake = useMemo(
     () =>
       nominatorsConnection
