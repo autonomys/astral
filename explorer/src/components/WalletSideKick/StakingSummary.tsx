@@ -4,7 +4,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { StakingSummaryQuery } from 'gql/oldSquidTypes'
+import { StakingSummaryQuery } from 'gql/graphql'
 import Link from 'next/link'
 import type { Chain } from 'providers/ChainProvider'
 import { FC, useMemo } from 'react'
@@ -55,7 +55,6 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
     () =>
       nominatorsConnection
         ? nominatorsConnection
-            .filter((nominator) => nominator.operator.operatorOwner !== subspaceAccount)
             .reduce(
               (acc, nominator) =>
                 acc +
@@ -66,7 +65,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
             )
             .toString()
         : '0',
-    [nominatorsConnection, subspaceAccount],
+    [nominatorsConnection],
   )
 
   const totalStake = useMemo(
