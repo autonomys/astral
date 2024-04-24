@@ -94,7 +94,6 @@ export const QUERY_STAKING_SUMMARY = gql`
           }
           operator {
             id
-            operatorOwner
             currentDomainId
             currentTotalStake
             totalShares
