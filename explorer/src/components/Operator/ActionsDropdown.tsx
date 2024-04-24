@@ -3,7 +3,7 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { FC, Fragment, useMemo } from 'react'
-import { OperatorAction, OperatorActionType } from './ActionsModal'
+import { ActionsInRed, OperatorAction, OperatorActionType } from './ActionsModal'
 
 export type ActionsDropdownRow = {
   original: {
@@ -84,8 +84,9 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
                 {({ selected }) => (
                   <span
                     className={`block truncate ${selected ? 'font-medium' : 'font-normal'} ${
-                      OperatorActionType[actionType as keyof typeof OperatorActionType] ===
-                        OperatorActionType.Deregister && 'text-red-500'
+                      ActionsInRed.includes(
+                        OperatorActionType[actionType as keyof typeof OperatorActionType],
+                      ) && 'text-red-500'
                     }`}
                   >
                     {OperatorActionType[actionType as keyof typeof OperatorActionType]}
