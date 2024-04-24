@@ -2,7 +2,7 @@ import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import React from 'react'
-import { EndGame } from './EndGame'
+// import { EndGame } from './EndGame'
 import { NominatorList } from './NominatorList'
 import { OperatorsList } from './OperatorsList'
 import { PhaseInformation } from './PhaseInformation'
@@ -25,9 +25,9 @@ const StakeWars = () => {
           Nominators with highest rewards in Phase 3
           <NominatorList currentBlock={data.squidStatus.height || 0} />
         </PhaseInformation>
-        <PhaseInformation phaseKey='endgame' title='End Game' data={data}>
+        {/* <PhaseInformation phaseKey='endgame' title='End Game' data={data}>
           <EndGame currentBlock={data.squidStatus.height || 0} />
-        </PhaseInformation>
+        </PhaseInformation> */}
       </PageTabs>
     </div>
   )
