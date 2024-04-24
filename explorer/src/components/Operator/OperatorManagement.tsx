@@ -161,6 +161,7 @@ export const OperatorManagement: FC = () => {
             action={action}
             handleAction={handleAction}
             row={row as ActionsDropdownRow}
+            excludeActions={[OperatorActionType.UnlockFunds]}
           />
         ),
       },
@@ -456,6 +457,7 @@ const MobileComponent: FC<MobileComponentProps> = ({ operators, action, handleAc
         index={index}
         operator={operator}
         action={action}
+        excludeActions={[OperatorActionType.UnlockFunds]}
         handleAction={handleAction}
         key={`operator-list-card-${operator.id}`}
       />
