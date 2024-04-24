@@ -55,6 +55,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
     () =>
       nominatorsConnection
         ? nominatorsConnection
+            .filter((nominator) => nominator.operator.operatorOwner !== subspaceAccount)
             .reduce(
               (acc, nominator) =>
                 acc +
@@ -65,7 +66,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
             )
             .toString()
         : '0',
-    [nominatorsConnection],
+    [nominatorsConnection, subspaceAccount],
   )
 
   const totalStake = useMemo(
