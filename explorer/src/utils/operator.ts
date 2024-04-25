@@ -1,5 +1,7 @@
 type OperatorDeregisteredStatus = { deregistered: { unlockAtConfirmedDomainBlockNumber: number } }
 
+// To-Do: After we end support for Gemini 3g on Astral: Properly type the operator status
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const operatorStatus = (status: any, lastBlock?: number) => {
   if (!status) return 'Unknown'
