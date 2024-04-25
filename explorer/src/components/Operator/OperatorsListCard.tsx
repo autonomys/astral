@@ -20,6 +20,7 @@ type Props = {
   index: number
   excludeActions?: OperatorActionType[]
   nominatorMaxStake?: string
+  lastBlock?: number
 }
 
 export const OperatorsListCard: FC<Props> = ({
@@ -28,6 +29,7 @@ export const OperatorsListCard: FC<Props> = ({
   handleAction,
   excludeActions,
   nominatorMaxStake,
+  lastBlock,
 }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const { actingAccount } = useWallet()
@@ -49,7 +51,7 @@ export const OperatorsListCard: FC<Props> = ({
         value: operator.status
           ? selectedChain.urls.page === Chains.gemini3g
             ? operator.status
-            : capitalizeFirstLetter(operatorStatus(operator.status))
+            : capitalizeFirstLetter(operatorStatus(operator.status, lastBlock))
           : 'unknown',
       },
     ]

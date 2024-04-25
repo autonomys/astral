@@ -323,6 +323,7 @@ export const OperatorManagement: FC = () => {
                 operators={operatorsConnection}
                 action={action}
                 handleAction={handleAction}
+                lastBlock={lastBlock}
               />
             }
           />
@@ -456,17 +457,28 @@ type MobileComponentProps = {
   operators: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'][]
   action: OperatorAction
   handleAction: (value: OperatorAction) => void
+  lastBlock?: number
 }
 
-const MobileComponent: FC<MobileComponentProps> = ({ operators, action, handleAction }) => (
+const MobileComponent: FC<MobileComponentProps> = ({
+  operators,
+  action,
+  handleAction,
+  lastBlock,
+}) => (
   <div className='w-full'>
     {operators.map((operator, index) => (
       <OperatorsListCard
         index={index}
         operator={operator}
         action={action}
-        excludeActions={[OperatorActionType.UnlockFunds]}
+        excludeActions={
+          operatorReadyToUnlock(operator.status, lastBlock)
+            ? [OperatorActionType.UnlockFunds]
+            : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockOperator]
+        }
         handleAction={handleAction}
+        lastBlock={lastBlock}
         key={`operator-list-card-${operator.id}`}
       />
     ))}
