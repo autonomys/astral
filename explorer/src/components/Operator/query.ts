@@ -7,6 +7,9 @@ export const QUERY_OPERATOR_CONNECTION_LIST = gql`
     $orderBy: [OperatorOrderByInput!]!
     $where: OperatorWhereInput
   ) {
+    lastBlock: blocks(limit: 1, orderBy: height_DESC) {
+      height
+    }
     operatorsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         node {
