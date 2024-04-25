@@ -18,7 +18,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { operatorStatus } from 'utils/operator'
+import { operatorReadyToUnlock, operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -53,6 +53,102 @@ export const OperatorManagement: FC = () => {
     setIsOpen(false)
     setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
   }, [])
+
+  const variables = useMemo(
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      // eslint-disable-next-line camelcase
+      where: searchOperator ? { operatorOwner_eq: searchOperator } : {},
+    }),
+    [sorting, pagination, searchOperator],
+  )
+
+  const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
+    QUERY_OPERATOR_CONNECTION_LIST,
+    {
+      variables: variables,
+      pollInterval: 6000,
+    },
+  )
+
+  useErrorHandler(error)
+
+  const fullDataDownloader = useCallback(
+    () => downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST),
+    [apolloClient],
+  )
+
+  const handleSearch = useCallback(
+    (value: string) => {
+      setSearch(value)
+      setPagination({ ...pagination, pageIndex: 0 })
+    },
+    [pagination],
+  )
+
+  const lastBlock = useMemo(
+    () => data && data.lastBlock && (data.lastBlock[0].height as number),
+    [data],
+  )
+  const operators = useMemo(() => data && data.operatorsConnection, [data])
+  const operatorsConnection = useMemo(
+    () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
+    [operators],
+  )
+  const totalCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
+  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
+
+  const totalNominators = useMemo(
+    () =>
+      operators && operators.edges
+        ? operators.edges.reduce((acc, operator) => acc + operator.node.nominators.length, 0)
+        : 0,
+    [operators],
+  )
+  const totalOperatorStake = useMemo(
+    () =>
+      operators && operators.edges
+        ? operators.edges
+            .reduce((acc, operator) => acc + BigInt(operator.node.currentTotalStake), BigInt(0))
+            .toString()
+        : '0',
+    [operators],
+  )
+  const totalNominatorsStake = useMemo(
+    () =>
+      operators && operators.edges
+        ? operators.edges
+            .reduce((acc, operator) => {
+              const nominators = operator.node.nominators
+              const totalShares = operator.node.totalShares
+              const currentTotalStake = operator.node.currentTotalStake
+              const subTotalNominatorsShares = nominators.reduce((acc, nominator) => {
+                if (nominator.id === `${operator.node.id}-${operator.node.operatorOwner}`)
+                  return acc
+                return acc + BigInt(nominator.shares)
+              }, BigInt(0))
+              const subTotalNominatorsStake =
+                (BigInt(currentTotalStake) * BigInt(subTotalNominatorsShares)) / BigInt(totalShares)
+              return acc + subTotalNominatorsStake
+            }, BigInt(0))
+            .toString()
+        : '0',
+    [operators],
+  )
+  const totalInStake = useMemo(
+    () => (BigInt(totalOperatorStake) + BigInt(totalNominatorsStake)).toString(),
+    [totalOperatorStake, totalNominatorsStake],
+  )
+
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   const columns = useMemo(() => {
     return [
@@ -146,7 +242,7 @@ export const OperatorManagement: FC = () => {
           <div>
             {selectedChain.urls.page === Chains.gemini3g
               ? row.original.status
-              : capitalizeFirstLetter(operatorStatus(row.original.status))}
+              : capitalizeFirstLetter(operatorStatus(row.original.status, lastBlock))}
           </div>
         ),
       },
@@ -161,104 +257,16 @@ export const OperatorManagement: FC = () => {
             action={action}
             handleAction={handleAction}
             row={row as ActionsDropdownRow}
-            excludeActions={[OperatorActionType.UnlockFunds]}
+            excludeActions={
+              operatorReadyToUnlock(row.original.status, lastBlock)
+                ? [OperatorActionType.UnlockFunds]
+                : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockOperator]
+            }
           />
         ),
       },
     ]
-  }, [selectedChain.urls.page, selectedDomain, action, handleAction])
-
-  const variables = useMemo(
-    () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
-      // eslint-disable-next-line camelcase
-      where: searchOperator ? { operatorOwner_eq: searchOperator } : {},
-    }),
-    [sorting, pagination, searchOperator],
-  )
-
-  const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
-    QUERY_OPERATOR_CONNECTION_LIST,
-    {
-      variables: variables,
-      pollInterval: 6000,
-    },
-  )
-
-  useErrorHandler(error)
-
-  const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST),
-    [apolloClient],
-  )
-
-  const handleSearch = useCallback(
-    (value: string) => {
-      setSearch(value)
-      setPagination({ ...pagination, pageIndex: 0 })
-    },
-    [pagination],
-  )
-
-  const operators = useMemo(() => data && data.operatorsConnection, [data])
-  const operatorsConnection = useMemo(
-    () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
-    [operators],
-  )
-  const totalCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-
-  const totalNominators = useMemo(
-    () =>
-      operators && operators.edges
-        ? operators.edges.reduce((acc, operator) => acc + operator.node.nominators.length, 0)
-        : 0,
-    [operators],
-  )
-  const totalOperatorStake = useMemo(
-    () =>
-      operators && operators.edges
-        ? operators.edges
-            .reduce((acc, operator) => acc + BigInt(operator.node.currentTotalStake), BigInt(0))
-            .toString()
-        : '0',
-    [operators],
-  )
-  const totalNominatorsStake = useMemo(
-    () =>
-      operators && operators.edges
-        ? operators.edges
-            .reduce((acc, operator) => {
-              const nominators = operator.node.nominators
-              const totalShares = operator.node.totalShares
-              const currentTotalStake = operator.node.currentTotalStake
-              const subTotalNominatorsShares = nominators.reduce((acc, nominator) => {
-                if (nominator.id === `${operator.node.id}-${operator.node.operatorOwner}`)
-                  return acc
-                return acc + BigInt(nominator.shares)
-              }, BigInt(0))
-              const subTotalNominatorsStake =
-                (BigInt(currentTotalStake) * BigInt(subTotalNominatorsShares)) / BigInt(totalShares)
-              return acc + subTotalNominatorsStake
-            }, BigInt(0))
-            .toString()
-        : '0',
-    [operators],
-  )
-  const totalInStake = useMemo(
-    () => (BigInt(totalOperatorStake) + BigInt(totalNominatorsStake)).toString(),
-    [totalOperatorStake, totalNominatorsStake],
-  )
-
-  const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
-    [totalCount, pagination],
-  )
+  }, [selectedChain.urls.page, selectedDomain, action, handleAction, lastBlock])
 
   useEffect(() => {
     if (subspaceAccount) handleSearch(subspaceAccount)
