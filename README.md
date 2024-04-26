@@ -4,6 +4,7 @@
 
 - [Astral Block Explorer](https://explorer.subspace.network/) Astral Block Explorer
 - [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid
+- [Health Check](https://uptime.subspace.network/status/network) Subspace Network Status Page
 
 ## Astral Block Explorer
 
@@ -50,7 +51,11 @@
 
 ## Astral Subsquid Playground
 
-**_Picture To Be Added_**
+![Astral Subsquid Playground](https://github.com/subspace/astral/assets/82244926/24ee475d-b6e6-446c-a54c-3ecdb3b72dfd)
+
+## Subspace Network Status Page
+
+![Subspace Network Status Page](https://github.com/subspace/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
 
 ## Overview
 
