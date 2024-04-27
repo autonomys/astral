@@ -47,6 +47,7 @@ export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => 
         account: subspaceAccount,
         message,
         signature: signature.signature,
+        redirect: false,
       })
 
       toast.success('The message was signed', { position: 'bottom-center' })
