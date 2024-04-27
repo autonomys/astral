@@ -6,6 +6,7 @@ import { JWT } from 'next-auth/jwt'
 import type { DiscordProfile } from 'next-auth/providers/discord'
 import DiscordProvider from 'next-auth/providers/discord'
 import { cookies } from 'next/headers'
+import { verifyDiscordGuildMember } from '../vcs/discord/member'
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env
 
@@ -20,13 +21,11 @@ export const Discord = () => {
 
     // fetch discord profile
     profile: async (profile: DiscordProfile, token: TokenSet) => {
+      if (!token.access_token) throw new Error('No access token')
+
       if (!process.env.NEXTAUTH_SECRET) throw new Error('No secret')
       const { NEXTAUTH_SECRET } = process.env
 
-      const guildsUrl = 'https://discord.com/api/users/@me/guilds'
-      const headers = {
-        Authorization: `Bearer ${token.access_token}`,
-      }
       const { get } = cookies()
       const selectedChain = get('selectedChain')
       const sessionToken = get('next-auth.session-token')?.value || ''
@@ -35,11 +34,8 @@ export const Discord = () => {
       }) as JWT
 
       try {
-        const response = await fetch(guildsUrl, { method: 'GET', headers })
-        const guilds = await response.json()
-        const isDiscordGuildMember = guilds.some(
-          (guild: { id: string }) => guild.id === process.env.DISCORD_GUILD_ID,
-        )
+        const isDiscordGuildMember = await verifyDiscordGuildMember(token.access_token)
+
         let isDiscordFarmerRole = false
 
         // To-Do: Implement VCs (in a separate file)
@@ -79,9 +75,9 @@ export const Discord = () => {
           discord: {
             id: profile.id,
             username: profile.username,
-            // To-Do: Implement VCs
             vcs: {
               member: isDiscordGuildMember,
+              // To-Do: Implement role VCs
               roles: {
                 farmer: isDiscordFarmerRole,
                 operator: false,
