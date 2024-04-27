@@ -36,8 +36,14 @@ export const WalletSidekick: FC = () => {
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault()
-      replace(`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_EXTRA_FLAGS.walletSidekick.OPEN}`)
-      setIsOpen(true)
+      try {
+        replace(
+          `?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_EXTRA_FLAGS.walletSidekick.OPEN}`,
+        )
+        setIsOpen(true)
+      } catch (error) {
+        console.error('Failed to open wallet sidekick:', error)
+      }
     },
     [replace],
   )

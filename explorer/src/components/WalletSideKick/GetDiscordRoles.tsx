@@ -14,6 +14,21 @@ interface StakingSummaryProps {
   subspaceAccount: string
 }
 
+interface StyledButtonProps {
+  children: React.ReactNode
+  className?: string
+  onClick?: () => void
+}
+
+const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) => (
+  <button
+    className={`w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg ${className}`}
+    onClick={onClick}
+  >
+    {children}
+  </button>
+)
+
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
   const { actingAccount, injector } = useWallet()
@@ -86,28 +101,18 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
               {session?.user?.subspace?.signature ? (
                 <>
                   <CheckMarkIcon />
-                  <button
-                    className='ml-2 w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                    onClick={handleWalletOwnership}
-                  >
+                  <StyledButton className='ml-2' onClick={handleWalletOwnership}>
                     Refresh
-                  </button>
+                  </StyledButton>
                 </>
               ) : (
-                <button
-                  className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                  onClick={handleWalletOwnership}
-                >
-                  Sign
-                </button>
+                <StyledButton onClick={handleWalletOwnership}>Sign</StyledButton>
               )}
             </StyledListItem>
             {!session?.user?.discord?.vcs.member && (
               <StyledListItem title='Join our Discord server'>
                 <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
-                  <button className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'>
-                    Join
-                  </button>
+                  <StyledButton>Join</StyledButton>
                 </Link>
               </StyledListItem>
             )}
@@ -117,20 +122,12 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
                 {session?.user?.discord?.vcs.member ? (
                   <>
                     <CheckMarkIcon />
-                    <button
-                      className='ml-2 w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                      onClick={handleConnectDiscord}
-                    >
+                    <StyledButton className='ml-2' onClick={handleConnectDiscord}>
                       Refresh
-                    </button>
+                    </StyledButton>
                   </>
                 ) : (
-                  <button
-                    className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                    onClick={handleConnectDiscord}
-                  >
-                    Connect
-                  </button>
+                  <StyledButton onClick={handleConnectDiscord}>Connect</StyledButton>
                 )}
               </StyledListItem>
             )}

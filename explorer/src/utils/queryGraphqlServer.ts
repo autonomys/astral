@@ -23,6 +23,7 @@ export const queryGraphqlServer = async (query: string, variables: object) => {
         variables,
       }),
     })
+    if (!request.ok) throw new Error(`API request failed with status ${request.status}`)
     const { data } = await request.json()
 
     // Return the data

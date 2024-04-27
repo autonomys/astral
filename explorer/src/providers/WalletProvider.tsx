@@ -77,14 +77,18 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const changeAccount = useCallback(
     async (account: WalletAccount) => {
-      setActingAccount(account)
-      const _subspaceAccount = formatAddress(account.address)
-      setSubspaceAccount(_subspaceAccount)
-      setPreferredAccount(account.address)
-      const newInjector = extensions?.find((extension) => extension.name === account.source)
-      if (newInjector) setInjector(newInjector)
-      setIsReady(true)
-      await signOutSessionOnAccountChange(_subspaceAccount)
+      try {
+        setActingAccount(account)
+        const _subspaceAccount = formatAddress(account.address)
+        setSubspaceAccount(_subspaceAccount)
+        setPreferredAccount(account.address)
+        const newInjector = extensions?.find((extension) => extension.name === account.source)
+        if (newInjector) setInjector(newInjector)
+        setIsReady(true)
+        await signOutSessionOnAccountChange(_subspaceAccount)
+      } catch (error) {
+        console.error('Failed to change account', error)
+      }
     },
     [extensions, setPreferredAccount, signOutSessionOnAccountChange],
   )
