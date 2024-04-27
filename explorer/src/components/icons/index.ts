@@ -1,4 +1,5 @@
 export * from './BlockIcon'
+export * from './CheckMarkIcon'
 export * from './DocIcon'
 export * from './EmptyCircleIcon'
 export * from './FilterIcon'
