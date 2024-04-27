@@ -1,4 +1,5 @@
 import { cryptoWaitReady, signatureVerify } from '@polkadot/util-crypto'
+import { DEFAULT_DISCORD_TOKEN } from 'constants/session'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
@@ -38,11 +39,14 @@ export const Subspace = () => {
           account,
           message,
           signature,
+          // To-Do: Implement VCs
+          vcs: {
+            farmer: false,
+            operator: false,
+            nominator: false,
+          },
         },
-        discord: {
-          isDiscordGuildMember: false,
-          isDiscordFarmerRole: false,
-        },
+        discord: DEFAULT_DISCORD_TOKEN,
       }
     },
   }) as Provider
