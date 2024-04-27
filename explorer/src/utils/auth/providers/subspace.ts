@@ -18,39 +18,44 @@ export const Subspace = () => {
 
     // The authorize function is called when the user logs in
     authorize: async (credentials) => {
-      // Return null if the credentials are invalid
-      if (!credentials || !credentials.account || !credentials.message || !credentials.signature)
-        return null
-      const { account, message, signature } = credentials
-      await cryptoWaitReady()
+      try {
+        // Return null if the credentials are invalid
+        if (!credentials || !credentials.account || !credentials.message || !credentials.signature)
+          return null
+        const { account, message, signature } = credentials
+        await cryptoWaitReady()
 
-      // Verify the signature to ensure it is valid
-      const { isValid } = signatureVerify(message, signature, account)
+        // Verify the signature to ensure it is valid
+        const { isValid } = signatureVerify(message, signature, account)
 
-      // Return null if the credentials are invalid
-      if (!isValid) return null
+        // Return null if the credentials are invalid
+        if (!isValid) return null
 
-      const did = `did:subspace:${account}`
+        const did = `did:subspace:${account}`
 
-      // Verify Subspace VCs
-      const farmer = await verifySubspaceFarmer(account)
+        // Verify Subspace VCs
+        const farmer = await verifySubspaceFarmer(account)
 
-      // Return the user object if the credentials are valid
-      return {
-        id: did,
-        DIDs: [did],
-        subspace: {
-          account,
-          message,
-          signature,
-          vcs: {
-            farmer,
-            // To-Do: Implement more VCs
-            operator: false,
-            nominator: false,
+        // Return the user object if the credentials are valid
+        return {
+          id: did,
+          DIDs: [did],
+          subspace: {
+            account,
+            message,
+            signature,
+            vcs: {
+              farmer,
+              // To-Do: Implement more VCs
+              operator: false,
+              nominator: false,
+            },
           },
-        },
-        discord: DEFAULT_DISCORD_TOKEN,
+          discord: DEFAULT_DISCORD_TOKEN,
+        }
+      } catch (error) {
+        console.error('Error verify Subspace wallet ownership:', error)
+        throw new Error('Error verify Subspace wallet ownership')
       }
     },
   }) as Provider

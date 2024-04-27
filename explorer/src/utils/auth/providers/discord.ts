@@ -23,18 +23,17 @@ export const Discord = () => {
 
     // fetch discord profile
     profile: async (profile: DiscordProfile, token: TokenSet) => {
-      if (!token.access_token) throw new Error('No access token')
-
-      if (!process.env.NEXTAUTH_SECRET) throw new Error('No secret')
-      const { NEXTAUTH_SECRET } = process.env
-
-      const { get } = cookies()
-      const sessionToken = get('next-auth.session-token')?.value || ''
-      const session = jsonwebtoken.verify(sessionToken, NEXTAUTH_SECRET, {
-        algorithms: ['HS256'],
-      }) as JWT
-
       try {
+        if (!token.access_token) throw new Error('No access token')
+
+        if (!process.env.NEXTAUTH_SECRET) throw new Error('No secret')
+        const { NEXTAUTH_SECRET } = process.env
+
+        const { get } = cookies()
+        const sessionToken = get('next-auth.session-token')?.value || ''
+        const session = jsonwebtoken.verify(sessionToken, NEXTAUTH_SECRET, {
+          algorithms: ['HS256'],
+        }) as JWT
         const did = 'did:openid:discord:' + profile.id
 
         const member = await verifyDiscordGuildMember(token.access_token)
@@ -64,8 +63,8 @@ export const Discord = () => {
           },
         }
       } catch (error) {
-        console.error('Error fetching Discord guilds:', error)
-        throw new Error('Failed to fetch Discord guilds')
+        console.error('Error fetching Discord profile:', error)
+        throw new Error('Failed to fetch Discord profile')
       }
     },
   })
