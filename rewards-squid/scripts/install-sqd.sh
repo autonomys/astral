@@ -22,6 +22,7 @@ else
     ln -s ~/opt/node-v${NODE_VERSION}-linux-x64/bin/sqd sqd
 
     echo "export PATH=$HOME/bin:$PATH" >> ~/.bash_profile
+    echo 'export NODE_OPTIONS="--max-old-space-size=4096"' >> ~/.bash_profile
 
     cd ~/
     git clone https://github.com/subspace/astral.git
@@ -33,5 +34,6 @@ else
     sqd up
     sqd build
     cp -rf .env.sample .env
+    export NODE_OPTIONS="--max-old-space-size=4096"
     nohup sqd run -f .env . &
 fi

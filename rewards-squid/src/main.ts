@@ -1,132 +1,108 @@
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
-
-import { getOrCreateNominators, getOrCreateOperator } from "./blocks/utils";
-import { RewardEvent } from "./model";
+import {
+  StoreWithCache,
+  TypeormDatabaseWithCache,
+} from "@belopash/typeorm-store";
+import {
+  getOrCreateOperator,
+  processRewardEvent,
+  updateEpochCompleted,
+  updateOperatorFundsUnlocked,
+  updateOperatorRewards,
+  updateOperatorStake,
+  updateOperatorStatus,
+  updateWithdrewStake,
+} from "./blocks/utils";
+import { DomainEpoch, OperatorRewardEvent, RewardEvent } from "./model";
 import { ProcessorContext, processor } from "./processor";
 import { events } from "./types";
 
-const types = {
-  Solution: {
-    public_key: "AccountId32",
-    reward_address: "AccountId32",
-  },
-  SubPreDigest: {
-    slot: "u64",
-    solution: "Solution",
-  },
+processor.run(
+  new TypeormDatabaseWithCache({ supportHotBlocks: true }),
+  async (ctx) => {
+    let rewards = await getOperatorEvents(ctx);
+
+    await ctx.store.save([...rewards.operatorEvents]);
+    await ctx.store.save([...rewards.rewardEvents]);
+    await ctx.store.save([...rewards.domainEpochEvents]);
+  }
+);
+
+type Rewards = {
+  rewardEvents: RewardEvent[];
+  operatorEvents: OperatorRewardEvent[];
+  domainEpochEvents: DomainEpoch[];
 };
 
-processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
-  const provider = new WsProvider(process.env.RPC_ENDPOINT);
-  const api = await ApiPromise.create({ provider, types });
-
-  let operatorRewards = await getOperatorEvents(ctx, api);
-  await ctx.store.save([...operatorRewards]);
-});
-
 async function getOperatorEvents(
-  ctx: ProcessorContext<Store>,
-  api: ApiPromise
-): Promise<RewardEvent[]> {
-  const operatorEvents: RewardEvent[] = [];
-
-  const updateEvents = [
-    events.domains.operatorDeregistered.name,
-    events.domains.operatorSlashed.name,
-    events.domains.operatorSwitchedDomain.name,
-  ];
+  ctx: ProcessorContext<StoreWithCache>
+): Promise<Rewards> {
+  const rewardEvents: RewardEvent[] = [];
+  const operatorEvents: OperatorRewardEvent[] = [];
+  const domainEpochEvents: DomainEpoch[] = [];
 
   for (let block of ctx.blocks) {
     for (let event of block.events) {
-      if (event.name === events.domains.operatorRegistered.name) {
-        const { operatorId } =
-          events.domains.operatorRegistered.v0.decode(event);
-        const operator = await getOrCreateOperator(
-          ctx,
-          operatorId,
-          block.header.height,
-          api
-        );
-        if (operator) {
-          await ctx.store.save(operator);
-        }
-      }
-
-      if (updateEvents.includes(event.name)) {
-        const { operatorId } =
-          events.domains.operatorDeregistered.v0.decode(event);
-        let operator = await getOrCreateOperator(
-          ctx,
-          operatorId,
-          block.header.height,
-          api
-        );
-        const operatorInfo = (
-          await api.query.domains.operators(operatorId)
-        ).toJSON() as any;
-
-        if (operator) {
-          operator.currentDomainId = operatorInfo.currentDomainId;
-          operator.nextDomainId = operatorInfo.nextDomainId;
-          operator.status = event.name;
-          operator.updatedAt = BigInt(block.header.height);
-          await ctx.store.save(operator);
-        }
-      }
-
-      if (event.name === events.domains.operatorRewarded.name) {
-        const { operatorId, reward } =
-          events.domains.operatorRewarded.v0.decode(event);
-
-        let operator = await getOrCreateOperator(
-          ctx,
-          operatorId,
-          block.header.height,
-          api
-        );
-
-        if (operator) {
-          const operatorReward = new RewardEvent({
-            id: `${event.id}-${operator.id}`,
-            indexInBlock: event.index,
-            name: event.name,
-            timestamp: block.header.timestamp
-              ? new Date(block.header.timestamp)
-              : undefined,
-            blockNumber: block.header.height,
-            extrinsicHash: event.extrinsic?.hash,
-            amount: reward,
-            isOperator: true,
-            operatorId: Number(operator.id),
-          });
-
-          operatorEvents.push(operatorReward);
-
-          const nominators = await getOrCreateNominators(ctx, api, operator);
-
-          for (let nominator of nominators) {
-            const nominatorReward = new RewardEvent({
-              id: `${event.id}-${nominator.id}`,
-              indexInBlock: event.index,
-              name: event.name,
-              timestamp: block.header.timestamp
-                ? new Date(block.header.timestamp)
-                : undefined,
-              blockNumber: block.header.height,
-              extrinsicHash: event.extrinsic?.hash,
-              account: nominator.account,
-              amount: reward,
-              isOperator: false,
-              operatorId: Number(operator.id),
-            });
-
-            operatorEvents.push(nominatorReward);
-          }
-        }
+      switch (event.name) {
+        case events.domains.domainEpochCompleted.name:
+          const domainEpochEvent = await updateEpochCompleted(
+            block.header,
+            event
+          );
+          domainEpochEvents.push(domainEpochEvent);
+          break;
+        case events.domains.operatorRegistered.name:
+          const rec = events.domains.operatorRegistered.v0.decode(event);
+          await getOrCreateOperator(ctx, block.header, rec.operatorId);
+          break;
+        case events.domains.operatorDeregistered.name:
+          const operatorDeregistered =
+            events.domains.operatorDeregistered.v0.decode(event);
+          await updateOperatorStatus(
+            ctx,
+            operatorDeregistered.operatorId,
+            block.header
+          );
+          break;
+        case events.domains.operatorSlashed.name:
+          const operatorSlashed =
+            events.domains.operatorSlashed.v0.decode(event);
+          await updateOperatorStatus(
+            ctx,
+            operatorSlashed.operatorId,
+            block.header
+          );
+          break;
+        case events.domains.storageFeeDeposited.name:
+          await updateOperatorStake(ctx, block.header, event);
+          break;
+        case events.domains.withdrewStake.name:
+          await updateWithdrewStake(ctx, block.header, event);
+          break;
+        case events.domains.operatorRewarded.name:
+          const operatorRewardEvents = await updateOperatorRewards(
+            ctx,
+            block,
+            event
+          );
+          operatorEvents.push(...operatorRewardEvents);
+          break;
+        case events.domains.fundsUnlocked.name:
+          await updateOperatorFundsUnlocked(ctx, block.header, event);
+          break;
+        case events.rewards.blockReward.name:
+        case events.rewards.voteReward.name:
+          const rewardEvent = await processRewardEvent(
+            ctx,
+            block.header,
+            event
+          );
+          rewardEvents.push(rewardEvent);
+          break;
+        default:
+          break;
       }
     }
   }
 
-  return operatorEvents;
+  return { rewardEvents, operatorEvents, domainEpochEvents };
 }
