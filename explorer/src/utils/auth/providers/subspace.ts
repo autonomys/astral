@@ -2,6 +2,7 @@ import { cryptoWaitReady, signatureVerify } from '@polkadot/util-crypto'
 import { DEFAULT_DISCORD_TOKEN } from 'constants/session'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { verifySubspaceFarmer } from '../vcs/subspace'
 
 export const Subspace = () => {
   return CredentialsProvider({
@@ -31,6 +32,9 @@ export const Subspace = () => {
 
       const did = `did:subspace:${account}`
 
+      // Verify Subspace VCs
+      const farmer = await verifySubspaceFarmer(account)
+
       // Return the user object if the credentials are valid
       return {
         id: did,
@@ -39,9 +43,9 @@ export const Subspace = () => {
           account,
           message,
           signature,
-          // To-Do: Implement VCs
           vcs: {
-            farmer: false,
+            farmer,
+            // To-Do: Implement more VCs
             operator: false,
             nominator: false,
           },
