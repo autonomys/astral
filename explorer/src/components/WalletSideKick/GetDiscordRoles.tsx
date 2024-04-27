@@ -112,26 +112,28 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
               </StyledListItem>
             )}
 
-            <StyledListItem title='Connect your Discord account!'>
-              {session?.user?.discord?.vcs.member ? (
-                <>
-                  <CheckMarkIcon />
+            {session?.user?.subspace && (
+              <StyledListItem title='Connect your Discord account!'>
+                {session?.user?.discord?.vcs.member ? (
+                  <>
+                    <CheckMarkIcon />
+                    <button
+                      className='ml-2 w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                      onClick={handleConnectDiscord}
+                    >
+                      Refresh
+                    </button>
+                  </>
+                ) : (
                   <button
-                    className='ml-2 w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                    className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
                     onClick={handleConnectDiscord}
                   >
-                    Refresh
+                    Connect
                   </button>
-                </>
-              ) : (
-                <button
-                  className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                  onClick={handleConnectDiscord}
-                >
-                  Connect
-                </button>
-              )}
-            </StyledListItem>
+                )}
+              </StyledListItem>
+            )}
           </List>
         </Accordion>
       </div>
