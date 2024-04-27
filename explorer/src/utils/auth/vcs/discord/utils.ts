@@ -1,4 +1,5 @@
 import { REST } from '@discordjs/rest'
+import { Routes } from 'discord-api-types/v10'
 
 export const discordRest = () => {
   if (!process.env.DISCORD_BOT_TOKEN) throw new Error('No Discord bot token')
@@ -10,7 +11,7 @@ export const discordRest = () => {
   return new REST(options).setToken(DISCORD_BOT_TOKEN)
 }
 
-export const userRoles = async (accessToken: string) => {
+export const getUserRoles = async (accessToken: string) => {
   try {
     if (!process.env.DISCORD_GUILD_ID) throw new Error('No Discord guild ID')
     const { DISCORD_GUILD_ID } = process.env
@@ -37,5 +38,21 @@ export const userRoles = async (accessToken: string) => {
   } catch (error) {
     console.error('Failed to fetch user roles from Discord', error)
     throw error
+  }
+}
+
+export const giveDiscordRole = async (userId: string, roleId: string, reason: string) => {
+  try {
+    if (!process.env.DISCORD_GUILD_ID) throw new Error('No Discord guild ID')
+    const { DISCORD_GUILD_ID } = process.env
+
+    // Initialize the Discord REST client
+    const rest = discordRest()
+
+    // Add the role to the user
+    await rest.put(Routes.guildMemberRole(DISCORD_GUILD_ID, userId, roleId), { reason })
+  } catch (error) {
+    console.error('Failed to add role:', error)
+    throw new Error('Failed to add role')
   }
 }
