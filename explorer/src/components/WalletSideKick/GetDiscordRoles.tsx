@@ -84,7 +84,15 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
           <List>
             <StyledListItem title='Verify the ownership of your wallet'>
               {session?.user?.subspace?.signature ? (
-                <CheckMarkIcon />
+                <>
+                  <CheckMarkIcon />
+                  <button
+                    className='ml-2 w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                    onClick={handleWalletOwnership}
+                  >
+                    Refresh
+                  </button>
+                </>
               ) : (
                 <button
                   className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
@@ -106,7 +114,15 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
 
             <StyledListItem title='Connect your Discord account!'>
               {session?.user?.discord?.vcs.member ? (
-                <CheckMarkIcon />
+                <>
+                  <CheckMarkIcon />
+                  <button
+                    className='ml-2 w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                    onClick={handleConnectDiscord}
+                  >
+                    Refresh
+                  </button>
+                </>
               ) : (
                 <button
                   className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
