@@ -1,4 +1,5 @@
 import 'next-auth'
+import { DiscordToken, SubspaceToken } from 'types/jwt'
 
 // Extending the 'next-auth' module to include custom user and session types
 declare module 'next-auth' {
@@ -6,12 +7,9 @@ declare module 'next-auth' {
 
   interface User {
     id: string
-    username: string
-    subspaceAccount: string
-    name: string
-    discordHandle: string
-    isDiscordGuildMember: boolean
-    isDiscordFarmerRole: boolean
+    DIDs: string[]
+    subspace?: SubspaceToken
+    discord?: DiscordToken
   }
 
   export interface Session {
@@ -24,11 +22,9 @@ declare module 'next-auth' {
 declare module 'next-auth/client' {
   interface User {
     id: string
-    subspaceAccount: string
-    name: string
-    discordHandle: string
-    isDiscordGuildMember: boolean
-    isDiscordFarmerRole: boolean
+    DIDs: string[]
+    subspace?: SubspaceToken
+    discord?: DiscordToken
   }
 
   export interface Session {
@@ -41,22 +37,15 @@ declare module 'next-auth/client' {
 declare module 'next-auth/jwt' {
   interface User {
     id: string
-    username: string
-    subspaceAccount: string
-    name: string
-    discordHandle: string
-    isDiscordGuildMember: boolean
-    isDiscordFarmerRole: boolean
+    DIDs: string[]
+    subspace?: SubspaceToken
+    discord?: DiscordToken
   }
 
   interface JWT {
-    user: User | null
-    username: string
     id: string
-    subspaceAccount: string
-    name: string
-    discordHandle: string
-    isDiscordGuildMember: boolean
-    isDiscordFarmerRole: boolean
+    DIDs: string[]
+    subspace?: SubspaceToken
+    discord?: DiscordToken
   }
 }
