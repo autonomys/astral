@@ -6,7 +6,6 @@ import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { chains } from 'constants/chains'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
-import Cookies from 'js-cookie'
 import { signOut, useSession } from 'next-auth/react'
 import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
@@ -77,12 +76,12 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       const _subspaceAccount = formatAddress(account.address)
       setSubspaceAccount(_subspaceAccount)
       setPreferredAccount(account.address)
-      if (_subspaceAccount) Cookies.set('subspaceAccount', _subspaceAccount, { expires: 1 })
       const newInjector = extensions?.find((extension) => extension.name === account.source)
       if (newInjector) setInjector(newInjector)
       setIsReady(true)
+      if (session && session.user) signOut({ redirect: false })
     },
-    [extensions, setPreferredAccount],
+    [extensions, session, setPreferredAccount],
   )
 
   const disconnectWallet = useCallback(() => {
@@ -147,10 +146,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         }
       }
     }
-    if (session && session.user) signOut({ redirect: false })
 
     getInjector()
-  }, [actingAccount, session])
+  }, [actingAccount])
 
   useEffect(() => {
     if (!injector) return
