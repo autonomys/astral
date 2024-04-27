@@ -4,7 +4,7 @@ import { JWT } from 'next-auth/jwt'
 import type { DiscordProfile } from 'next-auth/providers/discord'
 import DiscordProvider from 'next-auth/providers/discord'
 import { cookies } from 'next/headers'
-import { verifyDiscordGuildMember } from '../vcs/discord/member'
+import { verifyDiscordFarmerRole, verifyDiscordGuildMember } from '../vcs/discord'
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env
 
@@ -31,9 +31,14 @@ export const Discord = () => {
       }) as JWT
 
       try {
-        const isDiscordGuildMember = await verifyDiscordGuildMember(token.access_token)
-
         const did = 'did:openid:discord:' + profile.id
+
+        const member = await verifyDiscordGuildMember(token.access_token)
+        const farmer = await verifyDiscordFarmerRole(token.access_token)
+
+        if (session.subspace?.vcs.farmer && !farmer) {
+          // To-Do: Implement logic to add farmer roles
+        }
 
         return {
           id: session.id || did,
@@ -43,10 +48,10 @@ export const Discord = () => {
             id: profile.id,
             username: profile.username,
             vcs: {
-              member: isDiscordGuildMember,
-              // To-Do: Implement role VCs
+              member,
               roles: {
-                farmer: false,
+                farmer,
+                // To-Do: Implement more role VCs
                 operator: false,
                 nominator: false,
               },
