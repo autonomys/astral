@@ -2,9 +2,22 @@ export type SubspaceToken = {
   account: string
   message: string
   signature: string
+  vcs: {
+    farmer: boolean
+    operator: boolean
+    nominator: boolean
+  }
 }
 
 export type DiscordToken = {
-  isDiscordGuildMember: boolean
-  isDiscordFarmerRole: boolean
+  id: string
+  username: string
+  vcs: {
+    member: boolean
+    roles: {
+      farmer: boolean
+      operator: boolean
+      nominator: boolean
+    }
+  }
 }
