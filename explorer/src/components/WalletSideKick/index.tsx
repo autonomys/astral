@@ -16,7 +16,7 @@ import { SelectedChainProvider } from 'providers/ChainProvider'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
-import { ConnectDiscord } from './ConnectDiscord'
+import { GetDiscordRoles } from './GetDiscordRoles'
 import { LastExtrinsics } from './LastExtrinsics'
 import { Leaderboard } from './Leaderboard'
 import { StakingSummary } from './StakingSummary'
@@ -162,7 +162,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 walletBalance={walletBalance}
                 tokenSymbol={tokenSymbol}
               />
-              <ConnectDiscord subspaceAccount={subspaceAccount} />
+              <GetDiscordRoles subspaceAccount={subspaceAccount} />
               <StakingSummary
                 subspaceAccount={subspaceAccount}
                 selectedChain={consensusChain}

@@ -1,3 +1,4 @@
+import { CheckMarkIcon } from '@/components/icons/CheckMarkIcon'
 import { useQuery } from '@apollo/client'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -13,7 +14,7 @@ interface StakingSummaryProps {
   subspaceAccount: string
 }
 
-export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
+export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
   const { actingAccount, injector } = useWallet()
 
@@ -58,22 +59,14 @@ export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => 
     }
   }, [actingAccount, injector, subspaceAccount])
 
-  const handleConnectDiscord = useCallback(async () => await signIn('discord'), [])
-
-  const handleSignAndSendProof = useCallback(async () => {
-    console.log('Sign And Send Proof')
-    await fetch('/api/grant-farmer-role')
-  }, [])
+  const handleConnectDiscord = useCallback(
+    async () => await signIn('discord', { redirect: false }),
+    [],
+  )
 
   const isFarmer = useMemo(() => data && data.isFarmer && data.isFarmer.length > 0, [data])
 
-  if (
-    session &&
-    session.user &&
-    session.user.discord &&
-    session.user.discord.isDiscordFarmerRole &&
-    session.user.discord.isDiscordFarmerRole
-  )
+  if (session?.user?.discord?.vcs.roles.farmer)
     return (
       <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
         <Accordion title='You are a Farmer on Discord'>
@@ -84,62 +77,44 @@ export const ConnectDiscord: FC<StakingSummaryProps> = ({ subspaceAccount }) => 
       </div>
     )
 
-  if (isFarmer)
+  if (isFarmer && !session?.user?.discord?.vcs.roles.farmer)
     return (
       <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
         <Accordion title='Get your Farmer role on Discord'>
           <List>
-            <StyledListItem title='1. Verify the ownership of your wallet'>
-              <button
-                className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                onClick={handleWalletOwnership}
-              >
-                Sign
-              </button>
+            <StyledListItem title='Verify the ownership of your wallet'>
+              {session?.user?.subspace?.signature ? (
+                <CheckMarkIcon />
+              ) : (
+                <button
+                  className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
+                  onClick={handleWalletOwnership}
+                >
+                  Sign
+                </button>
+              )}
             </StyledListItem>
-            {session &&
-            session.user &&
-            session.user.discord &&
-            !session.user.discord.isDiscordGuildMember ? (
-              <>
-                <StyledListItem title='2. Join our Discord server'>
-                  <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
-                    <button className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'>
-                      Join
-                    </button>
-                  </Link>
-                </StyledListItem>
-
-                <StyledListItem title='3. Connect your Discord again!'>
-                  <button
-                    className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                    onClick={handleConnectDiscord}
-                  >
-                    Connect
+            {!session?.user?.discord?.vcs.member && (
+              <StyledListItem title='Join our Discord server'>
+                <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
+                  <button className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'>
+                    Join
                   </button>
-                </StyledListItem>
-              </>
-            ) : (
-              <StyledListItem title='2. Connect your Discord'>
+                </Link>
+              </StyledListItem>
+            )}
+
+            <StyledListItem title='Connect your Discord account!'>
+              {session?.user?.discord?.vcs.member ? (
+                <CheckMarkIcon />
+              ) : (
                 <button
                   className='w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
                   onClick={handleConnectDiscord}
                 >
                   Connect
                 </button>
-              </StyledListItem>
-            )}
-            <StyledListItem
-              title={`${session && session.user && session.user.discord && !session.user.discord.isDiscordGuildMember ? 3 : 2}. Sign a message as proof to request role`}
-            >
-              <button
-                className={
-                  'w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg'
-                }
-                onClick={handleSignAndSendProof}
-              >
-                Get Role
-              </button>
+              )}
             </StyledListItem>
           </List>
         </Accordion>
