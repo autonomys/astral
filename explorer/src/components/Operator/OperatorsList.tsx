@@ -183,7 +183,11 @@ export const OperatorsList: FC = () => {
               excludeActions={
                 nominator
                   ? [OperatorActionType.Deregister]
-                  : [OperatorActionType.Deregister, OperatorActionType.Withdraw]
+                  : [
+                      OperatorActionType.Deregister,
+                      OperatorActionType.Withdraw,
+                      OperatorActionType.UnlockFunds,
+                    ]
               }
               nominatorMaxStake={
                 nominator &&
@@ -325,8 +329,13 @@ const MobileComponent: FC<MobileComponentProps> = ({
           index={index}
           excludeActions={
             nominator
-              ? [OperatorActionType.Deregister]
-              : [OperatorActionType.Deregister, OperatorActionType.Withdraw]
+              ? [OperatorActionType.Deregister, OperatorActionType.UnlockOperator]
+              : [
+                  OperatorActionType.Deregister,
+                  OperatorActionType.Withdraw,
+                  OperatorActionType.UnlockFunds,
+                  OperatorActionType.UnlockOperator,
+                ]
           }
           nominatorMaxStake={
             nominator &&
