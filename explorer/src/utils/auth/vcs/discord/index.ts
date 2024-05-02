@@ -1,4 +1,19 @@
 import { verifyDiscordGuildMember } from './member'
-import { giveDiscordFarmerRole, verifyDiscordFarmerRole } from './role-farmer'
+import {
+  giveDiscordFarmerRole,
+  giveDiscordNominatorRole,
+  giveDiscordOperatorRole,
+  verifyDiscordFarmerRole,
+  verifyDiscordNominatorRole,
+  verifyDiscordOperatorRole,
+} from './role-farmer'
 
-export { giveDiscordFarmerRole, verifyDiscordFarmerRole, verifyDiscordGuildMember }
+export {
+  giveDiscordFarmerRole,
+  giveDiscordNominatorRole,
+  giveDiscordOperatorRole,
+  verifyDiscordFarmerRole,
+  verifyDiscordGuildMember,
+  verifyDiscordNominatorRole,
+  verifyDiscordOperatorRole,
+}

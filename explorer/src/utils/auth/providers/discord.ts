@@ -6,8 +6,12 @@ import DiscordProvider from 'next-auth/providers/discord'
 import { cookies } from 'next/headers'
 import {
   giveDiscordFarmerRole,
+  giveDiscordNominatorRole,
+  giveDiscordOperatorRole,
   verifyDiscordFarmerRole,
   verifyDiscordGuildMember,
+  verifyDiscordNominatorRole,
+  verifyDiscordOperatorRole,
 } from '../vcs/discord'
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env
@@ -38,10 +42,20 @@ export const Discord = () => {
 
         const member = await verifyDiscordGuildMember(token.access_token)
         let farmer = await verifyDiscordFarmerRole(token.access_token)
+        let operator = await verifyDiscordOperatorRole(token.access_token)
+        let nominator = await verifyDiscordNominatorRole(token.access_token)
 
         if (session.subspace?.vcs.farmer && !farmer) {
           await giveDiscordFarmerRole(profile.id)
           farmer = await verifyDiscordFarmerRole(token.access_token)
+        }
+        if (session.subspace?.vcs.farmer && !farmer) {
+          await giveDiscordOperatorRole(profile.id)
+          operator = await verifyDiscordOperatorRole(token.access_token)
+        }
+        if (session.subspace?.vcs.farmer && !farmer) {
+          await giveDiscordNominatorRole(profile.id)
+          nominator = await verifyDiscordNominatorRole(token.access_token)
         }
 
         return {
@@ -55,9 +69,8 @@ export const Discord = () => {
               member,
               roles: {
                 farmer,
-                // To-Do: Implement more role VCs
-                operator: false,
-                nominator: false,
+                operator,
+                nominator,
               },
             },
           },
