@@ -1,14 +1,11 @@
 import { CheckMarkIcon } from '@/components/icons/CheckMarkIcon'
-import { useQuery } from '@apollo/client'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
-import { CheckRoleQuery } from 'gql/graphql'
 import useWallet from 'hooks/useWallet'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FC, useCallback, useMemo } from 'react'
 import toast from 'react-hot-toast'
-import { QUERY_CHECK_ROLE } from './query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -29,21 +26,9 @@ const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) =
   </button>
 )
 
-export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
+export const SubspaceWalletFlow: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
   const { actingAccount, injector } = useWallet()
-
-  const summaryVariables = useMemo(
-    () => ({
-      first: 10,
-      subspaceAccount,
-    }),
-    [subspaceAccount],
-  )
-  const { data } = useQuery<CheckRoleQuery>(QUERY_CHECK_ROLE, {
-    variables: summaryVariables,
-    pollInterval: 6000,
-  })
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -74,67 +59,95 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
     }
   }, [actingAccount, injector, subspaceAccount])
 
+  return (
+    <StyledListItem title='Verify the ownership of your wallet'>
+      {session?.user?.subspace?.signature ? (
+        <>
+          <CheckMarkIcon />
+          <StyledButton className='ml-2' onClick={handleWalletOwnership}>
+            Refresh
+          </StyledButton>
+        </>
+      ) : (
+        <StyledButton onClick={handleWalletOwnership}>Sign</StyledButton>
+      )}
+    </StyledListItem>
+  )
+}
+
+export const DiscordFlow: FC = () => {
+  const { data: session } = useSession()
+
   const handleConnectDiscord = useCallback(
     async () => await signIn('discord', { redirect: false }),
     [],
   )
 
-  const isFarmer = useMemo(() => data && data.isFarmer && data.isFarmer.length > 0, [data])
-
-  if (session?.user?.discord?.vcs.roles.farmer)
-    return (
-      <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
-        <Accordion title='You are a Farmer on Discord'>
-          <List>
-            <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
-          </List>
-        </Accordion>
-      </div>
+  return (
+    session?.user?.subspace && (
+      <StyledListItem title='Connect your Discord account!'>
+        {session?.user?.discord?.vcs.member ? (
+          <>
+            <CheckMarkIcon />
+            <StyledButton className='ml-2' onClick={handleConnectDiscord}>
+              Refresh
+            </StyledButton>
+          </>
+        ) : (
+          <StyledButton onClick={handleConnectDiscord}>Connect</StyledButton>
+        )}
+      </StyledListItem>
     )
+  )
+}
 
-  if (isFarmer && !session?.user?.discord?.vcs.roles.farmer)
-    return (
-      <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
-        <Accordion title='Get your Farmer role on Discord'>
-          <List>
-            <StyledListItem title='Verify the ownership of your wallet'>
-              {session?.user?.subspace?.signature ? (
-                <>
-                  <CheckMarkIcon />
-                  <StyledButton className='ml-2' onClick={handleWalletOwnership}>
-                    Refresh
-                  </StyledButton>
-                </>
-              ) : (
-                <StyledButton onClick={handleWalletOwnership}>Sign</StyledButton>
+export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
+  const { data: session } = useSession()
+
+  const hasAnyRoles = useMemo(
+    () =>
+      session?.user?.discord?.vcs &&
+      Object.values(session.user.discord.vcs).some((role) => role === true),
+    [session],
+  )
+
+  return (
+    <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+      {hasAnyRoles ? (
+        <>
+          <Accordion title='Your roles on Discord'>
+            <List>
+              {session?.user?.discord?.vcs.roles.farmer && (
+                <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
               )}
-            </StyledListItem>
-            {!session?.user?.discord?.vcs.member && (
-              <StyledListItem title='Join our Discord server'>
-                <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
-                  <StyledButton>Join</StyledButton>
-                </Link>
-              </StyledListItem>
-            )}
-
-            {session?.user?.subspace && (
-              <StyledListItem title='Connect your Discord account!'>
-                {session?.user?.discord?.vcs.member ? (
-                  <>
-                    <CheckMarkIcon />
-                    <StyledButton className='ml-2' onClick={handleConnectDiscord}>
-                      Refresh
-                    </StyledButton>
-                  </>
-                ) : (
-                  <StyledButton onClick={handleConnectDiscord}>Connect</StyledButton>
-                )}
-              </StyledListItem>
-            )}
-          </List>
-        </Accordion>
-      </div>
-    )
-
-  return <></>
+              {session?.user?.discord?.vcs.roles.operator && (
+                <StyledListItem title='You are a Nominator on Discord'>🌐</StyledListItem>
+              )}
+              {session?.user?.discord?.vcs.roles.nominator && (
+                <StyledListItem title='You are a Operator on Discord'>🤝</StyledListItem>
+              )}
+              <SubspaceWalletFlow subspaceAccount={subspaceAccount} />
+              <DiscordFlow />
+            </List>
+          </Accordion>
+        </>
+      ) : (
+        <>
+          <Accordion title='Get all your roles on Discord'>
+            <List>
+              <SubspaceWalletFlow subspaceAccount={subspaceAccount} />
+              {!session?.user?.discord?.vcs.member && (
+                <StyledListItem title='Join our Discord server'>
+                  <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
+                    <StyledButton>Join</StyledButton>
+                  </Link>
+                </StyledListItem>
+              )}
+              <DiscordFlow />
+            </List>
+          </Accordion>
+        </>
+      )}
+    </div>
+  )
 }
