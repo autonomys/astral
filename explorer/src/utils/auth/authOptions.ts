@@ -25,6 +25,7 @@ export const authOptions: AuthOptions = {
         token.DIDs = user.DIDs
         token.subspace = user.subspace
         token.discord = user.discord
+        token.github = user.github
       }
       return token
     },
