@@ -1,14 +1,11 @@
 import { verifyDiscordGuildMember } from './member'
-import {
-  giveDiscordFarmerRole,
-  giveDiscordNominatorRole,
-  giveDiscordOperatorRole,
-  verifyDiscordFarmerRole,
-  verifyDiscordNominatorRole,
-  verifyDiscordOperatorRole,
-} from './role-farmer'
+import { giveDiscordFarmerRole, verifyDiscordFarmerRole } from './role-farmer'
+import { giveDiscordNominatorRole, verifyDiscordNominatorRole } from './role-nominator'
+import { giveDiscordOperatorRole, verifyDiscordOperatorRole } from './role-operator'
+import { getUserRoles } from './utils'
 
 export {
+  getUserRoles,
   giveDiscordFarmerRole,
   giveDiscordNominatorRole,
   giveDiscordOperatorRole,

@@ -5,6 +5,7 @@ import type { DiscordProfile } from 'next-auth/providers/discord'
 import DiscordProvider from 'next-auth/providers/discord'
 import { cookies } from 'next/headers'
 import {
+  getUserRoles,
   giveDiscordFarmerRole,
   giveDiscordNominatorRole,
   giveDiscordOperatorRole,
@@ -41,21 +42,29 @@ export const Discord = () => {
         const did = 'did:openid:discord:' + profile.id
 
         const member = await verifyDiscordGuildMember(token.access_token)
-        let farmer = await verifyDiscordFarmerRole(token.access_token)
-        let operator = await verifyDiscordOperatorRole(token.access_token)
-        let nominator = await verifyDiscordNominatorRole(token.access_token)
+        const roles = await getUserRoles(token.access_token)
+        let farmer = await verifyDiscordFarmerRole(roles)
+        let operator = await verifyDiscordOperatorRole(roles)
+        let nominator = await verifyDiscordNominatorRole(roles)
 
+        let newRolesAdded = false
         if (session.subspace?.vcs.farmer && !farmer) {
           await giveDiscordFarmerRole(profile.id)
-          farmer = await verifyDiscordFarmerRole(token.access_token)
+          newRolesAdded = true
         }
-        if (session.subspace?.vcs.farmer && !farmer) {
+        if (session.subspace?.vcs.operator && !operator) {
           await giveDiscordOperatorRole(profile.id)
-          operator = await verifyDiscordOperatorRole(token.access_token)
+          newRolesAdded = true
         }
-        if (session.subspace?.vcs.farmer && !farmer) {
+        if (session.subspace?.vcs.nominator && !nominator) {
           await giveDiscordNominatorRole(profile.id)
-          nominator = await verifyDiscordNominatorRole(token.access_token)
+          newRolesAdded = true
+        }
+        if (newRolesAdded) {
+          const newRoles = await getUserRoles(token.access_token)
+          farmer = await verifyDiscordFarmerRole(newRoles)
+          operator = await verifyDiscordOperatorRole(newRoles)
+          nominator = await verifyDiscordNominatorRole(newRoles)
         }
 
         return {
