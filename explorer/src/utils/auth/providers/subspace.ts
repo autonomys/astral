@@ -1,5 +1,5 @@
 import { cryptoWaitReady, signatureVerify } from '@polkadot/util-crypto'
-import { DEFAULT_DISCORD_TOKEN } from 'constants/session'
+import { DEFAULT_DISCORD_TOKEN, DEFAULT_GITHUB_TOKEN } from 'constants/session'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { verifySubspaceAccountRoles } from '../vcs/subspace'
@@ -51,6 +51,7 @@ export const Subspace = () => {
             },
           },
           discord: DEFAULT_DISCORD_TOKEN,
+          github: DEFAULT_GITHUB_TOKEN,
         }
       } catch (error) {
         console.error('Error verify Subspace wallet ownership:', error)

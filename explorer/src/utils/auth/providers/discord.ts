@@ -1,3 +1,4 @@
+import { DEFAULT_GITHUB_TOKEN } from 'constants/session'
 import * as jsonwebtoken from 'jsonwebtoken'
 import type { TokenSet } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
@@ -83,6 +84,7 @@ export const Discord = () => {
               },
             },
           },
+          github: session.github || DEFAULT_GITHUB_TOKEN,
         }
       } catch (error) {
         console.error('Error fetching Discord profile:', error)
