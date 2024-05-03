@@ -101,6 +101,32 @@ export const DiscordFlow: FC = () => {
   )
 }
 
+export const GitHubFlow: FC = () => {
+  const { data: session } = useSession()
+
+  const handleConnectGitHub = useCallback(
+    async () => await signIn('github', { redirect: false }),
+    [],
+  )
+
+  return (
+    session?.user?.subspace && (
+      <StyledListItem title='Connect your GitHub account!'>
+        {session?.user?.discord?.vcs.member ? (
+          <>
+            <CheckMarkIcon />
+            <StyledButton className='ml-2' onClick={handleConnectGitHub}>
+              Refresh
+            </StyledButton>
+          </>
+        ) : (
+          <StyledButton onClick={handleConnectGitHub}>Connect</StyledButton>
+        )}
+      </StyledListItem>
+    )
+  )
+}
+
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
 
@@ -128,6 +154,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
               )}
               <SubspaceWalletFlow subspaceAccount={subspaceAccount} />
               <DiscordFlow />
+              <GitHubFlow />
             </List>
           </Accordion>
         </>
@@ -144,6 +171,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
                 </StyledListItem>
               )}
               <DiscordFlow />
+              <GitHubFlow />
             </List>
           </Accordion>
         </>
