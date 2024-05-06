@@ -30,7 +30,10 @@ export const Discord = () => {
         const { NEXTAUTH_SECRET } = process.env
 
         const { get } = cookies()
-        const sessionToken = get('next-auth.session-token')?.value || ''
+        const sessionToken =
+          get('__Secure-next-auth.session-token')?.value || get('next-auth.session-token')?.value
+        if (!sessionToken) throw new Error('No session token')
+
         const session = jsonwebtoken.verify(sessionToken, NEXTAUTH_SECRET, {
           algorithms: ['HS256'],
         }) as JWT
