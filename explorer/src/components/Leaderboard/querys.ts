@@ -86,3 +86,14 @@ export const QUERY_OPERATORS_REWARDS_LIST = gql`
     }
   }
 `
+
+export const QUERY_EVENTS_COUNT = gql`
+  query AccountLeaderboardEventsCount(
+    $where: RewardEventWhereInput!
+    $orderBy: [RewardEventOrderByInput!]!
+  ) {
+    rewardEventsConnection(where: $where, orderBy: $orderBy) {
+      totalCount
+    }
+  }
+`
