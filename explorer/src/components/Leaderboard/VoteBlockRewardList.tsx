@@ -12,9 +12,11 @@ import { NewTable } from 'components/common/NewTable'
 import { NotAllowed } from 'components/common/NotAllowed'
 import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import type { AccountsConnectionRewardsQuery } from 'gql/graphql'
+import type {
+  AccountLeaderboardEventsCountQuery,
+  AccountsConnectionRewardsQuery,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -22,7 +24,36 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { NotFound } from '../layout/NotFound'
 import { VoteBlockRewardListCard } from './VoteBlockRewardListCard'
-import { QUERY_REWARDS_LIST } from './querys'
+import { QUERY_EVENTS_COUNT, QUERY_REWARDS_LIST } from './querys'
+
+interface EventsCountProps {
+  subspaceAddress: string
+  events: string[]
+}
+
+export const EventsCount: FC<EventsCountProps> = ({ subspaceAddress, events }) => {
+  const { data, error, loading } = useQuery<AccountLeaderboardEventsCountQuery>(
+    QUERY_EVENTS_COUNT,
+    {
+      variables: {
+        where: {
+          AND: {
+            account: { id_eq: subspaceAddress },
+            name_in: events,
+          },
+        },
+        orderBy: 'id_DESC',
+      },
+      pollInterval: 6000,
+    },
+  )
+
+  const eventsCount = useMemo(() => data && data.rewardEventsConnection.totalCount, [data])
+
+  if (error) return <div>Error</div>
+
+  return <div>{loading ? <Spinner /> : eventsCount}</div>
+}
 
 export const VoteBlockRewardList = () => {
   const [searchAccount, setSearch] = useState<string>('')
@@ -34,8 +65,6 @@ export const VoteBlockRewardList = () => {
 
   const { selectedChain } = useDomains()
   const apolloClient = useApolloClient()
-
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   const columns = useMemo(() => {
     return [
@@ -72,11 +101,21 @@ export const VoteBlockRewardList = () => {
                 )}
                 className='hover:text-[#DE67E4]'
               >
-                <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
+                <div>{shortString(row.original.id)}</div>
               </Link>
             </div>
           )
         },
+      },
+      {
+        accessorKey: 'blockCount',
+        header: 'Block rewards count',
+        enableSorting: true,
+        cell: ({
+          row,
+        }: Cell<
+          AccountsConnectionRewardsQuery['accountRewardsConnection']['edges'][0]['node']
+        >) => <EventsCount subspaceAddress={row.original.id} events={['Rewards.BlockReward']} />,
       },
       {
         accessorKey: 'block',
@@ -95,6 +134,16 @@ export const VoteBlockRewardList = () => {
         ),
       },
       {
+        accessorKey: 'voteCount',
+        header: 'Vote rewards count',
+        enableSorting: true,
+        cell: ({
+          row,
+        }: Cell<
+          AccountsConnectionRewardsQuery['accountRewardsConnection']['edges'][0]['node']
+        >) => <EventsCount subspaceAddress={row.original.id} events={['Rewards.VoteReward']} />,
+      },
+      {
         accessorKey: 'vote',
         header: 'Vote rewards',
         enableSorting: true,
@@ -108,6 +157,21 @@ export const VoteBlockRewardList = () => {
               ? `${numberWithCommas(bigNumberToNumber(row.original.vote))} tSSC`
               : 0}
           </div>
+        ),
+      },
+      {
+        accessorKey: 'count',
+        header: 'Total rewards count',
+        enableSorting: true,
+        cell: ({
+          row,
+        }: Cell<
+          AccountsConnectionRewardsQuery['accountRewardsConnection']['edges'][0]['node']
+        >) => (
+          <EventsCount
+            subspaceAddress={row.original.id}
+            events={['Rewards.BlockReward', 'Rewards.VoteReward']}
+          />
         ),
       },
       {
@@ -127,7 +191,7 @@ export const VoteBlockRewardList = () => {
         ),
       },
     ]
-  }, [selectedChain, pagination, isLargeLaptop])
+  }, [selectedChain, pagination])
 
   const getQueryVariables = useCallback(
     (
