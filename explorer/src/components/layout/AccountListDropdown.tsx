@@ -113,7 +113,7 @@ function AccountListDropdown() {
           <Listbox.Options className='absolute right-0 mt-1 max-h-80 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-[#1E254E] dark:text-white sm:text-sm md:w-full'>
             {walletList}
             <button
-              onClick={(e) => handleDisconnectWallet(e)}
+              onClick={handleDisconnectWallet}
               className='relative cursor-default select-none py-2 pr-8 text-gray-900 dark:bg-[#2A345E] dark:text-white md:pl-5'
             >
               <span className='block truncate px-2 font-normal'>Disconnect wallet</span>

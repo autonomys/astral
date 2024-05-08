@@ -1,12 +1,15 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { MobileCard, Row } from 'components/common/MobileCard'
+import { Chains } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
+import { operatorStatus } from 'utils/operator'
+import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown } from './ActionsDropdown'
 import { OperatorAction, OperatorActionType } from './ActionsModal'
 
@@ -17,6 +20,7 @@ type Props = {
   index: number
   excludeActions?: OperatorActionType[]
   nominatorMaxStake?: string
+  lastBlock?: number
 }
 
 export const OperatorsListCard: FC<Props> = ({
@@ -25,6 +29,7 @@ export const OperatorsListCard: FC<Props> = ({
   handleAction,
   excludeActions,
   nominatorMaxStake,
+  lastBlock,
 }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const { actingAccount } = useWallet()
@@ -41,7 +46,14 @@ export const OperatorsListCard: FC<Props> = ({
       { name: 'Nominator Tax', value: `${operator.nominationTax}%` },
       { name: 'Total Stake', value: `${bigNumberToNumber(operator.currentTotalStake)} tSSC` },
       { name: 'Total Shares', value: numberWithCommas(operator.totalShares) },
-      { name: 'Status', value: operator.status ? operator.status : 'unknown' },
+      {
+        name: 'Status',
+        value: operator.status
+          ? selectedChain.urls.page === Chains.gemini3g
+            ? operator.status
+            : capitalizeFirstLetter(operatorStatus(operator.status, lastBlock))
+          : 'unknown',
+      },
     ]
     if (actingAccount)
       rows.push({
@@ -77,6 +89,7 @@ export const OperatorsListCard: FC<Props> = ({
     operator.signingKey,
     operator.status,
     operator.totalShares,
+    selectedChain.urls.page,
   ])
 
   return (

@@ -94,6 +94,7 @@ export const QUERY_STAKING_SUMMARY = gql`
           }
           operator {
             id
+            operatorOwner
             currentDomainId
             currentTotalStake
             totalShares
@@ -101,6 +102,19 @@ export const QUERY_STAKING_SUMMARY = gql`
         }
       }
       totalCount
+    }
+  }
+`
+
+export const QUERY_CHECK_ROLE = gql`
+  query CheckRole($subspaceAccount: String!) {
+    isFarmer: rewardEvents(
+      where: { name_eq: "Rewards.VoteReward", account: { id_eq: $subspaceAccount } }
+      limit: 1
+    ) {
+      account {
+        id
+      }
     }
   }
 `

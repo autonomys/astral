@@ -13,7 +13,14 @@ export enum OperatorActionType {
   AddFunds = 'Add Funds',
   Withdraw = 'Withdraw',
   Deregister = 'Deregister',
+  UnlockFunds = 'Unlock Funds',
+  UnlockOperator = 'Unlock Operator',
 }
+export const ActionsInRed = [
+  OperatorActionType.Deregister,
+  OperatorActionType.UnlockFunds,
+  OperatorActionType.UnlockOperator,
+]
 
 export type OperatorAction = {
   type: OperatorActionType
@@ -188,6 +195,46 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
 
+  const handleUnlockFunds = useCallback(async () => {
+    if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
+      return setFormError('We are not able to connect to the blockchain')
+
+    try {
+      const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+      const hash = await api[selectedChain.urls.page].tx.domains
+        .unlockFunds(action.operatorId)
+        .signAndSend(actingAccount.address, { signer: injector.signer })
+
+      console.log('block', block)
+      console.log('hash', hash)
+
+      handleClose()
+    } catch (error) {
+      setFormError('There was an error while de-registering the operator')
+      console.error('Error', error)
+    }
+  }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
+
+  const handleUnlockOperator = useCallback(async () => {
+    if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
+      return setFormError('We are not able to connect to the blockchain')
+
+    try {
+      const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
+      const hash = await api[selectedChain.urls.page].tx.domains
+        .unlockOperator(action.operatorId)
+        .signAndSend(actingAccount.address, { signer: injector.signer })
+
+      console.log('block', block)
+      console.log('hash', hash)
+
+      handleClose()
+    } catch (error) {
+      setFormError('There was an error while de-registering the operator')
+      console.error('Error', error)
+    }
+  }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
+
   const ErrorPlaceholder = useMemo(
     () =>
       formError ? (
@@ -305,19 +352,47 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
             </button>
           </div>
         )
+      case OperatorActionType.UnlockFunds:
+      case OperatorActionType.UnlockOperator:
+        return (
+          <div className='flex flex-col items-start gap-4'>
+            <span className='mt-4 text-base font-medium text-[#241235] dark:text-white'>
+              Do you really want to{' '}
+              {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+              OperatorActionType.UnlockFunds
+                ? 'unlock the funds in your nomination'
+                : 'unlock the funds in your operator'}{' '}
+              ?
+            </span>
+            {ErrorPlaceholder}
+            <button
+              className='flex w-full max-w-fit items-center gap-2 rounded-full bg-red-500 px-2 text-sm font-medium text-white dark:bg-red-500 md:space-x-4 md:text-base'
+              onClick={
+                OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                OperatorActionType.UnlockFunds
+                  ? handleUnlockFunds
+                  : handleUnlockOperator
+              }
+            >
+              {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+            </button>
+          </div>
+        )
       default:
         return null
     }
   }, [
-    ErrorPlaceholder,
-    actingAccount,
     action.type,
-    maxAmountToAdd,
-    fundsFormValidationSchema,
-    handleAddFunds,
-    handleDeregister,
-    handleWithdraw,
     initialValues,
+    fundsFormValidationSchema,
+    ErrorPlaceholder,
+    handleDeregister,
+    handleUnlockFunds,
+    handleUnlockOperator,
+    handleAddFunds,
+    handleWithdraw,
+    maxAmountToAdd,
+    actingAccount,
     maxAmount,
   ])
 
