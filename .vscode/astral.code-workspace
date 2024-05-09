@@ -17,15 +17,27 @@
       "path": "../health-check"
     },
     {
+      "name": "general-squid",
+      "path": "../general-squid"
+    },
+    {
+      "name": "account-squid",
+      "path": "../account-squid"
+    },
+    {
+      "name": "rewards-squid",
+      "path": "../rewards-squid"
+    },
+    {
       "name": "squid-blockexplorer",
       "path": "../squid-blockexplorer"
     }
   ],
   "settings": {
     "editor.codeActionsOnSave": {
-      "source.sortImports": true,
-      "source.fixAll.eslint": true,
-      "source.fixAll.tslint": true
+      "source.sortImports": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.tslint": "explicit"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "javascript.updateImportsOnFileMove.enabled": "always",
