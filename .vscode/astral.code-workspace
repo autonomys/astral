@@ -47,12 +47,13 @@
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
     "editor.formatOnSave": true,
     "cSpell.words": [
-      "subspace",
+      "extrinsics",
       "gemini",
       "graphiql",
       "leaderboard",
+      "siwe",
       "subscan",
-      "extrinsics",
+      "subspace",
       "subsquid",
       "typegen"
     ]

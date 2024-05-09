@@ -18,9 +18,7 @@ import { QUERY_HOME, QUERY_HOME_DOMAIN } from './query'
 export const Home: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = isDesktop ? 10 : 3
-
   const { selectedChain } = useDomains()
-  console.log('selectedChain', selectedChain)
 
   const HomeQuery = useMemo(
     () => (selectedChain?.isDomain ? QUERY_HOME_DOMAIN : QUERY_HOME),

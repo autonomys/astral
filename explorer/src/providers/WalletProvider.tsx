@@ -6,6 +6,7 @@ import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { chains } from 'constants/chains'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
+import { getSession, signOut } from 'next-auth/react'
 import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
 
@@ -68,19 +69,31 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setApi(apis.reduce((acc, cur) => ({ ...acc, ...cur }), {}))
   }, [prepareApi])
 
+  const signOutSessionOnAccountChange = useCallback(async (subspaceAccount?: string) => {
+    const session = await getSession()
+    if (!subspaceAccount || (session && session?.user?.subspace?.account !== subspaceAccount))
+      await signOut({ redirect: false })
+  }, [])
+
   const changeAccount = useCallback(
-    (account: WalletAccount) => {
-      setActingAccount(account)
-      setSubspaceAccount(formatAddress(account.address))
-      setPreferredAccount(account.address)
-      const newInjector = extensions?.find((extension) => extension.name === account.source)
-      if (newInjector) setInjector(newInjector)
-      setIsReady(true)
+    async (account: WalletAccount) => {
+      try {
+        setActingAccount(account)
+        const _subspaceAccount = formatAddress(account.address)
+        setSubspaceAccount(_subspaceAccount)
+        setPreferredAccount(account.address)
+        const newInjector = extensions?.find((extension) => extension.name === account.source)
+        if (newInjector) setInjector(newInjector)
+        setIsReady(true)
+        await signOutSessionOnAccountChange(_subspaceAccount)
+      } catch (error) {
+        console.error('Failed to change account', error)
+      }
     },
-    [extensions, setPreferredAccount],
+    [extensions, setPreferredAccount, signOutSessionOnAccountChange],
   )
 
-  const disconnectWallet = useCallback(() => {
+  const disconnectWallet = useCallback(async () => {
     setInjector(null)
     setAccounts([])
     setActingAccount(undefined)
@@ -88,7 +101,8 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setPreferredAccount(null)
     setPreferredExtension(null)
     setIsReady(false)
-  }, [setInjector, setAccounts, setPreferredAccount, setPreferredExtension])
+    await signOutSessionOnAccountChange()
+  }, [setPreferredAccount, setPreferredExtension, signOutSessionOnAccountChange])
 
   const handleGetWalletFromExtension = useCallback(
     async (source: string) => {

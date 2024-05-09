@@ -129,3 +129,18 @@ export const INTERNAL_ROUTES = {
   notFound: '/404',
   catchAll: '*',
 }
+
+export enum ROUTE_EXTRA_FLAG_TYPE {
+  WALLET = 'wallet',
+  WALLET_SIDEKICK = 'walletSidekick',
+}
+
+export enum ROUTE_FLAG_VALUE_OPEN_CLOSE {
+  CLOSE = 'close',
+  OPEN = 'open',
+}
+
+export const ROUTE_EXTRA_FLAGS = {
+  wallet: ROUTE_FLAG_VALUE_OPEN_CLOSE,
+  walletSidekick: ROUTE_FLAG_VALUE_OPEN_CLOSE,
+}

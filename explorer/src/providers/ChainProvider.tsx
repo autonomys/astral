@@ -9,10 +9,9 @@ import {
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
-import { FC, ReactNode, createContext, useState } from 'react'
-
-// chains
 import { chains, squidLinks } from 'constants/chains'
+import Cookies from 'js-cookie'
+import { FC, ReactNode, createContext, useCallback, useState } from 'react'
 
 export type Chain = {
   title: string
@@ -70,11 +69,19 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
   const [selectedDomain, setSelectedDomain] = useState('consensus')
 
+  const handleSelectChain = useCallback(
+    (chain: Chain) => {
+      if (chain) Cookies.set('selectedChain', chain.urls.page, { expires: 1 })
+      setSelectedChain(chain)
+    },
+    [setSelectedChain],
+  )
+
   return (
     <ChainContext.Provider
       value={{
         selectedChain,
-        setSelectedChain,
+        setSelectedChain: handleSelectChain,
         selectedDomain,
         setSelectedDomain,
         chains,

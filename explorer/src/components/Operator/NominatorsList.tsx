@@ -220,7 +220,7 @@ export const NominatorsList: FC = () => {
                   },
                 } as ActionsDropdownRow
               }
-              excludeActions={[OperatorActionType.Deregister]}
+              excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
               nominatorMaxStake={(
                 (BigInt(row.original.operator.currentTotalStake) * BigInt(row.original.shares)) /
                 BigInt(row.original.operator.totalShares)
@@ -341,7 +341,12 @@ const MobileComponent: FC<MobileComponentProps> = ({ nominators, action, handleA
         action={action}
         handleAction={handleAction}
         index={index}
-        excludeActions={[OperatorActionType.Deregister]}
+        excludeActions={[
+          OperatorActionType.Deregister,
+          OperatorActionType.Withdraw,
+          OperatorActionType.UnlockFunds,
+          OperatorActionType.UnlockOperator,
+        ]}
         nominatorMaxStake={
           nominator &&
           (
