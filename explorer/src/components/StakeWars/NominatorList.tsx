@@ -8,7 +8,7 @@ import { SortingState } from '@tanstack/react-table'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
+import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
 import { GetAllNominatorsQuery } from 'gql/rewardTypes'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -177,7 +177,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
             <NewTable
               data={nominatorsWithRewards}
               columns={columns}
-              showNavigation={false}
+              showNavigation={true}
               sorting={sorting}
               onSortingChange={setSorting}
               pagination={pagination}

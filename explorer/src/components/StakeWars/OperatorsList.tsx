@@ -9,7 +9,7 @@ import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
+import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { GetAllOperatorsQuery } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
@@ -182,7 +182,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
           <NewTable
             data={operatorsConnection}
             columns={columns}
-            showNavigation={false}
+            showNavigation={true}
             sorting={sorting}
             onSortingChange={setSorting}
             pagination={pagination}
