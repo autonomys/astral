@@ -60,7 +60,7 @@
 ## Overview
 
 - [Explorer](./explorer/README.md) - Next.js app based on React and Tailwind CSS, uses Apollo Client to fetch data from Astral Subsquid
-- [Squid](./squid-blockexplorer/README.md) - backend app, utilizes [Subsquid Framework](https://docs.subsquid.io/overview/) for indexing and transforming chain data as well as exposing it using GraphQL
+- [Indexers](./indexers/README.md) - Includes various Subsquid indexers like blockexplorer-subsquid and other smaller Subsquid services.
 - [Health check](./health-check/README.md) - utility service to check health status of an internal service and expose it as a REST API endpoint
 
 ## Development
@@ -72,7 +72,7 @@ Ensure you have the following installed on your local development machine:
 - Node.js (v18.x or later)
 - Yarn (v2.x or later)
 
-You can check your Node and Yarn versions with `node -v` and `yarn -v` respectively.
+You can check your Node and Yarn versions with 'node -v' and 'yarn -v' respectively.
 
 ### Installation
 

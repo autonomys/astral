@@ -1,0 +1,13 @@
+/node_modules
+/lib
+
+/**Versions.json
+/**Versions.jsonl
+.nyc_output
+coverage
+
+devnet/farmer-data
+devnet/node-data
+
+# misc
+.env
