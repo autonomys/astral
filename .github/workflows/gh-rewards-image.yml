@@ -28,7 +28,7 @@ jobs:
 
       - name: Build processor image
         run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
-        working-directory: rewards-squid
+        working-directory: indexers/rewards-squid
 
       - name: Push processor image
         run: docker push $PROCESSOR_NAME
