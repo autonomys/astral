@@ -17,20 +17,8 @@
       "path": "../health-check"
     },
     {
-      "name": "general-squid",
-      "path": "../general-squid"
-    },
-    {
-      "name": "account-squid",
-      "path": "../account-squid"
-    },
-    {
-      "name": "rewards-squid",
-      "path": "../rewards-squid"
-    },
-    {
-      "name": "squid-blockexplorer",
-      "path": "../squid-blockexplorer"
+      "name": "indexers",
+      "path": "../indexers"
     }
   ],
   "settings": {
