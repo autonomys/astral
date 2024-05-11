@@ -252,6 +252,7 @@ export function getOrCreateAccountRewardsFactory(ctx: Context) {
         block: BigInt(0),
         operator: BigInt(0),
         amount: BigInt(0),
+        farmerEventsCount: BigInt(0),
         updatedAt: BigInt(header.height),
       });
 

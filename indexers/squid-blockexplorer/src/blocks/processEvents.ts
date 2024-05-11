@@ -96,7 +96,7 @@ export function processEventsFactory(
     call: any
   ) {
     const operatorEvents: RewardEvent[] = [];
-  
+
     const operatorId = BigInt(eventItem.event.args?.operatorId);
     const operator = await getOrCreateOperator(operatorId);
     if (!operator) return;
@@ -305,6 +305,9 @@ export function processEventsFactory(
       account: accountRewards.account,
       [rewardType]: rewardAmount,
       amount: accountRewardAmount,
+      farmerEventsCount: accountRewards.farmerEventsCount
+        ? accountRewards.farmerEventsCount + BigInt(1)
+        : BigInt(1),
       updatedAt: BigInt(header.height),
     });
   }
@@ -335,7 +338,9 @@ export function processEventsFactory(
       );
 
       if (rewardEvent) {
-        Array.isArray(rewardEvent) ? rewardEvents.push(...rewardEvent) : rewardEvents.push(rewardEvent);
+        Array.isArray(rewardEvent)
+          ? rewardEvents.push(...rewardEvent)
+          : rewardEvents.push(rewardEvent);
       }
 
       const genericEvent = new Event({
