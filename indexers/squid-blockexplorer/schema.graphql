@@ -151,6 +151,7 @@ type AccountRewards @entity {
   block: BigInt @index
   vote: BigInt @index
   operator: BigInt @index
+  farmerEventsCount: BigInt
   updatedAt: BigInt!
 }
 
