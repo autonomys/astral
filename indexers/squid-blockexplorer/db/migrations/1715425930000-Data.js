@@ -1,5 +1,5 @@
-module.exports = class Data1704916240126 {
-    name = 'Data1704916240126'
+module.exports = class Data1715425930000 {
+    name = 'Data1715425930000'
 
     async up(db) {
         await db.query(`CREATE TABLE "call" ("id" character varying NOT NULL, "name" text NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "success" boolean NOT NULL, "args" jsonb, "error" jsonb, "signer" text, "pos" integer, "block_id" character varying, "extrinsic_id" character varying, "parent_id" character varying, CONSTRAINT "PK_2098af0169792a34f9cfdd39c47" PRIMARY KEY ("id"))`)
@@ -46,7 +46,7 @@ module.exports = class Data1704916240126 {
         await db.query(`CREATE INDEX "IDX_5dbe10dbb2aa428088e61574d9" ON "operator" ("ordering_id") `)
         await db.query(`CREATE INDEX "IDX_b0357fd28c43547900d34af4a4" ON "operator" ("nominator_amount") `)
         await db.query(`CREATE INDEX "IDX_d6d18ca05472785030a7a3963b" ON "operator" ("updated_at") `)
-        await db.query(`CREATE TABLE "account_rewards" ("id" character varying NOT NULL, "amount" numeric, "block" numeric, "vote" numeric, "operator" numeric, "updated_at" numeric NOT NULL, "account_id" character varying, CONSTRAINT "PK_5a801ebab4bd4bfca108afcf722" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "account_rewards" ("id" character varying NOT NULL, "amount" numeric, "block" numeric, "vote" numeric, "operator" numeric, "farmer_events_count" numeric, "updated_at" numeric NOT NULL, "account_id" character varying, CONSTRAINT "PK_5a801ebab4bd4bfca108afcf722" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_f389793b00fdbe83f8fa075b42" ON "account_rewards" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_b63537b9bd1a5f5be07c119a5f" ON "account_rewards" ("block") `)
         await db.query(`CREATE INDEX "IDX_04107f30725a51e954a15dbb15" ON "account_rewards" ("vote") `)
