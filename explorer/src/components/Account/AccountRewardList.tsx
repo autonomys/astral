@@ -1,3 +1,5 @@
+'use client'
+
 /* eslint-disable camelcase */
 import { PAGE_SIZE } from '@/constants/general'
 import { AccountIdParam } from '@/types/app'
@@ -59,8 +61,8 @@ export const AccountRewardList: FC = () => {
     [totalCount, pagination.pageSize],
   )
 
-  if (!account || !convertedAddress || !data || !rewards) return <NotFound />
   if (loading) return <Spinner />
+  if (!account || !convertedAddress || !data || !rewards) return <NotFound />
 
   return (
     <div className='flex w-full flex-col align-middle'>
