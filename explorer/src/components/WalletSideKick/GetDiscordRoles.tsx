@@ -124,7 +124,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
                 <StyledListItem title='You are a Nominator on Discord'>🌐</StyledListItem>
               )}
               {session?.user?.discord?.vcs.roles.nominator && (
-                <StyledListItem title='You are a Operator on Discord'>🤝</StyledListItem>
+                <StyledListItem title='You are an Operator on Discord'>🤝</StyledListItem>
               )}
               <SubspaceWalletFlow subspaceAccount={subspaceAccount} />
               <DiscordFlow />
