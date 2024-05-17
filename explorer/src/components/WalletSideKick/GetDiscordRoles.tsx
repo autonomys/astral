@@ -2,6 +2,7 @@ import { CheckMarkIcon } from '@/components/icons/CheckMarkIcon'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { Modal } from 'components/common/Modal'
+import { EXTERNAL_ROUTES } from 'constants/routes'
 import useWallet from 'hooks/useWallet'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -38,6 +39,11 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
       <div className='flex flex-col items-start gap-4'>
         <div className='flex flex-col items-center gap-4'>
           <div className='grid grid-cols-1 gap-4'>
+            <Accordion title='How to become a farmer?'>
+              <Link href={EXTERNAL_ROUTES.docs + 'docs/category/farming/'} target='_blank'>
+                Please refer to the farming documentation on the Subspace website.
+              </Link>
+            </Accordion>
             <Accordion title='Why am I not getting the verified farmer role?'>
               The address you are using to sign the message needs to have won a block or a vote
               while farming.
