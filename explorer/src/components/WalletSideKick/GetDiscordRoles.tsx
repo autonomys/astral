@@ -1,14 +1,12 @@
 import { CheckMarkIcon } from '@/components/icons/CheckMarkIcon'
-import { useQuery } from '@apollo/client'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
-import { CheckRoleQuery } from 'gql/graphql'
+import { Modal } from 'components/common/Modal'
 import useWallet from 'hooks/useWallet'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useCallback, useState } from 'react'
 import toast from 'react-hot-toast'
-import { QUERY_CHECK_ROLE } from './query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -20,6 +18,11 @@ interface StyledButtonProps {
   onClick?: () => void
 }
 
+type ExplainerProps = {
+  isOpen: boolean
+  onClose: () => void
+}
+
 const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) => (
   <button
     className={`w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg ${className}`}
@@ -29,21 +32,33 @@ const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) =
   </button>
 )
 
+const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
+  return (
+    <Modal title={'Explainer'} onClose={onClose} isOpen={isOpen}>
+      <div className='flex flex-col items-start gap-4'>
+        <div className='flex flex-col items-center gap-4'>
+          <div className='grid grid-cols-1 gap-4'>
+            <Accordion title='Why am I not getting the verified farmer role?'>
+              The address you are using to sign the message needs to have won a block or a vote
+              while farming.
+            </Accordion>
+          </div>
+        </div>
+        <button
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-[#241235] px-2 text-sm font-medium text-white dark:bg-[#1E254E] md:space-x-4 md:text-base'
+          onClick={onClose}
+        >
+          Close
+        </button>
+      </div>
+    </Modal>
+  )
+}
+
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
   const { actingAccount, injector } = useWallet()
-
-  const summaryVariables = useMemo(
-    () => ({
-      first: 10,
-      subspaceAccount,
-    }),
-    [subspaceAccount],
-  )
-  const { data } = useQuery<CheckRoleQuery>(QUERY_CHECK_ROLE, {
-    variables: summaryVariables,
-    pollInterval: 6000,
-  })
+  const [explainerOpen, setExplainerOpen] = useState(false)
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -79,8 +94,6 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
     [],
   )
 
-  const isFarmer = useMemo(() => data && data.isFarmer && data.isFarmer.length > 0, [data])
-
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
       <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
@@ -91,11 +104,10 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
         </Accordion>
       </div>
     )
-
-  if (isFarmer && !session?.user?.discord?.vcs.roles.farmer)
+  else
     return (
       <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
-        <Accordion title='Get your Farmer role on Discord'>
+        <Accordion title='Get verified roles on Discord'>
           <List>
             <StyledListItem title='Verify the ownership of your wallet'>
               {session?.user?.subspace?.signature ? (
@@ -133,8 +145,14 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
             )}
           </List>
         </Accordion>
+        <button
+          className='text-xs text-gray-500 underline'
+          onClick={() => setExplainerOpen(true)}
+          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+        >
+          Having trouble? Check the explainer.
+        </button>
+        <Explainer isOpen={explainerOpen} onClose={() => setExplainerOpen(false)} />
       </div>
     )
-
-  return <></>
 }
