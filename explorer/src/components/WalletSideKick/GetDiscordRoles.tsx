@@ -104,55 +104,54 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
         </Accordion>
       </div>
     )
-  else
-    return (
-      <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
-        <Accordion title='Get verified roles on Discord'>
-          <List>
-            <StyledListItem title='Verify the ownership of your wallet'>
-              {session?.user?.subspace?.signature ? (
+  return (
+    <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+      <Accordion title='Get verified roles on Discord'>
+        <List>
+          <StyledListItem title='Verify the ownership of your wallet'>
+            {session?.user?.subspace?.signature ? (
+              <>
+                <CheckMarkIcon />
+                <StyledButton className='ml-2' onClick={handleWalletOwnership}>
+                  Refresh
+                </StyledButton>
+              </>
+            ) : (
+              <StyledButton onClick={handleWalletOwnership}>Sign</StyledButton>
+            )}
+          </StyledListItem>
+          {!session?.user?.discord?.vcs.member && (
+            <StyledListItem title='Join our Discord server'>
+              <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
+                <StyledButton>Join</StyledButton>
+              </Link>
+            </StyledListItem>
+          )}
+
+          {session?.user?.subspace && (
+            <StyledListItem title='Connect your Discord account!'>
+              {session?.user?.discord?.vcs.member ? (
                 <>
                   <CheckMarkIcon />
-                  <StyledButton className='ml-2' onClick={handleWalletOwnership}>
+                  <StyledButton className='ml-2' onClick={handleConnectDiscord}>
                     Refresh
                   </StyledButton>
                 </>
               ) : (
-                <StyledButton onClick={handleWalletOwnership}>Sign</StyledButton>
+                <StyledButton onClick={handleConnectDiscord}>Connect</StyledButton>
               )}
             </StyledListItem>
-            {!session?.user?.discord?.vcs.member && (
-              <StyledListItem title='Join our Discord server'>
-                <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
-                  <StyledButton>Join</StyledButton>
-                </Link>
-              </StyledListItem>
-            )}
-
-            {session?.user?.subspace && (
-              <StyledListItem title='Connect your Discord account!'>
-                {session?.user?.discord?.vcs.member ? (
-                  <>
-                    <CheckMarkIcon />
-                    <StyledButton className='ml-2' onClick={handleConnectDiscord}>
-                      Refresh
-                    </StyledButton>
-                  </>
-                ) : (
-                  <StyledButton onClick={handleConnectDiscord}>Connect</StyledButton>
-                )}
-              </StyledListItem>
-            )}
-          </List>
-        </Accordion>
-        <button
-          className='text-xs text-gray-500 underline'
-          onClick={() => setExplainerOpen(true)}
-          style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-        >
-          Having trouble? Check the explainer.
-        </button>
-        <Explainer isOpen={explainerOpen} onClose={() => setExplainerOpen(false)} />
-      </div>
-    )
+          )}
+        </List>
+      </Accordion>
+      <button
+        className='text-xs text-gray-500 underline'
+        onClick={() => setExplainerOpen(true)}
+        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+      >
+        Having trouble? Check the explainer.
+      </button>
+      <Explainer isOpen={explainerOpen} onClose={() => setExplainerOpen(false)} />
+    </div>
+  )
 }
