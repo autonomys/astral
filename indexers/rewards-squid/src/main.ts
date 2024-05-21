@@ -4,6 +4,7 @@ import {
 } from "@belopash/typeorm-store";
 import {
   getOrCreateOperator,
+  processAccountRewards,
   processRewardEvent,
   updateEpochCompleted,
   updateOperatorFundsUnlocked,
@@ -12,7 +13,12 @@ import {
   updateOperatorStatus,
   updateWithdrewStake,
 } from "./blocks/utils";
-import { DomainEpoch, OperatorRewardEvent, RewardEvent } from "./model";
+import {
+  AccountReward,
+  DomainEpoch,
+  OperatorRewardEvent,
+  RewardEvent,
+} from "./model";
 import { ProcessorContext, processor } from "./processor";
 import { events } from "./types";
 
@@ -21,14 +27,16 @@ processor.run(
   async (ctx) => {
     let rewards = await getOperatorEvents(ctx);
 
-    await ctx.store.save([...rewards.operatorEvents]);
     await ctx.store.save([...rewards.rewardEvents]);
+    await ctx.store.save([...rewards.accountRewards]);
+    await ctx.store.save([...rewards.operatorEvents]);
     await ctx.store.save([...rewards.domainEpochEvents]);
   }
 );
 
 type Rewards = {
   rewardEvents: RewardEvent[];
+  accountRewards: AccountReward[];
   operatorEvents: OperatorRewardEvent[];
   domainEpochEvents: DomainEpoch[];
 };
@@ -37,6 +45,7 @@ async function getOperatorEvents(
   ctx: ProcessorContext<StoreWithCache>
 ): Promise<Rewards> {
   const rewardEvents: RewardEvent[] = [];
+  const accountRewards: AccountReward[] = [];
   const operatorEvents: OperatorRewardEvent[] = [];
   const domainEpochEvents: DomainEpoch[] = [];
 
@@ -97,6 +106,14 @@ async function getOperatorEvents(
             event
           );
           rewardEvents.push(rewardEvent);
+
+          // Update account rewards
+          const accountRewardsEvent = await processAccountRewards(
+            ctx,
+            block.header,
+            event
+          );
+          accountRewards.push(accountRewardsEvent);
           break;
         default:
           break;
@@ -104,5 +121,5 @@ async function getOperatorEvents(
     }
   }
 
-  return { rewardEvents, operatorEvents, domainEpochEvents };
+  return { rewardEvents, accountRewards, operatorEvents, domainEpochEvents };
 }

@@ -362,6 +362,20 @@ export async function processRewardEvent(
   return rewardEvent;
 }
 
+export async function processAccountRewards(
+  ctx: ProcessorContext<StoreWithCache>,
+  header: BlockHeader,
+  event: Event
+) {
+  const address = event.args?.voter || event.args?.blockAuthor;
+
+  const account = await getOrCreateAccount(ctx, address);
+
+  const accountReward = await getOrCreateAccountRewards(ctx, header, account);
+
+  return accountReward;
+}
+
 export async function getOrCreateAccountRewards(
   ctx: ProcessorContext<StoreWithCache>,
   header: BlockHeader,
