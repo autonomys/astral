@@ -362,6 +362,34 @@ export async function processRewardEvent(
   return rewardEvent;
 }
 
+export async function updateAccountRewards(
+  accountReward: AccountReward,
+  reward: bigint,
+  rewardType: "block" | "vote",
+  header: BlockHeader
+) {
+  const currentTypeBalance = accountReward[rewardType];
+  const rewardAmount = currentTypeBalance
+    ? reward + currentTypeBalance
+    : reward;
+  const accountRewardAmount = accountReward.totalRewards
+    ? reward + accountReward.totalRewards
+    : reward;
+
+  if (!rewardAmount) return null;
+
+  return new AccountReward({
+    ...accountReward,
+    account: accountReward.account,
+    [rewardType]: rewardAmount,
+    totalRewards: accountRewardAmount,
+    farmerEventsCount: accountReward.farmerEventsCount
+      ? accountReward.farmerEventsCount + BigInt(1)
+      : BigInt(1),
+    updatedAt: header.height,
+  });
+}
+
 export async function processAccountRewards(
   ctx: ProcessorContext<StoreWithCache>,
   header: BlockHeader,
@@ -372,6 +400,17 @@ export async function processAccountRewards(
   const account = await getOrCreateAccount(ctx, address);
 
   const accountReward = await getOrCreateAccountRewards(ctx, header, account);
+
+  const rewardType = event.name === "Rewards.BlockReward" ? "block" : "vote";
+  const reward = BigInt(event.args.reward);
+  const updatedAccountRewards = updateAccountRewards(
+    accountReward,
+    reward,
+    rewardType,
+    header
+  );
+
+  if (updatedAccountRewards) return updatedAccountRewards;
 
   return accountReward;
 }
@@ -391,6 +430,7 @@ export async function getOrCreateAccountRewards(
       block: BigInt(0),
       operator: BigInt(0),
       totalRewards: BigInt(0),
+      farmerEventsCount: BigInt(0),
       updatedAt: header.height,
     });
   }

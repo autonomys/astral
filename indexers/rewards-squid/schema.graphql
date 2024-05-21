@@ -76,6 +76,7 @@ type AccountReward @entity {
   block: BigInt
   vote: BigInt
   operator: BigInt
+  farmerEventsCount: BigInt
   updatedAt: Int! @index
 }
 

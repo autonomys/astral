@@ -27,6 +27,9 @@ export class AccountReward {
     @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
     operator!: bigint | undefined | null
 
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    farmerEventsCount!: bigint | undefined | null
+
     @Index_()
     @Column_("int4", {nullable: false})
     updatedAt!: number
