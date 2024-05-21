@@ -77,6 +77,7 @@ export const OperatorsListCard: FC<Props> = ({
   }, [
     actingAccount,
     action,
+    lastBlock,
     excludeActions,
     handleAction,
     lastBlock,

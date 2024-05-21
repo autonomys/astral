@@ -9,10 +9,6 @@
       "path": "../explorer"
     },
     {
-      "name": "client",
-      "path": "../client"
-    },
-    {
       "name": "health-check",
       "path": "../health-check"
     },
