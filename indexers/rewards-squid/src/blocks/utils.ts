@@ -403,7 +403,7 @@ export async function processAccountRewards(
 
   const rewardType = event.name === "Rewards.BlockReward" ? "block" : "vote";
   const reward = BigInt(event.args.reward);
-  const updatedAccountRewards = updateAccountRewards(
+  const updatedAccountRewards = await updateAccountRewards(
     accountReward,
     reward,
     rewardType,
