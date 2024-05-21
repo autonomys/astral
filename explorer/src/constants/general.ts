@@ -1,6 +1,23 @@
 export const PAGE_SIZE = 10
 
+export const STAKE_WARS_PAGE_SIZE = 150
+
 export const MAX_DOWNLOADER_BATCH_SIZE = 100
+
+export const STAKE_WARS_PHASES = {
+  phase2: {
+    start: 334753,
+    end: 536562,
+  },
+  phase3: {
+    start: 536562,
+    end: 1040169,
+  },
+  endgame: {
+    start: 1040169,
+    end: 1040169,
+  },
+}
 
 export type Pagination = {
   pageSize: number

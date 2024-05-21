@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: squid-blockexplorer
+        working-directory: indexers/squid-blockexplorer
     name: Run eslint, check typescript and run tests
     steps:
       - uses: actions/checkout@v3

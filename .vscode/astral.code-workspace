@@ -13,15 +13,15 @@
       "path": "../health-check"
     },
     {
-      "name": "squid-blockexplorer",
-      "path": "../squid-blockexplorer"
+      "name": "indexers",
+      "path": "../indexers"
     }
   ],
   "settings": {
     "editor.codeActionsOnSave": {
-      "source.sortImports": true,
-      "source.fixAll.eslint": true,
-      "source.fixAll.tslint": true
+      "source.sortImports": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.tslint": "explicit"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "javascript.updateImportsOnFileMove.enabled": "always",

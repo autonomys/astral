@@ -1,6 +1,7 @@
 'use client'
 
 import { bigNumberToNumber, floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
+import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useDomains from 'hooks/useDomains'
@@ -123,12 +124,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
         console.log('block', block)
         console.log('hash', hash)
-
+        sendGAEvent({
+          event: 'nominateOperator',
+          value: `operatorID:${action.operatorId.toString()}`,
+        })
         resetForm()
         handleClose()
       } catch (error) {
         setFormError('There was an error while adding funds to the operator')
         console.error('Error', error)
+        sendGAEvent({ event: 'nominateOperator-error', value: error })
       }
     },
     [api, actingAccount, injector, action.operatorId, tokenDecimals, handleClose, selectedChain],
@@ -141,6 +146,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ) => {
       if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
         return setFormError('We are not able to connect to the blockchain')
+      if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
       try {
         const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
@@ -155,12 +161,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
         console.log('block', block)
         console.log('hash', hash)
-
+        sendGAEvent({ event: 'withdrawStake', value: `operatorID:${action.operatorId.toString()}` })
         resetForm()
         handleClose()
       } catch (error) {
         setFormError('There was an error while withdraw funds from the operator')
         console.error('Error', error)
+        sendGAEvent({ event: 'withdrawStake-error', value: error })
       }
     },
     [
@@ -178,6 +185,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const handleDeregister = useCallback(async () => {
     if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
       return setFormError('We are not able to connect to the blockchain')
+    if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
     try {
       const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
@@ -187,17 +195,22 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       console.log('block', block)
       console.log('hash', hash)
-
+      sendGAEvent({
+        event: 'deregisterOperator',
+        value: `operatorID:${action.operatorId.toString()}`,
+      })
       handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
+      sendGAEvent({ event: 'deregisterOperator-error', value: error })
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
 
   const handleUnlockFunds = useCallback(async () => {
     if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
       return setFormError('We are not able to connect to the blockchain')
+    if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
     try {
       const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
@@ -207,17 +220,19 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       console.log('block', block)
       console.log('hash', hash)
-
+      sendGAEvent({ event: 'unlockFunds', value: `operatorID:${action.operatorId.toString()}` })
       handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
+      sendGAEvent({ event: 'unlockFunds-error', value: error })
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
 
   const handleUnlockOperator = useCallback(async () => {
     if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
       return setFormError('We are not able to connect to the blockchain')
+    if (!action.operatorId) return setFormError('Please select an operator to add funds to')
 
     try {
       const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
@@ -227,11 +242,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       console.log('block', block)
       console.log('hash', hash)
-
+      sendGAEvent({ event: 'unlockOperator', value: `operatorID:${action.operatorId.toString()}` })
       handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
+      sendGAEvent({ event: 'unlockFunds-error', value: error })
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose, selectedChain])
 
