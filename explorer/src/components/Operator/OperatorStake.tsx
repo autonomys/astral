@@ -4,6 +4,7 @@ import { WalletIcon } from '@/components/icons'
 import { floatToStringWithDecimals } from '@/utils/number'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { sendGAEvent } from '@next/third-parties/google'
 import { isHex } from '@polkadot/util'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
@@ -13,7 +14,6 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { trackGAEvent } from 'utils//googleAnalytics'
 import * as Yup from 'yup'
 
 interface FormValues {
@@ -155,15 +155,11 @@ export const OperatorStake = () => {
 
         console.log('block', block)
         console.log('hash', hash)
-        trackGAEvent('Register Operator', 'Clicked on Register Operator', 'Operator Stake page')
+        sendGAEvent({ event: 'registerOperator', value: `domainID:${values.domainId}` })
       } catch (error) {
         setFormError('There was an error while registering the operator')
         console.error('Error', error)
-        trackGAEvent(
-          'Register Operator Error',
-          'Clicked on Register Operator',
-          'Operator Stake page',
-        )
+        sendGAEvent({ event: 'registerOperator-error', value: error })
       }
       resetForm()
     },

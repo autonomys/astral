@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { chainesSet, chains } from 'constants/chains'
 import { lang, metadata } from 'constants/metadata'
 import { Metadata, Viewport } from 'next'
@@ -15,6 +16,9 @@ export default async function RootLayout({
 }: ChainPageProps & { children: React.ReactNode }) {
   return (
     <html lang={lang}>
+      {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+      )}
       <head lang='en' />
       <body>
         <Provider>{children}</Provider>
