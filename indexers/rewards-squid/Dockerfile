@@ -17,6 +17,7 @@ WORKDIR /squid
 ADD package.json .
 ADD package-lock.json .
 RUN npm install -g npm@10.5.2 && npm ci --production
+
 FROM node AS squid
 WORKDIR /squid
 COPY --from=deps /squid/package.json .
@@ -32,3 +33,6 @@ RUN npm i -g @subsquid/commands && mv $(which squid-commands) /usr/local/bin/sqd
 EXPOSE 3000
 EXPOSE 4350
 ENV PROCESSOR_PROMETHEUS_PORT 3000
+
+FROM squid AS processor
+CMD ["sqd", "process:prod"]
