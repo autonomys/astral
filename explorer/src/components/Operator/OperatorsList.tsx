@@ -3,6 +3,7 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
+import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
@@ -46,6 +47,10 @@ export const OperatorsList: FC = () => {
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
     if (value.type !== OperatorActionType.None) setIsOpen(true)
+    sendGAEvent({
+      event: 'initialize_staking_action',
+      value: `action:${value.toString()}`,
+    })
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
