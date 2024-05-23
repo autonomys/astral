@@ -80,7 +80,6 @@ export const OperatorsListCard: FC<Props> = ({
     lastBlock,
     excludeActions,
     handleAction,
-    lastBlock,
     nominatorMaxStake,
     operator.currentDomainId,
     operator.currentTotalStake,
