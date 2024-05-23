@@ -61,10 +61,25 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
   )
 }
 
+const ExplainerLinkAndModal: FC = () => {
+  const [explainerOpen, setExplainerOpen] = useState(false)
+  return (
+    <>
+      <button
+        className='text-xs text-gray-500 underline'
+        onClick={() => setExplainerOpen(true)}
+        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+      >
+        Having trouble? Check the explainer.
+      </button>
+      <Explainer isOpen={explainerOpen} onClose={() => setExplainerOpen(false)} />
+    </>
+  )
+}
+
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
   const { actingAccount, injector } = useWallet()
-  const [explainerOpen, setExplainerOpen] = useState(false)
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -103,11 +118,12 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
       <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
-        <Accordion title='You are a Farmer on Discord'>
+        <Accordion title='Your verified roles on Discord'>
           <List>
             <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
           </List>
         </Accordion>
+        <ExplainerLinkAndModal />
       </div>
     )
   return (
@@ -150,14 +166,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
           )}
         </List>
       </Accordion>
-      <button
-        className='text-xs text-gray-500 underline'
-        onClick={() => setExplainerOpen(true)}
-        style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
-      >
-        Having trouble? Check the explainer.
-      </button>
-      <Explainer isOpen={explainerOpen} onClose={() => setExplainerOpen(false)} />
+      <ExplainerLinkAndModal />
     </div>
   )
 }
