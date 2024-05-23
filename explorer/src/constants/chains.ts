@@ -29,3 +29,9 @@ export const chains = [
 export const chainesSet = new Set(chains.map((chain) => chain.urls.page))
 
 export const defaultChain = chains[0]
+
+export const squidLinks = {
+  general: 'https://squid.green.gemini-3h.subspace.network/graphql',
+  rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
+  account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
+}

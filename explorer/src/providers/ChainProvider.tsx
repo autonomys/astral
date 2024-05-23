@@ -1,8 +1,15 @@
 'use client'
 
-import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  InMemoryCache,
+  Operation,
+  createHttpLink,
+} from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
-import { chains } from 'constants/chains'
+import { chains, squidLinks } from 'constants/chains'
 import Cookies from 'js-cookie'
 import { FC, ReactNode, createContext, useCallback, useState } from 'react'
 
@@ -38,8 +45,20 @@ interface SelectedChainProps extends Props {
 }
 
 export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {
+  const httpLink = createHttpLink({
+    uri: ({ getContext }: Operation) => {
+      const { clientName } = getContext()
+
+      if (clientName === 'general') return squidLinks.general
+      if (clientName === 'rewards') return squidLinks.rewards
+      if (clientName === 'account') return squidLinks.account
+
+      return selectedChain.urls.api
+    },
+  })
+
   const client = new ApolloClient({
-    link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
+    link: ApolloLink.from([new RetryLink(), httpLink]),
     cache: new InMemoryCache(),
   })
 
