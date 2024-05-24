@@ -2,6 +2,7 @@ import { SearchType, searchTypes } from '@/constants/general'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import { sendGAEvent } from '@next/third-parties/google'
 import { Field, Form, Formik } from 'formik'
 import { useSearch } from 'hooks/useSearch'
 import { FC, Fragment } from 'react'
@@ -23,6 +24,10 @@ export const SearchBar: FC = () => {
 
   const handleSubmit = async (values: FormValues) => {
     await handleSearch(values.searchTerm, values.searchType.id)
+    sendGAEvent({
+      event: 'search_submit',
+      value: `searchType:${searchTypes[0].toString()}:searchTerm:${values.searchTerm}`,
+    })
   }
 
   return (
