@@ -87,7 +87,9 @@ export const ExtrinsicList: FC = () => {
         event: 'extrinsic_filter',
         value: `filters:${filters.toString()}`,
       })
-    } catch (error) {}
+    } catch (error) {
+      console.log('Error sending GA event', error)
+    }
   }, [filters])
 
   if (loading) return <Spinner />
