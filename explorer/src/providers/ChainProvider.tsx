@@ -9,19 +9,9 @@ import {
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
-import { chains, squidLinks } from 'constants/chains'
+import { Chain, chains } from 'constants/chains'
 import Cookies from 'js-cookie'
 import { FC, ReactNode, createContext, useCallback, useState } from 'react'
-
-export type Chain = {
-  title: string
-  urls: {
-    api: string
-    page: string
-    rpc?: string
-  }
-  isDomain: boolean
-}
 
 export type ChainContextValue = {
   selectedChain: Chain
@@ -49,11 +39,14 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, c
     uri: ({ getContext }: Operation) => {
       const { clientName } = getContext()
 
-      if (clientName === 'general') return squidLinks.general
-      if (clientName === 'rewards') return squidLinks.rewards
-      if (clientName === 'account') return squidLinks.account
+      if (clientName === 'general' && selectedChain.urls.squids.general)
+        return selectedChain.urls.squids.general
+      if (clientName === 'account' && selectedChain.urls.squids.account)
+        return selectedChain.urls.squids.account
+      if (clientName === 'rewards' && selectedChain.urls.squids.rewards)
+        return selectedChain.urls.squids.rewards
 
-      return selectedChain.urls.api
+      return selectedChain.urls.squids.old
     },
   })
 

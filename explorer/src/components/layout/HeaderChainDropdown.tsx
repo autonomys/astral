@@ -5,10 +5,10 @@ import { FC, Fragment, useEffect } from 'react'
 
 // common
 import { SubspaceSymbol } from '@/components/icons'
+import { Chain } from 'constants/chains'
 import { domains } from 'constants/domains'
 import { Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
-import { Chain } from 'providers/ChainProvider'
 
 export const HeaderChainDropdown: FC = () => {
   const { setSelectedChain, chains, selectedChain, selectedDomain } = useDomains()
@@ -61,7 +61,7 @@ export const HeaderChainDropdown: FC = () => {
               <Listbox.Option
                 key={chainIdx}
                 className={({ active }) =>
-                  `relative cursor-default select-none py-2 pl-4 text-gray-900 md:pl-10 pr-4 dark:text-white ${
+                  `relative cursor-default select-none py-2 pl-4 pr-4 text-gray-900 dark:text-white md:pl-10 ${
                     active && 'bg-gray-100 dark:bg-[#2A345E]'
                   }`
                 }
