@@ -1,11 +1,11 @@
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useRouter } from 'next/navigation'
-import { FC, Fragment, useEffect } from 'react'
+import { FC, Fragment, useEffect, useMemo } from 'react'
 
 // common
 import { SubspaceSymbol } from '@/components/icons'
-import { Chain } from 'constants/chains'
+import { Chain, Chains } from 'constants/chains'
 import { domains } from 'constants/domains'
 import { Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
@@ -18,6 +18,16 @@ export const HeaderChainDropdown: FC = () => {
     setSelectedChain(chain)
     push(`/${chain.urls.page}/${selectedDomain}`)
   }
+
+  const filteredChains = useMemo(() => {
+    if (
+      process.env.NEXT_PUBLIC_SHOW_LOCALHOST &&
+      process.env.NEXT_PUBLIC_SHOW_LOCALHOST === 'true'
+    ) {
+      return chains
+    }
+    return chains.filter((chain) => chain.urls.page !== Chains.localhost)
+  }, [chains])
 
   useEffect(() => {
     if (selectedDomain === Routes.nova) {
@@ -57,7 +67,7 @@ export const HeaderChainDropdown: FC = () => {
           leaveTo='opacity-0'
         >
           <Listbox.Options className='absolute mt-1 max-h-60 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-[#1E254E] dark:text-white sm:text-sm md:w-full'>
-            {chains.map((chain, chainIdx) => (
+            {filteredChains.map((chain, chainIdx) => (
               <Listbox.Option
                 key={chainIdx}
                 className={({ active }) =>
