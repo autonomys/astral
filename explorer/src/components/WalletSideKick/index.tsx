@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { LogoIcon, WalletIcon } from '@/components/icons'
 import { formatUnitsToNumber } from '@/utils/number'
+import { sendGAEvent } from '@next/third-parties/google'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import { chains } from 'constants/chains'
 import { ROUTE_EXTRA_FLAGS, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
@@ -56,6 +57,10 @@ export const WalletSidekick: FC = () => {
   useEffect(() => {
     if (search === 'open') setIsOpen(true)
   }, [search])
+
+  useEffect(() => {
+    sendGAEvent({ event: 'walletSideKick_eta', value: isOpen ? 'open' : 'close' })
+  }, [isOpen])
 
   return (
     <>

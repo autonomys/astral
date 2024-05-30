@@ -29,7 +29,7 @@ const Footer: FC = () => {
           <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-6'>
             <div>
               <h2 className='title-font mb-6 text-xs font-semibold uppercase text-white'>Links:</h2>
-              <ul className='text-[##ffffffb3] dark:text-gray-400'>
+              <ul className='text-[#ffffffb3] dark:text-gray-400'>
                 <li className='mb-4'>
                   <a
                     href={EXTERNAL_ROUTES.forum}

@@ -5,10 +5,11 @@ import { PAGE_SIZE } from '@/constants/general'
 import { AccountIdParam } from '@/types/app'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
+import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { Spinner } from 'components/common/Spinner'
 import { useParams } from 'next/navigation'
-import { FC, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { formatAddress } from 'utils//formatAddress'
 import type { Account, RewardEvent, RewardsListQuery } from '../gql/graphql'
@@ -60,6 +61,10 @@ export const AccountRewardList: FC = () => {
     () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
   )
+
+  useEffect(() => {
+    sendGAEvent({ event: 'visit_account_rewards_page', value: account })
+  }, [account])
 
   if (loading) return <Spinner />
   if (!account || !convertedAddress || !data || !rewards) return <NotFound />

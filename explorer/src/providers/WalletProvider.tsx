@@ -1,5 +1,6 @@
 'use client'
 
+import { sendGAEvent } from '@next/third-parties/google'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
@@ -86,6 +87,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         if (newInjector) setInjector(newInjector)
         setIsReady(true)
         await signOutSessionOnAccountChange(_subspaceAccount)
+        sendGAEvent({
+          event: 'wallet_select_account',
+          value: `source:${account.source}`,
+        })
       } catch (error) {
         console.error('Failed to change account', error)
       }
@@ -102,6 +107,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setPreferredExtension(null)
     setIsReady(false)
     await signOutSessionOnAccountChange()
+    sendGAEvent({ event: 'wallet_disconnect' })
   }, [setPreferredAccount, setPreferredExtension, signOutSessionOnAccountChange])
 
   const handleGetWalletFromExtension = useCallback(
@@ -113,6 +119,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
         const walletAccounts = await wallet.getAccounts()
         setAccounts(walletAccounts)
         setPreferredExtension(source)
+        sendGAEvent({
+          event: 'wallet_get_wallet',
+          value: `source:${source}`,
+        })
         return walletAccounts
       }
     },
@@ -135,6 +145,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       if (!walletAccounts || walletAccounts.length === 0) return
       const mainAccount = walletAccounts.find((account) => account.address === address)
       if (mainAccount) changeAccount(mainAccount)
+      sendGAEvent({
+        event: 'wallet_auto_connect_account',
+        value: `source:${source}`,
+      })
     },
     [handleGetWalletFromExtension, changeAccount],
   )

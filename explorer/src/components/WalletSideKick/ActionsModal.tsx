@@ -1,5 +1,6 @@
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { camelToNormal } from '@/utils/string'
+import { sendGAEvent } from '@next/third-parties/google'
 import { SignerResult } from '@polkadot/api/types'
 import { Hash } from '@polkadot/types/interfaces'
 import { CopyButton } from 'components/common/CopyButton'
@@ -191,12 +192,20 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           .signAndSend(actingAccount.address, { signer: injector.signer })
         setHash(hash)
         toast.success('The transaction was sent successfully', { position: 'bottom-center' })
+        sendGAEvent({
+          event: 'walletSideKick_action_sendToken',
+          value: `extrinsic:${hash.toString()}`,
+        })
         resetForm()
       } catch (error) {
         const reason = 'There was an error while sending the transaction'
         setFormError(reason)
         toast.error(reason, { position: 'bottom-center' })
         console.error('Error', error)
+        sendGAEvent({
+          event: 'walletSideKick_action_sendToken_error',
+          value: error || 'unknown error',
+        })
       }
     },
     [consensusApi, actingAccount, injector, tokenDecimals],
@@ -219,12 +228,20 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           }))
         setSignature(signature)
         toast.success('The message was signed', { position: 'bottom-center' })
+        sendGAEvent({
+          event: 'walletSideKick_action_signMessage',
+          value: `msg:${values.message}`,
+        })
         resetForm()
       } catch (error) {
         const reason = 'There was an error while signing the message'
         setFormError(reason)
         toast.error(reason, { position: 'bottom-center' })
         console.error('Error', error)
+        sendGAEvent({
+          event: 'walletSideKick_action_signMessage_error',
+          value: error || 'unknown error',
+        })
       }
     },
     [actingAccount, injector],
@@ -243,12 +260,20 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           .signAndSend(actingAccount.address, { signer: injector.signer })
         setHash(hash)
         toast.success('The remark was sent', { position: 'bottom-center' })
+        sendGAEvent({
+          event: 'walletSideKick_action_sendRemark',
+          value: `msg:${values.message}`,
+        })
         resetForm()
       } catch (error) {
         const reason = 'There was an error while sending the remark'
         setFormError(reason)
         toast.error(reason, { position: 'bottom-center' })
         console.error('Error', error)
+        sendGAEvent({
+          event: 'walletSideKick_action_sendRemark_error',
+          value: error || 'unknown error',
+        })
       }
     },
     [actingAccount, consensusApi, injector],
@@ -269,6 +294,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         ).signAndSend(actingAccount.address, { signer: injector.signer })
         setHash(hash)
         toast.success('The extrinsic was sent', { position: 'bottom-center' })
+        sendGAEvent({
+          event: 'walletSideKick_action_customExtrinsic',
+          value: `category:${selectedCategory}:method:${selectedMethod}:extrinsic:${hash.toString()}`,
+        })
         resetCategory()
         resetForm()
       } catch (error) {
@@ -276,6 +305,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         setFormError(reason)
         toast.error(reason, { position: 'bottom-center' })
         console.error('Error', error)
+        sendGAEvent({
+          event: 'walletSideKick_action_customExtrinsic_error',
+          value: error || 'unknown error',
+        })
       }
     },
     [actingAccount, consensusApi, injector, selectedCategory, selectedMethod, resetCategory],
