@@ -1,12 +1,13 @@
 'use client'
 
 import { useQuery } from '@apollo/client'
+import { sendGAEvent } from '@next/third-parties/google'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useParams } from 'next/navigation'
-import { FC, useMemo } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { AccountIdParam } from 'types/app'
 import { formatAddress } from 'utils/formatAddress'
@@ -38,6 +39,10 @@ export const Account: FC = () => {
   useErrorHandler(error)
 
   const account = useMemo(() => data && (data.accountById as SquidAccount), [data])
+
+  useEffect(() => {
+    sendGAEvent({ event: 'visit_account_rewards_page', value: account })
+  }, [account])
 
   if (loading) return <Spinner />
   if (!accountId || !data || !data.accountById || !account) return <NotFound />

@@ -1,8 +1,9 @@
 'use client'
 
 import { useQuery } from '@apollo/client'
+import { sendGAEvent } from '@next/third-parties/google'
 import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 
 // extrinsic
@@ -79,6 +80,17 @@ export const ExtrinsicList: FC = () => {
     if (endCursor === 0 || endCursor < 0) return setLastCursor(undefined)
     setLastCursor(endCursor.toString())
   }, [])
+
+  useEffect(() => {
+    try {
+      sendGAEvent({
+        event: 'extrinsic_filter',
+        value: `filters:${filters.toString()}`,
+      })
+    } catch (error) {
+      console.log('Error sending GA event', error)
+    }
+  }, [filters])
 
   if (loading) return <Spinner />
   if (!data || !modules || !extrinsics) return <NotFound />

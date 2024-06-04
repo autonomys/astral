@@ -27,7 +27,7 @@ export async function GET(
     data: { accountById },
   }: {
     data: AccountByIdQuery
-  } = await fetch(chainMatch.urls.api, {
+  } = await fetch(chainMatch.urls.squids.old, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

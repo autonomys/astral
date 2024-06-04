@@ -5,6 +5,7 @@ import {
   PencilIcon,
   QrCodeIcon,
 } from '@heroicons/react/24/outline'
+import { sendGAEvent } from '@next/third-parties/google'
 import { Tooltip } from 'components/common/Tooltip'
 import { WalletAction } from 'constants/wallet'
 import useWallet from 'hooks/useWallet'
@@ -23,6 +24,10 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
   const onAction = useCallback((action: WalletAction) => {
     setAction(action)
     setIsOpen(true)
+    sendGAEvent({
+      event: 'walletSideKick_action_button_trigger',
+      value: `action:${action.toString()}`,
+    })
   }, [])
   const onSendToken = useCallback(() => onAction(WalletAction.SendToken), [onAction])
   const onReceiveToken = useCallback(() => onAction(WalletAction.ReceiveToken), [onAction])
