@@ -41,7 +41,8 @@ export const Account: FC = () => {
   const account = useMemo(() => data && (data.accountById as SquidAccount), [data])
 
   useEffect(() => {
-    sendGAEvent({ event: 'visit_account_rewards_page', value: account })
+    // sendGAEvent({ event: 'visit_account_rewards_page', value: account })
+    sendGAEvent('event', 'visit_account_rewards_page', { value: account })
   }, [account])
 
   if (loading) return <Spinner />
