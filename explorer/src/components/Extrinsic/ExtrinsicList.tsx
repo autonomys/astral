@@ -83,10 +83,7 @@ export const ExtrinsicList: FC = () => {
 
   useEffect(() => {
     try {
-      sendGAEvent({
-        event: 'extrinsic_filter',
-        value: `filters:${filters.toString()}`,
-      })
+      sendGAEvent('event', 'extrinsic_filter', { value: `filters:${filters.toString()}` })
     } catch (error) {
       console.log('Error sending GA event', error)
     }

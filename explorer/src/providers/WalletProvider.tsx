@@ -107,8 +107,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     setPreferredExtension(null)
     setIsReady(false)
     await signOutSessionOnAccountChange()
-    // sendGAEvent({ event: 'wallet_disconnect' })
-
     sendGAEvent('event', 'wallet_disconnect')
   }, [setPreferredAccount, setPreferredExtension, signOutSessionOnAccountChange])
 

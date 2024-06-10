@@ -63,9 +63,8 @@ export const AccountRewardList: FC = () => {
   )
 
   useEffect(() => {
-    // sendGAEvent({ event: 'visit_account_rewards_page', value: account })
-    sendGAEvent('event', 'visit_account_rewards_page', { value: account })
-  }, [account])
+    sendGAEvent('event', 'visit_account_rewards_page', { value: accountId })
+  }, [accountId])
 
   if (loading) return <Spinner />
   if (!account || !convertedAddress || !data || !rewards) return <NotFound />

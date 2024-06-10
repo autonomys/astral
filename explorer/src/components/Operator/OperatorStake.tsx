@@ -155,11 +155,11 @@ export const OperatorStake = () => {
 
         console.log('block', block)
         console.log('hash', hash)
-        sendGAEvent({ event: 'registerOperator', value: `domainID:${values.domainId}` })
+        sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
         setFormError('There was an error while registering the operator')
         console.error('Error', error)
-        sendGAEvent({ event: 'registerOperator-error', value: error })
+        sendGAEvent('event', 'error', { value: 'registerOperator' })
       }
       resetForm()
     },
