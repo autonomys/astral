@@ -59,7 +59,7 @@ export const WalletSidekick: FC = () => {
   }, [search])
 
   useEffect(() => {
-    sendGAEvent({ event: 'walletSideKick_eta', value: isOpen ? 'open' : 'close' })
+    sendGAEvent('event', 'walletSideKick_open_close', { value: isOpen ? 'open' : 'close' })
   }, [isOpen])
 
   return (

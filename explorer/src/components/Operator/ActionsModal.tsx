@@ -122,8 +122,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
         console.log('block', block)
         console.log('hash', hash)
-        sendGAEvent({
-          event: 'nominateOperator',
+        sendGAEvent('event', 'nominateOperator', {
           value: `operatorID:${action.operatorId.toString()}`,
         })
         resetForm()
@@ -131,7 +130,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       } catch (error) {
         setFormError('There was an error while adding funds to the operator')
         console.error('Error', error)
-        sendGAEvent({ event: 'nominateOperator-error', value: error })
+        sendGAEvent('event', 'error', { value: 'nominateOperator' })
       }
     },
     [api, actingAccount, injector, action.operatorId, tokenDecimals, handleClose],
@@ -159,13 +158,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
         console.log('block', block)
         console.log('hash', hash)
-        sendGAEvent({ event: 'withdrawStake', value: `operatorID:${action.operatorId.toString()}` })
+        sendGAEvent('event', 'withdrawStake', {
+          value: `operatorID:${action.operatorId.toString()}`,
+        })
         resetForm()
         handleClose()
       } catch (error) {
         setFormError('There was an error while withdraw funds from the operator')
         console.error('Error', error)
-        sendGAEvent({ event: 'withdrawStake-error', value: error })
+        sendGAEvent('event', 'error', { value: 'withdrawStake' })
       }
     },
     [api, actingAccount, injector, action.operatorId, maxAmount, tokenDecimals, handleClose],
@@ -184,15 +185,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       console.log('block', block)
       console.log('hash', hash)
-      sendGAEvent({
-        event: 'deregisterOperator',
+      sendGAEvent('event', 'deregisterOperator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
       handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
-      sendGAEvent({ event: 'deregisterOperator-error', value: error })
+      sendGAEvent('event', 'error', { value: 'deregisterOperator' })
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose])
 
@@ -209,12 +209,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       console.log('block', block)
       console.log('hash', hash)
-      sendGAEvent({ event: 'unlockFunds', value: `operatorID:${action.operatorId.toString()}` })
+      sendGAEvent('event', 'unlockFunds', {
+        value: `operatorID:${action.operatorId.toString()}`,
+      })
       handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
-      sendGAEvent({ event: 'unlockFunds-error', value: error })
+      sendGAEvent('event', 'error', { value: 'unlockFunds' })
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose])
 
@@ -231,12 +233,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       console.log('block', block)
       console.log('hash', hash)
-      sendGAEvent({ event: 'unlockOperator', value: `operatorID:${action.operatorId.toString()}` })
+      sendGAEvent('event', 'unlockOperator', {
+        value: `operatorID:${action.operatorId.toString()}`,
+      })
       handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
-      sendGAEvent({ event: 'unlockFunds-error', value: error })
+      sendGAEvent('event', 'error', { value: 'unlockOperator' })
     }
   }, [actingAccount, action.operatorId, api, injector, handleClose])
 

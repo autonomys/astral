@@ -24,8 +24,7 @@ export const SearchBar: FC = () => {
 
   const handleSubmit = async (values: FormValues) => {
     await handleSearch(values.searchTerm, values.searchType.id)
-    sendGAEvent({
-      event: 'search_submit',
+    sendGAEvent('event', 'search_submit', {
       value: `searchType:${searchTypes[0].toString()}:searchTerm:${values.searchTerm}`,
     })
   }
