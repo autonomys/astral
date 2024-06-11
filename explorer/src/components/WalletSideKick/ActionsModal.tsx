@@ -6,7 +6,6 @@ import { Hash } from '@polkadot/types/interfaces'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
 import { Tooltip } from 'components/common/Tooltip'
-import { chains } from 'constants/chains'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT,
@@ -116,11 +115,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       ),
     [selectedCategory, selectedMethod, extrinsicsList],
   )
-  const consensusChain = useMemo(
-    () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
-    [selectedChain],
-  )
-  const consensusApi = useMemo(() => api && api[consensusChain.urls.page], [api, consensusChain])
 
   const sendTokenFormValidationSchema = useMemo(
     () =>
@@ -141,10 +135,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   )
 
   const loadData = useCallback(async () => {
-    if (!consensusApi) return
+    if (!api) return
     const data = await Promise.all([
-      consensusApi.rpc.system.properties(),
-      ...Object.values(ExtrinsicsSupportedModule).map((module) => consensusApi.tx[module]),
+      api.rpc.system.properties(),
+      ...Object.values(ExtrinsicsSupportedModule).map((module) => api.tx[module]),
     ])
     const properties = data[0]
     const modules = (data.slice(1) as ExtrinsicModule[]).reduce(
@@ -157,16 +151,16 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     setTokenDecimals((properties.tokenDecimals.toPrimitive() as number[])[0])
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
     setExtrinsicsList(modules)
-  }, [consensusApi])
+  }, [api])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!actingAccount || !consensusApi) return
+    if (!actingAccount || !api) return
 
-    const balance = await consensusApi.query.system.account(actingAccount.address)
+    const balance = await api.query.system.account(actingAccount.address)
     setWalletBalance(
       formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
     )
-  }, [consensusApi, actingAccount])
+  }, [api, actingAccount])
 
   const handleClose = useCallback(() => {
     setFormError(null)
@@ -181,10 +175,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: SendTokenFormValues,
       resetForm: (nextState?: Partial<FormikState<SendTokenFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !consensusApi)
+      if (!actingAccount || !injector || !api)
         return setFormError('We are not able to connect to the blockchain')
       try {
-        const hash = await consensusApi.tx.balances
+        const hash = await api.tx.balances
           .transferKeepAlive(
             values.receiver,
             floatToStringWithDecimals(values.amount, tokenDecimals),
@@ -208,7 +202,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [consensusApi, actingAccount, injector, tokenDecimals],
+    [api, actingAccount, injector, tokenDecimals],
   )
 
   const handleSignMessage = useCallback(
@@ -252,10 +246,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: MessageFormValues,
       resetForm: (nextState?: Partial<FormikState<MessageFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !consensusApi)
+      if (!actingAccount || !injector || !api)
         return setFormError('We are not able to connect to the blockchain')
       try {
-        const hash = await consensusApi.tx.system
+        const hash = await api.tx.system
           .remark(values.message)
           .signAndSend(actingAccount.address, { signer: injector.signer })
         setHash(hash)
@@ -276,7 +270,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, consensusApi, injector],
+    [actingAccount, api, injector],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -284,12 +278,12 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: CustomExtrinsicFormValues,
       resetForm: (nextState?: Partial<FormikState<CustomExtrinsicFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !consensusApi)
+      if (!actingAccount || !injector || !api)
         return setFormError('We are not able to connect to the blockchain')
       if (!selectedCategory) return setFormError('You need to select a category')
       if (!selectedMethod) return setFormError('You need to select a method')
       try {
-        const hash = await consensusApi.tx[selectedCategory][selectedMethod](
+        const hash = await api.tx[selectedCategory][selectedMethod](
           ...Object.keys(values).map((key) => values[key]),
         ).signAndSend(actingAccount.address, { signer: injector.signer })
         setHash(hash)
@@ -311,7 +305,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, consensusApi, injector, selectedCategory, selectedMethod, resetCategory],
+    [actingAccount, api, injector, selectedCategory, selectedMethod, resetCategory],
   )
 
   const handleCopy = useCallback((value: string) => {

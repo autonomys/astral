@@ -5,14 +5,16 @@ import { ApiPromise, WsProvider } from '@polkadot/api'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { WalletAccount } from '@subwallet/wallet-connect/types'
-import { chains } from 'constants/chains'
+import { Chains, chains } from 'constants/chains'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getSession, signOut } from 'next-auth/react'
+import { useParams } from 'next/navigation'
 import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
-import { formatAddress } from 'utils//formatAddress'
+import type { ChainParam } from 'types/app'
+import { formatAddress } from 'utils/formatAddress'
 
 export type WalletContextValue = {
-  api: { [key: string]: ApiPromise } | undefined
+  api: ApiPromise | undefined
   isReady: boolean
   accounts: WalletAccount[] | undefined | null
   error: Error | null
@@ -38,7 +40,8 @@ type Props = {
 }
 
 export const WalletProvider: FC<Props> = ({ children }) => {
-  const [api, setApi] = useState<{ [key: string]: ApiPromise }>()
+  const { chain } = useParams<ChainParam>()
+  const [api, setApi] = useState<ApiPromise>()
   const [isReady, setIsReady] = useState(false)
   const [accounts, setAccounts] = useState<WalletAccount[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
@@ -50,25 +53,22 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
 
   const prepareApi = useCallback(async (chain: (typeof chains)[0]) => {
-    const wsProvider = new WsProvider(chain.urls.rpc)
-    const api = await ApiPromise.create({ provider: wsProvider })
-    await api.isReady
-    return api
+    try {
+      const wsProvider = new WsProvider(chain.urls.rpc)
+      const api = await ApiPromise.create({ provider: wsProvider })
+      await api.isReady
+      return api
+    } catch (error) {
+      console.error('Failed to prepare API for chain', chain.title, 'error:', error)
+    }
   }, [])
 
   const setup = useCallback(async () => {
-    const rpcSupportedChains = chains.filter((chain) => chain.urls.rpc)
-
-    const apis = await Promise.all(
-      rpcSupportedChains.map(async (chain) => {
-        return {
-          [chain.urls.page]: await prepareApi(chain),
-        }
-      }),
-    )
-
-    setApi(apis.reduce((acc, cur) => ({ ...acc, ...cur }), {}))
-  }, [prepareApi])
+    const chainKey = Object.values(Chains).find((value) => value === chain)
+    const findChain = chains.find((c) => c.urls.page === chainKey)
+    if (!findChain) return
+    setApi(await prepareApi(findChain))
+  }, [chain, prepareApi])
 
   const signOutSessionOnAccountChange = useCallback(async (subspaceAccount?: string) => {
     const session = await getSession()
