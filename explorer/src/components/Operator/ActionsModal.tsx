@@ -404,7 +404,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             Max
                           </button>
                         </div>
-                        <div className='mt-2 text-center text-sm font-medium text-white'>
+                        <div className='mt-2 text-center text-sm font-medium dark:text-white'>
                           {sliderValue.toFixed(0)}% of your shares
                         </div>
                       </div>
