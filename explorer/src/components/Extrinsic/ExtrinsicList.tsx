@@ -1,32 +1,27 @@
 'use client'
 
+import { PAGE_SIZE, searchTypes } from '@/constants'
+import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
-import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
-
-// extrinsic
-import { ExtrinsicListFilter } from './ExtrinsicListFilter'
-import { ExtrinsicTable } from './ExtrinsicTable'
-import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
-
-// common
-import { numberWithCommas } from '@/utils/number'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
+import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useErrorHandler } from 'react-error-boundary'
 import { NotFound } from '../layout/NotFound'
+import { ExtrinsicListFilter } from './ExtrinsicListFilter'
+import { ExtrinsicTable } from './ExtrinsicTable'
+import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
 
 export const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
-
-  const PAGE_SIZE = 10
 
   const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
     QUERY_EXTRINSIC_LIST_CONNECTION,
@@ -95,7 +90,7 @@ export const ExtrinsicList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar />
+        <SearchBar fixSearchType={searchTypes[2]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
         <ExtrinsicListFilter

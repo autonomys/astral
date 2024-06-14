@@ -1,5 +1,6 @@
 'use client'
 
+import { PAGE_SIZE, searchTypes } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
 import { ExportButton } from 'components/common/ExportButton'
@@ -18,7 +19,6 @@ import { QUERY_EVENT_CONNECTION_LIST } from './query'
 export const EventList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const PAGE_SIZE = 10
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const [filters, setFilters] = useState<EventWhereInput>({})
 
@@ -75,7 +75,7 @@ export const EventList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar />
+        <SearchBar fixSearchType={searchTypes[4]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
         <EventListFilter
