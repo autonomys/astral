@@ -9,7 +9,6 @@ import { isHex } from '@polkadot/util'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikState } from 'formik'
-import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -35,7 +34,6 @@ type Domain = {
 
 export const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -54,12 +52,12 @@ export const OperatorStake = () => {
   }
 
   const loadDomains = useCallback(async () => {
-    if (!api || !api[selectedChain.urls.page]) return
+    if (!api) return
 
     const [domains, domainRegistry, properties] = await Promise.all([
-      api[selectedChain.urls.page].consts.domains,
-      api[selectedChain.urls.page].query.domains.domainRegistry.entries(),
-      api[selectedChain.urls.page].rpc.system.properties(),
+      api.consts.domains,
+      api.query.domains.domainRegistry.entries(),
+      api.rpc.system.properties(),
     ])
 
     setDomainsList(
@@ -78,7 +76,7 @@ export const OperatorStake = () => {
     setTokenDecimals(_tokenDecimals)
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
     setMinOperatorStake((domains.minOperatorStake.toPrimitive() as number) / 10 ** _tokenDecimals)
-  }, [api, selectedChain])
+  }, [api])
 
   const filteredDomainsList = useMemo(
     () =>
@@ -133,12 +131,12 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector || !api[selectedChain.urls.page])
+      if (!api || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api[selectedChain.urls.page].rpc.chain.getBlock()
-        const hash = await api[selectedChain.urls.page].tx.domains
+        const block = await api.rpc.chain.getBlock()
+        const hash = await api.tx.domains
           .registerOperator(
             values.domainId,
             floatToStringWithDecimals(values.amountToStake, tokenDecimals),
@@ -155,15 +153,15 @@ export const OperatorStake = () => {
 
         console.log('block', block)
         console.log('hash', hash)
-        sendGAEvent({ event: 'registerOperator', value: `domainID:${values.domainId}` })
+        sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
         setFormError('There was an error while registering the operator')
         console.error('Error', error)
-        sendGAEvent({ event: 'registerOperator-error', value: error })
+        sendGAEvent('event', 'error', { value: 'registerOperator' })
       }
       resetForm()
     },
-    [actingAccount, api, injector, tokenDecimals, selectedChain],
+    [actingAccount, api, injector, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

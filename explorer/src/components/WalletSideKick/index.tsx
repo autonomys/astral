@@ -59,7 +59,7 @@ export const WalletSidekick: FC = () => {
   }, [search])
 
   useEffect(() => {
-    sendGAEvent({ event: 'walletSideKick_eta', value: isOpen ? 'open' : 'close' })
+    sendGAEvent('event', 'walletSideKick_open_close', { value: isOpen ? 'open' : 'close' })
   }, [isOpen])
 
   return (
@@ -88,7 +88,6 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
     () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
     [selectedChain],
   )
-  const consensusApi = useMemo(() => api && api[consensusChain.urls.page], [api, consensusChain])
 
   const handleNavigate = useCallback(
     (url: string) => {
@@ -99,28 +98,28 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   )
 
   const loadData = useCallback(async () => {
-    if (!consensusApi) return
+    if (!api) return
 
-    const properties = await consensusApi.rpc.system.properties()
+    const properties = await api.rpc.system.properties()
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
-  }, [consensusApi])
+  }, [api])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!consensusApi || !actingAccount) return
+    if (!api || !actingAccount) return
 
-    const balance = await consensusApi.query.system.account(actingAccount.address)
+    const balance = await api.query.system.account(actingAccount.address)
     setWalletBalance(
       formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
     )
-  }, [consensusApi, actingAccount])
+  }, [api, actingAccount])
 
   useEffect(() => {
     loadData()
-  }, [consensusApi, loadData])
+  }, [api, loadData])
 
   useEffect(() => {
     loadWalletBalance()
-  }, [consensusApi, actingAccount, loadWalletBalance])
+  }, [api, actingAccount, loadWalletBalance])
 
   if (!subspaceAccount || !actingAccount) return null
 
