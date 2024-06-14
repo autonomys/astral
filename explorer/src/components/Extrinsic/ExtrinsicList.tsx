@@ -1,24 +1,21 @@
 'use client'
 
+import { PAGE_SIZE } from '@/constants/general'
+import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
-import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
-
-// extrinsic
-import { ExtrinsicListFilter } from './ExtrinsicListFilter'
-import { ExtrinsicTable } from './ExtrinsicTable'
-import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
-
-// common
-import { numberWithCommas } from '@/utils/number'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
+import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useErrorHandler } from 'react-error-boundary'
 import { NotFound } from '../layout/NotFound'
+import { ExtrinsicListFilter } from './ExtrinsicListFilter'
+import { ExtrinsicTable } from './ExtrinsicTable'
+import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
 
 export const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
@@ -26,12 +23,14 @@ export const ExtrinsicList: FC = () => {
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
-  const PAGE_SIZE = 10
-
+  const variables = useMemo(
+    () => ({ first: PAGE_SIZE, after: lastCursor, where: filters }),
+    [filters, lastCursor],
+  )
   const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
     QUERY_EXTRINSIC_LIST_CONNECTION,
     {
-      variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
+      variables,
       pollInterval: 6000,
     },
   )
