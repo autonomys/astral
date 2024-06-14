@@ -386,7 +386,10 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             onChange={(value) => {
                               const newValue = Array.isArray(value) ? value[0] : value
                               setSliderValue(newValue)
-                              setFieldValue('amount', maxSharesToWithdraw * BigInt(newValue / 100))
+                              setFieldValue(
+                                'amount',
+                                (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100),
+                              )
                             }}
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
                           />
