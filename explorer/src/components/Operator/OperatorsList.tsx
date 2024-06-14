@@ -40,7 +40,7 @@ export const OperatorsList: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: operatorId ? parseInt(operatorId) : null,
-    maxAmount: null,
+    maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -54,7 +54,7 @@ export const OperatorsList: FC = () => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
   const { selectedChain, selectedDomain } = useDomains()
@@ -194,13 +194,7 @@ export const OperatorsList: FC = () => {
                       OperatorActionType.UnlockFunds,
                     ]
               }
-              nominatorMaxStake={
-                nominator &&
-                (
-                  (BigInt(row.original.currentTotalStake) * BigInt(nominator.shares)) /
-                  BigInt(row.original.totalShares)
-                ).toString()
-              }
+              nominatorMaxShares={nominator && BigInt(nominator.shares)}
             />
           )
         },
@@ -342,13 +336,7 @@ const MobileComponent: FC<MobileComponentProps> = ({
                   OperatorActionType.UnlockOperator,
                 ]
           }
-          nominatorMaxStake={
-            nominator &&
-            (
-              (BigInt(operator.currentTotalStake) * BigInt(nominator.shares)) /
-              BigInt(operator.totalShares)
-            ).toString()
-          }
+          nominatorMaxShares={nominator ? BigInt(nominator.shares) : undefined}
         />
       )
     })}

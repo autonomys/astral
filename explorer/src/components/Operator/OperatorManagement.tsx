@@ -42,7 +42,7 @@ export const OperatorManagement: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
-    maxAmount: null,
+    maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -56,7 +56,7 @@ export const OperatorManagement: FC = () => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
   const variables = useMemo(

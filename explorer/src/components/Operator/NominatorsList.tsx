@@ -40,7 +40,7 @@ export const NominatorsList: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: operatorId ? parseInt(operatorId) : null,
-    maxAmount: null,
+    maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -54,7 +54,7 @@ export const NominatorsList: FC = () => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
   const { selectedChain, selectedDomain } = useDomains()
@@ -221,15 +221,12 @@ export const NominatorsList: FC = () => {
                   ...row,
                   original: {
                     ...row.original,
-                    currentTotalStake: row.original.operator.currentTotalStake,
+                    totalShares: row.original.shares,
                   },
                 } as ActionsDropdownRow
               }
               excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
-              nominatorMaxStake={(
-                (BigInt(row.original.operator.currentTotalStake) * BigInt(row.original.shares)) /
-                BigInt(row.original.operator.totalShares)
-              ).toString()}
+              nominatorMaxShares={BigInt(row.original.shares)}
             />
           )
         },
@@ -352,13 +349,7 @@ const MobileComponent: FC<MobileComponentProps> = ({ nominators, action, handleA
           OperatorActionType.UnlockFunds,
           OperatorActionType.UnlockOperator,
         ]}
-        nominatorMaxStake={
-          nominator &&
-          (
-            (BigInt(nominator.operator.currentTotalStake) * BigInt(nominator.shares)) /
-            BigInt(nominator.operator.totalShares)
-          ).toString()
-        }
+        nominatorMaxShares={nominator && BigInt(nominator.shares)}
       />
     ))}
   </div>
