@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import { EventWhereInput, ExtrinsicWhereInput } from 'gql/graphql'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { Accordion } from './Accordion'
 
 dayjs.extend(relativeTime)
@@ -35,55 +35,64 @@ export const FilterForm: FC<Props> = ({
   const [timeDimension, setTimeDimension] = useState<'date' | 'block'>('block')
 
   useEffect(() => {
-    if (filters?.block?.height_gte && filters?.block?.height_lte) {
-      setTimeDimension('block')
-    } else if (filters?.timestamp_gte && filters?.timestamp_lte) {
-      setTimeDimension('date')
-    }
+    if (filters?.block?.height_gte && filters?.block?.height_lte) setTimeDimension('block')
+    else if (filters?.timestamp_gte && filters?.timestamp_lte) setTimeDimension('date')
   }, [filters])
 
-  const handleModuleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setWhere((prev) => ({ ...prev, name_containsInsensitive: e.target.value }))
-  }
+  const handleModuleChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) =>
+      setWhere((prev) => ({ ...prev, name_containsInsensitive: e.target.value })),
+    [setWhere],
+  )
 
-  const handleTimeDimensionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setTimeDimension(e.target.value as 'date' | 'block')
-  }
+  const handleTimeDimensionChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) =>
+      setTimeDimension(e.target.value as 'date' | 'block'),
+    [],
+  )
 
-  const handleBlockFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWhere((prev) => ({ ...prev, block: { ...where?.block, height_gte: e.target.value } }))
-  }
+  const handleBlockFrom = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setWhere((prev) => ({ ...prev, block: { ...where?.block, height_gte: e.target.value } })),
+    [setWhere, where?.block],
+  )
 
-  const handleBlockTo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWhere((prev) => ({ ...prev, block: { ...where?.block, height_lte: e.target.value } }))
-  }
+  const handleBlockTo = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setWhere((prev) => ({ ...prev, block: { ...where?.block, height_lte: e.target.value } })),
+    [setWhere, where?.block],
+  )
 
-  const handleDateFrom = (date: Date) => {
-    const utcDate = dayjs(date).utc().format()
-    setWhere((prev) => ({
-      ...prev,
-      timestamp_gte: utcDate,
-    }))
-  }
+  const handleDateFrom = useCallback(
+    (date: Date) =>
+      setWhere((prev) => ({
+        ...prev,
+        timestamp_gte: dayjs(date).utc().format(),
+      })),
+    [setWhere],
+  )
 
-  const handleDateTo = (date: Date) => {
-    const utcDate = dayjs(date).utc().format()
-    setWhere((prev) => ({
-      ...prev,
-      timestamp_lte: utcDate,
-    }))
-  }
+  const handleDateTo = useCallback(
+    (date: Date) =>
+      setWhere((prev) => ({
+        ...prev,
+        timestamp_lte: dayjs(date).utc().format(),
+      })),
+    [setWhere],
+  )
 
-  const handleFilter = () => {
-    setFilters(where)
-  }
+  const handleFilter = useCallback(() => setFilters(where), [setFilters, where])
 
-  const uniqueModules = new Set(modules)
-  const modulesFormatted = Object.values(uniqueModules).map((module) => ({
-    value: module,
-    label: module,
-  }))
-  const MODULES = [{ label: 'All', value: undefined }, ...modulesFormatted]
+  const modulesFormatted = useMemo(
+    () => [
+      { label: 'All', value: undefined },
+      ...Array.from(new Set(modules)).map((module) => ({
+        value: module,
+        label: module,
+      })),
+    ],
+    [modules],
+  )
 
   return (
     <div className='w-full'>
@@ -107,7 +116,7 @@ export const FilterForm: FC<Props> = ({
                   onChange={handleModuleChange}
                   className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
                 >
-                  {MODULES.map((module) => (
+                  {modulesFormatted.map((module) => (
                     <option key={module.value ? module.value : 'all'} value={module.value}>
                       {module.label}
                     </option>
