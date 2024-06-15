@@ -1,10 +1,10 @@
 'use client'
 
+import { PAGE_SIZE } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
-import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
 import type { Log, LogWhereInput, LogsConnectionQuery } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -20,8 +20,6 @@ export const LogList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const [filters, setFilters] = useState<LogWhereInput>({})
-
-  const PAGE_SIZE = 10
 
   const { data, error, loading } = useQuery<LogsConnectionQuery>(QUERY_LOG_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
@@ -72,9 +70,6 @@ export const LogList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar />
-      </div>
       <div className='mt-5 flex w-full justify-between'>
         <LogListFilter
           title={

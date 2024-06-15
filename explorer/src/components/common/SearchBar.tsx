@@ -5,7 +5,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Field, Form, Formik } from 'formik'
 import { useSearch } from 'hooks/useSearch'
-import { FC, Fragment } from 'react'
+import { FC, Fragment, useCallback } from 'react'
 import * as Yup from 'yup'
 import { SearchInput } from './SearchInput'
 
@@ -14,20 +14,27 @@ export interface FormValues {
   searchType: SearchType
 }
 
-export const SearchBar: FC = () => {
-  const initialValues: FormValues = { searchTerm: '', searchType: searchTypes[0] }
+export interface SearchBarProps {
+  fixSearchType?: SearchType
+}
+
+export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
+  const initialValues: FormValues = { searchTerm: '', searchType: fixSearchType ?? searchTypes[0] }
   const { handleSearch, isSearching } = useSearch()
 
   const searchValidationSchema = Yup.object().shape({
     searchTerm: Yup.string().trim().required('Search term is required'),
   })
 
-  const handleSubmit = async (values: FormValues) => {
-    await handleSearch(values.searchTerm, values.searchType.id)
-    sendGAEvent('event', 'search_submit', {
-      value: `searchType:${searchTypes[0].toString()}:searchTerm:${values.searchTerm}`,
-    })
-  }
+  const handleSubmit = useCallback(
+    async (values: FormValues) => {
+      await handleSearch(values.searchTerm, values.searchType.id)
+      sendGAEvent('event', 'search_submit', {
+        value: `searchType:${values.searchType.toString()}:searchTerm:${values.searchTerm}`,
+      })
+    },
+    [handleSearch],
+  )
 
   return (
     <Formik
@@ -38,63 +45,68 @@ export const SearchBar: FC = () => {
       {({ errors, touched, values, handleSubmit, setFieldValue }) => (
         <Form className='my-8 w-full' onSubmit={handleSubmit} data-testid='testSearchForm'>
           <div className='flex w-full items-center'>
-            <Listbox
-              value={values.searchType}
-              onChange={(val) => setFieldValue('searchType', val)}
-              name='searchType'
-              data-testid='search-type-list'
-            >
-              <div className='relative w-36'>
-                <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-[#1E254E] dark:text-white sm:text-sm'>
-                  <div className='flex'>
-                    <span className='ml-2 block truncate'>{values['searchType'].name}</span>
-                    <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
-                      <ChevronDownIcon
-                        className='size-5 text-gray-400 ui-open:rotate-180'
-                        aria-hidden='true'
-                      />
-                    </span>
-                  </div>
-                </Listbox.Button>
-                <Transition
-                  as={Fragment}
-                  leave='transition ease-in duration-100'
-                  leaveFrom='opacity-100'
-                  leaveTo='opacity-0'
-                >
-                  <Listbox.Options className='absolute z-20 mt-1 max-h-60 w-auto overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-[#1E254E] sm:text-sm md:w-full'>
-                    {searchTypes.map((term, personIdx) => (
-                      <Listbox.Option
-                        key={personIdx}
-                        className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-4 pr-4 dark:bg-[#1E254E] dark:text-white md:pl-10 ${
-                            active ? 'bg-gray-100 text-amber-900' : 'text-gray-900'
-                          }`
-                        }
-                        value={term}
-                      >
-                        {({ selected }) => (
-                          <>
-                            <span
-                              className={`block truncate ${
-                                selected ? 'font-medium' : 'font-normal'
-                              }`}
-                            >
-                              {term.name}
-                            </span>
-                            {selected ? (
-                              <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
-                                <CheckIcon className='hidden size-5 md:block' aria-hidden='true' />
+            {!fixSearchType && (
+              <Listbox
+                value={values.searchType}
+                onChange={(val) => setFieldValue('searchType', val)}
+                name='searchType'
+                data-testid='search-type-list'
+              >
+                <div className='relative w-48'>
+                  <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-[#1E254E] dark:text-white sm:text-sm'>
+                    <div className='flex'>
+                      <span className='ml-2 block truncate'>{values['searchType'].name}</span>
+                      <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
+                        <ChevronDownIcon
+                          className='size-5 text-gray-400 ui-open:rotate-180'
+                          aria-hidden='true'
+                        />
+                      </span>
+                    </div>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave='transition ease-in duration-100'
+                    leaveFrom='opacity-100'
+                    leaveTo='opacity-0'
+                  >
+                    <Listbox.Options className='absolute z-20 mt-1 max-h-60 w-auto overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-[#1E254E] sm:text-sm md:w-full'>
+                      {searchTypes.map((term, personIdx) => (
+                        <Listbox.Option
+                          key={personIdx}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-4 pr-4 dark:bg-[#1E254E] dark:text-white md:pl-10 ${
+                              active ? 'bg-gray-100 text-amber-900' : 'text-gray-900'
+                            }`
+                          }
+                          value={term}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span
+                                className={`block truncate ${
+                                  selected ? 'font-medium' : 'font-normal'
+                                }`}
+                              >
+                                {term.name}
                               </span>
-                            ) : null}
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            </Listbox>
+                              {selected ? (
+                                <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
+                                  <CheckIcon
+                                    className='hidden size-5 md:block'
+                                    aria-hidden='true'
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
+            )}
             <div className='ml-4 w-full'>
               <div className='relative'>
                 <Field component={SearchInput} name='searchTerm' />

@@ -138,7 +138,10 @@ export const OperatorManagement: FC = () => {
                 return acc + BigInt(nominator.shares)
               }, BigInt(0))
               const subTotalNominatorsStake =
-                (BigInt(currentTotalStake) * BigInt(subTotalNominatorsShares)) / BigInt(totalShares)
+                totalShares === '0'
+                  ? BigInt(0)
+                  : (BigInt(currentTotalStake) * BigInt(subTotalNominatorsShares)) /
+                    BigInt(totalShares)
               return acc + subTotalNominatorsStake
             }, BigInt(0))
             .toString()
