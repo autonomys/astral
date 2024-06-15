@@ -1,5 +1,6 @@
 'use client'
 
+import { searchTypes } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
 import { ExportButton } from 'components/common/ExportButton'
@@ -85,7 +86,7 @@ export const BlockList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar />
+        <SearchBar fixSearchType={searchTypes[1]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-[#282929] dark:text-white'>{`Blocks (${totalLabel})`}</div>
