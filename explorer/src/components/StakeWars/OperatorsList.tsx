@@ -105,6 +105,11 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [selectedChain.urls.page, selectedDomain])
 
+  const orderBy = useMemo(
+    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+    [sorting],
+  )
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -112,11 +117,11 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       blockNumber_gte: STAKE_WARS_PHASES.phase2.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase2.end,
     }),
-    [pagination, sorting],
+    [orderBy, pagination.pageIndex, pagination.pageSize],
   )
 
   const { data, error, loading } = useQuery<GetAllOperatorsQuery>(GET_ALL_OPERATORS, {
@@ -128,8 +133,8 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, GET_ALL_OPERATORS),
-    [apolloClient],
+    () => downloadFullData(apolloClient, GET_ALL_OPERATORS, 'operatorsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const operators = useMemo(() => data && data.operatorsConnection, [data])
@@ -188,6 +193,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            filename='stake-wars-operators-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={<MobileComponent operators={operatorsConnection} />}
           />

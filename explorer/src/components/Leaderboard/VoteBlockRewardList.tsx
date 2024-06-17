@@ -129,6 +129,11 @@ export const VoteBlockRewardList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
+  const orderBy = useMemo(
+    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'amount_DESC',
+    [sorting],
+  )
+
   const getQueryVariables = useCallback(
     (
       sorting: SortingState,
@@ -144,14 +149,13 @@ export const VoteBlockRewardList = () => {
           pagination.pageIndex > 0
             ? (pagination.pageIndex * pagination.pageSize).toString()
             : undefined,
-        orderBy:
-          sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'amount_DESC',
+        orderBy,
         where: searchAccount
           ? { id_eq: searchAccount }
           : { vote_gt: '0', vote_isNull: false, OR: { block_gt: '0', block_isNull: false } },
       }
     },
-    [],
+    [orderBy],
   )
 
   const variables = useMemo(
@@ -167,8 +171,9 @@ export const VoteBlockRewardList = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_REWARDS_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'accountRewardsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -226,6 +231,7 @@ export const VoteBlockRewardList = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            filename='leaderboard-vote-block-reward-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={<MobileComponent accounts={accountRewards} />}
           />

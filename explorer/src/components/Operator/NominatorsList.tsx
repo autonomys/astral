@@ -234,6 +234,11 @@ export const NominatorsList: FC = () => {
     return cols
   }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
 
+  const orderBy = useMemo(
+    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+    [sorting],
+  )
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -241,11 +246,11 @@ export const NominatorsList: FC = () => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       // eslint-disable-next-line camelcase
       where: searchNominator ? { account: { id_eq: searchNominator } } : {},
     }),
-    [sorting, pagination, searchNominator],
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchNominator],
   )
 
   const { data, error, loading } = useQuery<NominatorsConnectionQuery>(
@@ -259,8 +264,11 @@ export const NominatorsList: FC = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST, 'nominatorsConnection', {
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback((value: string | number) => {
@@ -308,6 +316,7 @@ export const NominatorsList: FC = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            filename='operators-nominators-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={
               <MobileComponent

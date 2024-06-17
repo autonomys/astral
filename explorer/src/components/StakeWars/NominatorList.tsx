@@ -83,6 +83,11 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [])
 
+  const orderBy = useMemo(
+    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+    [sorting],
+  )
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -90,11 +95,11 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       blockNumber_gte: STAKE_WARS_PHASES.phase3.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase3.end,
     }),
-    [sorting, pagination],
+    [pagination.pageSize, pagination.pageIndex, orderBy],
   )
 
   const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
@@ -106,8 +111,8 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, GET_ALL_NOMINATORS),
-    [apolloClient],
+    () => downloadFullData(apolloClient, GET_ALL_NOMINATORS, 'operatorsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const nominators = useMemo(() => data && data.nominatorsConnection, [data])
@@ -183,6 +188,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
               pagination={pagination}
               pageCount={pageCount}
               onPaginationChange={setPagination}
+              filename='stake-wars-nominator-list'
               fullDataDownloader={fullDataDownloader}
               mobileComponent={<MobileComponent nominators={nominatorsConnection} />}
             />

@@ -89,6 +89,11 @@ export const NominatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
+  const orderBy = useMemo(
+    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'operator_DESC',
+    [sorting],
+  )
+
   const getQueryVariables = useCallback(
     (
       sorting: SortingState,
@@ -104,14 +109,13 @@ export const NominatorRewardsList = () => {
           pagination.pageIndex > 0
             ? (pagination.pageIndex * pagination.pageSize).toString()
             : undefined,
-        orderBy:
-          sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'operator_DESC',
+        orderBy,
         where: searchAccount
           ? { id_eq: searchAccount }
           : { operator_gt: '0', operator_isNull: false },
       }
     },
-    [],
+    [orderBy],
   )
 
   const variables = useMemo(
@@ -130,8 +134,11 @@ export const NominatorRewardsList = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_NOMINATORS_REWARDS_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_NOMINATORS_REWARDS_LIST, 'accountRewardsConnection', {
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -189,6 +196,7 @@ export const NominatorRewardsList = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            filename='leaderboard-nominator-rewards-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={<MobileComponent accountRewards={accountRewards} />}
           />

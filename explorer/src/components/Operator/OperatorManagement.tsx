@@ -59,6 +59,11 @@ export const OperatorManagement: FC = () => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
+  const orderBy = useMemo(
+    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+    [sorting],
+  )
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -66,11 +71,11 @@ export const OperatorManagement: FC = () => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       // eslint-disable-next-line camelcase
       where: searchOperator ? { operatorOwner_eq: searchOperator } : {},
     }),
-    [sorting, pagination, searchOperator],
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchOperator],
   )
 
   const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
@@ -84,8 +89,11 @@ export const OperatorManagement: FC = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST, 'operatorsConnection', {
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -326,6 +334,7 @@ export const OperatorManagement: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             fullDataDownloader={fullDataDownloader}
+            filename='operators-operator-management-list'
             mobileComponent={
               <MobileComponent
                 operators={operatorsConnection}
