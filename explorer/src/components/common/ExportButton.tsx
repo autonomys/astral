@@ -1,4 +1,5 @@
 import { exportToExcel } from '@/utils/exportToExcel'
+import { useCallback } from 'react'
 
 type Props<T extends object> = {
   data: T[]
@@ -6,9 +7,9 @@ type Props<T extends object> = {
 }
 
 export const ExportButton = <T extends object>({ data, filename }: Props<T>) => {
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     exportToExcel(data, `${filename}.xlsx`)
-  }
+  }, [data, filename])
 
   return (
     <button
