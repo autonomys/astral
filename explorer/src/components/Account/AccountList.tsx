@@ -18,7 +18,7 @@ import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
 export const AccountList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const novaExplorerBanner = useEvmExplorerBanner()
+  const novaExplorerBanner = useEvmExplorerBanner('accounts')
 
   const { data, error, loading } = useQuery<AccountsConnectionQuery>(
     QUERY_ACCOUNT_CONNECTION_LIST,

@@ -23,7 +23,7 @@ export const ExtrinsicList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const novaExplorerBanner = useEvmExplorerBanner()
+  const novaExplorerBanner = useEvmExplorerBanner('txs')
 
   const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
     QUERY_EXTRINSIC_LIST_CONNECTION,

@@ -21,7 +21,7 @@ export const BlockList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const { selectedChain } = useDomains()
-  const novaExplorerBanner = useEvmExplorerBanner()
+  const novaExplorerBanner = useEvmExplorerBanner('blocks')
 
   const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
   const BlockListQuery = useMemo(
