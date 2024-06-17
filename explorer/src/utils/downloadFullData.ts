@@ -10,17 +10,19 @@ export const downloadFullData = async (
   const entries: unknown[] = []
 
   let hasNextPage = true
-  const _variables = {
-    first: MAX_DOWNLOADER_BATCH_SIZE,
-    after: entries.length ? entries.length.toString() : undefined,
-  }
   while (hasNextPage) {
+    const _variables = {
+      first: MAX_DOWNLOADER_BATCH_SIZE,
+      after: entries.length ? entries.length.toString() : undefined,
+    }
     const { data } = await apolloClient.query({
       query,
       variables: variables ? { ...variables, ..._variables } : _variables,
     })
+    console.log('data', data)
 
     const newEntries = extractNestedData(data, path + '.edges')
+    console.log('linesCount', newEntries.length)
 
     entries.push(...newEntries)
 
