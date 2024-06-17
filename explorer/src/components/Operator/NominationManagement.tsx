@@ -42,7 +42,7 @@ export const NominationManagement: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: null,
-    maxAmount: null,
+    maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -56,7 +56,7 @@ export const NominationManagement: FC = () => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
   const columns = useMemo(() => {
@@ -218,15 +218,12 @@ export const NominationManagement: FC = () => {
                 ...row,
                 original: {
                   ...row.original,
-                  currentTotalStake: row.original.operator.currentTotalStake,
+                  totalShares: row.original.shares,
                 },
               } as ActionsDropdownRow
             }
             excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
-            nominatorMaxStake={(
-              (BigInt(row.original.operator.currentTotalStake) * BigInt(row.original.shares)) /
-              BigInt(row.original.operator.totalShares)
-            ).toString()}
+            nominatorMaxShares={BigInt(row.original.shares)}
           />
         ),
       },

@@ -19,7 +19,7 @@ type Props = {
   handleAction: (value: OperatorAction) => void
   index: number
   excludeActions?: OperatorActionType[]
-  nominatorMaxStake?: string
+  nominatorMaxShares?: bigint
   lastBlock?: number
 }
 
@@ -28,7 +28,7 @@ export const OperatorsListCard: FC<Props> = ({
   action,
   handleAction,
   excludeActions,
-  nominatorMaxStake,
+  nominatorMaxShares,
   lastBlock,
 }) => {
   const { selectedChain, selectedDomain } = useDomains()
@@ -65,11 +65,11 @@ export const OperatorsListCard: FC<Props> = ({
             row={{
               original: {
                 id: operator.id,
-                currentTotalStake: operator.currentTotalStake,
+                totalShares: operator.totalShares,
               },
             }}
             excludeActions={excludeActions}
-            nominatorMaxStake={nominatorMaxStake}
+            nominatorMaxShares={nominatorMaxShares}
           />
         ),
       })
@@ -80,7 +80,7 @@ export const OperatorsListCard: FC<Props> = ({
     lastBlock,
     excludeActions,
     handleAction,
-    nominatorMaxStake,
+    nominatorMaxShares,
     operator.currentDomainId,
     operator.currentTotalStake,
     operator.id,
