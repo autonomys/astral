@@ -1,4 +1,5 @@
 import { exportToExcel } from '@/utils/exportToExcel'
+import { sendGAEvent } from '@next/third-parties/google'
 import { FC, useCallback, useState } from 'react'
 
 type Props = {
@@ -23,11 +24,17 @@ export const LazyExportButton: FC<Props> = ({ query, filename }) => {
       .then((data) => {
         exportToExcel(data, `${filename}.xlsx`)
         setState('idle')
+        sendGAEvent('event', 'export_full_data', {
+          value: `filename:${filename}`,
+        })
       })
       .catch((e) => {
         console.error('Error query for full board data', e)
         setState('error')
         setTimeout(() => setState('idle'), 3000)
+        sendGAEvent('event', 'error', {
+          value: e,
+        })
       })
   }, [filename, query])
 
