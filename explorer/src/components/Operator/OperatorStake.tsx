@@ -1,14 +1,17 @@
 'use client'
 
 import { WalletIcon } from '@/components/icons'
+import { accountIdToHex } from '@/utils/formatAddress'
 import { floatToStringWithDecimals } from '@/utils/number'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
-import { isHex } from '@polkadot/util'
+import { Keyring } from '@polkadot/api'
+import { createType } from '@polkadot/types'
+import { isHex, u8aToHex } from '@polkadot/util'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { Field, Form, Formik, FormikState } from 'formik'
+import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -18,9 +21,12 @@ import * as Yup from 'yup'
 interface FormValues {
   domainId: number
   signingKey: string
+  signature: string | Uint8Array
   amountToStake: number
   nominatorTax: number
   minimumNominatorStake: number
+  signingKeySeed: string
+  signingKeystore: Blob | null
 }
 
 type OperatorAllowListRestricted = { operators: string[] }
@@ -42,13 +48,17 @@ export const OperatorStake = () => {
   const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
+  const [activeProofMethodTab, setActiveProofMethodTab] = useState('seed')
 
   const initialValues: FormValues = {
     domainId: 0,
     signingKey: '',
+    signature: '0x',
     amountToStake: 0,
     nominatorTax: 0,
     minimumNominatorStake: 0,
+    signingKeySeed: '',
+    signingKeystore: null,
   }
 
   const loadDomains = useCallback(async () => {
@@ -148,6 +158,7 @@ export const OperatorStake = () => {
               ),
               nominationTax: values.nominatorTax.toString(),
             },
+            values.signature,
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -168,6 +179,111 @@ export const OperatorStake = () => {
     e.preventDefault()
     setIsOpen(true)
   }, [])
+
+  const resetActiveProofMethodTab = useCallback(
+    (
+      method: string,
+      values: FormValues,
+      resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
+    ) => {
+      setActiveProofMethodTab(method)
+      resetForm({
+        values: {
+          ...values,
+          signingKey: initialValues.signingKey,
+          signingKeySeed: initialValues.signingKeySeed,
+          signature: initialValues.signature,
+        },
+      })
+    },
+    [initialValues.signature, initialValues.signingKey, initialValues.signingKeySeed],
+  )
+
+  const handleProofOfOwnershipWithSeed = useCallback(
+    (
+      values: FormValues,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => {
+      if (!api || !actingAccount)
+        return setFormError('We are not able to connect to the blockchain')
+
+      const OperatorKeyring = new Keyring({ type: 'sr25519' })
+      const Operator = OperatorKeyring.addFromUri(values.signingKeySeed)
+
+      const signingKey = u8aToHex(Operator.publicKey)
+      const signature = Operator.sign(
+        createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
+      )
+      setFieldValue('signingKey', signingKey)
+      setFieldValue('signature', signature)
+    },
+    [actingAccount, api],
+  )
+
+  const handleProofOfOwnershipWithKeystore = useCallback(
+    (
+      events: React.ChangeEvent<HTMLInputElement>,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => {
+      if (!api || !actingAccount)
+        return setFormError('We are not able to connect to the blockchain')
+
+      if (!events.target.files) return setFormError('No file')
+
+      const fileReader = new FileReader()
+      fileReader.onload = () => {
+        const keystoreContent = fileReader.result as string
+        if (fileReader.readyState === 2) {
+          const parsedKeystoreSeed = keystoreContent.replace(/"|_/g, '')
+
+          const OperatorKeyring = new Keyring({ type: 'sr25519' })
+          const Operator = OperatorKeyring.addFromUri(parsedKeystoreSeed)
+
+          const signingKey = u8aToHex(Operator.publicKey)
+          const signature = Operator.sign(
+            createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
+          )
+          setFieldValue('signingKey', signingKey)
+          setFieldValue('signature', signature)
+        }
+      }
+      fileReader.readAsText(events.target.files[0])
+    },
+    [actingAccount, api],
+  )
+
+  const handleProofOfOwnershipWithWallet = useCallback(
+    async (
+      values: FormValues,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => {
+      if (!api || !actingAccount || !injector)
+        return setFormError('We are not able to connect to the blockchain')
+
+      const signature =
+        injector.signer.signRaw &&
+        (await injector.signer.signRaw({
+          address: actingAccount.address,
+          type: 'bytes',
+          data: createType(api.registry, 'AccountId', actingAccount.address).toString(),
+        }))
+      setFieldValue('signingKey', accountIdToHex(actingAccount.address))
+      if (signature) setFieldValue('signature', signature.signature)
+    },
+    [actingAccount, api, injector],
+  )
 
   useEffect(() => {
     loadDomains()
@@ -295,32 +411,226 @@ export const OperatorStake = () => {
                               </div>
                             </Listbox>
                           </div>
-                          <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
+
+                          <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
                             <span className='text-base font-medium text-[#241235] dark:text-white'>
-                              Signing key
+                              Proof of Ownership
                             </span>
-                            <Field
-                              name='signingKey'
-                              placeholder='Signing Key'
-                              className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                            <div className='mt-4'>
+                              <div className='flex justify-around'>
+                                <button
+                                  type='button'
+                                  className={`${
+                                    activeProofMethodTab === 'seed'
+                                      ? 'bg-[#EA71F9]'
+                                      : 'bg-white dark:bg-[#4D397A]'
+                                  } rounded-full px-4 shadow-md`}
+                                  onClick={() =>
+                                    resetActiveProofMethodTab('seed', values, resetForm)
+                                  }
+                                >
+                                  Proof with seed
+                                </button>
+                                <button
+                                  type='button'
+                                  className={`${
+                                    activeProofMethodTab === 'keystore'
+                                      ? 'bg-[#EA71F9]'
+                                      : 'bg-white dark:bg-[#4D397A]'
+                                  } rounded-full px-4 py-2 shadow-md`}
+                                  onClick={() =>
+                                    resetActiveProofMethodTab('keystore', values, resetForm)
+                                  }
+                                >
+                                  Proof with keystore
+                                </button>
+                                <button
+                                  type='button'
+                                  className={`${
+                                    activeProofMethodTab === 'wallet'
+                                      ? 'bg-[#EA71F9]'
+                                      : 'bg-white dark:bg-[#4D397A]'
+                                  } rounded-full px-4 py-2 shadow-md`}
+                                  onClick={() =>
+                                    resetActiveProofMethodTab('wallet', values, resetForm)
+                                  }
+                                >
+                                  Proof with connected wallet
+                                </button>
+                                <button
+                                  type='button'
+                                  className={`${
+                                    activeProofMethodTab === 'signature'
+                                      ? 'bg-[#EA71F9]'
+                                      : 'bg-white dark:bg-[#4D397A]'
+                                  } rounded-full px-4 py-2 shadow-md`}
+                                  onClick={() =>
+                                    resetActiveProofMethodTab('signature', values, resetForm)
+                                  }
+                                >
+                                  Proof with signature
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          {activeProofMethodTab === 'seed' && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                  Signing key seed
+                                </span>
+                                <Field
+                                  name='signingKeySeed'
+                                  type='password'
+                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
-                              errors.signingKey &&
-                              touched.signingKey &&
+                              errors.signingKeySeed &&
+                              touched.signingKeySeed &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
                             }
                           `}
-                            />
-                            {errors.signingKey && touched.signingKey ? (
-                              <div
-                                className='text-md mt-2 h-8 text-red-500'
-                                data-testid='errorMessage'
-                              >
-                                {errors.signingKey}
+                                />
+                                {errors.signingKeySeed && touched.signingKeySeed ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signingKeySeed}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
                               </div>
-                            ) : (
-                              <div className='text-md mt-2 h-8' data-testid='placeHolder' />
-                            )}
-                          </div>
+                              <div className={`p-4 ${isDesktop ? 'col-span-1' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                  &nbsp;
+                                </span>
+                                <div className='mt-4 flex justify-around'>
+                                  <button
+                                    type='button'
+                                    className={'rounded-full bg-[#EA71F9] px-4 py-2 shadow-md'}
+                                    onClick={() =>
+                                      handleProofOfOwnershipWithSeed(values, setFieldValue)
+                                    }
+                                  >
+                                    Generate proof
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {activeProofMethodTab === 'keystore' && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                  Signing key seed
+                                </span>
+                                <Field
+                                  id='file'
+                                  name='signingKeystore'
+                                  type='file'
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    handleProofOfOwnershipWithKeystore(e, setFieldValue)
+                                  }
+                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                            ${
+                              errors.signingKeystore &&
+                              touched.signingKeystore &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
+                            }
+                          `}
+                                />
+                                {errors.signingKeystore && touched.signingKeystore ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signingKeystore}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
+                              </div>
+                            </>
+                          )}
+                          {activeProofMethodTab === 'wallet' && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                  &nbsp;
+                                </span>
+                                <div className='mt-4 flex justify-around'>
+                                  <button
+                                    type='button'
+                                    className={'rounded-full bg-[#EA71F9] px-4 py-2 shadow-md'}
+                                    onClick={() =>
+                                      handleProofOfOwnershipWithWallet(values, setFieldValue)
+                                    }
+                                  >
+                                    Generate proof of ownership with connected wallet
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {((values.signingKey && values.signature) ||
+                            activeProofMethodTab === 'signature') && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                  Signing key
+                                </span>
+                                <Field
+                                  name='signingKey'
+                                  placeholder='Signing Key'
+                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                ${
+                                  errors.signingKey &&
+                                  touched.signingKey &&
+                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
+                                }
+                              `}
+                                />
+                                {errors.signingKey && touched.signingKey ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signingKey}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
+                              </div>
+
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                  Proof of signing key ownership signature
+                                </span>
+                                <Field
+                                  name='signature'
+                                  placeholder='Signature'
+                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                            ${
+                              errors.signature &&
+                              touched.signature &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
+                            }
+                          `}
+                                />
+                                {errors.signature && touched.signature ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signature}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
+                              </div>
+                            </>
+                          )}
 
                           <div className='p-4'>
                             <span className='text-base font-medium text-[#241235] dark:text-white'>
