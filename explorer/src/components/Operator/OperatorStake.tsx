@@ -38,6 +38,12 @@ type Domain = {
   operatorAllowList: OperatorAllowList
 }
 
+enum OwnershipProofMethod {
+  seed = 'seed',
+  keystore = 'keystore',
+  wallet = 'wallet',
+}
+
 export const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
@@ -48,7 +54,9 @@ export const OperatorStake = () => {
   const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
-  const [activeProofMethodTab, setActiveProofMethodTab] = useState('seed')
+  const [activeProofMethodTab, setActiveProofMethodTab] = useState<OwnershipProofMethod>(
+    OwnershipProofMethod.seed,
+  )
 
   const initialValues: FormValues = {
     domainId: 0,
@@ -421,25 +429,16 @@ export const OperatorStake = () => {
                                 <button
                                   type='button'
                                   className={`${
-                                    activeProofMethodTab === 'seed'
-                                      ? 'bg-[#EA71F9]'
-                                      : 'bg-white dark:bg-[#4D397A]'
-                                  } rounded-full px-4 shadow-md`}
-                                  onClick={() =>
-                                    resetActiveProofMethodTab('seed', values, resetForm)
-                                  }
-                                >
-                                  Proof with seed
-                                </button>
-                                <button
-                                  type='button'
-                                  className={`${
-                                    activeProofMethodTab === 'keystore'
+                                    activeProofMethodTab === OwnershipProofMethod.keystore
                                       ? 'bg-[#EA71F9]'
                                       : 'bg-white dark:bg-[#4D397A]'
                                   } rounded-full px-4 py-2 shadow-md`}
                                   onClick={() =>
-                                    resetActiveProofMethodTab('keystore', values, resetForm)
+                                    resetActiveProofMethodTab(
+                                      OwnershipProofMethod.keystore,
+                                      values,
+                                      resetForm,
+                                    )
                                   }
                                 >
                                   Proof with keystore
@@ -447,33 +446,41 @@ export const OperatorStake = () => {
                                 <button
                                   type='button'
                                   className={`${
-                                    activeProofMethodTab === 'wallet'
+                                    activeProofMethodTab === OwnershipProofMethod.seed
                                       ? 'bg-[#EA71F9]'
                                       : 'bg-white dark:bg-[#4D397A]'
-                                  } rounded-full px-4 py-2 shadow-md`}
+                                  } rounded-full px-4 shadow-md`}
                                   onClick={() =>
-                                    resetActiveProofMethodTab('wallet', values, resetForm)
+                                    resetActiveProofMethodTab(
+                                      OwnershipProofMethod.seed,
+                                      values,
+                                      resetForm,
+                                    )
                                   }
                                 >
-                                  Proof with connected wallet
+                                  Proof with seed
                                 </button>
                                 <button
                                   type='button'
                                   className={`${
-                                    activeProofMethodTab === 'signature'
+                                    activeProofMethodTab === OwnershipProofMethod.wallet
                                       ? 'bg-[#EA71F9]'
                                       : 'bg-white dark:bg-[#4D397A]'
                                   } rounded-full px-4 py-2 shadow-md`}
                                   onClick={() =>
-                                    resetActiveProofMethodTab('signature', values, resetForm)
+                                    resetActiveProofMethodTab(
+                                      OwnershipProofMethod.wallet,
+                                      values,
+                                      resetForm,
+                                    )
                                   }
                                 >
-                                  Proof with signature
+                                  Proof with connected wallet
                                 </button>
                               </div>
                             </div>
                           </div>
-                          {activeProofMethodTab === 'seed' && (
+                          {activeProofMethodTab === OwnershipProofMethod.seed && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
                                 <span className='text-base font-medium text-[#241235] dark:text-white'>
@@ -519,7 +526,7 @@ export const OperatorStake = () => {
                               </div>
                             </>
                           )}
-                          {activeProofMethodTab === 'keystore' && (
+                          {activeProofMethodTab === OwnershipProofMethod.keystore && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
                                 <span className='text-base font-medium text-[#241235] dark:text-white'>
@@ -553,7 +560,7 @@ export const OperatorStake = () => {
                               </div>
                             </>
                           )}
-                          {activeProofMethodTab === 'wallet' && (
+                          {activeProofMethodTab === OwnershipProofMethod.wallet && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
                                 <span className='text-base font-medium text-[#241235] dark:text-white'>
@@ -573,8 +580,7 @@ export const OperatorStake = () => {
                               </div>
                             </>
                           )}
-                          {((values.signingKey && values.signature) ||
-                            activeProofMethodTab === 'signature') && (
+                          {values.signingKey && values.signature && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
                                 <span className='text-base font-medium text-[#241235] dark:text-white'>
