@@ -15,6 +15,18 @@
     {
       "name": "indexers",
       "path": "../indexers"
+    },
+    {
+      "name": "indexer - General Squid",
+      "path": "../indexers/general-squid"
+    },
+    {
+      "name": "indexer - Account Squid",
+      "path": "../indexers/account-squid"
+    },
+    {
+      "name": "indexer - Rewards Squid",
+      "path": "../indexers/rewards-squid"
     }
   ],
   "settings": {

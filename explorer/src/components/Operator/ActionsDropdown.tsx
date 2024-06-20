@@ -8,7 +8,7 @@ import { ActionsInRed, OperatorAction, OperatorActionType } from './ActionsModal
 export type ActionsDropdownRow = {
   original: {
     id: string
-    currentTotalStake: string
+    totalShares: bigint
   }
 }
 
@@ -17,7 +17,7 @@ interface ActionsDropdownProps {
   handleAction: (action: OperatorAction) => void
   row: ActionsDropdownRow
   excludeActions?: OperatorActionType[]
-  nominatorMaxStake?: string
+  nominatorMaxShares?: bigint
 }
 
 export const ActionsDropdown: FC<ActionsDropdownProps> = ({
@@ -25,7 +25,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
   handleAction,
   row,
   excludeActions,
-  nominatorMaxStake,
+  nominatorMaxShares,
 }) => {
   const actionsAvailable = useMemo(
     () =>
@@ -46,9 +46,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
         handleAction({
           type: val,
           operatorId: parseInt(row.original.id),
-          maxAmount: nominatorMaxStake
-            ? BigInt(nominatorMaxStake)
-            : BigInt(row.original.currentTotalStake),
+          maxShares: nominatorMaxShares ? nominatorMaxShares : BigInt(row.original.totalShares),
         })
       }
     >
