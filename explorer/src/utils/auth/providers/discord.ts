@@ -1,9 +1,12 @@
+import { AuthProvider } from 'constants/session'
 import * as jsonwebtoken from 'jsonwebtoken'
 import type { TokenSet } from 'next-auth'
+import { User } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 import type { DiscordProfile } from 'next-auth/providers/discord'
 import DiscordProvider from 'next-auth/providers/discord'
 import { cookies } from 'next/headers'
+import { findUserByID, saveUser, updateUser } from 'utils/fauna'
 import {
   giveDiscordFarmerRole,
   verifyDiscordFarmerRole,
@@ -42,12 +45,17 @@ export const Discord = () => {
         const member = await verifyDiscordGuildMember(token.access_token)
         let farmer = await verifyDiscordFarmerRole(token.access_token)
 
+        const savedUser = await findUserByID(did)
+        // Exit if the Discord ID does not match (prevent a user to link multiple Discord accounts to the same account)
+        if (savedUser && savedUser[0].data.discord?.id !== profile.id)
+          throw new Error('Discord ID does not match')
+
         if (session.subspace?.vcs.farmer && !farmer) {
           await giveDiscordFarmerRole(profile.id)
           farmer = await verifyDiscordFarmerRole(token.access_token)
         }
 
-        return {
+        const user: User = {
           id: session.id || did,
           DIDs: [...session.DIDs, did],
           subspace: session.subspace,
@@ -64,6 +72,23 @@ export const Discord = () => {
               },
             },
           },
+        }
+
+        if (!savedUser || savedUser.length === 0) {
+          await saveUser(user)
+
+          return user
+        }
+        await updateUser(
+          savedUser[0].ref,
+          savedUser[0].data,
+          AuthProvider.discord,
+          user.discord ?? {},
+        )
+
+        return {
+          ...savedUser[0].data,
+          [AuthProvider.subspace]: user[AuthProvider.subspace],
         }
       } catch (error) {
         console.error('Error fetching Discord profile:', error)
