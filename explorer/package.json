@@ -44,6 +44,7 @@
     "@vercel/og": "^0.6.2",
     "dayjs": "^1.11.10",
     "ethers": "^6.11.1",
+    "faunadb": "^4.8.0",
     "formik": "^2.4.5",
     "graphql": "^16.6.0",
     "js-cookie": "^3.0.5",
