@@ -2,7 +2,7 @@ export enum Routes {
   nova = 'nova',
   consensus = 'consensus',
   leaderboard = 'leaderboard',
-  operators = 'operators',
+  staking = 'staking',
   stake = 'stake',
 }
 
@@ -20,8 +20,8 @@ export const ROUTES = [
     title: 'Leaderboard',
   },
   {
-    name: Routes.operators,
-    title: 'Operators',
+    name: Routes.staking,
+    title: 'Staking',
   },
   {
     name: Routes.stake,
