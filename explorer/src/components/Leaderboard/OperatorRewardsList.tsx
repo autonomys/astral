@@ -19,6 +19,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
 import { OperatorRewardsListCard } from './OperatorRewardsListCard'
 import { QUERY_OPERATORS_REWARDS_LIST } from './querys'
@@ -96,13 +97,7 @@ export const OperatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const orderBy = useMemo(
-    () =>
-      sorting.length
-        ? sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',')
-        : 'amount_DESC',
-    [sorting],
-  )
+  const orderBy = useMemo(() => sort(sorting, 'amount_DESC'), [sorting])
 
   const getQueryVariables = useCallback(
     (

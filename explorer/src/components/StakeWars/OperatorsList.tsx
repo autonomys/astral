@@ -18,6 +18,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { NotStarted } from '../layout/NotStarted'
 
@@ -105,10 +106,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [selectedChain.urls.page, selectedDomain])
 
-  const orderBy = useMemo(
-    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
-    [sorting],
-  )
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
   const variables = useMemo(
     () => ({

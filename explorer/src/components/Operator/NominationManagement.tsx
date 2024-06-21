@@ -20,6 +20,7 @@ import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { operatorStatus } from 'utils/operator'
+import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -231,10 +232,7 @@ export const NominationManagement: FC = () => {
     return cols
   }, [selectedChain.urls.page, selectedDomain, action, handleAction])
 
-  const orderBy = useMemo(
-    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
-    [sorting],
-  )
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
   const variables = useMemo(
     () => ({

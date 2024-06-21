@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { ExtrinsicListCard } from '../Extrinsic/ExtrinsicListCard'
 import { AccountExtrinsicFilterDropdown } from './AccountExtrinsicFilterDropdown'
@@ -42,10 +43,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
-  const orderBy = useMemo(
-    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'block_height_DESC',
-    [sorting],
-  )
+  const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
 
   const getQueryVariables = useCallback(
     (

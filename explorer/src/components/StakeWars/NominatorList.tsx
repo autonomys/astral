@@ -14,6 +14,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { NotStarted } from '../layout/NotStarted'
 import { NominatorListCard } from './NominatorListCard'
 import { NominatorWithRewards, getNominatorRewards } from './helpers/calculateNominatorReward'
@@ -83,10 +84,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [])
 
-  const orderBy = useMemo(
-    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
-    [sorting],
-  )
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
   const variables = useMemo(
     () => ({

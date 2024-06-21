@@ -19,6 +19,7 @@ import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
 import { NominatorRewardsListCard } from './NominatorRewardsListCard'
 import { QUERY_NOMINATORS_REWARDS_LIST } from './querys'
@@ -89,10 +90,7 @@ export const NominatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const orderBy = useMemo(
-    () => sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'operator_DESC',
-    [sorting],
-  )
+  const orderBy = useMemo(() => sort(sorting, 'operator_DESC'), [sorting])
 
   const getQueryVariables = useCallback(
     (
