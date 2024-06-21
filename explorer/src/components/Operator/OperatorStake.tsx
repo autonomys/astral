@@ -41,7 +41,6 @@ type Domain = {
 enum OwnershipProofMethod {
   seed = 'seed',
   keystore = 'keystore',
-  wallet = 'wallet',
 }
 
 export const OperatorStake = () => {
@@ -55,7 +54,7 @@ export const OperatorStake = () => {
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [activeProofMethodTab, setActiveProofMethodTab] = useState<OwnershipProofMethod>(
-    OwnershipProofMethod.seed,
+    OwnershipProofMethod.keystore,
   )
 
   const initialValues: FormValues = {
@@ -219,15 +218,20 @@ export const OperatorStake = () => {
       if (!api || !actingAccount)
         return setFormError('We are not able to connect to the blockchain')
 
-      const OperatorKeyring = new Keyring({ type: 'sr25519' })
-      const Operator = OperatorKeyring.addFromUri(values.signingKeySeed)
+      try {
+        const OperatorKeyring = new Keyring({ type: 'sr25519' })
+        const Operator = OperatorKeyring.addFromUri(values.signingKeySeed)
 
-      const signingKey = u8aToHex(Operator.publicKey)
-      const signature = Operator.sign(
-        createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
-      )
-      setFieldValue('signingKey', signingKey)
-      setFieldValue('signature', signature)
+        const signingKey = u8aToHex(Operator.publicKey)
+        const signature = Operator.sign(
+          createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
+        )
+        setFieldValue('signingKey', signingKey)
+        setFieldValue('signature', signature)
+      } catch (error) {
+        setFormError('There was an error with the seed')
+        console.error('Error', error)
+      }
     },
     [actingAccount, api],
   )
@@ -246,51 +250,36 @@ export const OperatorStake = () => {
 
       if (!events.target.files) return setFormError('No file')
 
-      const fileReader = new FileReader()
-      fileReader.onload = () => {
-        const keystoreContent = fileReader.result as string
-        if (fileReader.readyState === 2) {
-          const parsedKeystoreSeed = keystoreContent.replace(/"|_/g, '')
+      try {
+        const fileReader = new FileReader()
+        fileReader.onload = () => {
+          const keystoreContent = fileReader.result as string
+          if (fileReader.readyState === 2) {
+            try {
+              const parsedKeystoreSeed = keystoreContent.replace(/"|_/g, '')
 
-          const OperatorKeyring = new Keyring({ type: 'sr25519' })
-          const Operator = OperatorKeyring.addFromUri(parsedKeystoreSeed)
+              const OperatorKeyring = new Keyring({ type: 'sr25519' })
+              const Operator = OperatorKeyring.addFromUri(parsedKeystoreSeed)
 
-          const signingKey = u8aToHex(Operator.publicKey)
-          const signature = Operator.sign(
-            createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
-          )
-          setFieldValue('signingKey', signingKey)
-          setFieldValue('signature', signature)
+              const signingKey = u8aToHex(Operator.publicKey)
+              const signature = Operator.sign(
+                createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
+              )
+              setFieldValue('signingKey', signingKey)
+              setFieldValue('signature', signature)
+            } catch (error) {
+              setFormError('There was an error with the keystore')
+              console.error('Error', error)
+            }
+          }
         }
+        fileReader.readAsText(events.target.files[0])
+      } catch (error) {
+        setFormError('There was an error with the keystore')
+        console.error('Error', error)
       }
-      fileReader.readAsText(events.target.files[0])
     },
     [actingAccount, api],
-  )
-
-  const handleProofOfOwnershipWithWallet = useCallback(
-    async (
-      values: FormValues,
-      setFieldValue: (
-        field: string,
-        value: string | Uint8Array,
-        shouldValidate?: boolean | undefined,
-      ) => Promise<void | FormikErrors<FormValues>>,
-    ) => {
-      if (!api || !actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
-
-      const signature =
-        injector.signer.signRaw &&
-        (await injector.signer.signRaw({
-          address: actingAccount.address,
-          type: 'bytes',
-          data: createType(api.registry, 'AccountId', actingAccount.address).toString(),
-        }))
-      setFieldValue('signingKey', accountIdToHex(actingAccount.address))
-      if (signature) setFieldValue('signature', signature.signature)
-    },
-    [actingAccount, api, injector],
   )
 
   useEffect(() => {
@@ -420,7 +409,7 @@ export const OperatorStake = () => {
                             </Listbox>
                           </div>
 
-                          <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                          <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
                             <span className='text-base font-medium text-[#241235] dark:text-white'>
                               Proof of Ownership
                             </span>
@@ -459,23 +448,6 @@ export const OperatorStake = () => {
                                   }
                                 >
                                   Proof with seed
-                                </button>
-                                <button
-                                  type='button'
-                                  className={`${
-                                    activeProofMethodTab === OwnershipProofMethod.wallet
-                                      ? 'bg-[#EA71F9]'
-                                      : 'bg-white dark:bg-[#4D397A]'
-                                  } rounded-full px-4 py-2 shadow-md`}
-                                  onClick={() =>
-                                    resetActiveProofMethodTab(
-                                      OwnershipProofMethod.wallet,
-                                      values,
-                                      resetForm,
-                                    )
-                                  }
-                                >
-                                  Proof with connected wallet
                                 </button>
                               </div>
                             </div>
@@ -560,26 +532,6 @@ export const OperatorStake = () => {
                               </div>
                             </>
                           )}
-                          {activeProofMethodTab === OwnershipProofMethod.wallet && (
-                            <>
-                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
-                                <span className='text-base font-medium text-[#241235] dark:text-white'>
-                                  &nbsp;
-                                </span>
-                                <div className='mt-4 flex justify-around'>
-                                  <button
-                                    type='button'
-                                    className={'rounded-full bg-[#EA71F9] px-4 py-2 shadow-md'}
-                                    onClick={() =>
-                                      handleProofOfOwnershipWithWallet(values, setFieldValue)
-                                    }
-                                  >
-                                    Generate proof of ownership with connected wallet
-                                  </button>
-                                </div>
-                              </div>
-                            </>
-                          )}
                           {values.signingKey && values.signature && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
@@ -640,7 +592,7 @@ export const OperatorStake = () => {
 
                           <div className='p-4'>
                             <span className='text-base font-medium text-[#241235] dark:text-white'>
-                              Amount to Stake
+                              Amount to Stake (ATC)
                             </span>
                             <Field
                               name='amountToStake'
@@ -666,7 +618,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-[#241235] dark:text-white'>
-                              Nominator tax
+                              Nominator tax (%)
                             </span>
                             <Field
                               name='nominatorTax'
@@ -692,7 +644,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-[#241235] dark:text-white'>
-                              Minimum Nominator Stake
+                              Minimum Nominator Stake (ATC)
                             </span>
                             <Field
                               name='minimumNominatorStake'
