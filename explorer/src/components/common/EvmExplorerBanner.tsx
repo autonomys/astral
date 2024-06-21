@@ -16,7 +16,7 @@ export const EvmExplorerBanner: FC<{ path?: string }> = ({ path }) => {
             Explore Nova with Blockscout
           </div>
           <div className='text-[15px] text-[#282929] dark:text-white'>
-            Nova is an EVM domain. To interact with smart contracts and access more functionality,
+            Nova is an EVM domain. To interact with smart contracts and access EVM native functionality,
             we recommend using our Blockscout explorer.
           </div>
           <Link href={href} target='_blank'>
