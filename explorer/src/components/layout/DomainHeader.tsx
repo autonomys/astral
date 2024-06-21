@@ -39,7 +39,7 @@ export const DomainHeader: FC = () => {
   )
 
   const domainIcon = useCallback((domain: (typeof ROUTES)[0], isActive: boolean) => {
-    const className = `w-6 h-6 ${isActive ? 'text-white' : 'text-[#282929]'} dark:text-white`
+    const className = `w-6 h-6 ${isActive ? 'text-white' : 'text-grayDark'} dark:text-white`
     switch (domain.name) {
       case Routes.nova:
         return <GlobeAltIcon className={className} />
@@ -64,8 +64,8 @@ export const DomainHeader: FC = () => {
               onClick={() => handleDomainSelected(item.name)}
               className={
                 isActive
-                  ? 'rounded-full bg-[#241235] px-4 py-2 text-white dark:bg-[#DE67E4]'
-                  : 'bg-white text-[#282929] dark:bg-[#1E254E] dark:text-white'
+                  ? 'rounded-full bg-grayDarker px-4 py-2 text-white dark:bg-purpleAccent'
+                  : 'bg-white text-grayDark dark:bg-blueAccent dark:text-white'
               }
             >
               {isDesktop ? item.title : domainIcon(item, isActive)}
@@ -78,7 +78,7 @@ export const DomainHeader: FC = () => {
 
   return (
     <div
-      className='z-10 h-[60px] w-full bg-white dark:bg-[#1E254E]'
+      className='z-10 h-[60px] w-full bg-white dark:bg-blueAccent'
       id='accordion-open'
       data-accordion='open'
     >

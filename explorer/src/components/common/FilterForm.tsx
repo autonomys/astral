@@ -90,22 +90,22 @@ export const FilterForm: FC<Props> = ({
       <Accordion
         title={title}
         icon={
-          <div className='text-[#DE67E4] dark:text-[#1E254E]'>
+          <div className='text-purpleAccent dark:text-blueAccent'>
             <FilterIcon />
           </div>
         }
       >
-        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
           <div>
             <div className='mt-4 grid grid-cols-2 items-end gap-4 md:grid-cols-5'>
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                   Module
                 </div>
                 <select
                   value={where?.name_containsInsensitive || ''}
                   onChange={handleModuleChange}
-                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                 >
                   {MODULES.map((module) => (
                     <option key={module.value ? module.value : 'all'} value={module.value}>
@@ -116,14 +116,14 @@ export const FilterForm: FC<Props> = ({
               </div>
 
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>Call</div>
-                <select className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>Call</div>
+                <select className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'>
                   <option value=''>All</option>
                 </select>
               </div>
 
               <div className='flex flex-col gap-3 md:col-span-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                   Account
                 </div>
                 <input
@@ -131,18 +131,18 @@ export const FilterForm: FC<Props> = ({
                   placeholder='Optional'
                   onChange={handleAccountChange}
                   value={account}
-                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                 />
               </div>
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                   Time Dimension
                 </div>
 
                 <select
                   onChange={handleTimeDimensionChange}
                   value={timeDimension}
-                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                 >
                   <option value='block'>Block</option>
                   <option value='date'>Date</option>
@@ -153,7 +153,7 @@ export const FilterForm: FC<Props> = ({
                 {timeDimension === 'block' ? (
                   <>
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         From
                       </div>
                       <input
@@ -161,12 +161,12 @@ export const FilterForm: FC<Props> = ({
                         onChange={handleBlockFrom}
                         type='text'
                         placeholder='from'
-                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                       />
                     </div>
 
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         To
                       </div>
                       <input
@@ -174,14 +174,14 @@ export const FilterForm: FC<Props> = ({
                         onChange={handleBlockTo}
                         type='text'
                         placeholder='to'
-                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                       />
                     </div>
                   </>
                 ) : (
                   <>
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         Start Date
                       </div>
 
@@ -192,7 +192,7 @@ export const FilterForm: FC<Props> = ({
                     </div>
 
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         To Date
                       </div>
 
@@ -208,7 +208,7 @@ export const FilterForm: FC<Props> = ({
 
               <button
                 onClick={handleFilter}
-                className='rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white md:col-span-2 md:justify-self-end'
+                className='rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-blueAccent dark:text-white md:col-span-2 md:justify-self-end'
               >
                 Filter
               </button>

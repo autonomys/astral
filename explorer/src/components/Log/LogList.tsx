@@ -73,7 +73,7 @@ export const LogList: FC = () => {
       <div className='mt-5 flex w-full justify-between'>
         <LogListFilter
           title={
-            <div className=' font-medium text-[#282929] dark:text-white'>Logs {totalLabel}</div>
+            <div className=' font-medium text-grayDark dark:text-white'>Logs {totalLabel}</div>
           }
           filters={filters}
           logTypes={logTypes}

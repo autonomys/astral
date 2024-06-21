@@ -26,7 +26,7 @@ export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         cells: events.map(({ id, indexInBlock }) => (
           <div className='flex w-full gap-1' key={`${id}-${indexInBlock}-event-id`}>
             <Link
-              className='w-full hover:text-[#DE67E4]'
+              className='w-full hover:text-purpleAccent'
               href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
               data-testid={`event-link-${indexInBlock}`}
             >
@@ -45,7 +45,7 @@ export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         cells: events.map(({ block, id, indexInBlock }) => (
           <Link
             key={`${id}-${indexInBlock}-event-block`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
           >
             {block?.height}
@@ -89,7 +89,7 @@ export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
         <Table
           columns={columns}
           emptyMessage='There are no blocks to show'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
           tableHeaderProps='border-b border-gray-200'
           id='latest-events'
         />

@@ -64,7 +64,7 @@ export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => 
             <div className='flex items-center gap-3'>
               <button
                 onClick={toggleTheme}
-                className='items-center rounded-full bg-[#241235] p-2 hover:bg-gray-200 focus:outline-none dark:bg-[#FFFFFF]'
+                className='items-center rounded-full bg-grayDarker p-2 hover:bg-gray-200 focus:outline-none dark:bg-white'
               >
                 {isDark ? (
                   <SunIcon
@@ -85,7 +85,7 @@ export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => 
                 )}
               </button>
               <button
-                className='items-center rounded-full bg-white px-4 py-2 dark:bg-[#1E254E] dark:text-white'
+                className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
                 onClick={() => setIsOpen(false)}
               >
                 x
@@ -97,7 +97,7 @@ export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => 
               return (
                 <button
                   onClick={() => handleNavigate(item.link)}
-                  className='title-font flex items-center text-xl font-medium text-[#282929] dark:text-white'
+                  className='title-font flex items-center text-xl font-medium text-grayDark dark:text-white'
                   key={`${item.title}-${index}`}
                 >
                   {item.title}

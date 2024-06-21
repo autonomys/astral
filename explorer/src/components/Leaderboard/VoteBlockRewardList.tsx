@@ -70,7 +70,7 @@ export const VoteBlockRewardList = () => {
                   'consensus',
                   row.original.id,
                 )}
-                className='hover:text-[#DE67E4]'
+                className='hover:text-purpleAccent'
               >
                 <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
               </Link>
@@ -203,13 +203,13 @@ export const VoteBlockRewardList = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex w-full flex-col sm:mt-0'>
         <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>
             Farmers Leaderboard
           </div>
           <div className='flex gap-2'>
             <DebouncedInput
               type='text'
-              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
+              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
               placeholder='Search by account address'
               onChange={handleSearch}
               value={searchAccount}

@@ -73,7 +73,7 @@ export const AccountList: FC = () => {
         <SearchBar fixSearchType={searchTypes[3]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-[#282929] dark:text-white'>{`Holders (${totalLabel})`}</div>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Holders (${totalLabel})`}</div>
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <AccountTable accounts={accounts} page={currentPage} />

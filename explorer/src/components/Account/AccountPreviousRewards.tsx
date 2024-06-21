@@ -218,21 +218,21 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   }, [handleSearch])
 
   return (
-    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
       <div className='flex w-full flex-col gap-6 py-4 pl-4'>
         <div className='grid w-full grid-cols-3 gap-8 xl:gap-8'>
-          <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Testnet
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Localized tSSC
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Mainnet allocation %
           </div>
         </div>
         <div className='w-full'>
-          <ol className='relative border-l border-[#E6EAFA] dark:border-[#6C6BCF]'>
+          <ol className='relative border-l border-purpleLight dark:border-blueShade1'>
             {rewardsPhase.map((phase, index) => (
               <li
                 key={`${index}-account-rewards-block`}
@@ -244,18 +244,18 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
                   <div
                     className={`absolute -left-1.5 size-3 rounded-full ${
                       index === 0
-                        ? 'bg-[#DE67E4] dark:bg-[#DE67E4]'
-                        : 'bg-[#E6EAFA] dark:bg-[#6C6BCF]'
+                        ? 'bg-purpleAccent dark:bg-purpleAccent'
+                        : 'bg-purpleLight dark:bg-blueShade1'
                     }`}
                   ></div>
-                  <div className='text-[#282929 ] -mt-1 ml-4 text-[13px] font-normal dark:text-white '>
+                  <div className='text-grayDark -mt-1 ml-4 text-[13px] font-normal dark:text-white '>
                     {phase.label}
                   </div>
                 </div>
-                <div className='text-[#282929 ] -mt-1 text-[13px] font-normal dark:text-white'>
+                <div className='text-grayDark -mt-1 text-[13px] font-normal dark:text-white'>
                   {rewardsByPhase(phase.name)}
                 </div>
-                <div className='text-[#282929 ] -mt-1 text-[13px] font-normal dark:text-white'>
+                <div className='text-grayDark -mt-1 text-[13px] font-normal dark:text-white'>
                   {rewardsPercentageByPhase(phase.name)}
                 </div>
               </li>
@@ -265,10 +265,10 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
               className={'mb-[26px] grid grid-cols-3 gap-14 xl:gap-32'}
             >
               <div className=''></div>
-              <div className='text-[#4B5563 ] -mt-1 text-[13px] font-bold dark:text-white'>
+              <div className='text-grayMedium -mt-1 text-[13px] font-bold dark:text-white'>
                 Total Mainnet %
               </div>
-              <div className='text-[#4B5563 ] -mt-1 text-[13px] font-bold dark:text-white'>
+              <div className='text-grayMedium -mt-1 text-[13px] font-bold dark:text-white'>
                 {rewardsPercentageByPhase('mainnet')}
               </div>
             </li>

@@ -167,7 +167,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 

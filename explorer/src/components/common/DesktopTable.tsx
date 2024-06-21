@@ -6,8 +6,8 @@ interface TableProps<T extends object> {
 }
 
 export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
-  <table className="min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]">
-    <thead className='border-b border-gray-200 text-sm text-[#857EC2] dark:text-white/75'>
+  <table className="min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
+    <thead className='border-b border-gray-200 text-sm text-purpleShade2 dark:text-white/75'>
       {table.getHeaderGroups().map((headerGroup) => (
         <tr key={headerGroup.id}>
           {headerGroup.headers.map((header) => (
@@ -23,17 +23,17 @@ export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
                   ? null
                   : flexRender(header.column.columnDef.header, header.getContext())}
                 {header.column.getIsSorted() === 'asc' ? (
-                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-[#DE67E4] focus:z-20 dark:border-none  dark:text-white'>
+                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-purpleAccent focus:z-20 dark:border-none  dark:text-white'>
                     <span className='sr-only'>Up</span>
                     <ChevronUpIcon className='size-5' aria-hidden='true' />
                   </span>
                 ) : header.column.getIsSorted() === 'desc' ? (
-                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-[#DE67E4] focus:z-20 dark:border-none  dark:text-white'>
+                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-purpleAccent focus:z-20 dark:border-none  dark:text-white'>
                     <span className='sr-only'>Up</span>
                     <ChevronDownIcon className='size-5' aria-hidden='true' />
                   </span>
                 ) : (
-                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-[#DE67E4] focus:z-20 dark:border-none  dark:text-white'>
+                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-purpleAccent focus:z-20 dark:border-none  dark:text-white'>
                     <span className='sr-only'>Up</span>
                     <ChevronUpDownIcon className='size-5' aria-hidden='true' />
                   </span>
@@ -62,7 +62,7 @@ export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
         ))
       ) : (
         <div className='flex w-full p-6 hover:bg-gray-100 dark:hover:bg-transparent/10'>
-          <div className='text-sm text-[#857EC2] dark:text-white/75'>No entries to show</div>
+          <div className='text-sm text-purpleShade2 dark:text-white/75'>No entries to show</div>
         </div>
       )}
     </tbody>

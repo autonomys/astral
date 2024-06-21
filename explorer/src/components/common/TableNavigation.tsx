@@ -28,14 +28,14 @@ export const TableNavigation = <T extends object>({
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-[#1E254E] dark:text-white'
+            className='relative inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-blueAccent dark:text-white'
           >
             Previous
           </button>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className='relative ml-3 inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-[#1E254E] dark:text-white'
+            className='relative ml-3 inline-flex items-center rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-none dark:bg-blueAccent dark:text-white'
           >
             Next
           </button>
@@ -62,7 +62,7 @@ export const TableNavigation = <T extends object>({
         </div>
         <div className='items-center gap-2 sm:flex sm:flex-1 sm:items-center sm:justify-end'>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-[#1E254E] dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
@@ -72,7 +72,7 @@ export const TableNavigation = <T extends object>({
             </span>
           </button>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-[#1E254E] dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -82,7 +82,7 @@ export const TableNavigation = <T extends object>({
             </span>
           </button>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-[#1E254E] dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -92,7 +92,7 @@ export const TableNavigation = <T extends object>({
             </span>
           </button>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-[#DE67E4] hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-[#1E254E] dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
@@ -117,11 +117,11 @@ export const TableNavigation = <T extends object>({
               }}
               delay={400}
               value={table.getState().pagination.pageIndex + 1}
-              className='w-20 rounded-3xl border-none dark:bg-[#1E254E] dark:text-white'
+              className='w-20 rounded-3xl border-none dark:bg-blueAccent dark:text-white'
             />
           </span>
           <select
-            className='rounded-3xl border-none dark:bg-[#1E254E] dark:text-white'
+            className='rounded-3xl border-none dark:bg-blueAccent dark:text-white'
             value={table.getState().pagination.pageSize}
             onChange={(e) => {
               table.setPageSize(Number(e.target.value))

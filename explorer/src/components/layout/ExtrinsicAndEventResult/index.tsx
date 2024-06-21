@@ -39,7 +39,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = f
         return (
           <Link
             key={`${id}-result-id-${indexInBlock}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={link}
           >
             <div>{id}</div>
@@ -52,7 +52,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = f
       cells: results.map(({ blockHeight, indexInBlock, id }) => (
         <Link
           key={`${id}-result-block-${indexInBlock}`}
-          className='hover:text-[#DE67E4]'
+          className='hover:text-purpleAccent'
           href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           <div>{blockHeight}</div>
@@ -91,7 +91,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = f
           columns={columns}
           emptyMessage='There are no extrinsics to show'
           id='latest-extrinsics'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
           tableHeaderProps='border-b border-gray-200'
         />
       </div>

@@ -23,7 +23,7 @@ export const AccountHeader: FC<AccountHeaderProps> = ({
           type='text'
           value={subspaceAccount}
           readOnly
-          className='block w-[200px] rounded-xl border-[#DE67E4] bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
+          className='block w-[200px] rounded-xl border-purpleAccent bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
         />
         <div className='ml-2'>
           <Tooltip text='Copy wallet address'>
