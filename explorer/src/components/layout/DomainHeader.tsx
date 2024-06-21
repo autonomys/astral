@@ -47,7 +47,7 @@ export const DomainHeader: FC = () => {
         return <QueueListIcon className={className} />
       case Routes.leaderboard:
         return <TrophyIcon className={className} />
-      case Routes.operators:
+      case Routes.staking:
         return <CpuChipIcon className={className} />
       default:
         return null
