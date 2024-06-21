@@ -1,4 +1,10 @@
-import { BlockIcon, DocIcon, PieChartIcon, WalletIcon } from '@/components/icons'
+import {
+  ArchivedHistoryIcon,
+  BlockIcon,
+  DocIcon,
+  PieChartIcon,
+  WalletIcon,
+} from '@/components/icons'
 import { Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
 import { FC, useMemo } from 'react'
@@ -58,7 +64,7 @@ export const HomeCards: FC<Props> = ({
       // },
       {
         title: 'Archived History Size',
-        icon: <WalletIcon />,
+        icon: <ArchivedHistoryIcon />,
         value: historySize,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-[#AC70E1] dark:to-[#E6ADDC]',
       },
