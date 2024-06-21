@@ -108,7 +108,7 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/${operatorId}`,
     },
     list: 'list',
-    stake: 'stake',
+    register: 'register',
     manage: 'manage',
     nominators: 'nominators',
     nomination: 'nomination',
