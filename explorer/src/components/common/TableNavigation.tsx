@@ -1,3 +1,4 @@
+import { PAGE_SIZE_OPTIONS } from '@/constants/general'
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -10,16 +11,18 @@ import { ExportButton } from './ExportButton'
 import { LazyExportButton } from './LazyExportButton'
 
 interface TableProps<T extends object> {
+  table: Table<T>
   data?: T[]
   filename?: string
   fullDataDownloader?: () => Promise<unknown[]>
-  table: Table<T>
+  pageSizeOptions?: number[]
 }
 
 export const TableNavigation = <T extends object>({
   table,
   data,
   filename,
+  pageSizeOptions = PAGE_SIZE_OPTIONS,
   fullDataDownloader,
 }: TableProps<T>) => (
   <>
@@ -129,7 +132,7 @@ export const TableNavigation = <T extends object>({
               table.setPageSize(Number(e.target.value))
             }}
           >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
+            {pageSizeOptions.map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 Show {pageSize}
               </option>
