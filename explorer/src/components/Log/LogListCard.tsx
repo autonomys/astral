@@ -25,7 +25,7 @@ export const LogListCard: FC<Props> = ({ log }) => {
           className='flex gap-2'
           href={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, log.id)}
         >
-          <h3 className='text-sm font-medium text-[#241235] dark:text-white'>{log.id}</h3>
+          <h3 className='text-sm font-medium text-grayDarker dark:text-white'>{log.id}</h3>
         </Link>
       }
       body={body}

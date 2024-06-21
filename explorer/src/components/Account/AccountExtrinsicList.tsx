@@ -111,7 +111,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         cell: ({ row }: Row) => (
           <Link
             key={`${row.original.id}-extrinsic-block-${row.original.indexInBlock}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(
               selectedChain.urls.page,
               selectedDomain,
@@ -176,9 +176,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col align-middle'>
-      <div className='mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+      <div className='mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
         <div className='flex w-full justify-center gap-2'>
-          <div className='text-sm text-[#857EC2] dark:text-white/75'>Action Filter:</div>
+          <div className='text-sm text-purpleShade2 dark:text-white/75'>Action Filter:</div>
           <AccountExtrinsicFilterDropdown filters={filters} setFilters={setFilters} />
         </div>
       </div>

@@ -32,7 +32,7 @@ export const SearchInput: FC = () => {
       data-testid='search-term-input'
       id='searchTerm'
       className={`
-                    block w-full rounded-md bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white
+                    block w-full rounded-md bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white
                     ${
                       errors.searchTerm &&
                       touched.searchTerm &&

@@ -46,7 +46,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop 
         title: 'Hash',
         cells: extrinsics.map(({ id, hash }) => (
           <Link
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             key={`${id}-home-extrinsic-hash`}
             href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
           >
@@ -91,7 +91,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop 
   const columns = useMemo(() => generateColumns(extrinsics), [extrinsics, generateColumns])
 
   return isDesktop ? (
-    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-[#3A2D85] dark:to-[#678CD5]'>
+    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-purpleUndertone dark:to-blueMedium'>
       <HomeExtrinsicListHeader />
       <Table
         columns={columns}

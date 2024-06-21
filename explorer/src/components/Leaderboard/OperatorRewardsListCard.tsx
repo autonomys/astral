@@ -32,7 +32,7 @@ export const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
               operator.id,
             )}
           >
-            <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+            <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
               {operator.id}
             </p>
           </Link>

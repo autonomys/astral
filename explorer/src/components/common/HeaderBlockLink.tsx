@@ -13,6 +13,6 @@ type Props = {
 
 export const HeaderBlockLink: FC<Props> = ({ height, domain, chain }) => (
   <Link className='flex gap-1' href={INTERNAL_ROUTES.blocks.id.page(chain, domain, Number(height))}>
-    <h3 className='text-sm font-medium text-[#241235] dark:text-white'>#{Number(height)}</h3>
+    <h3 className='text-sm font-medium text-grayDarker dark:text-white'>#{Number(height)}</h3>
   </Link>
 )

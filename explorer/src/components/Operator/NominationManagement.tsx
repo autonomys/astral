@@ -71,7 +71,7 @@ export const NominationManagement: FC = () => {
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`nominator-link-${row.original.id}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.accounts.id.page(
               selectedChain.urls.page,
               'consensus',
@@ -102,7 +102,7 @@ export const NominationManagement: FC = () => {
           <div className='row flex items-center gap-3'>
             <Link
               data-testid={`nominator-link-${row.original.id}`}
-              className='hover:text-[#DE67E4]'
+              className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.operators.id.page(
                 selectedChain.urls.page,
                 selectedDomain,
@@ -321,7 +321,7 @@ export const NominationManagement: FC = () => {
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div
-            className={`text-[#241235] ${
+            className={`text-grayDarker ${
               isDesktop ? 'text-4xl' : 'text-xl'
             } font-bold leading-tight tracking-tight dark:text-white`}
           >
@@ -329,13 +329,13 @@ export const NominationManagement: FC = () => {
           </div>
         </div>
         <div
-          className={`text-[#241235] ${
+          className={`text-grayDarker ${
             isDesktop ? 'text-2xl' : 'text-lg'
           } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
         >
           Information across nominations
           {subspaceAccount && (
-            <div className="mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]">
+            <div className="mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
               <svg
                 className='me-3 inline h-4 w-4 flex-shrink-0'
                 aria-hidden='true'
@@ -379,13 +379,13 @@ export const NominationManagement: FC = () => {
         </div>
       </div>
 
-      <div className='mt-8 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#2A345E]'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -394,7 +394,7 @@ export const NominationManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -403,7 +403,7 @@ export const NominationManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -412,7 +412,7 @@ export const NominationManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >

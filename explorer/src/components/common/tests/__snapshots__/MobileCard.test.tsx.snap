@@ -3,7 +3,7 @@
 exports[`mobileCard renders properly 1`] = `
 <DocumentFragment>
   <div
-    class="w-full bg-white dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] rounded-lg py-7 px-4 font-['Montserrat'] mb-6"
+    class="w-full bg-white dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset rounded-lg py-7 px-4 font-['Montserrat'] mb-6"
   >
     <div
       class="flex gap-2 items-center mb-2"
@@ -17,12 +17,12 @@ exports[`mobileCard renders properly 1`] = `
         class="flex justify-between items-center py-2"
       >
         <div
-          class="text-[#857EC2] text-xs  dark:text-white/75"
+          class="text-purpleShade2 text-xs  dark:text-white/75"
         >
           sample
         </div>
         <div
-          class="text-[#241235] text-xs dark:text-white"
+          class="text-grayDarker text-xs dark:text-white"
         >
           1
         </div>

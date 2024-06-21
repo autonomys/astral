@@ -113,7 +113,7 @@ export const OperatorHeader = () => {
             href={`/${selectedChain.urls.page}/${Routes.operators}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
-            <span className='text-xl text-[#282929] dark:text-white'>
+            <span className='text-xl text-grayDark dark:text-white'>
               <LogoIcon fillColor='currentColor' />
             </span>
           </Link>
@@ -128,8 +128,8 @@ export const OperatorHeader = () => {
                   key={index}
                   className={
                     isCurrentPath || isInitialPath
-                      ? 'block rounded-full bg-[#241235] px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-[#DE67E4]'
-                      : 'bg-none text-[13px] font-semibold leading-4 text-[#282929] dark:text-white'
+                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-purpleAccent'
+                      : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
                 >
@@ -142,7 +142,7 @@ export const OperatorHeader = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='ml-4 inline-flex items-center rounded-full bg-[#241235] p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-[#FFFFFF]'
+              className='ml-4 inline-flex items-center rounded-full bg-grayDarker p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon
@@ -175,7 +175,7 @@ export const OperatorHeader = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='items-center rounded-full bg-[#241235] p-3 text-white dark:bg-white dark:text-[#1E254E]'
+              className='items-center rounded-full bg-grayDarker p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />
