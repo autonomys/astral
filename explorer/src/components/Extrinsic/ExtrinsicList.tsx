@@ -4,6 +4,7 @@ import { PAGE_SIZE, searchTypes } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
@@ -22,6 +23,7 @@ export const ExtrinsicList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const novaExplorerBanner = useEvmExplorerBanner('txs')
 
   const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
     QUERY_EXTRINSIC_LIST_CONNECTION,
@@ -89,6 +91,7 @@ export const ExtrinsicList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[2]} />
       </div>
