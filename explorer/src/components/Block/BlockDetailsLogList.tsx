@@ -22,7 +22,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
       cells: logs.map(({ id }) => (
         <Link
           key={`${id}-block-log-id`}
-          className='hover:text-[#DE67E4]'
+          className='hover:text-purpleAccent'
           href={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, id)}
         >
           {id}

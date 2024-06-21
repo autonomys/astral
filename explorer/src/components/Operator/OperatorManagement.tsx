@@ -175,7 +175,7 @@ export const OperatorManagement: FC = () => {
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
@@ -295,7 +295,7 @@ export const OperatorManagement: FC = () => {
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div
-            className={`text-[#241235] ${
+            className={`text-grayDarker ${
               isDesktop ? 'text-4xl' : 'text-xl'
             } font-bold leading-tight tracking-tight dark:text-white`}
           >
@@ -303,7 +303,7 @@ export const OperatorManagement: FC = () => {
           </div>
         </div>
         <div
-          className={`text-[#241235] ${
+          className={`text-grayDarker ${
             isDesktop ? 'text-2xl' : 'text-lg'
           } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
         >
@@ -312,7 +312,7 @@ export const OperatorManagement: FC = () => {
             <span
               className={`text-base ${
                 isDesktop ? 'text-base' : 'text-xs'
-              } ml-2 font-normal dark:text-[#1E254E]`}
+              } ml-2 font-normal dark:text-blueAccent`}
             >
               on Account {subspaceAccount}
             </span>
@@ -345,13 +345,13 @@ export const OperatorManagement: FC = () => {
         </div>
       </div>
 
-      <div className='mt-8 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#2A345E]'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -360,7 +360,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -369,7 +369,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -378,7 +378,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -388,7 +388,7 @@ export const OperatorManagement: FC = () => {
 
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -397,7 +397,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -406,7 +406,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -415,7 +415,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -425,7 +425,7 @@ export const OperatorManagement: FC = () => {
 
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -434,7 +434,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -443,7 +443,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -452,7 +452,7 @@ export const OperatorManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >

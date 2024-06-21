@@ -85,20 +85,20 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
       <Accordion
         title={title}
         icon={
-          <div className='text-[#DE67E4] dark:text-[#1E254E]'>
+          <div className='text-purpleAccent dark:text-blueAccent'>
             <FilterIcon />
           </div>
         }
       >
-        <div className='w-full rounded-[20px] bg-[#DDEFF1] p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
           <div>
             <div className='mt-4 grid grid-cols-2 items-end gap-4 md:grid-cols-6'>
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>Type</div>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>Type</div>
                 <select
                   value={where?.kind_containsInsensitive || ''}
                   onChange={handleModuleChange}
-                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                 >
                   {LOG_TYPES.map((module) => (
                     <option key={module.value ? module.value : 'all'} value={module.value}>
@@ -108,14 +108,14 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
                 </select>
               </div>
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                   Time Dimension
                 </div>
 
                 <select
                   onChange={handleTimeDimensionChange}
                   value={timeDimension}
-                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                 >
                   <option value='block'>Block</option>
                   <option value='date'>Date</option>
@@ -126,7 +126,7 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
                 {timeDimension === 'block' ? (
                   <>
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         From
                       </div>
                       <input
@@ -134,12 +134,12 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
                         onChange={handleBlockFrom}
                         type='text'
                         placeholder='from'
-                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                       />
                     </div>
 
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         To
                       </div>
                       <input
@@ -147,14 +147,14 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
                         onChange={handleBlockTo}
                         type='text'
                         placeholder='to'
-                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                        className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                       />
                     </div>
                   </>
                 ) : (
                   <>
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         Start Date
                       </div>
 
@@ -165,7 +165,7 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
                     </div>
 
                     <div className='flex flex-col gap-3'>
-                      <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                      <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                         To Date
                       </div>
 
@@ -179,7 +179,7 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
               </>
 
               <div className='flex flex-col gap-3'>
-                <div className='text-[13px] font-semibold text-[#282929] dark:text-white'>
+                <div className='text-[13px] font-semibold text-grayDark dark:text-white'>
                   Engine
                 </div>
                 <input
@@ -189,13 +189,13 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
                   value={
                     where?.value_jsonContains ? JSON.parse(where?.value_jsonContains)?.engine : ''
                   }
-                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+                  className='w-full rounded-[42px] border-transparent bg-white px-4 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
                 />
               </div>
 
               <button
                 onClick={handleFilter}
-                className='rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white md:justify-self-end'
+                className='rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-blueAccent dark:text-white md:justify-self-end'
               >
                 Filter
               </button>

@@ -21,13 +21,13 @@ export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
 
   return (
     <div className='w-full'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Block #{block.height}
           </h3>
           {/* TODO: uncomment when we have support for best blocks, currently all blocks are archived
-          <div className='bg-[#241235] text-xs font-medium  px-5 py-3 rounded-full block leading-normal text-white'>
+          <div className='bg-grayDarker text-xs font-medium  px-5 py-3 rounded-full block leading-normal text-white'>
             Best Block
           </div> */}
         </div>

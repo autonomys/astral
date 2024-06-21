@@ -11,7 +11,7 @@ export const EventTabDescription: FC<Props> = ({ event }) => {
   const [isActive, setIsActive] = useState(true)
   return (
     <div className='rounded-[20px] bg-white p-4 text-xs sm:bg-inherit'>
-      <div className='mb-2 grid text-[#857EC2] dark:text-white/75 sm:grid-cols-4'>
+      <div className='mb-2 grid text-purpleShade2 dark:text-white/75 sm:grid-cols-4'>
         <div>Event Id</div>
         <div>Hash</div>
         <div>Action</div>
@@ -38,11 +38,11 @@ export const EventTabDescription: FC<Props> = ({ event }) => {
         <div>{event.phase}</div>
       </div>
       <div
-        className={isActive ? 'block rounded-lg bg-[#F3FBFF] px-5 py-8 dark:bg-white/10' : 'hidden'}
+        className={isActive ? 'block rounded-lg bg-blueLight px-5 py-8 dark:bg-white/10' : 'hidden'}
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >
-        <div className='w-full divide-y divide-gray-200 text-xs text-[#282929] dark:divide-white/20 dark:text-white'>
+        <div className='w-full divide-y divide-gray-200 text-xs text-grayDark dark:divide-white/20 dark:text-white'>
           <div className='flex justify-between  py-2'>
             <div>Signer</div>
             <div>{event.extrinsic?.signer?.id || '-'}</div>

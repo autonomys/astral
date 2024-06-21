@@ -45,7 +45,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
@@ -176,7 +176,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
       </div>
 
