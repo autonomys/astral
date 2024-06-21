@@ -1,20 +1,16 @@
 'use client'
 
-import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { FC, useMemo, useState } from 'react'
-
-// layout
-import { HeaderChainDropdown } from './HeaderChainDropdown'
-import { MobileHeader } from './MobileHeader'
-
-// common
 import { LogoIcon } from '@/components/icons'
+import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
+import { FC, useMemo, useState } from 'react'
+import { HeaderChainDropdown } from './HeaderChainDropdown'
+import { MobileHeader } from './MobileHeader'
 
 export const Header: FC = () => {
   const { isDark, toggleTheme } = useTheme()

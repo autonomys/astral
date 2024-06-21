@@ -3,6 +3,7 @@
 import { PAGE_SIZE } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { Spinner } from 'components/common/Spinner'
@@ -20,6 +21,7 @@ export const LogList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const [filters, setFilters] = useState<LogWhereInput>({})
+  const novaExplorerBanner = useEvmExplorerBanner()
 
   const { data, error, loading } = useQuery<LogsConnectionQuery>(QUERY_LOG_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
@@ -70,6 +72,7 @@ export const LogList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <div className='mt-5 flex w-full justify-between'>
         <LogListFilter
           title={

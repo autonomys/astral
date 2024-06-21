@@ -19,6 +19,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
 import { OperatorRewardsListCard } from './OperatorRewardsListCard'
 import { QUERY_OPERATORS_REWARDS_LIST } from './querys'
@@ -96,6 +97,8 @@ export const OperatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
+  const orderBy = useMemo(() => sort(sorting, 'amount_DESC'), [sorting])
+
   const getQueryVariables = useCallback(
     (
       sorting: SortingState,
@@ -111,13 +114,11 @@ export const OperatorRewardsList = () => {
           pagination.pageIndex > 0
             ? (pagination.pageIndex * pagination.pageSize).toString()
             : undefined,
-        orderBy: sorting.length
-          ? sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',')
-          : 'amount_DESC',
+        orderBy,
         where: searchOperator ? { id_eq: searchOperator } : {},
       }
     },
-    [],
+    [orderBy],
   )
 
   const variables = useMemo(
@@ -136,8 +137,11 @@ export const OperatorRewardsList = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_OPERATORS_REWARDS_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_OPERATORS_REWARDS_LIST, 'operatorRewardsConnection', {
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -195,6 +199,7 @@ export const OperatorRewardsList = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            filename='leaderboard-operator-rewards-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={<MobileComponent operatorRewards={operatorRewards} />}
           />

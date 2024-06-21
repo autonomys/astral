@@ -11,6 +11,7 @@ import { LazyExportButton } from './LazyExportButton'
 
 interface TableProps<T extends object> {
   data?: T[]
+  filename?: string
   fullDataDownloader?: () => Promise<unknown[]>
   table: Table<T>
 }
@@ -18,6 +19,7 @@ interface TableProps<T extends object> {
 export const TableNavigation = <T extends object>({
   table,
   data,
+  filename,
   fullDataDownloader,
 }: TableProps<T>) => (
   <>
@@ -46,7 +48,7 @@ export const TableNavigation = <T extends object>({
           </div>
           <div className='w-full'>
             {fullDataDownloader && (
-              <LazyExportButton query={fullDataDownloader} filename='account-list' />
+              <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
             )}
           </div>
         </div>
@@ -56,7 +58,7 @@ export const TableNavigation = <T extends object>({
           {data && <ExportButton data={data} filename='account-list' />}
           <div className='flex w-full'>
             {fullDataDownloader && (
-              <LazyExportButton query={fullDataDownloader} filename='account-list' />
+              <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
             )}
           </div>
         </div>
