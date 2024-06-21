@@ -78,8 +78,8 @@ export const StakingHeader = () => {
         link: `/${selectedChain.urls.page}/${Routes.staking}`,
       },
       {
-        title: 'Stake My Operator',
-        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.stake}`,
+        title: 'Register Operator',
+        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
     ]
     if (operatorsConnection && operatorsConnection.length > 0)
