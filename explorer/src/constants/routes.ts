@@ -3,7 +3,8 @@ export enum Routes {
   consensus = 'consensus',
   leaderboard = 'leaderboard',
   staking = 'staking',
-  stake = 'stake',
+  // Route deactivated till bugs are fixed and feature is ready
+  // stake = 'stake',
 }
 
 export const ROUTES = [
@@ -23,10 +24,11 @@ export const ROUTES = [
     name: Routes.staking,
     title: 'Staking',
   },
-  {
-    name: Routes.stake,
-    title: 'Stake Wars',
-  },
+  // Route deactivated till bugs are fixed and feature is ready
+  // {
+  //   name: Routes.stake,
+  //   title: 'Stake Wars',
+  // },
 ]
 
 export const EXTERNAL_ROUTES = {
