@@ -1,7 +1,6 @@
 'use client'
 
 import { WalletIcon } from '@/components/icons'
-import { accountIdToHex } from '@/utils/formatAddress'
 import { floatToStringWithDecimals } from '@/utils/number'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -189,7 +188,7 @@ export const OperatorStake = () => {
 
   const resetActiveProofMethodTab = useCallback(
     (
-      method: string,
+      method: OwnershipProofMethod,
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
