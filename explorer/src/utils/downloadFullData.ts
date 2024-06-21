@@ -17,7 +17,7 @@ export const downloadFullData = async (
     }
     const { data } = await apolloClient.query({
       query,
-      variables: variables ? { ...variables, ..._variables } : _variables,
+      variables: variables ? { ..._variables, ...variables } : _variables,
     })
     console.log('data', data)
 
