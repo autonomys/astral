@@ -24,6 +24,7 @@ interface ReactTableProps<T extends object> {
   pagination: Pagination
   mobileComponent: ReactNode
   filename?: string
+  pageSizeOptions?: number[]
   fullDataDownloader?: () => Promise<unknown[]>
 }
 
@@ -39,6 +40,7 @@ export const NewTable = <T extends object>({
   mobileComponent,
   filename,
   fullDataDownloader,
+  pageSizeOptions,
 }: ReactTableProps<T>) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const memoizedData = useMemo(() => data, [data])
@@ -70,6 +72,7 @@ export const NewTable = <T extends object>({
           table={table}
           data={data}
           filename={filename}
+          pageSizeOptions={pageSizeOptions}
           fullDataDownloader={fullDataDownloader}
         />
       )}
