@@ -1,22 +1,17 @@
 'use client'
 
 import { CpuChipIcon, GlobeAltIcon, QueueListIcon, TrophyIcon } from '@heroicons/react/24/outline'
-import { usePathname, useRouter } from 'next/navigation'
-import { FC, useCallback, useMemo } from 'react'
-
-// layout
+import { WalletSidekick } from 'components/WalletSideKick'
+import { ConnectWalletButton } from 'components/common/ConnectWalletButton'
 import { chains } from 'constants/chains'
 import { domains } from 'constants/domains'
 import { ROUTES, Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
-
-// common
-import { ConnectWalletButton } from 'components/common/ConnectWalletButton'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
-
-// chains
-import { WalletSidekick } from 'components/WalletSideKick'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { FC, useCallback, useMemo } from 'react'
 import AccountListDropdown from './AccountListDropdown'
 
 export const DomainHeader: FC = () => {
@@ -60,16 +55,21 @@ export const DomainHeader: FC = () => {
         const isActive = pathname.includes(`${selectedChain.urls.page}/${item.name}`)
         return (
           <div className='flex items-center text-[13px] font-semibold' key={`${item}-${index}`}>
-            <button
-              onClick={() => handleDomainSelected(item.name)}
-              className={
-                isActive
-                  ? 'rounded-full bg-[#241235] px-4 py-2 text-white dark:bg-[#DE67E4]'
-                  : 'bg-white text-[#282929] dark:bg-[#1E254E] dark:text-white'
-              }
+            <Link
+              href={`/${selectedChain.urls.page}/${item.name}`}
+              className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
             >
-              {isDesktop ? item.title : domainIcon(item, isActive)}
-            </button>
+              <button
+                onClick={() => handleDomainSelected(item.name)}
+                className={
+                  isActive
+                    ? 'rounded-full bg-[#241235] px-4 py-2 text-white dark:bg-[#DE67E4]'
+                    : 'bg-white text-[#282929] dark:bg-[#1E254E] dark:text-white'
+                }
+              >
+                {isDesktop ? item.title : domainIcon(item, isActive)}
+              </button>
+            </Link>
           </div>
         )
       }),
