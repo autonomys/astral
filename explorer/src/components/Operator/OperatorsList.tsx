@@ -232,6 +232,7 @@ export const OperatorsList: FC = () => {
   const fullDataDownloader = useCallback(
     () =>
       downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST, 'operatorsConnection', {
+        first: 10,
         orderBy,
       }),
     [apolloClient, orderBy],
@@ -289,6 +290,7 @@ export const OperatorsList: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             filename='operators-operators-list'
+            pageSizeOptions={[10]}
             fullDataDownloader={fullDataDownloader}
             mobileComponent={
               <MobileComponent

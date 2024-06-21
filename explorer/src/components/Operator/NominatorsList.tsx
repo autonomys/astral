@@ -264,6 +264,7 @@ export const NominatorsList: FC = () => {
   const fullDataDownloader = useCallback(
     () =>
       downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST, 'nominatorsConnection', {
+        first: 10,
         orderBy,
       }),
     [apolloClient, orderBy],
@@ -314,6 +315,7 @@ export const NominatorsList: FC = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            pageSizeOptions={[10]}
             filename='operators-nominators-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={
