@@ -15,6 +15,7 @@ import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { ExtrinsicListCard } from '../Extrinsic/ExtrinsicListCard'
 import { AccountExtrinsicFilterDropdown } from './AccountExtrinsicFilterDropdown'
@@ -42,6 +43,8 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
+  const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
+
   const getQueryVariables = useCallback(
     (
       sorting: SortingState,
@@ -58,8 +61,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           pagination.pageIndex > 0
             ? (pagination.pageIndex * pagination.pageSize).toString()
             : undefined,
-        orderBy:
-          sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'block_height_DESC',
+        orderBy,
         where: {
           ...filters,
           signer: {
@@ -68,7 +70,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         },
       }
     },
-    [],
+    [orderBy],
   )
 
   const { data, error, loading } = useQuery<ExtrinsicsByAccountIdQuery>(QUERY_ACCOUNT_EXTRINSICS, {
@@ -79,8 +81,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'extrinsicsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
@@ -189,6 +192,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           pagination={pagination}
           pageCount={pageCount}
           onPaginationChange={setPagination}
+          filename='account-extrinsic-list'
           fullDataDownloader={fullDataDownloader}
           mobileComponent={<MobileComponent extrinsics={extrinsics} />}
         />
