@@ -12,7 +12,7 @@ import * as Yup from 'yup'
 
 export enum OperatorActionType {
   None = 'none',
-  Nominating = 'Nominating',
+  Nominating = 'Nominate',
   Withdraw = 'Withdraw',
   Deregister = 'Deregister',
   UnlockFunds = 'Unlock Funds',
