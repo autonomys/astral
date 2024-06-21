@@ -2,6 +2,7 @@
 
 import { useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import useDomains from 'hooks/useDomains'
@@ -26,6 +27,7 @@ import { QUERY_ACCOUNT_BY_ID, QUERY_ACCOUNT_BY_ID_EVM } from './query'
 export const Account: FC = () => {
   const { accountId: rawAccountId } = useParams<AccountIdParam>()
   const { selectedChain } = useDomains()
+  const novaExplorerBanner = useEvmExplorerBanner('address/' + rawAccountId)
   const accountId = selectedChain.isDomain ? rawAccountId : formatAddress(rawAccountId)
 
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -49,6 +51,7 @@ export const Account: FC = () => {
 
   return (
     <div className='flex w-full flex-col space-y-4'>
+      {novaExplorerBanner}
       <AccountDetailsCard account={account} accountAddress={accountId} isDesktop={isDesktop} />
       <div className='flex flex-col gap-8 lg:flex-row lg:justify-between'>
         <AccountGraphs account={account} isDesktop={isDesktop} />

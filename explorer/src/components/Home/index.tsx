@@ -1,6 +1,7 @@
 'use client'
 
 import { useQuery } from '@apollo/client'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
@@ -19,6 +20,7 @@ export const Home: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = isDesktop ? 10 : 3
   const { selectedChain } = useDomains()
+  const novaExplorerBanner = useEvmExplorerBanner()
 
   const HomeQuery = useMemo(
     () => (selectedChain?.isDomain ? QUERY_HOME_DOMAIN : QUERY_HOME),
@@ -36,6 +38,7 @@ export const Home: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <SearchBar />
       <HomeChainInfo error={error} data={data} loading={loading} />
       <div className='flex w-full flex-col items-center gap-5 xl:flex-row'>

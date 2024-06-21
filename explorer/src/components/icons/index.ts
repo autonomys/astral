@@ -1,3 +1,4 @@
+export * from './ArchivedHistoryIcon'
 export * from './BlockIcon'
 export * from './CheckMarkIcon'
 export * from './DocIcon'

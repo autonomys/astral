@@ -14,8 +14,8 @@ dayjs.extend(relativeTime)
 type Props = {
   logs: Log[]
   isDesktop?: boolean
-  extrinsicsCount?: string
-  eventsCount?: string
+  extrinsicsCount?: number
+  eventsCount?: number
 }
 
 export const BlockDetailsTabs: FC<Props> = ({
