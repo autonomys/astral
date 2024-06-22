@@ -26,7 +26,7 @@ export const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
         cells: logs.map(({ id }, index) => (
           <div className='flex w-full' key={`${id}-log-index`}>
             <Link
-              className='w-full hover:text-[#DE67E4]'
+              className='w-full hover:text-purpleAccent'
               data-testid={`log-link-${index}`}
               href={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, id)}
             >
@@ -69,7 +69,7 @@ export const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
         <Table
           columns={columns}
           emptyMessage='There are no blocks to show'
-          tableProps='bg-white rounded-md dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+          tableProps='bg-white rounded-md dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
           tableHeaderProps='border-b border-gray-200'
           id='latest-blocks'
         />

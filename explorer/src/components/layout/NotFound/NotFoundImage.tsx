@@ -4,7 +4,7 @@ import { useTheme } from 'providers/ThemeProvider'
 export const NotFoundImage = () => {
   const { isDark } = useTheme()
   return (
-    <div className='text-[#241235] dark:text-white'>
+    <div className='text-grayDarker dark:text-white'>
       <svg
         width='507'
         height='278'

@@ -46,7 +46,7 @@ export const AccountRewardTable: FC<Props> = ({
           return (
             <Link
               key={`${row.original.id}-account-index`}
-              className='hover:text-[#DE67E4]'
+              className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.blocks.id.page(
                 selectedChain.urls.page,
                 selectedDomain,

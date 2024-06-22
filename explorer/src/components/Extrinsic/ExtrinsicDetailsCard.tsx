@@ -28,12 +28,12 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
-            <h3 className='text-sm font-medium text-[#241235] dark:text-white  md:text-2xl'>
+            <h3 className='text-sm font-medium text-grayDarker dark:text-white  md:text-2xl'>
               Extrinsic #{extrinsic.block.height}-{extrinsic.indexInBlock}
             </h3>
-            <div className='flex items-center justify-center gap-2 rounded-full bg-[#241235] px-5 py-3'>
+            <div className='flex items-center justify-center gap-2 rounded-full bg-grayDarker px-5 py-3'>
               <div className=' block text-xs font-semibold leading-normal text-white'>
                 #{extrinsic.block.height}
               </div>
@@ -77,7 +77,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                 </StyledListItem>
               </List>
             </div>
-            <div className='mb-4 w-full break-all rounded-lg border border-[#F3FBFF] bg-[#F3FBFF] p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
+            <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
               <Arguments args={extrinsic.args} />
             </div>
           </div>

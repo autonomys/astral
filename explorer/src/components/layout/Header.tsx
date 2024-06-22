@@ -1,20 +1,16 @@
 'use client'
 
-import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { FC, useMemo, useState } from 'react'
-
-// layout
-import { HeaderChainDropdown } from './HeaderChainDropdown'
-import { MobileHeader } from './MobileHeader'
-
-// common
 import { LogoIcon } from '@/components/icons'
+import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
+import { FC, useMemo, useState } from 'react'
+import { HeaderChainDropdown } from './HeaderChainDropdown'
+import { MobileHeader } from './MobileHeader'
 
 export const Header: FC = () => {
   const { isDark, toggleTheme } = useTheme()
@@ -57,7 +53,7 @@ export const Header: FC = () => {
             href={`/${selectedChain.urls.page}/${selectedDomain}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
-            <span className='text-xl text-[#282929] dark:text-white'>
+            <span className='text-xl text-grayDark dark:text-white'>
               <LogoIcon fillColor='currentColor' />
             </span>
           </Link>
@@ -69,8 +65,8 @@ export const Header: FC = () => {
                   key={index}
                   className={
                     isCurrentPath
-                      ? 'block rounded-full bg-[#241235] px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-[#DE67E4]'
-                      : 'bg-none text-[13px] font-semibold leading-4 text-[#282929] dark:text-white'
+                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-purpleAccent'
+                      : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
                 >
@@ -83,7 +79,7 @@ export const Header: FC = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='ml-4 inline-flex items-center rounded-full bg-[#241235] p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-[#FFFFFF]'
+              className='ml-4 inline-flex items-center rounded-full bg-grayDarker p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon
@@ -116,7 +112,7 @@ export const Header: FC = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='items-center rounded-full bg-[#241235] p-3 text-white dark:bg-white dark:text-[#1E254E]'
+              className='items-center rounded-full bg-grayDarker p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />

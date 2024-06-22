@@ -36,7 +36,7 @@ export const NominatorListCard: FC<Props> = ({ nominator }) => {
     <MobileCard
       id='operator-list-mobile'
       header={
-        <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+        <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
           {nominator.id}
         </p>
       }

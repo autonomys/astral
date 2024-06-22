@@ -89,7 +89,7 @@ function Screen({
           >
             {metadata.title}
           </h2>
-          <div tw='absolute flex flex-row border-none rounded-[20px] bg-[#1E254E] text-xl text-white ml-230 mt-12 mb-4 p-2 pl-4 w-44 h-12'>
+          <div tw='absolute flex flex-row border-none rounded-[20px] bg-blueAccent text-xl text-white ml-230 mt-12 mb-4 p-2 pl-4 w-44 h-12'>
             {chainMatch.title}
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { searchTypes } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
@@ -20,6 +21,7 @@ export const BlockList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const { selectedChain } = useDomains()
+  const novaExplorerBanner = useEvmExplorerBanner('blocks')
 
   const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
   const BlockListQuery = useMemo(
@@ -85,11 +87,12 @@ export const BlockList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[1]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-[#282929] dark:text-white'>{`Blocks (${totalLabel})`}</div>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Blocks (${totalLabel})`}</div>
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <BlockTable blocks={blocks} isDesktop={isDesktop} />
