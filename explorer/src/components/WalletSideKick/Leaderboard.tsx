@@ -68,11 +68,11 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
     useLeaderboard(subspaceAccount)
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
-            <span className='text-base font-medium text-[#241235] dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               Leaderboard
             </span>
           </div>
@@ -81,7 +81,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
         {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
         {error && (
           <div className='m-2 flex items-center pt-4'>
-            <span className='text-base font-medium text-[#241235] dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               We are unable to load your wallet data
             </span>
           </div>
@@ -92,7 +92,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
               <li key='topFarmers'>
                 <Link
                   data-testid='topFarmers-link'
-                  className='hover:text-[#DE67E4]'
+                  className='hover:text-purpleAccent'
                   href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
                 >
                   <StyledListItem title='Top Farmer'>
@@ -105,7 +105,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
               <li key='topOperators'>
                 <Link
                   data-testid='topOperators-link'
-                  className='hover:text-[#DE67E4]'
+                  className='hover:text-purpleAccent'
                   href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
                 >
                   <StyledListItem title='Top Operator'>
@@ -118,7 +118,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
               <li key='topNominators'>
                 <Link
                   data-testid='topNominators-link'
-                  className='hover:text-[#DE67E4]'
+                  className='hover:text-purpleAccent'
                   href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
                 >
                   <StyledListItem title='Top Nominator'>
@@ -132,10 +132,10 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
           <div className='m-2 flex items-center pt-4'>
             <Link
               data-testid='totalNominatedCount-link'
-              className='hover:text-[#DE67E4]'
+              className='hover:text-purpleAccent'
               href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
             >
-              <span className='text-sm font-medium text-[#241235] dark:text-white'>
+              <span className='text-sm font-medium text-grayDarker dark:text-white'>
                 Your wallet is not in any of the top 100 leaderboard positions!
               </span>
             </Link>

@@ -72,7 +72,7 @@ export const OperatorsList: FC = () => {
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
@@ -232,6 +232,7 @@ export const OperatorsList: FC = () => {
   const fullDataDownloader = useCallback(
     () =>
       downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST, 'operatorsConnection', {
+        first: 10,
         orderBy,
       }),
     [apolloClient, orderBy],
@@ -266,11 +267,11 @@ export const OperatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
         <DebouncedInput
           type='text'
-          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
+          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
           placeholder='Search by operator id'
           onChange={handleSearch}
           value={searchOperator}
@@ -289,6 +290,7 @@ export const OperatorsList: FC = () => {
             pageCount={pageCount}
             onPaginationChange={setPagination}
             filename='operators-operators-list'
+            pageSizeOptions={[10]}
             fullDataDownloader={fullDataDownloader}
             mobileComponent={
               <MobileComponent

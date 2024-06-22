@@ -48,7 +48,7 @@ export const NominatorListCard: FC<Props> = ({
               nominator.account.id,
             )}
           >
-            <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+            <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
               {nominator.account.id}
             </p>
           </Link>

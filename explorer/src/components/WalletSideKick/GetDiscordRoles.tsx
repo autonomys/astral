@@ -26,7 +26,7 @@ type ExplainerProps = {
 
 const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) => (
   <button
-    className={`w-[100px] rounded-xl border border-[#DE67E4] bg-transparent px-4 shadow-lg ${className}`}
+    className={`w-[100px] rounded-xl border border-purpleAccent bg-transparent px-4 shadow-lg ${className}`}
     onClick={onClick}
   >
     {children}
@@ -51,7 +51,7 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-[#241235] px-2 text-sm font-medium text-white dark:bg-[#1E254E] md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close
@@ -117,7 +117,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
 
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
-      <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+      <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
             <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
@@ -127,7 +127,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
       </div>
     )
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion title='Get verified roles on Discord'>
         <List>
           <StyledListItem title='Verify the ownership of your wallet'>

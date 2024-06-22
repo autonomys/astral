@@ -98,7 +98,7 @@ export const ExtrinsicList: FC = () => {
       <div className='mt-5 flex w-full justify-between'>
         <ExtrinsicListFilter
           title={
-            <div className=' font-medium text-[#282929] dark:text-white'>
+            <div className=' font-medium text-grayDark dark:text-white'>
               Extrinsics {totalLabel}
             </div>
           }

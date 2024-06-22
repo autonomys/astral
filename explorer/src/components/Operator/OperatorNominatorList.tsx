@@ -10,7 +10,7 @@ type Props = {
 export const OperatorNominatorList: FC<Props> = ({ operator, isDesktop }) => {
   return (
     <div className='mt-5 flex w-full flex-col align-middle'>
-      <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] sm:mt-0'>
+      <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:mt-0'>
         <OperatorNominatorTable operator={operator} isDesktop={isDesktop} />
       </div>
     </div>

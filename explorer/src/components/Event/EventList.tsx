@@ -83,7 +83,7 @@ export const EventList: FC = () => {
       <div className='mt-5 flex w-full justify-between'>
         <EventListFilter
           title={
-            <div className=' font-medium text-[#282929] dark:text-white'>Events {totalLabel}</div>
+            <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
           }
           filters={filters}
           modules={modules}

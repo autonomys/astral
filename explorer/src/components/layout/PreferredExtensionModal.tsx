@@ -47,7 +47,7 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
     <button
       onClick={(e) => handleExtensionSelect(e, wallet.extensionName)}
       key={`${wallet.extensionName}-${index}`}
-      className='flex flex-col gap-3 rounded-md border border-[#DE67E4] p-2 hover:bg-gray-100 dark:hover:bg-transparent/10'
+      className='flex flex-col gap-3 rounded-md border border-purpleAccent p-2 hover:bg-gray-100 dark:hover:bg-transparent/10'
     >
       <div className='flex items-center gap-3'>
         <Image src={icon} alt={wallet.title} width={32} height={32} />
@@ -58,7 +58,7 @@ const WalletOption: FC<WalletOptionProps> = ({ wallet, index, onClose }) => {
       {wallet?.installed ? (
         <></>
       ) : (
-        <div className='justify-self-end text-xs font-medium text-indigo-500 dark:text-[#DE67E4]'>
+        <div className='justify-self-end text-xs font-medium text-indigo-500 dark:text-purpleAccent'>
           <div className='flex items-center gap-1'>
             <a href={wallet.installUrl} rel='noreferrer' target='_blank'>
               Install
@@ -106,7 +106,7 @@ export const PreferredExtensionModal: FC<Props> = ({ isOpen, onClose }) => {
         </div>
 
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-[#241235] px-2 text-sm font-medium text-white dark:bg-[#1E254E] md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close

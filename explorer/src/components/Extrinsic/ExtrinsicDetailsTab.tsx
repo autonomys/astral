@@ -61,7 +61,7 @@ const ExtrinsicDetailsEventCard: FC<EventCardProps> = ({ event }) => {
           className='w-full'
           href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, event.id)}
         >
-          <h3 className='text-sm font-medium text-[#241235] dark:text-white'>
+          <h3 className='text-sm font-medium text-grayDarker dark:text-white'>
             <div>{`${event.block?.height}-${event.indexInBlock}`}</div>
           </h3>
         </Link>

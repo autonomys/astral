@@ -17,7 +17,7 @@ const SearchResult: FC = () => {
         <SearchBar />
       </div>
       <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-[#282929] dark:text-white'>Search results</div>
+        <div className='text-base font-medium text-grayDark dark:text-white'>Search results</div>
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         {type === 'extrinsics' ? (

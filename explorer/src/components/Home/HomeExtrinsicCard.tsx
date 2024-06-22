@@ -36,7 +36,7 @@ export const HomeExtrinsicCard: FC<Props> = ({ extrinsic }) => {
           )}
         >
           <StatusIcon status={extrinsic.success} />
-          <h3 className='text-sm font-medium text-[#241235] dark:text-white'>{`${extrinsic.block.height}-${extrinsic.indexInBlock}`}</h3>
+          <h3 className='text-sm font-medium text-grayDarker dark:text-white'>{`${extrinsic.block.height}-${extrinsic.indexInBlock}`}</h3>
         </Link>
       }
       body={body}
