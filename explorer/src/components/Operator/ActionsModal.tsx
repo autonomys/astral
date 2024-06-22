@@ -12,7 +12,7 @@ import * as Yup from 'yup'
 
 export enum OperatorActionType {
   None = 'none',
-  AddFunds = 'Add Funds',
+  Nominating = 'Nominate',
   Withdraw = 'Withdraw',
   Deregister = 'Deregister',
   UnlockFunds = 'Unlock Funds',
@@ -259,7 +259,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const ActionBody = useMemo(() => {
     switch (OperatorActionType[action.type as keyof typeof OperatorActionType]) {
-      case OperatorActionType.AddFunds:
+      case OperatorActionType.Nominating:
         return (
           <div className='flex flex-col items-start gap-4'>
             <Formik
@@ -267,7 +267,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
               validationSchema={addFundsFormValidationSchema}
               onSubmit={(values, { resetForm }) =>
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                OperatorActionType.AddFunds
+                OperatorActionType.Nominating
                   ? handleAddFunds(values, resetForm)
                   : handleWithdraw(values, resetForm)
               }
@@ -281,7 +281,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   <span className='text-base font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                      OperatorActionType.AddFunds
+                      OperatorActionType.Nominating
                         ? 'stake'
                         : 'withdraw'
                     }`}
@@ -295,7 +295,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                           type='number'
                           placeholder={`Amount to ${
                             OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                            OperatorActionType.AddFunds
+                            OperatorActionType.Nominating
                               ? 'stake'
                               : 'withdraw'
                           }`}
@@ -354,7 +354,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
               validationSchema={withdrawFundsFormValidationSchema}
               onSubmit={(values, { resetForm }) =>
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                OperatorActionType.AddFunds
+                OperatorActionType.Nominating
                   ? handleAddFunds(values, resetForm)
                   : handleWithdraw(values, resetForm)
               }
@@ -368,7 +368,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   <span className='text-base font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-                      OperatorActionType.AddFunds
+                      OperatorActionType.Nominating
                         ? 'stake'
                         : 'withdraw'
                     }`}
