@@ -4,6 +4,7 @@ import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
@@ -43,6 +44,7 @@ interface FormValues {
 const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
+  const { selectedChain } = useDomains()
   const { api, actingAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
@@ -278,13 +280,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-grayDarker text-base font-medium dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
                         ? 'stake'
                         : 'withdraw'
-                    }`}
+                    }`}{' '}
+                    ({selectedChain.token.symbol})
                   </span>
                   <FieldArray
                     name='dischargeNorms'
@@ -299,13 +302,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                               ? 'stake'
                               : 'withdraw'
                           }`}
-                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                          className={`dark:bg-blueAccent mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
                             errors.amount &&
                             'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                           }`}
                         />
                         <button
-                          className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                          className='bg-grayDarker dark:bg-purpleAccent absolute flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                           type='button'
                           style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                           onClick={() => setFieldValue('amount', maxAmountToAdd)}
@@ -335,7 +338,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                      className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -365,7 +368,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-grayDarker text-base font-medium dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -394,7 +397,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
                           />
                           <button
-                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                            className='bg-grayDarker dark:bg-purpleAccent flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
@@ -430,7 +433,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                      className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -444,7 +447,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case OperatorActionType.Deregister:
         return (
           <div className='flex flex-col items-start gap-4'>
-            <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
+            <span className='text-grayDarker mt-4 text-base font-medium dark:text-white'>
               Do you really want to deregister your Operator?
             </span>
             {ErrorPlaceholder}
@@ -460,7 +463,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case OperatorActionType.UnlockOperator:
         return (
           <div className='flex flex-col items-start gap-4'>
-            <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
+            <span className='text-grayDarker mt-4 text-base font-medium dark:text-white'>
               Do you really want to{' '}
               {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
               OperatorActionType.UnlockFunds
@@ -517,7 +520,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+          className='bg-grayDarker dark:bg-blueAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close

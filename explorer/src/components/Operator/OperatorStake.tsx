@@ -1,18 +1,19 @@
 'use client'
 
-import { WalletIcon } from '@/components/icons'
-import { floatToStringWithDecimals } from '@/utils/number'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
 import { isHex } from '@polkadot/util'
+import { WalletIcon } from 'components/icons'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { floatToStringWithDecimals } from 'utils/number'
 import * as Yup from 'yup'
 
 interface FormValues {
@@ -34,6 +35,7 @@ type Domain = {
 
 export const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -324,7 +326,7 @@ export const OperatorStake = () => {
 
                           <div className='p-4'>
                             <span className='text-grayDarker text-base font-medium dark:text-white'>
-                              Amount to Stake
+                              Amount to Stake ({selectedChain.token.symbol})
                             </span>
                             <Field
                               name='amountToStake'
@@ -350,7 +352,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-grayDarker text-base font-medium dark:text-white'>
-                              Nominator tax
+                              Nominator tax (%)
                             </span>
                             <Field
                               name='nominatorTax'
@@ -376,7 +378,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-grayDarker text-base font-medium dark:text-white'>
-                              Minimum Nominator Stake
+                              Minimum Nominator Stake ({selectedChain.token.symbol})
                             </span>
                             <Field
                               name='minimumNominatorStake'
