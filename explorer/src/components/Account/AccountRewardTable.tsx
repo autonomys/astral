@@ -102,7 +102,8 @@ export const AccountRewardTable: FC<Props> = ({
         enableSorting: true,
         cell: ({ row }) => (
           <div key={`${row.original.id}-account-balance`}>
-            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0} tSSC
+            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0}{' '}
+            {selectedChain.token.symbol}
           </div>
         ),
       },

@@ -344,18 +344,18 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
             {result ? (
               <>
                 {hash && WalletAction[action] === WalletAction.SendToken && (
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-grayDarker text-base font-medium dark:text-white'>
                     Extrinsic Hash
                   </span>
                 )}
                 <textarea
                   name='hash'
                   value={result}
-                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                  className='dark:bg-blueAccent mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                  className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -369,7 +369,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               >
                 {({ errors, touched, handleSubmit, setFieldValue }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
-                    <span className='text-base font-medium text-grayDarker dark:text-white'>
+                    <span className='text-grayDarker text-base font-medium dark:text-white'>
                       Send to
                     </span>
                     <FieldArray
@@ -380,7 +380,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             name='receiver'
                             type='text'
                             placeholder='Send to'
-                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                            className={`dark:bg-blueAccent mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
                               errors.amount &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
@@ -395,10 +395,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     ) : (
                       <div className='text-md mt-2 h-8' data-testid='placeHolder' />
                     )}
-                    <span className='text-base font-medium text-grayDarker dark:text-white'>
+                    <span className='text-grayDarker text-base font-medium dark:text-white'>
                       {`Amount to ${
                         WalletAction[action] === WalletAction.SendToken ? 'send' : 'withdraw'
-                      }`}
+                      }`}{' '}
+                      ({selectedChain.token.symbol})
                     </span>
                     <FieldArray
                       name='dischargeNorms'
@@ -410,13 +411,13 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             placeholder={`Amount to ${
                               WalletAction[action] === WalletAction.SendToken ? 'stake' : 'withdraw'
                             }`}
-                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                            className={`dark:bg-blueAccent mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
                               errors.amount &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
                           />
                           <button
-                            className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                            className='bg-grayDarker dark:bg-purpleAccent absolute flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                             type='button'
                             style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                             onClick={() => setFieldValue('amount', maxAmount)}
@@ -446,7 +447,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -465,23 +466,23 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
             {result ? (
               <>
                 {hash && WalletAction[action] === WalletAction.SendRemark && (
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-grayDarker text-base font-medium dark:text-white'>
                     Extrinsic Hash
                   </span>
                 )}
                 {signature && WalletAction[action] === WalletAction.SignMessage && (
-                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                  <span className='text-grayDarker text-base font-medium dark:text-white'>
                     Signature # {signature.id}
                   </span>
                 )}
                 <textarea
                   name={WalletAction[action] === WalletAction.SendRemark ? 'hash' : 'signature'}
                   value={result}
-                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                  className='dark:bg-blueAccent mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                  className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -499,7 +500,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               >
                 {({ errors, touched, handleSubmit }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
-                    <span className='text-base font-medium text-grayDarker dark:text-white'>
+                    <span className='text-grayDarker text-base font-medium dark:text-white'>
                       {WalletAction[action] === WalletAction.SendRemark ? 'Remark' : 'Message'}
                     </span>
                     <FieldArray
@@ -508,7 +509,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                         <div className='relative'>
                           <Field
                             name='message'
-                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                            className={`dark:bg-blueAccent mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
                               errors.message &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
@@ -518,7 +519,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               <textarea
                                 {...field}
                                 placeholder='Message'
-                                className={`mt-4 block h-[120px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                className={`dark:bg-blueAccent mt-4 block h-[120px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
                                   errors.message &&
                                   'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                 }`}
@@ -542,7 +543,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -562,14 +563,14 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 <div className='flex items-center'>
                   <Link
                     data-testid='wallet-link'
-                    className='pr-2 hover:text-purpleAccent'
+                    className='hover:text-purpleAccent pr-2'
                     href={INTERNAL_ROUTES.accounts.id.page(
                       selectedChain.urls.page,
                       'consensus',
                       subspaceAccount,
                     )}
                   >
-                    <span className='ml-2 w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white md:w-full'>
+                    <span className='text-grayDarker ml-2 w-5 truncate text-lg font-medium underline dark:text-white md:w-full'>
                       {actingAccount.name}
                     </span>
                   </Link>
@@ -583,7 +584,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                   type='text'
                   value={subspaceAccount}
                   readOnly
-                  className='block w-full rounded-xl bg-white px-4 py-2 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white dark:focus:bg-blueAccent'
+                  className='dark:bg-blueAccent dark:focus:bg-blueAccent block w-full rounded-xl bg-white px-4 py-2 text-sm text-gray-900 shadow-lg dark:text-white'
                 />
               </>
             )}
@@ -594,17 +595,17 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='flex flex-col items-start gap-4'>
             {result ? (
               <>
-                <span className='text-base font-medium text-grayDarker dark:text-white'>
+                <span className='text-grayDarker text-base font-medium dark:text-white'>
                   Extrinsic Hash
                 </span>
                 <textarea
                   name='hash'
                   value={result}
-                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                  className='dark:bg-blueAccent mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                  className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -653,7 +654,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(selectedMethod)}
@@ -669,32 +670,32 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         return null
     }
   }, [
-    ErrorPlaceholder,
-    actingAccount,
     action,
-    sendTokenFormValidationSchema,
-    messageFormValidationSchema,
-    handleSendRemark,
-    handleSendToken,
-    handleSignMessage,
-    initialSendTokenValues,
-    initialMessageValues,
-    maxAmount,
-    subspaceAccount,
-    selectedChain.urls.page,
-    handleCopy,
-    signature,
-    hash,
     result,
+    hash,
+    initialSendTokenValues,
+    sendTokenFormValidationSchema,
+    signature,
+    initialMessageValues,
+    messageFormValidationSchema,
+    subspaceAccount,
+    actingAccount,
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    initialCustomExtrinsicValues,
+    customExtrinsicFormValidationSchema,
+    handleCopy,
+    handleSendToken,
+    maxAmount,
+    ErrorPlaceholder,
+    handleSendRemark,
+    handleSignMessage,
+    handleCustomExtrinsic,
     extrinsicsList,
     selectedCategory,
     selectedMethod,
-    setSelectedCategory,
-    handleCustomExtrinsic,
     resetCategory,
     resetMethod,
-    customExtrinsicFormValidationSchema,
-    initialCustomExtrinsicValues,
   ])
 
   useEffect(() => {
@@ -712,7 +713,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+          className='bg-grayDarker dark:bg-blueAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
           onClick={handleClose}
         >
           Close
