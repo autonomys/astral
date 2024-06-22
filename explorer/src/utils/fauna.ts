@@ -13,59 +13,46 @@ const client = new Client({
   scheme: 'https',
 })
 
-export const findUserByID = async (userID: string) => {
-  return await client
-    .query(q.Paginate(q.Match(q.Index('users_by_id'), userID)))
+const queryIndex = async (index: string, term: string) =>
+  await client
+    .query(q.Paginate(q.Match(q.Index(index), term)))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .then((response: any) => {
       const resultsRefs = response.data
       if (resultsRefs.length === 0) return null
 
-      const results = resultsRefs.map((ref: ExprArg) => {
-        return q.Get(ref)
-      })
+      const results = resultsRefs.map((ref: ExprArg) => q.Get(ref))
 
       return client.query(results) as Promise<{ ref: ExprArg; ts: number; data: SavedUser }[]>
     })
+    .catch((error: FaunaHttpErrorResponseContent) => console.log('error', error))
+
+const saveData = async (collection: string, data: object) =>
+  await client
+    .query(q.Create(q.Ref(collection), { data }))
+    .catch((error: FaunaHttpErrorResponseContent) => console.log('error', error))
+
+const updateData = async (document: ExprArg, data: object) =>
+  await client
+    .query(q.Update(q.Ref(document), { data }))
+    .then((response: object) => response)
     .catch((error: FaunaHttpErrorResponseContent) => {
       console.log('error', error)
+      return error
     })
-}
 
-export const findUserByAuthProviderId = async (provider: AuthProvider, id: string) => {
-  return await client
-    .query(q.Paginate(q.Match(q.Index(`users_by_${provider.toString()}_id`), id)))
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .then((response: any) => {
-      const resultsRefs = response.data
-      if (resultsRefs.length === 0) return null
+export const findUserByID = async (userID: string) => await queryIndex('users_by_id', userID)
 
-      const results = resultsRefs.map((ref: ExprArg) => {
-        return q.Get(ref)
-      })
-
-      return client.query(results) as Promise<{ ref: ExprArg; ts: number; data: SavedUser }[]>
-    })
-    .catch((error: FaunaHttpErrorResponseContent) => {
-      console.log('error', error)
-    })
-}
+export const findUserByAuthProviderId = async (provider: AuthProvider, userID: string) =>
+  await queryIndex(`users_by_${provider.toString()}_id`, userID)
 
 export const saveUser = async (user: User) => {
   const now = q.Now()
-  await client
-    .query(
-      q.Create(q.Ref('classes/users'), {
-        data: {
-          ...user,
-          createdAt: now,
-          updatedAt: now,
-        },
-      }),
-    )
-    .catch((error: FaunaHttpErrorResponseContent) => {
-      console.log('error', error)
-    })
+  return await saveData('classes/users', {
+    ...user,
+    createdAt: now,
+    updatedAt: now,
+  })
 }
 
 export const updateUser = async (
@@ -79,33 +66,12 @@ export const updateUser = async (
     [provider]: updateToUser,
     updatedAt: q.Now(),
   }
-  await client
-    .query(
-      q.Update(q.Ref(document), {
-        data: newData,
-      }),
-    )
-    .then((response: object) => {
-      return response
-    })
-    .catch((error: FaunaHttpErrorResponseContent) => {
-      console.log('error', error)
-      return error
-    })
+  return await updateData(document, newData)
 }
 
-export const saveUserToken = async (user: User) => {
-  await client
-    .query(
-      q.Create(q.Ref('classes/users_tokens'), {
-        data: {
-          ...user,
-          host: headers().get('host'),
-          createdAt: q.Now(),
-        },
-      }),
-    )
-    .catch((error: FaunaHttpErrorResponseContent) => {
-      console.log('error', error)
-    })
-}
+export const saveUserToken = async (user: User) =>
+  await saveData('classes/users_tokens', {
+    ...user,
+    host: headers().get('host'),
+    createdAt: q.Now(),
+  })
