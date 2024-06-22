@@ -1,7 +1,7 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { MobileCard, Row } from 'components/common/MobileCard'
-import { Chains } from 'constants/'
+import { Chains, WalletType } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
@@ -55,7 +55,7 @@ export const OperatorsListCard: FC<Props> = ({
           : 'unknown',
       },
     ]
-    if (actingAccount)
+    if (actingAccount && actingAccount.type === WalletType.subspace)
       rows.push({
         name: 'Actions',
         value: (
@@ -107,7 +107,7 @@ export const OperatorsListCard: FC<Props> = ({
             operator.id,
           )}
         >
-          <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
+          <p className='text-grayDarker break-all text-sm font-medium dark:text-white'>
             {operator.id}
           </p>
         </Link>
