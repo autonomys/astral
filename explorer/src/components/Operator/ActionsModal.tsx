@@ -1,10 +1,12 @@
 'use client'
 
-import { bigNumberToNumber, floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
+import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useWallet from 'hooks/useWallet'
+import Slider from 'rc-slider'
+import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import * as Yup from 'yup'
 
@@ -25,7 +27,7 @@ export const ActionsInRed = [
 export type OperatorAction = {
   type: OperatorActionType
   operatorId: number | null
-  maxAmount: bigint | null
+  maxShares: bigint | null
 }
 
 type Props = {
@@ -46,6 +48,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
+  const [sliderValue, setSliderValue] = useState(0)
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -60,24 +63,25 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         : 0,
     [walletBalance],
   )
-  const maxAmountToWithdraw = useMemo(
-    () => (action.maxAmount ? bigNumberToNumber(action.maxAmount.toString()) : 0),
-    [action.maxAmount],
-  )
-  const maxAmount = useMemo(
-    () =>
-      OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-      OperatorActionType.AddFunds
-        ? maxAmountToAdd
-        : maxAmountToWithdraw,
-    [action.type, maxAmountToAdd, maxAmountToWithdraw],
+  const maxSharesToWithdraw = useMemo(
+    () => (action.maxShares ? action.maxShares : BigInt(0)),
+    [action.maxShares],
   )
 
-  const fundsFormValidationSchema = Yup.object().shape({
+  const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .min(0, `Amount  need to be greater than 0 ${tokenSymbol}`)
-      .max(maxAmount, `Amount need to be less than ${maxAmount} ${tokenSymbol}`)
+      .min(0, `Amount need to be greater than 0 ${tokenSymbol}`)
+      .max(maxAmountToAdd, `Amount need to be less than ${maxAmountToAdd} ${tokenSymbol}`)
       .required('Amount to stake is required'),
+  })
+
+  const withdrawFundsFormValidationSchema = Yup.object().shape({
+    amount: Yup.number()
+      .min(0, 'Amount need to be greater than 0 shares')
+      .test('max', `Amount need to be less than ${maxSharesToWithdraw} shares`, function (value) {
+        return typeof value === 'number' && BigInt(value) <= maxSharesToWithdraw
+      })
+      .required('Amount of shares to withdraw is required'),
   })
 
   const loadData = useCallback(async () => {
@@ -109,7 +113,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ) => {
       if (!api || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
-      if (!action.operatorId) return setFormError('Please select an operator to add funds to')
+      if (action.operatorId === null)
+        return setFormError('Please select an operator to add funds to')
 
       try {
         const block = await api.rpc.chain.getBlock()
@@ -143,17 +148,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ) => {
       if (!api || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
-      if (!action.operatorId) return setFormError('Please select an operator to add funds to')
+      if (action.operatorId === null)
+        return setFormError('Please select an operator to add funds to')
 
       try {
         const block = await api.rpc.chain.getBlock()
         const hash = await api.tx.domains
-          .withdrawStake(
-            action.operatorId,
-            maxAmount === values.amount
-              ? { All: null }
-              : { Some: floatToStringWithDecimals(values.amount, tokenDecimals) },
-          )
+          .withdrawStake(action.operatorId, values.amount.toString())
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
         console.log('block', block)
@@ -169,13 +170,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'withdrawStake' })
       }
     },
-    [api, actingAccount, injector, action.operatorId, maxAmount, tokenDecimals, handleClose],
+    [api, actingAccount, injector, action.operatorId, handleClose],
   )
 
   const handleDeregister = useCallback(async () => {
     if (!api || !actingAccount || !injector)
       return setFormError('We are not able to connect to the blockchain')
-    if (!action.operatorId) return setFormError('Please select an operator to add funds to')
+    if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
       const block = await api.rpc.chain.getBlock()
@@ -199,7 +200,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const handleUnlockFunds = useCallback(async () => {
     if (!api || !actingAccount || !injector)
       return setFormError('We are not able to connect to the blockchain')
-    if (!action.operatorId) return setFormError('Please select an operator to add funds to')
+    if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
       const block = await api.rpc.chain.getBlock()
@@ -223,7 +224,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const handleUnlockOperator = useCallback(async () => {
     if (!api || !actingAccount || !injector)
       return setFormError('We are not able to connect to the blockchain')
-    if (!action.operatorId) return setFormError('Please select an operator to add funds to')
+    if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
       const block = await api.rpc.chain.getBlock()
@@ -259,12 +260,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const ActionBody = useMemo(() => {
     switch (OperatorActionType[action.type as keyof typeof OperatorActionType]) {
       case OperatorActionType.AddFunds:
-      case OperatorActionType.Withdraw:
         return (
           <div className='flex flex-col items-start gap-4'>
             <Formik
               initialValues={initialValues}
-              validationSchema={fundsFormValidationSchema}
+              validationSchema={addFundsFormValidationSchema}
               onSubmit={(values, { resetForm }) =>
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                 OperatorActionType.AddFunds
@@ -278,7 +278,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-base font-medium text-[#241235] dark:text-white'>
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.AddFunds
@@ -299,16 +299,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                               ? 'stake'
                               : 'withdraw'
                           }`}
-                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white ${
+                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                             errors.amount &&
                             'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                           }`}
                         />
                         <button
-                          className='absolute flex items-center gap-2 rounded-full bg-[#241235] px-2 text-sm font-medium text-white dark:bg-[#DE67E4] md:space-x-4 md:text-base'
+                          className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                           type='button'
                           style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
-                          onClick={() => setFieldValue('amount', maxAmount)}
+                          onClick={() => setFieldValue('amount', maxAmountToAdd)}
                         >
                           Max
                         </button>
@@ -335,7 +335,102 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-[#241235] px-2 text-sm font-medium text-white dark:bg-[#DE67E4] md:space-x-4 md:text-base'
+                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                      type='submit'
+                    >
+                      {OperatorActionType[action.type as keyof typeof OperatorActionType]}
+                    </button>
+                  )}
+                </Form>
+              )}
+            </Formik>
+          </div>
+        )
+      case OperatorActionType.Withdraw:
+        return (
+          <div className='flex flex-col items-start gap-4'>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={withdrawFundsFormValidationSchema}
+              onSubmit={(values, { resetForm }) =>
+                OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                OperatorActionType.AddFunds
+                  ? handleAddFunds(values, resetForm)
+                  : handleWithdraw(values, resetForm)
+              }
+            >
+              {({ errors, touched, handleSubmit, setFieldValue }) => (
+                <Form
+                  className='w-full'
+                  onSubmit={handleSubmit}
+                  data-testid='testOperatorStakeForm'
+                >
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
+                    {`Amount to ${
+                      OperatorActionType[action.type as keyof typeof OperatorActionType] ===
+                      OperatorActionType.AddFunds
+                        ? 'stake'
+                        : 'withdraw'
+                    }`}
+                  </span>
+                  <FieldArray
+                    name='dischargeNorms'
+                    render={() => (
+                      <div className='relative w-[400px]'>
+                        <div className='flex items-center'>
+                          <Slider
+                            min={0}
+                            max={100}
+                            defaultValue={0}
+                            value={sliderValue}
+                            onChange={(value) => {
+                              const newValue = Array.isArray(value) ? value[0] : value
+                              setSliderValue(newValue)
+                              setFieldValue(
+                                'amount',
+                                (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100),
+                              )
+                            }}
+                            style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
+                          />
+                          <button
+                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                            type='button'
+                            onClick={() => {
+                              setSliderValue(100)
+                              setFieldValue('amount', maxSharesToWithdraw)
+                            }}
+                          >
+                            Max
+                          </button>
+                        </div>
+                        <div className='mt-2 text-center text-sm font-medium dark:text-white'>
+                          {sliderValue.toFixed(0)}% of your shares
+                        </div>
+                      </div>
+                    )}
+                  />
+                  {(errors.amount && touched.amount) || maxAmountToAdd === 0 ? (
+                    maxAmountToAdd === 0 ? (
+                      <span className='text-md h-8 text-red-500' data-testid='errorMessage'>
+                        You don&apos;t have enough balance to stake
+                      </span>
+                    ) : (
+                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                        {errors.amount}
+                      </div>
+                    )
+                  ) : (
+                    <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                  )}
+                  {ErrorPlaceholder}
+                  {!actingAccount ? (
+                    <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                      You need to connect your wallet
+                    </div>
+                  ) : (
+                    <button
+                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -349,7 +444,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case OperatorActionType.Deregister:
         return (
           <div className='flex flex-col items-start gap-4'>
-            <span className='mt-4 text-base font-medium text-[#241235] dark:text-white'>
+            <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to deregister your Operator?
             </span>
             {ErrorPlaceholder}
@@ -365,7 +460,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case OperatorActionType.UnlockOperator:
         return (
           <div className='flex flex-col items-start gap-4'>
-            <span className='mt-4 text-base font-medium text-[#241235] dark:text-white'>
+            <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to{' '}
               {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
               OperatorActionType.UnlockFunds
@@ -393,7 +488,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   }, [
     action.type,
     initialValues,
-    fundsFormValidationSchema,
+    addFundsFormValidationSchema,
+    withdrawFundsFormValidationSchema,
     ErrorPlaceholder,
     handleDeregister,
     handleUnlockFunds,
@@ -402,7 +498,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     handleWithdraw,
     maxAmountToAdd,
     actingAccount,
-    maxAmount,
+    maxSharesToWithdraw,
+    sliderValue,
   ])
 
   useEffect(() => {
@@ -420,7 +517,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-[#241235] px-2 text-sm font-medium text-white dark:bg-[#1E254E] md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close

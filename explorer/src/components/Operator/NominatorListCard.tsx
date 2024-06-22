@@ -16,7 +16,7 @@ type Props = {
   handleAction?: (value: OperatorAction) => void
   index?: number
   excludeActions?: OperatorActionType[]
-  nominatorMaxStake?: string
+  nominatorMaxShares?: bigint
 }
 
 export const NominatorListCard: FC<Props> = ({
@@ -24,7 +24,7 @@ export const NominatorListCard: FC<Props> = ({
   action,
   handleAction,
   excludeActions,
-  nominatorMaxStake,
+  nominatorMaxShares,
 }) => {
   const { selectedChain, selectedDomain } = useDomains()
 
@@ -48,7 +48,7 @@ export const NominatorListCard: FC<Props> = ({
               nominator.account.id,
             )}
           >
-            <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+            <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
               {nominator.account.id}
             </p>
           </Link>
@@ -60,13 +60,10 @@ export const NominatorListCard: FC<Props> = ({
               row={{
                 original: {
                   id: nominator.account.id,
-                  currentTotalStake: (
-                    (BigInt(nominator.operator.currentTotalStake) * BigInt(nominator.shares)) /
-                    BigInt(nominator.operator.totalShares)
-                  ).toString(),
+                  totalShares: BigInt(nominator.operator.totalShares),
                 },
               }}
-              nominatorMaxStake={nominatorMaxStake}
+              nominatorMaxShares={nominatorMaxShares}
             />
           )}
         </div>

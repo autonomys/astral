@@ -80,7 +80,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         cells: extrinsics.map(({ block, indexInBlock, id }) => (
           <Link
             key={`${id}-block-extrinsic-id`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
           >
             {`${block.height}-${indexInBlock}`}

@@ -21,6 +21,7 @@ import type { OperatorIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { operatorStatus } from 'utils/operator'
+import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -40,7 +41,7 @@ export const NominatorsList: FC = () => {
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
     operatorId: operatorId ? parseInt(operatorId) : null,
-    maxAmount: null,
+    maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -54,7 +55,7 @@ export const NominatorsList: FC = () => {
   }, [])
   const handleActionClose = useCallback(() => {
     setIsOpen(false)
-    setAction({ type: OperatorActionType.None, operatorId: null, maxAmount: null })
+    setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
   const { selectedChain, selectedDomain } = useDomains()
@@ -71,7 +72,7 @@ export const NominatorsList: FC = () => {
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.accounts.id.page(
               selectedChain.urls.page,
               'consensus',
@@ -102,7 +103,7 @@ export const NominatorsList: FC = () => {
           <div className='row flex items-center gap-3'>
             <Link
               data-testid={`nominator-link-${row.original.id}`}
-              className='hover:text-[#DE67E4]'
+              className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.operators.id.page(
                 selectedChain.urls.page,
                 selectedDomain,
@@ -221,21 +222,20 @@ export const NominatorsList: FC = () => {
                   ...row,
                   original: {
                     ...row.original,
-                    currentTotalStake: row.original.operator.currentTotalStake,
+                    totalShares: row.original.shares,
                   },
                 } as ActionsDropdownRow
               }
               excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
-              nominatorMaxStake={(
-                (BigInt(row.original.operator.currentTotalStake) * BigInt(row.original.shares)) /
-                BigInt(row.original.operator.totalShares)
-              ).toString()}
+              nominatorMaxShares={BigInt(row.original.shares)}
             />
           )
         },
       })
     return cols
   }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
   const variables = useMemo(
     () => ({
@@ -244,11 +244,11 @@ export const NominatorsList: FC = () => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       // eslint-disable-next-line camelcase
       where: searchNominator ? { account: { id_eq: searchNominator } } : {},
     }),
-    [sorting, pagination, searchNominator],
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchNominator],
   )
 
   const { data, error, loading } = useQuery<NominatorsConnectionQuery>(
@@ -262,8 +262,12 @@ export const NominatorsList: FC = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST, 'nominatorsConnection', {
+        first: 10,
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback((value: string | number) => {
@@ -296,7 +300,7 @@ export const NominatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 
@@ -311,6 +315,8 @@ export const NominatorsList: FC = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            pageSizeOptions={[10]}
+            filename='operators-nominators-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={
               <MobileComponent
@@ -352,13 +358,7 @@ const MobileComponent: FC<MobileComponentProps> = ({ nominators, action, handleA
           OperatorActionType.UnlockFunds,
           OperatorActionType.UnlockOperator,
         ]}
-        nominatorMaxStake={
-          nominator &&
-          (
-            (BigInt(nominator.operator.currentTotalStake) * BigInt(nominator.shares)) /
-            BigInt(nominator.operator.totalShares)
-          ).toString()
-        }
+        nominatorMaxShares={nominator && BigInt(nominator.shares)}
       />
     ))}
   </div>

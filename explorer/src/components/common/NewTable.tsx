@@ -23,6 +23,8 @@ interface ReactTableProps<T extends object> {
   pageCount: number
   pagination: Pagination
   mobileComponent: ReactNode
+  filename?: string
+  pageSizeOptions?: number[]
   fullDataDownloader?: () => Promise<unknown[]>
 }
 
@@ -36,7 +38,9 @@ export const NewTable = <T extends object>({
   onSortingChange,
   onPaginationChange,
   mobileComponent,
+  filename,
   fullDataDownloader,
+  pageSizeOptions,
 }: ReactTableProps<T>) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const memoizedData = useMemo(() => data, [data])
@@ -64,7 +68,13 @@ export const NewTable = <T extends object>({
     <div className='flex w-full flex-col'>
       {isDesktop ? <DesktopTable table={table} /> : mobileComponent}
       {showNavigation && (
-        <TableNavigation table={table} data={data} fullDataDownloader={fullDataDownloader} />
+        <TableNavigation
+          table={table}
+          data={data}
+          filename={filename}
+          pageSizeOptions={pageSizeOptions}
+          fullDataDownloader={fullDataDownloader}
+        />
       )}
     </div>
   )

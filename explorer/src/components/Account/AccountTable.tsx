@@ -47,7 +47,7 @@ export const AccountTable: FC<Props> = ({ accounts, page }) => {
             <Link
               data-testid={`account-link-${index}`}
               href={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, id)}
-              className='hover:text-[#DE67E4]'
+              className='hover:text-purpleAccent'
             >
               <div>{isLargeLaptop ? id : shortString(id)}</div>
             </Link>
@@ -89,7 +89,7 @@ export const AccountTable: FC<Props> = ({ accounts, page }) => {
         <Table
           columns={columns}
           emptyMessage='There are no accounts to show'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
           tableHeaderProps='border-b border-gray-200'
           id='accounts-list'
         />
