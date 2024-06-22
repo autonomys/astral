@@ -14,8 +14,8 @@ dayjs.extend(relativeTime)
 type Props = {
   logs: Log[]
   isDesktop?: boolean
-  extrinsicsCount?: string
-  eventsCount?: string
+  extrinsicsCount?: number
+  eventsCount?: number
 }
 
 export const BlockDetailsTabs: FC<Props> = ({
@@ -65,7 +65,7 @@ const BlockDetailsLogCard: FC<LogCardProps> = ({ log }) => {
   return (
     <MobileCard
       id='block-details-log-mobile'
-      header={<h3 className='text-sm font-medium text-[#241235] dark:text-white'>{log.id}</h3>}
+      header={<h3 className='text-sm font-medium text-grayDarker dark:text-white'>{log.id}</h3>}
       body={body}
     />
   )

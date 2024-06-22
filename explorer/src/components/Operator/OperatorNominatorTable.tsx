@@ -33,7 +33,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator, isDesktop }) => {
               selectedDomain,
               account.id,
             )}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
           >
             <div>{isLargeLaptop ? account.id : shortString(account.id)}</div>
           </Link>
@@ -68,7 +68,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator, isDesktop }) => {
           columns={columns}
           emptyMessage='There are no nominators to show'
           id='operator-latest-nominators'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
           tableHeaderProps='border-b border-gray-200'
         />
       </div>

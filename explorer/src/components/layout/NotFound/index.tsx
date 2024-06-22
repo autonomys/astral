@@ -17,7 +17,7 @@ export const NotFound: FC = () => {
       <div className='container mx-auto my-8 flex flex-col items-center justify-center px-5'>
         <NotFoundImage />
         <div className='max-w-md text-center'>
-          <h2 className='my-8 text-xl text-[#282929] dark:text-white'>
+          <h2 className='my-8 text-xl text-grayDark dark:text-white'>
             The page you are looking for could not be found.
           </h2>
           <Link href={`/${selectedChain.urls.page}/${selectedDomain}`}>

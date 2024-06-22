@@ -2,8 +2,9 @@ export enum Routes {
   nova = 'nova',
   consensus = 'consensus',
   leaderboard = 'leaderboard',
-  operators = 'operators',
-  stake = 'stake',
+  staking = 'staking',
+  // Route deactivated till bugs are fixed and feature is ready
+  // stake = 'stake',
 }
 
 export const ROUTES = [
@@ -20,13 +21,14 @@ export const ROUTES = [
     title: 'Leaderboard',
   },
   {
-    name: Routes.operators,
-    title: 'Operators',
+    name: Routes.staking,
+    title: 'Staking',
   },
-  {
-    name: Routes.stake,
-    title: 'Stake Wars',
-  },
+  // Route deactivated till bugs are fixed and feature is ready
+  // {
+  //   name: Routes.stake,
+  //   title: 'Stake Wars',
+  // },
 ]
 
 export const EXTERNAL_ROUTES = {
@@ -49,6 +51,7 @@ export const EXTERNAL_ROUTES = {
     linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
+  novaExplorer: 'https://nova.subspace.network/',
   polkadot:
     'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
   subscan: 'https://subspace.subscan.io/',
@@ -108,7 +111,7 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/${operatorId}`,
     },
     list: 'list',
-    stake: 'stake',
+    register: 'register',
     manage: 'manage',
     nominators: 'nominators',
     nomination: 'nomination',

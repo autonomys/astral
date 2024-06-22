@@ -48,14 +48,14 @@ export const OperatorsListCard: FC<Props> = ({ operator }) => {
         <Link
           key={`${operator.id}-operator-id-${operator.signingKey}`}
           data-testid={`operator-link-${operator.id}-${operator.signingKey}}`}
-          className='hover:text-[#DE67E4]'
+          className='hover:text-purpleAccent'
           href={INTERNAL_ROUTES.operators.id.page(
             selectedChain.urls.page,
             selectedDomain,
             operator.id,
           )}
         >
-          <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+          <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
             {operator.id}
           </p>
         </Link>

@@ -36,11 +36,11 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
   const extrinsics = useMemo(() => data && data.extrinsics.edges, [data])
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#1E254E] dark:text-white'>
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
-            <span className='text-base font-medium text-[#241235] dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               Last extrinsics
             </span>
           </div>
@@ -49,7 +49,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
         {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
         {error && (
           <div className='m-2 flex items-center pt-4'>
-            <span className='text-base font-medium text-[#241235] dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               We are unable to load your wallet data
             </span>
           </div>
@@ -62,7 +62,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                   title={
                     <Link
                       data-testid='extrinsic-link'
-                      className='hover:text-[#DE67E4]'
+                      className='hover:text-purpleAccent'
                       href={INTERNAL_ROUTES.extrinsics.id.page(
                         selectedChain.urls.page,
                         Routes.consensus,
@@ -77,7 +77,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                 >
                   <Link
                     data-testid='extrinsic-link'
-                    className='hover:text-[#DE67E4]'
+                    className='hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.extrinsics.id.page(
                       selectedChain.urls.page,
                       Routes.consensus,
@@ -85,14 +85,14 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                     )}
                   >
                     <Tooltip text={extrinsic.node.name.split('.')[1].toUpperCase()}>
-                      <span className='text-sm font-medium text-[#241235] dark:text-gray-400'>
+                      <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
                         {extrinsic.node.name.split('.')[1].toUpperCase()}
                       </span>
                     </Tooltip>
                   </Link>
                   <Link
                     data-testid='extrinsic-link'
-                    className='px-2 hover:text-[#DE67E4]'
+                    className='px-2 hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.blocks.id.page(
                       selectedChain.urls.page,
                       Routes.consensus,
@@ -100,7 +100,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                     )}
                   >
                     <Tooltip text={extrinsic.node.block.id}>
-                      <span className='text-sm font-medium text-[#241235] dark:text-gray-400'>
+                      <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
                         #{extrinsic.node.block.height}
                       </span>
                     </Tooltip>
@@ -112,7 +112,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
           </List>
         ) : (
           <div className='m-2 flex items-center pt-4'>
-            <span className='text-sm font-medium text-[#241235] dark:text-white'>
+            <span className='text-sm font-medium text-grayDarker dark:text-white'>
               {!loading && !error && 'You have no extrinsics yet'}
             </span>
           </div>

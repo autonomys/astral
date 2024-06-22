@@ -25,7 +25,7 @@ export const LogDetailsEventList: FC<Props> = ({ events }) => {
         cells: events.map(({ block, indexInBlock, id }) => (
           <div className='flex w-full gap-1' key={`${id}-log-event-id`}>
             <Link
-              className='w-full hover:text-[#DE67E4]'
+              className='w-full hover:text-purpleAccent'
               href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
             >
               {`${block?.height}-${indexInBlock}`}

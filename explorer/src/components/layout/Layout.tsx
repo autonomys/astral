@@ -22,7 +22,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
   }, [pathname])
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-[#F1F7F8] to-[#EFFDFF] font-['Montserrat'] dark:bg-dark">
+    <div className="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-bronze to-purpleMist font-['Montserrat'] dark:bg-dark">
       <div className="relative flex min-h-screen w-full flex-col bg-[url('/images/backgroundColor.svg')] bg-cover font-['Montserrat']">
         <DomainHeader />
         {subHeader}

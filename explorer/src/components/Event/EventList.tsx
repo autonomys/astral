@@ -3,6 +3,7 @@
 import { PAGE_SIZE, searchTypes } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
@@ -21,6 +22,7 @@ export const EventList: FC = () => {
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const [filters, setFilters] = useState<EventWhereInput>({})
+  const novaExplorerBanner = useEvmExplorerBanner()
 
   const { data, error, loading } = useQuery<EventsConnectionQuery>(QUERY_EVENT_CONNECTION_LIST, {
     variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
@@ -74,13 +76,14 @@ export const EventList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[4]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
         <EventListFilter
           title={
-            <div className=' font-medium text-[#282929] dark:text-white'>Events {totalLabel}</div>
+            <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
           }
           filters={filters}
           modules={modules}

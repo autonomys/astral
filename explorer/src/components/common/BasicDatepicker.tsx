@@ -15,9 +15,9 @@ type Props = {
 
 const defaultOptions = {
   theme: {
-    background: 'bg-white dark:bg-[#1E254E] dark:text-white',
+    background: 'bg-white dark:bg-blueAccent dark:text-white',
     disabledText: 'text-gray-500/75 dark:text-gray-400/75',
-    input: 'py-3 w-full rounded-[20px] bg-white dark:bg-[#1E254E] dark:text-white',
+    input: 'py-3 w-full rounded-[20px] bg-white dark:bg-blueAccent dark:text-white',
   },
 } as IOptions
 
@@ -36,7 +36,7 @@ export const BasicDatepicker: FC<Props> = ({ onChange, value, minDate }) => {
   return (
     <Datepicker options={options} onChange={onChange} show={show} setShow={handleClose}>
       <div className='relative'>
-        <span className='absolute left-3 flex size-5 items-center py-[22px] text-[#282929] dark:text-white'>
+        <span className='absolute left-3 flex size-5 items-center py-[22px] text-grayDark dark:text-white'>
           <CalendarIcon />
         </span>
         <input
@@ -44,7 +44,7 @@ export const BasicDatepicker: FC<Props> = ({ onChange, value, minDate }) => {
           placeholder='Select Date'
           value={value ? dayjs(value).utc().format('MMMM DD, YYYY') : ''}
           onFocus={() => setShow(!show)}
-          className='w-full rounded-[42px] border-transparent bg-white px-10 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-[#1E254E] dark:text-white'
+          className='w-full rounded-[42px] border-transparent bg-white px-10 py-3 text-sm focus:border-gray-500 focus:bg-white focus:ring-0 dark:bg-blueAccent dark:text-white'
           readOnly
         />
       </div>

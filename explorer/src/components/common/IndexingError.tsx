@@ -20,7 +20,7 @@ export const IndexingError: FC = () => {
           <a
             href={EXTERNAL_ROUTES.subscan}
             target='_blank'
-            className='text-md text-[#ffffffb3] hover:text-[#DE67E4]'
+            className='text-md text-whiteOpaque hover:text-purpleAccent'
             rel='noreferrer'
           >
             Subscan
@@ -29,7 +29,7 @@ export const IndexingError: FC = () => {
           <a
             href={EXTERNAL_ROUTES.polkadot}
             target='_blank'
-            className='text-md text-[#ffffffb3] hover:text-[#DE67E4]'
+            className='text-md text-whiteOpaque hover:text-purpleAccent'
             rel='noreferrer'
           >
             Polkadot
@@ -41,7 +41,7 @@ export const IndexingError: FC = () => {
         className='mx-2 w-8 rounded-[20px] bg-white p-1 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-orange-600/40 dark:text-white'
         onClick={handleHideWarning}
       >
-        <XMarkIcon className='size-6 text-[#282929] dark:text-white' />
+        <XMarkIcon className='size-6 text-grayDark dark:text-white' />
       </button>
     </div>
   )
