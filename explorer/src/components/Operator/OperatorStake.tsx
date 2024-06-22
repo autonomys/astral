@@ -2,8 +2,9 @@
 
 import { WalletIcon } from '@/components/icons'
 import { floatToStringWithDecimals } from '@/utils/number'
+import { shortString } from '@/utils/string'
 import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Keyring } from '@polkadot/api'
 import { createType } from '@polkadot/types'
@@ -16,6 +17,7 @@ import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import * as Yup from 'yup'
+import { ConnectWalletButton } from '../common/ConnectWalletButton'
 
 interface FormValues {
   domainId: number
@@ -147,7 +149,7 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !subspaceAccount || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
 
       try {
@@ -178,7 +180,7 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, api, injector, tokenDecimals],
+    [actingAccount, subspaceAccount, api, injector, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -205,21 +207,21 @@ export const OperatorStake = () => {
     [initialValues.signature, initialValues.signingKey, initialValues.signingKeySeed],
   )
 
-  const handleProofOfOwnershipWithSeed = useCallback(
+  const handleProof = useCallback(
     (
-      values: FormValues,
+      seed: string,
       setFieldValue: (
         field: string,
         value: string | Uint8Array,
         shouldValidate?: boolean | undefined,
       ) => Promise<void | FormikErrors<FormValues>>,
     ) => {
-      if (!api || !actingAccount)
+      if (!api || !subspaceAccount || !actingAccount)
         return setFormError('We are not able to connect to the blockchain')
 
       try {
         const OperatorKeyring = new Keyring({ type: 'sr25519' })
-        const Operator = OperatorKeyring.addFromUri(values.signingKeySeed)
+        const Operator = OperatorKeyring.addFromUri(seed)
 
         const signingKey = u8aToHex(Operator.publicKey)
         const signature = Operator.sign(
@@ -232,7 +234,19 @@ export const OperatorStake = () => {
         console.error('Error', error)
       }
     },
-    [actingAccount, api],
+    [subspaceAccount, actingAccount, api],
+  )
+
+  const handleProofOfOwnershipWithSeed = useCallback(
+    (
+      values: FormValues,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => handleProof(values.signingKeySeed, setFieldValue),
+    [handleProof],
   )
 
   const handleProofOfOwnershipWithKeystore = useCallback(
@@ -244,28 +258,15 @@ export const OperatorStake = () => {
         shouldValidate?: boolean | undefined,
       ) => Promise<void | FormikErrors<FormValues>>,
     ) => {
-      if (!api || !actingAccount)
-        return setFormError('We are not able to connect to the blockchain')
-
       if (!events.target.files) return setFormError('No file')
-
       try {
         const fileReader = new FileReader()
         fileReader.onload = () => {
           const keystoreContent = fileReader.result as string
           if (fileReader.readyState === 2) {
             try {
-              const parsedKeystoreSeed = keystoreContent.replace(/"|_/g, '')
-
-              const OperatorKeyring = new Keyring({ type: 'sr25519' })
-              const Operator = OperatorKeyring.addFromUri(parsedKeystoreSeed)
-
-              const signingKey = u8aToHex(Operator.publicKey)
-              const signature = Operator.sign(
-                createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
-              )
-              setFieldValue('signingKey', signingKey)
-              setFieldValue('signature', signature)
+              const seed = keystoreContent.replace(/"|_/g, '')
+              handleProof(seed, setFieldValue)
             } catch (error) {
               setFormError('There was an error with the keystore')
               console.error('Error', error)
@@ -278,7 +279,7 @@ export const OperatorStake = () => {
         console.error('Error', error)
       }
     },
-    [actingAccount, api],
+    [handleProof],
   )
 
   useEffect(() => {
@@ -321,7 +322,45 @@ export const OperatorStake = () => {
             </div>
 
             <div className='mt-4 text-2xl font-bold leading-tight tracking-tight text-[#241235] dark:text-white'>
-              Step 2: Register
+              Step 2: Connect your wallet
+            </div>
+
+            <div className='mt-4 text-xl'>
+              {!actingAccount ? (
+                <div className='flex w-full items-center justify-center p-4 text-sm'>
+                  <ConnectWalletButton />
+                </div>
+              ) : (
+                <div
+                  className={`${
+                    isDesktop ? 'text-ms' : 'text-sm'
+                  } flex w-full p-4 text-[#241235] dark:text-white`}
+                >
+                  {subspaceAccount ? (
+                    <>
+                      {isDesktop ? subspaceAccount : shortString(subspaceAccount)}{' '}
+                      <CheckIcon className='ml-2 h-6 w-6' />
+                    </>
+                  ) : (
+                    <>
+                      {isDesktop ? actingAccount.address : shortString(actingAccount.address)}{' '}
+                      <ExclamationTriangleIcon className='ml-2 h-6 w-6' />
+                      <br />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+            {actingAccount &&
+              (actingAccount as unknown as { type: string }).type === 'ethereum' && (
+                <div className='ml-2 text-[#241235] dark:text-white'>
+                  EVM account not supported for this action
+                </div>
+              )}
+            <hr />
+
+            <div className='mt-4 text-2xl font-bold leading-tight tracking-tight text-[#241235] dark:text-white'>
+              Step 3: Register
             </div>
 
             <Formik
