@@ -629,7 +629,7 @@ export const OperatorStake = () => {
 
                           <div className='p-4'>
                             <span className='text-grayDarker text-base font-medium dark:text-white'>
-                              Amount to Stake
+                              Amount to Stake (tATC)
                             </span>
                             <Field
                               name='amountToStake'
@@ -655,7 +655,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-grayDarker text-base font-medium dark:text-white'>
-                              Nominator tax
+                              Nominator tax (%)
                             </span>
                             <Field
                               name='nominatorTax'
@@ -681,7 +681,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-grayDarker text-base font-medium dark:text-white'>
-                              Minimum Nominator Stake
+                              Minimum Nominator Stake (tATC)
                             </span>
                             <Field
                               name='minimumNominatorStake'
