@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { LogoIcon, WalletIcon } from '@/components/icons'
+import { WalletType } from '@/constants'
 import { formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
@@ -107,10 +108,12 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const loadWalletBalance = useCallback(async () => {
     if (!api || !actingAccount) return
 
-    const balance = await api.query.system.account(actingAccount.address)
-    setWalletBalance(
-      formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
-    )
+    if (actingAccount.type === WalletType.subspace) {
+      const balance = await api.query.system.account(actingAccount.address)
+      setWalletBalance(
+        formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+      )
+    }
   }, [api, actingAccount])
 
   useEffect(() => {
@@ -152,7 +155,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               </button>
               <div className='flex items-center gap-3'>
                 <button
-                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
+                  className='dark:bg-blueAccent items-center rounded-full bg-white px-4 py-2 dark:text-white'
                   onClick={onClose}
                 >
                   x
