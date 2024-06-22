@@ -18,6 +18,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { NotStarted } from '../layout/NotStarted'
 
@@ -44,7 +45,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
@@ -105,6 +106,8 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [selectedChain.urls.page, selectedDomain])
 
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -112,11 +115,11 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       blockNumber_gte: STAKE_WARS_PHASES.phase2.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase2.end,
     }),
-    [pagination, sorting],
+    [orderBy, pagination.pageIndex, pagination.pageSize],
   )
 
   const { data, error, loading } = useQuery<GetAllOperatorsQuery>(GET_ALL_OPERATORS, {
@@ -128,8 +131,8 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, GET_ALL_OPERATORS),
-    [apolloClient],
+    () => downloadFullData(apolloClient, GET_ALL_OPERATORS, 'operatorsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const operators = useMemo(() => data && data.operatorsConnection, [data])
@@ -173,7 +176,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
       </div>
 
@@ -188,6 +191,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            filename='stake-wars-operators-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={<MobileComponent operators={operatorsConnection} />}
           />

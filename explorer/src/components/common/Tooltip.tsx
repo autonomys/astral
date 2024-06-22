@@ -18,7 +18,7 @@ export const Tooltip: FC<TooltipProps> = ({ text, children }) => {
   return (
     <div className='group relative flex flex-col items-center'>
       {isVisible && (
-        <div className='absolute top-full z-10 mt-2 w-auto rounded-md bg-[#DE67E4] p-2 text-sm text-white shadow-lg'>
+        <div className='absolute top-full z-10 mt-2 w-auto rounded-md bg-purpleAccent p-2 text-sm text-white shadow-lg'>
           {text}
         </div>
       )}

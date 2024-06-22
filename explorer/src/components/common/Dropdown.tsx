@@ -46,7 +46,7 @@ export const Dropdown: FC = () => {
                       {term.name}
                     </span>
                     {selected ? (
-                      <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#37D058]'>
+                      <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-greenBright'>
                         <CheckIcon className='size-5' aria-hidden='true' />
                       </span>
                     ) : null}

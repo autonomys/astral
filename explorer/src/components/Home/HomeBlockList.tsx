@@ -44,7 +44,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
         title: 'Height',
         cells: blocks.map(({ height, id }) => (
           <Link
-            className='flex gap-2 hover:text-[#DE67E4]'
+            className='flex gap-2 hover:text-purpleAccent'
             key={`${id}-home-block-height`}
             href={INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, height)}
           >
@@ -81,7 +81,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data, isDesktop }) => {
   const columns = useMemo(() => generateColumns(blocks), [blocks, generateColumns])
 
   return isDesktop ? (
-    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
       <HomeBlockListHeader />
       <Table columns={columns} emptyMessage='There are no blocks to show' id='home-latest-blocks' />
     </div>

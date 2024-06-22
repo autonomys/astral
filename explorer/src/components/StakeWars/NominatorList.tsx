@@ -14,6 +14,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { sort } from 'utils/sort'
 import { NotStarted } from '../layout/NotStarted'
 import { NominatorListCard } from './NominatorListCard'
 import { NominatorWithRewards, getNominatorRewards } from './helpers/calculateNominatorReward'
@@ -83,6 +84,8 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [])
 
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -90,11 +93,11 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       blockNumber_gte: STAKE_WARS_PHASES.phase3.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase3.end,
     }),
-    [sorting, pagination],
+    [pagination.pageSize, pagination.pageIndex, orderBy],
   )
 
   const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
@@ -106,8 +109,8 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, GET_ALL_NOMINATORS),
-    [apolloClient],
+    () => downloadFullData(apolloClient, GET_ALL_NOMINATORS, 'operatorsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const nominators = useMemo(() => data && data.nominatorsConnection, [data])
@@ -167,7 +170,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 
@@ -183,6 +186,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
               pagination={pagination}
               pageCount={pageCount}
               onPaginationChange={setPagination}
+              filename='stake-wars-nominator-list'
               fullDataDownloader={fullDataDownloader}
               mobileComponent={<MobileComponent nominators={nominatorsConnection} />}
             />

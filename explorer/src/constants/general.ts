@@ -1,4 +1,5 @@
 export const PAGE_SIZE = 10
+export const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50]
 
 export const STAKE_WARS_PAGE_SIZE = 150
 

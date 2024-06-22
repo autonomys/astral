@@ -29,7 +29,7 @@ export const EventListCard: FC<Props> = ({ event }) => {
           className='flex gap-2'
           href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, event.id)}
         >
-          <h3 className='text-sm font-medium text-[#241235] dark:text-white'>{`${event.block?.height}-${event.indexInBlock}`}</h3>
+          <h3 className='text-sm font-medium text-grayDarker dark:text-white'>{`${event.block?.height}-${event.indexInBlock}`}</h3>
         </Link>
       }
       body={body}

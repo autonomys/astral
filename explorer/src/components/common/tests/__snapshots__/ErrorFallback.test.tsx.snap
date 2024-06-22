@@ -9,7 +9,7 @@ exports[`errorFallback renders properly 1`] = `
       class="text-center container flex flex-col items-center justify-center"
     >
       <div
-        class="dark:text-[#1E254E] text-[#D3DEF5]"
+        class="dark:text-blueAccent text-[#D3DEF5]"
       >
         <svg
           fill="none"
@@ -509,7 +509,7 @@ exports[`errorFallback renders properly 1`] = `
         </svg>
       </div>
       <h2
-        class="mt-5 text-[#282929] text-xl  font-medium dark:text-white"
+        class="mt-5 text-grayDark text-xl  font-medium dark:text-white"
       >
         Something went wrong
       </h2>
@@ -518,7 +518,7 @@ exports[`errorFallback renders properly 1`] = `
       >
         If the problem persists, visit our 
         <a
-          class="font-medium text-[#9179EC] dark:text-[#DE67E4]"
+          class="font-medium text-purpleShade1 dark:text-purpleAccent"
           href="https://status.subspace.network"
           rel="noreferrer"
           target="_blank"
@@ -528,7 +528,7 @@ exports[`errorFallback renders properly 1`] = `
         . Thank you for being so patient while we are fixing this issue.
       </p>
       <button
-        class="text-xs font-light px-5 py-3 rounded-full leading-normal text-white bg-[#241235]"
+        class="text-xs font-light px-5 py-3 rounded-full leading-normal text-white bg-grayDarker"
       >
         <div
           class="flex items-center gap-x-5"

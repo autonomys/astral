@@ -20,6 +20,7 @@ import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { operatorStatus } from 'utils/operator'
+import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -70,7 +71,7 @@ export const NominationManagement: FC = () => {
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`nominator-link-${row.original.id}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.accounts.id.page(
               selectedChain.urls.page,
               'consensus',
@@ -101,7 +102,7 @@ export const NominationManagement: FC = () => {
           <div className='row flex items-center gap-3'>
             <Link
               data-testid={`nominator-link-${row.original.id}`}
-              className='hover:text-[#DE67E4]'
+              className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.operators.id.page(
                 selectedChain.urls.page,
                 selectedDomain,
@@ -231,6 +232,8 @@ export const NominationManagement: FC = () => {
     return cols
   }, [selectedChain.urls.page, selectedDomain, action, handleAction])
 
+  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -238,11 +241,11 @@ export const NominationManagement: FC = () => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       // eslint-disable-next-line camelcase
       where: searchNominator ? { account: { id_eq: searchNominator } } : {},
     }),
-    [sorting, pagination, searchNominator],
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchNominator],
   )
 
   const { data, error, loading } = useQuery<NominatorsConnectionQuery>(
@@ -256,8 +259,12 @@ export const NominationManagement: FC = () => {
   useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_NOMINATOR_CONNECTION_LIST, 'nominatorsConnection', {
+        first: 10,
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -314,7 +321,7 @@ export const NominationManagement: FC = () => {
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div
-            className={`text-[#241235] ${
+            className={`text-grayDarker ${
               isDesktop ? 'text-4xl' : 'text-xl'
             } font-bold leading-tight tracking-tight dark:text-white`}
           >
@@ -322,13 +329,13 @@ export const NominationManagement: FC = () => {
           </div>
         </div>
         <div
-          className={`text-[#241235] ${
+          className={`text-grayDarker ${
             isDesktop ? 'text-2xl' : 'text-lg'
           } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
         >
           Information across nominations
           {subspaceAccount && (
-            <div className="mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]">
+            <div className="mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
               <svg
                 className='me-3 inline h-4 w-4 flex-shrink-0'
                 aria-hidden='true'
@@ -358,6 +365,8 @@ export const NominationManagement: FC = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
+            pageSizeOptions={[10]}
+            filename='operators-nomination-management-list'
             fullDataDownloader={fullDataDownloader}
             mobileComponent={
               <MobileComponent
@@ -370,13 +379,13 @@ export const NominationManagement: FC = () => {
         </div>
       </div>
 
-      <div className='mt-8 rounded-[20px] bg-[#DDEFF1] p-5 dark:bg-[#2A345E]'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -385,7 +394,7 @@ export const NominationManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -394,7 +403,7 @@ export const NominationManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
@@ -403,7 +412,7 @@ export const NominationManagement: FC = () => {
               </div>
               <div className='p-4'>
                 <span
-                  className={`text-[#241235] ${
+                  className={`text-grayDarker ${
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >

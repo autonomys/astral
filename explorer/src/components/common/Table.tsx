@@ -45,7 +45,7 @@ export const Table: FC<Props> = ({
         <table className={`w-full min-w-max table-auto font-['Montserrat'] ${tableProps}`}>
           {hasRows ? (
             <thead>
-              <tr className={`text-sm text-[#857EC2] dark:text-white/75 ${tableHeaderProps}`}>
+              <tr className={`text-sm text-purpleShade2 dark:text-white/75 ${tableHeaderProps}`}>
                 {columns?.map(({ title, isNumeric = false, centerTitle = false }, index) => (
                   <th key={`table-header-${id}-${index}`} className='font-normal'>
                     {isNumeric ? (

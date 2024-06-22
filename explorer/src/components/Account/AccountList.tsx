@@ -2,6 +2,7 @@
 
 import { PAGE_SIZE, searchTypes } from '@/constants'
 import { useQuery } from '@apollo/client'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { ExportButton } from 'components/common/ExportButton'
 import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
@@ -17,6 +18,7 @@ import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
 export const AccountList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const novaExplorerBanner = useEvmExplorerBanner('accounts')
 
   const { data, error, loading } = useQuery<AccountsConnectionQuery>(
     QUERY_ACCOUNT_CONNECTION_LIST,
@@ -69,11 +71,12 @@ export const AccountList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[3]} />
       </div>
       <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-[#282929] dark:text-white'>{`Holders (${totalLabel})`}</div>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Holders (${totalLabel})`}</div>
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <AccountTable accounts={accounts} page={currentPage} />
