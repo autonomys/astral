@@ -5,7 +5,7 @@ import { PreferredExtensionModal } from 'components/layout/PreferredExtensionMod
 import useMediaQuery from 'hooks/useMediaQuery'
 import React, { useCallback, useState } from 'react'
 
-export const ConnectWalletButton: React.FC = () => {
+export const WalletButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
@@ -21,7 +21,7 @@ export const ConnectWalletButton: React.FC = () => {
         onClick={onClick}
         className={`h-10 ${
           isDesktop ? 'w-36' : 'w-10 p-2'
-        } rounded-full bg-gradient-to-r from-pinkAccent to-purpleDeepAccent font-medium text-white`}
+        } from-pinkAccent to-purpleDeepAccent rounded-full bg-gradient-to-r font-medium text-white`}
       >
         {isDesktop ? 'Connect Wallet' : <WalletIcon className='size-6' />}
       </button>
