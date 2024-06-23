@@ -4,7 +4,9 @@ import { WalletAccountWithType } from 'types/wallet'
 export interface Transaction {
   ownerAccount: WalletAccountWithType
   status: TransactionStatus
-  submittedAtBlock: number
+  submittedAtBlockHash: string
+  submittedAtBlockNumber: number
+  call: string
   txHash: string
   blockHash: string
   from: string
@@ -12,5 +14,4 @@ export interface Transaction {
   amount: string
   fee: string
   nonce: number
-  signature: string
 }

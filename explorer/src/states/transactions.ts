@@ -3,23 +3,36 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface TransactionsDefaultState {
-  transactions: Transaction[]
+  pendingTransactions: Transaction[]
+  finalizedTransactions: Transaction[]
 }
 
 interface TransactionsState extends TransactionsDefaultState {
-  setTransactions: (transactions: Transaction[]) => void
+  addPendingTransactions: (transaction: Transaction) => void
+  moveToFinalizedTransactions: (transaction: Transaction) => void
   clear: () => void
 }
 
 const initialState: TransactionsDefaultState = {
-  transactions: [],
+  pendingTransactions: [],
+  finalizedTransactions: [],
 }
 
 export const useTransactionsStates = create<TransactionsState>()(
   persist(
     (set) => ({
       ...initialState,
-      setTransactions: (transactions: Transaction[]) => set(() => ({ transactions })),
+      addPendingTransactions: (transaction: Transaction) =>
+        set((state) => ({
+          pendingTransactions: [...state.pendingTransactions, transaction],
+        })),
+      moveToFinalizedTransactions: (transaction: Transaction) =>
+        set((state) => ({
+          pendingTransactions: state.pendingTransactions.filter(
+            (t) => t.txHash !== transaction.txHash && t.blockHash !== transaction.blockHash,
+          ),
+          finalizedTransactions: [...state.finalizedTransactions, transaction],
+        })),
       clear: () => set(() => ({ ...initialState })),
     }),
     {
