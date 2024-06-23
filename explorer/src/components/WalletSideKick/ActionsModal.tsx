@@ -1,3 +1,4 @@
+import { TransactionStatus } from '@/constants'
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { camelToNormal } from '@/utils/string'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -20,6 +21,7 @@ import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useTransactionsStates } from 'states/transactions'
 import * as Yup from 'yup'
 import {
   CustomExtrinsicFormValues,
@@ -56,6 +58,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
+  const { addPendingTransactions } = useTransactionsStates()
 
   const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
@@ -180,12 +183,30 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         return setFormError('We are not able to connect to the blockchain')
       if (!subspaceAccount) throw new Error('No subspace account')
       try {
+        const block = await api.rpc.chain.getBlock()
+
+        const to = values.receiver
+        const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
+
         const hash = await api.tx.balances
-          .transferKeepAlive(
-            values.receiver,
-            floatToStringWithDecimals(values.amount, tokenDecimals),
-          )
+          .transferKeepAlive(to, amount)
           .signAndSend(actingAccount.address, { signer: injector.signer })
+
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call: 'balances.transferKeepAlive',
+          txHash: hash.toString(),
+          blockHash: '',
+          from: actingAccount.address,
+          to,
+          amount,
+          fee: '0',
+          nonce: 0,
+        })
+
         setHash(hash)
         toast.success('The transaction was sent successfully', { position: 'bottom-center' })
         sendGAEvent({
@@ -204,7 +225,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, injector, api, subspaceAccount, tokenDecimals],
+    [actingAccount, injector, api, subspaceAccount, tokenDecimals, addPendingTransactions],
   )
 
   const handleSignMessage = useCallback(
@@ -253,9 +274,27 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         return setFormError('We are not able to connect to the blockchain')
       if (!subspaceAccount) throw new Error('No subspace account')
       try {
+        const block = await api.rpc.chain.getBlock()
+
         const hash = await api.tx.system
           .remark(values.message)
           .signAndSend(actingAccount.address, { signer: injector.signer })
+
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call: 'system.remark',
+          txHash: hash.toString(),
+          blockHash: '',
+          from: actingAccount.address,
+          to: actingAccount.address,
+          amount: '0',
+          fee: '0',
+          nonce: 0,
+        })
+
         setHash(hash)
         toast.success('The remark was sent', { position: 'bottom-center' })
         sendGAEvent({
@@ -274,7 +313,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, api, injector, subspaceAccount],
+    [actingAccount, addPendingTransactions, api, injector, subspaceAccount],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -288,9 +327,27 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       if (!selectedCategory) return setFormError('You need to select a category')
       if (!selectedMethod) return setFormError('You need to select a method')
       try {
+        const block = await api.rpc.chain.getBlock()
+
         const hash = await api.tx[selectedCategory][selectedMethod](
           ...Object.keys(values).map((key) => values[key]),
         ).signAndSend(actingAccount.address, { signer: injector.signer })
+
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call: `${selectedCategory}.${selectedMethod}`,
+          txHash: hash.toString(),
+          blockHash: '',
+          from: actingAccount.address,
+          to: actingAccount.address,
+          amount: '0',
+          fee: '0',
+          nonce: 0,
+        })
+
         setHash(hash)
         toast.success('The extrinsic was sent', { position: 'bottom-center' })
         sendGAEvent({
@@ -317,6 +374,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       subspaceAccount,
       selectedCategory,
       selectedMethod,
+      addPendingTransactions,
       resetCategory,
     ],
   )

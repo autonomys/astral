@@ -1,6 +1,7 @@
 'use client'
 
 import { WalletIcon } from '@/components/icons'
+import { TransactionStatus } from '@/constants'
 import { floatToStringWithDecimals } from '@/utils/number'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
@@ -13,6 +14,7 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTransactionsStates } from 'states/transactions'
 import * as Yup from 'yup'
 
 interface FormValues {
@@ -37,6 +39,7 @@ export const OperatorStake = () => {
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const { addPendingTransactions } = useTransactionsStates()
 
   const [domainsList, setDomainsList] = useState<Domain[]>([])
   const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
@@ -137,6 +140,8 @@ export const OperatorStake = () => {
 
       try {
         const block = await api.rpc.chain.getBlock()
+        const from = actingAccount.address
+
         const hash = await api.tx.domains
           .registerOperator(
             values.domainId,
@@ -150,10 +155,23 @@ export const OperatorStake = () => {
               nominationTax: values.nominatorTax.toString(),
             },
           )
-          .signAndSend(actingAccount.address, { signer: injector.signer })
+          .signAndSend(from, { signer: injector.signer })
 
-        console.log('block', block)
-        console.log('hash', hash)
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call: 'balances.transferKeepAlive',
+          txHash: hash.toString(),
+          blockHash: '',
+          from,
+          to: from,
+          amount: '0',
+          fee: '0',
+          nonce: 0,
+        })
+
         sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
         setFormError('There was an error while registering the operator')

@@ -1,6 +1,6 @@
 'use client'
 
-import { WalletType } from '@/constants'
+import { TransactionStatus, WalletType } from '@/constants'
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
@@ -9,6 +9,7 @@ import useWallet from 'hooks/useWallet'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTransactionsStates } from 'states/transactions'
 import * as Yup from 'yup'
 
 export enum OperatorActionType {
@@ -50,6 +51,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [sliderValue, setSliderValue] = useState(0)
+  const { addPendingTransactions } = useTransactionsStates()
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -122,15 +124,28 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       try {
         const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
-          .nominateOperator(
-            action.operatorId.toString(),
-            floatToStringWithDecimals(values.amount, tokenDecimals),
-          )
-          .signAndSend(actingAccount.address, { signer: injector.signer })
+        const from = actingAccount.address
+        const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
 
-        console.log('block', block)
-        console.log('hash', hash)
+        const hash = await api.tx.domains
+          .nominateOperator(action.operatorId.toString(), amount)
+          .signAndSend(from, { signer: injector.signer })
+
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call: 'balances.transferKeepAlive',
+          txHash: hash.toString(),
+          blockHash: '',
+          from,
+          to: from,
+          amount,
+          fee: '0',
+          nonce: 0,
+        })
+
         sendGAEvent('event', 'nominateOperator', {
           value: `operatorID:${action.operatorId.toString()}`,
         })
@@ -142,7 +157,16 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'nominateOperator' })
       }
     },
-    [api, actingAccount, injector, subspaceAccount, action.operatorId, tokenDecimals, handleClose],
+    [
+      api,
+      actingAccount,
+      injector,
+      subspaceAccount,
+      action.operatorId,
+      tokenDecimals,
+      addPendingTransactions,
+      handleClose,
+    ],
   )
 
   const handleWithdraw = useCallback(
@@ -158,12 +182,27 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       try {
         const block = await api.rpc.chain.getBlock()
+        const from = actingAccount.address
+
         const hash = await api.tx.domains
           .withdrawStake(action.operatorId, values.amount.toString())
-          .signAndSend(actingAccount.address, { signer: injector.signer })
+          .signAndSend(from, { signer: injector.signer })
 
-        console.log('block', block)
-        console.log('hash', hash)
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call: 'balances.transferKeepAlive',
+          txHash: hash.toString(),
+          blockHash: '',
+          from,
+          to: from,
+          amount: '0',
+          fee: '0',
+          nonce: 0,
+        })
+
         sendGAEvent('event', 'withdrawStake', {
           value: `operatorID:${action.operatorId.toString()}`,
         })
@@ -175,7 +214,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'withdrawStake' })
       }
     },
-    [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose],
+    [
+      api,
+      actingAccount,
+      injector,
+      subspaceAccount,
+      action.operatorId,
+      addPendingTransactions,
+      handleClose,
+    ],
   )
 
   const handleDeregister = useCallback(async () => {
@@ -186,12 +233,27 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
     try {
       const block = await api.rpc.chain.getBlock()
+      const from = actingAccount.address
+
       const hash = await api.tx.domains
         .deregisterOperator(action.operatorId)
-        .signAndSend(actingAccount.address, { signer: injector.signer })
+        .signAndSend(from, { signer: injector.signer })
 
-      console.log('block', block)
-      console.log('hash', hash)
+      addPendingTransactions({
+        ownerAccount: actingAccount,
+        status: TransactionStatus.Pending,
+        submittedAtBlockHash: block.toHex(),
+        submittedAtBlockNumber: block.block.header.number.toNumber(),
+        call: 'balances.transferKeepAlive',
+        txHash: hash.toString(),
+        blockHash: '',
+        from,
+        to: from,
+        amount: '0',
+        fee: '0',
+        nonce: 0,
+      })
+
       sendGAEvent('event', 'deregisterOperator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
@@ -201,7 +263,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'deregisterOperator' })
     }
-  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
+  }, [
+    api,
+    actingAccount,
+    injector,
+    subspaceAccount,
+    action.operatorId,
+    addPendingTransactions,
+    handleClose,
+  ])
 
   const handleUnlockFunds = useCallback(async () => {
     if (!api || !actingAccount || !injector)
@@ -211,12 +281,27 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
     try {
       const block = await api.rpc.chain.getBlock()
+      const from = actingAccount.address
+
       const hash = await api.tx.domains
         .unlockFunds(action.operatorId)
-        .signAndSend(actingAccount.address, { signer: injector.signer })
+        .signAndSend(from, { signer: injector.signer })
 
-      console.log('block', block)
-      console.log('hash', hash)
+      addPendingTransactions({
+        ownerAccount: actingAccount,
+        status: TransactionStatus.Pending,
+        submittedAtBlockHash: block.toHex(),
+        submittedAtBlockNumber: block.block.header.number.toNumber(),
+        call: 'balances.transferKeepAlive',
+        txHash: hash.toString(),
+        blockHash: '',
+        from,
+        to: from,
+        amount: '0',
+        fee: '0',
+        nonce: 0,
+      })
+
       sendGAEvent('event', 'unlockFunds', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
@@ -226,7 +311,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockFunds' })
     }
-  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
+  }, [
+    api,
+    actingAccount,
+    injector,
+    subspaceAccount,
+    action.operatorId,
+    addPendingTransactions,
+    handleClose,
+  ])
 
   const handleUnlockOperator = useCallback(async () => {
     if (!api || !actingAccount || !injector)
@@ -236,12 +329,27 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
     try {
       const block = await api.rpc.chain.getBlock()
+      const from = actingAccount.address
+
       const hash = await api.tx.domains
         .unlockOperator(action.operatorId)
-        .signAndSend(actingAccount.address, { signer: injector.signer })
+        .signAndSend(from, { signer: injector.signer })
 
-      console.log('block', block)
-      console.log('hash', hash)
+      addPendingTransactions({
+        ownerAccount: actingAccount,
+        status: TransactionStatus.Pending,
+        submittedAtBlockHash: block.toHex(),
+        submittedAtBlockNumber: block.block.header.number.toNumber(),
+        call: 'balances.transferKeepAlive',
+        txHash: hash.toString(),
+        blockHash: '',
+        from,
+        to: from,
+        amount: '0',
+        fee: '0',
+        nonce: 0,
+      })
+
       sendGAEvent('event', 'unlockOperator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
@@ -251,7 +359,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockOperator' })
     }
-  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
+  }, [
+    api,
+    actingAccount,
+    injector,
+    subspaceAccount,
+    action.operatorId,
+    addPendingTransactions,
+    handleClose,
+  ])
 
   const ErrorPlaceholder = useMemo(
     () =>
