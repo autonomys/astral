@@ -11,6 +11,7 @@ import {
 import useMediaQuery from 'hooks/useMediaQuery'
 import { ReactNode, useMemo } from 'react'
 import { DesktopTable } from './DesktopTable'
+import { ListCard } from './ListCard'
 import { TableNavigation } from './TableNavigation'
 
 interface ReactTableProps<T extends object> {
@@ -22,7 +23,7 @@ interface ReactTableProps<T extends object> {
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount: number
   pagination: Pagination
-  mobileComponent: ReactNode
+  mobileComponent?: ReactNode
   filename?: string
   pageSizeOptions?: number[]
   fullDataDownloader?: () => Promise<unknown[]>
@@ -63,6 +64,10 @@ export const NewTable = <T extends object>({
     },
     pageCount,
   })
+
+  if (!mobileComponent) {
+    mobileComponent = <ListCard table={table} />
+  }
 
   return (
     <div className='flex w-full flex-col'>
