@@ -419,5 +419,3 @@ export const NominationManagement: FC = () => {
     </div>
   )
 }
-
-export default NominationManagement

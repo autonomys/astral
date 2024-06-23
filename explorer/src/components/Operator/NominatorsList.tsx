@@ -324,5 +324,3 @@ export const NominatorsList: FC = () => {
     </div>
   )
 }
-
-export default NominatorsList

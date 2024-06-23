@@ -17,7 +17,6 @@ import { useErrorHandler } from 'react-error-boundary'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
-import { ExtrinsicListCard } from '../Extrinsic/ExtrinsicListCard'
 import { AccountExtrinsicFilterDropdown } from './AccountExtrinsicFilterDropdown'
 import { QUERY_ACCOUNT_EXTRINSICS } from './query'
 
@@ -176,9 +175,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col align-middle'>
-      <div className='mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+      <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r'>
         <div className='flex w-full justify-center gap-2'>
-          <div className='text-sm text-purpleShade2 dark:text-white/75'>Action Filter:</div>
+          <div className='text-purpleShade2 text-sm dark:text-white/75'>Action Filter:</div>
           <AccountExtrinsicFilterDropdown filters={filters} setFilters={setFilters} />
         </div>
       </div>
@@ -194,24 +193,8 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           onPaginationChange={setPagination}
           filename='account-extrinsic-list'
           fullDataDownloader={fullDataDownloader}
-          mobileComponent={<MobileComponent extrinsics={extrinsics} />}
         />
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  extrinsics: Extrinsic[]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ extrinsics }) => (
-  <div className='w-full'>
-    {extrinsics.map((extrinsic, index) => (
-      <ExtrinsicListCard
-        extrinsic={extrinsic}
-        key={`extrinsic-list-card-${extrinsic.id}-${index}`}
-      />
-    ))}
-  </div>
-)

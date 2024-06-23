@@ -23,7 +23,6 @@ interface ReactTableProps<T extends object> {
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount: number
   pagination: Pagination
-  mobileComponent?: ReactNode
   filename?: string
   pageSizeOptions?: number[]
   fullDataDownloader?: () => Promise<unknown[]>
@@ -38,7 +37,6 @@ export const NewTable = <T extends object>({
   pageCount,
   onSortingChange,
   onPaginationChange,
-  mobileComponent,
   filename,
   fullDataDownloader,
   pageSizeOptions,
@@ -65,13 +63,9 @@ export const NewTable = <T extends object>({
     pageCount,
   })
 
-  if (!mobileComponent) {
-    mobileComponent = <ListCard table={table} />
-  }
-
   return (
     <div className='flex w-full flex-col'>
-      {isDesktop ? <DesktopTable table={table} /> : mobileComponent}
+      {isDesktop ? <DesktopTable table={table} /> : <ListCard table={table} />}
       {showNavigation && (
         <TableNavigation
           table={table}

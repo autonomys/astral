@@ -16,7 +16,6 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { NotStarted } from '../layout/NotStarted'
-import { NominatorListCard } from './NominatorListCard'
 import { NominatorWithRewards, getNominatorRewards } from './helpers/calculateNominatorReward'
 
 type Props = {
@@ -170,7 +169,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-grayDark text-base font-medium dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 
@@ -188,7 +187,6 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
               onPaginationChange={setPagination}
               filename='stake-wars-nominator-list'
               fullDataDownloader={fullDataDownloader}
-              mobileComponent={<MobileComponent nominators={nominatorsConnection} />}
             />
           )}
         </div>
@@ -196,21 +194,3 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     </div>
   )
 }
-
-type MobileComponentProps = {
-  nominators: GetAllNominatorsQuery['nominatorsConnection']['edges'][0]['node'][] | undefined
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ nominators }) => (
-  <div className='w-full'>
-    {nominators?.map((nominator, index) => {
-      return (
-        <NominatorListCard
-          key={`nominator-list-card-${nominator.id}`}
-          nominator={nominator}
-          index={index}
-        />
-      )
-    })}
-  </div>
-)
