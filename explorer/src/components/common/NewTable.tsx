@@ -9,7 +9,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 import { DesktopTable } from './DesktopTable'
 import { ListCard } from './ListCard'
 import { TableNavigation } from './TableNavigation'
