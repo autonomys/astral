@@ -1,8 +1,10 @@
+import type { Chain } from 'constants/chains'
 import type { TransactionStatus } from 'constants/transaction'
-import { WalletAccountWithType } from 'types/wallet'
+import type { WalletAccountWithType } from 'types/wallet'
 
 export interface Transaction {
   ownerAccount: WalletAccountWithType
+  chain: Chain
   status: TransactionStatus
   submittedAtBlockHash: string
   submittedAtBlockNumber: number
@@ -14,4 +16,9 @@ export interface Transaction {
   amount: string
   fee: string
   nonce: number
+}
+
+export interface TransactionWithMetadata extends Transaction {
+  submittedAtLocalTimestamp: Date
+  finalizedAtLocalTimestamp?: Date
 }
