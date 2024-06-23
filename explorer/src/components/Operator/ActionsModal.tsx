@@ -5,6 +5,7 @@ import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
@@ -45,6 +46,7 @@ interface FormValues {
 const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
+  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
@@ -133,6 +135,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
         addPendingTransactions({
           ownerAccount: actingAccount,
+          chain: selectedChain,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -165,6 +168,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       action.operatorId,
       tokenDecimals,
       addPendingTransactions,
+      selectedChain,
       handleClose,
     ],
   )
@@ -190,6 +194,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
         addPendingTransactions({
           ownerAccount: actingAccount,
+          chain: selectedChain,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -221,6 +226,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       subspaceAccount,
       action.operatorId,
       addPendingTransactions,
+      selectedChain,
       handleClose,
     ],
   )
@@ -241,6 +247,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       addPendingTransactions({
         ownerAccount: actingAccount,
+        chain: selectedChain,
         status: TransactionStatus.Pending,
         submittedAtBlockHash: block.toHex(),
         submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -270,6 +277,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     subspaceAccount,
     action.operatorId,
     addPendingTransactions,
+    selectedChain,
     handleClose,
   ])
 
@@ -289,6 +297,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       addPendingTransactions({
         ownerAccount: actingAccount,
+        chain: selectedChain,
         status: TransactionStatus.Pending,
         submittedAtBlockHash: block.toHex(),
         submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -318,6 +327,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     subspaceAccount,
     action.operatorId,
     addPendingTransactions,
+    selectedChain,
     handleClose,
   ])
 
@@ -337,6 +347,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
       addPendingTransactions({
         ownerAccount: actingAccount,
+        chain: selectedChain,
         status: TransactionStatus.Pending,
         submittedAtBlockHash: block.toHex(),
         submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -366,6 +377,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     subspaceAccount,
     action.operatorId,
     addPendingTransactions,
+    selectedChain,
     handleClose,
   ])
 

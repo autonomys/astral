@@ -10,6 +10,7 @@ import { isHex } from '@polkadot/util'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -35,6 +36,7 @@ type Domain = {
 }
 
 export const OperatorStake = () => {
+  const { selectedChain } = useDomains()
   const [isOpen, setIsOpen] = useState(false)
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
@@ -159,6 +161,7 @@ export const OperatorStake = () => {
 
         addPendingTransactions({
           ownerAccount: actingAccount,
+          chain: selectedChain,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -180,7 +183,15 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, api, injector, subspaceAccount, tokenDecimals],
+    [
+      actingAccount,
+      addPendingTransactions,
+      api,
+      injector,
+      selectedChain,
+      subspaceAccount,
+      tokenDecimals,
+    ],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

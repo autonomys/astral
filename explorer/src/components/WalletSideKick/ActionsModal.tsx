@@ -194,6 +194,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
 
         addPendingTransactions({
           ownerAccount: actingAccount,
+          chain: selectedChain,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -225,7 +226,15 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, injector, api, subspaceAccount, tokenDecimals, addPendingTransactions],
+    [
+      actingAccount,
+      injector,
+      api,
+      subspaceAccount,
+      tokenDecimals,
+      addPendingTransactions,
+      selectedChain,
+    ],
   )
 
   const handleSignMessage = useCallback(
@@ -282,6 +291,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
 
         addPendingTransactions({
           ownerAccount: actingAccount,
+          chain: selectedChain,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -313,7 +323,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, addPendingTransactions, api, injector, subspaceAccount],
+    [actingAccount, addPendingTransactions, api, injector, selectedChain, subspaceAccount],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -335,6 +345,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
 
         addPendingTransactions({
           ownerAccount: actingAccount,
+          chain: selectedChain,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -375,6 +386,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       selectedCategory,
       selectedMethod,
       addPendingTransactions,
+      selectedChain,
       resetCategory,
     ],
   )
