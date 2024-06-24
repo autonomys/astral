@@ -411,7 +411,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     <span className='text-grayDarker text-base font-medium dark:text-white'>
                       {`Amount to ${
                         WalletAction[action] === WalletAction.SendToken ? 'send' : 'withdraw'
-                      }`}
+                      }`}{' '}
+                      ({selectedChain.token.symbol})
                     </span>
                     <FieldArray
                       name='dischargeNorms'
@@ -682,32 +683,32 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         return null
     }
   }, [
-    ErrorPlaceholder,
-    actingAccount,
     action,
-    sendTokenFormValidationSchema,
-    messageFormValidationSchema,
-    handleSendRemark,
-    handleSendToken,
-    handleSignMessage,
-    initialSendTokenValues,
-    initialMessageValues,
-    maxAmount,
-    subspaceAccount,
-    selectedChain.urls.page,
-    handleCopy,
-    signature,
-    hash,
     result,
+    hash,
+    initialSendTokenValues,
+    sendTokenFormValidationSchema,
+    signature,
+    initialMessageValues,
+    messageFormValidationSchema,
+    subspaceAccount,
+    actingAccount,
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    initialCustomExtrinsicValues,
+    customExtrinsicFormValidationSchema,
+    handleCopy,
+    handleSendToken,
+    maxAmount,
+    ErrorPlaceholder,
+    handleSendRemark,
+    handleSignMessage,
+    handleCustomExtrinsic,
     extrinsicsList,
     selectedCategory,
     selectedMethod,
-    setSelectedCategory,
-    handleCustomExtrinsic,
     resetCategory,
     resetMethod,
-    customExtrinsicFormValidationSchema,
-    initialCustomExtrinsicValues,
   ])
 
   useEffect(() => {

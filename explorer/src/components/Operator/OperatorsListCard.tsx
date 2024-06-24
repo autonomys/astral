@@ -41,10 +41,13 @@ export const OperatorsListCard: FC<Props> = ({
       { name: 'Owner', value: shortString(operator.operatorOwner || '') },
       {
         name: 'Minimum Stake',
-        value: `${bigNumberToNumber(operator.minimumNominatorStake)} tSSC`,
+        value: `${bigNumberToNumber(operator.minimumNominatorStake)} ${selectedChain.token.symbol}`,
       },
       { name: 'Nominator Tax', value: `${operator.nominationTax}%` },
-      { name: 'Total Stake', value: `${bigNumberToNumber(operator.currentTotalStake)} tSSC` },
+      {
+        name: 'Total Stake',
+        value: `${bigNumberToNumber(operator.currentTotalStake)} ${selectedChain.token.symbol}`,
+      },
       { name: 'Total Shares', value: numberWithCommas(operator.totalShares) },
       {
         name: 'Status',
@@ -75,22 +78,23 @@ export const OperatorsListCard: FC<Props> = ({
       })
     return rows
   }, [
-    actingAccount,
-    action,
-    lastBlock,
-    excludeActions,
-    handleAction,
-    nominatorMaxShares,
     operator.currentDomainId,
-    operator.currentTotalStake,
-    operator.id,
+    operator.signingKey,
+    operator.operatorOwner,
     operator.minimumNominatorStake,
     operator.nominationTax,
-    operator.operatorOwner,
-    operator.signingKey,
-    operator.status,
+    operator.currentTotalStake,
     operator.totalShares,
+    operator.status,
+    operator.id,
+    selectedChain.token.symbol,
     selectedChain.urls.page,
+    lastBlock,
+    actingAccount,
+    action,
+    handleAction,
+    excludeActions,
+    nominatorMaxShares,
   ])
 
   return (

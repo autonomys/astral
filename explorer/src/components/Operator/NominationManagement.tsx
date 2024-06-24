@@ -134,7 +134,7 @@ export const NominationManagement: FC = () => {
                 ),
               ),
             )}{' '}
-            tSSC
+            {selectedChain.token.symbol}
           </div>
         ),
       },
@@ -167,7 +167,7 @@ export const NominationManagement: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.operator.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.operator.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -187,7 +187,7 @@ export const NominationManagement: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.operator.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.operator.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -230,7 +230,7 @@ export const NominationManagement: FC = () => {
       },
     ]
     return cols
-  }, [selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [selectedChain.urls.page, selectedChain.token.symbol, selectedDomain, action, handleAction])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
@@ -335,7 +335,7 @@ export const NominationManagement: FC = () => {
         >
           Information across nominations
           {subspaceAccount && (
-            <div className="mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
+            <div className="dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r">
               <svg
                 className='me-3 inline h-4 w-4 flex-shrink-0'
                 aria-hidden='true'
@@ -379,7 +379,7 @@ export const NominationManagement: FC = () => {
         </div>
       </div>
 
-      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
+      <div className='bg-grayLight dark:bg-blueDarkAccent mt-8 rounded-[20px] p-5'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>
@@ -416,7 +416,7 @@ export const NominationManagement: FC = () => {
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
-                  {bigNumberToNumber(totalInStake)} tSSC
+                  {bigNumberToNumber(totalInStake)} {selectedChain.token.symbol}
                 </span>
               </div>
             </div>

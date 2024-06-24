@@ -6,6 +6,7 @@ import { NotFound } from 'components/layout/NotFound'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
+import useDomains from 'hooks/useDomains'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, useMemo } from 'react'
 import { LatestRewardsWeekQuery } from '../gql/graphql'
@@ -21,7 +22,7 @@ type Props = {
 
 export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { isDark } = useTheme()
-
+  const { selectedChain } = useDomains()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
 
   const { data, error, loading } = useQuery<LatestRewardsWeekQuery>(QUERY_LAST_WEEK_REWARDS, {
@@ -74,7 +75,9 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
         <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
           {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
         </div>
-        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
+        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
+          {selectedChain.token.symbol}
+        </div>
       </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>
         {parsedData.length > 0 ? (
