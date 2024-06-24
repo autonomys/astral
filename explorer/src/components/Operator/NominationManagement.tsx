@@ -24,7 +24,6 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { NominatorListCard } from './NominatorListCard'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
 
 export const NominationManagement: FC = () => {
@@ -368,13 +367,6 @@ export const NominationManagement: FC = () => {
             pageSizeOptions={[10]}
             filename='operators-nomination-management-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={
-              <MobileComponent
-                nominators={nominatorsConnection}
-                action={action}
-                handleAction={handleAction}
-              />
-            }
           />
         </div>
       </div>
@@ -427,26 +419,3 @@ export const NominationManagement: FC = () => {
     </div>
   )
 }
-
-export default NominationManagement
-
-type MobileComponentProps = {
-  nominators: NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ nominators, action, handleAction }) => (
-  <div className='w-full'>
-    {nominators.map((nominator, index) => (
-      <NominatorListCard
-        index={index}
-        nominator={nominator}
-        action={action}
-        excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
-        handleAction={handleAction}
-        key={`nominator-list-card-${nominator.id}`}
-      />
-    ))}
-  </div>
-)

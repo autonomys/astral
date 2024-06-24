@@ -15,13 +15,12 @@ import type { OperatorsConnectionRewardsQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
-import { OperatorRewardsListCard } from './OperatorRewardsListCard'
 import { QUERY_OPERATORS_REWARDS_LIST } from './querys'
 
 export const OperatorRewardsList = () => {
@@ -201,27 +200,11 @@ export const OperatorRewardsList = () => {
             onPaginationChange={setPagination}
             filename='leaderboard-operator-rewards-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operatorRewards={operatorRewards} />}
           />
         </div>
       </div>
     </div>
   )
 }
+
 export default OperatorRewardsList
-
-type MobileComponentProps = {
-  operatorRewards: OperatorsConnectionRewardsQuery['operatorRewardsConnection']['edges'][0]['node'][]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ operatorRewards }) => (
-  <div className='w-full'>
-    {operatorRewards.map((operator, index) => (
-      <OperatorRewardsListCard
-        index={index}
-        operator={operator}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
-  </div>
-)
