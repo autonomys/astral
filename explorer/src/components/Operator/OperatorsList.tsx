@@ -152,7 +152,7 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+          <div>{`${row.original.nominators ? row.original.nominators.length : 0}`}</div>
         ),
       },
       {
@@ -274,11 +274,11 @@ export const OperatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-grayDark text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
         <DebouncedInput
           type='text'
-          className='dark:bg-blueAccent block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
           placeholder='Search by operator id'
           onChange={handleSearch}
           value={searchOperator}
