@@ -90,7 +90,7 @@ export const VoteBlockRewardList = () => {
         >) => (
           <div>
             {row.original.block
-              ? `${numberWithCommas(bigNumberToNumber(row.original.block))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.block))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -106,7 +106,7 @@ export const VoteBlockRewardList = () => {
         >) => (
           <div>
             {row.original.vote
-              ? `${numberWithCommas(bigNumberToNumber(row.original.vote))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.vote))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -122,7 +122,7 @@ export const VoteBlockRewardList = () => {
         >) => (
           <div>
             {row.original.amount
-              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -206,13 +206,13 @@ export const VoteBlockRewardList = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex w-full flex-col sm:mt-0'>
         <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>
+          <div className='text-grayDark text-base font-medium dark:text-white'>
             Farmers Leaderboard
           </div>
           <div className='flex gap-2'>
             <DebouncedInput
               type='text'
-              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+              className='dark:bg-blueAccent block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
               placeholder='Search by account address'
               onChange={handleSearch}
               value={searchAccount}

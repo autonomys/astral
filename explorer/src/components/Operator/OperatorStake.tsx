@@ -1,7 +1,6 @@
 'use client'
 
 import { WalletIcon } from '@/components/icons'
-import { floatToStringWithDecimals } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
@@ -12,10 +11,12 @@ import { isHex, u8aToHex } from '@polkadot/util'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { floatToStringWithDecimals } from 'utils/number'
 import * as Yup from 'yup'
 import { ConnectWalletButton } from '../common/ConnectWalletButton'
 
@@ -46,6 +47,7 @@ enum OwnershipProofMethod {
 
 export const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -303,9 +305,9 @@ export const OperatorStake = () => {
               </div>
             </div>
             <div className='mt-6 w-full break-words text-base font-medium text-grayDarker dark:text-white'>
-              tSSC holders (Gemini 3h testnet network only) can stake their tSSC to add more
-              security to the protocol and earn Staking Incentives. Learn more about the risks
-              involved.
+              {tokenSymbol} holders (Gemini 3h testnet network only) can stake their {tokenSymbol}{' '}
+              to add more security to the protocol and earn Staking Incentives. Learn more about the
+              risks involved.
             </div>
             <div className='mt-4 text-2xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
               Step 1: Setup a node
@@ -630,7 +632,7 @@ export const OperatorStake = () => {
 
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Amount to Stake (tSSC)
+                              Amount to Stake ({selectedChain.token.symbol})
                             </span>
                             <Field
                               name='amountToStake'
@@ -682,7 +684,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Minimum Nominator Stake (tSSC)
+                              Minimum Nominator Stake ({selectedChain.token.symbol})
                             </span>
                             <Field
                               name='minimumNominatorStake'
