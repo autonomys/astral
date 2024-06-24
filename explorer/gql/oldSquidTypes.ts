@@ -2775,7 +2775,7 @@ export type ExtrinsicsSummaryQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsSummaryQuery = { __typename?: 'Query', extrinsics: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', node: { __typename?: 'Extrinsic', id: string, success: boolean, name: string, block: { __typename?: 'Block', id: string, timestamp: any, height: any } } }> } };
+export type ExtrinsicsSummaryQuery = { __typename?: 'Query', extrinsics: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', node: { __typename?: 'Extrinsic', id: string, hash: string, success: boolean, name: string, block: { __typename?: 'Block', id: string, timestamp: any, height: any } } }> } };
 
 export type StakingSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];

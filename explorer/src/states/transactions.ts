@@ -37,22 +37,19 @@ export const useTransactionsStates = create<TransactionsState>()(
       removePendingTransactions: (transaction: Transaction) =>
         set((state) => ({
           pendingTransactions: state.pendingTransactions.filter(
-            (t) => t.txHash !== transaction.txHash && t.blockHash !== transaction.blockHash,
+            (t) => t.txHash !== transaction.txHash,
           ),
         })),
       markAsFinalized: (transaction: Transaction, status: TransactionStatus) =>
         set((state) => {
           const pendingTransaction = state.pendingTransactions.find(
-            (t) => t.txHash === transaction.txHash && t.blockHash === transaction.blockHash,
+            (t) => t.txHash === transaction.txHash,
           )
           if (!pendingTransaction) return state
           return {
             pendingTransactions: [
               ...state.pendingTransactions.filter(
-                (t) =>
-                  t.status === TransactionStatus.Pending &&
-                  t.txHash !== transaction.txHash &&
-                  t.blockHash !== transaction.blockHash,
+                (t) => t.status === TransactionStatus.Pending && t.txHash !== transaction.txHash,
               ),
               {
                 ...pendingTransaction,
@@ -65,7 +62,7 @@ export const useTransactionsStates = create<TransactionsState>()(
       moveToFinalizedTransactions: (transaction: Transaction) =>
         set((state) => ({
           pendingTransactions: state.pendingTransactions.filter(
-            (t) => t.txHash !== transaction.txHash && t.blockHash !== transaction.blockHash,
+            (t) => t.txHash !== transaction.txHash,
           ),
           finalizedTransactions: [
             ...state.finalizedTransactions,

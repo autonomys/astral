@@ -133,6 +133,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           .nominateOperator(action.operatorId.toString(), amount)
           .signAndSend(from, { signer: injector.signer })
 
+        sendGAEvent('event', 'nominateOperator', {
+          value: `operatorID:${action.operatorId.toString()}`,
+        })
+        resetForm()
+        handleClose()
+
         addPendingTransactions({
           ownerAccount: actingAccount,
           chain: selectedChain,
@@ -148,12 +154,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           fee: '0',
           nonce: 0,
         })
-
-        sendGAEvent('event', 'nominateOperator', {
-          value: `operatorID:${action.operatorId.toString()}`,
-        })
-        resetForm()
-        handleClose()
       } catch (error) {
         setFormError('There was an error while adding funds to the operator')
         console.error('Error', error)
@@ -192,6 +192,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           .withdrawStake(action.operatorId, values.amount.toString())
           .signAndSend(from, { signer: injector.signer })
 
+        sendGAEvent('event', 'withdrawStake', {
+          value: `operatorID:${action.operatorId.toString()}`,
+        })
+        resetForm()
+        handleClose()
+
         addPendingTransactions({
           ownerAccount: actingAccount,
           chain: selectedChain,
@@ -207,12 +213,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           fee: '0',
           nonce: 0,
         })
-
-        sendGAEvent('event', 'withdrawStake', {
-          value: `operatorID:${action.operatorId.toString()}`,
-        })
-        resetForm()
-        handleClose()
       } catch (error) {
         setFormError('There was an error while withdraw funds from the operator')
         console.error('Error', error)
@@ -245,6 +245,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         .deregisterOperator(action.operatorId)
         .signAndSend(from, { signer: injector.signer })
 
+      sendGAEvent('event', 'deregisterOperator', {
+        value: `operatorID:${action.operatorId.toString()}`,
+      })
+      handleClose()
+
       addPendingTransactions({
         ownerAccount: actingAccount,
         chain: selectedChain,
@@ -260,11 +265,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         fee: '0',
         nonce: 0,
       })
-
-      sendGAEvent('event', 'deregisterOperator', {
-        value: `operatorID:${action.operatorId.toString()}`,
-      })
-      handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
@@ -295,6 +295,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         .unlockFunds(action.operatorId)
         .signAndSend(from, { signer: injector.signer })
 
+      sendGAEvent('event', 'unlockFunds', {
+        value: `operatorID:${action.operatorId.toString()}`,
+      })
+      handleClose()
+
       addPendingTransactions({
         ownerAccount: actingAccount,
         chain: selectedChain,
@@ -310,11 +315,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         fee: '0',
         nonce: 0,
       })
-
-      sendGAEvent('event', 'unlockFunds', {
-        value: `operatorID:${action.operatorId.toString()}`,
-      })
-      handleClose()
     } catch (error) {
       setFormError('There was an error while de-registering the operator')
       console.error('Error', error)
@@ -414,7 +414,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-grayDarker text-base font-medium dark:text-white'>
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -435,13 +435,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                               ? 'stake'
                               : 'withdraw'
                           }`}
-                          className={`dark:bg-blueAccent mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
+                          className={`mt-4 block w-full rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                             errors.amount &&
                             'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                           }`}
                         />
                         <button
-                          className='bg-grayDarker dark:bg-purpleAccent absolute flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                          className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                           type='button'
                           style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                           onClick={() => setFieldValue('amount', maxAmountToAdd)}
@@ -471,7 +471,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -501,7 +501,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                   onSubmit={handleSubmit}
                   data-testid='testOperatorStakeForm'
                 >
-                  <span className='text-grayDarker text-base font-medium dark:text-white'>
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
                     {`Amount to ${
                       OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                       OperatorActionType.Nominating
@@ -530,7 +530,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
                           />
                           <button
-                            className='bg-grayDarker dark:bg-purpleAccent flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                            className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                             type='button'
                             onClick={() => {
                               setSliderValue(100)
@@ -566,7 +566,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                     </div>
                   ) : (
                     <button
-                      className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                       type='submit'
                     >
                       {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -580,7 +580,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case OperatorActionType.Deregister:
         return (
           <div className='flex flex-col items-start gap-4'>
-            <span className='text-grayDarker mt-4 text-base font-medium dark:text-white'>
+            <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to deregister your Operator?
             </span>
             {ErrorPlaceholder}
@@ -596,7 +596,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       case OperatorActionType.UnlockOperator:
         return (
           <div className='flex flex-col items-start gap-4'>
-            <span className='text-grayDarker mt-4 text-base font-medium dark:text-white'>
+            <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to{' '}
               {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
               OperatorActionType.UnlockFunds
@@ -653,7 +653,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='bg-grayDarker dark:bg-blueAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close
