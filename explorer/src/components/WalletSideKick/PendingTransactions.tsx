@@ -30,12 +30,14 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChai
   const transactions = useMemo(
     () =>
       actingAccount
-        ? pendingTransactions.filter(
-            (tx) =>
-              tx.chain &&
-              actingAccount.address === tx.from &&
-              selectedChain.urls.page == tx.chain.urls.page,
-          )
+        ? pendingTransactions
+            .filter(
+              (tx) =>
+                tx.chain &&
+                actingAccount.address === tx.from &&
+                selectedChain.urls.page == tx.chain.urls.page,
+            )
+            .sort((a, b) => b.submittedAtBlockNumber - a.submittedAtBlockNumber)
         : [],
     [actingAccount, pendingTransactions, selectedChain.urls.page],
   )
