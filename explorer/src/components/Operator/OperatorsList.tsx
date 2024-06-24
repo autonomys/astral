@@ -25,7 +25,6 @@ import { capitalizeFirstLetter } from 'utils/string'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { OperatorsListCard } from './OperatorsListCard'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorsList: FC = () => {
@@ -299,14 +298,6 @@ export const OperatorsList: FC = () => {
             filename='operators-operators-list'
             pageSizeOptions={[10]}
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={
-              <MobileComponent
-                operators={operatorsConnection}
-                action={action}
-                handleAction={handleAction}
-                subspaceAccount={subspaceAccount}
-              />
-            }
           />
         </div>
       </div>
@@ -314,47 +305,3 @@ export const OperatorsList: FC = () => {
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-  subspaceAccount?: string
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({
-  operators,
-  action,
-  handleAction,
-  subspaceAccount,
-}) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => {
-      const nominator =
-        subspaceAccount &&
-        operator.nominators.find(
-          (nominator) => nominator.id === `${operator.id}-${subspaceAccount}`,
-        )
-      return (
-        <OperatorsListCard
-          key={`operator-list-card-${operator.id}`}
-          operator={operator}
-          action={action}
-          handleAction={handleAction}
-          index={index}
-          excludeActions={
-            nominator
-              ? [OperatorActionType.Deregister, OperatorActionType.UnlockOperator]
-              : [
-                  OperatorActionType.Deregister,
-                  OperatorActionType.Withdraw,
-                  OperatorActionType.UnlockFunds,
-                  OperatorActionType.UnlockOperator,
-                ]
-          }
-          nominatorMaxShares={nominator ? BigInt(nominator.shares) : undefined}
-        />
-      )
-    })}
-  </div>
-)

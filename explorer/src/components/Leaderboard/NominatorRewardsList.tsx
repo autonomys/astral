@@ -16,12 +16,11 @@ import { AccountRewards, AccountsNominatorsConnectionRewardsQuery } from 'gql/gr
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
-import { NominatorRewardsListCard } from './NominatorRewardsListCard'
 import { QUERY_NOMINATORS_REWARDS_LIST } from './querys'
 
 type Row = {
@@ -198,26 +197,9 @@ export const NominatorRewardsList = () => {
             onPaginationChange={setPagination}
             filename='leaderboard-nominator-rewards-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent accountRewards={accountRewards} />}
           />
         </div>
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  accountRewards: AccountRewards[]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ accountRewards }) => (
-  <div className='w-full'>
-    {accountRewards.map((account, index) => (
-      <NominatorRewardsListCard
-        index={index}
-        account={account}
-        key={`reward-list-card-${account.id}`}
-      />
-    ))}
-  </div>
-)

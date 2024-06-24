@@ -25,7 +25,6 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { NominatorListCard } from './NominatorListCard'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
 
 export const NominatorsList: FC = () => {
@@ -325,14 +324,6 @@ export const NominatorsList: FC = () => {
             pageSizeOptions={[10]}
             filename='operators-nominators-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={
-              <MobileComponent
-                nominators={nominatorsConnection}
-                action={action}
-                handleAction={handleAction}
-                subspaceAccount={subspaceAccount}
-              />
-            }
           />
         </div>
       </div>
@@ -340,33 +331,3 @@ export const NominatorsList: FC = () => {
     </div>
   )
 }
-
-export default NominatorsList
-
-type MobileComponentProps = {
-  nominators: NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-  subspaceAccount?: string
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ nominators, action, handleAction }) => (
-  <div className='w-full'>
-    {nominators.map((nominator, index) => (
-      <NominatorListCard
-        key={`operator-list-card-${nominator.id}`}
-        nominator={nominator}
-        action={action}
-        handleAction={handleAction}
-        index={index}
-        excludeActions={[
-          OperatorActionType.Deregister,
-          OperatorActionType.Withdraw,
-          OperatorActionType.UnlockFunds,
-          OperatorActionType.UnlockOperator,
-        ]}
-        nominatorMaxShares={nominator && BigInt(nominator.shares)}
-      />
-    ))}
-  </div>
-)

@@ -24,7 +24,6 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { OperatorsListCard } from './OperatorsListCard'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorManagement: FC = () => {
@@ -342,14 +341,6 @@ export const OperatorManagement: FC = () => {
             fullDataDownloader={fullDataDownloader}
             pageSizeOptions={[10]}
             filename='operators-operator-management-list'
-            mobileComponent={
-              <MobileComponent
-                operators={operatorsConnection}
-                action={action}
-                handleAction={handleAction}
-                lastBlock={lastBlock}
-              />
-            }
           />
         </div>
       </div>
@@ -476,35 +467,3 @@ export const OperatorManagement: FC = () => {
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-  lastBlock?: number
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({
-  operators,
-  action,
-  handleAction,
-  lastBlock,
-}) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => (
-      <OperatorsListCard
-        index={index}
-        operator={operator}
-        action={action}
-        excludeActions={
-          operatorReadyToUnlock(operator.status, lastBlock)
-            ? [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
-            : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockOperator]
-        }
-        handleAction={handleAction}
-        lastBlock={lastBlock}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
-  </div>
-)
