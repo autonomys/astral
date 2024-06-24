@@ -3,12 +3,15 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { LogoIcon, WalletIcon } from '@/components/icons'
+import { WalletType } from '@/constants'
 import { formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import { chains } from 'constants/chains'
+import { domains } from 'constants/domains'
 import { ROUTE_EXTRA_FLAGS, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
 import dayjs from 'dayjs'
+import { JsonRpcProvider } from 'ethers'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
@@ -107,11 +110,19 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const loadWalletBalance = useCallback(async () => {
     if (!api || !actingAccount) return
 
-    const balance = await api.query.system.account(actingAccount.address)
-    setWalletBalance(
-      formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
-    )
-  }, [api, actingAccount])
+    if (actingAccount.type === WalletType.subspace) {
+      const balance = await api.query.system.account(actingAccount.address)
+      setWalletBalance(
+        formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+      )
+    } else {
+      const domain = domains.find((d) => d.urls.page === selectedChain.urls.page)
+      if (!domain) return
+      const provider = new JsonRpcProvider(domain.urls.rpc)
+      const balance = await provider.getBalance(actingAccount.address)
+      setWalletBalance(formatUnitsToNumber(balance.toString()))
+    }
+  }, [api, actingAccount, selectedChain.urls])
 
   useEffect(() => {
     loadData()
@@ -121,7 +132,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
     loadWalletBalance()
   }, [api, actingAccount, loadWalletBalance])
 
-  if (!subspaceAccount || !actingAccount) return null
+  if (!actingAccount) return null
 
   return (
     // backdrop
@@ -152,7 +163,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               </button>
               <div className='flex items-center gap-3'>
                 <button
-                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
+                  className='dark:bg-blueAccent items-center rounded-full bg-white px-4 py-2 dark:text-white'
                   onClick={onClose}
                 >
                   x
@@ -160,26 +171,29 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
             <SelectedChainProvider selectedChain={consensusChain}>
-              <AccountHeader
-                subspaceAccount={subspaceAccount}
-                walletBalance={walletBalance}
-                tokenSymbol={tokenSymbol}
-              />
-              <AccountSummary
-                subspaceAccount={subspaceAccount}
-                selectedChain={consensusChain}
-                actingAccountName={actingAccount.name}
-                walletBalance={walletBalance}
-                tokenSymbol={tokenSymbol}
-              />
-              <GetDiscordRoles subspaceAccount={subspaceAccount} />
-              <StakingSummary
-                subspaceAccount={subspaceAccount}
-                selectedChain={consensusChain}
-                tokenSymbol={tokenSymbol}
-              />
-              <LastExtrinsics subspaceAccount={subspaceAccount} selectedChain={consensusChain} />
-              <Leaderboard subspaceAccount={subspaceAccount} />
+              <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
+              {subspaceAccount && (
+                <>
+                  <AccountSummary
+                    subspaceAccount={subspaceAccount}
+                    selectedChain={consensusChain}
+                    actingAccountName={actingAccount.name}
+                    walletBalance={walletBalance}
+                    tokenSymbol={tokenSymbol}
+                  />
+                  <GetDiscordRoles subspaceAccount={subspaceAccount} />
+                  <StakingSummary
+                    subspaceAccount={subspaceAccount}
+                    selectedChain={consensusChain}
+                    tokenSymbol={tokenSymbol}
+                  />
+                  <LastExtrinsics
+                    subspaceAccount={subspaceAccount}
+                    selectedChain={consensusChain}
+                  />
+                  <Leaderboard subspaceAccount={subspaceAccount} />
+                </>
+              )}
             </SelectedChainProvider>
             <div className='flex'>
               <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
