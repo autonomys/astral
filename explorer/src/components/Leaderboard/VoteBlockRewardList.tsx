@@ -89,7 +89,7 @@ export const VoteBlockRewardList = () => {
         >) => (
           <div>
             {row.original.block
-              ? `${numberWithCommas(bigNumberToNumber(row.original.block))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.block))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -105,7 +105,7 @@ export const VoteBlockRewardList = () => {
         >) => (
           <div>
             {row.original.vote
-              ? `${numberWithCommas(bigNumberToNumber(row.original.vote))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.vote))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -121,7 +121,7 @@ export const VoteBlockRewardList = () => {
         >) => (
           <div>
             {row.original.amount
-              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),

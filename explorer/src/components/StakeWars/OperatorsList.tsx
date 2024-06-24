@@ -78,7 +78,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -86,7 +86,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Total Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -98,12 +98,12 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         }: Cell<
           GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'] & { rewards: bigint }
         >) => (
-          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} tSSC`}</div>
+          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} ${selectedChain.token.symbol}`}</div>
         ),
       },
     ]
     return cols
-  }, [selectedChain.urls.page, selectedDomain])
+  }, [selectedChain.token.symbol, selectedChain.urls.page, selectedDomain])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 

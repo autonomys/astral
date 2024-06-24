@@ -82,7 +82,9 @@ export const NominatorRewardsList = () => {
         enableSorting: true,
         cell: ({ row }) => (
           <div>
-            {row.original.operator ? `${bigNumberToString(row.original.operator, 10)} tSSC` : 0}
+            {row.original.operator
+              ? `${bigNumberToString(row.original.operator, 10)} ${selectedChain.token.symbol}`
+              : 0}
           </div>
         ),
       },

@@ -10,6 +10,10 @@ export const domains: Chain[] = [
         old: 'https://nova.squid.gemini-3h.subspace.network/graphql',
       },
     },
+    token: {
+      symbol: 'tATC',
+      decimals: 18,
+    },
     isDomain: true,
   },
   {
@@ -20,6 +24,10 @@ export const domains: Chain[] = [
       squids: {
         old: 'https://nova.squid.gemini-3g.subspace.network/graphql',
       },
+    },
+    token: {
+      symbol: 'tATC',
+      decimals: 18,
     },
     isDomain: true,
   },

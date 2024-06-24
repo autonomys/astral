@@ -213,7 +213,7 @@ export const OperatorManagement: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -233,7 +233,7 @@ export const OperatorManagement: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -280,7 +280,14 @@ export const OperatorManagement: FC = () => {
         ),
       },
     ]
-  }, [selectedChain.urls.page, selectedDomain, action, handleAction, lastBlock])
+  }, [
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    selectedDomain,
+    lastBlock,
+    action,
+    handleAction,
+  ])
 
   useEffect(() => {
     if (subspaceAccount) handleSearch(subspaceAccount)
@@ -394,7 +401,7 @@ export const OperatorManagement: FC = () => {
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
-                  {bigNumberToNumber(totalInStake)} tSSC
+                  {bigNumberToNumber(totalInStake)} {selectedChain.token.symbol}
                 </span>
               </div>
               <div className='p-4'>
@@ -412,7 +419,7 @@ export const OperatorManagement: FC = () => {
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
-                  {bigNumberToNumber(totalOperatorStake)} tSSC*
+                  {bigNumberToNumber(totalOperatorStake)} {selectedChain.token.symbol}*
                 </span>
               </div>
 
@@ -431,7 +438,7 @@ export const OperatorManagement: FC = () => {
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
-                  {bigNumberToNumber(totalOperatorStake)} tSSC
+                  {bigNumberToNumber(totalOperatorStake)} {selectedChain.token.symbol}
                 </span>
               </div>
               <div className='p-4'>
@@ -449,7 +456,7 @@ export const OperatorManagement: FC = () => {
                     isDesktop ? 'text-base' : 'text-sm'
                   } font-medium dark:text-white`}
                 >
-                  {bigNumberToNumber(totalNominatorsStake)} tSSC
+                  {bigNumberToNumber(totalNominatorsStake)} {selectedChain.token.symbol}
                 </span>
               </div>
             </div>

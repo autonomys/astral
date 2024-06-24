@@ -134,7 +134,7 @@ export const NominatorsList: FC = () => {
                 ),
               ),
             )}{' '}
-            tSSC
+            ${selectedChain.token.symbol}
           </div>
         ),
       },
@@ -167,7 +167,7 @@ export const NominatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.operator.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.operator.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -187,7 +187,7 @@ export const NominatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.operator.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.operator.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -232,7 +232,14 @@ export const NominatorsList: FC = () => {
         },
       })
     return cols
-  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [
+    subspaceAccount,
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    selectedDomain,
+    action,
+    handleAction,
+  ])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 

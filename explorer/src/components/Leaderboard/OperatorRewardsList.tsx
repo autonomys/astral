@@ -88,7 +88,7 @@ export const OperatorRewardsList = () => {
         >) => (
           <div>
             {row.original.amount
-              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),

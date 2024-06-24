@@ -1,9 +1,11 @@
 'use client'
 
+import { WalletType } from '@/constants'
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
@@ -43,7 +45,8 @@ interface FormValues {
 const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
-  const { api, actingAccount, injector } = useWallet()
+  const { selectedChain } = useDomains()
+  const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
@@ -95,10 +98,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const loadWalletBalance = useCallback(async () => {
     if (!api || !actingAccount) return
 
-    const balance = await api.query.system.account(actingAccount.address)
-    setWalletBalance(
-      formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
-    )
+    if (actingAccount.type === WalletType.subspace) {
+      const balance = await api.query.system.account(actingAccount.address)
+      setWalletBalance(
+        formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+      )
+    }
   }, [api, actingAccount])
 
   const handleClose = useCallback(() => {
@@ -113,6 +118,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ) => {
       if (!api || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) return setFormError('Not a subspace account connected')
       if (action.operatorId === null)
         return setFormError('Please select an operator to add funds to')
 
@@ -138,7 +144,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'nominateOperator' })
       }
     },
-    [api, actingAccount, injector, action.operatorId, tokenDecimals, handleClose],
+    [api, actingAccount, injector, subspaceAccount, action.operatorId, tokenDecimals, handleClose],
   )
 
   const handleWithdraw = useCallback(
@@ -148,6 +154,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ) => {
       if (!api || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) return setFormError('Not a subspace account connected')
       if (action.operatorId === null)
         return setFormError('Please select an operator to add funds to')
 
@@ -170,12 +177,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'withdrawStake' })
       }
     },
-    [api, actingAccount, injector, action.operatorId, handleClose],
+    [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose],
   )
 
   const handleDeregister = useCallback(async () => {
     if (!api || !actingAccount || !injector)
       return setFormError('We are not able to connect to the blockchain')
+    if (!subspaceAccount) return setFormError('Not a subspace account connected')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
@@ -195,11 +203,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'deregisterOperator' })
     }
-  }, [actingAccount, action.operatorId, api, injector, handleClose])
+  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
 
   const handleUnlockFunds = useCallback(async () => {
     if (!api || !actingAccount || !injector)
       return setFormError('We are not able to connect to the blockchain')
+    if (!subspaceAccount) return setFormError('Not a subspace account connected')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
@@ -219,11 +228,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockFunds' })
     }
-  }, [actingAccount, action.operatorId, api, injector, handleClose])
+  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
 
   const handleUnlockOperator = useCallback(async () => {
     if (!api || !actingAccount || !injector)
       return setFormError('We are not able to connect to the blockchain')
+    if (!subspaceAccount) return setFormError('Not a subspace account connected')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
@@ -243,7 +253,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockOperator' })
     }
-  }, [actingAccount, action.operatorId, api, injector, handleClose])
+  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
 
   const ErrorPlaceholder = useMemo(
     () =>
@@ -284,7 +294,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       OperatorActionType.Nominating
                         ? 'stake'
                         : 'withdraw'
-                    }`}
+                    }`}{' '}
+                    ({selectedChain.token.symbol})
                   </span>
                   <FieldArray
                     name='dischargeNorms'
@@ -496,10 +507,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     handleUnlockOperator,
     handleAddFunds,
     handleWithdraw,
+    selectedChain.token.symbol,
     maxAmountToAdd,
     actingAccount,
-    maxSharesToWithdraw,
     sliderValue,
+    maxSharesToWithdraw,
   ])
 
   useEffect(() => {

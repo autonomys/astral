@@ -111,7 +111,7 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -131,7 +131,7 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -200,7 +200,14 @@ export const OperatorsList: FC = () => {
         },
       })
     return cols
-  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [
+    subspaceAccount,
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    selectedDomain,
+    action,
+    handleAction,
+  ])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 

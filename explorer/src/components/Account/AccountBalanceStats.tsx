@@ -1,5 +1,6 @@
 import { StatItem } from 'components/common/StatItem'
 import { Account } from 'gql/graphql'
+import useDomains from 'hooks/useDomains'
 import { FC } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { AccountBalancePieChart } from './AccountBalancePieChart'
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
+  const { selectedChain } = useDomains()
   const accountTotal = bigNumberToNumber(account.total || 0)
   const accountFree = bigNumberToNumber(account.free || 0)
   const accountReserved = bigNumberToNumber(account.reserved || 0)
@@ -28,7 +30,9 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
         <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
           {numberWithCommas(accountTotal)}
         </div>
-        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
+        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
+          {selectedChain.token.symbol}
+        </div>
       </div>
       <div className='col-span-2 flex size-full items-center justify-center lg:items-end lg:justify-end'>
         <AccountBalancePieChart account={account} />
@@ -36,17 +40,17 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
       <div className='flex w-full items-center lg:gap-4 lg:py-8'>
         <div className='flex flex-row justify-center gap-8 lg:flex-none lg:flex-col'>
           <div className='flex items-center'>
-            <div className='mr-2 h-[30px] w-1 bg-purpleElectric' />
+            <div className='bg-purpleElectric mr-2 h-[30px] w-1' />
             <StatItem
               title='Free'
-              value={`${numberWithCommas(accountFree)} tSSC (${freePercent.toFixed(2)}%)`}
+              value={`${numberWithCommas(accountFree)} ${selectedChain.token.symbol} (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
-            <div className='mr-2 h-[30px] w-1 bg-blueShade2' />
+            <div className='bg-blueShade2 mr-2 h-[30px] w-1' />
             <StatItem
               title='Reserved'
-              value={`${numberWithCommas(accountReserved)} tSSC (${reservedPercent.toFixed(2)}%)`}
+              value={`${numberWithCommas(accountReserved)} ${selectedChain.token.symbol} (${reservedPercent.toFixed(2)}%)`}
             />
           </div>
         </div>
