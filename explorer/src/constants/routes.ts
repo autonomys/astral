@@ -133,8 +133,20 @@ export const INTERNAL_ROUTES = {
   catchAll: '*',
 }
 
+export enum API_ROUTES {
+  Auth = 'auth',
+  Claim = 'claim',
+}
+
 export enum CLAIM_TYPES {
   OperatorDisbursement = 'operator-disbursement',
+}
+
+export const ROUTE_API = {
+  claim: {
+    operatorDisbursement: (chain: string): string =>
+      `/api/${API_ROUTES.Claim}/${chain}/${CLAIM_TYPES.OperatorDisbursement}`,
+  },
 }
 
 export enum ROUTE_EXTRA_FLAG_TYPE {

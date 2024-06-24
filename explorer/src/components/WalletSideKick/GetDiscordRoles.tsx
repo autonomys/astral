@@ -1,8 +1,10 @@
-import { CheckMarkIcon } from '@/components/icons/CheckMarkIcon'
+import { ClockIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { Modal } from 'components/common/Modal'
-import { EXTERNAL_ROUTES } from 'constants/routes'
+import { CheckMarkIcon } from 'components/icons/CheckMarkIcon'
+import { EXTERNAL_ROUTES, ROUTE_API } from 'constants/routes'
+import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -16,6 +18,7 @@ interface StakingSummaryProps {
 interface StyledButtonProps {
   children: React.ReactNode
   className?: string
+  isDisabled?: boolean
   onClick?: () => void
 }
 
@@ -24,9 +27,10 @@ type ExplainerProps = {
   onClose: () => void
 }
 
-const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) => (
+const StyledButton: FC<StyledButtonProps> = ({ children, className, isDisabled, onClick }) => (
   <button
-    className={`border-purpleAccent w-[100px] rounded-xl border bg-transparent px-4 shadow-lg ${className}`}
+    className={`w-[100px] rounded-xl border border-purpleAccent bg-transparent px-4 shadow-lg ${className}`}
+    disabled={isDisabled}
     onClick={onClick}
   >
     {children}
@@ -51,7 +55,7 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         <button
-          className='bg-grayDarker dark:bg-blueAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close
@@ -79,7 +83,10 @@ const ExplainerLinkAndModal: FC = () => {
 
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { data: session } = useSession()
+  const { selectedChain } = useDomains()
   const { actingAccount, injector } = useWallet()
+  const [isPending, setIsPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -116,19 +123,76 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
     [],
   )
 
+  const handleClaimOperatorDisbursement = useCallback(async () => {
+    setError(null)
+    if (!actingAccount || !injector) throw new Error('No wallet connected')
+    if (!injector.signer.signRaw) throw new Error('No signer')
+    if (!subspaceAccount) throw new Error('No subspace account')
+
+    // Prepare and sign the message
+    const message = `I am the owner of ${subspaceAccount} and I claim the operator disbursement`
+    const signature = await injector.signer.signRaw({
+      address: actingAccount.address,
+      type: 'bytes',
+      data: message,
+    })
+    if (!signature) throw new Error('No signature')
+    const claim = await fetch(ROUTE_API.claim.operatorDisbursement(selectedChain.urls.page), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        address: actingAccount.address,
+        message,
+        signature: signature.signature,
+      }),
+    }).then((res) => res.json())
+    if (claim.hash) setIsPending(true)
+    else if (claim.error) setError(claim.error)
+  }, [actingAccount, injector, selectedChain.urls.page, subspaceAccount])
+
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
-      <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
+      <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
-            <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
+            <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
+          </List>
+          <List>
+            <StyledListItem
+              title={
+                <>
+                  <p>
+                    <b>Run an operator node</b> in Stake Wars 2,
+                  </p>
+                  <p>
+                    {' '}
+                    claim <b>100 {selectedChain.token.symbol}</b> to cover the operator stake.
+                  </p>
+                </>
+              }
+            >
+              {isPending ? (
+                <p className='text-sm text-gray-500'>
+                  Claim is pending <ClockIcon className='size-5' stroke='orange' />
+                </p>
+              ) : (
+                <StyledButton
+                  className={`ml-2 ${error !== null && 'cursor-not-allowed'}`}
+                  isDisabled={error !== null}
+                  onClick={handleClaimOperatorDisbursement}
+                >
+                  Claim
+                </StyledButton>
+              )}
+            </StyledListItem>
+            {error && <p className='text-sm text-red-500'>{error}</p>}
           </List>
         </Accordion>
         <ExplainerLinkAndModal />
       </div>
     )
   return (
-    <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion title='Get verified roles on Discord'>
         <List>
           <StyledListItem title='Verify the ownership of your wallet'>
