@@ -1,4 +1,5 @@
-import { AuthProvider } from '@/constants/session'
+import type { Chains } from 'constants/chains'
+import type { AuthProvider } from 'constants/session'
 import { Client, ExprArg, FaunaHttpErrorResponseContent, query as q } from 'faunadb'
 import type { SavedUser, User } from 'next-auth'
 import { headers } from 'next/headers'
@@ -13,9 +14,9 @@ const client = new Client({
   scheme: 'https',
 })
 
-const queryIndex = async (index: string, term: string) =>
+const queryIndex = async (index: string, terms: string | string[]) =>
   await client
-    .query(q.Paginate(q.Match(q.Index(index), term)))
+    .query(q.Paginate(q.Match(q.Index(index), ...(Array.isArray(terms) ? terms : [terms]))))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .then((response: any) => {
       const resultsRefs = response.data
@@ -41,10 +42,33 @@ const updateData = async (document: ExprArg, data: object) =>
       return error
     })
 
+export const findClaim = async (userID: string, chain: string, claimType: string) =>
+  await queryIndex('claim_by_id_chain_and_claimType', [userID, chain, claimType])
+
 export const findUserByID = async (userID: string) => await queryIndex('users_by_id', userID)
 
 export const findUserByAuthProviderId = async (provider: AuthProvider, userID: string) =>
   await queryIndex(`users_by_${provider.toString()}_id`, userID)
+
+export const saveClaim = async (
+  user: User,
+  chain: Chains,
+  claimType: string,
+  claim: object,
+  tx: object,
+) => {
+  const now = q.Now()
+  return await saveData('classes/claims', {
+    id: `${user.id}-${chain}-${claimType}`,
+    chain,
+    claimType,
+    claim,
+    user,
+    tx,
+    createdAt: now,
+    updatedAt: now,
+  })
+}
 
 export const saveUser = async (user: User) => {
   const now = q.Now()
