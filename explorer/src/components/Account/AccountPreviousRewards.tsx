@@ -218,21 +218,21 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   }, [handleSearch])
 
   return (
-    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+    <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r'>
       <div className='flex w-full flex-col gap-6 py-4 pl-4'>
         <div className='grid w-full grid-cols-3 gap-8 xl:gap-8'>
-          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='text-purpleShade2 col-span-1 text-[13px] font-normal dark:text-white/75'>
             Testnet
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
-            Localized tSSC
+          <div className='text-purpleShade2 col-span-1 text-[13px] font-normal dark:text-white/75'>
+            Localized {selectedChain.token.symbol}
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='text-purpleShade2 col-span-1 text-[13px] font-normal dark:text-white/75'>
             Mainnet allocation %
           </div>
         </div>
         <div className='w-full'>
-          <ol className='relative border-l border-purpleLight dark:border-blueShade1'>
+          <ol className='border-purpleLight dark:border-blueShade1 relative border-l'>
             {rewardsPhase.map((phase, index) => (
               <li
                 key={`${index}-account-rewards-block`}

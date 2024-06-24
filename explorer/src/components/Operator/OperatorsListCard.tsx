@@ -1,7 +1,7 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { MobileCard, Row } from 'components/common/MobileCard'
-import { Chains } from 'constants/'
+import { Chains, WalletType } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
@@ -41,10 +41,13 @@ export const OperatorsListCard: FC<Props> = ({
       { name: 'Owner', value: shortString(operator.operatorOwner || '') },
       {
         name: 'Minimum Stake',
-        value: `${bigNumberToNumber(operator.minimumNominatorStake)} tSSC`,
+        value: `${bigNumberToNumber(operator.minimumNominatorStake)} ${selectedChain.token.symbol}`,
       },
       { name: 'Nominator Tax', value: `${operator.nominationTax}%` },
-      { name: 'Total Stake', value: `${bigNumberToNumber(operator.currentTotalStake)} tSSC` },
+      {
+        name: 'Total Stake',
+        value: `${bigNumberToNumber(operator.currentTotalStake)} ${selectedChain.token.symbol}`,
+      },
       { name: 'Total Shares', value: numberWithCommas(operator.totalShares) },
       {
         name: 'Status',
@@ -55,7 +58,7 @@ export const OperatorsListCard: FC<Props> = ({
           : 'unknown',
       },
     ]
-    if (actingAccount)
+    if (actingAccount && actingAccount.type === WalletType.subspace)
       rows.push({
         name: 'Actions',
         value: (
@@ -75,22 +78,23 @@ export const OperatorsListCard: FC<Props> = ({
       })
     return rows
   }, [
-    actingAccount,
-    action,
-    lastBlock,
-    excludeActions,
-    handleAction,
-    nominatorMaxShares,
     operator.currentDomainId,
-    operator.currentTotalStake,
-    operator.id,
+    operator.signingKey,
+    operator.operatorOwner,
     operator.minimumNominatorStake,
     operator.nominationTax,
-    operator.operatorOwner,
-    operator.signingKey,
-    operator.status,
+    operator.currentTotalStake,
     operator.totalShares,
+    operator.status,
+    operator.id,
+    selectedChain.token.symbol,
     selectedChain.urls.page,
+    lastBlock,
+    actingAccount,
+    action,
+    handleAction,
+    excludeActions,
+    nominatorMaxShares,
   ])
 
   return (
@@ -107,7 +111,7 @@ export const OperatorsListCard: FC<Props> = ({
             operator.id,
           )}
         >
-          <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
+          <p className='text-grayDarker break-all text-sm font-medium dark:text-white'>
             {operator.id}
           </p>
         </Link>

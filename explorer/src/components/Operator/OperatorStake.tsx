@@ -1,26 +1,34 @@
 'use client'
 
 import { WalletIcon } from '@/components/icons'
-import { floatToStringWithDecimals } from '@/utils/number'
+import { shortString } from '@/utils/string'
 import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
-import { isHex } from '@polkadot/util'
+import { Keyring } from '@polkadot/api'
+import { createType } from '@polkadot/types'
+import { isHex, u8aToHex } from '@polkadot/util'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { Field, Form, Formik, FormikState } from 'formik'
+import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
+import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { floatToStringWithDecimals } from 'utils/number'
 import * as Yup from 'yup'
+import { ConnectWalletButton } from '../common/ConnectWalletButton'
 
 interface FormValues {
   domainId: number
   signingKey: string
+  signature: string | Uint8Array
   amountToStake: number
   nominatorTax: number
   minimumNominatorStake: number
+  signingKeySeed: string
+  signingKeystore: Blob | null
 }
 
 type OperatorAllowListRestricted = { operators: string[] }
@@ -32,8 +40,14 @@ type Domain = {
   operatorAllowList: OperatorAllowList
 }
 
+enum OwnershipProofMethod {
+  seed = 'seed',
+  keystore = 'keystore',
+}
+
 export const OperatorStake = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -42,13 +56,19 @@ export const OperatorStake = () => {
   const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
+  const [activeProofMethodTab, setActiveProofMethodTab] = useState<OwnershipProofMethod>(
+    OwnershipProofMethod.keystore,
+  )
 
   const initialValues: FormValues = {
     domainId: 0,
     signingKey: '',
+    signature: '0x',
     amountToStake: 0,
     nominatorTax: 0,
     minimumNominatorStake: 0,
+    signingKeySeed: '',
+    signingKeystore: null,
   }
 
   const loadDomains = useCallback(async () => {
@@ -131,8 +151,9 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
+      if (!api || !subspaceAccount || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) throw new Error('No subspace account')
 
       try {
         const block = await api.rpc.chain.getBlock()
@@ -148,6 +169,7 @@ export const OperatorStake = () => {
               ),
               nominationTax: values.nominatorTax.toString(),
             },
+            values.signature,
           )
           .signAndSend(actingAccount.address, { signer: injector.signer })
 
@@ -161,13 +183,107 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, api, injector, tokenDecimals],
+    [actingAccount, api, injector, subspaceAccount, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault()
     setIsOpen(true)
   }, [])
+
+  const resetActiveProofMethodTab = useCallback(
+    (
+      method: OwnershipProofMethod,
+      values: FormValues,
+      resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
+    ) => {
+      setActiveProofMethodTab(method)
+      resetForm({
+        values: {
+          ...values,
+          signingKey: initialValues.signingKey,
+          signingKeySeed: initialValues.signingKeySeed,
+          signature: initialValues.signature,
+        },
+      })
+    },
+    [initialValues.signature, initialValues.signingKey, initialValues.signingKeySeed],
+  )
+
+  const handleProof = useCallback(
+    (
+      seed: string,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => {
+      if (!api || !subspaceAccount || !actingAccount)
+        return setFormError('We are not able to connect to the blockchain')
+
+      try {
+        const OperatorKeyring = new Keyring({ type: 'sr25519' })
+        const Operator = OperatorKeyring.addFromUri(seed)
+
+        const signingKey = u8aToHex(Operator.publicKey)
+        const signature = Operator.sign(
+          createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
+        )
+        setFieldValue('signingKey', signingKey)
+        setFieldValue('signature', signature)
+      } catch (error) {
+        setFormError('There was an error with the seed')
+        console.error('Error', error)
+      }
+    },
+    [subspaceAccount, actingAccount, api],
+  )
+
+  const handleProofOfOwnershipWithSeed = useCallback(
+    (
+      values: FormValues,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => handleProof(values.signingKeySeed, setFieldValue),
+    [handleProof],
+  )
+
+  const handleProofOfOwnershipWithKeystore = useCallback(
+    (
+      events: React.ChangeEvent<HTMLInputElement>,
+      setFieldValue: (
+        field: string,
+        value: string | Uint8Array,
+        shouldValidate?: boolean | undefined,
+      ) => Promise<void | FormikErrors<FormValues>>,
+    ) => {
+      if (!events.target.files) return setFormError('No file')
+      try {
+        const fileReader = new FileReader()
+        fileReader.onload = () => {
+          const keystoreContent = fileReader.result as string
+          if (fileReader.readyState === 2) {
+            try {
+              const seed = keystoreContent.replace(/"|_/g, '')
+              handleProof(seed, setFieldValue)
+            } catch (error) {
+              setFormError('There was an error with the keystore')
+              console.error('Error', error)
+            }
+          }
+        }
+        fileReader.readAsText(events.target.files[0])
+      } catch (error) {
+        setFormError('There was an error with the keystore')
+        console.error('Error', error)
+      }
+    },
+    [handleProof],
+  )
 
   useEffect(() => {
     loadDomains()
@@ -189,9 +305,9 @@ export const OperatorStake = () => {
               </div>
             </div>
             <div className='mt-6 w-full break-words text-base font-medium text-grayDarker dark:text-white'>
-              tSSC holders (Gemini 3h testnet network only) can stake their tSSC to add more
-              security to the protocol and earn Staking Incentives. Learn more about the risks
-              involved.
+              {tokenSymbol} holders (Gemini 3h testnet network only) can stake their {tokenSymbol}{' '}
+              to add more security to the protocol and earn Staking Incentives. Learn more about the
+              risks involved.
             </div>
             <div className='mt-4 text-2xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
               Step 1: Setup a node
@@ -207,9 +323,46 @@ export const OperatorStake = () => {
                 Please follow the docs to setup a node
               </Link>
             </div>
+            <div className='mt-4 text-2xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
+              Step 2: Connect your wallet
+            </div>
+
+            <div className='mt-4 text-xl'>
+              {!actingAccount ? (
+                <div className='flex w-full items-center justify-center p-4 text-sm'>
+                  <ConnectWalletButton />
+                </div>
+              ) : (
+                <div
+                  className={`${
+                    isDesktop ? 'text-ms' : 'text-sm'
+                  } flex w-full p-4 text-grayDarker dark:text-white`}
+                >
+                  {subspaceAccount ? (
+                    <>
+                      {isDesktop ? subspaceAccount : shortString(subspaceAccount)}{' '}
+                      <CheckIcon className='ml-2 h-6 w-6' />
+                    </>
+                  ) : (
+                    <>
+                      {isDesktop ? actingAccount.address : shortString(actingAccount.address)}{' '}
+                      <ExclamationTriangleIcon className='ml-2 h-6 w-6' />
+                      <br />
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+            {actingAccount &&
+              (actingAccount as unknown as { type: string }).type === 'ethereum' && (
+                <div className='ml-2 text-grayDarker dark:text-white'>
+                  EVM account not supported for this action
+                </div>
+              )}
+            <hr />
 
             <div className='mt-4 text-2xl font-bold leading-tight tracking-tight text-grayDarker dark:text-white'>
-              Step 2: Register
+              Step 3: Register
             </div>
 
             <Formik
@@ -295,36 +448,191 @@ export const OperatorStake = () => {
                               </div>
                             </Listbox>
                           </div>
+
                           <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Signing key
+                              Proof of Ownership
                             </span>
-                            <Field
-                              name='signingKey'
-                              placeholder='Signing Key'
-                              className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                            <div className='mt-4'>
+                              <div className='flex justify-around'>
+                                <button
+                                  type='button'
+                                  className={`${
+                                    activeProofMethodTab === OwnershipProofMethod.keystore
+                                      ? 'bg-pinkAccent'
+                                      : 'bg-white dark:bg-purpleDeepAccent'
+                                  } rounded-full px-4 py-2 shadow-md`}
+                                  onClick={() =>
+                                    resetActiveProofMethodTab(
+                                      OwnershipProofMethod.keystore,
+                                      values,
+                                      resetForm,
+                                    )
+                                  }
+                                >
+                                  Proof with keystore
+                                </button>
+                                <button
+                                  type='button'
+                                  className={`${
+                                    activeProofMethodTab === OwnershipProofMethod.seed
+                                      ? 'bg-pinkAccent'
+                                      : 'bg-white dark:bg-purpleDeepAccent'
+                                  } rounded-full px-4 shadow-md`}
+                                  onClick={() =>
+                                    resetActiveProofMethodTab(
+                                      OwnershipProofMethod.seed,
+                                      values,
+                                      resetForm,
+                                    )
+                                  }
+                                >
+                                  Proof with seed
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                          {activeProofMethodTab === OwnershipProofMethod.seed && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
+                                  Signing key
+                                </span>
+                                <Field
+                                  name='signingKey'
+                                  placeholder='Signing Key'
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.signingKey &&
                               touched.signingKey &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                             }
                           `}
-                            />
-                            {errors.signingKey && touched.signingKey ? (
-                              <div
-                                className='text-md mt-2 h-8 text-red-500'
-                                data-testid='errorMessage'
-                              >
-                                {errors.signingKey}
+                                />
+                                {errors.signingKeySeed && touched.signingKeySeed ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signingKeySeed}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
                               </div>
-                            ) : (
-                              <div className='text-md mt-2 h-8' data-testid='placeHolder' />
-                            )}
-                          </div>
+                              <div className={`p-4 ${isDesktop ? 'col-span-1' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
+                                  &nbsp;
+                                </span>
+                                <div className='mt-4 flex justify-around'>
+                                  <button
+                                    type='button'
+                                    className={'rounded-full bg-pinkAccent px-4 py-2 shadow-md'}
+                                    onClick={() =>
+                                      handleProofOfOwnershipWithSeed(values, setFieldValue)
+                                    }
+                                  >
+                                    Generate proof
+                                  </button>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {activeProofMethodTab === OwnershipProofMethod.keystore && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
+                                  Signing key seed
+                                </span>
+                                <Field
+                                  id='file'
+                                  name='signingKeystore'
+                                  type='file'
+                                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                    handleProofOfOwnershipWithKeystore(e, setFieldValue)
+                                  }
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                            ${
+                              errors.signingKeystore &&
+                              touched.signingKeystore &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
+                            }
+                          `}
+                                />
+                                {errors.signingKeystore && touched.signingKeystore ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signingKeystore}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
+                              </div>
+                            </>
+                          )}
+                          {values.signingKey && values.signature && (
+                            <>
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
+                                  Signing key
+                                </span>
+                                <Field
+                                  name='signingKey'
+                                  placeholder='Signing Key'
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                ${
+                                  errors.signingKey &&
+                                  touched.signingKey &&
+                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
+                                }
+                              `}
+                                />
+                                {errors.signingKey && touched.signingKey ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signingKey}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
+                              </div>
+
+                              <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
+                                  Proof of signing key ownership signature
+                                </span>
+                                <Field
+                                  name='signature'
+                                  placeholder='Signature'
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                            ${
+                              errors.signature &&
+                              touched.signature &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
+                            }
+                          `}
+                                />
+                                {errors.signature && touched.signature ? (
+                                  <div
+                                    className='text-md mt-2 h-8 text-red-500'
+                                    data-testid='errorMessage'
+                                  >
+                                    {errors.signature}
+                                  </div>
+                                ) : (
+                                  <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                                )}
+                              </div>
+                            </>
+                          )}
 
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Amount to Stake
+                              Amount to Stake ({selectedChain.token.symbol})
                             </span>
                             <Field
                               name='amountToStake'
@@ -350,7 +658,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Nominator tax
+                              Nominator tax (%)
                             </span>
                             <Field
                               name='nominatorTax'
@@ -376,7 +684,7 @@ export const OperatorStake = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Minimum Nominator Stake
+                              Minimum Nominator Stake ({selectedChain.token.symbol})
                             </span>
                             <Field
                               name='minimumNominatorStake'
