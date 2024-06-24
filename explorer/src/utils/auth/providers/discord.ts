@@ -1,17 +1,15 @@
 import { AuthProvider } from 'constants/session'
-import * as jsonwebtoken from 'jsonwebtoken'
 import type { TokenSet } from 'next-auth'
 import { User } from 'next-auth'
-import { JWT } from 'next-auth/jwt'
 import type { DiscordProfile } from 'next-auth/providers/discord'
 import DiscordProvider from 'next-auth/providers/discord'
-import { cookies } from 'next/headers'
 import { findUserByID, saveUser, updateUser } from 'utils/fauna'
 import {
   giveDiscordFarmerRole,
   verifyDiscordFarmerRole,
   verifyDiscordGuildMember,
 } from '../vcs/discord'
+import { verifyToken } from '../verifyToken'
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET } = process.env
 
@@ -29,17 +27,7 @@ export const Discord = () => {
       try {
         if (!token.access_token) throw new Error('No access token')
 
-        if (!process.env.NEXTAUTH_SECRET) throw new Error('No secret')
-        const { NEXTAUTH_SECRET } = process.env
-
-        const { get } = cookies()
-        const sessionToken =
-          get('__Secure-next-auth.session-token')?.value || get('next-auth.session-token')?.value
-        if (!sessionToken) throw new Error('No session token')
-
-        const session = jsonwebtoken.verify(sessionToken, NEXTAUTH_SECRET, {
-          algorithms: ['HS256'],
-        }) as JWT
+        const session = verifyToken()
         const did = 'did:openid:discord:' + profile.id
 
         const member = await verifyDiscordGuildMember(token.access_token)
