@@ -1,5 +1,6 @@
 'use client'
 
+import Footer from '@/components/layout/Footer'
 import { CookieBanner } from 'components/common/CookieBanner'
 import { ErrorFallback } from 'components/common/ErrorFallback'
 import { Container } from 'components/layout/Container'
@@ -22,7 +23,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
   }, [pathname])
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-bronze to-purpleMist font-['Montserrat'] dark:bg-dark">
+    <div className="from-bronze to-purpleMist relative flex min-h-screen w-full flex-col bg-gradient-to-b font-['Montserrat'] dark:bg-dark">
       <div className="relative flex min-h-screen w-full flex-col bg-[url('/images/backgroundColor.svg')] bg-cover font-['Montserrat']">
         <DomainHeader />
         {subHeader}
@@ -34,6 +35,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
         >
           <Container>{children}</Container>
         </ErrorBoundary>
+        <Footer />
         <div className='sticky bottom-0 w-full'>
           <CookieBanner />
         </div>
