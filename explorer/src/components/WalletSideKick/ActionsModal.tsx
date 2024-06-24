@@ -11,6 +11,7 @@ import {
   AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT,
   ExtrinsicsSupportedModule,
   WalletAction,
+  WalletType,
 } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useDomains from 'hooks/useDomains'
@@ -154,7 +155,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   }, [api])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!actingAccount || !api) return
+    if (!actingAccount || !api || actingAccount.type === WalletType.ethereum) return
 
     const balance = await api.query.system.account(actingAccount.address)
     setWalletBalance(
@@ -177,6 +178,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!actingAccount || !injector || !api)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) throw new Error('No subspace account')
       try {
         const hash = await api.tx.balances
           .transferKeepAlive(
@@ -202,7 +204,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [api, actingAccount, injector, tokenDecimals],
+    [actingAccount, injector, api, subspaceAccount, tokenDecimals],
   )
 
   const handleSignMessage = useCallback(
@@ -212,6 +214,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) throw new Error('No subspace account')
       try {
         const signature =
           injector.signer.signRaw &&
@@ -238,7 +241,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, injector],
+    [actingAccount, injector, subspaceAccount],
   )
 
   const handleSendRemark = useCallback(
@@ -248,6 +251,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!actingAccount || !injector || !api)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) throw new Error('No subspace account')
       try {
         const hash = await api.tx.system
           .remark(values.message)
@@ -270,7 +274,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, api, injector],
+    [actingAccount, api, injector, subspaceAccount],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -280,6 +284,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!actingAccount || !injector || !api)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) throw new Error('No subspace account')
       if (!selectedCategory) return setFormError('You need to select a category')
       if (!selectedMethod) return setFormError('You need to select a method')
       try {
@@ -305,7 +310,15 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, api, injector, selectedCategory, selectedMethod, resetCategory],
+    [
+      actingAccount,
+      injector,
+      api,
+      subspaceAccount,
+      selectedCategory,
+      selectedMethod,
+      resetCategory,
+    ],
   )
 
   const handleCopy = useCallback((value: string) => {

@@ -1,3 +1,8 @@
+export enum WalletType {
+  subspace = 'subspace',
+  ethereum = 'ethereum',
+}
+
 export enum WalletAction {
   None = 'None',
   SendToken = 'SendToken',
