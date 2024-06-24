@@ -17,6 +17,10 @@ export interface Chain {
       rewards?: string
     }
   }
+  token: {
+    symbol: string
+    decimals: number
+  }
   isDomain: boolean
 }
 
@@ -33,6 +37,10 @@ export const chains: Chain[] = [
         account: 'http://localhost:4352/graphql',
       },
     },
+    token: {
+      symbol: 'tSSC',
+      decimals: 18,
+    },
     isDomain: false,
   },
   {
@@ -47,6 +55,10 @@ export const chains: Chain[] = [
         account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
       },
     },
+    token: {
+      symbol: 'tSSC',
+      decimals: 18,
+    },
     isDomain: false,
   },
   {
@@ -57,6 +69,10 @@ export const chains: Chain[] = [
       squids: {
         old: 'https://squid.gemini-3g.subspace.network/graphql',
       },
+    },
+    token: {
+      symbol: 'tSSC',
+      decimals: 18,
     },
     isDomain: false,
   },

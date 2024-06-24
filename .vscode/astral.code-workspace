@@ -43,6 +43,7 @@
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
     "editor.formatOnSave": true,
     "cSpell.words": [
+      "autonomys",
       "extrinsics",
       "gemini",
       "graphiql",

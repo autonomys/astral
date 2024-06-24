@@ -420,7 +420,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                       OperatorActionType.Nominating
                         ? 'stake'
                         : 'withdraw'
-                    }`}
+                    }`}{' '}
+                    ({selectedChain.token.symbol})
                   </span>
                   <FieldArray
                     name='dischargeNorms'
@@ -632,10 +633,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     handleUnlockOperator,
     handleAddFunds,
     handleWithdraw,
+    selectedChain.token.symbol,
     maxAmountToAdd,
     actingAccount,
-    maxSharesToWithdraw,
     sliderValue,
+    maxSharesToWithdraw,
   ])
 
   useEffect(() => {

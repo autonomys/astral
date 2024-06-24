@@ -18,15 +18,21 @@ export const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
     { name: 'Rank', value: index },
     {
       name: 'Block reward',
-      value: account.block ? `${numberWithCommas(bigNumberToNumber(account.block))} tSSC` : 0,
+      value: account.block
+        ? `${numberWithCommas(bigNumberToNumber(account.block))} ${selectedChain.token.symbol}`
+        : 0,
     },
     {
       name: 'Vote reward',
-      value: account.vote ? `${numberWithCommas(bigNumberToNumber(account.vote))} tSSC` : 0,
+      value: account.vote
+        ? `${numberWithCommas(bigNumberToNumber(account.vote))} ${selectedChain.token.symbol}`
+        : 0,
     },
     {
       name: 'Total reward',
-      value: account.amount ? `${numberWithCommas(bigNumberToNumber(account.amount))} tSSC` : 0,
+      value: account.amount
+        ? `${numberWithCommas(bigNumberToNumber(account.amount))} ${selectedChain.token.symbol}`
+        : 0,
     },
   ]
   return (
@@ -42,7 +48,7 @@ export const VoteBlockRewardListCard: FC<Props> = ({ account, index }) => {
               account.id,
             )}
           >
-            <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
+            <p className='text-grayDarker break-all text-sm font-medium dark:text-white'>
               {account.id}
             </p>
           </Link>
