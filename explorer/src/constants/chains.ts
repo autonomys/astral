@@ -38,7 +38,7 @@ export const chains: Chain[] = [
       },
     },
     token: {
-      symbol: 'tATC',
+      symbol: 'tSSC',
       decimals: 18,
     },
     isDomain: false,
@@ -56,7 +56,7 @@ export const chains: Chain[] = [
       },
     },
     token: {
-      symbol: 'tATC',
+      symbol: 'tSSC',
       decimals: 18,
     },
     isDomain: false,
@@ -71,7 +71,7 @@ export const chains: Chain[] = [
       },
     },
     token: {
-      symbol: 'tATC',
+      symbol: 'tSSC',
       decimals: 18,
     },
     isDomain: false,
