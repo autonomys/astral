@@ -151,6 +151,7 @@ export const OperatorStake = () => {
     ) => {
       if (!api || !subspaceAccount || !actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
+      if (!subspaceAccount) throw new Error('No subspace account')
 
       try {
         const block = await api.rpc.chain.getBlock()
@@ -180,7 +181,7 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, subspaceAccount, api, injector, tokenDecimals],
+    [actingAccount, api, injector, subspaceAccount, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -447,7 +448,7 @@ export const OperatorStake = () => {
                           </div>
 
                           <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
-                            <span className='text-base font-medium text-[#241235] dark:text-white'>
+                            <span className='text-base font-medium text-grayDarker dark:text-white'>
                               Proof of Ownership
                             </span>
                             <div className='mt-4'>
@@ -456,8 +457,8 @@ export const OperatorStake = () => {
                                   type='button'
                                   className={`${
                                     activeProofMethodTab === OwnershipProofMethod.keystore
-                                      ? 'bg-[#EA71F9]'
-                                      : 'bg-white dark:bg-[#4D397A]'
+                                      ? 'bg-pinkAccent'
+                                      : 'bg-white dark:bg-purpleDeepAccent'
                                   } rounded-full px-4 py-2 shadow-md`}
                                   onClick={() =>
                                     resetActiveProofMethodTab(
@@ -473,8 +474,8 @@ export const OperatorStake = () => {
                                   type='button'
                                   className={`${
                                     activeProofMethodTab === OwnershipProofMethod.seed
-                                      ? 'bg-[#EA71F9]'
-                                      : 'bg-white dark:bg-[#4D397A]'
+                                      ? 'bg-pinkAccent'
+                                      : 'bg-white dark:bg-purpleDeepAccent'
                                   } rounded-full px-4 shadow-md`}
                                   onClick={() =>
                                     resetActiveProofMethodTab(
@@ -518,13 +519,13 @@ export const OperatorStake = () => {
                                 )}
                               </div>
                               <div className={`p-4 ${isDesktop ? 'col-span-1' : 'col-span-1'}`}>
-                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
                                   &nbsp;
                                 </span>
                                 <div className='mt-4 flex justify-around'>
                                   <button
                                     type='button'
-                                    className={'rounded-full bg-[#EA71F9] px-4 py-2 shadow-md'}
+                                    className={'rounded-full bg-pinkAccent px-4 py-2 shadow-md'}
                                     onClick={() =>
                                       handleProofOfOwnershipWithSeed(values, setFieldValue)
                                     }
@@ -538,7 +539,7 @@ export const OperatorStake = () => {
                           {activeProofMethodTab === OwnershipProofMethod.keystore && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
-                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
                                   Signing key seed
                                 </span>
                                 <Field
@@ -548,11 +549,11 @@ export const OperatorStake = () => {
                                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                     handleProofOfOwnershipWithKeystore(e, setFieldValue)
                                   }
-                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.signingKeystore &&
                               touched.signingKeystore &&
-                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                             }
                           `}
                                 />
@@ -572,17 +573,17 @@ export const OperatorStake = () => {
                           {values.signingKey && values.signature && (
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
-                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
                                   Signing key
                                 </span>
                                 <Field
                                   name='signingKey'
                                   placeholder='Signing Key'
-                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                                 ${
                                   errors.signingKey &&
                                   touched.signingKey &&
-                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
+                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                                 }
                               `}
                                 />
@@ -599,17 +600,17 @@ export const OperatorStake = () => {
                               </div>
 
                               <div className={`p-4 ${isDesktop ? 'col-span-3' : 'col-span-1'}`}>
-                                <span className='text-base font-medium text-[#241235] dark:text-white'>
+                                <span className='text-base font-medium text-grayDarker dark:text-white'>
                                   Proof of signing key ownership signature
                                 </span>
                                 <Field
                                   name='signature'
                                   placeholder='Signature'
-                                  className={`mt-4 block w-full rounded-full bg-white from-[#EA71F9] to-[#4D397A] px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.signature &&
                               touched.signature &&
-                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#2A345E]'
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                             }
                           `}
                                 />

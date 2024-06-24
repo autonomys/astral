@@ -26,7 +26,7 @@ type ExplainerProps = {
 
 const StyledButton: FC<StyledButtonProps> = ({ children, className, onClick }) => (
   <button
-    className={`w-[100px] rounded-xl border border-purpleAccent bg-transparent px-4 shadow-lg ${className}`}
+    className={`border-purpleAccent w-[100px] rounded-xl border bg-transparent px-4 shadow-lg ${className}`}
     onClick={onClick}
   >
     {children}
@@ -51,7 +51,7 @@ const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
         <button
-          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
+          className='bg-grayDarker dark:bg-blueAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
           onClick={onClose}
         >
           Close
@@ -85,6 +85,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
     try {
       if (!actingAccount || !injector) throw new Error('No wallet connected')
       if (!injector.signer.signRaw) throw new Error('No signer')
+      if (!subspaceAccount) throw new Error('No subspace account')
 
       // Prepare and sign the message
       const message = `I am the owner of ${subspaceAccount}`
@@ -117,7 +118,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
 
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
-      <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+      <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
             <StyledListItem title='You are a Farmer on Discord'>🌾</StyledListItem>
@@ -127,7 +128,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
       </div>
     )
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
       <Accordion title='Get verified roles on Discord'>
         <List>
           <StyledListItem title='Verify the ownership of your wallet'>
