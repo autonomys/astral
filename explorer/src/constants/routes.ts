@@ -133,6 +133,10 @@ export const INTERNAL_ROUTES = {
   catchAll: '*',
 }
 
+export enum CLAIM_TYPES {
+  OperatorDisbursement = 'operator-disbursement',
+}
+
 export enum ROUTE_EXTRA_FLAG_TYPE {
   WALLET = 'wallet',
   WALLET_SIDEKICK = 'walletSidekick',
