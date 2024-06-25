@@ -5,7 +5,9 @@ import { chains } from 'constants/chains'
 import { CLAIM_TYPES } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from 'utils/auth/verifyToken'
-import { findClaim, saveClaim } from 'utils/fauna'
+import { findClaim, findClaimStats, saveClaim, saveClaimStats, updateClaimStats } from 'utils/fauna'
+import { formatUnitsToNumber } from 'utils/number'
+import { sendSlackStatsMessage, walletBalanceLowSlackMessage } from 'utils/slack'
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -40,6 +42,8 @@ export const POST = async (req: NextRequest) => {
     const isValid = signatureVerify(stringToU8a(message), signature, publicKey).isValid
     if (!isValid) return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
 
+    const claimStats = await findClaimStats(chainMatch.urls.page, claimType)
+
     // Connect to the Polkadot node
     const wsProvider = new WsProvider(chainMatch.urls.rpc)
     const api = await ApiPromise.create({ provider: wsProvider })
@@ -47,6 +51,16 @@ export const POST = async (req: NextRequest) => {
     // Create a keyring instance and add Alice's account
     const keyring = new Keyring({ type: 'sr25519' })
     const wallet = keyring.addFromUri(process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI)
+
+    // Get wallet free balance
+    const {
+      data: { free },
+    } = (await api.query.system.account(wallet.address)).toJSON() as { data: { free: string } }
+    if (BigInt(free) < BigInt(1000 * 10 ** 18))
+      await walletBalanceLowSlackMessage(formatUnitsToNumber(free).toString(), wallet.address)
+
+    if (BigInt(free) <= BigInt(process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT))
+      return NextResponse.json({ error: 'Insufficient funds' }, { status: 400 })
 
     // Create and sign the transfer transaction
     const block = await api.rpc.chain.getBlock()
@@ -66,6 +80,17 @@ export const POST = async (req: NextRequest) => {
     }
 
     await saveClaim(session, chainMatch.urls.page, claimType, claim, tx)
+
+    if (!claimStats) {
+      const slackMessage = await sendSlackStatsMessage(1)
+      if (slackMessage) await saveClaimStats(session, chainMatch.urls.page, claimType, slackMessage)
+    } else {
+      await sendSlackStatsMessage(
+        claimStats[0].data.totalClaims + 1,
+        claimStats[0].data.slackMessageId,
+      )
+      await updateClaimStats(claimStats[0].ref, claimStats[0].data, session)
+    }
 
     await api.disconnect()
 
