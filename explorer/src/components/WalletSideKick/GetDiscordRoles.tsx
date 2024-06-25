@@ -1,15 +1,18 @@
-import { ClockIcon } from '@heroicons/react/24/outline'
+import { useQuery } from '@apollo/client'
+import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { Modal } from 'components/common/Modal'
 import { CheckMarkIcon } from 'components/icons/CheckMarkIcon'
 import { EXTERNAL_ROUTES, ROUTE_API } from 'constants/routes'
+import { ExtrinsicsByHashQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { FC, useCallback, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { QUERY_EXTRINSIC_BY_HASH } from '../Extrinsic/query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -85,8 +88,16 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   const { data: session } = useSession()
   const { selectedChain } = useDomains()
   const { actingAccount, injector } = useWallet()
-  const [isPending, setIsPending] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [claimIsPending, setClaimIsPending] = useState(false)
+  const [claimIsFinalized, setClaimIsFinalized] = useState(false)
+  const [claimError, setClaimError] = useState<string | null>(null)
+  const [claimHash, setClaimHash] = useState<string | null>(null)
+
+  const { data } = useQuery<ExtrinsicsByHashQuery>(QUERY_EXTRINSIC_BY_HASH, {
+    variables: { hash: claimHash },
+    skip: claimHash === null || claimIsFinalized,
+    pollInterval: 6000,
+  })
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -124,7 +135,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   )
 
   const handleClaimOperatorDisbursement = useCallback(async () => {
-    setError(null)
+    setClaimError(null)
     if (!actingAccount || !injector) throw new Error('No wallet connected')
     if (!injector.signer.signRaw) throw new Error('No signer')
     if (!subspaceAccount) throw new Error('No subspace account')
@@ -146,9 +157,15 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
         signature: signature.signature,
       }),
     }).then((res) => res.json())
-    if (claim.hash) setIsPending(true)
-    else if (claim.error) setError(claim.error)
+    if (claim.hash) {
+      setClaimIsPending(true)
+      setClaimHash(claim.hash)
+    } else if (claim.error) setClaimError(claim.error)
   }, [actingAccount, injector, selectedChain.urls.page, subspaceAccount])
+
+  useEffect(() => {
+    if (data && data.extrinsics && data.extrinsics.length > 0) setClaimIsFinalized(true)
+  }, [data])
 
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
@@ -171,26 +188,37 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
                 </>
               }
             >
-              {isPending ? (
-                <p className='text-sm text-gray-500'>
-                  Claim is pending <ClockIcon className='size-5' stroke='orange' />
-                </p>
+              {claimIsFinalized ? (
+                <>
+                  <p className='text-sm text-gray-500'>
+                    Claimed <CheckCircleIcon className='size-5' stroke='green' />
+                  </p>
+                </>
               ) : (
-                <StyledButton
-                  className={`ml-2 ${error !== null && 'cursor-not-allowed'}`}
-                  isDisabled={error !== null}
-                  onClick={handleClaimOperatorDisbursement}
-                >
-                  Claim
-                </StyledButton>
+                <>
+                  {claimIsPending ? (
+                    <p className='text-sm text-gray-500'>
+                      Pending <ClockIcon className='size-5' stroke='orange' />
+                    </p>
+                  ) : (
+                    <StyledButton
+                      className={`ml-2 ${claimError !== null && 'cursor-not-allowed'}`}
+                      isDisabled={claimError !== null}
+                      onClick={handleClaimOperatorDisbursement}
+                    >
+                      Claim
+                    </StyledButton>
+                  )}
+                </>
               )}
             </StyledListItem>
-            {error && <p className='text-sm text-red-500'>{error}</p>}
+            {claimError && <p className='text-sm text-red-500'>{claimError}</p>}
           </List>
         </Accordion>
         <ExplainerLinkAndModal />
       </div>
     )
+
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion title='Get verified roles on Discord'>
