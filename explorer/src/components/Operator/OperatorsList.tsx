@@ -12,11 +12,13 @@ import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import type { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useDomainsData } from 'hooks/useDomainsData'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { useDomainsStates } from 'states/domains'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { operatorStatus } from 'utils/operator'
@@ -36,6 +38,12 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
+  const { domains } = useDomainsStates()
+  const { loadData: loadDomainsData } = useDomainsData()
+
+  useEffect(() => {
+    if (!domains || domains.length === 0) loadDomainsData()
+  }, [domains, loadDomainsData])
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -88,9 +96,20 @@ export const OperatorsList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>
-        ),
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          const domain = domains.find(
+            (d) =>
+              (row.original.currentDomainId || row.original.currentDomainId === 0) &&
+              d.domainId === row.original.currentDomainId.toString(),
+          )
+          return (
+            <div>
+              {domain
+                ? domain.domainName.charAt(0).toUpperCase() + domain.domainName.slice(1)
+                : '#' + row.original.currentDomainId}
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'signingKey',
@@ -132,16 +151,6 @@ export const OperatorsList: FC = () => {
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
-        ),
-      },
-      {
-        accessorKey: 'totalShares',
-        header: 'Total Shares',
-        enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{numberWithCommas(row.original.totalShares)}</div>
         ),
       },
       {
@@ -202,6 +211,7 @@ export const OperatorsList: FC = () => {
     return cols
   }, [
     subspaceAccount,
+    domains,
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
