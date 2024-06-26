@@ -243,7 +243,7 @@ export const OperatorManagement: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
         ),
       },
       {
@@ -319,7 +319,7 @@ export const OperatorManagement: FC = () => {
             <span
               className={`text-base ${
                 isDesktop ? 'text-base' : 'text-xs'
-              } dark:text-blueAccent ml-2 font-normal`}
+              } ml-2 font-normal dark:text-blueAccent`}
             >
               on Account {subspaceAccount}
             </span>
@@ -345,7 +345,7 @@ export const OperatorManagement: FC = () => {
         </div>
       </div>
 
-      <div className='bg-grayLight dark:bg-blueDarkAccent mt-8 rounded-[20px] p-5'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>

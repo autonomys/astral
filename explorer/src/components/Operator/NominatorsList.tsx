@@ -134,7 +134,7 @@ export const NominatorsList: FC = () => {
                 ),
               ),
             )}{' '}
-            ${selectedChain.token.symbol}
+            {selectedChain.token.symbol}
           </div>
         ),
       },
@@ -306,7 +306,7 @@ export const NominatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-grayDark text-base font-medium dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 
