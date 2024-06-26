@@ -2,11 +2,14 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
+import { Chains } from 'constants/'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Operator } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import { FC } from 'react'
+import { operatorStatus } from 'utils/operator'
+import { capitalizeFirstLetter } from 'utils/string'
 
 dayjs.extend(relativeTime)
 
@@ -20,7 +23,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
 
   return (
     <div className='w-full'>
-      <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Operator #{operator.id}
@@ -47,7 +50,11 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               {bigNumberToNumber(operator.currentTotalStake)} ${selectedChain.token.symbol}
             </StyledListItem>
             <StyledListItem title='Shares'>{numberWithCommas(operator.totalShares)}</StyledListItem>
-            <StyledListItem title='Status'>{operator.status}</StyledListItem>
+            <StyledListItem title='Status'>
+              {selectedChain.urls.page === Chains.gemini3g
+                ? operator.status
+                : capitalizeFirstLetter(operatorStatus(operator.status))}
+            </StyledListItem>
           </List>
         </div>
       </div>

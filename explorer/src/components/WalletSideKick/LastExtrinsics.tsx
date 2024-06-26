@@ -1,5 +1,6 @@
 'use client'
 
+import { TransactionStatus } from '@/constants'
 import { useQuery } from '@apollo/client'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
@@ -10,9 +11,11 @@ import type { Chain } from 'constants/chains'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { ExtrinsicsSummaryQuery } from 'gql/graphql'
+import { ExtrinsicsSummaryQuery } from 'gql/oldSquidTypes'
+import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
-import { FC, useMemo } from 'react'
+import { FC, useCallback, useMemo } from 'react'
+import { useTransactionsStates } from 'states/transactions'
 import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
 interface LastExtrinsicsProps {
@@ -22,6 +25,19 @@ interface LastExtrinsicsProps {
 
 export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selectedChain }) => {
   dayjs.extend(relativeTime)
+  const { actingAccount } = useWallet()
+  const { pendingTransactions, markAsFinalized, moveToFinalizedTransactions } =
+    useTransactionsStates()
+  const transactions = useMemo(
+    () =>
+      actingAccount
+        ? pendingTransactions.filter(
+            (tx) =>
+              actingAccount.address === tx.from && selectedChain.urls.page == tx.chain.urls.page,
+          )
+        : [],
+    [actingAccount, pendingTransactions, selectedChain.urls.page],
+  )
   const summaryVariables = useMemo(
     () => ({
       first: 10,
@@ -33,7 +49,38 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
     variables: summaryVariables,
     pollInterval: 6000,
   })
-  const extrinsics = useMemo(() => data && data.extrinsics.edges, [data])
+
+  const moveIfPending = useCallback(
+    (edges: ExtrinsicsSummaryQuery['extrinsics']['edges']) => {
+      if (!transactions || !transactions[0] || !transactions[0].call) return edges
+      try {
+        const timeNowPlus2min = new Date(new Date().getTime() + 2 * 60000).getTime() // 2 minutes from now
+        const pending = transactions.find(
+          (tx) => edges[0].node && edges[0].node.hash && tx.txHash === edges[0].node.hash,
+        )
+        const toMove =
+          pending &&
+          pending.finalizedAtLocalTimestamp &&
+          pending.finalizedAtLocalTimestamp.getTime() > timeNowPlus2min
+        if (pending) {
+          markAsFinalized(
+            pending,
+            edges[0].node.success ? TransactionStatus.Success : TransactionStatus.Failed,
+          )
+          if (toMove) moveToFinalizedTransactions(toMove && pending)
+        }
+      } catch (error) {
+        console.error('Error in moveIfPending', error)
+      }
+      return edges
+    },
+    [markAsFinalized, moveToFinalizedTransactions, transactions],
+  )
+
+  const extrinsics = useMemo(
+    () => data && moveIfPending(data.extrinsics.edges),
+    [data, moveIfPending],
+  )
 
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>

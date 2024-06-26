@@ -48,6 +48,7 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
       edges {
         node {
           id
+          hash
           success
           block {
             id
