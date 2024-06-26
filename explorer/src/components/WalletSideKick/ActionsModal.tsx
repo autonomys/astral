@@ -15,6 +15,7 @@ import {
 } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useDomains from 'hooks/useDomains'
+import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
@@ -56,6 +57,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
+  const { sendAndSaveTx } = useTxHelper()
 
   const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
@@ -176,23 +178,29 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: SendTokenFormValues,
       resetForm: (nextState?: Partial<FormikState<SendTokenFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !api)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       try {
-        const hash = await api.tx.balances
-          .transferKeepAlive(
-            values.receiver,
-            floatToStringWithDecimals(values.amount, tokenDecimals),
-          )
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-        setHash(hash)
-        toast.success('The transaction was sent successfully', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_sendToken',
-          value: `extrinsic:${hash.toString()}`,
+        const to = values.receiver
+        const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
+
+        const tx = await api.tx.balances.transferKeepAlive(to, amount)
+        const hash = await sendAndSaveTx({
+          call: 'transferKeepAlive',
+          tx,
+          signer: injector.signer,
+          to,
+          amount,
+          error: setFormError,
         })
-        resetForm()
+        if (hash) {
+          setHash(hash)
+          toast.success('The transaction was sent successfully', { position: 'bottom-center' })
+          sendGAEvent({
+            event: 'walletSideKick_action_sendToken',
+            value: `extrinsic:${hash.toString()}`,
+          })
+          resetForm()
+        }
       } catch (error) {
         const reason = 'There was an error while sending the transaction'
         setFormError(reason)
@@ -204,7 +212,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, injector, api, subspaceAccount, tokenDecimals],
+    [injector, api, tokenDecimals, sendAndSaveTx],
   )
 
   const handleSignMessage = useCallback(
@@ -214,7 +222,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
       try {
         const signature =
           injector.signer.signRaw &&
@@ -241,7 +248,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, injector, subspaceAccount],
+    [actingAccount, injector],
   )
 
   const handleSendRemark = useCallback(
@@ -249,20 +256,24 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: MessageFormValues,
       resetForm: (nextState?: Partial<FormikState<MessageFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !api)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       try {
-        const hash = await api.tx.system
-          .remark(values.message)
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-        setHash(hash)
-        toast.success('The remark was sent', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_sendRemark',
-          value: `msg:${values.message}`,
+        const tx = await api.tx.system.remark(values.message)
+        const hash = await sendAndSaveTx({
+          call: 'remark',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
         })
-        resetForm()
+        if (hash) {
+          setHash(hash)
+          toast.success('The remark was sent', { position: 'bottom-center' })
+          sendGAEvent({
+            event: 'walletSideKick_action_sendRemark',
+            value: `msg:${values.message}`,
+          })
+          resetForm()
+        }
       } catch (error) {
         const reason = 'There was an error while sending the remark'
         setFormError(reason)
@@ -274,7 +285,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, api, injector, subspaceAccount],
+    [api, injector, sendAndSaveTx],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -282,23 +293,29 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: CustomExtrinsicFormValues,
       resetForm: (nextState?: Partial<FormikState<CustomExtrinsicFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !api)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       if (!selectedCategory) return setFormError('You need to select a category')
       if (!selectedMethod) return setFormError('You need to select a method')
       try {
-        const hash = await api.tx[selectedCategory][selectedMethod](
+        const tx = await api.tx[selectedCategory][selectedMethod](
           ...Object.keys(values).map((key) => values[key]),
-        ).signAndSend(actingAccount.address, { signer: injector.signer })
-        setHash(hash)
-        toast.success('The extrinsic was sent', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_customExtrinsic',
-          value: `category:${selectedCategory}:method:${selectedMethod}:extrinsic:${hash.toString()}`,
+        )
+        const hash = await sendAndSaveTx({
+          call: 'remark',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
         })
-        resetCategory()
-        resetForm()
+        if (hash) {
+          setHash(hash)
+          toast.success('The extrinsic was sent', { position: 'bottom-center' })
+          sendGAEvent({
+            event: 'walletSideKick_action_customExtrinsic',
+            value: `category:${selectedCategory}:method:${selectedMethod}:extrinsic:${hash.toString()}`,
+          })
+          resetCategory()
+          resetForm()
+        }
       } catch (error) {
         const reason = 'There was an error while sending the extrinsic'
         setFormError(reason)
@@ -310,15 +327,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [
-      actingAccount,
-      injector,
-      api,
-      subspaceAccount,
-      selectedCategory,
-      selectedMethod,
-      resetCategory,
-    ],
+    [injector, api, selectedCategory, selectedMethod, sendAndSaveTx, resetCategory],
   )
 
   const handleCopy = useCallback((value: string) => {
@@ -357,18 +366,18 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
             {result ? (
               <>
                 {hash && WalletAction[action] === WalletAction.SendToken && (
-                  <span className='text-grayDarker text-base font-medium dark:text-white'>
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
                     Extrinsic Hash
                   </span>
                 )}
                 <textarea
                   name='hash'
                   value={result}
-                  className='dark:bg-blueAccent mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -382,7 +391,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               >
                 {({ errors, touched, handleSubmit, setFieldValue }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
-                    <span className='text-grayDarker text-base font-medium dark:text-white'>
+                    <span className='text-base font-medium text-grayDarker dark:text-white'>
                       Send to
                     </span>
                     <FieldArray
@@ -393,7 +402,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             name='receiver'
                             type='text'
                             placeholder='Send to'
-                            className={`dark:bg-blueAccent mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                               errors.amount &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
@@ -408,7 +417,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     ) : (
                       <div className='text-md mt-2 h-8' data-testid='placeHolder' />
                     )}
-                    <span className='text-grayDarker text-base font-medium dark:text-white'>
+                    <span className='text-base font-medium text-grayDarker dark:text-white'>
                       {`Amount to ${
                         WalletAction[action] === WalletAction.SendToken ? 'send' : 'withdraw'
                       }`}{' '}
@@ -424,13 +433,13 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             placeholder={`Amount to ${
                               WalletAction[action] === WalletAction.SendToken ? 'stake' : 'withdraw'
                             }`}
-                            className={`dark:bg-blueAccent mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                               errors.amount &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
                           />
                           <button
-                            className='bg-grayDarker dark:bg-purpleAccent absolute flex items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                            className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                             type='button'
                             style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                             onClick={() => setFieldValue('amount', maxAmount)}
@@ -460,7 +469,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -479,23 +488,23 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
             {result ? (
               <>
                 {hash && WalletAction[action] === WalletAction.SendRemark && (
-                  <span className='text-grayDarker text-base font-medium dark:text-white'>
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
                     Extrinsic Hash
                   </span>
                 )}
                 {signature && WalletAction[action] === WalletAction.SignMessage && (
-                  <span className='text-grayDarker text-base font-medium dark:text-white'>
+                  <span className='text-base font-medium text-grayDarker dark:text-white'>
                     Signature # {signature.id}
                   </span>
                 )}
                 <textarea
                   name={WalletAction[action] === WalletAction.SendRemark ? 'hash' : 'signature'}
                   value={result}
-                  className='dark:bg-blueAccent mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -513,7 +522,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               >
                 {({ errors, touched, handleSubmit }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
-                    <span className='text-grayDarker text-base font-medium dark:text-white'>
+                    <span className='text-base font-medium text-grayDarker dark:text-white'>
                       {WalletAction[action] === WalletAction.SendRemark ? 'Remark' : 'Message'}
                     </span>
                     <FieldArray
@@ -522,7 +531,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                         <div className='relative'>
                           <Field
                             name='message'
-                            className={`dark:bg-blueAccent mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                               errors.message &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
@@ -532,7 +541,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               <textarea
                                 {...field}
                                 placeholder='Message'
-                                className={`dark:bg-blueAccent mt-4 block h-[120px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white ${
+                                className={`mt-4 block h-[120px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
                                   errors.message &&
                                   'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                                 }`}
@@ -556,7 +565,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -576,14 +585,14 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 <div className='flex items-center'>
                   <Link
                     data-testid='wallet-link'
-                    className='hover:text-purpleAccent pr-2'
+                    className='pr-2 hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.accounts.id.page(
                       selectedChain.urls.page,
                       'consensus',
                       subspaceAccount,
                     )}
                   >
-                    <span className='text-grayDarker ml-2 w-5 truncate text-lg font-medium underline dark:text-white md:w-full'>
+                    <span className='ml-2 w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white md:w-full'>
                       {actingAccount.name}
                     </span>
                   </Link>
@@ -597,7 +606,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                   type='text'
                   value={subspaceAccount}
                   readOnly
-                  className='dark:bg-blueAccent dark:focus:bg-blueAccent block w-full rounded-xl bg-white px-4 py-2 text-sm text-gray-900 shadow-lg dark:text-white'
+                  className='block w-full rounded-xl bg-white px-4 py-2 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white dark:focus:bg-blueAccent'
                 />
               </>
             )}
@@ -608,17 +617,17 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='flex flex-col items-start gap-4'>
             {result ? (
               <>
-                <span className='text-grayDarker text-base font-medium dark:text-white'>
+                <span className='text-base font-medium text-grayDarker dark:text-white'>
                   Extrinsic Hash
                 </span>
                 <textarea
                   name='hash'
                   value={result}
-                  className='dark:bg-blueAccent mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+                  className='mt-4 block h-[80px] w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -667,7 +676,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='bg-grayDarker dark:bg-purpleAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium capitalize text-white md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(selectedMethod)}
@@ -726,7 +735,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           <div className='grid grid-cols-1 gap-4'>{ActionBody}</div>
         </div>
         <button
-          className='bg-grayDarker dark:bg-blueAccent flex w-full max-w-fit items-center gap-2 rounded-full px-2 text-sm font-medium text-white md:space-x-4 md:text-base'
+          className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-blueAccent md:space-x-4 md:text-base'
           onClick={handleClose}
         >
           Close
