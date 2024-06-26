@@ -1,5 +1,6 @@
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
-import { camelToNormal } from '@/utils/string'
+import { camelToNormal, shortString } from '@/utils/string'
+import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SignerResult } from '@polkadot/api/types'
 import { Hash } from '@polkadot/types/interfaces'
@@ -19,8 +20,9 @@ import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
+import { formatAddress } from 'utils//formatAddress'
 import * as Yup from 'yup'
 import {
   CustomExtrinsicFormValues,
@@ -47,7 +49,7 @@ interface MessageFormValues {
 
 export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose }) => {
   const { selectedChain } = useDomains()
-  const { api, actingAccount, injector, subspaceAccount } = useWallet()
+  const { api, actingAccount, accounts, injector, subspaceAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
@@ -57,6 +59,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
+  const [addressBookIsOpen, setAddressBookIsOpen] = useState<boolean>(false)
   const { sendAndSaveTx } = useTxHelper()
 
   const resetCategory = useCallback((extra?: () => void) => {
@@ -334,7 +337,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     navigator.clipboard.writeText(value)
     toast.success('Copied to clipboard', { position: 'bottom-center' })
   }, [])
-
   const ErrorPlaceholder = useMemo(
     () =>
       formError ? (
@@ -407,6 +409,58 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
                             }`}
                           />
+
+                          <Listbox value={actingAccount}>
+                            <Listbox.Button
+                              className={
+                                'absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                              }
+                              style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                              onClick={() => setAddressBookIsOpen(!addressBookIsOpen)}
+                            >
+                              Address book
+                            </Listbox.Button>
+                            <Transition
+                              as={Fragment}
+                              leave='transition ease-in duration-100'
+                              leaveFrom='opacity-100'
+                              leaveTo='opacity-0'
+                            >
+                              <Listbox.Options className='absolute right-0 z-50 mt-1 max-h-40 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+                                {accounts &&
+                                  accounts.map((account, chainIdx) => (
+                                    <Listbox.Option
+                                      key={chainIdx}
+                                      className={({ active }) =>
+                                        `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
+                                          active && 'bg-gray-100 dark:bg-blueDarkAccent'
+                                        }`
+                                      }
+                                      value={account}
+                                      onClick={() => setFieldValue('receiver', account.address)}
+                                    >
+                                      {({ selected }) => {
+                                        const subAccount =
+                                          account.type === WalletType.subspace
+                                            ? formatAddress(account.address)
+                                            : account.address
+                                        const formattedAccount =
+                                          subAccount && shortString(subAccount)
+                                        return (
+                                          <div className='px-2'>
+                                            <span
+                                              className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                                            >
+                                              {account.name} {formattedAccount}
+                                            </span>
+                                          </div>
+                                        )
+                                      }}
+                                    </Listbox.Option>
+                                  ))}
+                              </Listbox.Options>
+                            </Transition>
+                          </Listbox>
                         </div>
                       )}
                     />
@@ -426,7 +480,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     <FieldArray
                       name='dischargeNorms'
                       render={() => (
-                        <div className='relative'>
+                        <div className={addressBookIsOpen ? 'relative z-10' : 'relative'}>
                           <Field
                             name='amount'
                             type='number'
@@ -710,6 +764,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     handleSendToken,
     maxAmount,
     ErrorPlaceholder,
+    accounts,
+    addressBookIsOpen,
     handleSendRemark,
     handleSignMessage,
     handleCustomExtrinsic,
