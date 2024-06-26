@@ -48,7 +48,7 @@ export const POST = async (req: NextRequest) => {
     const wsProvider = new WsProvider(chainMatch.urls.rpc)
     const api = await ApiPromise.create({ provider: wsProvider })
 
-    // Create a keyring instance and add Alice's account
+    // Create a keyring instance from wallet in environments variables
     const keyring = new Keyring({ type: 'sr25519' })
     const wallet = keyring.addFromUri(process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI)
 
