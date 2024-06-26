@@ -39,14 +39,14 @@ export const Operator: FC = () => {
       <div className='mt-5 flex w-full flex-col align-middle'>
         <div className='mb-5 flex justify-between'>
           <button
-            className='rounded-full bg-grayDarker p-4 px-4 py-2 text-grayDark dark:bg-purpleAccent dark:text-white'
+            className='rounded-full bg-grayDarker p-4 px-4 py-2 text-white dark:bg-purpleAccent'
             onClick={() => push((parseInt(operator.id) - 1).toString())}
             disabled={parseInt(operator.id) === 0}
           >
             Prev Operator
           </button>
           <button
-            className='rounded-full bg-grayDarker p-4 px-4 py-2 text-grayDark dark:bg-purpleAccent dark:text-white'
+            className='rounded-full bg-grayDarker p-4 px-4 py-2  text-white dark:bg-purpleAccent'
             onClick={() => push((parseInt(operator.id) + 1).toString())}
           >
             Next Operator
