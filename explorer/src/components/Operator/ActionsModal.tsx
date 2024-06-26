@@ -19,12 +19,13 @@ export enum OperatorActionType {
   Withdraw = 'Withdraw',
   Deregister = 'Deregister',
   UnlockFunds = 'Unlock Funds',
-  UnlockOperator = 'Unlock Operator',
+  UnlockNominator = 'Unlock Nominator',
 }
 export const ActionsInRed = [
   OperatorActionType.Deregister,
+  OperatorActionType.Withdraw,
   OperatorActionType.UnlockFunds,
-  OperatorActionType.UnlockOperator,
+  OperatorActionType.UnlockNominator,
 ]
 
 export type OperatorAction = {
@@ -217,32 +218,32 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while de-registering the operator')
+      setFormError('There was an error while unlocking the funds the operator')
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockFunds' })
     }
   }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
 
-  const handleUnlockOperator = useCallback(async () => {
+  const handleUnlockNominator = useCallback(async () => {
     if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const tx = await api.tx.domains.unlockOperator(action.operatorId)
+      const tx = await api.tx.domains.unlockNominator(action.operatorId)
       await sendAndSaveTx({
-        call: 'unlockFunds',
+        call: 'unlockNominator',
         tx,
         signer: injector.signer,
         error: setFormError,
       })
-      sendGAEvent('event', 'unlockOperator', {
+      sendGAEvent('event', 'unlockNominator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while de-registering the operator')
+      setFormError('There was an error while unlocking the stake of the nominator')
       console.error('Error', error)
-      sendGAEvent('event', 'error', { value: 'unlockOperator' })
+      sendGAEvent('event', 'error', { value: 'unlockNominator' })
     }
   }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
 
@@ -459,15 +460,15 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           </div>
         )
       case OperatorActionType.UnlockFunds:
-      case OperatorActionType.UnlockOperator:
+      case OperatorActionType.UnlockNominator:
         return (
           <div className='flex flex-col items-start gap-4'>
             <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
               Do you really want to{' '}
               {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
               OperatorActionType.UnlockFunds
-                ? 'unlock the funds in your nomination'
-                : 'unlock the funds in your operator'}{' '}
+                ? 'unlock the funds in your operator'
+                : 'unlock the funds in your nomination'}{' '}
               ?
             </span>
             {ErrorPlaceholder}
@@ -477,7 +478,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                 OperatorActionType.UnlockFunds
                   ? handleUnlockFunds
-                  : handleUnlockOperator
+                  : handleUnlockNominator
               }
             >
               {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -495,7 +496,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ErrorPlaceholder,
     handleDeregister,
     handleUnlockFunds,
-    handleUnlockOperator,
+    handleUnlockNominator,
     handleAddFunds,
     handleWithdraw,
     selectedChain.token.symbol,
