@@ -496,15 +496,15 @@ export const OperatorStake = () => {
                             <>
                               <div className={`p-4 ${isDesktop ? 'col-span-2' : 'col-span-1'}`}>
                                 <span className='text-base font-medium text-grayDarker dark:text-white'>
-                                  Signing key
+                                  Signing key seed
                                 </span>
                                 <Field
-                                  name='signingKey'
-                                  placeholder='Signing Key'
+                                  name='signingKeySeed'
+                                  placeholder='Signing Key seed'
                                   className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
-                              errors.signingKey &&
-                              touched.signingKey &&
+                              errors.signingKeySeed &&
+                              touched.signingKeySeed &&
                               'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueDarkAccent'
                             }
                           `}

@@ -2,11 +2,11 @@
 import { QUERY_HOME } from 'components/Home/query'
 import { HomeQueryQuery } from 'components/gql/graphql'
 import {
+  AutonomysSymbol,
   BlockIcon,
   DocIcon,
   LogoIcon,
   PieChartIcon,
-  SubspaceSymbol,
   WalletIcon,
 } from 'components/icons'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
@@ -204,7 +204,7 @@ function Screen({
       </div>
       <div tw='absolute flex flex-row border-none w-full h-full'>
         <div tw='flex flex-col w-full justify-center ml-250 mt-140'>
-          <SubspaceSymbol fill='#000000' />
+          <AutonomysSymbol fill='#000000' />
           <span
             style={{
               fontFamily: 'Montserrat',
