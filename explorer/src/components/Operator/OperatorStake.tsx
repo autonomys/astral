@@ -9,14 +9,13 @@ import { isHex, u8aToHex } from '@polkadot/util'
 import { WalletIcon } from 'components/icons'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { TransactionStatus } from 'constants/transaction'
 import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { useTransactionsStates } from 'states/transactions'
 import { floatToStringWithDecimals } from 'utils/number'
 import { shortString } from 'utils/string'
 import * as Yup from 'yup'
@@ -53,7 +52,7 @@ export const OperatorStake = () => {
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { addPendingTransactions } = useTransactionsStates()
+  const { sendAndSaveTx } = useTxHelper()
 
   const [domainsList, setDomainsList] = useState<Domain[]>([])
   const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
@@ -154,47 +153,29 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !subspaceAccount || !actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const from = actingAccount.address
-
-        const hash = await api.tx.domains
-          .registerOperator(
-            values.domainId,
-            floatToStringWithDecimals(values.amountToStake, tokenDecimals),
-            {
-              signingKey: values.signingKey,
-              minimumNominatorStake: floatToStringWithDecimals(
-                values.minimumNominatorStake,
-                tokenDecimals,
-              ),
-              nominationTax: values.nominatorTax.toString(),
-            },
-            values.signature,
-          )
-          .signAndSend(from, { signer: injector.signer })
-
-        sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
-
-        addPendingTransactions({
-          ownerAccount: actingAccount,
-          chain: selectedChain,
-          status: TransactionStatus.Pending,
-          submittedAtBlockHash: block.toHex(),
-          submittedAtBlockNumber: block.block.header.number.toNumber(),
-          call: 'balances.transferKeepAlive',
-          txHash: hash.toString(),
-          blockHash: '',
-          from,
-          to: from,
-          amount: '0',
-          fee: '0',
-          nonce: 0,
+        const tx = await api.tx.domains.registerOperator(
+          values.domainId,
+          floatToStringWithDecimals(values.amountToStake, tokenDecimals),
+          {
+            signingKey: values.signingKey,
+            minimumNominatorStake: floatToStringWithDecimals(
+              values.minimumNominatorStake,
+              tokenDecimals,
+            ),
+            nominationTax: values.nominatorTax.toString(),
+          },
+          values.signature,
+        )
+        await sendAndSaveTx({
+          call: 'registerOperator',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
         })
+        sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
         setFormError('There was an error while registering the operator')
         console.error('Error', error)
@@ -202,15 +183,7 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [
-      actingAccount,
-      addPendingTransactions,
-      api,
-      injector,
-      selectedChain,
-      subspaceAccount,
-      tokenDecimals,
-    ],
+    [api, injector, sendAndSaveTx, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

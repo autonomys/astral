@@ -25,7 +25,7 @@ export const useTxHelper = () => {
 
   const sendAndSaveTx = useCallback(
     async (input: SendAndSaveTx) => {
-      const { call, tx, signer, to, amount, fee, nonce, error, after } = input
+      const { call, tx, signer, to, amount, fee, nonce, error } = input
 
       if (!api || !actingAccount || !injector)
         return error

@@ -1,4 +1,3 @@
-import { TransactionStatus } from '@/constants'
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { camelToNormal } from '@/utils/string'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -16,12 +15,12 @@ import {
 } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useDomains from 'hooks/useDomains'
+import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
-import { useTransactionsStates } from 'states/transactions'
 import * as Yup from 'yup'
 import {
   CustomExtrinsicFormValues,
@@ -58,7 +57,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
-  const { addPendingTransactions } = useTransactionsStates()
+  const { sendAndSaveTx } = useTxHelper()
 
   const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
@@ -179,42 +178,29 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: SendTokenFormValues,
       resetForm: (nextState?: Partial<FormikState<SendTokenFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !api)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       try {
-        const block = await api.rpc.chain.getBlock()
-
         const to = values.receiver
         const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
 
-        const hash = await api.tx.balances
-          .transferKeepAlive(to, amount)
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-
-        setHash(hash)
-        toast.success('The transaction was sent successfully', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_sendToken',
-          value: `extrinsic:${hash.toString()}`,
-        })
-        resetForm()
-
-        addPendingTransactions({
-          ownerAccount: actingAccount,
-          chain: selectedChain,
-          status: TransactionStatus.Pending,
-          submittedAtBlockHash: block.toHex(),
-          submittedAtBlockNumber: block.block.header.number.toNumber(),
-          call: 'balances.transferKeepAlive',
-          txHash: hash.toString(),
-          blockHash: '',
-          from: actingAccount.address,
+        const tx = await api.tx.balances.transferKeepAlive(to, amount)
+        const hash = await sendAndSaveTx({
+          call: 'transferKeepAlive',
+          tx,
+          signer: injector.signer,
           to,
           amount,
-          fee: '0',
-          nonce: 0,
+          error: setFormError,
         })
+        if (hash) {
+          setHash(hash)
+          toast.success('The transaction was sent successfully', { position: 'bottom-center' })
+          sendGAEvent({
+            event: 'walletSideKick_action_sendToken',
+            value: `extrinsic:${hash.toString()}`,
+          })
+          resetForm()
+        }
       } catch (error) {
         const reason = 'There was an error while sending the transaction'
         setFormError(reason)
@@ -226,15 +212,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [
-      actingAccount,
-      injector,
-      api,
-      subspaceAccount,
-      tokenDecimals,
-      addPendingTransactions,
-      selectedChain,
-    ],
+    [injector, api, tokenDecimals, sendAndSaveTx],
   )
 
   const handleSignMessage = useCallback(
@@ -244,7 +222,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!actingAccount || !injector)
         return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
       try {
         const signature =
           injector.signer.signRaw &&
@@ -271,7 +248,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, injector, subspaceAccount],
+    [actingAccount, injector],
   )
 
   const handleSendRemark = useCallback(
@@ -279,39 +256,24 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: MessageFormValues,
       resetForm: (nextState?: Partial<FormikState<MessageFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !api)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       try {
-        const block = await api.rpc.chain.getBlock()
-
-        const hash = await api.tx.system
-          .remark(values.message)
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-
-        setHash(hash)
-        toast.success('The remark was sent', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_sendRemark',
-          value: `msg:${values.message}`,
+        const tx = await api.tx.system.remark(values.message)
+        const hash = await sendAndSaveTx({
+          call: 'remark',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
         })
-        resetForm()
-
-        addPendingTransactions({
-          ownerAccount: actingAccount,
-          chain: selectedChain,
-          status: TransactionStatus.Pending,
-          submittedAtBlockHash: block.toHex(),
-          submittedAtBlockNumber: block.block.header.number.toNumber(),
-          call: 'system.remark',
-          txHash: hash.toString(),
-          blockHash: '',
-          from: actingAccount.address,
-          to: actingAccount.address,
-          amount: '0',
-          fee: '0',
-          nonce: 0,
-        })
+        if (hash) {
+          setHash(hash)
+          toast.success('The remark was sent', { position: 'bottom-center' })
+          sendGAEvent({
+            event: 'walletSideKick_action_sendRemark',
+            value: `msg:${values.message}`,
+          })
+          resetForm()
+        }
       } catch (error) {
         const reason = 'There was an error while sending the remark'
         setFormError(reason)
@@ -323,7 +285,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [actingAccount, addPendingTransactions, api, injector, selectedChain, subspaceAccount],
+    [api, injector, sendAndSaveTx],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -331,42 +293,29 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       values: CustomExtrinsicFormValues,
       resetForm: (nextState?: Partial<FormikState<CustomExtrinsicFormValues>> | undefined) => void,
     ) => {
-      if (!actingAccount || !injector || !api)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       if (!selectedCategory) return setFormError('You need to select a category')
       if (!selectedMethod) return setFormError('You need to select a method')
       try {
-        const block = await api.rpc.chain.getBlock()
-
-        const hash = await api.tx[selectedCategory][selectedMethod](
+        const tx = await api.tx[selectedCategory][selectedMethod](
           ...Object.keys(values).map((key) => values[key]),
-        ).signAndSend(actingAccount.address, { signer: injector.signer })
-
-        setHash(hash)
-        toast.success('The extrinsic was sent', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_customExtrinsic',
-          value: `category:${selectedCategory}:method:${selectedMethod}:extrinsic:${hash.toString()}`,
+        )
+        const hash = await sendAndSaveTx({
+          call: 'remark',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
         })
-        resetCategory()
-        resetForm()
-
-        addPendingTransactions({
-          ownerAccount: actingAccount,
-          chain: selectedChain,
-          status: TransactionStatus.Pending,
-          submittedAtBlockHash: block.toHex(),
-          submittedAtBlockNumber: block.block.header.number.toNumber(),
-          call: `${selectedCategory}.${selectedMethod}`,
-          txHash: hash.toString(),
-          blockHash: '',
-          from: actingAccount.address,
-          to: actingAccount.address,
-          amount: '0',
-          fee: '0',
-          nonce: 0,
-        })
+        if (hash) {
+          setHash(hash)
+          toast.success('The extrinsic was sent', { position: 'bottom-center' })
+          sendGAEvent({
+            event: 'walletSideKick_action_customExtrinsic',
+            value: `category:${selectedCategory}:method:${selectedMethod}:extrinsic:${hash.toString()}`,
+          })
+          resetCategory()
+          resetForm()
+        }
       } catch (error) {
         const reason = 'There was an error while sending the extrinsic'
         setFormError(reason)
@@ -378,17 +327,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
       }
     },
-    [
-      actingAccount,
-      injector,
-      api,
-      subspaceAccount,
-      selectedCategory,
-      selectedMethod,
-      addPendingTransactions,
-      selectedChain,
-      resetCategory,
-    ],
+    [injector, api, selectedCategory, selectedMethod, sendAndSaveTx, resetCategory],
   )
 
   const handleCopy = useCallback((value: string) => {
