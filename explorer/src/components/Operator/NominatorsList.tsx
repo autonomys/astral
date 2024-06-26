@@ -25,7 +25,6 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { NominatorListCard } from './NominatorListCard'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
 
 export const NominatorsList: FC = () => {
@@ -135,7 +134,7 @@ export const NominatorsList: FC = () => {
                 ),
               ),
             )}{' '}
-            tSSC
+            ${selectedChain.token.symbol}
           </div>
         ),
       },
@@ -168,7 +167,7 @@ export const NominatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.operator.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.operator.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -188,7 +187,7 @@ export const NominatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.operator.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.operator.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -233,7 +232,14 @@ export const NominatorsList: FC = () => {
         },
       })
     return cols
-  }, [subspaceAccount, selectedChain.urls.page, selectedDomain, action, handleAction])
+  }, [
+    subspaceAccount,
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    selectedDomain,
+    action,
+    handleAction,
+  ])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
@@ -300,7 +306,7 @@ export const NominatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-grayDark text-base font-medium dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 
@@ -318,14 +324,6 @@ export const NominatorsList: FC = () => {
             pageSizeOptions={[10]}
             filename='operators-nominators-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={
-              <MobileComponent
-                nominators={nominatorsConnection}
-                action={action}
-                handleAction={handleAction}
-                subspaceAccount={subspaceAccount}
-              />
-            }
           />
         </div>
       </div>
@@ -333,33 +331,3 @@ export const NominatorsList: FC = () => {
     </div>
   )
 }
-
-export default NominatorsList
-
-type MobileComponentProps = {
-  nominators: NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-  subspaceAccount?: string
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ nominators, action, handleAction }) => (
-  <div className='w-full'>
-    {nominators.map((nominator, index) => (
-      <NominatorListCard
-        key={`operator-list-card-${nominator.id}`}
-        nominator={nominator}
-        action={action}
-        handleAction={handleAction}
-        index={index}
-        excludeActions={[
-          OperatorActionType.Deregister,
-          OperatorActionType.Withdraw,
-          OperatorActionType.UnlockFunds,
-          OperatorActionType.UnlockOperator,
-        ]}
-        nominatorMaxShares={nominator && BigInt(nominator.shares)}
-      />
-    ))}
-  </div>
-)

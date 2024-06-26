@@ -78,11 +78,11 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
   )
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
-            <span className='text-base font-medium text-grayDarker dark:text-white'>
+            <span className='text-grayDarker text-base font-medium dark:text-white'>
               Staking Summary
             </span>
           </div>
@@ -91,7 +91,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
         {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
         {error && (
           <div className='m-2 flex items-center pt-4'>
-            <span className='text-base font-medium text-grayDarker dark:text-white'>
+            <span className='text-grayDarker text-base font-medium dark:text-white'>
               We are unable to load your wallet data
             </span>
           </div>
@@ -106,7 +106,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                 <Link
                   data-testid='totalOperatorStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.manage}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
                     {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
@@ -119,7 +119,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                 <Link
                   data-testid='totalNominatedStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.nomination}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
                     {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
@@ -132,7 +132,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                 <Link
                   data-testid='totalOperatorCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.manage}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
                     {totalOperatorCount}
@@ -145,7 +145,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                 <Link
                   data-testid='totalNominatedCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.nomination}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
                 >
                   <StyledListItem title='Amount of nomination'>
                     {totalNominatedCount}
@@ -159,9 +159,9 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
             <Link
               data-testid='totalNominatedCount-link'
               className='hover:text-purpleAccent'
-              href={`/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.list}`}
+              href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.list}`}
             >
-              <span className='text-sm font-medium text-grayDarker dark:text-white'>
+              <span className='text-grayDarker text-sm font-medium dark:text-white'>
                 Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page to
                 stake your {tokenSymbol}
               </span>

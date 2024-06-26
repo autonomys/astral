@@ -4,30 +4,31 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
-import { WalletAccount } from '@subwallet/wallet-connect/types'
 import { Chains, chains } from 'constants/chains'
+import { WalletType } from 'constants/wallet'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getSession, signOut } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
 import type { ChainParam } from 'types/app'
+import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
 
 export type WalletContextValue = {
   api: ApiPromise | undefined
   isReady: boolean
-  accounts: WalletAccount[] | undefined | null
+  accounts: WalletAccountWithType[] | undefined | null
   error: Error | null
   injector: InjectedExtension | null
-  actingAccount: WalletAccount | undefined
+  actingAccount: WalletAccountWithType | undefined
   extensions: InjectedExtension[] | undefined
   disconnectWallet: () => void
-  setActingAccount: (account: WalletAccount) => void
+  setActingAccount: (account: WalletAccountWithType) => void
   setPreferredExtension: (extension: string) => void
   preferredExtension: string | undefined
   subspaceAccount: string | undefined
   handleSelectFirstWalletFromExtension: (source: string) => Promise<void>
-  changeAccount: (account: WalletAccount) => void
+  changeAccount: (account: WalletAccountWithType) => void
 }
 
 export const WalletContext = createContext<WalletContextValue>(
@@ -43,11 +44,11 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const { chain } = useParams<ChainParam>()
   const [api, setApi] = useState<ApiPromise>()
   const [isReady, setIsReady] = useState(false)
-  const [accounts, setAccounts] = useState<WalletAccount[] | null | undefined>(undefined)
+  const [accounts, setAccounts] = useState<WalletAccountWithType[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
   const [error, setError] = useState<Error | null>(null)
   const [injector, setInjector] = useState<InjectedExtension | null>(null)
-  const [actingAccount, setActingAccount] = useState<WalletAccount | undefined>(undefined)
+  const [actingAccount, setActingAccount] = useState<WalletAccountWithType | undefined>(undefined)
   const [subspaceAccount, setSubspaceAccount] = useState<string | undefined>(undefined)
   const [preferredAccount, setPreferredAccount] = useSafeLocalStorage('localAccount', null)
   const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
@@ -77,9 +78,16 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   }, [])
 
   const changeAccount = useCallback(
-    async (account: WalletAccount) => {
+    async (account: WalletAccountWithType) => {
       try {
-        setActingAccount(account)
+        const type =
+          account.type === WalletType.ethereum
+            ? WalletType.ethereum
+            : WalletType.subspace || WalletType.subspace
+        setActingAccount({
+          ...account,
+          type,
+        })
         const _subspaceAccount = formatAddress(account.address)
         setSubspaceAccount(_subspaceAccount)
         setPreferredAccount(account.address)
@@ -116,7 +124,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       if (wallet) {
         await wallet.enable()
         if (wallet.extension) setInjector(wallet.extension)
-        const walletAccounts = await wallet.getAccounts()
+        const walletAccounts = (await wallet.getAccounts()) as WalletAccountWithType[]
         setAccounts(walletAccounts)
         setPreferredExtension(source)
         sendGAEvent({
@@ -194,6 +202,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       const mockAccount = {
         address: process.env.REACT_APP_MOCK_WALLET_ADDRESS,
         source: process.env.REACT_APP_MOCK_WALLET_SOURCE,
+        type: WalletType.subspace,
       }
       setActingAccount(mockAccount)
       setAccounts([mockAccount])

@@ -18,27 +18,25 @@ interface AccountLatestRewardsProps {
 
 export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
   const { selectedChain, selectedDomain } = useDomains()
-
   const { accountId } = useParams<AccountIdParam>()
-
   const { push } = useRouter()
 
   return (
-    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white px-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+    <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset flex w-full flex-col rounded-[20px] border border-gray-200 bg-white px-4 dark:border-none dark:bg-gradient-to-r'>
       <div className='flex w-full flex-col gap-6 pl-4'>
         <div className='flex w-full justify-between'>
-          <div className='flex-1 grow text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='text-purpleShade2 flex-1 grow text-[13px] font-normal dark:text-white/75'>
             Block Number
           </div>
-          <div className='flex-1 grow text-center text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='text-purpleShade2 flex-1 grow text-center text-[13px] font-normal dark:text-white/75'>
             Type
           </div>
-          <div className='flex-1 grow text-end text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='text-purpleShade2 flex-1 grow text-end text-[13px] font-normal dark:text-white/75'>
             Amount
           </div>
         </div>
         <div className='w-full'>
-          <ol className='relative w-full border-l border-purpleLight dark:border-blueShade1'>
+          <ol className='border-purpleLight dark:border-blueShade1 relative w-full border-l'>
             {rewards.map(({ id, name, block, amount }, index) => (
               <li
                 key={`${id}-account-rewards-block`}
@@ -75,7 +73,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                     .join(' ')}
                 </div>
                 <div className='text-grayDark -mt-1 w-full flex-1 grow text-end text-[13px] font-normal dark:text-white'>
-                  {bigNumberToNumber(amount)} tSSC
+                  {bigNumberToNumber(amount)} {selectedChain.token.symbol}
                 </div>
               </li>
             ))}
@@ -93,7 +91,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
               ),
             )
           }
-          className='mt-4 w-full rounded-[20px] bg-blueLight py-4 dark:bg-whiteTransparent dark:text-white'
+          className='bg-blueLight dark:bg-whiteTransparent mt-4 w-full rounded-[20px] py-4 dark:text-white'
         >
           See All Rewards
         </button>

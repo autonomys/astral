@@ -28,7 +28,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
   const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
 
   return (
-    <div className='m-2 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div className='bg-grayLight dark:bg-blueAccent m-2 rounded-[20px] p-5 dark:text-white'>
       <Accordion
         title={
           <Link
@@ -43,10 +43,10 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
             <div className='m-2 flex items-center'>
               <Identicon value={subspaceAccount} size={48} theme={theme} />
               <div className='relative'>
-                <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
+                <span className='text-grayDarker ml-2 hidden w-5 truncate text-lg font-medium underline dark:text-white sm:block md:w-full'>
                   {actingAccountName}
                 </span>
-                <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
+                <span className='text-grayDarker ml-2 hidden w-5 truncate text-lg font-medium underline dark:text-white sm:block md:w-full'>
                   {shortString(subspaceAccount)}
                 </span>
               </div>
@@ -73,19 +73,19 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           />
         )}
         <div className='m-2 flex items-center pt-4'>
-          <span className='text-base font-medium text-grayDarker dark:text-white'>
+          <span className='text-grayDarker text-base font-medium dark:text-white'>
             Your Subspace Wallet Address
           </span>
         </div>
         <div className='m-2 flex items-center'>
           {subspaceAccount && (
-            <span className='ml-2 hidden w-5 truncate text-sm font-medium text-grayDarker dark:text-white sm:block md:w-full'>
+            <span className='text-grayDarker ml-2 hidden w-5 truncate text-sm font-medium dark:text-white sm:block md:w-full'>
               {subspaceAccount}
             </span>
           )}
         </div>
         <div className='m-2 flex items-center pt-4'>
-          <span className='text-base font-medium text-grayDarker dark:text-white'>
+          <span className='text-grayDarker text-base font-medium dark:text-white'>
             Your Subspace Wallet Balance
           </span>
         </div>

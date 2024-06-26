@@ -15,13 +15,12 @@ import type { OperatorsConnectionRewardsQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
-import { OperatorRewardsListCard } from './OperatorRewardsListCard'
 import { QUERY_OPERATORS_REWARDS_LIST } from './querys'
 
 export const OperatorRewardsList = () => {
@@ -89,7 +88,7 @@ export const OperatorRewardsList = () => {
         >) => (
           <div>
             {row.original.amount
-              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -176,13 +175,13 @@ export const OperatorRewardsList = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex w-full flex-col sm:mt-0'>
         <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>
+          <div className='text-grayDark text-base font-medium dark:text-white'>
             Operators Leaderboard
           </div>
           <div className='flex gap-2'>
             <DebouncedInput
               type='text'
-              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+              className='dark:bg-blueAccent block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
               placeholder='Search by operator id'
               onChange={handleSearch}
               value={searchOperator}
@@ -201,27 +200,11 @@ export const OperatorRewardsList = () => {
             onPaginationChange={setPagination}
             filename='leaderboard-operator-rewards-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operatorRewards={operatorRewards} />}
           />
         </div>
       </div>
     </div>
   )
 }
+
 export default OperatorRewardsList
-
-type MobileComponentProps = {
-  operatorRewards: OperatorsConnectionRewardsQuery['operatorRewardsConnection']['edges'][0]['node'][]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ operatorRewards }) => (
-  <div className='w-full'>
-    {operatorRewards.map((operator, index) => (
-      <OperatorRewardsListCard
-        index={index}
-        operator={operator}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
-  </div>
-)

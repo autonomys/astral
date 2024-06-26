@@ -11,7 +11,6 @@ import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
-import { AccountRewardListCard } from './AccountRewardListCard'
 
 dayjs.extend(relativeTime)
 
@@ -102,7 +101,8 @@ export const AccountRewardTable: FC<Props> = ({
         enableSorting: true,
         cell: ({ row }) => (
           <div key={`${row.original.id}-account-balance`}>
-            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0} tSSC
+            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0}{' '}
+            {selectedChain.token.symbol}
           </div>
         ),
       },
@@ -122,17 +122,6 @@ export const AccountRewardTable: FC<Props> = ({
           pagination={pagination}
           pageCount={pageCount}
           onPaginationChange={setPagination}
-          mobileComponent={
-            <div className='w-full'>
-              {rewards.map((reward, index) => (
-                <AccountRewardListCard
-                  index={index}
-                  reward={reward}
-                  key={`account-list-card-${reward.id}`}
-                />
-              ))}
-            </div>
-          }
         />
       </div>
     </div>

@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
-export const OperatorHeader = () => {
+export const StakingHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -75,26 +75,26 @@ export const OperatorHeader = () => {
     const general = [
       {
         title: 'Operators',
-        link: `/${selectedChain.urls.page}/${Routes.operators}`,
+        link: `/${selectedChain.urls.page}/${Routes.staking}`,
       },
       {
-        title: 'Stake My Operator',
-        link: `/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.stake}`,
+        title: 'Register Operator',
+        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
     ]
     if (operatorsConnection && operatorsConnection.length > 0)
       general.push({
         title: 'Manage My Operator',
-        link: `/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.manage}`,
+        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`,
       })
     general.push({
       title: 'Nominators',
-      link: `/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.nominators}`,
+      link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nominators}`,
     })
     if (nominatorsConnection && nominatorsConnection.length > 0)
       general.push({
         title: 'Manage My Nomination',
-        link: `/${selectedChain.urls.page}/${Routes.operators}/${INTERNAL_ROUTES.operators.nomination}`,
+        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`,
       })
     return general
   }, [operatorsConnection, nominatorsConnection, selectedChain.urls.page])
@@ -110,7 +110,7 @@ export const OperatorHeader = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.operators}`}
+            href={`/${selectedChain.urls.page}/${Routes.staking}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>

@@ -5,7 +5,6 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
@@ -79,7 +78,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -87,7 +86,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Total Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -99,12 +98,12 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         }: Cell<
           GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'] & { rewards: bigint }
         >) => (
-          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} tSSC`}</div>
+          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} ${selectedChain.token.symbol}`}</div>
         ),
       },
     ]
     return cols
-  }, [selectedChain.urls.page, selectedDomain])
+  }, [selectedChain.token.symbol, selectedChain.urls.page, selectedDomain])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
@@ -176,7 +175,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-grayDark text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
       </div>
 
@@ -193,28 +192,9 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
             onPaginationChange={setPagination}
             filename='stake-wars-operators-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
           />
         </div>
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'][]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => {
-      return (
-        <OperatorsListCard
-          key={`operator-list-card-${operator.id}`}
-          operator={operator}
-          index={index}
-        />
-      )
-    })}
-  </div>
-)
