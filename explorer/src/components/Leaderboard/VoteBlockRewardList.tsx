@@ -16,13 +16,12 @@ import type { AccountsConnectionRewardsQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { NotFound } from '../layout/NotFound'
-import { VoteBlockRewardListCard } from './VoteBlockRewardListCard'
 import { QUERY_REWARDS_LIST } from './querys'
 
 export const VoteBlockRewardList = () => {
@@ -231,26 +230,9 @@ export const VoteBlockRewardList = () => {
             onPaginationChange={setPagination}
             filename='leaderboard-vote-block-reward-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent accounts={accountRewards} />}
           />
         </div>
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  accounts: AccountsConnectionRewardsQuery['accountRewardsConnection']['edges'][0]['node'][]
-}
-
-export const MobileComponent: FC<MobileComponentProps> = ({ accounts }) => (
-  <div className='w-full'>
-    {accounts.map((account, index) => (
-      <VoteBlockRewardListCard
-        index={index}
-        account={account}
-        key={`reward-list-card-${account.id}`}
-      />
-    ))}
-  </div>
-)

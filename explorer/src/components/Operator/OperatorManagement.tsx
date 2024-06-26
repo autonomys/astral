@@ -24,7 +24,6 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { OperatorsListCard } from './OperatorsListCard'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorManagement: FC = () => {
@@ -244,7 +243,7 @@ export const OperatorManagement: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
         ),
       },
       {
@@ -320,7 +319,7 @@ export const OperatorManagement: FC = () => {
             <span
               className={`text-base ${
                 isDesktop ? 'text-base' : 'text-xs'
-              } dark:text-blueAccent ml-2 font-normal`}
+              } ml-2 font-normal dark:text-blueAccent`}
             >
               on Account {subspaceAccount}
             </span>
@@ -342,19 +341,11 @@ export const OperatorManagement: FC = () => {
             fullDataDownloader={fullDataDownloader}
             pageSizeOptions={[10]}
             filename='operators-operator-management-list'
-            mobileComponent={
-              <MobileComponent
-                operators={operatorsConnection}
-                action={action}
-                handleAction={handleAction}
-                lastBlock={lastBlock}
-              />
-            }
           />
         </div>
       </div>
 
-      <div className='bg-grayLight dark:bg-blueDarkAccent mt-8 rounded-[20px] p-5'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>
@@ -476,35 +467,3 @@ export const OperatorManagement: FC = () => {
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-  lastBlock?: number
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({
-  operators,
-  action,
-  handleAction,
-  lastBlock,
-}) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => (
-      <OperatorsListCard
-        index={index}
-        operator={operator}
-        action={action}
-        excludeActions={
-          operatorReadyToUnlock(operator.status, lastBlock)
-            ? [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
-            : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockOperator]
-        }
-        handleAction={handleAction}
-        lastBlock={lastBlock}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
-  </div>
-)

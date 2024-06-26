@@ -25,7 +25,6 @@ import { capitalizeFirstLetter } from 'utils/string'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { OperatorsListCard } from './OperatorsListCard'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorsList: FC = () => {
@@ -152,7 +151,7 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
         ),
       },
       {
@@ -274,11 +273,11 @@ export const OperatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-grayDark text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
         <DebouncedInput
           type='text'
-          className='dark:bg-blueAccent block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
           placeholder='Search by operator id'
           onChange={handleSearch}
           value={searchOperator}
@@ -299,14 +298,6 @@ export const OperatorsList: FC = () => {
             filename='operators-operators-list'
             pageSizeOptions={[10]}
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={
-              <MobileComponent
-                operators={operatorsConnection}
-                action={action}
-                handleAction={handleAction}
-                subspaceAccount={subspaceAccount}
-              />
-            }
           />
         </div>
       </div>
@@ -314,47 +305,3 @@ export const OperatorsList: FC = () => {
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'][]
-  action: OperatorAction
-  handleAction: (value: OperatorAction) => void
-  subspaceAccount?: string
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({
-  operators,
-  action,
-  handleAction,
-  subspaceAccount,
-}) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => {
-      const nominator =
-        subspaceAccount &&
-        operator.nominators.find(
-          (nominator) => nominator.id === `${operator.id}-${subspaceAccount}`,
-        )
-      return (
-        <OperatorsListCard
-          key={`operator-list-card-${operator.id}`}
-          operator={operator}
-          action={action}
-          handleAction={handleAction}
-          index={index}
-          excludeActions={
-            nominator
-              ? [OperatorActionType.Deregister, OperatorActionType.UnlockOperator]
-              : [
-                  OperatorActionType.Deregister,
-                  OperatorActionType.Withdraw,
-                  OperatorActionType.UnlockFunds,
-                  OperatorActionType.UnlockOperator,
-                ]
-          }
-          nominatorMaxShares={nominator ? BigInt(nominator.shares) : undefined}
-        />
-      )
-    })}
-  </div>
-)

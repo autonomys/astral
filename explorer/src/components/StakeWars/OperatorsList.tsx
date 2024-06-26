@@ -5,7 +5,6 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
 import { NewTable } from 'components/common/NewTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
@@ -193,28 +192,9 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
             onPaginationChange={setPagination}
             filename='stake-wars-operators-list'
             fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
           />
         </div>
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'][]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => {
-      return (
-        <OperatorsListCard
-          key={`operator-list-card-${operator.id}`}
-          operator={operator}
-          index={index}
-        />
-      )
-    })}
-  </div>
-)
