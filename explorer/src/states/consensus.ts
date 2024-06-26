@@ -1,4 +1,3 @@
-import type { Domain } from 'types/domain'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 

@@ -14,6 +14,7 @@ import { useConsensusData } from 'hooks/useConsensusData'
 import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
@@ -23,7 +24,7 @@ import type { OperatorAllowListOpen, OperatorAllowListRestricted } from 'types/d
 import { floatToStringWithDecimals } from 'utils/number'
 import { shortString } from 'utils/string'
 import * as Yup from 'yup'
-import { ConnectWalletButton } from '../common/ConnectWalletButton'
+import { WalletButton } from '../WalletButton'
 
 interface FormValues {
   domainId: number
@@ -42,8 +43,8 @@ enum OwnershipProofMethod {
 }
 
 export const OperatorStake = () => {
-  const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
+  const [isOpen, setIsOpen] = useState(false)
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
@@ -51,6 +52,7 @@ export const OperatorStake = () => {
   const { domains, minOperatorStake } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
+  const { sendAndSaveTx } = useTxHelper()
 
   useEffect(() => {
     if (!domains || domains.length === 0) loadDomainsData()
@@ -100,7 +102,7 @@ export const OperatorStake = () => {
   const registerOperatorValidationSchema = Yup.object().shape({
     domainId: Yup.number()
       .oneOf(
-        filteredDomainsList.map((d) => d.domainId),
+        filteredDomainsList.map((d) => parseInt(d.domainId)),
         'Domain Id need to be a valid domains',
       )
       .required('Domain Id is required'),
@@ -128,30 +130,28 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !subspaceAccount || !actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
-          .registerOperator(
-            values.domainId,
-            floatToStringWithDecimals(values.amountToStake, tokenDecimals),
-            {
-              signingKey: values.signingKey,
-              minimumNominatorStake: floatToStringWithDecimals(
-                values.minimumNominatorStake,
-                tokenDecimals,
-              ),
-              nominationTax: values.nominatorTax.toString(),
-            },
-            values.signature,
-          )
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-
-        console.log('block', block)
-        console.log('hash', hash)
+        const tx = await api.tx.domains.registerOperator(
+          values.domainId,
+          floatToStringWithDecimals(values.amountToStake, tokenDecimals),
+          {
+            signingKey: values.signingKey,
+            minimumNominatorStake: floatToStringWithDecimals(
+              values.minimumNominatorStake,
+              tokenDecimals,
+            ),
+            nominationTax: values.nominatorTax.toString(),
+          },
+          values.signature,
+        )
+        await sendAndSaveTx({
+          call: 'registerOperator',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
+        })
         sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
         setFormError('There was an error while registering the operator')
@@ -160,7 +160,7 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount, api, injector, subspaceAccount, tokenDecimals],
+    [api, injector, sendAndSaveTx, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -303,7 +303,7 @@ export const OperatorStake = () => {
             <div className='mt-4 text-xl'>
               {!actingAccount ? (
                 <div className='flex w-full items-center justify-center p-4 text-sm'>
-                  <ConnectWalletButton />
+                  <WalletButton />
                 </div>
               ) : (
                 <div

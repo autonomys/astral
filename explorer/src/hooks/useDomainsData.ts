@@ -19,7 +19,7 @@ export const useDomainsData = () => {
     setDomains(
       domainRegistry.map((domain) => {
         return {
-          domainId: (domain[0].toPrimitive() as number[])[0],
+          domainId: (domain[0].toPrimitive() as string[])[0],
           domainName: (domain[1].toJSON() as { domainConfig: { domainName: string } }).domainConfig
             .domainName,
           operatorAllowList: (
