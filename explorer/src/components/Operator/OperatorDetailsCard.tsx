@@ -4,7 +4,7 @@ import Identicon from '@polkadot/react-identicon'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { Chains } from 'constants/'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Operator } from 'gql/graphql'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { selectedChain } = useDomains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   return (
@@ -47,7 +47,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
                         className='hover:text-purpleAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
                           selectedChain.urls.page,
-                          selectedDomain,
+                          Routes.consensus,
                           operator.operatorOwner,
                         )}
                       >
