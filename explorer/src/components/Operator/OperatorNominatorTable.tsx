@@ -1,8 +1,8 @@
-import { numberWithCommas } from '@/utils/number'
+import { limitNumberDecimals, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import Identicon from '@polkadot/react-identicon'
 import { NewTable } from 'components/common/NewTable'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { Nominator, Operator } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { selectedChain } = useDomains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   const columns = useMemo(
@@ -31,7 +31,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
               className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.accounts.id.page(
                 selectedChain.urls.page,
-                selectedDomain,
+                Routes.consensus,
                 row.original.account.id,
               )}
             >
@@ -43,20 +43,43 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         ),
       },
       {
+        accessorKey: 'stakes',
+        header: 'Stakes',
+        cell: ({ row }: Cell<Nominator>) => (
+          <div>
+            {numberWithCommas(
+              limitNumberDecimals(
+                Number(
+                  Number(
+                    (BigInt(operator.currentTotalStake) / BigInt(operator.totalShares)) *
+                      BigInt(row.original.shares),
+                  ) /
+                    10 ** 18,
+                ),
+              ),
+            )}{' '}
+            {selectedChain.token.symbol}
+          </div>
+        ),
+      },
+      {
         accessorKey: 'shares',
         header: 'Shares',
-        cell: ({ row }: Cell<Nominator>) => {
-          const percent = (row.original.shares / operator.totalShares) * 100
-          const isOwner = operator.operatorOwner === row.original.account.id
-          return (
-            <>
-              {isLargeLaptop && (
-                <div>{row.original.shares ? numberWithCommas(row.original.shares) : 0}</div>
-              )}
-              {percent.toFixed(2)}%{isOwner ? 'Yes' : 'No'}
-            </>
-          )
-        },
+        cell: ({ row }: Cell<Nominator>) => (
+          <div>
+            {numberWithCommas(
+              limitNumberDecimals(
+                Number(
+                  Number(
+                    (BigInt(row.original.shares) * BigInt(1000000000)) /
+                      BigInt(operator.totalShares),
+                  ) / 1000000000,
+                ) * 100,
+              ),
+            )}{' '}
+            %
+          </div>
+        ),
       },
       {
         accessorKey: 'owner',
@@ -67,10 +90,11 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     ],
     [
       isLargeLaptop,
+      operator.currentTotalStake,
       operator.operatorOwner,
       operator.totalShares,
+      selectedChain.token.symbol,
       selectedChain.urls.page,
-      selectedDomain,
     ],
   )
 
