@@ -218,7 +218,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while unlocking the funds the operator')
+      setFormError('There was an error while unlocking the funds of the operator')
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockFunds' })
     }
@@ -464,12 +464,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         return (
           <div className='flex flex-col items-start gap-4'>
             <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
-              Do you really want to{' '}
-              {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-              OperatorActionType.UnlockFunds
-                ? 'unlock the funds in your operator'
-                : 'unlock the funds in your nomination'}{' '}
-              ?
+              Do you really want to unlock the funds in your
+              {action.type === OperatorActionType.UnlockFunds ? 'operator' : 'nominator'} ?
             </span>
             {ErrorPlaceholder}
             <button
