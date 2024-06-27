@@ -12,7 +12,6 @@ import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
-import { EventListCard } from './EventListCard'
 
 dayjs.extend(relativeTime)
 
@@ -21,7 +20,7 @@ interface Props {
   isDesktop?: boolean
 }
 
-export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
+export const EventTable: FC<Props> = ({ events }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -113,7 +112,7 @@ export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
     [totalCount, pagination],
   )
 
-  return isDesktop ? (
+  return (
     <div className='w-full'>
       <div className='my-6 rounded'>
         <NewTable
@@ -128,12 +127,6 @@ export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
           filename='events-list'
         />
       </div>
-    </div>
-  ) : (
-    <div className='w-full'>
-      {events.map((event) => (
-        <EventListCard event={event} key={`event-list-card-${event.id}-${event.indexInBlock}`} />
-      ))}
     </div>
   )
 }

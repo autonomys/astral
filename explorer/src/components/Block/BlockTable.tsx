@@ -14,7 +14,6 @@ import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
 import { BlockAuthor } from './BlockAuthor'
-import { BlockListCard } from './BlockListCard'
 
 dayjs.extend(relativeTime)
 
@@ -23,7 +22,7 @@ interface Props {
   isDesktop?: boolean
 }
 
-export const BlockTable: FC<Props> = ({ blocks, isDesktop = true }) => {
+export const BlockTable: FC<Props> = ({ blocks }) => {
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -120,7 +119,7 @@ export const BlockTable: FC<Props> = ({ blocks, isDesktop = true }) => {
     [totalCount, pagination],
   )
 
-  return isDesktop ? (
+  return (
     <div className='w-full'>
       <div className='my-6 rounded'>
         <NewTable
@@ -135,12 +134,6 @@ export const BlockTable: FC<Props> = ({ blocks, isDesktop = true }) => {
           filename='blocks-list'
         />
       </div>
-    </div>
-  ) : (
-    <div className='w-full'>
-      {blocks.map((block) => (
-        <BlockListCard block={block} key={`home-block-card-${block.id}`} />
-      ))}
     </div>
   )
 }
