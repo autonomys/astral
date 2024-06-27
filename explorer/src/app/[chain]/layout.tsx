@@ -4,6 +4,7 @@ import { lang, metadata } from 'constants/metadata'
 import { Metadata, Viewport } from 'next'
 import { headers } from 'next/headers'
 import { Provider } from 'providers'
+import { Toaster } from 'react-hot-toast'
 import type { ChainPageProps } from 'types/app'
 import '../../styles/index.css'
 
@@ -21,6 +22,7 @@ export default async function RootLayout({
       )}
       <head lang='en' />
       <body>
+        <Toaster position='bottom-center' />
         <Provider>{children}</Provider>
       </body>
     </html>
