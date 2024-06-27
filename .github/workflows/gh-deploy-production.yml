@@ -1,9 +1,9 @@
 name: Deploy to production and preview deploys
 on:
   push:
-    branches: [main]
+    branches: [production]
     paths:
-      - 'client/**'
+      - "client/**"
 jobs:
   deploy:
     concurrency: ci-${{ github.ref }}
