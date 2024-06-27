@@ -54,7 +54,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [sliderValue, setSliderValue] = useState(0)
-  const { sendAndSaveTx } = useTxHelper()
+  const { handleTxError, sendAndSaveTx } = useTxHelper()
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -139,12 +139,23 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         resetForm()
         handleClose()
       } catch (error) {
-        setFormError('There was an error while adding funds to the operator')
-        console.error('Error', error)
-        sendGAEvent('event', 'error', { value: 'nominateOperator' })
+        handleTxError(
+          'There was an error while adding funds to the operator',
+          'nominateOperator',
+          setFormError,
+        )
       }
     },
-    [api, injector, subspaceAccount, action.operatorId, tokenDecimals, sendAndSaveTx, handleClose],
+    [
+      injector,
+      api,
+      subspaceAccount,
+      action.operatorId,
+      tokenDecimals,
+      sendAndSaveTx,
+      handleClose,
+      handleTxError,
+    ],
   )
 
   const handleWithdraw = useCallback(
@@ -170,12 +181,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         resetForm()
         handleClose()
       } catch (error) {
-        setFormError('There was an error while withdraw funds from the operator')
-        console.error('Error', error)
-        sendGAEvent('event', 'error', { value: 'withdrawStake' })
+        handleTxError(
+          'There was an error while withdraw funds from the operator',
+          'withdrawStake',
+          setFormError,
+        )
       }
     },
-    [api, injector, action.operatorId, sendAndSaveTx, handleClose],
+    [injector, api, action.operatorId, sendAndSaveTx, handleClose, handleTxError],
   )
 
   const handleDeregister = useCallback(async () => {
@@ -218,11 +231,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while unlocking the funds of the operator')
-      console.error('Error', error)
-      sendGAEvent('event', 'error', { value: 'unlockFunds' })
+      handleTxError(
+        'There was an error while unlocking the funds of the operator',
+        'unlockFunds',
+        setFormError,
+      )
     }
-  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
+  }, [injector, api, action.operatorId, sendAndSaveTx, handleClose, handleTxError])
 
   const handleUnlockNominator = useCallback(async () => {
     if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
@@ -241,11 +256,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while unlocking the stake of the nominator')
-      console.error('Error', error)
-      sendGAEvent('event', 'error', { value: 'unlockNominator' })
+      handleTxError(
+        'There was an error while unlocking the stake of the nominator',
+        'unlockNominator',
+        setFormError,
+      )
     }
-  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
+  }, [injector, api, action.operatorId, sendAndSaveTx, handleClose, handleTxError])
 
   const ErrorPlaceholder = useMemo(
     () =>

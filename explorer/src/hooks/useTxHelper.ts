@@ -5,6 +5,7 @@ import type { ISubmittableResult } from '@polkadot/types/types'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import { useCallback } from 'react'
+import toast from 'react-hot-toast'
 import { useTransactionsStates } from 'states/transactions'
 
 export interface SendAndSaveTx {
@@ -23,11 +24,21 @@ export const useTxHelper = () => {
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const { addPendingTransactions } = useTransactionsStates()
 
+  const handleTxSuccess = useCallback(
+    (message: string, call: string, handleSuccess?: (message: string) => void) => {
+      handleSuccess ? handleSuccess(message) : console.info('Success', message)
+      sendGAEvent('event', 'tx_call', { value: call })
+      toast.success(message, { position: 'bottom-center' })
+    },
+    [],
+  )
+
   const handleTxError = useCallback(
-    (errorMessage: string, call: string, handleErrorMessage?: (errorMessage: string) => void) => {
-      handleErrorMessage ? handleErrorMessage(errorMessage) : console.error('Error', errorMessage)
-      sendGAEvent('event', 'error_message', { value: errorMessage })
+    (message: string, call: string, handleError?: (message: string) => void) => {
+      handleError ? handleError(message) : console.error('Error', message)
+      sendGAEvent('event', 'error_message', { value: message })
       sendGAEvent('event', 'error', { value: call })
+      toast.error(message, { position: 'bottom-center' })
     },
     [],
   )
@@ -60,7 +71,7 @@ export const useTxHelper = () => {
           fee: fee || '0',
           nonce: nonce || 0,
         })
-        sendGAEvent('event', 'tx_call', { value: call })
+        handleTxSuccess('The transaction was sent successfully', call)
 
         return hash
       } catch (e) {
@@ -75,8 +86,9 @@ export const useTxHelper = () => {
       subspaceAccount,
       addPendingTransactions,
       selectedChain,
+      handleTxSuccess,
     ],
   )
 
-  return { handleTxError, sendAndSaveTx }
+  return { handleTxSuccess, handleTxError, sendAndSaveTx }
 }
