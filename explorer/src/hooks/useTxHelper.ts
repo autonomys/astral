@@ -23,44 +23,60 @@ export const useTxHelper = () => {
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const { addPendingTransactions } = useTransactionsStates()
 
+  const handleTxError = useCallback(
+    (errorMessage: string, call: string, handleErrorMessage?: (errorMessage: string) => void) => {
+      handleErrorMessage ? handleErrorMessage(errorMessage) : console.error('Error', errorMessage)
+      sendGAEvent('event', 'error_message', { value: errorMessage })
+      sendGAEvent('event', 'error', { value: call })
+    },
+    [],
+  )
+
   const sendAndSaveTx = useCallback(
     async (input: SendAndSaveTx) => {
       const { call, tx, signer, to, amount, fee, nonce, error } = input
 
       if (!api || !actingAccount || !injector)
-        return error
-          ? error('We are not able to connect to the blockchain')
-          : console.error('We are not able to connect to the blockchain')
-      if (!subspaceAccount)
-        return error
-          ? error('Not a subspace account connected')
-          : console.error('Not a subspace account connected')
+        return handleTxError('We are not able to connect to the blockchain', call, error)
+      if (!subspaceAccount) return handleTxError('Not a subspace account connected', call, error)
 
-      const block = await api.rpc.chain.getBlock()
-      const from = actingAccount.address
-      const hash = await tx.signAndSend(from, { signer })
+      try {
+        const block = await api.rpc.chain.getBlock()
+        const from = actingAccount.address
+        const hash = await tx.signAndSend(from, { signer })
 
-      addPendingTransactions({
-        ownerAccount: actingAccount,
-        chain: selectedChain,
-        status: TransactionStatus.Pending,
-        submittedAtBlockHash: block.block.header.hash.toHex(),
-        submittedAtBlockNumber: block.block.header.number.toNumber(),
-        call,
-        txHash: hash.toString(),
-        blockHash: '',
-        from,
-        to: to || from,
-        amount: amount || '0',
-        fee: fee || '0',
-        nonce: nonce || 0,
-      })
-      sendGAEvent('event', 'tx_call', { value: call })
+        addPendingTransactions({
+          ownerAccount: actingAccount,
+          chain: selectedChain,
+          status: TransactionStatus.Pending,
+          submittedAtBlockHash: block.block.header.hash.toHex(),
+          submittedAtBlockNumber: block.block.header.number.toNumber(),
+          call,
+          txHash: hash.toString(),
+          blockHash: '',
+          from,
+          to: to || from,
+          amount: amount || '0',
+          fee: fee || '0',
+          nonce: nonce || 0,
+        })
+        sendGAEvent('event', 'tx_call', { value: call })
 
-      return hash
+        return hash
+      } catch (e) {
+        handleTxError(`There was an error while sending the ${call} transaction`, call, error)
+      }
     },
-    [api, actingAccount, injector, subspaceAccount, addPendingTransactions, selectedChain],
+    [
+      api,
+      actingAccount,
+      injector,
+      handleTxError,
+      subspaceAccount,
+      addPendingTransactions,
+      selectedChain,
+    ],
   )
 
-  return { sendAndSaveTx }
+  return { handleTxError, sendAndSaveTx }
 }
