@@ -1,12 +1,17 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
+import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { Column, Table } from 'components/common/Table'
+import { NewTable } from 'components/common/NewTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Log } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 import { LogListCard } from './LogListCard'
 
 dayjs.extend(relativeTime)
@@ -18,60 +23,90 @@ interface Props {
 
 export const LogTable: FC<Props> = ({ logs, isDesktop = false }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = useCallback(
-    (logs: Log[]): Column[] => [
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+
+  const columns = useMemo(
+    () => [
       {
-        title: 'Log Index',
-        cells: logs.map(({ id }, index) => (
-          <div className='flex w-full' key={`${id}-log-index`}>
+        accessorKey: 'id',
+        header: 'Log Index',
+        enableSorting: true,
+        cell: ({ row }: Cell<Log>) => (
+          <div className='flex w-full' key={`${row.index}-log-index`}>
             <Link
               className='w-full hover:text-purpleAccent'
-              data-testid={`log-link-${index}`}
-              href={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, id)}
+              data-testid={`log-link-${row.index}`}
+              href={INTERNAL_ROUTES.logs.id.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                row.original.id,
+              )}
             >
-              <div>{id}</div>
+              <div>{row.original.id}</div>
             </Link>
-            <CopyButton value={id} message='Id copied' />
+            <CopyButton value={row.original.id} message='Id copied' />
           </div>
-        )),
+        ),
       },
       {
-        title: 'Block',
-        cells: logs.map(({ block, id }) => <div key={`${id}-block-height`}>{block.height}</div>),
+        accessorKey: 'block',
+        header: 'Block',
+        enableSorting: true,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-block-height`}>{row.original.block.height}</div>
+        ),
       },
       {
-        title: 'Type',
-        cells: logs.map(({ kind, id }) => <div key={`${id}-type`}>{kind}</div>),
+        accessorKey: 'kind',
+        header: 'Type',
+        enableSorting: true,
+        cell: ({ row }: Cell<Log>) => <div key={`${row.index}-kind`}>{row.original.kind}</div>,
       },
       {
-        title: 'Engine',
-        cells: logs.map(({ value, id }) => {
-          return <div key={`${id}-engine`}>{value?.engine}</div>
-        }),
+        accessorKey: 'engine',
+        header: 'Engine',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-engine`}>{row.original.value?.engine}</div>
+        ),
       },
       {
-        title: 'Data',
-        cells: logs.map(({ value, id }) => (
-          <div key={`${id}-data`}>{`${value?.data.slice(0, 20)}...`}</div>
-        )),
+        accessorKey: 'data',
+        header: 'Data',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div
+            key={`${row.index}-block-height`}
+          >{`${row.original.value?.data.slice(0, 20)}...`}</div>
+        ),
       },
     ],
     [selectedChain.urls.page, selectedDomain],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(logs), [logs, generateColumns])
+  const totalCount = useMemo(() => (logs ? logs.length : 0), [logs])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   return isDesktop ? (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <Table
+        <NewTable
+          data={logs}
           columns={columns}
-          emptyMessage='There are no blocks to show'
-          tableProps='bg-white rounded-md dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
-          tableHeaderProps='border-b border-gray-200'
-          id='latest-blocks'
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='logs-list'
         />
       </div>
     </div>

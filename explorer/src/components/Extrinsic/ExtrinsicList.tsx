@@ -10,7 +10,6 @@ import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
 import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { NotFound } from '../layout/NotFound'
@@ -22,7 +21,6 @@ export const ExtrinsicList: FC = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
-  const isDesktop = useMediaQuery('(min-width: 640px)')
   const novaExplorerBanner = useEvmExplorerBanner('txs')
 
   const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
@@ -108,7 +106,7 @@ export const ExtrinsicList: FC = () => {
         />
       </div>
       <div className='mt-8 flex w-full flex-col sm:mt-0'>
-        <ExtrinsicTable extrinsics={extrinsics} isDesktop={isDesktop} />
+        <ExtrinsicTable extrinsics={extrinsics} />
         <div className='flex w-full justify-between gap-2'>
           <ExportButton data={extrinsics} filename='extrinsic-list' />
           {totalCount && pageInfo && (

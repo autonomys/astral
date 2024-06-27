@@ -1,12 +1,17 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
+import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { Column, Table } from 'components/common/Table'
+import { NewTable } from 'components/common/NewTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Event } from 'gql/graphql'
+import type { Event } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 import { EventListCard } from './EventListCard'
 
 dayjs.extend(relativeTime)
@@ -18,80 +23,109 @@ interface Props {
 
 export const EventTable: FC<Props> = ({ events, isDesktop = false }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = useCallback(
-    (events: Event[]): Column[] => [
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+
+  const columns = useMemo(
+    () => [
       {
-        title: 'Event Id',
-        cells: events.map(({ id, indexInBlock }) => (
-          <div className='flex w-full gap-1' key={`${id}-${indexInBlock}-event-id`}>
+        accessorKey: 'id',
+        header: 'Event Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Event>) => (
+          <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
             <Link
               className='w-full hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
-              data-testid={`event-link-${indexInBlock}`}
+              href={INTERNAL_ROUTES.events.id.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                row.original.id,
+              )}
+              data-testid={`event-link-${row.index}`}
             >
-              {id}
+              {row.original.id}
             </Link>
             <CopyButton
-              data-testid={`testCopyButton-${indexInBlock}`}
-              value={id}
+              data-testid={`testCopyButton-${row.index}`}
+              value={row.original.id}
               message='Id copied'
             />
           </div>
-        )),
+        ),
       },
       {
-        title: 'Block',
-        cells: events.map(({ block, id, indexInBlock }) => (
+        accessorKey: 'block.height',
+        header: 'Block',
+        enableSorting: true,
+        cell: ({ row }: Cell<Event>) => (
           <Link
-            key={`${id}-${indexInBlock}-event-block`}
+            key={`${row.index}-event-block`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
+            href={INTERNAL_ROUTES.events.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
           >
-            {block?.height}
+            {row.original.block?.height}
           </Link>
-        )),
+        ),
       },
       {
-        title: 'Action',
-        cells: events.map(({ name, id, indexInBlock }) => (
-          <div key={`${id}-${indexInBlock}-event-action`}>
-            {name
+        accessorKey: 'action',
+        header: 'Action',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-event-action`}>
+            {row.original.name
               .split('.')[1]
               .split(/(?=[A-Z])/)
               .join(' ')}
           </div>
-        )),
+        ),
       },
       {
-        title: 'Type',
-        cells: events.map(({ phase, id, indexInBlock }) => (
-          <div key={`${id}-${indexInBlock}-event-phase`}>{phase.split(/(?=[A-Z])/).join(' ')}</div>
-        )),
+        accessorKey: 'type',
+        header: 'Type',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-event-phase`}>
+            {row.original.phase.split(/(?=[A-Z])/).join(' ')}
+          </div>
+        ),
       },
       {
-        title: 'Time',
-        cells: events.map(({ block, id, indexInBlock }) => {
-          const blockDate = dayjs(block?.timestamp).fromNow(true)
-          return <div key={`${id}-${indexInBlock}-event-time`}>{blockDate}</div>
-        }),
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => dayjs(row.original.block?.timestamp).fromNow(true),
       },
     ],
-    [selectedChain, selectedDomain],
+    [selectedChain.urls.page, selectedDomain],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(events), [events, generateColumns])
+  const totalCount = useMemo(() => (events ? events.length : 0), [events])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   return isDesktop ? (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <Table
+        <NewTable
+          data={events}
           columns={columns}
-          emptyMessage='There are no blocks to show'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
-          tableHeaderProps='border-b border-gray-200'
-          id='latest-events'
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='events-list'
         />
       </div>
     </div>

@@ -1,17 +1,20 @@
+'use client'
+
 import { PAGE_SIZE } from '@/constants/general'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import Identicon from '@polkadot/react-identicon'
-import { Column, Table } from 'components/common/Table'
+import type { SortingState } from '@tanstack/react-table'
+import { NewTable } from 'components/common/NewTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Account } from 'gql/graphql'
+import type { Account } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
-import { AccountListCard } from './AccountListCard'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 
 dayjs.extend(relativeTime)
 
@@ -22,84 +25,102 @@ interface Props {
 
 export const AccountTable: FC<Props> = ({ accounts, page }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  const isDesktop = useMediaQuery('(min-width: 640px)')
-
-  const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
-
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+  const theme = useMemo(() => (selectedChain.isDomain ? 'ethereum' : 'beachball'), [selectedChain])
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
-  const newCount = PAGE_SIZE * Number(page + 1) - 10
+  const newCount = useMemo(() => PAGE_SIZE * Number(page + 1) - 10, [page])
 
-  // methods
-  const generateColumns = useCallback(
-    (accounts: Account[]): Column[] => [
+  const columns = useMemo(
+    () => [
       {
-        title: 'Rank',
-        cells: accounts.map((id, index) => (
-          <div key={`${id}-account-index`}>{page + 1 > 1 ? newCount + index + 1 : index + 1}</div>
-        )),
+        accessorKey: 'id',
+        header: 'Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Account>) => (
+          <div key={`${row.index}-account-index`}>
+            {page + 1 > 1 ? newCount + row.index + 1 : row.index + 1}
+          </div>
+        ),
       },
       {
-        title: 'Account',
-        cells: accounts.map(({ id }, index) => (
-          <div key={`${id}-account-id`} className='row flex items-center gap-3'>
-            <Identicon value={id} size={26} theme={theme} />
+        accessorKey: 'account',
+        header: 'Account',
+        enableSorting: true,
+        cell: ({ row }: Cell<Account>) => (
+          <div key={`${row.index}-account-id`} className='row flex items-center gap-3'>
+            <Identicon value={row.original.id} size={26} theme={theme} />
             <Link
-              data-testid={`account-link-${index}`}
-              href={INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, id)}
+              data-testid={`account-link-${row.index}`}
+              href={INTERNAL_ROUTES.accounts.id.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                row.original.id,
+              )}
               className='hover:text-purpleAccent'
             >
-              <div>{isLargeLaptop ? id : shortString(id)}</div>
+              <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
             </Link>
           </div>
-        )),
+        ),
       },
       {
-        title: 'Extrinsics',
-        cells: accounts.map(({ extrinsics, id }) => (
-          <div key={`${id}-account-extrinsic`}>{extrinsics.length}</div>
-        )),
+        accessorKey: 'extrinsics',
+        header: 'Extrinsics',
+        enableSorting: true,
+        cell: ({ row }: Cell<Account>) => (
+          <div key={`${row.index}-account-extrinsic`}>{row.original.extrinsics.length}</div>
+        ),
       },
       {
-        title: 'Locked (TSSC)',
-        cells: accounts.map(({ reserved, id }) => (
-          <div key={`${id}-account-locked`}>
-            {reserved ? numberWithCommas(bigNumberToNumber(reserved)) : 0}
+        accessorKey: 'reserved',
+        header: 'Locked (tSSC)',
+        enableSorting: true,
+        cell: ({ row }: Cell<Account>) => (
+          <div key={`${row.index}-account-locked`}>
+            {row.original.reserved ? numberWithCommas(bigNumberToNumber(row.original.reserved)) : 0}
           </div>
-        )),
+        ),
       },
       {
-        title: 'Balance (TSSC)',
-        cells: accounts.map(({ total, id }) => (
-          <div key={`${id}-account-balance`}>
-            {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
+        accessorKey: 'free',
+        header: 'Balance (tSSC)',
+        enableSorting: true,
+        cell: ({ row }: Cell<Account>) => (
+          <div key={`${row.index}-account-locked`}>
+            {row.original.free ? numberWithCommas(bigNumberToNumber(row.original.free)) : 0}
           </div>
-        )),
+        ),
       },
     ],
-    [selectedDomain, selectedChain, theme, isLargeLaptop, newCount, page],
+    [isLargeLaptop, newCount, page, selectedChain.urls.page, selectedDomain, theme],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(accounts), [accounts, generateColumns])
+  const totalCount = useMemo(() => (accounts ? accounts.length : 0), [accounts])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
-  return isDesktop ? (
+  return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <Table
+        <NewTable
+          data={accounts}
           columns={columns}
-          emptyMessage='There are no accounts to show'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
-          tableHeaderProps='border-b border-gray-200'
-          id='accounts-list'
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='accounts-list'
         />
       </div>
-    </div>
-  ) : (
-    <div className='w-full'>
-      {accounts.map((account, index) => (
-        <AccountListCard index={index} account={account} key={`account-list-card-${account.id}`} />
-      ))}
     </div>
   )
 }

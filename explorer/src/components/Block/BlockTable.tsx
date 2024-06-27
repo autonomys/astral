@@ -1,13 +1,18 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@/utils/string'
+import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { Column, Table } from 'components/common/Table'
+import { NewTable } from 'components/common/NewTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Block } from 'gql/graphql'
+import type { Block } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 import { BlockAuthor } from './BlockAuthor'
 import { BlockListCard } from './BlockListCard'
 
@@ -20,86 +25,114 @@ interface Props {
 
 export const BlockTable: FC<Props> = ({ blocks, isDesktop = true }) => {
   const { selectedChain, selectedDomain } = useDomains()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+  const chain = useMemo(() => selectedChain.urls.page, [selectedChain])
 
-  const chain = selectedChain.urls.page
-
-  // methods
-  const generateColumns = useCallback(
-    (blocks: Block[]): Column[] => [
+  const columns = useMemo(
+    () => [
       {
-        title: 'Block',
-        cells: blocks.map(({ height, id }, index) => (
+        accessorKey: 'id',
+        header: 'Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Block>) => (
           <Link
-            key={`${id}-block-height`}
-            data-testid={`block-link-${index}`}
+            key={`${row.index}-block-height`}
+            data-testid={`block-link-${row.index}`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(chain, selectedDomain, height)}
+            href={INTERNAL_ROUTES.blocks.id.page(chain, selectedDomain, row.original.height)}
           >
-            <div>{height}</div>
+            <div>{row.original.height}</div>
           </Link>
-        )),
+        ),
       },
       {
-        title: 'Time',
-        cells: blocks.map(({ timestamp, id }) => {
-          const blockDate = dayjs(timestamp).fromNow(true)
-
-          return <div key={`${id}-block-time`}>{blockDate}</div>
-        }),
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: true,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-time`}>{dayjs(row.original.timestamp).fromNow(true)}</div>
+        ),
       },
       {
-        title: 'Extrinsics',
-        cells: blocks.map(({ extrinsics, id }) => (
-          <div key={`${id}-block-extrinsics`}>{extrinsics?.length}</div>
-        )),
+        accessorKey: 'extrinsics',
+        header: 'Extrinsics',
+        enableSorting: true,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-time`}>
+            {dayjs(row.original.extrinsics?.length).fromNow(true)}
+          </div>
+        ),
       },
       {
-        title: 'Events',
-        cells: blocks.map(({ events, id }) => (
-          <div key={`${id}-block-events`}>{events?.length}</div>
-        )),
+        accessorKey: 'Events',
+        header: 'Events',
+        enableSorting: true,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-time`}>
+            {dayjs(row.original.events?.length).fromNow(true)}
+          </div>
+        ),
       },
       {
-        title: 'Block hash',
-        cells: blocks.map(({ hash, id }, index) => (
-          <div key={`${id}-block-hash`}>
-            <CopyButton data-testid={`testCopy-${index}`} value={hash} message='Hash copied'>
-              {shortString(hash)}
+        accessorKey: 'hash',
+        header: 'Block hash',
+        enableSorting: true,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-hash`}>
+            <CopyButton
+              data-testid={`testCopy-${row.index}`}
+              value={row.original.hash}
+              message='Hash copied'
+            >
+              {shortString(row.original.hash)}
             </CopyButton>
           </div>
-        )),
+        ),
       },
       {
-        title: 'Block Author',
-        cells: blocks.map(({ author, id }) => (
-          <div key={`${id}-block-author`}>
-            <CopyButton value={author?.id || 'Unkown'} message='Author account copied'>
+        accessorKey: 'author',
+        header: 'Block Author',
+        enableSorting: true,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-author`}>
+            <CopyButton value={row.original.author?.id || 'Unkown'} message='Author account copied'>
               <BlockAuthor
                 domain={selectedDomain}
                 chain={chain}
-                author={author?.id}
+                author={row.original.author?.id}
                 isDesktop={false}
               />
             </CopyButton>
           </div>
-        )),
+        ),
       },
     ],
-    [selectedDomain, chain],
+    [chain, selectedDomain],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(blocks), [blocks, generateColumns])
+  const totalCount = useMemo(() => (blocks ? blocks.length : 0), [blocks])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   return isDesktop ? (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <Table
+        <NewTable
+          data={blocks}
           columns={columns}
-          emptyMessage='There are no blocks to show'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
-          tableHeaderProps='border-b border-gray-200'
-          id='latest-blocks'
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='blocks-list'
         />
       </div>
     </div>

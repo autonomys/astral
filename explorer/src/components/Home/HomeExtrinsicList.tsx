@@ -1,17 +1,21 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@/utils/string'
 import { ApolloError } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
+import type { SortingState } from '@tanstack/react-table'
+import { NewTable } from 'components/common/NewTable'
 import { StatusIcon } from 'components/common/StatusIcon'
-import { Column, Table } from 'components/common/Table'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
-import { HomeExtrinsicCard } from './HomeExtrinsicCard'
 
 dayjs.extend(relativeTime)
 
@@ -19,7 +23,6 @@ interface HomeExtrinsicListProps {
   loading: boolean
   error?: ApolloError | undefined
   data: HomeQueryQuery | HomeQueryDomainQuery
-  isDesktop: boolean
 }
 
 export const HomeExtrinsicListHeader = () => (
@@ -37,74 +40,101 @@ export const HomeExtrinsicListHeader = () => (
   </div>
 )
 
-export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data, isDesktop }) => {
+export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = useCallback(
-    (extrinsics: Extrinsic[]): Column[] => [
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+
+  const extrinsics = useMemo(() => data.extrinsics as Extrinsic[], [data.extrinsics])
+
+  const columns = useMemo(
+    () => [
       {
-        title: 'Hash',
-        cells: extrinsics.map(({ id, hash }) => (
+        accessorKey: 'hash',
+        header: 'Hash',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
           <Link
             className='hover:text-purpleAccent'
-            key={`${id}-home-extrinsic-hash`}
-            href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
+            key={`${row.index}-home-extrinsic-hash`}
+            href={INTERNAL_ROUTES.extrinsics.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
           >
-            <div>{shortString(hash)}</div>
+            <div>{shortString(row.original.hash)}</div>
           </Link>
-        )),
+        ),
       },
       {
-        title: 'Block',
-        cells: extrinsics.map(({ block, id }) => (
-          <div key={`${id}-home-extrinsic-block`}>{block.height}</div>
-        )),
+        accessorKey: 'block',
+        header: 'Block',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-home-extrinsic-block`}>{row.original.block.height}</div>
+        ),
       },
       {
-        title: 'Call',
-        cells: extrinsics.map(({ name, id }) => (
-          <div key={`${id}-home-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
-        )),
-      },
-      {
-        title: 'Time',
-        cells: extrinsics.map(({ id, timestamp }) => {
-          const blockDate = dayjs(timestamp).fromNow(true)
-
-          return <div key={`${id}-home-extrinsic-time`}>{blockDate} ago</div>
-        }),
-      },
-      {
-        title: 'Status',
-        cells: extrinsics.map(({ id, success }) => (
-          <div className='flex items-center justify-center' key={`${id}-home-extrinsic-status`}>
-            <StatusIcon status={success} />
+        accessorKey: 'name',
+        header: 'Call',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-home-extrinsic-action`}>
+            {row.original.name.split('.')[1].toUpperCase()}
           </div>
-        )),
+        ),
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-home-extrinsic-time`}>
+            {dayjs(row.original.timestamp).fromNow(true)} ago
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'name',
+        header: 'Status',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div
+            className='flex items-center justify-center'
+            key={`${row.index}-home-extrinsic-status`}
+          >
+            <StatusIcon status={row.original.success} />
+          </div>
+        ),
       },
     ],
     [selectedChain.urls.page, selectedDomain],
   )
 
-  // constants
-  const extrinsics = useMemo(() => data.extrinsics as Extrinsic[], [data.extrinsics])
-  const columns = useMemo(() => generateColumns(extrinsics), [extrinsics, generateColumns])
+  const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
-  return isDesktop ? (
+  return (
     <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-purpleUndertone dark:to-blueMedium'>
       <HomeExtrinsicListHeader />
-      <Table
+      <NewTable
+        data={extrinsics}
         columns={columns}
-        emptyMessage='There are no extrinsics to show'
-        id='home-latest-extrinsics'
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='home-latest-extrinsics'
       />
-    </div>
-  ) : (
-    <div className='w-full'>
-      <HomeExtrinsicListHeader />
-      {extrinsics.map((extrinsic) => (
-        <HomeExtrinsicCard extrinsic={extrinsic} key={`home-extrinsic-card-${extrinsic.id}`} />
-      ))}
     </div>
   )
 }
