@@ -35,7 +35,7 @@ export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDeskt
         >
           <List>
             <StyledListItem title='Account Id'>
-              <CopyButton value={publicKey.toString()} message='Account Id copied'>
+              <CopyButton value={accountAddress.toString()} message='Account Id copied'>
                 {!isDesktop ? shortString(accountAddress) : accountAddress}
               </CopyButton>
             </StyledListItem>
