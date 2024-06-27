@@ -5,7 +5,7 @@ import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
@@ -334,7 +334,7 @@ export const NominationManagement: FC = () => {
         >
           Information across nominations
           {subspaceAccount && (
-            <div className="dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r">
+            <div className="mt-4 flex items-center rounded-lg bg-white p-4 font-['Montserrat'] text-sm dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
               <svg
                 className='me-3 inline h-4 w-4 flex-shrink-0'
                 aria-hidden='true'
@@ -355,7 +355,7 @@ export const NominationManagement: FC = () => {
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={nominatorsConnection}
             columns={columns}
             showNavigation={true}
@@ -371,7 +371,7 @@ export const NominationManagement: FC = () => {
         </div>
       </div>
 
-      <div className='bg-grayLight dark:bg-blueDarkAccent mt-8 rounded-[20px] p-5'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>

@@ -4,7 +4,7 @@ import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@/utils/string'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
@@ -107,7 +107,7 @@ export const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
   return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <NewTable
+        <SortedTable
           data={extrinsics}
           columns={columns}
           showNavigation={true}

@@ -3,7 +3,7 @@
 import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@/utils/string'
 import type { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -83,7 +83,7 @@ export const LogDetailsEventList: FC<Props> = ({ events }) => {
   )
 
   return (
-    <NewTable
+    <SortedTable
       data={events}
       columns={columns}
       showNavigation={true}

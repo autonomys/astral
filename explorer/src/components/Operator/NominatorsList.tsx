@@ -5,7 +5,7 @@ import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
@@ -312,7 +312,7 @@ export const NominatorsList: FC = () => {
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={nominatorsConnection}
             columns={columns}
             showNavigation={true}

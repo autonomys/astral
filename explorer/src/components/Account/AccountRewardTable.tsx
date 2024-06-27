@@ -2,7 +2,7 @@ import { Pagination } from '@/constants/general'
 import { bigNumberToNumber } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { ColumnDef, SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -113,7 +113,7 @@ export const AccountRewardTable: FC<Props> = ({
   return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <NewTable
+        <SortedTable
           data={rewards}
           columns={cols}
           showNavigation={true}

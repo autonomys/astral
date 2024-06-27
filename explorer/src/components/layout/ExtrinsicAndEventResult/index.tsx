@@ -2,7 +2,7 @@
 
 import { PAGE_SIZE } from '@/constants/general'
 import type { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -117,7 +117,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
   return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <NewTable
+        <SortedTable
           data={results}
           columns={columns}
           showNavigation={true}

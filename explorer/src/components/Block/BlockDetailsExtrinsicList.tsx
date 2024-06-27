@@ -4,7 +4,7 @@ import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@/utils/string'
 import { useQuery } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
@@ -140,7 +140,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0'>
-      <NewTable
+      <SortedTable
         data={extrinsics}
         columns={columns}
         showNavigation={true}

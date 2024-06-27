@@ -5,7 +5,7 @@ import { shortString } from '@/utils/string'
 import { ApolloError } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import type { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
@@ -124,7 +124,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
   return (
     <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-purpleUndertone dark:to-blueMedium'>
       <HomeExtrinsicListHeader />
-      <NewTable
+      <SortedTable
         data={extrinsics}
         columns={columns}
         showNavigation={true}

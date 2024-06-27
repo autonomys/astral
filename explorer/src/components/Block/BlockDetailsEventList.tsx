@@ -3,7 +3,7 @@
 import { PAGE_SIZE } from '@/constants/general'
 import { useApolloClient, useQuery } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
@@ -148,7 +148,7 @@ export const BlockDetailsEventList: FC = () => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0'>
-      <NewTable
+      <SortedTable
         data={events}
         columns={columns}
         showNavigation={true}

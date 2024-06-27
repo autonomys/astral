@@ -28,7 +28,7 @@ interface ReactTableProps<T extends object> {
   fullDataDownloader?: () => Promise<unknown[]>
 }
 
-export const NewTable = <T extends object>({
+export const SortedTable = <T extends object>({
   data,
   columns,
   showNavigation,

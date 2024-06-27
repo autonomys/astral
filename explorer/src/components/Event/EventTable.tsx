@@ -3,7 +3,7 @@
 import { PAGE_SIZE } from '@/constants/general'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -115,7 +115,7 @@ export const EventTable: FC<Props> = ({ events }) => {
   return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <NewTable
+        <SortedTable
           data={events}
           columns={columns}
           showNavigation={true}

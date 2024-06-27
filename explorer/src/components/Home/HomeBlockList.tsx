@@ -4,7 +4,7 @@ import { PAGE_SIZE } from '@/constants/general'
 import { ApolloError } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import type { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -107,7 +107,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
   return (
     <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
       <HomeBlockListHeader />
-      <NewTable
+      <SortedTable
         data={blocks}
         columns={columns}
         showNavigation={true}

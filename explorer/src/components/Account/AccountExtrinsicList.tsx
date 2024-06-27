@@ -2,7 +2,7 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { NotFound } from 'components/layout/NotFound'
@@ -175,14 +175,14 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col align-middle'>
-      <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r'>
+      <div className='mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
         <div className='flex w-full justify-center gap-2'>
-          <div className='text-purpleShade2 text-sm dark:text-white/75'>Action Filter:</div>
+          <div className='text-sm text-purpleShade2 dark:text-white/75'>Action Filter:</div>
           <AccountExtrinsicFilterDropdown filters={filters} setFilters={setFilters} />
         </div>
       </div>
       <div className='my-6 rounded'>
-        <NewTable
+        <SortedTable
           data={extrinsics}
           columns={columns}
           showNavigation={true}
