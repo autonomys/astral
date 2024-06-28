@@ -2610,6 +2610,7 @@ export type BlocksConnectionQuery = { __typename?: 'Query', blocksConnection: { 
 export type BlocksConnectionDomainQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
+  orderBy: Array<BlockOrderByInput> | BlockOrderByInput;
 }>;
 
 

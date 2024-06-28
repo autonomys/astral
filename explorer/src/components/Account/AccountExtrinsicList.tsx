@@ -44,36 +44,25 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
 
-  const getQueryVariables = useCallback(
-    (
-      sorting: SortingState,
-      pagination: {
-        pageSize: number
-        pageIndex: number
-      },
-      filters: ExtrinsicWhereInput,
-      accountId: string,
-    ) => {
-      return {
-        first: pagination.pageSize,
-        after:
-          pagination.pageIndex > 0
-            ? (pagination.pageIndex * pagination.pageSize).toString()
-            : undefined,
-        orderBy,
-        where: {
-          ...filters,
-          signer: {
-            id_eq: accountId,
-          },
+  const variables = useMemo(() => {
+    return {
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy,
+      where: {
+        ...filters,
+        signer: {
+          id_eq: accountId,
         },
-      }
-    },
-    [orderBy],
-  )
+      },
+    }
+  }, [accountId, filters, orderBy, pagination.pageIndex, pagination.pageSize])
 
   const { data, error, loading } = useQuery<ExtrinsicsByAccountIdQuery>(QUERY_ACCOUNT_EXTRINSICS, {
-    variables: getQueryVariables(sorting, pagination, filters, accountId),
+    variables,
     pollInterval: 6000,
   })
 
@@ -104,7 +93,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: 'block.height',
         header: 'Extrinsic Id',
         enableSorting: true,
         cell: ({ row }: Row) => (
@@ -122,14 +111,14 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         ),
       },
       {
-        accessorKey: 'timestamp',
+        accessorKey: 'block.timestamp',
         header: 'Time',
         enableSorting: true,
-        cell: ({ row }) => {
-          const blockDate = dayjs(row.original.block.timestamp).fromNow(true)
-
-          return <div key={`${row.original.id}-extrinsic-time-${row.index}`}>{blockDate}</div>
-        },
+        cell: ({ row }) => (
+          <div key={`${row.original.id}-extrinsic-time-${row.index}`}>
+            {dayjs(row.original.block.timestamp).fromNow(true)}
+          </div>
+        ),
       },
       {
         accessorKey: 'success',

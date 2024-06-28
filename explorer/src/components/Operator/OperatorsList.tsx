@@ -238,7 +238,7 @@ export const OperatorsList: FC = () => {
   const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
     QUERY_OPERATOR_CONNECTION_LIST,
     {
-      variables: variables,
+      variables,
       pollInterval: 6000,
     },
   )

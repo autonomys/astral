@@ -51,7 +51,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       {
         accessorKey: 'block',
         header: 'Extrinsic Id',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Extrinsic>) => (
           <Link
             key={`${row.index}-block-extrinsic-id`}
@@ -69,7 +69,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       {
         accessorKey: 'hash',
         header: 'Block hash',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Extrinsic>) => (
           <div key={`${row.index}-block-extrinsic-hash`}>{shortString(row.original.hash)}</div>
         ),
@@ -77,7 +77,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       {
         accessorKey: 'name',
         header: 'Action',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Extrinsic>) => (
           <div key={`${row.index}-block-extrinsic-action`}>
             {row.original.name.split('.')[1].toUpperCase()}
@@ -97,7 +97,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       {
         accessorKey: 'success',
         header: 'Status',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Extrinsic>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'

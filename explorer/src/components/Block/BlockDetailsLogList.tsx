@@ -31,7 +31,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
       {
         accessorKey: 'id',
         header: 'Log Index',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Log>) => (
           <Link
             key={`${row.index}-block-log-id`}
@@ -49,7 +49,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
       {
         accessorKey: 'block',
         header: 'Block',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Log>) => (
           <div key={`${row.index}-block-log-block`}>{row.original.block.height}</div>
         ),
@@ -57,7 +57,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
       {
         accessorKey: 'kind',
         header: 'Type',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Log>) => (
           <div key={`${row.index}-block-log-type`}>{row.original.kind}</div>
         ),

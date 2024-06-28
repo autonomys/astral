@@ -22,9 +22,11 @@ interface ReactTableProps<T extends object> {
   onSortingChange?: OnChangeFn<SortingState>
   onPaginationChange?: OnChangeFn<PaginationState>
   pageCount: number
-  pagination: Pagination
+  pagination?: Pagination
   filename?: string
   pageSizeOptions?: number[]
+  hideDownloadButton?: boolean
+  hidePageSizeOptions?: boolean
   fullDataDownloader?: () => Promise<unknown[]>
 }
 
@@ -33,13 +35,15 @@ export const SortedTable = <T extends object>({
   columns,
   showNavigation,
   sorting,
-  pagination,
-  pageCount,
   onSortingChange,
   onPaginationChange,
+  pageCount,
+  pagination,
   filename,
-  fullDataDownloader,
   pageSizeOptions,
+  hideDownloadButton,
+  hidePageSizeOptions,
+  fullDataDownloader,
 }: ReactTableProps<T>) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const memoizedData = useMemo(() => data, [data])
@@ -72,6 +76,8 @@ export const SortedTable = <T extends object>({
           data={data}
           filename={filename}
           pageSizeOptions={pageSizeOptions}
+          hideDownloadButton={hideDownloadButton}
+          hidePageSizeOptions={hidePageSizeOptions}
           fullDataDownloader={fullDataDownloader}
         />
       )}

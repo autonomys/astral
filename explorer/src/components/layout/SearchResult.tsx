@@ -1,6 +1,6 @@
-import { ExtrinsicAndEventResultTable } from '@/components/layout/ExtrinsicAndEventResult'
 import { ExtrinsicTable } from 'components/Extrinsic/ExtrinsicTable'
 import { SearchBar } from 'components/common/SearchBar'
+import { ExtrinsicAndEventResultTable } from 'components/layout/ExtrinsicAndEventResult'
 import { useSearch } from 'hooks/useSearch'
 import { useParams } from 'next/navigation'
 import { FC } from 'react'

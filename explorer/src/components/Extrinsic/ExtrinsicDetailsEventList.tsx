@@ -31,7 +31,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
       {
         accessorKey: 'id',
         header: 'Event Id',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Event>) => (
           <Link
             key={`${row.index}-extrinsic-event-id`}
@@ -49,7 +49,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
       {
         accessorKey: 'extrinsic',
         header: 'Extrinsic Id',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Event>) => (
           <div
             key={`${row.index}-extrinsic-event-extrinsic`}
@@ -59,7 +59,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
       {
         accessorKey: 'action',
         header: 'Action',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Event>) => (
           <div key={`${row.index}-extrinsic-event-action`}>{row.original.name.split('.')[1]}</div>
         ),
@@ -67,7 +67,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
       {
         accessorKey: 'phase',
         header: 'Type',
-        enableSorting: true,
+        enableSorting: false,
         cell: ({ row }: Cell<Event>) => (
           <div key={`${row.index}-extrinsic-event-phase`}>{row.original.phase}</div>
         ),
