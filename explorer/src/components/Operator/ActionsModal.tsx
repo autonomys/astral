@@ -6,6 +6,7 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useDomains from 'hooks/useDomains'
+import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
@@ -52,6 +53,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [sliderValue, setSliderValue] = useState(0)
+  const { sendAndSaveTx } = useTxHelper()
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -116,23 +118,20 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       if (!subspaceAccount) return setFormError('Not a subspace account connected')
       if (action.operatorId === null)
         return setFormError('Please select an operator to add funds to')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
-          .nominateOperator(
-            action.operatorId.toString(),
-            floatToStringWithDecimals(values.amount, tokenDecimals),
-          )
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-
-        console.log('block', block)
-        console.log('hash', hash)
+        const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
+        const tx = await api.tx.domains.nominateOperator(action.operatorId.toString(), amount)
+        await sendAndSaveTx({
+          call: 'nominateOperator',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
+        })
         sendGAEvent('event', 'nominateOperator', {
           value: `operatorID:${action.operatorId.toString()}`,
         })
@@ -144,7 +143,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'nominateOperator' })
       }
     },
-    [api, actingAccount, injector, subspaceAccount, action.operatorId, tokenDecimals, handleClose],
+    [api, injector, subspaceAccount, action.operatorId, tokenDecimals, sendAndSaveTx, handleClose],
   )
 
   const handleWithdraw = useCallback(
@@ -152,20 +151,18 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) return setFormError('Not a subspace account connected')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       if (action.operatorId === null)
         return setFormError('Please select an operator to add funds to')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
-          .withdrawStake(action.operatorId, values.amount.toString())
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-
-        console.log('block', block)
-        console.log('hash', hash)
+        const tx = await api.tx.domains.withdrawStake(action.operatorId, values.amount.toString())
+        await sendAndSaveTx({
+          call: 'withdrawStake',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
+        })
         sendGAEvent('event', 'withdrawStake', {
           value: `operatorID:${action.operatorId.toString()}`,
         })
@@ -177,23 +174,21 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         sendGAEvent('event', 'error', { value: 'withdrawStake' })
       }
     },
-    [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose],
+    [api, injector, action.operatorId, sendAndSaveTx, handleClose],
   )
 
   const handleDeregister = useCallback(async () => {
-    if (!api || !actingAccount || !injector)
-      return setFormError('We are not able to connect to the blockchain')
-    if (!subspaceAccount) return setFormError('Not a subspace account connected')
+    if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const block = await api.rpc.chain.getBlock()
-      const hash = await api.tx.domains
-        .deregisterOperator(action.operatorId)
-        .signAndSend(actingAccount.address, { signer: injector.signer })
-
-      console.log('block', block)
-      console.log('hash', hash)
+      const tx = await api.tx.domains.deregisterOperator(action.operatorId)
+      await sendAndSaveTx({
+        call: 'deregisterOperator',
+        tx,
+        signer: injector.signer,
+        error: setFormError,
+      })
       sendGAEvent('event', 'deregisterOperator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
@@ -203,22 +198,20 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'deregisterOperator' })
     }
-  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
+  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
 
   const handleUnlockFunds = useCallback(async () => {
-    if (!api || !actingAccount || !injector)
-      return setFormError('We are not able to connect to the blockchain')
-    if (!subspaceAccount) return setFormError('Not a subspace account connected')
+    if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const block = await api.rpc.chain.getBlock()
-      const hash = await api.tx.domains
-        .unlockFunds(action.operatorId)
-        .signAndSend(actingAccount.address, { signer: injector.signer })
-
-      console.log('block', block)
-      console.log('hash', hash)
+      const tx = await api.tx.domains.unlockFunds(action.operatorId)
+      await sendAndSaveTx({
+        call: 'unlockFunds',
+        tx,
+        signer: injector.signer,
+        error: setFormError,
+      })
       sendGAEvent('event', 'unlockFunds', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
@@ -228,22 +221,20 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockFunds' })
     }
-  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
+  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
 
   const handleUnlockOperator = useCallback(async () => {
-    if (!api || !actingAccount || !injector)
-      return setFormError('We are not able to connect to the blockchain')
-    if (!subspaceAccount) return setFormError('Not a subspace account connected')
+    if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const block = await api.rpc.chain.getBlock()
-      const hash = await api.tx.domains
-        .unlockOperator(action.operatorId)
-        .signAndSend(actingAccount.address, { signer: injector.signer })
-
-      console.log('block', block)
-      console.log('hash', hash)
+      const tx = await api.tx.domains.unlockOperator(action.operatorId)
+      await sendAndSaveTx({
+        call: 'unlockFunds',
+        tx,
+        signer: injector.signer,
+        error: setFormError,
+      })
       sendGAEvent('event', 'unlockOperator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
@@ -253,7 +244,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       console.error('Error', error)
       sendGAEvent('event', 'error', { value: 'unlockOperator' })
     }
-  }, [api, actingAccount, injector, subspaceAccount, action.operatorId, handleClose])
+  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
 
   const ErrorPlaceholder = useMemo(
     () =>

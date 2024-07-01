@@ -41,13 +41,14 @@ export const Account: FC = () => {
   useErrorHandler(error)
 
   const account = useMemo(() => data && (data.accountById as SquidAccount), [data])
+  const rewards = useMemo(() => (data ? (data.rewardEvents as RewardEvent[]) : []), [data])
 
   useEffect(() => {
     sendGAEvent('event', 'visit_account_rewards_page', { value: accountId })
   }, [accountId])
 
   if (loading) return <Spinner />
-  if (!accountId || !data || !data.accountById || !account) return <NotFound />
+  if (!accountId) return <NotFound /> //  || !data || !data.accountById || !account
 
   return (
     <div className='flex w-full flex-col space-y-4'>
@@ -55,7 +56,7 @@ export const Account: FC = () => {
       <AccountDetailsCard account={account} accountAddress={accountId} isDesktop={isDesktop} />
       <div className='flex flex-col gap-8 lg:flex-row lg:justify-between'>
         <AccountGraphs account={account} isDesktop={isDesktop} />
-        <AccountRewardsHistory isDesktop={isDesktop} rewards={data.rewardEvents as RewardEvent[]} />
+        <AccountRewardsHistory isDesktop={isDesktop} rewards={rewards} />
       </div>
       <AccountExtrinsicList accountId={accountId} />
     </div>
