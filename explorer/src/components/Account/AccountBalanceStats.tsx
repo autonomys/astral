@@ -6,15 +6,15 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { AccountBalancePieChart } from './AccountBalancePieChart'
 
 type Props = {
-  account: Account
+  account: Account | undefined
   isDesktop?: boolean
 }
 
 export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
   const { selectedChain } = useDomains()
-  const accountTotal = bigNumberToNumber(account.total || 0)
-  const accountFree = bigNumberToNumber(account.free || 0)
-  const accountReserved = bigNumberToNumber(account.reserved || 0)
+  const accountTotal = bigNumberToNumber(account ? account.total : 0)
+  const accountFree = bigNumberToNumber(account ? account.free : 0)
+  const accountReserved = bigNumberToNumber(account ? account.reserved : 0)
   const freePercent = accountTotal ? (100 * accountFree) / accountTotal : 0
   const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
 
@@ -40,14 +40,14 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
       <div className='flex w-full items-center lg:gap-4 lg:py-8'>
         <div className='flex flex-row justify-center gap-8 lg:flex-none lg:flex-col'>
           <div className='flex items-center'>
-            <div className='bg-purpleElectric mr-2 h-[30px] w-1' />
+            <div className='mr-2 h-[30px] w-1 bg-purpleElectric' />
             <StatItem
               title='Free'
               value={`${numberWithCommas(accountFree)} ${selectedChain.token.symbol} (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
-            <div className='bg-blueShade2 mr-2 h-[30px] w-1' />
+            <div className='mr-2 h-[30px] w-1 bg-blueShade2' />
             <StatItem
               title='Reserved'
               value={`${numberWithCommas(accountReserved)} ${selectedChain.token.symbol} (${reservedPercent.toFixed(2)}%)`}
