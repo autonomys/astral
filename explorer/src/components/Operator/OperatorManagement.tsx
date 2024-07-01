@@ -273,8 +273,8 @@ export const OperatorManagement: FC = () => {
             row={row as ActionsDropdownRow}
             excludeActions={
               operatorReadyToUnlock(row.original.status, lastBlock)
-                ? [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
-                : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockOperator]
+                ? [OperatorActionType.Deregister, OperatorActionType.UnlockNominator]
+                : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockFunds]
             }
           />
         ),
