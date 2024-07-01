@@ -56,7 +56,7 @@ export const POST = async (req: NextRequest) => {
     const {
       data: { free },
     } = (await api.query.system.account(wallet.address)).toJSON() as { data: { free: string } }
-    if (BigInt(free) < BigInt(1000 * 10 ** 18))
+    if (BigInt(free) < BigInt(process.env.CLAIM_WALLET_LOW_FUND_WARNING || 1000 * 10 ** 18))
       await walletBalanceLowSlackMessage(formatUnitsToNumber(free).toString(), wallet.address)
 
     if (BigInt(free) <= BigInt(process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT))
