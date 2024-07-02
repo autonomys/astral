@@ -1,13 +1,15 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
+import type { SortingState } from '@tanstack/react-table'
+import { SortedTable } from 'components/common/SortedTable'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import Link from 'next/link'
-import { FC } from 'react'
-
-// common
-import { Column, Table } from 'components/common/Table'
-import { INTERNAL_ROUTES } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
-import { ExtrinsicAndEventResultCard } from './ExtrinsicAndEventResultCard'
+import Link from 'next/link'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 
 dayjs.extend(relativeTime)
 
@@ -22,88 +24,111 @@ export type Result = {
 
 interface Props {
   results: Result[]
-  isDesktop?: boolean
 }
 
-export const ExtrinsicAndEventResultTable: FC<Props> = ({ results, isDesktop = false }) => {
+export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = (results: Result[]): Column[] => [
-    {
-      title: 'Id',
-      cells: results.map(({ id, indexInBlock, type }) => {
-        const link =
-          type === 'Extrinsic'
-            ? INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)
-            : INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)
-        return (
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'id',
+        header: 'Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Result>) => {
+          const link =
+            row.original.type === 'Extrinsic'
+              ? INTERNAL_ROUTES.extrinsics.id.page(
+                  selectedChain.urls.page,
+                  selectedDomain,
+                  row.original.id,
+                )
+              : INTERNAL_ROUTES.events.id.page(
+                  selectedChain.urls.page,
+                  selectedDomain,
+                  row.original.id,
+                )
+          return (
+            <Link key={`${row.index}-result-id`} className='hover:text-purpleAccent' href={link}>
+              <div>{row.original.id}</div>
+            </Link>
+          )
+        },
+      },
+      {
+        accessorKey: 'blockHeight',
+        header: 'Block',
+        enableSorting: true,
+        cell: ({ row }: Cell<Result>) => (
           <Link
-            key={`${id}-result-id-${indexInBlock}`}
+            key={`${row.index}-result-block`}
             className='hover:text-purpleAccent'
-            href={link}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.blockHeight,
+            )}
           >
-            <div>{id}</div>
+            <div>{row.original.blockHeight}</div>
           </Link>
-        )
-      }),
-    },
-    {
-      title: 'Block',
-      cells: results.map(({ blockHeight, indexInBlock, id }) => (
-        <Link
-          key={`${id}-result-block-${indexInBlock}`}
-          className='hover:text-purpleAccent'
-          href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
-        >
-          <div>{blockHeight}</div>
-        </Link>
-      )),
-    },
-    {
-      title: 'Time',
-      cells: results.map(({ timestamp, id }, index) => {
-        const blockDate = dayjs(timestamp).fromNow(true)
+        ),
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: true,
+        cell: ({ row }: Cell<Result>) => (
+          <div key={`${row.index}-result-time`}>{dayjs(row.original.timestamp).fromNow(true)}</div>
+        ),
+      },
+      {
+        accessorKey: 'action',
+        header: 'Action',
+        enableSorting: true,
+        cell: ({ row }: Cell<Result>) => (
+          <div key={`${row.index}-result-action`}>
+            {row.original.action.split('.')[1].toUpperCase()}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'type',
+        header: 'Type',
+        enableSorting: true,
+        cell: ({ row }: Cell<Result>) => (
+          <div key={`${row.index}-result-type`}>{row.original.type}</div>
+        ),
+      },
+    ],
+    [selectedChain.urls.page, selectedDomain],
+  )
 
-        return <div key={`${id}-result-time-${index}`}>{blockDate}</div>
-      }),
-    },
-    {
-      title: 'Action',
-      cells: results.map(({ action, id }, index) => (
-        <div key={`${id}-result-action-${index}`}>{action.split('.')[1].toUpperCase()}</div>
-      )),
-    },
-    {
-      title: 'Type',
-      cells: results.map(({ type, id }, index) => (
-        <div key={`${id}-result-type-${index}`}>{type}</div>
-      )),
-    },
-  ]
+  const totalCount = useMemo(() => (results ? results.length : 0), [results])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
-  // constants
-  const columns = generateColumns(results)
-
-  return isDesktop ? (
+  return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <Table
+        <SortedTable
+          data={results}
           columns={columns}
-          emptyMessage='There are no extrinsics to show'
-          id='latest-extrinsics'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
-          tableHeaderProps='border-b border-gray-200'
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='latest-extrinsics'
         />
       </div>
-    </div>
-  ) : (
-    <div className='w-full'>
-      {results.map((result, index) => (
-        <ExtrinsicAndEventResultCard
-          result={result}
-          key={`extrinsic-list-card-${result.id}-${index}`}
-        />
-      ))}
     </div>
   )
 }
