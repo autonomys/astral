@@ -74,7 +74,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
       }
       return edges
     },
-    [markAsFinalized, moveToFinalizedTransactions, transactions],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transactions],
   )
 
   const extrinsics = useMemo(

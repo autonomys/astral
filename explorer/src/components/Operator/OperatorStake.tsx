@@ -52,7 +52,7 @@ export const OperatorStake = () => {
   const { domains, minOperatorStake } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
-  const { sendAndSaveTx } = useTxHelper()
+  const { handleTxError, sendAndSaveTx } = useTxHelper()
 
   useEffect(() => {
     if (!domains || domains.length === 0) loadDomainsData()
@@ -154,13 +154,15 @@ export const OperatorStake = () => {
         })
         sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
-        setFormError('There was an error while registering the operator')
-        console.error('Error', error)
-        sendGAEvent('event', 'error', { value: 'registerOperator' })
+        handleTxError(
+          'There was an error while registering the operator',
+          'registerOperator',
+          setFormError,
+        )
       }
       resetForm()
     },
-    [api, injector, sendAndSaveTx, tokenDecimals],
+    [api, handleTxError, injector, sendAndSaveTx, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

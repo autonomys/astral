@@ -19,12 +19,13 @@ export enum OperatorActionType {
   Withdraw = 'Withdraw',
   Deregister = 'Deregister',
   UnlockFunds = 'Unlock Funds',
-  UnlockOperator = 'Unlock Operator',
+  UnlockNominator = 'Unlock Nominator',
 }
 export const ActionsInRed = [
   OperatorActionType.Deregister,
+  OperatorActionType.Withdraw,
   OperatorActionType.UnlockFunds,
-  OperatorActionType.UnlockOperator,
+  OperatorActionType.UnlockNominator,
 ]
 
 export type OperatorAction = {
@@ -53,7 +54,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [sliderValue, setSliderValue] = useState(0)
-  const { sendAndSaveTx } = useTxHelper()
+  const { handleTxError, sendAndSaveTx } = useTxHelper()
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -138,12 +139,23 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         resetForm()
         handleClose()
       } catch (error) {
-        setFormError('There was an error while adding funds to the operator')
-        console.error('Error', error)
-        sendGAEvent('event', 'error', { value: 'nominateOperator' })
+        handleTxError(
+          'There was an error while adding funds to the operator',
+          'nominateOperator',
+          setFormError,
+        )
       }
     },
-    [api, injector, subspaceAccount, action.operatorId, tokenDecimals, sendAndSaveTx, handleClose],
+    [
+      injector,
+      api,
+      subspaceAccount,
+      action.operatorId,
+      tokenDecimals,
+      sendAndSaveTx,
+      handleClose,
+      handleTxError,
+    ],
   )
 
   const handleWithdraw = useCallback(
@@ -169,12 +181,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         resetForm()
         handleClose()
       } catch (error) {
-        setFormError('There was an error while withdraw funds from the operator')
-        console.error('Error', error)
-        sendGAEvent('event', 'error', { value: 'withdrawStake' })
+        handleTxError(
+          'There was an error while withdraw funds from the operator',
+          'withdrawStake',
+          setFormError,
+        )
       }
     },
-    [api, injector, action.operatorId, sendAndSaveTx, handleClose],
+    [injector, api, action.operatorId, sendAndSaveTx, handleClose, handleTxError],
   )
 
   const handleDeregister = useCallback(async () => {
@@ -217,34 +231,38 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while de-registering the operator')
-      console.error('Error', error)
-      sendGAEvent('event', 'error', { value: 'unlockFunds' })
+      handleTxError(
+        'There was an error while unlocking the funds of the operator',
+        'unlockFunds',
+        setFormError,
+      )
     }
-  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
+  }, [injector, api, action.operatorId, sendAndSaveTx, handleClose, handleTxError])
 
-  const handleUnlockOperator = useCallback(async () => {
+  const handleUnlockNominator = useCallback(async () => {
     if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const tx = await api.tx.domains.unlockOperator(action.operatorId)
+      const tx = await api.tx.domains.unlockNominator(action.operatorId)
       await sendAndSaveTx({
-        call: 'unlockFunds',
+        call: 'unlockNominator',
         tx,
         signer: injector.signer,
         error: setFormError,
       })
-      sendGAEvent('event', 'unlockOperator', {
+      sendGAEvent('event', 'unlockNominator', {
         value: `operatorID:${action.operatorId.toString()}`,
       })
       handleClose()
     } catch (error) {
-      setFormError('There was an error while de-registering the operator')
-      console.error('Error', error)
-      sendGAEvent('event', 'error', { value: 'unlockOperator' })
+      handleTxError(
+        'There was an error while unlocking the stake of the nominator',
+        'unlockNominator',
+        setFormError,
+      )
     }
-  }, [api, injector, action.operatorId, sendAndSaveTx, handleClose])
+  }, [injector, api, action.operatorId, sendAndSaveTx, handleClose, handleTxError])
 
   const ErrorPlaceholder = useMemo(
     () =>
@@ -459,16 +477,12 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           </div>
         )
       case OperatorActionType.UnlockFunds:
-      case OperatorActionType.UnlockOperator:
+      case OperatorActionType.UnlockNominator:
         return (
           <div className='flex flex-col items-start gap-4'>
             <span className='mt-4 text-base font-medium text-grayDarker dark:text-white'>
-              Do you really want to{' '}
-              {OperatorActionType[action.type as keyof typeof OperatorActionType] ===
-              OperatorActionType.UnlockFunds
-                ? 'unlock the funds in your nomination'
-                : 'unlock the funds in your operator'}{' '}
-              ?
+              Do you really want to unlock the funds in your
+              {action.type === OperatorActionType.UnlockFunds ? 'operator' : 'nominator'} ?
             </span>
             {ErrorPlaceholder}
             <button
@@ -477,7 +491,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                 OperatorActionType[action.type as keyof typeof OperatorActionType] ===
                 OperatorActionType.UnlockFunds
                   ? handleUnlockFunds
-                  : handleUnlockOperator
+                  : handleUnlockNominator
               }
             >
               {OperatorActionType[action.type as keyof typeof OperatorActionType]}
@@ -495,7 +509,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     ErrorPlaceholder,
     handleDeregister,
     handleUnlockFunds,
-    handleUnlockOperator,
+    handleUnlockNominator,
     handleAddFunds,
     handleWithdraw,
     selectedChain.token.symbol,

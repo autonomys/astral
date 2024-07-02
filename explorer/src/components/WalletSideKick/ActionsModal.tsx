@@ -60,7 +60,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
   const [addressBookIsOpen, setAddressBookIsOpen] = useState<boolean>(false)
-  const { sendAndSaveTx } = useTxHelper()
+  const { sendAndSaveTx, handleTxError } = useTxHelper()
 
   const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
@@ -188,7 +188,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
 
         const tx = await api.tx.balances.transferKeepAlive(to, amount)
         const hash = await sendAndSaveTx({
-          call: 'transferKeepAlive',
+          call: 'balances.transferKeepAlive',
           tx,
           signer: injector.signer,
           to,
@@ -205,17 +205,14 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           resetForm()
         }
       } catch (error) {
-        const reason = 'There was an error while sending the transaction'
-        setFormError(reason)
-        toast.error(reason, { position: 'bottom-center' })
-        console.error('Error', error)
-        sendGAEvent({
-          event: 'walletSideKick_action_sendToken_error',
-          value: error || 'unknown error',
-        })
+        handleTxError(
+          'There was an error while sending the transaction',
+          'balances.transferKeepAlive',
+          setFormError,
+        )
       }
     },
-    [injector, api, tokenDecimals, sendAndSaveTx],
+    [injector, api, tokenDecimals, sendAndSaveTx, handleTxError],
   )
 
   const handleSignMessage = useCallback(
@@ -241,17 +238,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         })
         resetForm()
       } catch (error) {
-        const reason = 'There was an error while signing the message'
-        setFormError(reason)
-        toast.error(reason, { position: 'bottom-center' })
-        console.error('Error', error)
-        sendGAEvent({
-          event: 'walletSideKick_action_signMessage_error',
-          value: error || 'unknown error',
-        })
+        handleTxError('There was an error while signing the message', 'signMessage', setFormError)
       }
     },
-    [actingAccount, injector],
+    [actingAccount, handleTxError, injector],
   )
 
   const handleSendRemark = useCallback(
@@ -263,7 +253,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       try {
         const tx = await api.tx.system.remark(values.message)
         const hash = await sendAndSaveTx({
-          call: 'remark',
+          call: 'system.remark',
           tx,
           signer: injector.signer,
           error: setFormError,
@@ -278,17 +268,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           resetForm()
         }
       } catch (error) {
-        const reason = 'There was an error while sending the remark'
-        setFormError(reason)
-        toast.error(reason, { position: 'bottom-center' })
-        console.error('Error', error)
-        sendGAEvent({
-          event: 'walletSideKick_action_sendRemark_error',
-          value: error || 'unknown error',
-        })
+        handleTxError('There was an error while sending the remark', 'system.remark', setFormError)
       }
     },
-    [api, injector, sendAndSaveTx],
+    [api, handleTxError, injector, sendAndSaveTx],
   )
 
   const handleCustomExtrinsic = useCallback(
@@ -304,7 +287,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           ...Object.keys(values).map((key) => values[key]),
         )
         const hash = await sendAndSaveTx({
-          call: 'remark',
+          call: `${selectedCategory}.${selectedMethod}`,
           tx,
           signer: injector.signer,
           error: setFormError,
@@ -320,17 +303,14 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           resetForm()
         }
       } catch (error) {
-        const reason = 'There was an error while sending the extrinsic'
-        setFormError(reason)
-        toast.error(reason, { position: 'bottom-center' })
-        console.error('Error', error)
-        sendGAEvent({
-          event: 'walletSideKick_action_customExtrinsic_error',
-          value: error || 'unknown error',
-        })
+        handleTxError(
+          'There was an error while sending the extrinsic',
+          `${selectedCategory}.${selectedMethod}`,
+          setFormError,
+        )
       }
     },
-    [injector, api, selectedCategory, selectedMethod, sendAndSaveTx, resetCategory],
+    [injector, api, selectedCategory, selectedMethod, sendAndSaveTx, resetCategory, handleTxError],
   )
 
   const handleCopy = useCallback((value: string) => {
