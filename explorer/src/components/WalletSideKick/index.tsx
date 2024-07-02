@@ -38,9 +38,12 @@ type DrawerProps = {
 }
 
 export const PendingTransactionsLabel: FC = () => {
-  const { pendingTransactionsCount } = useTransactionsStates()
+  const { pendingTransactions } = useTransactionsStates()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const count = useMemo(() => pendingTransactionsCount(), [pendingTransactionsCount])
+  const count = useMemo(
+    () => (pendingTransactions ? pendingTransactions.length : 0),
+    [pendingTransactions],
+  )
 
   useEffect(() => {
     sendGAEvent('event', 'walletSideKick_pending_transactions', { value: count })
@@ -52,8 +55,8 @@ export const PendingTransactionsLabel: FC = () => {
     <div
       className={
         !isDesktop
-          ? 'bg-pinkAccent inline-flex items-center p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
-          : 'from-pinkAccent to-purpleDeepAccent ml-4 rounded-full p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
+          ? 'inline-flex items-center bg-pinkAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
+          : 'ml-4 rounded-full from-pinkAccent to-purpleDeepAccent p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
       }
     >
       <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
@@ -197,7 +200,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               </button>
               <div className='flex items-center gap-3'>
                 <button
-                  className='dark:bg-blueAccent items-center rounded-full bg-white px-4 py-2 dark:text-white'
+                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
                   onClick={onClose}
                 >
                   x
