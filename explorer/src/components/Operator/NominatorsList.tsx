@@ -225,7 +225,7 @@ export const NominatorsList: FC = () => {
                   },
                 } as ActionsDropdownRow
               }
-              excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
+              excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockFunds]}
               nominatorMaxShares={BigInt(row.original.shares)}
             />
           )

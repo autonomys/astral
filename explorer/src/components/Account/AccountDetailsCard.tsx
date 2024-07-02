@@ -9,7 +9,7 @@ import { FC } from 'react'
 import { accountIdToHex } from 'utils//formatAddress'
 
 type Props = {
-  account: Account
+  account: Account | undefined
   accountAddress: string
   isDesktop?: boolean
 }
@@ -34,12 +34,17 @@ export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDeskt
           }
         >
           <List>
+            <StyledListItem title='Account Id'>
+              <CopyButton value={accountAddress.toString()} message='Account Id copied'>
+                {!isDesktop ? shortString(accountAddress) : accountAddress}
+              </CopyButton>
+            </StyledListItem>
             <StyledListItem title='Public key'>
               <CopyButton value={publicKey.toString()} message='Public key copied'>
                 {!isDesktop ? shortString(publicKey) : publicKey}
               </CopyButton>
             </StyledListItem>
-            <StyledListItem title='Nonce'>{account.nonce}</StyledListItem>
+            {account && <StyledListItem title='Nonce'>{account.nonce}</StyledListItem>}
           </List>
         </Accordion>
       </div>
