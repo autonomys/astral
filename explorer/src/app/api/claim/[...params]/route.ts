@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/constants'
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api'
 import { stringToU8a } from '@polkadot/util'
 import { cryptoWaitReady, decodeAddress, signatureVerify } from '@polkadot/util-crypto'
@@ -5,7 +6,15 @@ import { chains } from 'constants/chains'
 import { CLAIM_TYPES } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from 'utils/auth/verifyToken'
-import { findClaim, findClaimStats, saveClaim, saveClaimStats, updateClaimStats } from 'utils/fauna'
+import {
+  findClaim,
+  findClaimStats,
+  findUserByID,
+  saveClaim,
+  saveClaimStats,
+  updateClaimStats,
+  updateUser,
+} from 'utils/fauna'
 import { formatUnitsToNumber } from 'utils/number'
 import { sendSlackStatsMessage, walletBalanceLowSlackMessage } from 'utils/slack'
 
@@ -21,6 +30,10 @@ export const POST = async (req: NextRequest) => {
 
     const session = verifyToken()
     await cryptoWaitReady()
+
+    const dbSession = await findUserByID(session.id)
+
+    if (!dbSession) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
     const pathname = req.nextUrl.pathname
     const chain = pathname.split('/').slice(3)[0]
@@ -93,6 +106,19 @@ export const POST = async (req: NextRequest) => {
     }
 
     await api.disconnect()
+
+    await updateUser(dbSession[0].ref, dbSession[0].data, AuthProvider.subspace, {
+      ...dbSession[0].data.subspace,
+      disbursements:
+        dbSession[0].data.subspace && dbSession[0].data.subspace.disbursements
+          ? {
+              ...dbSession[0].data.subspace.disbursements,
+              stakeWars2: true,
+            }
+          : {
+              stakeWars2: true,
+            },
+    })
 
     return NextResponse.json({
       message: 'Disbursement claimed successfully',

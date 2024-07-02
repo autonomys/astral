@@ -17,6 +17,9 @@ export const DEFAULT_SUBSPACE_TOKEN: SubspaceToken = {
     operator: false,
     nominator: false,
   },
+  disbursements: {
+    stakeWars2: false,
+  },
 }
 
 export const DEFAULT_DISCORD_TOKEN: DiscordToken = {
