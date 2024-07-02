@@ -4,6 +4,7 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
+import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NewTable } from 'components/common/NewTable'
@@ -117,11 +118,16 @@ export const OperatorsList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div className='row flex items-center gap-3'>
-            <div>{shortString(row.original.signingKey)}</div>
-          </div>
-        ),
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          console.log('row', row.original)
+          const isOperator = row.original.operatorOwner === subspaceAccount
+          return (
+            <div className='row flex items-center gap-3'>
+              {isOperator && <Identicon value={row.original.id} size={26} theme='beachball' />}
+              <div>{shortString(row.original.signingKey)}</div>
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'minimumNominatorStake',
@@ -186,23 +192,27 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          const isOperator = row.original.operatorOwner === subspaceAccount
           const nominator = row.original.nominators.find(
             (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
+          const excludeActions = []
+          if (!isOperator)
+            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
+          if (!nominator)
+            excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
+          if (
+            !nominator &&
+            row.original.status &&
+            (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
+          )
+            return <></>
           return (
             <ActionsDropdown
               action={action}
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
-              excludeActions={
-                nominator
-                  ? [OperatorActionType.Deregister]
-                  : [
-                      OperatorActionType.Deregister,
-                      OperatorActionType.Withdraw,
-                      OperatorActionType.UnlockFunds,
-                    ]
-              }
+              excludeActions={excludeActions}
               nominatorMaxShares={nominator && BigInt(nominator.shares)}
             />
           )

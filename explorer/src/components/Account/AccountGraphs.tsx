@@ -9,7 +9,7 @@ import { AccountGraphTabs } from './AccountGraphTabs'
 dayjs.extend(relativeTime)
 
 type Props = {
-  account: Account
+  account: Account | undefined
   isDesktop?: boolean
 }
 
