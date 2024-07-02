@@ -87,10 +87,6 @@ export const StakingHeader = () => {
         title: 'Manage My Operator',
         link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`,
       })
-    general.push({
-      title: 'Nominators',
-      link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nominators}`,
-    })
     if (nominatorsConnection && nominatorsConnection.length > 0)
       general.push({
         title: 'Manage My Nomination',
