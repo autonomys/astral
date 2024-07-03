@@ -165,7 +165,7 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [actingAccount.address, api, handleTxError, injector, sendAndSaveTx, tokenDecimals],
+    [actingAccount, api, handleTxError, injector, sendAndSaveTx, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -264,7 +264,7 @@ export const OperatorStake = () => {
         console.error('Error', error)
       }
     },
-    [handleProof],
+    [],
   )
 
   return (
