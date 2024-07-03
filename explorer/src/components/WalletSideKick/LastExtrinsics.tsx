@@ -14,7 +14,7 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsSummaryQuery } from 'gql/oldSquidTypes'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
 import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
@@ -23,9 +23,11 @@ interface LastExtrinsicsProps {
   selectedChain: Chain
 }
 
+dayjs.extend(relativeTime)
+
 export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selectedChain }) => {
-  dayjs.extend(relativeTime)
   const { actingAccount } = useWallet()
+  const [extrinsics, setExtrinsics] = useState<ExtrinsicsSummaryQuery['extrinsics']['edges']>([])
   const { pendingTransactions, markAsFinalized, moveToFinalizedTransactions } =
     useTransactionsStates()
   const transactions = useMemo(
@@ -78,10 +80,12 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
     [transactions],
   )
 
-  const extrinsics = useMemo(
-    () => data && moveIfPending(data.extrinsics.edges),
-    [data, moveIfPending],
-  )
+  useEffect(() => {
+    if (data && data.extrinsics.edges[0].node.hash !== extrinsics[0]?.node.hash) {
+      setExtrinsics(data.extrinsics.edges)
+      moveIfPending(data.extrinsics.edges)
+    }
+  }, [data, extrinsics, moveIfPending])
 
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
@@ -105,24 +109,9 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
         {extrinsics && extrinsics.length > 0 ? (
           <List>
             {extrinsics.map((extrinsic, index) => (
-              <li key={index}>
-                <StyledListItem
-                  title={
-                    <Link
-                      data-testid='extrinsic-link'
-                      className='hover:text-purpleAccent'
-                      href={INTERNAL_ROUTES.extrinsics.id.page(
-                        selectedChain.urls.page,
-                        Routes.consensus,
-                        extrinsic.node.id,
-                      )}
-                    >
-                      <Tooltip text={dayjs(extrinsic.node.block.timestamp).toString()}>
-                        {dayjs(extrinsic.node.block.timestamp).fromNow(true)}
-                      </Tooltip>
-                    </Link>
-                  }
-                >
+              <StyledListItem
+                key={index}
+                title={
                   <Link
                     data-testid='extrinsic-link'
                     className='hover:text-purpleAccent'
@@ -132,30 +121,44 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                       extrinsic.node.id,
                     )}
                   >
-                    <Tooltip text={extrinsic.node.name.split('.')[1].toUpperCase()}>
-                      <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
-                        {extrinsic.node.name.split('.')[1].toUpperCase()}
-                      </span>
+                    <Tooltip text={dayjs(extrinsic.node.block.timestamp).toString()}>
+                      {dayjs(extrinsic.node.block.timestamp).fromNow(true)}
                     </Tooltip>
                   </Link>
-                  <Link
-                    data-testid='extrinsic-link'
-                    className='px-2 hover:text-purpleAccent'
-                    href={INTERNAL_ROUTES.blocks.id.page(
-                      selectedChain.urls.page,
-                      Routes.consensus,
-                      extrinsic.node.block.height,
-                    )}
-                  >
-                    <Tooltip text={extrinsic.node.block.id}>
-                      <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
-                        #{extrinsic.node.block.height}
-                      </span>
-                    </Tooltip>
-                  </Link>
-                  <StatusIcon status={extrinsic.node.success} />
-                </StyledListItem>
-              </li>
+                }
+              >
+                <Link
+                  data-testid='extrinsic-link'
+                  className='hover:text-purpleAccent'
+                  href={INTERNAL_ROUTES.extrinsics.id.page(
+                    selectedChain.urls.page,
+                    Routes.consensus,
+                    extrinsic.node.id,
+                  )}
+                >
+                  <Tooltip text={extrinsic.node.name.split('.')[1].toUpperCase()}>
+                    <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
+                      {extrinsic.node.name.split('.')[1].toUpperCase()}
+                    </span>
+                  </Tooltip>
+                </Link>
+                <Link
+                  data-testid='extrinsic-link'
+                  className='px-2 hover:text-purpleAccent'
+                  href={INTERNAL_ROUTES.blocks.id.page(
+                    selectedChain.urls.page,
+                    Routes.consensus,
+                    extrinsic.node.block.height,
+                  )}
+                >
+                  <Tooltip text={extrinsic.node.block.id}>
+                    <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
+                      #{extrinsic.node.block.height}
+                    </span>
+                  </Tooltip>
+                </Link>
+                <StatusIcon status={extrinsic.node.success} />
+              </StyledListItem>
             ))}
           </List>
         ) : (
