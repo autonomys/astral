@@ -1,39 +1,58 @@
 'use client'
 
 import { searchTypes } from '@/constants'
+import { PAGE_SIZE } from '@/constants/general'
 import { numberWithCommas } from '@/utils/number'
+import { shortString } from '@/utils/string'
 import { useQuery } from '@apollo/client'
+import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
-import { ExportButton } from 'components/common/ExportButton'
-import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { INTERNAL_ROUTES } from 'constants/routes'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block, BlocksConnectionDomainQuery, BlocksConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
-import useMediaQuery from 'hooks/useMediaQuery'
-import { FC, useCallback, useMemo, useState } from 'react'
+import Link from 'next/link'
+import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
-import { BlockTable } from './BlockTable'
+import type { Cell } from 'types/table'
+import { BlockAuthor } from './BlockAuthor'
 import { QUERY_BLOCK_LIST_CONNECTION, QUERY_BLOCK_LIST_CONNECTION_DOMAIN } from './query'
 
+dayjs.extend(relativeTime)
+
 export const BlockList: FC = () => {
-  const isDesktop = useMediaQuery('(min-width: 640px)')
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const novaExplorerBanner = useEvmExplorerBanner('blocks')
 
-  const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
   const BlockListQuery = useMemo(
     () =>
       selectedChain.isDomain ? QUERY_BLOCK_LIST_CONNECTION_DOMAIN : QUERY_BLOCK_LIST_CONNECTION,
     [selectedChain.isDomain],
   )
 
+  const variables = useMemo(
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+    }),
+    [pagination.pageSize, pagination.pageIndex],
+  )
+
   const { data, error, loading } = useQuery<BlocksConnectionQuery | BlocksConnectionDomainQuery>(
     BlockListQuery,
     {
-      variables: { first, after: lastCursor },
+      variables,
       pollInterval: 6000,
     },
   )
@@ -46,35 +65,98 @@ export const BlockList: FC = () => {
     [blocksConnection],
   )
   const totalCount = useMemo(
-    () => blocksConnection && blocksConnection.totalCount,
+    () => (blocksConnection ? blocksConnection.totalCount : 0),
     [blocksConnection],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-  const pageInfo = useMemo(() => blocksConnection && blocksConnection.pageInfo, [blocksConnection])
 
-  const handleNextPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
+  const chain = useMemo(() => selectedChain.urls.page, [selectedChain])
 
-  const handlePreviousPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'height',
+        header: 'Id',
+        enableSorting: false,
+        cell: ({ row }: Cell<Block>) => (
+          <Link
+            key={`${row.index}-block-height`}
+            data-testid={`block-link-${row.index}`}
+            className='hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.blocks.id.page(chain, selectedDomain, row.original.height)}
+          >
+            <div>{row.original.height}</div>
+          </Link>
+        ),
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: false,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-time`}>{dayjs(row.original.timestamp).fromNow(true)}</div>
+        ),
+      },
+      {
+        accessorKey: 'extrinsics',
+        header: 'Extrinsics',
+        enableSorting: false,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-time`}>
+            {dayjs(row.original.extrinsics?.length).fromNow(true)}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'Events',
+        header: 'Events',
+        enableSorting: false,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-time`}>
+            {dayjs(row.original.events?.length).fromNow(true)}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'hash',
+        header: 'Block hash',
+        enableSorting: false,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-hash`}>
+            <CopyButton
+              data-testid={`testCopy-${row.index}`}
+              value={row.original.hash}
+              message='Hash copied'
+            >
+              {shortString(row.original.hash)}
+            </CopyButton>
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'author',
+        header: 'Block Author',
+        enableSorting: false,
+        cell: ({ row }: Cell<Block>) => (
+          <div key={`${row.index}-block-author`}>
+            <CopyButton value={row.original.author?.id || 'Unkown'} message='Author account copied'>
+              <BlockAuthor
+                domain={selectedDomain}
+                chain={chain}
+                author={row.original.author?.id}
+                isDesktop={false}
+              />
+            </CopyButton>
+          </div>
+        ),
+      },
+    ],
+    [chain, selectedDomain],
+  )
 
-  const onChange = useCallback(
-    (page: number) => {
-      setCurrentPage(Number(page))
-
-      const newCount = page > 0 ? first * Number(page + 1) : first
-      const endCursor = newCount - first
-
-      if (endCursor === 0 || endCursor < 0) return setLastCursor(undefined)
-      setLastCursor(endCursor.toString())
-    },
-    [first],
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
   )
 
   if (loading) return <Spinner />
@@ -95,21 +177,18 @@ export const BlockList: FC = () => {
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Blocks (${totalLabel})`}</div>
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <BlockTable blocks={blocks} isDesktop={isDesktop} />
-        <div className='flex w-full justify-between gap-2'>
-          <ExportButton data={blocks} filename='block-list' />
-          {totalCount && pageInfo && (
-            <Pagination
-              nextPage={handleNextPage}
-              previousPage={handlePreviousPage}
-              currentPage={currentPage}
-              pageSize={first}
-              totalCount={totalCount}
-              hasNextPage={pageInfo.hasNextPage}
-              hasPreviousPage={pageInfo.hasPreviousPage}
-              onChange={onChange}
+        <div className='w-full'>
+          <div className='my-6 rounded'>
+            <SortedTable
+              data={blocks}
+              columns={columns}
+              showNavigation={true}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              filename='blocks-list'
             />
-          )}
+          </div>
         </div>
       </div>
     </div>
