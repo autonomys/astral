@@ -1,6 +1,7 @@
 import { AuthProvider } from '@/constants'
-import { transfer } from '@autonomys/auto-consensus'
-import { activateWallet, ActivateWalletInput } from '@autonomys/auto-utils'
+import { balance, transfer } from '@autonomys/auto-consensus'
+import { ActivateWalletInput, activateWallet } from '@autonomys/auto-utils'
+import type { ApiPromise } from '@polkadot/api'
 import { stringToU8a } from '@polkadot/util'
 import { decodeAddress, signatureVerify } from '@polkadot/util-crypto'
 import { chains } from 'constants/chains'
@@ -68,18 +69,23 @@ export const POST = async (req: NextRequest) => {
     } as ActivateWalletInput)
 
     // Get wallet free balance
-    const {
-      data: { free },
-    } = (await api.query.system.account(wallet.address)).toJSON() as { data: { free: string } }
+    const { free } = await balance(api as unknown as ApiPromise, wallet.address)
     if (BigInt(free) < BigInt(process.env.CLAIM_WALLET_LOW_FUND_WARNING || 1000 * 10 ** 18))
-      await walletBalanceLowSlackMessage(formatUnitsToNumber(free).toString(), wallet.address)
+      await walletBalanceLowSlackMessage(
+        formatUnitsToNumber(free.toString()).toString(),
+        wallet.address,
+      )
 
     if (BigInt(free) <= BigInt(process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT))
       return NextResponse.json({ error: 'Insufficient funds' }, { status: 400 })
 
     // Create and sign the transfer transaction
     const block = await api.rpc.chain.getBlock()
-    const tx = await transfer(api, address, process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT)
+    const tx = await transfer(
+      api as unknown as ApiPromise,
+      address,
+      process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT,
+    )
     const hash = await tx.signAndSend(wallet)
     const txReceipt = {
       ownerAccount: wallet.address,
