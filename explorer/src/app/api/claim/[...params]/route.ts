@@ -30,8 +30,10 @@ export const POST = async (req: NextRequest) => {
 
     const session = verifyToken()
     await cryptoWaitReady()
+    console.log('session', session)
 
     const dbSession = await findUserByID(session.id)
+    console.log('dbSession', dbSession)
 
     if (!dbSession) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
