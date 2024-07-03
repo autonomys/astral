@@ -2,7 +2,7 @@
 import { useApolloClient, useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { NotFound } from 'components/layout/NotFound'
@@ -44,36 +44,25 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
 
-  const getQueryVariables = useCallback(
-    (
-      sorting: SortingState,
-      pagination: {
-        pageSize: number
-        pageIndex: number
-      },
-      filters: ExtrinsicWhereInput,
-      accountId: string,
-    ) => {
-      return {
-        first: pagination.pageSize,
-        after:
-          pagination.pageIndex > 0
-            ? (pagination.pageIndex * pagination.pageSize).toString()
-            : undefined,
-        orderBy,
-        where: {
-          ...filters,
-          signer: {
-            id_eq: accountId,
-          },
+  const variables = useMemo(() => {
+    return {
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy,
+      where: {
+        ...filters,
+        signer: {
+          id_eq: accountId,
         },
-      }
-    },
-    [orderBy],
-  )
+      },
+    }
+  }, [accountId, filters, orderBy, pagination.pageIndex, pagination.pageSize])
 
   const { data, error, loading } = useQuery<ExtrinsicsByAccountIdQuery>(QUERY_ACCOUNT_EXTRINSICS, {
-    variables: getQueryVariables(sorting, pagination, filters, accountId),
+    variables,
     pollInterval: 6000,
   })
 
@@ -104,7 +93,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: 'block.height',
         header: 'Extrinsic Id',
         enableSorting: true,
         cell: ({ row }: Row) => (
@@ -122,14 +111,14 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         ),
       },
       {
-        accessorKey: 'timestamp',
+        accessorKey: 'block.timestamp',
         header: 'Time',
         enableSorting: true,
-        cell: ({ row }) => {
-          const blockDate = dayjs(row.original.block.timestamp).fromNow(true)
-
-          return <div key={`${row.original.id}-extrinsic-time-${row.index}`}>{blockDate}</div>
-        },
+        cell: ({ row }) => (
+          <div key={`${row.original.id}-extrinsic-time-${row.index}`}>
+            {dayjs(row.original.block.timestamp).fromNow(true)}
+          </div>
+        ),
       },
       {
         accessorKey: 'success',
@@ -175,14 +164,14 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col align-middle'>
-      <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r'>
+      <div className='mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
         <div className='flex w-full justify-center gap-2'>
-          <div className='text-purpleShade2 text-sm dark:text-white/75'>Action Filter:</div>
+          <div className='text-sm text-purpleShade2 dark:text-white/75'>Action Filter:</div>
           <AccountExtrinsicFilterDropdown filters={filters} setFilters={setFilters} />
         </div>
       </div>
       <div className='my-6 rounded'>
-        <NewTable
+        <SortedTable
           data={extrinsics}
           columns={columns}
           showNavigation={true}

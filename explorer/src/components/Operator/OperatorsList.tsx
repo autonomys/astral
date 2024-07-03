@@ -7,7 +7,7 @@ import { sendGAEvent } from '@next/third-parties/google'
 import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
@@ -248,7 +248,7 @@ export const OperatorsList: FC = () => {
   const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
     QUERY_OPERATOR_CONNECTION_LIST,
     {
-      variables: variables,
+      variables,
       pollInterval: 6000,
     },
   )
@@ -306,7 +306,7 @@ export const OperatorsList: FC = () => {
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={operatorsConnection}
             columns={columns}
             showNavigation={true}

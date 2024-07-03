@@ -9,7 +9,6 @@ interface TransactionsDefaultState {
 }
 
 interface TransactionsState extends TransactionsDefaultState {
-  pendingTransactionsCount: () => number
   addPendingTransactions: (transaction: Transaction) => void
   removePendingTransactions: (transaction: Transaction) => void
   markAsFinalized: (transaction: Transaction, status: TransactionStatus) => void
@@ -24,9 +23,8 @@ const initialState: TransactionsDefaultState = {
 
 export const useTransactionsStates = create<TransactionsState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       ...initialState,
-      pendingTransactionsCount: () => get().pendingTransactions.length,
       addPendingTransactions: (transaction: Transaction) =>
         set((state) => ({
           pendingTransactions: [

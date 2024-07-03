@@ -1,7 +1,7 @@
 import { limitNumberDecimals, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import Identicon from '@polkadot/react-identicon'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { Nominator, Operator } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
@@ -99,7 +99,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   )
 
   return (
-    <NewTable
+    <SortedTable
       data={operator.nominators}
       columns={columns}
       showNavigation={false}

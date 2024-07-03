@@ -30,7 +30,7 @@ export const BlockDetailsTabs: FC<Props> = ({
         <BlockDetailsExtrinsicList isDesktop={isDesktop} />
       </Tab>
       <Tab title={`Events (${eventsCount})`}>
-        <BlockDetailsEventList isDesktop={isDesktop} />
+        <BlockDetailsEventList />
       </Tab>
       <Tab title={`Logs (${logs.length})`}>
         {isDesktop ? (

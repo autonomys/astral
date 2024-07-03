@@ -42,8 +42,8 @@ export const Home: FC = () => {
       <SearchBar />
       <HomeChainInfo error={error} data={data} loading={loading} />
       <div className='flex w-full flex-col items-center gap-5 xl:flex-row'>
-        <HomeBlockList error={error} data={data} loading={loading} isDesktop={isDesktop} />
-        <HomeExtrinsicList error={error} data={data} loading={loading} isDesktop={isDesktop} />
+        <HomeBlockList error={error} data={data} loading={loading} />
+        <HomeExtrinsicList error={error} data={data} loading={loading} />
       </div>
     </div>
   )

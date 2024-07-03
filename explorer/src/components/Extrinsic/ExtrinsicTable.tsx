@@ -1,108 +1,124 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
+import { shortString } from '@/utils/string'
+import type { SortingState } from '@tanstack/react-table'
+import { CopyButton } from 'components/common/CopyButton'
+import { SortedTable } from 'components/common/SortedTable'
+import { StatusIcon } from 'components/common/StatusIcon'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
-
-// gql
 import { Extrinsic } from 'gql/graphql'
-
-// common
-import { shortString } from '@/utils/string'
-import { CopyButton } from 'components/common/CopyButton'
-import { StatusIcon } from 'components/common/StatusIcon'
-import { Column, Table } from 'components/common/Table'
-import { INTERNAL_ROUTES } from 'constants/routes'
-
-// extrinsic
 import useDomains from 'hooks/useDomains'
-import { ExtrinsicListCard } from './ExtrinsicListCard'
+import Link from 'next/link'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 
 dayjs.extend(relativeTime)
 
 interface Props {
   extrinsics: Extrinsic[]
-  isDesktop?: boolean
 }
 
-export const ExtrinsicTable: FC<Props> = ({ extrinsics, isDesktop = false }) => {
+export const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = useCallback(
-    (extrinsics: Extrinsic[]): Column[] => [
-      {
-        title: 'Extrinsic Id',
-        cells: extrinsics.map(({ block, indexInBlock, id }) => (
-          <Link
-            key={`${id}-extrinsic-block-${indexInBlock}`}
-            className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
-          >
-            <div>{`${block.height}-${indexInBlock}`}</div>
-          </Link>
-        )),
-      },
-      {
-        title: 'Time',
-        cells: extrinsics.map(({ block, id }, index) => {
-          const blockDate = dayjs(block.timestamp).fromNow(true)
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
 
-          return <div key={`${id}-extrinsic-time-${index}`}>{blockDate}</div>
-        }),
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'block',
+        header: 'Extrinsic Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <Link
+            key={`${row.index}-extrinsic-block`}
+            className='hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.extrinsics.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
+          >
+            <div>{`${row.original.block.height}-${row.index}`}</div>
+          </Link>
+        ),
       },
       {
-        title: 'Status',
-        cells: extrinsics.map(({ success, id }, index) => (
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-extrinsic-time`}>
+            {dayjs(row.original.block.timestamp).fromNow(true)}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
-            key={`${id}-home-extrinsic-status-${index}`}
+            key={`${row.index}-home-extrinsic-status`}
           >
-            <StatusIcon status={success} />
+            <StatusIcon status={row.original.success} />
           </div>
-        )),
+        ),
       },
       {
-        title: 'Action',
-        cells: extrinsics.map(({ name, id }, index) => (
-          <div key={`${id}-extrinsic-action-${index}`}>{name.split('.')[1].toUpperCase()}</div>
-        )),
+        accessorKey: 'action',
+        header: 'Action',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-extrinsic-action`}>
+            {row.original.name.split('.')[1].toUpperCase()}
+          </div>
+        ),
       },
       {
-        title: 'Block hash',
-        cells: extrinsics.map(({ hash, id }, index) => (
-          <div key={`${id}-extrinsic-hash-${index}`}>
-            <CopyButton value={hash} message='Hash copied'>
-              {shortString(hash)}
+        accessorKey: 'blockhash',
+        header: 'Block hash',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-extrinsic-hash}`}>
+            <CopyButton value={row.original.hash} message='Hash copied'>
+              {shortString(row.original.hash)}
             </CopyButton>
           </div>
-        )),
+        ),
       },
     ],
     [selectedChain.urls.page, selectedDomain],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(extrinsics), [extrinsics, generateColumns])
+  const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
-  return isDesktop ? (
+  return (
     <div className='w-full'>
       <div className='my-6 rounded'>
-        <Table
+        <SortedTable
+          data={extrinsics}
           columns={columns}
-          emptyMessage='There are no extrinsics to show'
-          id='latest-extrinsics'
-          tableProps='bg-white rounded-[20px] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
-          tableHeaderProps='border-b border-gray-200'
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='extrinsics-list'
         />
       </div>
-    </div>
-  ) : (
-    <div className='w-full'>
-      {extrinsics.map((extrinsic, index) => (
-        <ExtrinsicListCard
-          extrinsic={extrinsic}
-          key={`extrinsic-list-card-${extrinsic.id}-${index}`}
-        />
-      ))}
     </div>
   )
 }

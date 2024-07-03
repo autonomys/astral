@@ -8,8 +8,8 @@ import { useApolloClient, useQuery } from '@apollo/client'
 import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NewTable } from 'components/common/NewTable'
 import { NotAllowed } from 'components/common/NotAllowed'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import type { AccountsConnectionRewardsQuery } from 'gql/graphql'
@@ -205,13 +205,13 @@ export const VoteBlockRewardList = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex w-full flex-col sm:mt-0'>
         <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-grayDark text-base font-medium dark:text-white'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>
             Farmers Leaderboard
           </div>
           <div className='flex gap-2'>
             <DebouncedInput
               type='text'
-              className='dark:bg-blueAccent block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
               placeholder='Search by account address'
               onChange={handleSearch}
               value={searchAccount}
@@ -219,7 +219,7 @@ export const VoteBlockRewardList = () => {
           </div>
         </div>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={accountRewards}
             columns={columns}
             showNavigation={true}
