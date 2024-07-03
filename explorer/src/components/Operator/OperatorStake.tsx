@@ -1,5 +1,6 @@
 'use client'
 
+import { registerOperator } from '@autonomys/auto-consensus'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -130,22 +131,24 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
+      if (!actingAccount || !injector || !api)
+        return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const tx = await api.tx.domains.registerOperator(
-          values.domainId,
-          floatToStringWithDecimals(values.amountToStake, tokenDecimals),
-          {
-            signingKey: values.signingKey,
-            minimumNominatorStake: floatToStringWithDecimals(
-              values.minimumNominatorStake,
-              tokenDecimals,
-            ),
-            nominationTax: values.nominatorTax.toString(),
-          },
-          values.signature,
-        )
+        const OperatorKeyring = new Keyring({ type: 'sr25519' })
+        const Operator = OperatorKeyring.addFromUri(values.signingKeySeed)
+        const tx = await registerOperator({
+          api,
+          domainId: values.domainId,
+          amountToStake: floatToStringWithDecimals(values.amountToStake, tokenDecimals),
+          Operator,
+          minimumNominatorStake: floatToStringWithDecimals(
+            values.minimumNominatorStake,
+            tokenDecimals,
+          ),
+          nominationTax: values.nominatorTax.toString(),
+          senderAddress: actingAccount.address,
+        })
         await sendAndSaveTx({
           call: 'registerOperator',
           tx,
@@ -162,7 +165,7 @@ export const OperatorStake = () => {
       }
       resetForm()
     },
-    [api, handleTxError, injector, sendAndSaveTx, tokenDecimals],
+    [actingAccount.address, api, handleTxError, injector, sendAndSaveTx, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -248,7 +251,7 @@ export const OperatorStake = () => {
           if (fileReader.readyState === 2) {
             try {
               const seed = keystoreContent.replace(/"|_/g, '')
-              handleProof(seed, setFieldValue)
+              setFieldValue('signingKeySeed', seed)
             } catch (error) {
               setFormError('There was an error with the keystore')
               console.error('Error', error)
