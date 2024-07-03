@@ -3,29 +3,50 @@
 import { PAGE_SIZE, searchTypes } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
+import { SortingState } from '@tanstack/react-table'
+import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
-import { ExportButton } from 'components/common/ExportButton'
-import { Pagination } from 'components/common/Pagination'
 import { SearchBar } from 'components/common/SearchBar'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { INTERNAL_ROUTES } from 'constants/routes'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event, EventWhereInput, EventsConnectionQuery } from 'gql/graphql'
-import useMediaQuery from 'hooks/useMediaQuery'
-import { FC, useCallback, useMemo, useState } from 'react'
+import useDomains from 'hooks/useDomains'
+import Link from 'next/link'
+import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import type { Cell } from 'types/table'
 import { NotFound } from '../layout/NotFound'
 import { EventListFilter } from './EventListFilter'
-import { EventTable } from './EventTable'
 import { QUERY_EVENT_CONNECTION_LIST } from './query'
 
+dayjs.extend(relativeTime)
+
 export const EventList: FC = () => {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const { selectedChain, selectedDomain } = useDomains()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
   const [filters, setFilters] = useState<EventWhereInput>({})
   const novaExplorerBanner = useEvmExplorerBanner()
 
+  const variables = useMemo(
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+    }),
+    [pagination.pageSize, pagination.pageIndex],
+  )
+
   const { data, error, loading } = useQuery<EventsConnectionQuery>(QUERY_EVENT_CONNECTION_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
+    variables,
     pollInterval: 6000,
   })
 
@@ -37,39 +58,97 @@ export const EventList: FC = () => {
     [eventsConnection],
   )
   const totalCount = useMemo(
-    () => eventsConnection && eventsConnection.totalCount,
+    () => (eventsConnection ? eventsConnection.totalCount : 0),
     [eventsConnection],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-  const pageInfo = useMemo(() => eventsConnection && eventsConnection.pageInfo, [eventsConnection])
   const modules = useMemo(
     () => data && data.eventModuleNames.map((module) => module.name.split('.')[0]),
     [data],
   )
 
-  const handleNextPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'id',
+        header: 'Event Id',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
+            <Link
+              className='w-full hover:text-purpleAccent'
+              href={INTERNAL_ROUTES.events.id.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                row.original.id,
+              )}
+              data-testid={`event-link-${row.index}`}
+            >
+              {row.original.id}
+            </Link>
+            <CopyButton
+              data-testid={`testCopyButton-${row.index}`}
+              value={row.original.id}
+              message='Id copied'
+            />
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'block.height',
+        header: 'Block',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <Link
+            key={`${row.index}-event-block`}
+            className='hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.events.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
+          >
+            {row.original.block?.height}
+          </Link>
+        ),
+      },
+      {
+        accessorKey: 'action',
+        header: 'Action',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-event-action`}>
+            {row.original.name
+              .split('.')[1]
+              .split(/(?=[A-Z])/)
+              .join(' ')}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'type',
+        header: 'Type',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-event-phase`}>
+            {row.original.phase.split(/(?=[A-Z])/).join(' ')}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => dayjs(row.original.block?.timestamp).fromNow(true),
+      },
+    ],
+    [selectedChain.urls.page, selectedDomain],
+  )
 
-  const handlePreviousPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
-
-  const onChange = useCallback((page: number) => {
-    setCurrentPage(Number(page))
-
-    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
-    const endCursor = newCount - PAGE_SIZE
-
-    if (endCursor === 0 || endCursor < 0) {
-      return setLastCursor(undefined)
-    }
-    setLastCursor(endCursor.toString())
-  }, [])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   if (loading) return <Spinner />
   if (!data || !modules || !events) return <NotFound />
@@ -91,21 +170,20 @@ export const EventList: FC = () => {
         />
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <EventTable events={events} isDesktop={isDesktop} />
-        <div className='flex w-full justify-between gap-2'>
-          <ExportButton data={events} filename='event-list' />
-          {totalCount && pageInfo && (
-            <Pagination
-              nextPage={handleNextPage}
-              previousPage={handlePreviousPage}
-              currentPage={currentPage}
-              pageSize={PAGE_SIZE}
-              totalCount={totalCount}
-              hasNextPage={pageInfo.hasNextPage}
-              hasPreviousPage={pageInfo.hasPreviousPage}
-              onChange={onChange}
+        <div className='w-full'>
+          <div className='my-6 rounded'>
+            <SortedTable
+              data={events}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              filename='events-list'
             />
-          )}
+          </div>
         </div>
       </div>
     </div>

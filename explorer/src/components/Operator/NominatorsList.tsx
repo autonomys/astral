@@ -5,7 +5,7 @@ import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
@@ -134,7 +134,7 @@ export const NominatorsList: FC = () => {
                 ),
               ),
             )}{' '}
-            ${selectedChain.token.symbol}
+            {selectedChain.token.symbol}
           </div>
         ),
       },
@@ -225,7 +225,7 @@ export const NominatorsList: FC = () => {
                   },
                 } as ActionsDropdownRow
               }
-              excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockOperator]}
+              excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockFunds]}
               nominatorMaxShares={BigInt(row.original.shares)}
             />
           )
@@ -306,13 +306,13 @@ export const NominatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-grayDark text-base font-medium dark:text-white'>{`Nominators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={nominatorsConnection}
             columns={columns}
             showNavigation={true}

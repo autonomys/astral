@@ -1,10 +1,12 @@
+'use client'
+
+import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@/utils/string'
 import { useQuery } from '@apollo/client'
-import { ExtrinsicCard } from 'components/common/ExtrinsicCard'
-import { Pagination } from 'components/common/Pagination'
+import type { SortingState } from '@tanstack/react-table'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
-import { Column, Table } from 'components/common/Table'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -12,7 +14,8 @@ import { Extrinsic, ExtrinsicsByBlockIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
 
 dayjs.extend(relativeTime)
@@ -24,12 +27,15 @@ type Props = {
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { blockId } = useParams()
   const { selectedChain, selectedDomain } = useDomains()
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
 
   const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
   const { data, error, loading } = useQuery<ExtrinsicsByBlockIdQuery>(QUERY_BLOCK_EXTRINSICS, {
-    variables: { blockId: Number(blockId), first, after: lastCursor },
+    variables: { blockId: Number(blockId), first },
   })
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
@@ -39,92 +45,76 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       extrinsicsConnection.edges.map((extrinsic) => extrinsic.node as Extrinsic),
     [extrinsicsConnection],
   )
-  const totalCount = useMemo(
-    () => extrinsicsConnection && extrinsicsConnection.totalCount,
-    [extrinsicsConnection],
-  )
-  const pageInfo = useMemo(
-    () => extrinsicsConnection && extrinsicsConnection.pageInfo,
-    [extrinsicsConnection],
-  )
 
-  const handleNextPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
-
-  const handlePreviousPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
-
-  const onChange = useCallback(
-    (page: number) => {
-      setCurrentPage(Number(page))
-
-      const newCount = page > 0 ? first * Number(page + 1) : first
-      const endCursor = newCount - first
-
-      if (endCursor === 0 || endCursor < 0) return setLastCursor(undefined)
-      setLastCursor(endCursor.toString())
-    },
-    [first],
-  )
-
-  const generateColumns = useCallback(
-    (extrinsics: Extrinsic[]): Column[] => [
+  const columns = useMemo(
+    () => [
       {
-        title: 'Extrinsic Id',
-        cells: extrinsics.map(({ block, indexInBlock, id }) => (
+        accessorKey: 'block',
+        header: 'Extrinsic Id',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
           <Link
-            key={`${id}-block-extrinsic-id`}
+            key={`${row.index}-block-extrinsic-id`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, id)}
+            href={INTERNAL_ROUTES.extrinsics.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
           >
-            {`${block.height}-${indexInBlock}`}
+            {`${row.original.block.height}-${row.index}`}
           </Link>
-        )),
+        ),
       },
       {
-        title: 'Block hash',
-        cells: extrinsics.map(({ hash, id }) => (
-          <div key={`${id}-block-extrinsic-hash`}>{shortString(hash)}</div>
-        )),
+        accessorKey: 'hash',
+        header: 'Block hash',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-block-extrinsic-hash`}>{shortString(row.original.hash)}</div>
+        ),
       },
       {
-        title: 'Action',
-        cells: extrinsics.map(({ name, id }) => (
-          <div key={`${id}-block-extrinsic-action`}>{name.split('.')[1].toUpperCase()}</div>
-        )),
+        accessorKey: 'name',
+        header: 'Action',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-block-extrinsic-action`}>
+            {row.original.name.split('.')[1].toUpperCase()}
+          </div>
+        ),
       },
       {
-        title: 'Time',
-        cells: extrinsics.map(({ block, id }) => {
-          const blockDate = dayjs(block.timestamp).fromNow(true)
-
-          return <div key={`${id}-block-extrinsic-time`}>{blockDate}</div>
-        }),
+        accessorKey: 'block.timestamp',
+        header: 'Time',
+        enableSorting: true,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-block-extrinsic-action`}>
+            {dayjs(row.original.block.timestamp).fromNow(true)}
+          </div>
+        ),
       },
       {
-        title: 'Status',
-        cells: extrinsics.map(({ id, success }) => (
+        accessorKey: 'success',
+        header: 'Status',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
-            key={`${id}-home-extrinsic-status`}
+            key={`${row.index}-home-extrinsic-status`}
           >
-            <StatusIcon status={success} />
+            <StatusIcon status={row.original.success} />
           </div>
-        )),
+        ),
       },
     ],
     [selectedChain.urls.page, selectedDomain],
   )
 
-  const columns = useMemo(
-    () => extrinsics && generateColumns(extrinsics),
-    [extrinsics, generateColumns],
+  const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
   )
 
   if (error)
@@ -150,37 +140,17 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0'>
-      <>
-        {isDesktop ? (
-          <Table
-            columns={columns}
-            emptyMessage='There are no extrinsics to show'
-            id='block-details-extrinsics-list'
-          />
-        ) : (
-          <div className='flex flex-col'>
-            {extrinsics.map((extrinsic) => (
-              <ExtrinsicCard
-                id='block-details-extrinsic-mobile'
-                key={`block-details-extrinsic-card-${extrinsic.id}`}
-                extrinsic={extrinsic}
-              />
-            ))}
-          </div>
-        )}
-      </>
-      {totalCount && pageInfo && (
-        <Pagination
-          nextPage={handleNextPage}
-          previousPage={handlePreviousPage}
-          currentPage={currentPage}
-          pageSize={first}
-          totalCount={totalCount}
-          hasNextPage={pageInfo.hasNextPage}
-          hasPreviousPage={pageInfo.hasPreviousPage}
-          onChange={onChange}
-        />
-      )}
+      <SortedTable
+        data={extrinsics}
+        columns={columns}
+        showNavigation={true}
+        sorting={sorting}
+        onSortingChange={setSorting}
+        pagination={pagination}
+        pageCount={pageCount}
+        onPaginationChange={setPagination}
+        filename='block-details-extrinsics-list'
+      />
     </div>
   )
 }

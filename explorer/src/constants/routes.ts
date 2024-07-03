@@ -32,7 +32,7 @@ export const ROUTES = [
 ]
 
 export const EXTERNAL_ROUTES = {
-  subspace: 'https://subspace.network/',
+  autonomys: 'https://autonomys.net/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
   forum: 'https://forum.subspace.network/',
   gemini2guide:
@@ -113,7 +113,6 @@ export const INTERNAL_ROUTES = {
     list: 'list',
     register: 'register',
     manage: 'manage',
-    nominators: 'nominators',
     nomination: 'nomination',
   },
   search: {

@@ -9,25 +9,61 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import { chains } from 'constants/chains'
 import { domains } from 'constants/domains'
-import { ROUTE_EXTRA_FLAGS, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
+import {
+  ROUTE_EXTRA_FLAGS,
+  ROUTE_EXTRA_FLAG_TYPE,
+  ROUTE_FLAG_VALUE_OPEN_CLOSE,
+} from 'constants/routes'
 import dayjs from 'dayjs'
 import { JsonRpcProvider } from 'ethers'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { SelectedChainProvider } from 'providers/ChainProvider'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTransactionsStates } from 'states/transactions'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
 import { LastExtrinsics } from './LastExtrinsics'
 import { Leaderboard } from './Leaderboard'
+import { PendingTransactions } from './PendingTransactions'
 import { StakingSummary } from './StakingSummary'
 
 type DrawerProps = {
   isOpen: boolean
   onClose: () => void
+}
+
+export const PendingTransactionsLabel: FC = () => {
+  const { pendingTransactions } = useTransactionsStates()
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const count = useMemo(
+    () => (pendingTransactions ? pendingTransactions.length : 0),
+    [pendingTransactions],
+  )
+
+  useEffect(() => {
+    sendGAEvent('event', 'walletSideKick_pending_transactions', { value: count })
+  }, [count])
+
+  if (count === 0) return null
+
+  return (
+    <div
+      className={
+        !isDesktop
+          ? 'inline-flex items-center bg-pinkAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
+          : 'ml-4 rounded-full from-pinkAccent to-purpleDeepAccent p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
+      }
+    >
+      <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
+        {count}
+      </Link>
+    </div>
+  )
 }
 
 export const WalletSidekick: FC = () => {
@@ -67,6 +103,7 @@ export const WalletSidekick: FC = () => {
 
   return (
     <>
+      <PendingTransactionsLabel />
       <button
         onClick={onClick}
         className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
@@ -163,7 +200,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
               </button>
               <div className='flex items-center gap-3'>
                 <button
-                  className='dark:bg-blueAccent items-center rounded-full bg-white px-4 py-2 dark:text-white'
+                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
                   onClick={onClose}
                 >
                   x
@@ -181,6 +218,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                     walletBalance={walletBalance}
                     tokenSymbol={tokenSymbol}
                   />
+                  <PendingTransactions selectedChain={consensusChain} />
                   <GetDiscordRoles subspaceAccount={subspaceAccount} />
                   <StakingSummary
                     subspaceAccount={subspaceAccount}

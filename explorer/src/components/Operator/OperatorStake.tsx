@@ -1,24 +1,30 @@
 'use client'
 
-import { WalletIcon } from '@/components/icons'
-import { shortString } from '@/utils/string'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Keyring } from '@polkadot/api'
 import { createType } from '@polkadot/types'
 import { isHex, u8aToHex } from '@polkadot/util'
+import { WalletIcon } from 'components/icons'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
+import { useConsensusData } from 'hooks/useConsensusData'
 import useDomains from 'hooks/useDomains'
+import { useDomainsData } from 'hooks/useDomainsData'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { useConsensusStates } from 'states/consensus'
+import { useDomainsStates } from 'states/domains'
+import type { OperatorAllowListOpen, OperatorAllowListRestricted } from 'types/domain'
 import { floatToStringWithDecimals } from 'utils/number'
+import { shortString } from 'utils/string'
 import * as Yup from 'yup'
-import { ConnectWalletButton } from '../common/ConnectWalletButton'
+import { WalletButton } from '../WalletButton'
 
 interface FormValues {
   domainId: number
@@ -31,31 +37,31 @@ interface FormValues {
   signingKeystore: Blob | null
 }
 
-type OperatorAllowListRestricted = { operators: string[] }
-type OperatorAllowListOpen = { anyone: null }
-type OperatorAllowList = OperatorAllowListRestricted | OperatorAllowListOpen
-type Domain = {
-  domainId: number
-  domainName: string
-  operatorAllowList: OperatorAllowList
-}
-
 enum OwnershipProofMethod {
   seed = 'seed',
   keystore = 'keystore',
 }
 
 export const OperatorStake = () => {
-  const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
+  const [isOpen, setIsOpen] = useState(false)
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const { tokenDecimals, tokenSymbol } = useConsensusStates()
+  const { domains, minOperatorStake } = useDomainsStates()
+  const { loadData: loadDomainsData } = useDomainsData()
+  const { loadData: loadConsensusData } = useConsensusData()
+  const { handleTxError, sendAndSaveTx } = useTxHelper()
 
-  const [domainsList, setDomainsList] = useState<Domain[]>([])
-  const [minOperatorStake, setMinOperatorStake] = useState<number>(0)
-  const [tokenDecimals, setTokenDecimals] = useState<number>(0)
-  const [tokenSymbol, setTokenSymbol] = useState<string>('')
+  useEffect(() => {
+    if (!domains || domains.length === 0) loadDomainsData()
+  }, [domains, loadDomainsData])
+
+  useEffect(() => {
+    if (!tokenSymbol || tokenDecimals === 0) loadConsensusData()
+  }, [tokenSymbol, tokenDecimals, loadConsensusData])
+
   const [activeProofMethodTab, setActiveProofMethodTab] = useState<OwnershipProofMethod>(
     OwnershipProofMethod.keystore,
   )
@@ -71,36 +77,9 @@ export const OperatorStake = () => {
     signingKeystore: null,
   }
 
-  const loadDomains = useCallback(async () => {
-    if (!api) return
-
-    const [domains, domainRegistry, properties] = await Promise.all([
-      api.consts.domains,
-      api.query.domains.domainRegistry.entries(),
-      api.rpc.system.properties(),
-    ])
-
-    setDomainsList(
-      domainRegistry.map((domain) => {
-        return {
-          domainId: (domain[0].toPrimitive() as number[])[0],
-          domainName: (domain[1].toJSON() as { domainConfig: { domainName: string } }).domainConfig
-            .domainName,
-          operatorAllowList: (
-            domain[1].toJSON() as { domainConfig: { operatorAllowList: OperatorAllowList } }
-          ).domainConfig.operatorAllowList,
-        } as Domain
-      }),
-    )
-    const _tokenDecimals = (properties.tokenDecimals.toPrimitive() as number[])[0]
-    setTokenDecimals(_tokenDecimals)
-    setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
-    setMinOperatorStake((domains.minOperatorStake.toPrimitive() as number) / 10 ** _tokenDecimals)
-  }, [api])
-
   const filteredDomainsList = useMemo(
     () =>
-      domainsList.filter((domain) => {
+      domains.filter((domain) => {
         if ((domain.operatorAllowList as OperatorAllowListOpen).anyone === null) return true
         else if (subspaceAccount)
           return (domain.operatorAllowList as OperatorAllowListRestricted).operators.includes(
@@ -108,7 +87,7 @@ export const OperatorStake = () => {
           )
         return false
       }),
-    [domainsList, subspaceAccount],
+    [domains, subspaceAccount],
   )
 
   const currentDomainLabel = useCallback(
@@ -123,7 +102,7 @@ export const OperatorStake = () => {
   const registerOperatorValidationSchema = Yup.object().shape({
     domainId: Yup.number()
       .oneOf(
-        filteredDomainsList.map((d) => d.domainId),
+        filteredDomainsList.map((d) => parseInt(d.domainId)),
         'Domain Id need to be a valid domains',
       )
       .required('Domain Id is required'),
@@ -151,39 +130,39 @@ export const OperatorStake = () => {
       values: FormValues,
       resetForm: (nextState?: Partial<FormikState<FormValues>> | undefined) => void,
     ) => {
-      if (!api || !subspaceAccount || !actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
-      if (!subspaceAccount) throw new Error('No subspace account')
+      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
 
       try {
-        const block = await api.rpc.chain.getBlock()
-        const hash = await api.tx.domains
-          .registerOperator(
-            values.domainId,
-            floatToStringWithDecimals(values.amountToStake, tokenDecimals),
-            {
-              signingKey: values.signingKey,
-              minimumNominatorStake: floatToStringWithDecimals(
-                values.minimumNominatorStake,
-                tokenDecimals,
-              ),
-              nominationTax: values.nominatorTax.toString(),
-            },
-            values.signature,
-          )
-          .signAndSend(actingAccount.address, { signer: injector.signer })
-
-        console.log('block', block)
-        console.log('hash', hash)
+        const tx = await api.tx.domains.registerOperator(
+          values.domainId,
+          floatToStringWithDecimals(values.amountToStake, tokenDecimals),
+          {
+            signingKey: values.signingKey,
+            minimumNominatorStake: floatToStringWithDecimals(
+              values.minimumNominatorStake,
+              tokenDecimals,
+            ),
+            nominationTax: values.nominatorTax.toString(),
+          },
+          values.signature,
+        )
+        await sendAndSaveTx({
+          call: 'registerOperator',
+          tx,
+          signer: injector.signer,
+          error: setFormError,
+        })
         sendGAEvent('event', 'registerOperator', { value: `domainID:${values.domainId}` })
       } catch (error) {
-        setFormError('There was an error while registering the operator')
-        console.error('Error', error)
-        sendGAEvent('event', 'error', { value: 'registerOperator' })
+        handleTxError(
+          'There was an error while registering the operator',
+          'registerOperator',
+          setFormError,
+        )
       }
       resetForm()
     },
-    [actingAccount, api, injector, subspaceAccount, tokenDecimals],
+    [api, handleTxError, injector, sendAndSaveTx, tokenDecimals],
   )
 
   const handleConnectWallet = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -285,10 +264,6 @@ export const OperatorStake = () => {
     [handleProof],
   )
 
-  useEffect(() => {
-    loadDomains()
-  }, [api, loadDomains])
-
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='mt-5 flex w-full flex-col pt-20 sm:mt-0'>
@@ -330,7 +305,7 @@ export const OperatorStake = () => {
             <div className='mt-4 text-xl'>
               {!actingAccount ? (
                 <div className='flex w-full items-center justify-center p-4 text-sm'>
-                  <ConnectWalletButton />
+                  <WalletButton />
                 </div>
               ) : (
                 <div

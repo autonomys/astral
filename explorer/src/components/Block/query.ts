@@ -39,8 +39,8 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
 `
 
 export const QUERY_BLOCK_LIST_CONNECTION_DOMAIN = gql`
-  query BlocksConnectionDomain($first: Int!, $after: String) {
-    blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
+  query BlocksConnectionDomain($first: Int!, $after: String, $orderBy: [BlockOrderByInput!]!) {
+    blocksConnection(orderBy: $orderBy, first: $first, after: $after) {
       edges {
         cursor
         node {

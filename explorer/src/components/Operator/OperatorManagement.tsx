@@ -5,7 +5,7 @@ import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
@@ -243,7 +243,7 @@ export const OperatorManagement: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
         ),
       },
       {
@@ -273,8 +273,8 @@ export const OperatorManagement: FC = () => {
             row={row as ActionsDropdownRow}
             excludeActions={
               operatorReadyToUnlock(row.original.status, lastBlock)
-                ? [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
-                : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockOperator]
+                ? [OperatorActionType.Deregister, OperatorActionType.UnlockNominator]
+                : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockFunds]
             }
           />
         ),
@@ -319,7 +319,7 @@ export const OperatorManagement: FC = () => {
             <span
               className={`text-base ${
                 isDesktop ? 'text-base' : 'text-xs'
-              } dark:text-blueAccent ml-2 font-normal`}
+              } ml-2 font-normal dark:text-blueAccent`}
             >
               on Account {subspaceAccount}
             </span>
@@ -329,7 +329,7 @@ export const OperatorManagement: FC = () => {
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={operatorsConnection}
             columns={columns}
             showNavigation={true}
@@ -345,7 +345,7 @@ export const OperatorManagement: FC = () => {
         </div>
       </div>
 
-      <div className='bg-grayLight dark:bg-blueDarkAccent mt-8 rounded-[20px] p-5'>
+      <div className='mt-8 rounded-[20px] bg-grayLight p-5 dark:bg-blueDarkAccent'>
         <div className='ml-4 w-full'>
           <div className='relative'>
             <div className={`grid ${isDesktop ? 'grid-cols-4' : 'grid-cols-2'} gap-4`}>

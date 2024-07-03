@@ -3,28 +3,45 @@
 import { PAGE_SIZE } from '@/constants'
 import { numberWithCommas } from '@/utils/number'
 import { useQuery } from '@apollo/client'
+import { SortingState } from '@tanstack/react-table'
+import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
-import { ExportButton } from 'components/common/ExportButton'
-import { Pagination } from 'components/common/Pagination'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import type { Log, LogWhereInput, LogsConnectionQuery } from 'gql/graphql'
-import useMediaQuery from 'hooks/useMediaQuery'
-import { FC, useCallback, useMemo, useState } from 'react'
+import useDomains from 'hooks/useDomains'
+import Link from 'next/link'
+import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import type { Cell } from 'types/table'
 import { NotFound } from '../layout/NotFound'
 import { LogListFilter } from './LogListFilter'
-import { LogTable } from './LogTable'
 import { QUERY_LOG_CONNECTION_LIST } from './query'
 
 export const LogList: FC = () => {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
-  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const { selectedChain, selectedDomain } = useDomains()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
   const [filters, setFilters] = useState<LogWhereInput>({})
   const novaExplorerBanner = useEvmExplorerBanner()
 
+  const variables = useMemo(
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+    }),
+    [pagination.pageSize, pagination.pageIndex],
+  )
+
   const { data, error, loading } = useQuery<LogsConnectionQuery>(QUERY_LOG_CONNECTION_LIST, {
-    variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
+    variables,
     pollInterval: 6000,
   })
 
@@ -35,37 +52,79 @@ export const LogList: FC = () => {
     () => logsConnection && logsConnection.edges.map((log) => log.node as Log),
     [logsConnection],
   )
-  const totalCount = useMemo(() => logsConnection && logsConnection.totalCount, [logsConnection])
+  const totalCount = useMemo(
+    () => (logsConnection ? logsConnection.totalCount : 0),
+    [logsConnection],
+  )
   const totalLabel = useMemo(
     () => (totalCount ? numberWithCommas(Number(totalCount)) : 0),
     [totalCount],
   )
-  const pageInfo = useMemo(() => logsConnection && logsConnection.pageInfo, [logsConnection])
   const logTypes = useMemo(() => data && data.logTypesQuery.result, [data])
 
-  const handleNextPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'id',
+        header: 'Log Index',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div className='flex w-full' key={`${row.index}-log-index`}>
+            <Link
+              className='w-full hover:text-purpleAccent'
+              data-testid={`log-link-${row.index}`}
+              href={INTERNAL_ROUTES.logs.id.page(
+                selectedChain.urls.page,
+                selectedDomain,
+                row.original.id,
+              )}
+            >
+              <div>{row.original.id}</div>
+            </Link>
+            <CopyButton value={row.original.id} message='Id copied' />
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'block',
+        header: 'Block',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-block-height`}>{row.original.block.height}</div>
+        ),
+      },
+      {
+        accessorKey: 'kind',
+        header: 'Type',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => <div key={`${row.index}-kind`}>{row.original.kind}</div>,
+      },
+      {
+        accessorKey: 'engine',
+        header: 'Engine',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-engine`}>{row.original.value?.engine}</div>
+        ),
+      },
+      {
+        accessorKey: 'data',
+        header: 'Data',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div
+            key={`${row.index}-block-height`}
+          >{`${row.original.value?.data.slice(0, 20)}...`}</div>
+        ),
+      },
+    ],
+    [selectedChain.urls.page, selectedDomain],
+  )
 
-  const handlePreviousPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
-
-  const onChange = (page: number) => {
-    setCurrentPage(Number(page))
-
-    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
-    const endCursor = newCount - PAGE_SIZE
-
-    if (endCursor === 0 || endCursor < 0) {
-      return setLastCursor(undefined)
-    }
-    setLastCursor(endCursor.toString())
-  }
+  const pageCount = useMemo(
+    () => Math.floor(totalCount / pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   if (loading) return <Spinner />
   if (!logs || !logTypes) return <NotFound />
@@ -84,21 +143,20 @@ export const LogList: FC = () => {
         />
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <LogTable logs={logs} isDesktop={isDesktop} />
-        <div className='flex w-full justify-between gap-2'>
-          <ExportButton data={logs} filename='log-list' />
-          {totalCount && pageInfo && (
-            <Pagination
-              nextPage={handleNextPage}
-              previousPage={handlePreviousPage}
-              currentPage={currentPage}
-              pageSize={PAGE_SIZE}
-              totalCount={totalCount}
-              hasNextPage={pageInfo.hasNextPage}
-              hasPreviousPage={pageInfo.hasPreviousPage}
-              onChange={onChange}
+        <div className='w-full'>
+          <div className='my-6 rounded'>
+            <SortedTable
+              data={logs}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              filename='logs-list'
             />
-          )}
+          </div>
         </div>
       </div>
     </div>

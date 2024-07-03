@@ -14,8 +14,10 @@ interface TableProps<T extends object> {
   table: Table<T>
   data?: T[]
   filename?: string
-  fullDataDownloader?: () => Promise<unknown[]>
   pageSizeOptions?: number[]
+  fullDataDownloader?: () => Promise<unknown[]>
+  hideDownloadButton?: boolean
+  hidePageSizeOptions?: boolean
 }
 
 export const TableNavigation = <T extends object>({
@@ -23,6 +25,8 @@ export const TableNavigation = <T extends object>({
   data,
   filename,
   pageSizeOptions = PAGE_SIZE_OPTIONS,
+  hideDownloadButton,
+  hidePageSizeOptions,
   fullDataDownloader,
 }: TableProps<T>) => (
   <>
@@ -45,26 +49,30 @@ export const TableNavigation = <T extends object>({
             Next
           </button>
         </div>
-        <div className='flex w-full justify-between sm:hidden'>
-          <div className='w-full'>
-            {data && <ExportButton data={data} filename='account-list' />}
+        {hideDownloadButton === undefined && (
+          <div className='flex w-full justify-between sm:hidden'>
+            <div className='w-full'>
+              {data && <ExportButton data={data} filename='account-list' />}
+            </div>
+            <div className='w-full'>
+              {fullDataDownloader && (
+                <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
+              )}
+            </div>
           </div>
-          <div className='w-full'>
-            {fullDataDownloader && (
-              <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
-            )}
-          </div>
-        </div>
+        )}
       </div>
       <div className='hidden sm:flex sm:w-full sm:flex-col sm:items-center sm:justify-between sm:gap-4 lg:flex-row '>
-        <div className='hidden justify-between  gap-2   sm:flex sm:flex-1'>
-          {data && <ExportButton data={data} filename='account-list' />}
-          <div className='flex w-full'>
-            {fullDataDownloader && (
-              <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
-            )}
+        {hideDownloadButton === undefined && (
+          <div className='hidden justify-between  gap-2   sm:flex sm:flex-1'>
+            {data && <ExportButton data={data} filename='account-list' />}
+            <div className='flex w-full'>
+              {fullDataDownloader && (
+                <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
+              )}
+            </div>
           </div>
-        </div>
+        )}
         <div className='items-center gap-2 sm:flex sm:flex-1 sm:items-center sm:justify-end'>
           <button
             className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
@@ -125,19 +133,21 @@ export const TableNavigation = <T extends object>({
               className='w-20 rounded-3xl border-none dark:bg-blueAccent dark:text-white'
             />
           </span>
-          <select
-            className='rounded-3xl border-none dark:bg-blueAccent dark:text-white'
-            value={table.getState().pagination.pageSize}
-            onChange={(e) => {
-              table.setPageSize(Number(e.target.value))
-            }}
-          >
-            {pageSizeOptions.map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
+          {hidePageSizeOptions === undefined && (
+            <select
+              className='rounded-3xl border-none dark:bg-blueAccent dark:text-white'
+              value={table.getState().pagination.pageSize}
+              onChange={(e) => {
+                table.setPageSize(Number(e.target.value))
+              }}
+            >
+              {pageSizeOptions.map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
+          )}
           <div className='h-4' />
         </div>
       </div>

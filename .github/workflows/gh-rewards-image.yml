@@ -3,8 +3,8 @@ name: Update rewards container image
 on:
   push:
     branches:
+      - production
       - main
-      - staging
 
 env:
   PROCESSOR_NAME: ghcr.io/${{ github.repository_owner }}/blockexplorer-rewards:latest

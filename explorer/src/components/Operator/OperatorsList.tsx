@@ -4,19 +4,22 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
+import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NewTable } from 'components/common/NewTable'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import type { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useDomainsData } from 'hooks/useDomainsData'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { useDomainsStates } from 'states/domains'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { operatorStatus } from 'utils/operator'
@@ -36,6 +39,12 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
+  const { domains } = useDomainsStates()
+  const { loadData: loadDomainsData } = useDomainsData()
+
+  useEffect(() => {
+    if (!domains || domains.length === 0) loadDomainsData()
+  }, [domains, loadDomainsData])
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -88,9 +97,20 @@ export const OperatorsList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>
-        ),
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          const domain = domains.find(
+            (d) =>
+              (row.original.currentDomainId || row.original.currentDomainId === 0) &&
+              d.domainId === row.original.currentDomainId.toString(),
+          )
+          return (
+            <div>
+              {domain
+                ? domain.domainName.charAt(0).toUpperCase() + domain.domainName.slice(1)
+                : '#' + row.original.currentDomainId}
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'signingKey',
@@ -98,11 +118,16 @@ export const OperatorsList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div className='row flex items-center gap-3'>
-            <div>{shortString(row.original.signingKey)}</div>
-          </div>
-        ),
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          console.log('row', row.original)
+          const isOperator = row.original.operatorOwner === subspaceAccount
+          return (
+            <div className='row flex items-center gap-3'>
+              {isOperator && <Identicon value={row.original.id} size={26} theme='beachball' />}
+              <div>{shortString(row.original.signingKey)}</div>
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'minimumNominatorStake',
@@ -135,23 +160,13 @@ export const OperatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'totalShares',
-        header: 'Total Shares',
-        enableSorting: true,
-        cell: ({
-          row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{numberWithCommas(row.original.totalShares)}</div>
-        ),
-      },
-      {
         accessorKey: 'nominators',
         header: 'Nominators',
         enableSorting: false,
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominators ? row.original.nominators.length : 0}/256`}</div>
+          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
         ),
       },
       {
@@ -177,23 +192,27 @@ export const OperatorsList: FC = () => {
         cell: ({
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          const isOperator = row.original.operatorOwner === subspaceAccount
           const nominator = row.original.nominators.find(
             (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
+          const excludeActions = []
+          if (!isOperator)
+            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
+          if (!nominator)
+            excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
+          if (
+            !nominator &&
+            row.original.status &&
+            (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
+          )
+            return <></>
           return (
             <ActionsDropdown
               action={action}
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
-              excludeActions={
-                nominator
-                  ? [OperatorActionType.Deregister]
-                  : [
-                      OperatorActionType.Deregister,
-                      OperatorActionType.Withdraw,
-                      OperatorActionType.UnlockFunds,
-                    ]
-              }
+              excludeActions={excludeActions}
               nominatorMaxShares={nominator && BigInt(nominator.shares)}
             />
           )
@@ -202,6 +221,7 @@ export const OperatorsList: FC = () => {
     return cols
   }, [
     subspaceAccount,
+    domains,
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
@@ -228,7 +248,7 @@ export const OperatorsList: FC = () => {
   const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
     QUERY_OPERATOR_CONNECTION_LIST,
     {
-      variables: variables,
+      variables,
       pollInterval: 6000,
     },
   )
@@ -273,11 +293,11 @@ export const OperatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-grayDark text-base font-medium dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
         <DebouncedInput
           type='text'
-          className='dark:bg-blueAccent block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:text-white'
+          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
           placeholder='Search by operator id'
           onChange={handleSearch}
           value={searchOperator}
@@ -286,7 +306,7 @@ export const OperatorsList: FC = () => {
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded'>
-          <NewTable
+          <SortedTable
             data={operatorsConnection}
             columns={columns}
             showNavigation={true}

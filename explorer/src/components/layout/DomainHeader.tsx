@@ -1,8 +1,8 @@
 'use client'
 
 import { CpuChipIcon, GlobeAltIcon, QueueListIcon, TrophyIcon } from '@heroicons/react/24/outline'
+import { WalletButton } from 'components/WalletButton'
 import { WalletSidekick } from 'components/WalletSideKick'
-import { ConnectWalletButton } from 'components/common/ConnectWalletButton'
 import { chains } from 'constants/chains'
 import { domains } from 'constants/domains'
 import { ROUTES, Routes } from 'constants/routes'
@@ -12,7 +12,7 @@ import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { FC, useCallback, useMemo } from 'react'
-import AccountListDropdown from './AccountListDropdown'
+import AccountListDropdown from '../WalletButton/AccountListDropdown'
 
 export const DomainHeader: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -63,8 +63,8 @@ export const DomainHeader: FC = () => {
                 onClick={() => handleDomainSelected(item.name)}
                 className={
                   isActive
-                    ? 'rounded-full bg-grayDarker px-4 py-2 text-white dark:bg-purpleAccent'
-                    : 'bg-white text-grayDark dark:bg-blueAccent dark:text-white'
+                    ? 'bg-grayDarker dark:bg-purpleAccent rounded-full px-4 py-2 text-white'
+                    : 'text-grayDark dark:bg-blueAccent bg-white dark:text-white'
                 }
               >
                 {isDesktop ? item.title : domainIcon(item, isActive)}
@@ -78,7 +78,7 @@ export const DomainHeader: FC = () => {
 
   return (
     <div
-      className='z-10 h-[60px] w-full bg-white dark:bg-blueAccent'
+      className='dark:bg-blueAccent z-10 h-[60px] w-full bg-white'
       id='accordion-open'
       data-accordion='open'
     >
@@ -86,7 +86,7 @@ export const DomainHeader: FC = () => {
         <div className='flex gap-9'>{domainsOptions}</div>
         <div className='flex gap-4'>
           {!actingAccount ? (
-            <ConnectWalletButton />
+            <WalletButton />
           ) : (
             <div className='flex'>
               <AccountListDropdown />

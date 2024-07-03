@@ -5,14 +5,16 @@ import { FC } from 'react'
 import { bigNumberToNumber } from 'utils/number'
 
 type Props = {
-  account: Account
+  account: Account | undefined
 }
 
 export const AccountBalancePieChart: FC<Props> = ({ account }) => {
   const { isDark } = useTheme()
-  const otherNumber = Number(account.total) - Number(account.free) - Number(account.reserved)
-  const transferable = account.free ? bigNumberToNumber(account.free) : 0
-  const staking = account.reserved ? bigNumberToNumber(account.reserved) : 0
+  const otherNumber = account
+    ? Number(account.total) - Number(account.free) - Number(account.reserved)
+    : 0
+  const transferable = account ? bigNumberToNumber(account.free) : 0
+  const staking = account ? bigNumberToNumber(account.reserved) : 0
   const other = otherNumber ? bigNumberToNumber(otherNumber.toString()) : 0
 
   const data = [

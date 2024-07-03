@@ -21,7 +21,7 @@ const Footer: FC = () => {
               </div>
               <div className='container mx-auto hidden flex-col flex-wrap pb-1 pr-5 pt-20 sm:flex sm:flex-row'>
                 <p className='text-center text-xs text-whiteOpaque sm:text-left'>
-                  © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                  © {dayjs().year()} Autonomys Labs, Inc. All Rights Reserved
                 </p>
               </div>
             </div>
@@ -53,7 +53,7 @@ const Footer: FC = () => {
                 <li>
                   <a
                     target='_blank'
-                    href={EXTERNAL_ROUTES.subspace}
+                    href={EXTERNAL_ROUTES.autonomys}
                     className='text-xs text-whiteOpaque hover:text-purpleAccent'
                     rel='noreferrer'
                   >
