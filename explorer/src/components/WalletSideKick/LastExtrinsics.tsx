@@ -81,7 +81,16 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
   )
 
   useEffect(() => {
-    if (data && data.extrinsics.edges[0].node.hash !== extrinsics[0]?.node.hash) {
+    if (
+      data &&
+      data.extrinsics &&
+      data.extrinsics.edges &&
+      data.extrinsics.edges[0] &&
+      (!extrinsics ||
+        (extrinsics &&
+          extrinsics.length > 0 &&
+          data.extrinsics.edges[0].node.hash !== extrinsics[0].node.hash))
+    ) {
       setExtrinsics(data.extrinsics.edges)
       moveIfPending(data.extrinsics.edges)
     }
