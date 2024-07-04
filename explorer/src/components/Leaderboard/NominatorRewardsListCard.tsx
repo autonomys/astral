@@ -1,11 +1,11 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import Identicon from '@polkadot/react-identicon'
 import { MobileCard } from 'components/common/MobileCard'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { AccountRewards } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
 import { FC } from 'react'
+import { AccountIcon } from '../common/AccountIcon'
 
 type Props = {
   account: AccountRewards
@@ -28,7 +28,7 @@ export const NominatorRewardsListCard: FC<Props> = ({ account, index }) => {
       id='account-list-mobile'
       header={
         <div key={`${account.id}-account-id`} className='row -mx-1 -mt-3 flex items-center gap-3'>
-          <Identicon value={account.id} size={49} theme='beachball' />
+          <AccountIcon address={account.id} />
           <Link
             href={INTERNAL_ROUTES.accounts.id.page(
               selectedChain.urls.page,
@@ -36,7 +36,7 @@ export const NominatorRewardsListCard: FC<Props> = ({ account, index }) => {
               account.id,
             )}
           >
-            <p className='text-grayDarker break-all text-sm font-medium dark:text-white'>
+            <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
               {account.id}
             </p>
           </Link>
