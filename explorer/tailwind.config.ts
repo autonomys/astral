@@ -15,61 +15,63 @@ const config: Config = {
   theme: {
     extend: {
       backgroundImage: {
-        dark: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
-        light: 'linear-gradient(180deg, #f1f7f8 0%, #effdff 100%)',
+        // Background Gradient
+        dark: 'linear-gradient(180deg, var(--background-dark-start) 0%, var(--background-dark-middle) 50%, var(--background-dark-end) 100%)',
+        light:
+          'linear-gradient(180deg, var(--background-light-start) 0%, var(--background-light-end) 100%)',
       },
       colors: {
         // Common Gradient
-        gradientTwilight: '#4141B3',
-        gradientDusk: '#6B5ACF',
-        gradientSunset: '#896BD2',
+        gradientTwilight: 'var(--gradient-twilight)',
+        gradientDusk: 'var(--gradient-dusk)',
+        gradientSunset: 'var(--gradient-sunset)',
 
         // Grays and Blacks
-        grayDark: '#282929',
-        grayDarker: '#241235',
-        grayLight: '#DDEFF1',
+        grayDark: 'var(--gray-dark)',
+        grayDarker: 'var(--gray-darker)',
+        grayLight: 'var(--gray-light)',
 
         // Whites
-        white: '#FFFFFF',
-        whiteTransparent: '#ffffff1a',
-        whiteOpaque: '#ffffffb3',
+        white: 'var(--white)',
+        whiteTransparent: 'var(--white-transparent)',
+        whiteOpaque: 'var(--white-opaque)',
 
         // Purples
-        purpleShade1: '#9179EC',
-        purpleShade2: '#857EC2',
-        purpleAccent: '#DE67E4',
-        purpleLight: '#E6EAFA',
-        purpleDeep: '#5649A3',
-        purpleDeepAccent: '#4D397A',
-        purpleLighterAccent: '#6E6ECD',
-        purpleMedium: '#A196E1',
-        purplePale: '#C2B0EE',
-        purplePastel: '#8EABE4',
-        purpleTint: '#AC70E1',
-        purpleTinge: '#E6ADDC',
-        purpleUndertone: '#3A2D85',
-        purpleRoyal: '#4524C1', 
-        purpleSoft: '#D3DEF5', 
-        purpleElectric: '#E970F8', 
-        purpleMist: '#EFFDFF', 
+        purpleShade1: 'var(--purple-shade-1)',
+        purpleShade2: 'var(--purple-shade-2)',
+        purpleAccent: 'var(--purple-accent)',
+        purpleLight: 'var(--purple-light)',
+        purpleDeep: 'var(--purple-deep)',
+        purpleDeepAccent: 'var(--purple-deep-accent)',
+        purpleLighterAccent: 'var(--purple-lighter-accent)',
+        purpleMedium: 'var(--purple-medium)',
+        purplePale: 'var(--purple-pale)',
+        purplePastel: 'var(--purple-pastel)',
+        purpleTint: 'var(--purple-tint)',
+        purpleTinge: 'var(--purple-tinge)',
+        purpleUndertone: 'var(--purple-undertone)',
+        purpleRoyal: 'var(--purple-royal)',
+        purpleSoft: 'var(--purple-soft)',
+        purpleElectric: 'var(--purple-electric)',
+        purpleMist: 'var(--purple-mist)',
 
         // Blues
-        blueShade1: '#6C6BCF', 
-        blueShade2: '#D9F0FC',
-        blueAccent: '#1E254E',
-        blueLight: '#F3FBFF',
-        blueMedium: '#678CD5',
-        bluePastel: '#929EEA',
-        bluePale: '#ABCFEF',
-        blueDarkAccent: '#2A345E',
+        blueShade1: 'var(--blue-shade-1)',
+        blueShade2: 'var(--blue-shade-2)',
+        blueAccent: 'var(--blue-accent)',
+        blueLight: 'var(--blue-light)',
+        blueMedium: 'var(--blue-medium)',
+        bluePastel: 'var(--blue-pastel)',
+        bluePale: 'var(--blue-pale)',
+        blueDarkAccent: 'var(--blue-dark-accent)',
 
         // Greens
-        greenBright: '#37D058',
-        greenPastel: '#91D3A0',
+        greenBright: 'var(--green-bright)',
+        greenPastel: 'var(--green-pastel)',
 
         // Misc
-        pinkAccent: '#EA71F9',
-        bronze: '#F1F7F8', 
+        pinkAccent: 'var(--pink-accent)',
+        bronze: 'var(--bronze)',
       },
     },
     fontFamily: {

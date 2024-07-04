@@ -1,0 +1,62 @@
+/* src/styles/subspace.css */
+
+:root {
+  /* Background Gradient */
+  --background-dark-start: #0b050f;
+  --background-dark-middle: #4d2f92;
+  --background-dark-end: #bc8eda;
+  --background-light-start: #f1f7f8;
+  --background-light-end: #effdff;
+
+  /* Common Gradient */
+  --gradient-twilight: #4141b3;
+  --gradient-dusk: #6b5acf;
+  --gradient-sunset: #896bd2;
+
+  /* Grays and Blacks */
+  --gray-dark: #282929;
+  --gray-darker: #241235;
+  --gray-light: #ddeff1;
+
+  /* Whites */
+  --white: #ffffff;
+  --white-transparent: #ffffff1a;
+  --white-opaque: #ffffffb3;
+
+  /* Purples */
+  --purple-shade-1: #9179ec;
+  --purple-shade-2: #857ec2;
+  --purple-accent: #de67e4;
+  --purple-light: #e6eafa;
+  --purple-deep: #5649a3;
+  --purple-deep-accent: #4d397a;
+  --purple-lighter-accent: #6e6ecd;
+  --purple-medium: #a196e1;
+  --purple-pale: #c2b0ee;
+  --purple-pastel: #8eabe4;
+  --purple-tint: #ac70e1;
+  --purple-tinge: #e6addc;
+  --purple-undertone: #3a2d85;
+  --purple-royal: #4524c1;
+  --purple-soft: #d3def5;
+  --purple-electric: #e970f8;
+  --purple-mist: #effdff;
+
+  /* Blues */
+  --blue-shade-1: #6c6bcf;
+  --blue-shade-2: #d9f0fc;
+  --blue-accent: #1e254e;
+  --blue-light: #f3fbff;
+  --blue-medium: #678cd5;
+  --blue-pastel: #929eea;
+  --blue-pale: #abcfef;
+  --blue-dark-accent: #2a345e;
+
+  /* Greens */
+  --green-bright: #37d058;
+  --green-pastel: #91d3a0;
+
+  /* Misc */
+  --pink-accent: #ea71f9;
+  --bronze: #f1f7f8;
+}
