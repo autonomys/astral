@@ -4,6 +4,7 @@ import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useAddressBookStates } from 'states/addressBook'
+import { usePreferencesStates } from 'states/preferences'
 import type { AddressBookEntry } from 'types/wallet'
 import { camelToNormal, capitalizeFirstLetter, shortString } from 'utils/string'
 import * as Yup from 'yup'
@@ -14,16 +15,28 @@ type ActionsModalProps = {
   onClose: () => void
 }
 
+type AccountSetting = {
+  enableDevMode: boolean
+}
+
 export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, preference, onClose }) => {
   const { actingAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const { addresses, addAddress, removeAddress } = useAddressBookStates()
+  const { enableDevMode, switchDevMode } = usePreferencesStates()
 
   const initialAddAddressBookValues: AddressBookEntry = useMemo(
     () => ({
       address: '',
       label: '',
       type: WalletType.subspace,
+    }),
+    [],
+  )
+
+  const initialAccountSettingsValues: AccountSetting = useMemo(
+    () => ({
+      enableDevMode: false,
     }),
     [],
   )
@@ -45,6 +58,14 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
           .required('Label is required'),
       }),
     [addresses],
+  )
+
+  const changeAccountSettubgsFormValidationSchema = useMemo(
+    () =>
+      Yup.object().shape({
+        enableDevMode: Yup.boolean(),
+      }),
+    [],
   )
 
   const handleClose = useCallback(() => {
@@ -85,6 +106,14 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
       removeAddress(address)
     },
     [removeAddress],
+  )
+
+  const handleSettingsSubmit = useCallback(
+    (values: AccountSetting) => {
+      console.log('Save settings', values)
+      onClose()
+    },
+    [onClose],
   )
 
   const ActionBody = useMemo(() => {
@@ -207,7 +236,45 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
           </div>
         )
       case AccountPreferenceSection.Settings:
-        return <></>
+        return (
+          <div className='flex flex-col items-start gap-4'>
+            <Formik
+              initialValues={initialAccountSettingsValues}
+              validationSchema={changeAccountSettubgsFormValidationSchema}
+              onSubmit={(values) => handleSettingsSubmit(values)}
+            >
+              {({ handleSubmit }) => (
+                <Form className='w-full' onSubmit={handleSubmit}>
+                  <div className='mb-8 flex items-center gap-4'>
+                    <label
+                      htmlFor='enableDevMode'
+                      className='text-base font-medium text-grayDarker dark:text-white'
+                    >
+                      Click to enable Dev Mode
+                    </label>
+                    <div className='toggle-switch'>
+                      <input
+                        id='enableDevMode'
+                        name='enableDevMode'
+                        type='checkbox'
+                        checked={enableDevMode}
+                        onChange={switchDevMode}
+                        className='toggle-switch-checkbox'
+                      />
+                      <span className='slider'></span>
+                    </div>
+                  </div>
+                  <button
+                    className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                    type='submit'
+                  >
+                    Save Settings
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        )
       default:
         return null
     }
@@ -216,11 +283,16 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
     addresses,
     initialAddAddressBookValues,
     addAddressBookFormValidationSchema,
+    initialAccountSettingsValues,
+    changeAccountSettubgsFormValidationSchema,
     handleEditClick,
     handleDeleteClick,
     handleAddInAddressBook,
     ErrorPlaceholder,
     actingAccount,
+    handleSettingsSubmit,
+    enableDevMode,
+    switchDevMode,
   ])
 
   return (

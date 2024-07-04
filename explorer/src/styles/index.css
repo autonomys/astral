@@ -7,3 +7,28 @@
 @tailwind utilities;
 
 @import 'subspace.css';
+
+@layer components {
+  .toggle-switch {
+    @apply relative mr-2 inline-block w-10 select-none align-middle transition duration-200 ease-in;
+  }
+  .toggle-switch input {
+    @apply absolute block h-6 w-6 cursor-pointer appearance-none rounded-full border-4 bg-white;
+  }
+  .toggle-switch input:checked {
+    @apply right-0 border-blue-400;
+  }
+  .toggle-switch input:checked + .slider {
+    @apply bg-blue-400;
+  }
+  .toggle-switch input:checked + .slider:before {
+    @apply translate-x-full transform border-blue-400;
+  }
+  .slider {
+    @apply block h-6 cursor-pointer overflow-hidden rounded-full bg-gray-300;
+  }
+  .slider:before {
+    @apply absolute inset-y-0 left-0 block h-6 w-6 rounded-full border-2 border-gray-300 bg-white shadow transition-transform duration-200 ease-in-out;
+    content: '';
+  }
+}
