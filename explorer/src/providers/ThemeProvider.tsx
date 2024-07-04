@@ -22,7 +22,9 @@ function usePrefersDarkMode() {
 
 type Value = {
   isDark: boolean
+  theme: string
   toggleTheme: () => void
+  setTheme: (theme: string) => void
 }
 
 const ThemeContext = createContext<Value>(
@@ -37,6 +39,7 @@ type Props = {
 export const ThemeProvider: FC<Props> = ({ children }) => {
   const prefersDarkMode = usePrefersDarkMode()
   const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', false)
+  const [theme, setTheme] = useState('subspace')
 
   useEffect(() => {
     if (window === undefined) return
@@ -50,11 +53,17 @@ export const ThemeProvider: FC<Props> = ({ children }) => {
 
   const toggleTheme = () => setIsEnabled(!isEnabled)
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
   return (
     <ThemeContext.Provider
       value={{
         toggleTheme,
+        theme,
         isDark: isEnabled,
+        setTheme,
       }}
     >
       {children}
