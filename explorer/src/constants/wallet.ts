@@ -12,6 +12,14 @@ export enum WalletAction {
   ExtrinsicsLab = 'ExtrinsicsLab',
 }
 
+export enum AccountPreferenceSection {
+  None = 'None',
+  AddressBook = 'addressBook',
+  Settings = 'settings',
+  Theme = 'theme',
+  Language = 'language',
+}
+
 export const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export enum ExtrinsicsSupportedModule {
