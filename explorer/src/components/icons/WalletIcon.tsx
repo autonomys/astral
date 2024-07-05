@@ -86,8 +86,8 @@ export const WalletIcon: FC<Props> = ({ width = '89', height = '96' }) => {
           y2='6.46321'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#9179EC' />
-          <stop offset='1' stopColor='#E3DAFA' />
+          <stop stopColor='var(--purple-shade-1)' />
+          <stop offset='1' stopColor='var(--purple-pale)' />
         </linearGradient>
         <linearGradient
           id='paint1_linear_152_727'
@@ -97,8 +97,8 @@ export const WalletIcon: FC<Props> = ({ width = '89', height = '96' }) => {
           y2='3.95309'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#9179EC' />
-          <stop offset='1' stopColor='#53447A' />
+          <stop stopColor='var(--purple-shade-1)' />
+          <stop offset='1' stopColor='var(--purple-deep-accent)' />
         </linearGradient>
         <linearGradient
           id='paint2_linear_152_727'
@@ -108,8 +108,8 @@ export const WalletIcon: FC<Props> = ({ width = '89', height = '96' }) => {
           y2='40.9498'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#9179EC' />
-          <stop offset='1' stopColor='#53447A' />
+          <stop stopColor='var(--purple-shade-1)' />
+          <stop offset='1' stopColor='var(--purple-deep-accent)' />
         </linearGradient>
         <linearGradient
           id='paint3_linear_152_727'
@@ -119,8 +119,8 @@ export const WalletIcon: FC<Props> = ({ width = '89', height = '96' }) => {
           y2='40.7063'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint4_linear_152_727'
@@ -130,8 +130,8 @@ export const WalletIcon: FC<Props> = ({ width = '89', height = '96' }) => {
           y2='10.2297'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint5_linear_152_727'
@@ -141,8 +141,8 @@ export const WalletIcon: FC<Props> = ({ width = '89', height = '96' }) => {
           y2='8.54494'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
       </defs>
     </svg>

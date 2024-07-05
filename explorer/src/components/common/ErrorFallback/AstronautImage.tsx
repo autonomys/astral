@@ -95,7 +95,7 @@ const AstronautImage = () => {
         <path
           d='M138.196 34.9228L138.196 34.9228L139.536 35.5925C139.616 35.6303 139.7 35.6479 139.783 35.6479C140 35.6479 140.206 35.527 140.305 35.3207C140.442 35.0336 140.321 34.6901 140.033 34.5528L140.025 34.5491L140.025 34.549L139.311 34.1776L139.131 34.0838L139.186 33.8881L141.283 26.4419L141.314 26.3303L141.419 26.2822L153.91 20.5902L153.912 20.5897C154.203 20.4588 154.331 20.1182 154.201 19.8288L138.196 34.9228ZM138.196 34.9228L138.192 34.9209M138.196 34.9228L138.192 34.9209M138.192 34.9209C137.938 34.7995 137.809 34.5149 137.886 34.2464L137.886 34.2461M138.192 34.9209L137.886 34.2461M137.886 34.2461L140.275 25.7605L140.275 25.7604M137.886 34.2461L140.275 25.7604M140.275 25.7604C140.321 25.5966 140.438 25.4613 140.594 25.3911L140.595 25.3907M140.275 25.7604L140.595 25.3907M140.595 25.3907L153.436 19.5405M140.595 25.3907L153.436 19.5405M153.436 19.5405C153.436 19.5404 153.437 19.5403 153.437 19.5402M153.436 19.5405L153.437 19.5402M153.437 19.5402C153.73 19.4095 154.07 19.5395 154.201 19.8287L153.437 19.5402Z'
           fill='#232323'
-          stroke='#F6B5FA'
+          stroke='var(--purple-tinge)'
           strokeWidth='0.5'
         />
         <g opacity='0.3'>
@@ -107,7 +107,7 @@ const AstronautImage = () => {
         <path
           d='M46.5723 77.9435C46.1192 78.1228 45.6531 78.2128 45.1941 78.2208H45.1275C43.6345 78.2208 42.2211 77.3599 41.5734 75.9169C41.1424 74.9553 41.1179 73.8866 41.5038 72.906C41.8904 71.9255 42.6381 71.1596 43.6107 70.7484L78.2737 56.0943L78.2742 56.0941C78.5253 55.9871 78.8175 56.0683 78.9783 56.2893C78.9783 56.2893 78.9784 56.2894 78.9784 56.2894L83.5121 62.5233L83.5122 62.5233C83.6183 62.6691 83.6508 62.8559 83.6007 63.0298C83.5501 63.203 83.4223 63.3438 83.2535 63.411C83.2534 63.411 83.2534 63.411 83.2534 63.411L46.5724 77.9435C46.5723 77.9435 46.5723 77.9435 46.5723 77.9435ZM78.3956 57.4818L78.3023 57.3533L78.156 57.4152L44.0696 71.8252C43.3903 72.1123 42.8672 72.6486 42.5969 73.3339L42.5969 73.334C42.3272 74.0188 42.3443 74.7672 42.6456 75.4394L42.8281 75.3576L42.6456 75.4394C43.2433 76.773 44.7782 77.3947 46.1388 76.8562L46.1389 76.8562L81.879 62.6961L82.1188 62.6011L81.9671 62.3925L78.3956 57.4818Z'
           fill='#232323'
-          stroke='#FB80FE'
+          stroke='var(--purple-accent)'
           strokeWidth='0.4'
         />
         <g opacity='0.3'>
@@ -127,7 +127,7 @@ const AstronautImage = () => {
         <path
           d='M24.5472 80.2705L24.5471 80.2705L24.5481 80.2651C24.5926 80.0125 24.4468 79.7484 24.19 79.6475L14.9064 76.3505L14.9063 76.3506L14.8983 76.3475C14.7422 76.2869 14.573 76.2987 14.4362 76.3733L14.4233 76.3803L14.4098 76.386L2.1456 81.5957C1.90269 81.737 1.81612 82.0501 1.96843 82.3133C2.12618 82.5855 2.46859 82.6785 2.72479 82.5386L2.7381 82.5314L2.75207 82.5255L14.6898 77.4952L14.7965 77.4503L14.9057 77.4886L23.1498 80.3836L23.3816 80.4651L23.3474 80.7084L23.2344 81.5127L23.2346 81.5128L23.2327 81.5233C23.1818 81.8112 23.3793 82.1064 23.6875 82.1699C23.9054 82.2143 24.1078 82.1277 24.222 81.9725C24.2661 81.9126 24.2975 81.8426 24.312 81.7632L24.5472 80.2705Z'
           fill='#232323'
-          stroke='#FD74FF'
+          stroke='var(--purple-accent)'
           strokeWidth='0.6'
         />
         <g opacity='0.3'>
@@ -175,7 +175,7 @@ const AstronautImage = () => {
         <path
           d='M87.625 118.267L87.6252 118.267C87.8352 118.295 88.0428 118.308 88.2474 118.308L87.625 118.267ZM87.625 118.267C87.4192 118.241 87.2684 118.048 87.2954 117.832C87.3228 117.616 87.5151 117.469 87.7206 117.495M87.625 118.267L94.7132 94.0814M94.7132 94.0814L94.7135 94.0814C95.6742 94.4141 96.259 95.3925 96.1074 96.4061C95.1468 102.836 93.6109 109.134 91.5429 115.125C91.1686 116.21 90.338 117.054 89.3104 117.372C88.812 117.527 88.2762 117.567 87.7206 117.495M94.7132 94.0814C94.5159 94.0133 94.4063 93.7925 94.4755 93.5868L94.4756 93.5865M94.7132 94.0814L94.4756 93.5865M87.7206 117.495C87.7206 117.495 87.7205 117.495 87.7205 117.495L87.7461 117.297L87.7208 117.495C87.7208 117.495 87.7207 117.495 87.7206 117.495ZM94.4756 93.5865C94.5439 93.3825 94.7602 93.2768 94.9573 93.3446M94.4756 93.5865L94.9573 93.3446M97.0573 96.5528C97.2791 95.0688 96.4233 93.6402 95.0225 93.1555L97.0573 96.5528ZM97.0573 96.5528C96.0876 103.044 94.5374 109.401 92.4492 115.449L97.0573 96.5528ZM94.9573 93.3446C96.2653 93.7972 97.0673 95.1328 96.8595 96.5233L96.8595 96.5233C95.8916 103.002 94.3442 109.347 92.2601 115.384L92.2601 115.384C91.8018 116.712 90.7782 117.731 89.5302 118.117L89.5894 118.308L89.5302 118.117C89.1206 118.244 88.6918 118.308 88.2479 118.308L94.9573 93.3446Z'
           fill='#232323'
-          stroke='#806BB7'
+          stroke='var(--purple-shade-1)'
           strokeWidth='0.4'
         />
         <g opacity='0.3'>
@@ -258,8 +258,8 @@ const AstronautImage = () => {
             y2='133.7'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-1)' />
           </linearGradient>
           <linearGradient
             id='paint1_linear_799_12141'
@@ -269,8 +269,8 @@ const AstronautImage = () => {
             y2='115.309'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-1)' />
           </linearGradient>
           <linearGradient
             id='paint2_linear_799_12141'
@@ -280,8 +280,8 @@ const AstronautImage = () => {
             y2='176.864'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-1)' />
           </linearGradient>
           <linearGradient
             id='paint3_linear_799_12141'
@@ -291,8 +291,8 @@ const AstronautImage = () => {
             y2='72.5649'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#FC73FE' />
-            <stop offset='1' stopColor='#F3CBF8' />
+            <stop stopColor='var(--purple-accent)' />
+            <stop offset='1' stopColor='var(--purple-accent)' />
           </linearGradient>
           <linearGradient
             id='paint4_linear_799_12141'
@@ -302,8 +302,8 @@ const AstronautImage = () => {
             y2='81.2244'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#FC73FE' />
-            <stop offset='1' stopColor='#F3CBF8' />
+            <stop stopColor='var(--purple-accent)' />
+            <stop offset='1' stopColor='var(--purple-tinge)' />
           </linearGradient>
           <linearGradient
             id='paint5_linear_799_12141'
@@ -313,8 +313,8 @@ const AstronautImage = () => {
             y2='66.6396'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-1)' />
           </linearGradient>
           <linearGradient
             id='paint6_linear_799_12141'
@@ -324,8 +324,8 @@ const AstronautImage = () => {
             y2='119.799'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-1)' />
           </linearGradient>
           <linearGradient
             id='paint7_linear_799_12141'
@@ -335,8 +335,8 @@ const AstronautImage = () => {
             y2='97.9693'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#FC73FE' />
-            <stop offset='1' stopColor='#F3CBF8' />
+            <stop stopColor='var(--purple-accent)' />
+            <stop offset='1' stopColor='var(--purple-tinge)' />
           </linearGradient>
           <linearGradient
             id='paint8_linear_799_12141'
@@ -346,8 +346,8 @@ const AstronautImage = () => {
             y2='82.0248'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-2)' />
           </linearGradient>
           <linearGradient
             id='paint9_linear_799_12141'
@@ -369,8 +369,8 @@ const AstronautImage = () => {
             y2='71.5888'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-2)' />
           </linearGradient>
           <linearGradient
             id='paint11_linear_799_12141'
@@ -380,8 +380,8 @@ const AstronautImage = () => {
             y2='63.2146'
             gradientUnits='userSpaceOnUse'
           >
-            <stop stopColor='#ECE1FE' />
-            <stop offset='1' stopColor='#936FF3' />
+            <stop stopColor='var(--purple-light)' />
+            <stop offset='1' stopColor='var(--purple-shade-2)' />
           </linearGradient>
         </defs>
       </svg>

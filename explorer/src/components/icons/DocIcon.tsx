@@ -75,8 +75,8 @@ export const DocIcon: FC = () => {
           y2='73.5359'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#9179EC' />
-          <stop offset='1' stopColor='#E3DAFA' />
+          <stop stopColor='var(--purple-shade-2)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint1_linear_153_51'
@@ -86,8 +86,8 @@ export const DocIcon: FC = () => {
           y2='55.5928'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint2_linear_153_51'
@@ -97,8 +97,8 @@ export const DocIcon: FC = () => {
           y2='14.4047'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#9179EC' />
-          <stop offset='1' stopColor='#E3DAFA' />
+          <stop stopColor='var(--purple-shade-2)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint3_linear_153_51'
@@ -108,8 +108,8 @@ export const DocIcon: FC = () => {
           y2='16.8995'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint4_linear_153_51'
@@ -119,8 +119,8 @@ export const DocIcon: FC = () => {
           y2='11.2282'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint5_linear_153_51'
@@ -130,8 +130,8 @@ export const DocIcon: FC = () => {
           y2='13.7717'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint6_linear_153_51'
@@ -141,8 +141,8 @@ export const DocIcon: FC = () => {
           y2='27.5566'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
       </defs>
     </svg>

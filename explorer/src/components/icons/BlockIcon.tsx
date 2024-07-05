@@ -63,8 +63,8 @@ export const BlockIcon: FC = () => {
           y2='63.6695'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#4F378D' />
-          <stop offset='1' stopColor='#7B72D9' />
+          <stop stopColor='var(--purple-deep-accent)' />
+          <stop offset='1' stopColor='var(--purple-deep)' />
         </linearGradient>
         <linearGradient
           id='paint1_linear_131_9529'
@@ -74,8 +74,8 @@ export const BlockIcon: FC = () => {
           y2='31.47'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-pale)' />
         </linearGradient>
       </defs>
     </svg>

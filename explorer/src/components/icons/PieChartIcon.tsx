@@ -91,8 +91,8 @@ export const PieChartIcon: FC = () => {
           y2='63.8103'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#4F378D' />
-          <stop offset='1' stopColor='#7B72D9' />
+          <stop stopColor='var(--purple-deep-accent)' />
+          <stop offset='1' stopColor='var(--purple-shade-2)' />
         </linearGradient>
         <linearGradient
           id='paint1_linear_128_8846'
@@ -102,8 +102,8 @@ export const PieChartIcon: FC = () => {
           y2='17.2532'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#9179EC' />
-          <stop offset='1' stopColor='#E3DAFA' />
+          <stop stopColor='var(--purple-shade-2)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
         <linearGradient
           id='paint2_linear_128_8846'
@@ -113,8 +113,8 @@ export const PieChartIcon: FC = () => {
           y2='55.7513'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#4F378D' />
-          <stop offset='1' stopColor='#7B72D9' />
+          <stop stopColor='var(--purple-deep-accent)' />
+          <stop offset='1' stopColor='var(--purple-shade-1)' />
         </linearGradient>
         <linearGradient
           id='paint3_linear_128_8846'
@@ -124,8 +124,8 @@ export const PieChartIcon: FC = () => {
           y2='57.822'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#4F378D' />
-          <stop offset='1' stopColor='#7B72D9' />
+          <stop stopColor='var(--purple-deep-accent)' />
+          <stop offset='1' stopColor='var(--purple-shade-1)' />
         </linearGradient>
         <linearGradient
           id='paint4_linear_128_8846'
@@ -135,8 +135,8 @@ export const PieChartIcon: FC = () => {
           y2='23.8729'
           gradientUnits='userSpaceOnUse'
         >
-          <stop stopColor='#E970F8' />
-          <stop offset='1' stopColor='#F7D3FB' />
+          <stop stopColor='var(--purple-accent)' />
+          <stop offset='1' stopColor='var(--purple-light)' />
         </linearGradient>
       </defs>
     </svg>
