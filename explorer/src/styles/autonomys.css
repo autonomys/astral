@@ -1,0 +1,60 @@
+[data-theme='autonomys'] {
+  /* Background Gradient */
+  --background-dark-start: #0a0a5e;
+  --background-dark-middle: #1e3a8a;
+  --background-dark-end: #3b82f6;
+  --background-light-start: #eff7ff;
+  --background-light-end: #d9f0fc;
+
+  /* Common Gradient */
+  --gradient-twilight: #1e3a8a;
+  --gradient-dusk: #3b82f6;
+  --gradient-sunset: #60a5fa;
+
+  /* Grays and Blacks */
+  --gray-dark: #282929;
+  --gray-darker: #241235;
+  --gray-light: #ddeff1;
+
+  /* Whites */
+  --white: #ffffff;
+  --white-transparent: #ffffff1a;
+  --white-opaque: #ffffffb3;
+
+  /* Blues */
+  --blue-shade-1: #6c6bcf;
+  --blue-shade-2: #d9f0fc;
+  --blue-accent: #1e254e;
+  --blue-light: #f3fbff;
+  --blue-medium: #678cd5;
+  --blue-pastel: #929eea;
+  --blue-pale: #abcfef;
+  --blue-dark-accent: #2a345e;
+
+  /* Replacing Purples with Blues */
+  --purple-shade-1: #6a89cc;
+  --purple-shade-2: #3b5998;
+  --purple-accent: #3c8dbc;
+  --purple-light: #dce8f4;
+  --purple-deep: #34495e;
+  --purple-deep-accent: #2c3e50;
+  --purple-lighter-accent: #4a69bd;
+  --purple-medium: #5f8dc4;
+  --purple-pale: #aec6e8;
+  --purple-pastel: #6497b1;
+  --purple-tint: #5a82b9;
+  --purple-tinge: #d0d6f1;
+  --purple-undertone: #2c3e50;
+  --purple-royal: #1f3a93;
+  --purple-soft: #d4e6f1;
+  --purple-electric: #1abc9c;
+  --purple-mist: #ecf5fd;
+
+  /* Greens */
+  --green-bright: #37d058;
+  --green-pastel: #91d3a0;
+
+  /* Misc */
+  --pink-accent: #1e40af;
+  --bronze: #f1f7f8;
+}

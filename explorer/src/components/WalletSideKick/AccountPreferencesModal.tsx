@@ -2,6 +2,7 @@ import { Modal } from 'components/common/Modal'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useWallet from 'hooks/useWallet'
+import { useTheme } from 'providers/ThemeProvider'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useAddressBookStates } from 'states/addressBook'
 import { usePreferencesStates } from 'states/preferences'
@@ -24,6 +25,15 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
   const [formError, setFormError] = useState<string | null>(null)
   const { addresses, addAddress, removeAddress } = useAddressBookStates()
   const { enableDevMode, switchDevMode } = usePreferencesStates()
+
+  const { theme, setTheme } = useTheme()
+
+  const handleSetTheme = useCallback(
+    (theme: string) => {
+      setTheme(theme)
+    },
+    [setTheme],
+  )
 
   const initialAddAddressBookValues: AddressBookEntry = useMemo(
     () => ({
@@ -275,6 +285,26 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
             </Formik>
           </div>
         )
+      case AccountPreferenceSection.Theme:
+        return (
+          <div className='flex flex-col items-start gap-4'>
+            Current Theme: {theme}
+            <button
+              onClick={() => handleSetTheme('subspace')}
+              className='rounded-full bg-grayDarker px-4 py-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+            >
+              Subspace Theme
+            </button>
+            <button
+              onClick={() => handleSetTheme('autonomys')}
+              className='rounded-full bg-grayDarker px-4 py-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+            >
+              Autonomys Theme
+            </button>
+          </div>
+        )
+      case AccountPreferenceSection.Language:
+        return <div className='flex flex-col items-start gap-4'>Current Language: English</div>
       default:
         return null
     }
@@ -285,6 +315,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
     addAddressBookFormValidationSchema,
     initialAccountSettingsValues,
     changeAccountSettubgsFormValidationSchema,
+    theme,
     handleEditClick,
     handleDeleteClick,
     handleAddInAddressBook,
@@ -293,6 +324,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
     handleSettingsSubmit,
     enableDevMode,
     switchDevMode,
+    handleSetTheme,
   ])
 
   return (
