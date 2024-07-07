@@ -2,6 +2,13 @@
 
 import { WalletType } from '@/constants'
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
+import {
+  deregisterOperator,
+  nominateOperator,
+  unlockFunds,
+  unlockNominator,
+  withdrawStake,
+} from '@autonomys/auto-consensus'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
@@ -125,8 +132,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         return setFormError('Please select an operator to add funds to')
 
       try {
-        const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
-        const tx = await api.tx.domains.nominateOperator(action.operatorId.toString(), amount)
+        const operatorId = action.operatorId.toString()
+        const amountToStake = floatToStringWithDecimals(values.amount, tokenDecimals)
+        const tx = await nominateOperator({
+          api,
+          operatorId,
+          amountToStake,
+        })
         await sendAndSaveTx({
           call: 'nominateOperator',
           tx,
@@ -168,7 +180,13 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
         return setFormError('Please select an operator to add funds to')
 
       try {
-        const tx = await api.tx.domains.withdrawStake(action.operatorId, values.amount.toString())
+        const operatorId = action.operatorId.toString()
+        const shares = values.amount.toString()
+        const tx = await withdrawStake({
+          api,
+          operatorId,
+          shares,
+        })
         await sendAndSaveTx({
           call: 'withdrawStake',
           tx,
@@ -196,7 +214,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const tx = await api.tx.domains.deregisterOperator(action.operatorId)
+      const operatorId = action.operatorId.toString()
+      const tx = await deregisterOperator({ api, operatorId })
       await sendAndSaveTx({
         call: 'deregisterOperator',
         tx,
@@ -219,7 +238,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const tx = await api.tx.domains.unlockFunds(action.operatorId)
+      const operatorId = action.operatorId.toString()
+      const tx = await unlockFunds({ api, operatorId })
       await sendAndSaveTx({
         call: 'unlockFunds',
         tx,
@@ -244,7 +264,8 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     if (action.operatorId === null) return setFormError('Please select an operator to add funds to')
 
     try {
-      const tx = await api.tx.domains.unlockNominator(action.operatorId)
+      const operatorId = action.operatorId.toString()
+      const tx = await unlockNominator({ api, operatorId })
       await sendAndSaveTx({
         call: 'unlockNominator',
         tx,
