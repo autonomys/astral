@@ -1,7 +1,9 @@
 import { AuthProvider } from '@/constants'
-import { ApiPromise, Keyring, WsProvider } from '@polkadot/api'
+import { balance, transfer } from '@autonomys/auto-consensus'
+import { ActivateWalletInput, activateWallet } from '@autonomys/auto-utils'
+import type { ApiPromise } from '@polkadot/api'
 import { stringToU8a } from '@polkadot/util'
-import { cryptoWaitReady, decodeAddress, signatureVerify } from '@polkadot/util-crypto'
+import { decodeAddress, signatureVerify } from '@polkadot/util-crypto'
 import { chains } from 'constants/chains'
 import { CLAIM_TYPES } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
@@ -29,7 +31,6 @@ export const POST = async (req: NextRequest) => {
       throw new Error('Missing CLAIM_OPERATOR_DISBURSEMENT_AMOUNT')
 
     const session = verifyToken()
-    await cryptoWaitReady()
     console.log('session', session)
 
     const dbSession = await findUserByID(session.id)
@@ -59,32 +60,34 @@ export const POST = async (req: NextRequest) => {
 
     const claimStats = await findClaimStats(chainMatch.urls.page, claimType)
 
-    // Connect to the Polkadot node
-    const wsProvider = new WsProvider(chainMatch.urls.rpc)
-    const api = await ApiPromise.create({ provider: wsProvider })
-
-    // Create a keyring instance from wallet in environments variables
-    const keyring = new Keyring({ type: 'sr25519' })
-    const wallet = keyring.addFromUri(process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI)
+    const {
+      api,
+      accounts: [wallet],
+    } = await activateWallet({
+      uri: process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI,
+      networkId: 'autonomys-' + chainMatch.urls.page,
+    } as ActivateWalletInput)
 
     // Get wallet free balance
-    const {
-      data: { free },
-    } = (await api.query.system.account(wallet.address)).toJSON() as { data: { free: string } }
+    const { free } = await balance(api as unknown as ApiPromise, wallet.address)
     if (BigInt(free) < BigInt(process.env.CLAIM_WALLET_LOW_FUND_WARNING || 1000 * 10 ** 18))
-      await walletBalanceLowSlackMessage(formatUnitsToNumber(free).toString(), wallet.address)
+      await walletBalanceLowSlackMessage(
+        formatUnitsToNumber(free.toString()).toString(),
+        wallet.address,
+      )
 
     if (BigInt(free) <= BigInt(process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT))
       return NextResponse.json({ error: 'Insufficient funds' }, { status: 400 })
 
     // Create and sign the transfer transaction
     const block = await api.rpc.chain.getBlock()
-    const transfer = api.tx.balances.transferKeepAlive(
+    const tx = await transfer(
+      api as unknown as ApiPromise,
       address,
       process.env.CLAIM_OPERATOR_DISBURSEMENT_AMOUNT,
     )
-    const hash = await transfer.signAndSend(wallet)
-    const tx = {
+    const hash = await tx.signAndSend(wallet)
+    const txReceipt = {
       ownerAccount: wallet.address,
       status: 'pending',
       submittedAtBlockHash: block.block.header.hash.toHex(),
@@ -94,7 +97,7 @@ export const POST = async (req: NextRequest) => {
       blockHash: '',
     }
 
-    await saveClaim(session, chainMatch.urls.page, claimType, claim, tx)
+    await saveClaim(session, chainMatch.urls.page, claimType, claim, txReceipt)
 
     if (!claimStats) {
       const slackMessage = await sendSlackStatsMessage(1)
