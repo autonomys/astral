@@ -28,6 +28,7 @@ export const useDomainsStates = create<DomainsState>()(
     }),
     {
       name: 'domains-storage',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
     },
   ),
