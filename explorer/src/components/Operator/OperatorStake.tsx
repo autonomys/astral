@@ -56,8 +56,8 @@ export const OperatorStake = () => {
   const { handleTxError, sendAndSaveTx } = useTxHelper()
 
   useEffect(() => {
-    if (!domains || domains.length === 0) loadDomainsData()
-  }, [domains, loadDomainsData])
+    if (api && (!domains || domains.length === 0)) loadDomainsData()
+  }, [api, domains, loadDomainsData])
 
   useEffect(() => {
     if (!tokenSymbol || tokenDecimals === 0) loadConsensusData()
