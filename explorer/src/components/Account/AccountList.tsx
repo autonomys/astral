@@ -4,7 +4,6 @@ import { PAGE_SIZE, searchTypes } from '@/constants'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
-import Identicon from '@polkadot/react-identicon'
 import type { SortingState } from '@tanstack/react-table'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
@@ -20,6 +19,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { AccountIcon } from '../common/AccountIcon'
 import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
 
 export const AccountList: FC = () => {
@@ -84,7 +84,7 @@ export const AccountList: FC = () => {
         enableSorting: false,
         cell: ({ row }: Cell<Account>) => (
           <div key={`${row.index}-account-id`} className='row flex items-center gap-3'>
-            <Identicon value={row.original.id} size={26} theme={theme} />
+            <AccountIcon address={row.original.id} size={26} theme={theme} />
             <Link
               data-testid={`account-link-${row.index}`}
               href={INTERNAL_ROUTES.accounts.id.page(

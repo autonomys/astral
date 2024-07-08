@@ -5,7 +5,6 @@ import { PAGE_SIZE } from '@/constants/general'
 import { bigNumberToString } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
-import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { NotAllowed } from 'components/common/NotAllowed'
@@ -20,6 +19,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
+import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_NOMINATORS_REWARDS_LIST } from './querys'
 
@@ -60,7 +60,7 @@ export const NominatorRewardsList = () => {
         cell: ({ row }: Row) => {
           return (
             <div className='row flex items-center gap-3'>
-              <Identicon value={row.original.id} size={26} theme='beachball' />
+              <AccountIcon address={row.original.id} size={26} />
               <Link
                 data-testid={`account-link-${row.index}`}
                 href={INTERNAL_ROUTES.accounts.id.page(

@@ -4,7 +4,6 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { useApolloClient, useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
-import Identicon from '@polkadot/react-identicon'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
@@ -25,6 +24,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter } from 'utils/string'
+import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -123,7 +123,7 @@ export const OperatorsList: FC = () => {
           const isOperator = row.original.operatorOwner === subspaceAccount
           return (
             <div className='row flex items-center gap-3'>
-              {isOperator && <Identicon value={row.original.id} size={26} theme='beachball' />}
+              {isOperator && <AccountIcon address={row.original.id} size={26} />}
               <div>{shortString(row.original.signingKey)}</div>
             </div>
           )

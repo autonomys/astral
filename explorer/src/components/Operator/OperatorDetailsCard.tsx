@@ -1,6 +1,5 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
-import Identicon from '@polkadot/react-identicon'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { Chains } from 'constants/'
@@ -14,6 +13,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter } from 'utils/string'
+import { AccountIcon } from '../common/AccountIcon'
 
 dayjs.extend(relativeTime)
 
@@ -40,7 +40,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               <CopyButton value={operator.operatorOwner || ''} message='Operator owner key copied'>
                 {isDesktop ? (
                   <>
-                    <Identicon value={operator.operatorOwner} size={26} theme='beachball' />
+                    <AccountIcon address={operator.operatorOwner} size={26} />
                     {operator.operatorOwner && (
                       <Link
                         data-testid={`nominator-link-${operator.operatorOwner}}`}
