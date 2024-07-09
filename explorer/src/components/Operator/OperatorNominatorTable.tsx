@@ -1,6 +1,5 @@
 import { limitNumberDecimals, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
-import Identicon from '@polkadot/react-identicon'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { Nominator, Operator } from 'gql/graphql'
@@ -9,6 +8,7 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
+import { AccountIcon } from '../common/AccountIcon'
 
 interface Props {
   operator: Operator
@@ -25,7 +25,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         header: 'Account Id',
         cell: ({ row }: Cell<Nominator>) => (
           <div className='row flex items-center gap-3'>
-            <Identicon value={row.original.account.id} size={26} theme='beachball' />
+            <AccountIcon address={row.original.account.id} size={26} />
             <Link
               data-testid={`nominator-link-${row.original.id}-${row.original.account.id}-${row.index}}`}
               className='hover:text-purpleAccent'
