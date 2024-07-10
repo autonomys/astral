@@ -14,6 +14,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import type { Account, AccountsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -31,6 +32,7 @@ export const AccountList: FC = () => {
   })
   const novaExplorerBanner = useEvmExplorerBanner('accounts')
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+  const inFocus = useWindowFocus()
 
   const variables = useMemo(
     () => ({
@@ -47,6 +49,7 @@ export const AccountList: FC = () => {
     QUERY_ACCOUNT_CONNECTION_LIST,
     {
       variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )

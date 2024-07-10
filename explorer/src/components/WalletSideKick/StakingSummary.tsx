@@ -6,6 +6,7 @@ import { List, StyledListItem } from 'components/common/List'
 import type { Chain } from 'constants/chains'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { StakingSummaryQuery } from 'gql/graphql'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import { QUERY_STAKING_SUMMARY } from './query'
@@ -21,7 +22,8 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
   selectedChain,
   tokenSymbol,
 }) => {
-  const summaryVariables = useMemo(
+  const inFocus = useWindowFocus()
+  const variables = useMemo(
     () => ({
       first: 10,
       subspaceAccount,
@@ -29,7 +31,8 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
     [subspaceAccount],
   )
   const { data, error, loading } = useQuery<StakingSummaryQuery>(QUERY_STAKING_SUMMARY, {
-    variables: summaryVariables,
+    variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 
@@ -78,11 +81,11 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
   )
 
   return (
-    <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
-            <span className='text-grayDarker text-base font-medium dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               Staking Summary
             </span>
           </div>
@@ -91,7 +94,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
         {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
         {error && (
           <div className='m-2 flex items-center pt-4'>
-            <span className='text-grayDarker text-base font-medium dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               We are unable to load your wallet data
             </span>
           </div>
@@ -161,7 +164,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
               className='hover:text-purpleAccent'
               href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.list}`}
             >
-              <span className='text-grayDarker text-sm font-medium dark:text-white'>
+              <span className='text-sm font-medium text-grayDarker dark:text-white'>
                 Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page to
                 stake your {tokenSymbol}
               </span>

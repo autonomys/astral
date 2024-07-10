@@ -15,6 +15,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -40,6 +41,7 @@ export const AccountRewardList: FC = () => {
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { accountId } = useParams<AccountIdParam>()
+  const inFocus = useWindowFocus()
 
   const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
 
@@ -58,6 +60,7 @@ export const AccountRewardList: FC = () => {
 
   const { data, error, loading } = useQuery<RewardsListQuery>(QUERY_REWARDS_LIST, {
     variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 

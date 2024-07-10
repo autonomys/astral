@@ -14,6 +14,7 @@ import { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -34,6 +35,7 @@ export const OperatorManagement: FC = () => {
     pageIndex: 0,
   })
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const inFocus = useWindowFocus()
 
   const { subspaceAccount } = useWallet()
   const { selectedChain, selectedDomain } = useDomains()
@@ -78,7 +80,8 @@ export const OperatorManagement: FC = () => {
   const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
     QUERY_OPERATOR_CONNECTION_LIST,
     {
-      variables: variables,
+      variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )

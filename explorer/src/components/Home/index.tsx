@@ -7,6 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
@@ -21,6 +22,7 @@ export const Home: FC = () => {
   const PAGE_SIZE = isDesktop ? 10 : 3
   const { selectedChain } = useDomains()
   const novaExplorerBanner = useEvmExplorerBanner()
+  const inFocus = useWindowFocus()
 
   const HomeQuery = useMemo(
     () => (selectedChain?.isDomain ? QUERY_HOME_DOMAIN : QUERY_HOME),
@@ -29,6 +31,7 @@ export const Home: FC = () => {
 
   const { data, loading, error } = useQuery<HomeQueryQuery | HomeQueryDomainQuery>(HomeQuery, {
     variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
+    skip: !inFocus,
     pollInterval: 6000,
   })
   useErrorHandler(error)

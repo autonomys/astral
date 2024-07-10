@@ -10,6 +10,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
 import { GetAllNominatorsQuery } from 'gql/rewardTypes'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import type { Cell } from 'types/table'
@@ -28,6 +29,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     pageSize: STAKE_WARS_PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
   const apolloClient = useApolloClient()
 
   const columns = useMemo(() => {
@@ -100,7 +102,8 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
   )
 
   const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
-    variables: variables,
+    variables,
+    skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })

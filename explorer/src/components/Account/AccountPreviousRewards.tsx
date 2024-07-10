@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { AccountRewards, AllRewardForAccountByIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
@@ -53,6 +54,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
 
   const { accountId } = useParams<AccountIdParam>()
   const { selectedChain } = useDomains()
+  const inFocus = useWindowFocus()
 
   const convertedAddress = useMemo(
     () => (selectedChain.isDomain ? accountId : formatAddress(accountId)),
@@ -63,6 +65,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
     QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID,
     {
       variables: { convertedAddress },
+      skip: !inFocus,
     },
   )
   const rewards = useMemo(
@@ -218,21 +221,21 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   }, [handleSearch])
 
   return (
-    <div className='dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r'>
+    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
       <div className='flex w-full flex-col gap-6 py-4 pl-4'>
         <div className='grid w-full grid-cols-3 gap-8 xl:gap-8'>
-          <div className='text-purpleShade2 col-span-1 text-[13px] font-normal dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Testnet
           </div>
-          <div className='text-purpleShade2 col-span-1 text-[13px] font-normal dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Localized {selectedChain.token.symbol}
           </div>
-          <div className='text-purpleShade2 col-span-1 text-[13px] font-normal dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Mainnet allocation %
           </div>
         </div>
         <div className='w-full'>
-          <ol className='border-purpleLight dark:border-blueShade1 relative border-l'>
+          <ol className='relative border-l border-purpleLight dark:border-blueShade1'>
             {rewardsPhase.map((phase, index) => (
               <li
                 key={`${index}-account-rewards-block`}
@@ -248,14 +251,14 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
                         : 'bg-purpleLight dark:bg-blueShade1'
                     }`}
                   ></div>
-                  <div className='text-grayDark -mt-1 ml-4 text-[13px] font-normal dark:text-white '>
+                  <div className='-mt-1 ml-4 text-[13px] font-normal text-grayDark dark:text-white '>
                     {phase.label}
                   </div>
                 </div>
-                <div className='text-grayDark -mt-1 text-[13px] font-normal dark:text-white'>
+                <div className='-mt-1 text-[13px] font-normal text-grayDark dark:text-white'>
                   {rewardsByPhase(phase.name)}
                 </div>
-                <div className='text-grayDark -mt-1 text-[13px] font-normal dark:text-white'>
+                <div className='-mt-1 text-[13px] font-normal text-grayDark dark:text-white'>
                   {rewardsPercentageByPhase(phase.name)}
                 </div>
               </li>

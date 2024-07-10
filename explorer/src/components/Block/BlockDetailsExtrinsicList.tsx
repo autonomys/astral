@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic, ExtrinsicsByBlockIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useMemo, useState } from 'react'
@@ -32,10 +33,12 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
 
   const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
   const { data, error, loading } = useQuery<ExtrinsicsByBlockIdQuery>(QUERY_BLOCK_EXTRINSICS, {
     variables: { blockId: Number(blockId), first },
+    skip: !inFocus,
   })
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])

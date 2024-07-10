@@ -5,6 +5,7 @@ import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -15,8 +16,10 @@ import { QUERY_EXTRINSIC_BY_ID } from './query'
 
 export const Extrinsic: FC = () => {
   const { extrinsicId } = useParams()
+  const inFocus = useWindowFocus()
   const { data, error, loading } = useQuery<ExtrinsicsByIdQuery>(QUERY_EXTRINSIC_BY_ID, {
     variables: { extrinsicId },
+    skip: !inFocus,
   })
   const isDesktop = useMediaQuery('(min-width: 1440px)')
   const isLargeDesktop = useMediaQuery('(min-width: 1440px)')

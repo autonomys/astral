@@ -11,6 +11,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsByAccountIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -41,6 +42,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
+  const inFocus = useWindowFocus()
 
   const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
 
@@ -63,6 +65,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const { data, error, loading } = useQuery<ExtrinsicsByAccountIdQuery>(QUERY_ACCOUNT_EXTRINSICS, {
     variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 

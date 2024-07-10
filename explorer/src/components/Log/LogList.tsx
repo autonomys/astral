@@ -11,6 +11,7 @@ import { Spinner } from 'components/common/Spinner'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import type { Log, LogWhereInput, LogsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -28,6 +29,7 @@ export const LogList: FC = () => {
   })
   const [filters, setFilters] = useState<LogWhereInput>({})
   const novaExplorerBanner = useEvmExplorerBanner()
+  const inFocus = useWindowFocus()
 
   const variables = useMemo(
     () => ({
@@ -42,6 +44,7 @@ export const LogList: FC = () => {
 
   const { data, error, loading } = useQuery<LogsConnectionQuery>(QUERY_LOG_CONNECTION_LIST, {
     variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 

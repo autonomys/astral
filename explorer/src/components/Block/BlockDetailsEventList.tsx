@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event, EventsByBlockIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useMemo, useState } from 'react'
@@ -29,6 +30,7 @@ export const BlockDetailsEventList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
@@ -47,6 +49,7 @@ export const BlockDetailsEventList: FC = () => {
 
   const { data, error, loading } = useQuery<EventsByBlockIdQuery>(QUERY_BLOCK_EVENTS, {
     variables,
+    skip: !inFocus,
   })
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])

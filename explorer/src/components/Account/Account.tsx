@@ -7,6 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -28,6 +29,7 @@ export const Account: FC = () => {
   const { accountId: rawAccountId } = useParams<AccountIdParam>()
   const { selectedChain } = useDomains()
   const novaExplorerBanner = useEvmExplorerBanner('address/' + rawAccountId)
+  const inFocus = useWindowFocus()
   const accountId = selectedChain.isDomain ? rawAccountId : formatAddress(rawAccountId)
 
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -36,6 +38,7 @@ export const Account: FC = () => {
 
   const { data, error, loading } = useQuery<AccountByIdQuery | AccountByIdEvmQuery>(AccountQuery, {
     variables: { accountId },
+    skip: !inFocus,
   })
 
   useErrorHandler(error)

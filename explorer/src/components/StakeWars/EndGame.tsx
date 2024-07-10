@@ -9,6 +9,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
 import { GetAllNominatorsQuery } from 'gql/rewardTypes'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Image from 'next/image'
 import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -26,6 +27,7 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
     pageSize: STAKE_WARS_PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
 
   const nominatorVariables = useMemo(
     () => ({
@@ -60,12 +62,14 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
     loading: nominatorLoading,
   } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
     variables: nominatorVariables,
+    skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })
 
   const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_OPERATORS, {
     variables: operatorVariables,
+    skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })

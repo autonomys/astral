@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event, EventWhereInput, EventsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -31,6 +32,7 @@ export const EventList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
   const [filters, setFilters] = useState<EventWhereInput>({})
   const novaExplorerBanner = useEvmExplorerBanner()
 
@@ -47,6 +49,7 @@ export const EventList: FC = () => {
 
   const { data, error, loading } = useQuery<EventsConnectionQuery>(QUERY_EVENT_CONNECTION_LIST, {
     variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 

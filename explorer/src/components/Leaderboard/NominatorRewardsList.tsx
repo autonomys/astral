@@ -14,6 +14,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import { AccountRewards, AccountsNominatorsConnectionRewardsQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -42,6 +43,7 @@ export const NominatorRewardsList = () => {
   const apolloClient = useApolloClient()
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+  const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
     return [
@@ -93,39 +95,26 @@ export const NominatorRewardsList = () => {
 
   const orderBy = useMemo(() => sort(sorting, 'operator_DESC'), [sorting])
 
-  const getQueryVariables = useCallback(
-    (
-      sorting: SortingState,
-      pagination: {
-        pageSize: number
-        pageIndex: number
-      },
-      searchAccount: string,
-    ) => {
-      return {
-        first: pagination.pageSize,
-        after:
-          pagination.pageIndex > 0
-            ? (pagination.pageIndex * pagination.pageSize).toString()
-            : undefined,
-        orderBy,
-        where: searchAccount
-          ? { id_eq: searchAccount }
-          : { operator_gt: '0', operator_isNull: false },
-      }
-    },
-    [orderBy],
-  )
-
   const variables = useMemo(
-    () => getQueryVariables(sorting, pagination, searchAccount),
-    [sorting, pagination, searchAccount, getQueryVariables],
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy,
+      where: searchAccount
+        ? { id_eq: searchAccount }
+        : { operator_gt: '0', operator_isNull: false },
+    }),
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchAccount],
   )
 
   const { data, error, loading } = useQuery<AccountsNominatorsConnectionRewardsQuery>(
     QUERY_NOMINATORS_REWARDS_LIST,
     {
       variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )

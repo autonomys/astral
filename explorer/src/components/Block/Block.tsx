@@ -7,6 +7,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { Block as BlockResult } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -21,6 +22,7 @@ export const Block: FC = () => {
   const { selectedChain } = useDomains()
   const novaExplorerBanner = useEvmExplorerBanner('block/' + blockId)
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const inFocus = useWindowFocus()
 
   const query = useMemo(
     () => (selectedChain.isDomain ? QUERY_BLOCK_BY_ID_DOMAIN : QUERY_BLOCK_BY_ID),
@@ -28,6 +30,7 @@ export const Block: FC = () => {
   )
   const { data, error, loading } = useQuery<BlockByIdDomainQuery | BlockByIdQuery>(query, {
     variables: { blockId: Number(blockId) },
+    skip: !inFocus,
   })
 
   const block = useMemo(() => data && (data.blocks[0] as BlockResult), [data])

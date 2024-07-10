@@ -8,6 +8,7 @@ import { EXTERNAL_ROUTES, ROUTE_API } from 'constants/routes'
 import { ExtrinsicsByHashQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -92,10 +93,11 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   const [claimIsFinalized, setClaimIsFinalized] = useState(false)
   const [claimError, setClaimError] = useState<string | null>(null)
   const [claimHash, setClaimHash] = useState<string | null>(null)
+  const inFocus = useWindowFocus()
 
   const { data } = useQuery<ExtrinsicsByHashQuery>(QUERY_EXTRINSIC_BY_HASH, {
     variables: { hash: claimHash },
-    skip: claimHash === null || claimIsFinalized,
+    skip: !inFocus || claimHash === null || claimIsFinalized,
     pollInterval: 6000,
   })
 

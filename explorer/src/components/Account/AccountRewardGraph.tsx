@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, useMemo } from 'react'
 import { LatestRewardsWeekQuery } from '../gql/graphql'
@@ -24,9 +25,11 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { isDark } = useTheme()
   const { selectedChain } = useDomains()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
+  const inFocus = useWindowFocus()
 
   const { data, error, loading } = useQuery<LatestRewardsWeekQuery>(QUERY_LAST_WEEK_REWARDS, {
     variables: { accountId: accountId, gte: lastWeek },
+    skip: !inFocus,
   })
 
   const parsedData = useMemo(

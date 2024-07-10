@@ -15,6 +15,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block, BlocksConnectionDomainQuery, BlocksConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -32,6 +33,7 @@ export const BlockList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
   const BlockListQuery = useMemo(
     () =>
       selectedChain.isDomain ? QUERY_BLOCK_LIST_CONNECTION_DOMAIN : QUERY_BLOCK_LIST_CONNECTION,
@@ -53,6 +55,7 @@ export const BlockList: FC = () => {
     BlockListQuery,
     {
       variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )

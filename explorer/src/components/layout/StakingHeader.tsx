@@ -12,6 +12,7 @@ import { NominatorsConnectionQuery, OperatorsConnectionQuery } from 'gql/graphql
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
@@ -26,6 +27,7 @@ export const StakingHeader = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
   const { subspaceAccount } = useWallet()
+  const inFocus = useWindowFocus()
 
   const { data: dataOperators, refetch: refetchOperators } = useQuery<OperatorsConnectionQuery>(
     QUERY_OPERATOR_CONNECTION_LIST,
@@ -37,6 +39,7 @@ export const StakingHeader = () => {
         where: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
         orderBy: 'id_ASC',
       },
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )

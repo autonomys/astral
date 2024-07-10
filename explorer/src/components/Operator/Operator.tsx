@@ -3,9 +3,11 @@
 import { useQuery } from '@apollo/client'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
+import { OperatorByIdQuery, Operator as TOperator } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
@@ -14,24 +16,22 @@ import { QUERY_OPERATOR_BY_ID } from './query'
 export const Operator: FC = () => {
   const { operatorId } = useParams<{ operatorId?: string }>()
   const { push } = useRouter()
-
+  const inFocus = useWindowFocus()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const { data, error, loading } = useQuery(QUERY_OPERATOR_BY_ID, {
-    variables: { operatorId: operatorId },
+
+  const variables = useMemo(() => ({ operatorId }), [operatorId])
+  const { data, error, loading } = useQuery<OperatorByIdQuery>(QUERY_OPERATOR_BY_ID, {
+    variables,
+    skip: !inFocus,
   })
+
+  const operator = useMemo(() => (data ? data.operatorById : []) as TOperator, [data])
 
   useErrorHandler(error)
 
-  if (loading) {
-    return <Spinner />
-  }
+  if (loading) return <Spinner />
 
-  if (!data.operatorById) {
-    return <NotFound />
-  }
-
-  const operator = data.operatorById
-  console.log('operator', operator)
+  if (!operator) return <NotFound />
 
   return (
     <div className='flex w-full flex-col space-y-4'>

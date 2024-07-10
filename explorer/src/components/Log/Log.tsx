@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import type { LogByIdQuery, Log as SquidLog } from 'gql/graphql'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useMemo } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -14,7 +15,11 @@ import { QUERY_LOG_BY_ID } from './query'
 
 export const Log: FC = () => {
   const { logId } = useParams<LogIdParam>()
-  const { data, error, loading } = useQuery<LogByIdQuery>(QUERY_LOG_BY_ID, { variables: { logId } })
+  const inFocus = useWindowFocus()
+  const { data, error, loading } = useQuery<LogByIdQuery>(QUERY_LOG_BY_ID, {
+    variables: { logId },
+    skip: !inFocus,
+  })
 
   useErrorHandler(error)
 

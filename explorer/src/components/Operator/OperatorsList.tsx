@@ -14,6 +14,7 @@ import type { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -41,6 +42,7 @@ export const OperatorsList: FC = () => {
   const { operatorId } = useParams<{ operatorId?: string }>()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
+  const inFocus = useWindowFocus()
 
   useEffect(() => {
     if (!domains || domains.length === 0) loadDomainsData()
@@ -249,6 +251,7 @@ export const OperatorsList: FC = () => {
     QUERY_OPERATOR_CONNECTION_LIST,
     {
       variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )

@@ -13,6 +13,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import type { NominatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -43,6 +44,7 @@ export const NominatorsList: FC = () => {
     maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const inFocus = useWindowFocus()
 
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
@@ -260,7 +262,8 @@ export const NominatorsList: FC = () => {
   const { data, error, loading } = useQuery<NominatorsConnectionQuery>(
     QUERY_NOMINATOR_CONNECTION_LIST,
     {
-      variables: variables,
+      skip: !inFocus,
+      variables,
       pollInterval: 6000,
     },
   )

@@ -13,6 +13,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsSummaryQuery } from 'gql/oldSquidTypes'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
@@ -30,6 +31,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
   const [extrinsics, setExtrinsics] = useState<ExtrinsicsSummaryQuery['extrinsics']['edges']>([])
   const { pendingTransactions, markAsFinalized, moveToFinalizedTransactions } =
     useTransactionsStates()
+  const inFocus = useWindowFocus()
   const transactions = useMemo(
     () =>
       actingAccount
@@ -40,7 +42,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
         : [],
     [actingAccount, pendingTransactions, selectedChain.urls.page],
   )
-  const summaryVariables = useMemo(
+  const variables = useMemo(
     () => ({
       first: 10,
       subspaceAccount,
@@ -48,7 +50,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
     [subspaceAccount],
   )
   const { data, error, loading } = useQuery<ExtrinsicsSummaryQuery>(QUERY_EXTRINSIC_SUMMARY, {
-    variables: summaryVariables,
+    variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 

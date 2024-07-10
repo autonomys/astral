@@ -6,6 +6,7 @@ import { List, StyledListItem } from 'components/common/List'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountsTopLeaderboardQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import { QUERY_TOP_LEADERBOARD } from './query'
@@ -15,14 +16,16 @@ interface LeaderboardProps {
 }
 
 export const useLeaderboard = (subspaceAccount: string) => {
-  const topLeaderboardVariables = useMemo(
+  const inFocus = useWindowFocus()
+  const variables = useMemo(
     () => ({
       first: 100,
     }),
     [],
   )
   const { data, error, loading } = useQuery<AccountsTopLeaderboardQuery>(QUERY_TOP_LEADERBOARD, {
-    variables: topLeaderboardVariables,
+    variables,
+    skip: !inFocus,
     pollInterval: 6000,
   })
 

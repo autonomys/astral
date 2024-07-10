@@ -12,6 +12,7 @@ import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { GetAllOperatorsQuery } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
@@ -34,6 +35,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   const apolloClient = useApolloClient()
 
   const { selectedChain, selectedDomain } = useDomains()
+  const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
     const cols = [
@@ -122,7 +124,8 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   )
 
   const { data, error, loading } = useQuery<GetAllOperatorsQuery>(GET_ALL_OPERATORS, {
-    variables: variables,
+    variables,
+    skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })
