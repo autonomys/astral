@@ -12,11 +12,13 @@ import { Chains, PAGE_SIZE } from 'constants/'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useDomainsData } from 'hooks/useDomainsData'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useErrorHandler } from 'react-error-boundary'
+import { useDomainsStates } from 'states/domains'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { operatorReadyToUnlock, operatorStatus } from 'utils/operator'
@@ -36,6 +38,8 @@ export const OperatorManagement: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   const { subspaceAccount } = useWallet()
+  const { domains } = useDomainsStates()
+  const { loadData: loadDomainsData } = useDomainsData()
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
@@ -45,6 +49,10 @@ export const OperatorManagement: FC = () => {
     maxShares: null,
   })
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (!domains || domains.length === 0) loadDomainsData()
+  }, [domains, loadDomainsData])
 
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
@@ -192,9 +200,20 @@ export const OperatorManagement: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>
-        ),
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          const domain = domains.find(
+            (d) =>
+              (row.original.currentDomainId || row.original.currentDomainId === 0) &&
+              d.domainId === row.original.currentDomainId.toString(),
+          )
+          return (
+            <div>
+              {domain
+                ? domain.domainName.charAt(0).toUpperCase() + domain.domainName.slice(1)
+                : '#' + row.original.currentDomainId}
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'signingKey',
