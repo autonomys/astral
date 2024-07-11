@@ -1,5 +1,6 @@
 import { ROUTE_EXTRA_FLAG_TYPE, Routes } from 'constants/routes'
 import * as GqlT from 'gql/graphql'
+import * as OldGqlT from 'gql/oldSquidTypes'
 import { create } from 'zustand'
 
 export type Init = {
@@ -29,34 +30,50 @@ const initialized: Init = { initialized: true }
 
 interface ExplorerQueryState {
   [Routes.consensus]: {
-    home: QueryState<GqlT.HomeQueryQuery>
+    home: QueryState<OldGqlT.HomeQueryQuery>
 
-    accounts: QueryState<GqlT.AccountsConnectionQuery>
-    blocks: QueryState<GqlT.BlocksConnectionQuery>
-    extrinsics: QueryState<GqlT.ExtrinsicsConnectionQuery>
-    events: QueryState<GqlT.EventsConnectionQuery>
-    logs: QueryState<GqlT.LogsConnectionQuery>
+    accounts: QueryState<OldGqlT.AccountsConnectionQuery>
+    blocks: QueryState<OldGqlT.BlocksConnectionQuery>
+    extrinsics: QueryState<OldGqlT.ExtrinsicsConnectionQuery>
+    events: QueryState<OldGqlT.EventsConnectionQuery>
+    logs: QueryState<OldGqlT.LogsConnectionQuery>
 
-    account: QueryState<GqlT.AccountByIdQuery>
-    block: QueryState<GqlT.BlockByIdQuery>
-    extrinsic: QueryState<GqlT.ExtrinsicsByIdQuery>
-    event: QueryState<GqlT.EventByIdQuery>
-    log: QueryState<GqlT.LogByIdQuery>
+    account: QueryState<OldGqlT.AccountByIdQuery>
+    block: QueryState<OldGqlT.BlockByIdQuery>
+    extrinsic: QueryState<OldGqlT.ExtrinsicsByIdQuery>
+    event: QueryState<OldGqlT.EventByIdQuery>
+    log: QueryState<OldGqlT.LogByIdQuery>
+
+    accountExtrinsic: QueryState<OldGqlT.ExtrinsicsByAccountIdQuery>
+    accountPreviousReward: QueryState<OldGqlT.AllRewardForAccountByIdQuery>
+    accountRewardGraph: QueryState<OldGqlT.LatestRewardsWeekQuery>
+    accountReward: QueryState<OldGqlT.RewardsListQuery>
+
+    blockDetailsExtrinsic: QueryState<OldGqlT.ExtrinsicsByBlockIdQuery>
+    blockDetailsEvent: QueryState<OldGqlT.EventsByBlockIdQuery>
   }
   [Routes.nova]: {
-    home: QueryState<GqlT.HomeQueryDomainQuery>
+    home: QueryState<OldGqlT.HomeQueryDomainQuery>
 
-    accounts: QueryState<GqlT.AccountsConnectionQuery>
-    blocks: QueryState<GqlT.BlocksConnectionDomainQuery>
-    extrinsics: QueryState<GqlT.ExtrinsicsConnectionQuery>
-    events: QueryState<GqlT.EventsConnectionQuery>
-    logs: QueryState<GqlT.LogsConnectionQuery>
+    accounts: QueryState<OldGqlT.AccountsConnectionQuery>
+    blocks: QueryState<OldGqlT.BlocksConnectionDomainQuery>
+    extrinsics: QueryState<OldGqlT.ExtrinsicsConnectionQuery>
+    events: QueryState<OldGqlT.EventsConnectionQuery>
+    logs: QueryState<OldGqlT.LogsConnectionQuery>
 
-    account: QueryState<GqlT.AccountByIdEvmQuery>
-    block: QueryState<GqlT.BlockByIdDomainQuery>
-    extrinsic: QueryState<GqlT.ExtrinsicsByIdQuery>
-    event: QueryState<GqlT.EventByIdQuery>
-    log: QueryState<GqlT.LogByIdQuery>
+    account: QueryState<OldGqlT.AccountByIdEvmQuery>
+    block: QueryState<OldGqlT.BlockByIdDomainQuery>
+    extrinsic: QueryState<OldGqlT.ExtrinsicsByIdQuery>
+    event: QueryState<OldGqlT.EventByIdQuery>
+    log: QueryState<OldGqlT.LogByIdQuery>
+
+    accountExtrinsic: QueryState<OldGqlT.ExtrinsicsByAccountIdQuery>
+    accountPreviousReward: QueryState<OldGqlT.AllRewardForAccountByIdQuery>
+    accountRewardGraph: QueryState<OldGqlT.LatestRewardsWeekQuery>
+    accountReward: QueryState<OldGqlT.RewardsListQuery>
+
+    blockDetailsExtrinsic: QueryState<OldGqlT.ExtrinsicsByBlockIdQuery>
+    blockDetailsEvent: QueryState<OldGqlT.EventsByBlockIdQuery>
   }
   [Routes.leaderboard]: {
     farmers: QueryState<GqlT.AccountsConnectionRewardsQuery>
@@ -64,17 +81,18 @@ interface ExplorerQueryState {
     operators: QueryState<GqlT.OperatorsConnectionRewardsQuery>
   }
   [Routes.staking]: {
-    operators: QueryState<GqlT.OperatorByIdQuery>
-    nominators: QueryState<GqlT.NominatorsConnectionQuery>
-    manageOperators: QueryState<GqlT.OperatorsConnectionQuery>
-    manageNominations: QueryState<GqlT.NominatorsConnectionQuery>
+    operators: QueryState<OldGqlT.OperatorsConnectionQuery>
+    nominators: QueryState<OldGqlT.NominatorsConnectionQuery>
+    manageOperators: QueryState<OldGqlT.OperatorsConnectionQuery>
+    manageNominations: QueryState<OldGqlT.NominatorsConnectionQuery>
 
-    operator: QueryState<GqlT.OperatorByIdQuery>
+    operator: QueryState<OldGqlT.OperatorByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
-    stakingSummary: QueryState<GqlT.StakingSummaryQuery>
-    lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
-    leaderboard: QueryState<GqlT.AccountsTopLeaderboardQuery>
+    claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
+    stakingSummary: QueryState<OldGqlT.StakingSummaryQuery>
+    lastExtrinsics: QueryState<OldGqlT.ExtrinsicsSummaryQuery>
+    leaderboard: QueryState<OldGqlT.AccountsTopLeaderboardQuery>
   }
 }
 
@@ -109,6 +127,14 @@ const initialState: ExplorerQueryState = {
     extrinsic: initialized,
     event: initialized,
     log: initialized,
+
+    accountExtrinsic: initialized,
+    accountPreviousReward: initialized,
+    accountRewardGraph: initialized,
+    accountReward: initialized,
+
+    blockDetailsExtrinsic: initialized,
+    blockDetailsEvent: initialized,
   },
   nova: {
     home: initialized,
@@ -124,6 +150,14 @@ const initialState: ExplorerQueryState = {
     extrinsic: initialized,
     event: initialized,
     log: initialized,
+
+    accountExtrinsic: initialized,
+    accountPreviousReward: initialized,
+    accountRewardGraph: initialized,
+    accountReward: initialized,
+
+    blockDetailsExtrinsic: initialized,
+    blockDetailsEvent: initialized,
   },
   leaderboard: {
     farmers: initialized,
@@ -139,6 +173,7 @@ const initialState: ExplorerQueryState = {
     operator: initialized,
   },
   walletSidekick: {
+    claim: initialized,
     stakingSummary: initialized,
     lastExtrinsics: initialized,
     leaderboard: initialized,

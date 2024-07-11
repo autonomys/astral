@@ -6,11 +6,12 @@ import {
   useQuery,
 } from '@apollo/client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useErrorHandler } from 'react-error-boundary'
 import { Components, ExplorerSection, useQueryStates } from 'states/query'
 
 interface UseCustomQueryOptions<TData, TVariables extends OperationVariables>
   extends QueryHookOptions<TData, TVariables> {
-  pollInterval: number
+  pollInterval?: number
 }
 
 export const useSquidQuery = <TData, TVariables extends OperationVariables>(
@@ -47,6 +48,8 @@ export const useSquidQuery = <TData, TVariables extends OperationVariables>(
   })
 
   const { data, stopPolling, error } = queryResult
+
+  useErrorHandler(error)
 
   useEffect(() => {
     if (section && component) setIsLoading(section, component)
