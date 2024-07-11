@@ -1,21 +1,26 @@
 /* eslint-disable camelcase */
 
-import { GET_ALL_NOMINATORS } from '@/components/StakeWars/rewardsQuery'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
+import { GET_ALL_NOMINATORS } from 'components/StakeWars/rewardsQuery'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
-import { GetAllNominatorsQuery } from 'gql/rewardTypes'
+import {
+  GetAllNominatorsQuery,
+  GetAllNominatorsQueryVariables,
+  NominatorOrderByInput,
+} from 'gql/rewardTypes'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
-import { FC, useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
 import { NotStarted } from '../layout/NotStarted'
 import { NominatorWithRewards, getNominatorRewards } from './helpers/calculateNominatorReward'
 
@@ -24,6 +29,7 @@ type Props = {
 }
 
 export const NominatorList: FC<Props> = ({ currentBlock }) => {
+  const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'shares', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: STAKE_WARS_PAGE_SIZE,
@@ -85,7 +91,10 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     return cols
   }, [])
 
-  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, NominatorOrderByInput.IdAsc) as NominatorOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -101,14 +110,15 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy],
   )
 
-  const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
+  const { data, loading, setIsVisible } = useSquidQuery<
+    GetAllNominatorsQuery,
+    GetAllNominatorsQueryVariables
+  >(GET_ALL_NOMINATORS, {
     variables,
     skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })
-
-  useErrorHandler(error)
 
   const fullDataDownloader = useCallback(
     () => downloadFullData(apolloClient, GET_ALL_NOMINATORS, 'operatorsConnection', { orderBy }),
@@ -159,14 +169,17 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
     [totalCount, pagination],
   )
 
-  if (loading)
-    return (
-      <div className='flex w-full items-center justify-center'>
-        <Spinner />
-      </div>
-    )
+  const noData = useMemo(() => {
+    if (loading) return <Spinner />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
+
   if (currentBlock < STAKE_WARS_PHASES.phase3.start) return <NotStarted />
-  if (!nominatorsWithRewards) return <NotFound />
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -177,8 +190,8 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='my-6 rounded'>
-          {nominatorsWithRewards && (
+        <div className='my-6 rounded' ref={ref}>
+          {nominatorsWithRewards ? (
             <SortedTable
               data={nominatorsWithRewards}
               columns={columns}
@@ -191,6 +204,8 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
               filename='stake-wars-nominator-list'
               fullDataDownloader={fullDataDownloader}
             />
+          ) : (
+            noData
           )}
         </div>
       </div>

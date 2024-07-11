@@ -1,18 +1,24 @@
 /* eslint-disable camelcase */
 
-import { GET_ALL_NOMINATORS, GET_ALL_OPERATORS } from '@/components/StakeWars/rewardsQuery'
-import { bigNumberToNumber } from '@/utils/number'
-import { capitalizeFirstLetter, shortString } from '@/utils/string'
-import { useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
+import { GET_ALL_NOMINATORS, GET_ALL_OPERATORS } from 'components/StakeWars/rewardsQuery'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/'
-import { GetAllNominatorsQuery } from 'gql/rewardTypes'
+import { OperatorOrderByInput } from 'gql/graphql'
+import {
+  GetAllNominatorsQuery,
+  GetAllNominatorsQueryVariables,
+  GetAllOperatorsQuery,
+  GetAllOperatorsQueryVariables,
+  NominatorOrderByInput,
+} from 'gql/rewardTypes'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Image from 'next/image'
 import { FC, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { bigNumberToNumber } from 'utils/number'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { NotStarted } from '../layout/NotStarted'
 import { getNominatorRewards, getOperatorRewards } from './helpers/calculateNominatorReward'
 
@@ -33,7 +39,10 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
     () => ({
       first: pagination.pageSize,
       after: undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy:
+        (sorting
+          .map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`)
+          .join(',') as NominatorOrderByInput) || NominatorOrderByInput.IdAsc,
       where: {},
       blockNumber_gte: STAKE_WARS_PHASES.phase3.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase3.end,
@@ -49,32 +58,34 @@ export const EndGame: FC<Props> = ({ currentBlock }) => {
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
       orderBy:
-        operatorSorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+        (operatorSorting
+          .map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`)
+          .join(',') as OperatorOrderByInput) || OperatorOrderByInput.IdAsc,
       blockNumber_gte: STAKE_WARS_PHASES.phase2.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase2.end,
     }),
     [operatorSorting, pagination],
   )
 
-  const {
-    data: nominatorData,
-    error: nominatorError,
-    loading: nominatorLoading,
-  } = useQuery<GetAllNominatorsQuery>(GET_ALL_NOMINATORS, {
+  const { data: nominatorData, loading: nominatorLoading } = useSquidQuery<
+    GetAllNominatorsQuery,
+    GetAllNominatorsQueryVariables
+  >(GET_ALL_NOMINATORS, {
     variables: nominatorVariables,
     skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })
 
-  const { data, error, loading } = useQuery<GetAllNominatorsQuery>(GET_ALL_OPERATORS, {
-    variables: operatorVariables,
-    skip: !inFocus,
-    pollInterval: 6000,
-    context: { clientName: 'rewards' },
-  })
-
-  useErrorHandler(error || nominatorError)
+  const { data, loading } = useSquidQuery<GetAllOperatorsQuery, GetAllOperatorsQueryVariables>(
+    GET_ALL_OPERATORS,
+    {
+      variables: operatorVariables,
+      skip: !inFocus,
+      pollInterval: 6000,
+      context: { clientName: 'rewards' },
+    },
+  )
 
   const nominators = useMemo(
     () => nominatorData && nominatorData.nominatorsConnection,
