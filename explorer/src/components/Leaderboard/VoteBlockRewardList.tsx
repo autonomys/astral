@@ -1,31 +1,37 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NotAllowed } from 'components/common/NotAllowed'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { AccountsConnectionRewardsQuery } from 'gql/graphql'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  AccountRewardsOrderByInput,
+  AccountsConnectionRewardsQuery,
+  AccountsConnectionRewardsQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_REWARDS_LIST } from './querys'
 
 export const VoteBlockRewardList = () => {
+  const { ref, inView } = useInView()
   const [searchAccount, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'operator', desc: true }])
   const [pagination, setPagination] = useState({
@@ -131,9 +137,12 @@ export const VoteBlockRewardList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const orderBy = useMemo(() => sort(sorting, 'amount_DESC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, AccountRewardsOrderByInput.AmountDesc) as AccountRewardsOrderByInput,
+    [sorting],
+  )
 
-  const variables = useMemo(
+  const variables: AccountsConnectionRewardsQueryVariables = useMemo(
     () => ({
       first: pagination.pageSize,
       after:
@@ -143,18 +152,33 @@ export const VoteBlockRewardList = () => {
       orderBy,
       where: searchAccount
         ? { id_eq: searchAccount }
-        : { vote_gt: '0', vote_isNull: false, OR: { block_gt: '0', block_isNull: false } },
+        : {
+            OR: [
+              { vote_gt: '0', vote_isNull: false },
+              { block_gt: '0', block_isNull: false },
+            ],
+          },
     }),
     [pagination.pageSize, pagination.pageIndex, orderBy, searchAccount],
   )
 
-  const { data, error, loading } = useQuery<AccountsConnectionRewardsQuery>(QUERY_REWARDS_LIST, {
-    variables,
-    skip: !inFocus,
-    pollInterval: 6000,
-  })
+  const { setIsVisible } = useSquidQuery<
+    AccountsConnectionRewardsQuery,
+    AccountsConnectionRewardsQueryVariables
+  >(
+    QUERY_REWARDS_LIST,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+    },
+    Routes.leaderboard,
+    'farmers',
+  )
 
-  useErrorHandler(error)
+  const {
+    leaderboard: { farmers },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -170,7 +194,10 @@ export const VoteBlockRewardList = () => {
     [pagination],
   )
 
-  const accountRewardsConnection = useMemo(() => data && data.accountRewardsConnection, [data])
+  const accountRewardsConnection = useMemo(
+    () => hasValue(farmers) && farmers.value.accountRewardsConnection,
+    [farmers],
+  )
   const accountRewards = useMemo(
     () =>
       accountRewardsConnection &&
@@ -186,9 +213,15 @@ export const VoteBlockRewardList = () => {
     [totalCount, pagination.pageSize],
   )
 
-  if (loading) return <Spinner />
-  if (selectedChain.isDomain) return <NotAllowed />
-  if (!data || !accountRewards) return <NotFound />
+  const noData = useMemo(() => {
+    if (isLoading(farmers)) return <Spinner />
+    if (!hasValue(farmers)) return <NotFound />
+    return null
+  }, [farmers])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -208,18 +241,24 @@ export const VoteBlockRewardList = () => {
           </div>
         </div>
         <div className='my-6 rounded'>
-          <SortedTable
-            data={accountRewards}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='leaderboard-vote-block-reward-list'
-            fullDataDownloader={fullDataDownloader}
-          />
+          <div ref={ref}>
+            {accountRewards ? (
+              <SortedTable
+                data={accountRewards}
+                columns={columns}
+                showNavigation={true}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='leaderboard-vote-block-reward-list'
+                fullDataDownloader={fullDataDownloader}
+              />
+            ) : (
+              noData
+            )}
+          </div>
         </div>
       </div>
     </div>

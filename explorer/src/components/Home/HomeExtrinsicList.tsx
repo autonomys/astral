@@ -1,7 +1,6 @@
 'use client'
 
 import { shortString } from '@/utils/string'
-import { ApolloError } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
@@ -18,8 +17,6 @@ import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
 dayjs.extend(relativeTime)
 
 interface HomeExtrinsicListProps {
-  loading: boolean
-  error?: ApolloError | undefined
   data: HomeQueryQuery | HomeQueryDomainQuery
 }
 

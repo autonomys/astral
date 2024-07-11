@@ -1,34 +1,40 @@
 'use client'
 
-import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { NominatorsConnectionQuery } from 'gql/graphql'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  NominatorOrderByInput,
+  NominatorsConnectionQuery,
+  NominatorsConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { OperatorIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
 
 export const NominatorsList: FC = () => {
+  const { ref, inView } = useInView()
   const [searchNominator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -243,7 +249,10 @@ export const NominatorsList: FC = () => {
     handleAction,
   ])
 
-  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, NominatorOrderByInput.IdAsc) as NominatorOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -259,16 +268,23 @@ export const NominatorsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, searchNominator],
   )
 
-  const { data, error, loading } = useQuery<NominatorsConnectionQuery>(
+  const { setIsVisible } = useSquidQuery<
+    NominatorsConnectionQuery,
+    NominatorsConnectionQueryVariables
+  >(
     QUERY_NOMINATOR_CONNECTION_LIST,
     {
       skip: !inFocus,
       variables,
       pollInterval: 6000,
     },
+    Routes.staking,
+    'nominators',
   )
 
-  useErrorHandler(error)
+  const {
+    staking: { nominators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -285,12 +301,17 @@ export const NominatorsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const nominators = useMemo(() => data && data.nominatorsConnection, [data])
   const nominatorsConnection = useMemo(
-    () => nominators && nominators.edges.map((nominator) => nominator.node),
+    () =>
+      hasValue(nominators) &&
+      nominators.value.nominatorsConnection &&
+      nominators.value.nominatorsConnection.edges.map((nominator) => nominator.node),
     [nominators],
   )
-  const totalCount = useMemo(() => (nominators ? nominators.totalCount : 0), [nominators])
+  const totalCount = useMemo(
+    () => (hasValue(nominators) ? nominators.value.nominatorsConnection.totalCount : 0),
+    [nominators],
+  )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const pageCount = useMemo(
@@ -302,8 +323,15 @@ export const NominatorsList: FC = () => {
     if (operatorId) handleSearch(operatorId)
   }, [operatorId, handleSearch])
 
-  if (loading) return <Spinner />
-  if (!data || !nominatorsConnection) return <NotFound />
+  const noData = useMemo(() => {
+    if (isLoading(nominators)) return <Spinner />
+    if (!hasValue(nominators)) return <NotFound />
+    return null
+  }, [nominators])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -314,20 +342,24 @@ export const NominatorsList: FC = () => {
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='my-6 rounded'>
-          <SortedTable
-            data={nominatorsConnection}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            pageSizeOptions={[10]}
-            filename='operators-nominators-list'
-            fullDataDownloader={fullDataDownloader}
-          />
+        <div className='my-6 rounded' ref={ref}>
+          {nominatorsConnection ? (
+            <SortedTable
+              data={nominatorsConnection}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              pageSizeOptions={[10]}
+              filename='operators-nominators-list'
+              fullDataDownloader={fullDataDownloader}
+            />
+          ) : (
+            noData
+          )}
         </div>
       </div>
       <ActionsModal isOpen={isOpen} action={action} onClose={handleActionClose} />

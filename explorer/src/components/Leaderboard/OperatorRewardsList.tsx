@@ -1,30 +1,36 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NotAllowed } from 'components/common/NotAllowed'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { OperatorsConnectionRewardsQuery } from 'gql/graphql'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  OperatorRewardsOrderByInput,
+  type OperatorsConnectionRewardsQuery,
+  type OperatorsConnectionRewardsQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_OPERATORS_REWARDS_LIST } from './querys'
 
 export const OperatorRewardsList = () => {
+  const { ref, inView } = useInView()
   const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'amount', desc: true }])
   const [pagination, setPagination] = useState({
@@ -98,7 +104,10 @@ export const OperatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const orderBy = useMemo(() => sort(sorting, 'amount_DESC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, OperatorRewardsOrderByInput.AmountDesc) as OperatorRewardsOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -113,16 +122,23 @@ export const OperatorRewardsList = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, searchOperator],
   )
 
-  const { data, error, loading } = useQuery<OperatorsConnectionRewardsQuery>(
+  const { setIsVisible } = useSquidQuery<
+    OperatorsConnectionRewardsQuery,
+    OperatorsConnectionRewardsQueryVariables
+  >(
     QUERY_OPERATORS_REWARDS_LIST,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.leaderboard,
+    'operators',
   )
 
-  useErrorHandler(error)
+  const {
+    leaderboard: { operators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -140,7 +156,10 @@ export const OperatorRewardsList = () => {
     [pagination],
   )
 
-  const operatorRewardsConnection = useMemo(() => data && data.operatorRewardsConnection, [data])
+  const operatorRewardsConnection = useMemo(
+    () => hasValue(operators) && operators.value.operatorRewardsConnection,
+    [operators],
+  )
   const totalCount = useMemo(
     () => operatorRewardsConnection && operatorRewardsConnection.totalCount,
     [operatorRewardsConnection],
@@ -156,9 +175,15 @@ export const OperatorRewardsList = () => {
     [operatorRewardsConnection],
   )
 
-  if (loading) return <Spinner />
-  if (selectedChain.isDomain) return <NotAllowed />
-  if (!data || !operatorRewards) return <NotFound />
+  const noData = useMemo(() => {
+    if (isLoading(operators)) return <Spinner />
+    if (!hasValue(operators)) return <NotFound />
+    return null
+  }, [operators])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -178,18 +203,24 @@ export const OperatorRewardsList = () => {
           </div>
         </div>
         <div className='my-6 rounded'>
-          <SortedTable
-            data={operatorRewards}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='leaderboard-operator-rewards-list'
-            fullDataDownloader={fullDataDownloader}
-          />
+          <div ref={ref}>
+            {operatorRewards ? (
+              <SortedTable
+                data={operatorRewards}
+                columns={columns}
+                showNavigation={true}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='leaderboard-operator-rewards-list'
+                fullDataDownloader={fullDataDownloader}
+              />
+            ) : (
+              noData
+            )}
+          </div>
         </div>
       </div>
     </div>

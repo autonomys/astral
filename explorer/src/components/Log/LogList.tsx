@@ -1,26 +1,33 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants'
-import { numberWithCommas } from '@/utils/number'
-import { useQuery } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { Log, LogWhereInput, LogsConnectionQuery } from 'gql/graphql'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import type {
+  Log,
+  LogWhereInput,
+  LogsConnectionQuery,
+  LogsConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
+import { numberWithCommas } from 'utils/number'
 import { NotFound } from '../layout/NotFound'
 import { LogListFilter } from './LogListFilter'
 import { QUERY_LOG_CONNECTION_LIST } from './query'
 
 export const LogList: FC = () => {
+  const { ref, inView } = useInView()
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -42,13 +49,31 @@ export const LogList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { data, error, loading } = useQuery<LogsConnectionQuery>(QUERY_LOG_CONNECTION_LIST, {
-    variables,
-    skip: !inFocus,
-    pollInterval: 6000,
-  })
+  const { setIsVisible } = useSquidQuery<LogsConnectionQuery, LogsConnectionQueryVariables>(
+    QUERY_LOG_CONNECTION_LIST,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+    },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'logs',
+  )
 
-  useErrorHandler(error)
+  const {
+    consensus: { logs: consensusEntry },
+    nova: { logs: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const logsConnection = useMemo(() => data && data.logsConnection, [data])
   const logs = useMemo(
@@ -129,36 +154,51 @@ export const LogList: FC = () => {
     [totalCount, pagination],
   )
 
-  if (loading) return <Spinner />
-  if (!logs || !logTypes) return <NotFound />
+  const noData = useMemo(() => {
+    if (loading) return <Spinner />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
       {novaExplorerBanner}
-      <div className='mt-5 flex w-full justify-between'>
-        <LogListFilter
-          title={
-            <div className=' font-medium text-grayDark dark:text-white'>Logs {totalLabel}</div>
-          }
-          filters={filters}
-          logTypes={logTypes}
-          setFilters={setFilters}
-        />
-      </div>
+      {logTypes && (
+        <div className='mt-5 flex w-full justify-between'>
+          <LogListFilter
+            title={
+              <div className=' font-medium text-grayDark dark:text-white'>Logs {totalLabel}</div>
+            }
+            filters={filters}
+            logTypes={logTypes}
+            setFilters={setFilters}
+          />
+        </div>
+      )}
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded'>
-            <SortedTable
-              data={logs}
-              columns={columns}
-              showNavigation={true}
-              sorting={sorting}
-              onSortingChange={setSorting}
-              pagination={pagination}
-              pageCount={pageCount}
-              onPaginationChange={setPagination}
-              filename='logs-list'
-            />
+            <div ref={ref}>
+              {logs ? (
+                <SortedTable
+                  data={logs}
+                  columns={columns}
+                  showNavigation={true}
+                  sorting={sorting}
+                  onSortingChange={setSorting}
+                  pagination={pagination}
+                  pageCount={pageCount}
+                  onPaginationChange={setPagination}
+                  filename='logs-list'
+                />
+              ) : (
+                noData
+              )}
+            </div>
           </div>
         </div>
       </div>

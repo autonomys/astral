@@ -4,21 +4,29 @@ import { searchTypes } from '@/constants'
 import { PAGE_SIZE } from '@/constants/general'
 import { numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
-import { useQuery } from '@apollo/client'
 import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { NotFound } from 'components/layout/NotFound'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Block, BlocksConnectionDomainQuery, BlocksConnectionQuery } from 'gql/graphql'
+import {
+  Block,
+  BlocksConnectionDomainQuery,
+  BlocksConnectionDomainQueryVariables,
+  BlocksConnectionQuery,
+  BlocksConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { BlockAuthor } from './BlockAuthor'
 import { QUERY_BLOCK_LIST_CONNECTION, QUERY_BLOCK_LIST_CONNECTION_DOMAIN } from './query'
@@ -26,6 +34,7 @@ import { QUERY_BLOCK_LIST_CONNECTION, QUERY_BLOCK_LIST_CONNECTION_DOMAIN } from 
 dayjs.extend(relativeTime)
 
 export const BlockList: FC = () => {
+  const { ref, inView } = useInView()
   const { selectedChain, selectedDomain } = useDomains()
   const novaExplorerBanner = useEvmExplorerBanner('blocks')
 
@@ -51,16 +60,34 @@ export const BlockList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { data, error, loading } = useQuery<BlocksConnectionQuery | BlocksConnectionDomainQuery>(
+  const { setIsVisible } = useSquidQuery<
+    BlocksConnectionQuery | BlocksConnectionDomainQuery,
+    BlocksConnectionQueryVariables | BlocksConnectionDomainQueryVariables
+  >(
     BlockListQuery,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
     },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'blocks',
   )
 
-  useErrorHandler(error)
+  const {
+    consensus: { blocks: consensusEntry },
+    nova: { blocks: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const blocksConnection = useMemo(() => data && data.blocksConnection, [data])
   const blocks = useMemo(
@@ -162,13 +189,15 @@ export const BlockList: FC = () => {
     [totalCount, pagination],
   )
 
-  if (loading) return <Spinner />
-  if (!data || !blocks)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <p className='text-sm font-light text-gray-600 dark:text-white'>There was an error</p>
-      </div>
-    )
+  const noData = useMemo(() => {
+    if (loading) return <Spinner />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -182,15 +211,21 @@ export const BlockList: FC = () => {
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded'>
-            <SortedTable
-              data={blocks}
-              columns={columns}
-              showNavigation={true}
-              pagination={pagination}
-              pageCount={pageCount}
-              onPaginationChange={setPagination}
-              filename='blocks-list'
-            />
+            <div ref={ref}>
+              {blocks ? (
+                <SortedTable
+                  data={blocks}
+                  columns={columns}
+                  showNavigation={true}
+                  pagination={pagination}
+                  pageCount={pageCount}
+                  onPaginationChange={setPagination}
+                  filename='blocks-list'
+                />
+              ) : (
+                noData
+              )}
+            </div>
           </div>
         </div>
       </div>

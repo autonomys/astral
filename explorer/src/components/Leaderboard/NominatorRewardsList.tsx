@@ -1,25 +1,31 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { bigNumberToString } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NotAllowed } from 'components/common/NotAllowed'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import { AccountRewards, AccountsNominatorsConnectionRewardsQuery } from 'gql/graphql'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  AccountRewards,
+  AccountRewardsOrderByInput,
+  AccountsNominatorsConnectionRewardsQuery,
+  AccountsNominatorsConnectionRewardsQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToString } from 'utils/number'
 import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_NOMINATORS_REWARDS_LIST } from './querys'
@@ -32,6 +38,7 @@ type Row = {
 }
 
 export const NominatorRewardsList = () => {
+  const { ref, inView } = useInView()
   const [searchAccount, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'operator', desc: true }])
   const [pagination, setPagination] = useState({
@@ -93,7 +100,10 @@ export const NominatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const orderBy = useMemo(() => sort(sorting, 'operator_DESC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, AccountRewardsOrderByInput.OperatorDesc) as AccountRewardsOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -110,16 +120,23 @@ export const NominatorRewardsList = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, searchAccount],
   )
 
-  const { data, error, loading } = useQuery<AccountsNominatorsConnectionRewardsQuery>(
+  const { setIsVisible } = useSquidQuery<
+    AccountsNominatorsConnectionRewardsQuery,
+    AccountsNominatorsConnectionRewardsQueryVariables
+  >(
     QUERY_NOMINATORS_REWARDS_LIST,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.leaderboard,
+    'nominators',
   )
 
-  useErrorHandler(error)
+  const {
+    leaderboard: { nominators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -137,7 +154,10 @@ export const NominatorRewardsList = () => {
     [pagination],
   )
 
-  const accountRewardsConnection = useMemo(() => data && data.accountRewardsConnection, [data])
+  const accountRewardsConnection = useMemo(
+    () => hasValue(nominators) && nominators.value.accountRewardsConnection,
+    [nominators],
+  )
   const accountRewards = useMemo(
     () =>
       accountRewardsConnection &&
@@ -153,9 +173,15 @@ export const NominatorRewardsList = () => {
     [totalCount, pagination],
   )
 
-  if (loading) return <Spinner />
-  if (!data || !accountRewards) return <NotFound />
-  if (selectedChain.isDomain) return <NotAllowed />
+  const noData = useMemo(() => {
+    if (isLoading(nominators)) return <Spinner />
+    if (!hasValue(nominators)) return <NotFound />
+    return null
+  }, [nominators])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -175,18 +201,24 @@ export const NominatorRewardsList = () => {
           </div>
         </div>
         <div className='my-6 rounded'>
-          <SortedTable
-            data={accountRewards}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='leaderboard-nominator-rewards-list'
-            fullDataDownloader={fullDataDownloader}
-          />
+          <div ref={ref}>
+            {accountRewards ? (
+              <SortedTable
+                data={accountRewards}
+                columns={columns}
+                showNavigation={true}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='leaderboard-nominator-rewards-list'
+                fullDataDownloader={fullDataDownloader}
+              />
+            ) : (
+              noData
+            )}
+          </div>
         </div>
       </div>
     </div>

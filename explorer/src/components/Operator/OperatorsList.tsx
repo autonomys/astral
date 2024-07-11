@@ -1,30 +1,35 @@
 'use client'
 
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { Chains, PAGE_SIZE } from 'constants/'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { OperatorsConnectionQuery } from 'gql/graphql'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  OperatorOrderByInput,
+  OperatorsConnectionQuery,
+  OperatorsConnectionQueryVariables,
+} from 'gql/oldSquidTypes'
 import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useInView } from 'react-intersection-observer'
 import { useDomainsStates } from 'states/domains'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -32,6 +37,7 @@ import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorsList: FC = () => {
+  const { ref, inView } = useInView()
   const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -229,7 +235,10 @@ export const OperatorsList: FC = () => {
     handleAction,
   ])
 
-  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, OperatorOrderByInput.IdAsc) as OperatorOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -245,16 +254,23 @@ export const OperatorsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, searchOperator],
   )
 
-  const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
+  const { setIsVisible } = useSquidQuery<
+    OperatorsConnectionQuery,
+    OperatorsConnectionQueryVariables
+  >(
     QUERY_OPERATOR_CONNECTION_LIST,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.staking,
+    'operators',
   )
 
-  useErrorHandler(error)
+  const {
+    staking: { operators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -271,24 +287,35 @@ export const OperatorsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const operators = useMemo(() => data && data.operatorsConnection, [data])
   const operatorsConnection = useMemo(
-    () => operators && operators.edges.map((operator) => operator.node),
+    () =>
+      hasValue(operators) &&
+      operators.value.operatorsConnection.edges.map((operator) => operator.node),
     [operators],
   )
-  const totalCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
+  const totalCount = useMemo(
+    () => (hasValue(operators) ? operators.value.operatorsConnection.totalCount : 0),
+    [operators],
+  )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
     () => Math.floor(totalCount / pagination.pageSize),
     [totalCount, pagination],
   )
 
+  const noData = useMemo(() => {
+    if (isLoading(operators)) return <Spinner />
+    if (!hasValue(operators)) return <NotFound />
+    return null
+  }, [operators])
+
   useEffect(() => {
     if (operatorId) handleSearch(operatorId)
   }, [operatorId, handleSearch])
 
-  if (loading) return <Spinner />
-  if (!operatorsConnection) return <NotFound />
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -306,20 +333,24 @@ export const OperatorsList: FC = () => {
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='my-6 rounded'>
-          <SortedTable
-            data={operatorsConnection}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='operators-operators-list'
-            pageSizeOptions={[10]}
-            fullDataDownloader={fullDataDownloader}
-          />
+        <div className='my-6 rounded' ref={ref}>
+          {operatorsConnection ? (
+            <SortedTable
+              data={operatorsConnection}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              filename='operators-operators-list'
+              pageSizeOptions={[10]}
+              fullDataDownloader={fullDataDownloader}
+            />
+          ) : (
+            noData
+          )}
         </div>
       </div>
       <ActionsModal isOpen={isOpen} action={action} onClose={handleActionClose} />

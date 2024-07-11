@@ -1,9 +1,5 @@
 'use client'
 
-import { PAGE_SIZE, searchTypes } from '@/constants'
-import { numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useQuery } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
@@ -12,15 +8,25 @@ import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
+import {
+  Extrinsic,
+  ExtrinsicWhereInput,
+  ExtrinsicsConnectionQuery,
+  ExtrinsicsConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import Link from 'next/link'
 import { FC, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
+import { numberWithCommas } from 'utils/number'
+import { shortString } from 'utils/string'
 import { NotFound } from '../layout/NotFound'
 import { ExtrinsicListFilter } from './ExtrinsicListFilter'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
@@ -28,6 +34,7 @@ import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
 dayjs.extend(relativeTime)
 
 export const ExtrinsicList: FC = () => {
+  const { ref, inView } = useInView()
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -48,15 +55,33 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
+  const { setIsVisible } = useSquidQuery<
+    ExtrinsicsConnectionQuery,
+    ExtrinsicsConnectionQueryVariables
+  >(
     QUERY_EXTRINSIC_LIST_CONNECTION,
     {
       variables,
       pollInterval: 6000,
     },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'extrinsics',
   )
 
-  useErrorHandler(error)
+  const {
+    consensus: { extrinsics: consensusEntry },
+    nova: { extrinsics: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -148,6 +173,12 @@ export const ExtrinsicList: FC = () => {
     [selectedChain.urls.page, selectedDomain],
   )
 
+  const noData = useMemo(() => {
+    if (loading) return <Spinner />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
   useEffect(() => {
     try {
       sendGAEvent('event', 'extrinsic_filter', { value: `filters:${filters.toString()}` })
@@ -156,8 +187,9 @@ export const ExtrinsicList: FC = () => {
     }
   }, [filters])
 
-  if (loading) return <Spinner />
-  if (!data || !modules || !extrinsics) return <NotFound />
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -165,32 +197,40 @@ export const ExtrinsicList: FC = () => {
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[2]} />
       </div>
-      <div className='mt-5 flex w-full justify-between'>
-        <ExtrinsicListFilter
-          title={
-            <div className=' font-medium text-grayDark dark:text-white'>
-              Extrinsics {totalLabel}
-            </div>
-          }
-          filters={filters}
-          modules={modules}
-          setFilters={setFilters}
-        />
-      </div>
+      {modules && (
+        <div className='mt-5 flex w-full justify-between'>
+          <ExtrinsicListFilter
+            title={
+              <div className=' font-medium text-grayDark dark:text-white'>
+                Extrinsics {totalLabel}
+              </div>
+            }
+            filters={filters}
+            modules={modules}
+            setFilters={setFilters}
+          />
+        </div>
+      )}
       <div className='mt-8 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded'>
-            <SortedTable
-              data={extrinsics}
-              columns={columns}
-              showNavigation={true}
-              sorting={sorting}
-              onSortingChange={setSorting}
-              pagination={pagination}
-              pageCount={pageCount}
-              onPaginationChange={setPagination}
-              filename='extrinsics-list'
-            />
+            <div ref={ref}>
+              {extrinsics ? (
+                <SortedTable
+                  data={extrinsics}
+                  columns={columns}
+                  showNavigation={true}
+                  sorting={sorting}
+                  onSortingChange={setSorting}
+                  pagination={pagination}
+                  pageCount={pageCount}
+                  onPaginationChange={setPagination}
+                  filename='extrinsics-list'
+                />
+              ) : (
+                noData
+              )}
+            </div>
           </div>
         </div>
       </div>

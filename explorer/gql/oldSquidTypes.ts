@@ -2736,6 +2736,16 @@ export type LogByIdQueryVariables = Exact<{
 
 export type LogByIdQuery = { __typename?: 'Query', logById?: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'Event', id: string, args?: any | null, name: string, phase: string, indexInBlock: number, timestamp: any, block?: { __typename?: 'Block', height: any, hash: string } | null }> } } | null };
 
+export type StakingHeaderQueryVariables = Exact<{
+  opOrderBy: Array<OperatorOrderByInput> | OperatorOrderByInput;
+  noOrderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
+  opWhere?: InputMaybe<OperatorWhereInput>;
+  noWhere?: InputMaybe<NominatorWhereInput>;
+}>;
+
+
+export type StakingHeaderQuery = { __typename?: 'Query', operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number }, nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number } };
+
 export type OperatorsConnectionQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
