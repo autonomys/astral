@@ -251,7 +251,14 @@ export const NominationManagement: FC = () => {
       },
     ]
     return cols
-  }, [selectedChain.urls.page, selectedChain.token.symbol, selectedDomain, action, handleAction])
+  }, [
+    selectedChain.urls.page,
+    selectedChain.token.symbol,
+    domains,
+    selectedDomain,
+    action,
+    handleAction,
+  ])
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 

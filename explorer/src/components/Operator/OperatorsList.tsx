@@ -120,16 +120,14 @@ export const OperatorsList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
-          console.log('row', row.original)
-          const isOperator = row.original.operatorOwner === subspaceAccount
-          return (
-            <div className='row flex items-center gap-3'>
-              {isOperator && <AccountIcon address={row.original.id} size={26} />}
-              <div>{shortString(row.original.signingKey)}</div>
-            </div>
-          )
-        },
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+          <div className='row flex items-center gap-3'>
+            {row.original.operatorOwner === subspaceAccount && (
+              <AccountIcon address={row.original.id} size={26} />
+            )}
+            <div>{shortString(row.original.signingKey)}</div>
+          </div>
+        ),
       },
       {
         accessorKey: 'minimumNominatorStake',

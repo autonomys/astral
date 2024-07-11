@@ -306,6 +306,7 @@ export const OperatorManagement: FC = () => {
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
+    domains,
     lastBlock,
     action,
     handleAction,
