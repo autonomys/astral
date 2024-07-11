@@ -169,6 +169,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
     loadWalletBalance()
   }, [api, actingAccount, loadWalletBalance])
 
+  if (!isOpen) return null
   if (!actingAccount) return null
 
   return (
