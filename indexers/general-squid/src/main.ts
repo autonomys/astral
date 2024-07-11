@@ -70,20 +70,25 @@ async function processBlock(
   { header, calls, events, extrinsics }: Block,
   blockAuthor: string
 ) {
-  await saveBlock(ctx, header, blockAuthor);
+  let savedBlock = await saveBlock(
+    ctx,
+    header,
+    blockAuthor,
+    extrinsics.length,
+    events.length,
+    0,
+    calls.length
+  );
 
-  for (const extrinsic of extrinsics) {
-    await saveExtrinsic(ctx, extrinsic);
-  }
+  await Promise.all(
+    extrinsics.map((extrinsic) => saveExtrinsic(ctx, savedBlock, extrinsic))
+  );
 
-  // Process calls in reverse order as required
-  for (const call of calls.reverse()) {
-    await saveCall(ctx, call);
-  }
+  await Promise.all(
+    calls.reverse().map((call) => saveCall(ctx, savedBlock, call))
+  );
 
-  for (const event of events) {
-    await saveEvent(ctx, event);
-  }
+  await Promise.all(events.map((event) => saveEvent(ctx, savedBlock, event)));
 
   await processDigestLogs(ctx, header);
 }
