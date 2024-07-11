@@ -1,35 +1,41 @@
 'use client'
 
-import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { NominatorsConnectionQuery } from 'gql/graphql'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  NominatorOrderByInput,
+  NominatorsConnectionQuery,
+  NominatorsConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useInView } from 'react-intersection-observer'
 import { useDomainsStates } from 'states/domains'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
 
 export const NominationManagement: FC = () => {
+  const { ref, inView } = useInView()
   const [searchNominator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -260,7 +266,10 @@ export const NominationManagement: FC = () => {
     handleAction,
   ])
 
-  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, NominatorOrderByInput.IdAsc) as NominatorOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -276,16 +285,23 @@ export const NominationManagement: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, searchNominator],
   )
 
-  const { data, error, loading } = useQuery<NominatorsConnectionQuery>(
+  const { setIsVisible } = useSquidQuery<
+    NominatorsConnectionQuery,
+    NominatorsConnectionQueryVariables
+  >(
     QUERY_NOMINATOR_CONNECTION_LIST,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.staking,
+    'manageNominations',
   )
 
-  useErrorHandler(error)
+  const {
+    staking: { manageNominations },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -305,8 +321,11 @@ export const NominationManagement: FC = () => {
   )
 
   const nominators = useMemo(
-    () => data && data.nominatorsConnection && data.nominatorsConnection,
-    [data],
+    () =>
+      hasValue(manageNominations) &&
+      manageNominations.value.nominatorsConnection &&
+      manageNominations.value.nominatorsConnection,
+    [manageNominations],
   )
   const nominatorsConnection = useMemo(
     () => nominators && nominators.edges.map((nominator) => nominator.node),
@@ -342,8 +361,15 @@ export const NominationManagement: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subspaceAccount])
 
-  if (loading) return <Spinner />
-  if (!subspaceAccount || !nominatorsConnection) return <NotFound />
+  const noData = useMemo(() => {
+    if (isLoading(manageNominations)) return <Spinner />
+    if (!hasValue(manageNominations)) return <NotFound />
+    return null
+  }, [manageNominations])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -384,20 +410,24 @@ export const NominationManagement: FC = () => {
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='my-6 rounded'>
-          <SortedTable
-            data={nominatorsConnection}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            pageSizeOptions={[10]}
-            filename='operators-nomination-management-list'
-            fullDataDownloader={fullDataDownloader}
-          />
+        <div className='my-6 rounded' ref={ref}>
+          {nominatorsConnection ? (
+            <SortedTable
+              data={nominatorsConnection}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              pageSizeOptions={[10]}
+              filename='operators-nomination-management-list'
+              fullDataDownloader={fullDataDownloader}
+            />
+          ) : (
+            noData
+          )}
         </div>
       </div>
 
