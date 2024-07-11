@@ -139,56 +139,52 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                 {bigNumberToNumber(totalStake)} {tokenSymbol}
               </StyledListItem>
               {totalOperatorStake !== '0' && (
-                <li key={'totalOperatorStake'}>
-                  <Link
-                    data-testid='totalOperatorStake-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
-                  >
-                    <StyledListItem title='Your total staked in your own operators'>
-                      {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key={'totalOperatorStake'}
+                  data-testid='totalOperatorStake-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
+                >
+                  <StyledListItem title='Your total staked in your own operators'>
+                    {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
+                  </StyledListItem>
+                </Link>
               )}
               {totalNominatedStake !== '0' && (
-                <li key={'totalNominatedStake'}>
-                  <Link
-                    data-testid='totalNominatedStake-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
-                  >
-                    <StyledListItem title='Your total nominated to other operators'>
-                      {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key={'totalNominatedStake'}
+                  data-testid='totalNominatedStake-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
+                >
+                  <StyledListItem title='Your total nominated to other operators'>
+                    {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
+                  </StyledListItem>
+                </Link>
               )}
               {totalOperatorCount > 0 && (
-                <li key={'totalOperatorCount'}>
-                  <Link
-                    data-testid='totalOperatorCount-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
-                  >
-                    <StyledListItem title='Amount of operators you control'>
-                      {totalOperatorCount}
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key={'totalOperatorCount'}
+                  data-testid='totalOperatorCount-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
+                >
+                  <StyledListItem title='Amount of operators you control'>
+                    {totalOperatorCount}
+                  </StyledListItem>
+                </Link>
               )}
               {totalNominatedCount > 0 && (
-                <li key={'totalNominatedCount'}>
-                  <Link
-                    data-testid='totalNominatedCount-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
-                  >
-                    <StyledListItem title='Amount of nomination'>
-                      {totalNominatedCount}
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key={'totalNominatedCount'}
+                  data-testid='totalNominatedCount-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
+                >
+                  <StyledListItem title='Amount of nomination'>
+                    {totalNominatedCount}
+                  </StyledListItem>
+                </Link>
               )}
             </List>
           ) : (

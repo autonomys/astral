@@ -126,43 +126,40 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
           {hasTopPositions ? (
             <List>
               {topFarmers > 0 && (
-                <li key='topFarmers'>
-                  <Link
-                    data-testid='topFarmers-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
-                  >
-                    <StyledListItem title='Top Farmer'>
-                      {numberPositionSuffix(topFarmers)} place
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key='topFarmers-link'
+                  data-testid='topFarmers-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                >
+                  <StyledListItem title='Top Farmer'>
+                    {numberPositionSuffix(topFarmers)} place
+                  </StyledListItem>
+                </Link>
               )}
               {topOperators > 0 && (
-                <li key='topOperators'>
-                  <Link
-                    data-testid='topOperators-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
-                  >
-                    <StyledListItem title='Top Operator'>
-                      {numberPositionSuffix(topOperators)} place
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key='topOperators-link'
+                  data-testid='topOperators-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
+                >
+                  <StyledListItem title='Top Operator'>
+                    {numberPositionSuffix(topOperators)} place
+                  </StyledListItem>
+                </Link>
               )}
               {topNominators > 0 && (
-                <li key='topNominators'>
-                  <Link
-                    data-testid='topNominators-link'
-                    className='hover:text-purpleAccent'
-                    href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
-                  >
-                    <StyledListItem title='Top Nominator'>
-                      {numberPositionSuffix(topNominators)} place
-                    </StyledListItem>
-                  </Link>
-                </li>
+                <Link
+                  key='topNominators-link'
+                  data-testid='topNominators-link'
+                  className='hover:text-purpleAccent'
+                  href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
+                >
+                  <StyledListItem title='Top Nominator'>
+                    {numberPositionSuffix(topNominators)} place
+                  </StyledListItem>
+                </Link>
               )}
             </List>
           ) : (

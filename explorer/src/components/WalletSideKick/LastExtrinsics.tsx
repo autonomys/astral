@@ -162,6 +162,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                   }
                 >
                   <Link
+                    key='link-extrinsic'
                     data-testid='extrinsic-link'
                     className='hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.extrinsics.id.page(
@@ -177,6 +178,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                     </Tooltip>
                   </Link>
                   <Link
+                    key='link-blocks'
                     data-testid='extrinsic-link'
                     className='px-2 hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.blocks.id.page(
