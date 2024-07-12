@@ -27,6 +27,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-bronze to-purpleMist font-['Montserrat'] dark:bg-dark">
       <div className="relative flex min-h-screen w-full flex-col bg-[url('/images/backgroundColor.svg')] bg-cover font-['Montserrat']">
+        {outOfSync}
         <DomainHeader />
         {subHeader}
         <ErrorBoundary
@@ -35,7 +36,6 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
           // TODO: consider adding error monitoring
           onError={(error) => console.error(error)}
         >
-          {outOfSync}
           <Container>{children}</Container>
         </ErrorBoundary>
         <Footer />

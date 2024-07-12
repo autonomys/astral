@@ -1,7 +1,9 @@
 import { useQuery } from '@apollo/client'
 import { activate } from '@autonomys/auto-utils'
+import { EXTERNAL_ROUTES } from 'constants/routes'
 import { LastBlockQuery } from 'gql/oldSquidTypes'
 import useDomains from 'hooks/useDomains'
+import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { LAST_BLOCK } from './query'
 
@@ -18,7 +20,20 @@ export const OutOfSyncBanner: FC = () => {
             </div>
             <div className='text-[15px] text-[#282929] dark:text-white'>
               The indexer is currently out of sync. We are working to resolve this issue as soon as
-              possible. Please check back later.
+              possible. Please check back later or visit Subscan for the most up-to-date information
+              or use Polkadot.js Apps to interact with the chain.
+            </div>
+            <div>
+              <Link href={EXTERNAL_ROUTES.subscan} target='_blank'>
+                <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
+                  Visit Subscan
+                </button>
+              </Link>
+              <Link className='ml-4' href={EXTERNAL_ROUTES.polkadot} target='_blank'>
+                <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
+                  Visit Polkadot.js Apps
+                </button>
+              </Link>
             </div>
           </div>
         </div>
