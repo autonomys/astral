@@ -1,21 +1,21 @@
-import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
+// import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { Modal } from 'components/common/Modal'
 import { CheckMarkIcon } from 'components/icons/CheckMarkIcon'
-import { EXTERNAL_ROUTES, ROUTE_API, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
-import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { EXTERNAL_ROUTES } from 'constants/routes' // , ROUTE_API, ROUTE_EXTRA_FLAG_TYPE
+// import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
+// import useDomains from 'hooks/useDomains'
+// import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
-import { useWindowFocus } from 'hooks/useWindowFocus'
+// import { useWindowFocus } from 'hooks/useWindowFocus'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useState } from 'react' // , useEffect
 import toast from 'react-hot-toast'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, useQueryStates } from 'states/query'
-import { QUERY_EXTRINSIC_BY_HASH } from '../Extrinsic/query'
+// import { hasValue, useQueryStates } from 'states/query'
+// import { QUERY_EXTRINSIC_BY_HASH } from '../Extrinsic/query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -88,30 +88,30 @@ const ExplainerLinkAndModal: FC = () => {
 }
 
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
-  const { ref, inView } = useInView()
+  const { ref } = useInView() // , inView
   const { data: session } = useSession()
-  const { selectedChain } = useDomains()
+  // const { selectedChain } = useDomains()
   const { actingAccount, injector } = useWallet()
-  const [claimIsPending, setClaimIsPending] = useState(false)
-  const [claimIsFinalized, setClaimIsFinalized] = useState(false)
-  const [claimError, setClaimError] = useState<string | null>(null)
-  const [claimHash, setClaimHash] = useState<string | null>(null)
-  const inFocus = useWindowFocus()
+  // const [claimIsPending, setClaimIsPending] = useState(false)
+  // const [claimIsFinalized, setClaimIsFinalized] = useState(false)
+  // const [claimError, setClaimError] = useState<string | null>(null)
+  // const [claimHash, setClaimHash] = useState<string | null>(null)
+  // const inFocus = useWindowFocus()
 
-  const { setIsVisible } = useSquidQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
-    QUERY_EXTRINSIC_BY_HASH,
-    {
-      variables: { hash: claimHash ?? '' },
-      skip: !inFocus || claimHash === null || claimIsFinalized,
-      pollInterval: 6000,
-    },
-    ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
-    'claim',
-  )
+  // const { setIsVisible } = useSquidQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
+  //   QUERY_EXTRINSIC_BY_HASH,
+  //   {
+  //     variables: { hash: claimHash ?? '' },
+  //     skip: !inFocus || claimHash === null || claimIsFinalized,
+  //     pollInterval: 6000,
+  //   },
+  //   ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
+  //   'claim',
+  // )
 
-  const {
-    walletSidekick: { claim },
-  } = useQueryStates()
+  // const {
+  //   walletSidekick: { claim },
+  // } = useQueryStates()
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -148,43 +148,43 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
     [],
   )
 
-  const handleClaimOperatorDisbursement = useCallback(async () => {
-    setClaimError(null)
-    if (!actingAccount || !injector) throw new Error('No wallet connected')
-    if (!injector.signer.signRaw) throw new Error('No signer')
-    if (!subspaceAccount) throw new Error('No subspace account')
+  // const handleClaimOperatorDisbursement = useCallback(async () => {
+  //   setClaimError(null)
+  //   if (!actingAccount || !injector) throw new Error('No wallet connected')
+  //   if (!injector.signer.signRaw) throw new Error('No signer')
+  //   if (!subspaceAccount) throw new Error('No subspace account')
 
-    // Prepare and sign the message
-    const message = `I am the owner of ${subspaceAccount} and I claim the operator disbursement`
-    const signature = await injector.signer.signRaw({
-      address: actingAccount.address,
-      type: 'bytes',
-      data: message,
-    })
-    if (!signature) throw new Error('No signature')
-    const claim = await fetch(ROUTE_API.claim.operatorDisbursement(selectedChain.urls.page), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        address: actingAccount.address,
-        message,
-        signature: signature.signature,
-      }),
-    }).then((res) => res.json())
-    if (claim.hash) {
-      setClaimIsPending(true)
-      setClaimHash(claim.hash)
-    } else if (claim.error) setClaimError(claim.error)
-  }, [actingAccount, injector, selectedChain.urls.page, subspaceAccount])
+  //   // Prepare and sign the message
+  //   const message = `I am the owner of ${subspaceAccount} and I claim the operator disbursement`
+  //   const signature = await injector.signer.signRaw({
+  //     address: actingAccount.address,
+  //     type: 'bytes',
+  //     data: message,
+  //   })
+  //   if (!signature) throw new Error('No signature')
+  //   const claim = await fetch(ROUTE_API.claim.operatorDisbursement(selectedChain.urls.page), {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({
+  //       address: actingAccount.address,
+  //       message,
+  //       signature: signature.signature,
+  //     }),
+  //   }).then((res) => res.json())
+  //   if (claim.hash) {
+  //     setClaimIsPending(true)
+  //     setClaimHash(claim.hash)
+  //   } else if (claim.error) setClaimError(claim.error)
+  // }, [actingAccount, injector, selectedChain.urls.page, subspaceAccount])
 
-  useEffect(() => {
-    if (hasValue(claim) && claim.value.extrinsics && claim.value.extrinsics.length > 0)
-      setClaimIsFinalized(true)
-  }, [claim])
+  // useEffect(() => {
+  //   if (hasValue(claim) && claim.value.extrinsics && claim.value.extrinsics.length > 0)
+  //     setClaimIsFinalized(true)
+  // }, [claim])
 
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  // useEffect(() => {
+  //   setIsVisible(inView)
+  // }, [inView, setIsVisible])
 
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
@@ -193,7 +193,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
           <List>
             <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
           </List>
-          <List>
+          {/* <List>
             <StyledListItem
               title={
                 <>
@@ -232,7 +232,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
               )}
             </StyledListItem>
             {claimError && <p className='text-sm text-red-500'>{claimError}</p>}
-          </List>
+          </List> */}
         </Accordion>
         <ExplainerLinkAndModal />
       </div>
