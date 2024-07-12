@@ -11,10 +11,10 @@ interface SpinnerProps {
 export const Spinner: FC<SpinnerProps> = ({ isSmall }) => {
   const { isDark } = useTheme()
   return (
-    <div className={`items-center justify-center ${isSmall ? 'py-12' : 'py-32'}`}>
+    <div className={`flex w-full items-center justify-center ${isSmall ? 'py-12' : 'py-32'}`}>
       <Lottie
         animationData={isDark ? loaderDark : loaderLight}
-        style={isSmall ? { width: '50vw', alignItems: 'center', justifyContent: 'center' } : {}}
+        style={isSmall ? { width: '50vw', height: '50vh' } : {}}
       />
     </div>
   )
