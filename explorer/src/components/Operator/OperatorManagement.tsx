@@ -1,34 +1,41 @@
 'use client'
 
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Chains, PAGE_SIZE } from 'constants/'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import { OperatorsConnectionQuery } from 'gql/graphql'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  OperatorOrderByInput,
+  OperatorsConnectionQuery,
+  OperatorsConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useInView } from 'react-intersection-observer'
 import { useDomainsStates } from 'states/domains'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { operatorReadyToUnlock, operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorManagement: FC = () => {
+  const { ref, inView } = useInView()
   const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -36,6 +43,7 @@ export const OperatorManagement: FC = () => {
     pageIndex: 0,
   })
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const inFocus = useWindowFocus()
 
   const { subspaceAccount } = useWallet()
   const { domains } = useDomainsStates()
@@ -67,7 +75,10 @@ export const OperatorManagement: FC = () => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
-  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, OperatorOrderByInput.IdAsc) as OperatorOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -83,15 +94,23 @@ export const OperatorManagement: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, searchOperator],
   )
 
-  const { data, error, loading } = useQuery<OperatorsConnectionQuery>(
+  const { setIsVisible } = useSquidQuery<
+    OperatorsConnectionQuery,
+    OperatorsConnectionQueryVariables
+  >(
     QUERY_OPERATOR_CONNECTION_LIST,
     {
-      variables: variables,
+      variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.staking,
+    'manageOperators',
   )
 
-  useErrorHandler(error)
+  const {
+    staking: { manageOperators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -111,10 +130,16 @@ export const OperatorManagement: FC = () => {
   )
 
   const lastBlock = useMemo(
-    () => data && data.lastBlock && (data.lastBlock[0].height as number),
-    [data],
+    () =>
+      hasValue(manageOperators) && manageOperators.value.lastBlock
+        ? (manageOperators.value.lastBlock[0].height as number)
+        : 0,
+    [manageOperators],
   )
-  const operators = useMemo(() => data && data.operatorsConnection, [data])
+  const operators = useMemo(
+    () => hasValue(manageOperators) && manageOperators.value.operatorsConnection,
+    [manageOperators],
+  )
   const operatorsConnection = useMemo(
     () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
     [operators],
@@ -303,18 +328,26 @@ export const OperatorManagement: FC = () => {
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
+    domains,
     lastBlock,
     action,
     handleAction,
   ])
+
+  const noData = useMemo(() => {
+    if (isLoading(manageOperators)) return <Spinner isSmall />
+    if (!hasValue(manageOperators)) return <NotFound />
+    return null
+  }, [manageOperators])
 
   useEffect(() => {
     if (subspaceAccount) handleSearch(subspaceAccount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subspaceAccount])
 
-  if (loading) return <Spinner />
-  if (!subspaceAccount) return <NotFound />
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -347,20 +380,24 @@ export const OperatorManagement: FC = () => {
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='my-6 rounded'>
-          <SortedTable
-            data={operatorsConnection}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            fullDataDownloader={fullDataDownloader}
-            pageSizeOptions={[10]}
-            filename='operators-operator-management-list'
-          />
+        <div className='my-6 rounded' ref={ref}>
+          {operatorsConnection ? (
+            <SortedTable
+              data={operatorsConnection}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              fullDataDownloader={fullDataDownloader}
+              pageSizeOptions={[10]}
+              filename='operators-operator-management-list'
+            />
+          ) : (
+            noData
+          )}
         </div>
       </div>
 

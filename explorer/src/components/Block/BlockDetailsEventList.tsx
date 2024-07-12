@@ -1,26 +1,32 @@
 'use client'
 
 import { PAGE_SIZE } from '@/constants/general'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Event, EventsByBlockIdQuery } from 'gql/graphql'
+import { Event, EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FC, useCallback, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
+import { NotFound } from '../layout/NotFound'
 import { QUERY_BLOCK_EVENTS } from './query'
 
 dayjs.extend(relativeTime)
 
 export const BlockDetailsEventList: FC = () => {
+  const { ref, inView } = useInView()
   const { blockId } = useParams()
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
@@ -29,6 +35,7 @@ export const BlockDetailsEventList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
 
   const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
 
@@ -45,9 +52,30 @@ export const BlockDetailsEventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { data, error, loading } = useQuery<EventsByBlockIdQuery>(QUERY_BLOCK_EVENTS, {
-    variables,
-  })
+  const { setIsVisible } = useSquidQuery<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>(
+    QUERY_BLOCK_EVENTS,
+    {
+      variables,
+      skip: !inFocus,
+    },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'blockDetailsEvent',
+  )
+
+  const {
+    consensus: { blockDetailsEvent: consensusEntry },
+    consensus: { blockDetailsEvent: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
   const events = useMemo(
@@ -123,43 +151,34 @@ export const BlockDetailsEventList: FC = () => {
     [totalCount, pagination],
   )
 
-  if (error)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <p className='text-sm font-light text-gray-600 dark:text-white'>There was an error</p>
-      </div>
-    )
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
 
-  if (loading)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <div className='size-20 '>
-          <Spinner />
-        </div>
-      </div>
-    )
-
-  if (!data || !columns || !events)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <p className='text-sm font-light text-gray-600 dark:text-white'>There was an error</p>
-      </div>
-    )
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
-    <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0'>
-      <SortedTable
-        data={events}
-        columns={columns}
-        showNavigation={true}
-        sorting={sorting}
-        onSortingChange={setSorting}
-        pagination={pagination}
-        pageCount={pageCount}
-        onPaginationChange={setPagination}
-        filename='block-details-event-list'
-        fullDataDownloader={fullDataDownloader}
-      />
+    <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
+      {events ? (
+        <SortedTable
+          data={events}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='block-details-event-list'
+          fullDataDownloader={fullDataDownloader}
+        />
+      ) : (
+        noData
+      )}
     </div>
   )
 }

@@ -1,5 +1,21 @@
 import { gql } from '@apollo/client'
 
+export const QUERY_STAKING_HEADER = gql`
+  query StakingHeader(
+    $opOrderBy: [OperatorOrderByInput!]!
+    $noOrderBy: [NominatorOrderByInput!]!
+    $opWhere: OperatorWhereInput
+    $noWhere: NominatorWhereInput
+  ) {
+    operatorsConnection(orderBy: $opOrderBy, first: 1, where: $opWhere) {
+      totalCount
+    }
+    nominatorsConnection(orderBy: $noOrderBy, first: 1, where: $noWhere) {
+      totalCount
+    }
+  }
+`
+
 export const QUERY_OPERATOR_CONNECTION_LIST = gql`
   query OperatorsConnection(
     $first: Int!

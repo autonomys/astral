@@ -59,35 +59,34 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChai
               const txs = tx.call.split('.')
               const txName = txs.length > 1 ? txs[1].toUpperCase() : tx.call.toUpperCase()
               return (
-                <li key={index}>
-                  <StyledListItem
-                    title={
-                      <div className='flex flex-col'>
-                        {txName}
-                        <Tooltip text={dayjs(tx.submittedAtLocalTimestamp).toString()}>
-                          <span className='mr-2 text-sm font-medium text-grayDarker dark:text-gray-400'>
-                            {dayjs(tx.submittedAtLocalTimestamp).fromNow(true)}
-                          </span>
-                        </Tooltip>
-                      </div>
-                    }
-                  >
+                <StyledListItem
+                  key={index}
+                  title={
                     <div className='flex flex-col'>
-                      <span className='mr-2 text-sm font-medium text-grayDarker dark:text-gray-400'>
-                        {shortString(tx.txHash)}
-                      </span>
-                      <span className='mr-2 text-sm font-medium text-grayDarker dark:text-gray-400'>
-                        #{tx.submittedAtBlockNumber}
-                      </span>
+                      {txName}
+                      <Tooltip text={dayjs(tx.submittedAtLocalTimestamp).toString()}>
+                        <span className='mr-2 text-sm font-medium text-grayDarker dark:text-gray-400'>
+                          {dayjs(tx.submittedAtLocalTimestamp).fromNow(true)}
+                        </span>
+                      </Tooltip>
                     </div>
-                    <div className='m-2 p-2'>
-                      <StatusIcon status={tx.status !== TransactionStatus.Pending} />
-                    </div>
-                    <div className='m-2 p-2'>
-                      <TrashIcon className='size-5' stroke='red' onClick={() => handleRemove(tx)} />
-                    </div>
-                  </StyledListItem>
-                </li>
+                  }
+                >
+                  <div className='flex flex-col'>
+                    <span className='mr-2 text-sm font-medium text-grayDarker dark:text-gray-400'>
+                      {shortString(tx.txHash)}
+                    </span>
+                    <span className='mr-2 text-sm font-medium text-grayDarker dark:text-gray-400'>
+                      #{tx.submittedAtBlockNumber}
+                    </span>
+                  </div>
+                  <div className='m-2 p-2'>
+                    <StatusIcon status={tx.status !== TransactionStatus.Pending} />
+                  </div>
+                  <div className='m-2 p-2'>
+                    <TrashIcon className='size-5' stroke='red' onClick={() => handleRemove(tx)} />
+                  </div>
+                </StyledListItem>
               )
             })}
           </List>

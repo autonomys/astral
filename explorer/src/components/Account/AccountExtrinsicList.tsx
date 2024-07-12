@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
@@ -7,13 +7,22 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
-import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsByAccountIdQuery } from 'gql/graphql'
+import {
+  Extrinsic,
+  ExtrinsicOrderByInput,
+  ExtrinsicWhereInput,
+  ExtrinsicsByAccountIdQuery,
+  ExtrinsicsByAccountIdQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
@@ -32,6 +41,7 @@ type Row = {
 }
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
+  const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -41,8 +51,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
+  const inFocus = useWindowFocus()
 
-  const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
+  const orderBy = useMemo(
+    () => sort(sorting, ExtrinsicOrderByInput.BlockHeightDesc) as ExtrinsicOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(() => {
     return {
@@ -61,12 +75,34 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     }
   }, [accountId, filters, orderBy, pagination.pageIndex, pagination.pageSize])
 
-  const { data, error, loading } = useQuery<ExtrinsicsByAccountIdQuery>(QUERY_ACCOUNT_EXTRINSICS, {
-    variables,
-    pollInterval: 6000,
-  })
+  const { setIsVisible } = useSquidQuery<
+    ExtrinsicsByAccountIdQuery,
+    ExtrinsicsByAccountIdQueryVariables
+  >(
+    QUERY_ACCOUNT_EXTRINSICS,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+    },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'accountExtrinsic',
+  )
 
-  useErrorHandler(error)
+  const {
+    consensus: { accountExtrinsic: consensusEntry },
+    consensus: { accountExtrinsic: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const fullDataDownloader = useCallback(
     () =>
@@ -159,8 +195,15 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [selectedDomain, selectedChain],
   )
 
-  if (loading) return <Spinner />
-  if (!data || !extrinsics) return <NotFound />
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='mt-5 flex w-full flex-col align-middle'>
@@ -170,19 +213,23 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           <AccountExtrinsicFilterDropdown filters={filters} setFilters={setFilters} />
         </div>
       </div>
-      <div className='my-6 rounded'>
-        <SortedTable
-          data={extrinsics}
-          columns={columns}
-          showNavigation={true}
-          sorting={sorting}
-          onSortingChange={setSorting}
-          pagination={pagination}
-          pageCount={pageCount}
-          onPaginationChange={setPagination}
-          filename='account-extrinsic-list'
-          fullDataDownloader={fullDataDownloader}
-        />
+      <div className='my-6 rounded' ref={ref}>
+        {extrinsics ? (
+          <SortedTable
+            data={extrinsics}
+            columns={columns}
+            showNavigation={true}
+            sorting={sorting}
+            onSortingChange={setSorting}
+            pagination={pagination}
+            pageCount={pageCount}
+            onPaginationChange={setPagination}
+            filename='account-extrinsic-list'
+            fullDataDownloader={fullDataDownloader}
+          />
+        ) : (
+          noData
+        )}
       </div>
     </div>
   )
