@@ -362,7 +362,7 @@ export const NominationManagement: FC = () => {
   }, [subspaceAccount])
 
   const noData = useMemo(() => {
-    if (isLoading(manageNominations)) return <Spinner />
+    if (isLoading(manageNominations)) return <Spinner isSmall />
     if (!hasValue(manageNominations)) return <NotFound />
     return null
   }, [manageNominations])

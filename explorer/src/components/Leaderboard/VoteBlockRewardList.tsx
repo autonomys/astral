@@ -214,7 +214,7 @@ export const VoteBlockRewardList = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(farmers)) return <Spinner />
+    if (isLoading(farmers)) return <Spinner isSmall />
     if (!hasValue(farmers)) return <NotFound />
     return null
   }, [farmers])

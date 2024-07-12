@@ -59,7 +59,7 @@ export const Extrinsic: FC = () => {
   const novaExplorerBanner = useEvmExplorerBanner(extrinsic ? 'tx/' + extrinsic.hash : 'tx/')
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
   }, [data, loading])

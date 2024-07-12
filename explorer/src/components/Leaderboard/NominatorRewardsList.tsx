@@ -174,7 +174,7 @@ export const NominatorRewardsList = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(nominators)) return <Spinner />
+    if (isLoading(nominators)) return <Spinner isSmall />
     if (!hasValue(nominators)) return <NotFound />
     return null
   }, [nominators])

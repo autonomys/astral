@@ -66,7 +66,7 @@ export const Block: FC = () => {
   const block = useMemo(() => data && (data.blocks[0] as BlockResult), [data])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
   }, [data, loading])

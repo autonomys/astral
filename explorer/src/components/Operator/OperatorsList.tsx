@@ -304,7 +304,7 @@ export const OperatorsList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(operators)) return <Spinner />
+    if (isLoading(operators)) return <Spinner isSmall />
     if (!hasValue(operators)) return <NotFound />
     return null
   }, [operators])

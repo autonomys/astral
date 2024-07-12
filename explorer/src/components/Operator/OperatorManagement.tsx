@@ -335,7 +335,7 @@ export const OperatorManagement: FC = () => {
   ])
 
   const noData = useMemo(() => {
-    if (isLoading(manageOperators)) return <Spinner />
+    if (isLoading(manageOperators)) return <Spinner isSmall />
     if (!hasValue(manageOperators)) return <NotFound />
     return null
   }, [manageOperators])

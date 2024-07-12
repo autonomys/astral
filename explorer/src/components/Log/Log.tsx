@@ -49,7 +49,7 @@ export const Log: FC = () => {
   const log = useMemo(() => data && (data.logById as SquidLog), [data])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
   }, [data, loading])

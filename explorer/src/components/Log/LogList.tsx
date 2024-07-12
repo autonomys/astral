@@ -155,7 +155,7 @@ export const LogList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
   }, [data, loading])
