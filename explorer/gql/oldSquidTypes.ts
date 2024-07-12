@@ -2792,3 +2792,8 @@ export type CheckRoleQueryVariables = Exact<{
 
 
 export type CheckRoleQuery = { __typename?: 'Query', isFarmer: Array<{ __typename?: 'RewardEvent', account?: { __typename?: 'Account', id: string } | null }> };
+
+export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LastBlockQuery = { __typename?: 'Query', lastBlock: Array<{ __typename?: 'Block', height: any }> };

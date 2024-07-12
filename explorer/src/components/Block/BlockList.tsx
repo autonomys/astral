@@ -102,9 +102,7 @@ export const BlockList: FC = () => {
         header: 'Extrinsics',
         enableSorting: false,
         cell: ({ row }: Cell<Block>) => (
-          <div key={`${row.index}-block-time`}>
-            {dayjs(row.original.extrinsics?.length).fromNow(true)}
-          </div>
+          <div key={`${row.index}-block-time`}>{row.original.extrinsics?.length}</div>
         ),
       },
       {
@@ -112,9 +110,7 @@ export const BlockList: FC = () => {
         header: 'Events',
         enableSorting: false,
         cell: ({ row }: Cell<Block>) => (
-          <div key={`${row.index}-block-time`}>
-            {dayjs(row.original.events?.length).fromNow(true)}
-          </div>
+          <div key={`${row.index}-block-time`}>{row.original.events?.length}</div>
         ),
       },
       {
