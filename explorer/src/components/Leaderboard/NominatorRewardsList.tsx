@@ -26,6 +26,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToString } from 'utils/number'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_NOMINATORS_REWARDS_LIST } from './querys'
@@ -169,7 +170,7 @@ export const NominatorRewardsList = () => {
     [accountRewardsConnection],
   )
   const pageCount = useMemo(
-    () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
+    () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination],
   )
 

@@ -1,8 +1,5 @@
 'use client'
 
-import { PAGE_SIZE, searchTypes } from '@/constants'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
 import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
@@ -10,6 +7,7 @@ import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
+import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import type {
   Account,
@@ -26,6 +24,9 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
 
@@ -157,7 +158,7 @@ export const AccountList: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

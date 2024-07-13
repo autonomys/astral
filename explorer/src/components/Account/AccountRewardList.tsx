@@ -1,15 +1,13 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { AccountIdParam } from '@/types/app'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
+import { countTablePages } from '@/utils/table'
 import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -23,10 +21,13 @@ import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { AccountIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { formatAddress } from 'utils//formatAddress'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
 import type { Account, RewardEvent, RewardsListQuery } from '../gql/graphql'
 import { NotFound } from '../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
@@ -181,7 +182,7 @@ export const AccountRewardList: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
+    () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
   )
 

@@ -26,6 +26,7 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { AccountExtrinsicFilterDropdown } from './AccountExtrinsicFilterDropdown'
 import { QUERY_ACCOUNT_EXTRINSICS } from './query'
 
@@ -122,7 +123,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [extrinsicsConnection],
   )
   const pageCount = useMemo(
-    () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
+    () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
   )
 
