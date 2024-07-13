@@ -1,11 +1,10 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
-import { shortString } from '@/utils/string'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -19,6 +18,8 @@ import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
+import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
 
@@ -143,7 +144,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
 
   const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

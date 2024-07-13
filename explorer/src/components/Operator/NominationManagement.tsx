@@ -30,6 +30,7 @@ import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/
 import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
@@ -352,7 +353,7 @@ export const NominationManagement: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
