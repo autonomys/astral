@@ -309,18 +309,25 @@ export const OperatorManagement: FC = () => {
         enableSorting: false,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <ActionsDropdown
-            action={action}
-            handleAction={handleAction}
-            row={row as ActionsDropdownRow}
-            excludeActions={
-              operatorReadyToUnlock(row.original.status, lastBlock)
-                ? [OperatorActionType.Deregister, OperatorActionType.UnlockNominator]
-                : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockFunds]
-            }
-          />
-        ),
+        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+          const excludeActions = operatorReadyToUnlock(row.original.status, lastBlock)
+            ? [OperatorActionType.Deregister, OperatorActionType.UnlockNominator]
+            : [OperatorActionType.UnlockFunds, OperatorActionType.UnlockFunds]
+
+          if (
+            row.original.status &&
+            (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
+          )
+            excludeActions.push(OperatorActionType.Nominating)
+          return (
+            <ActionsDropdown
+              action={action}
+              handleAction={handleAction}
+              row={row as ActionsDropdownRow}
+              excludeActions={excludeActions}
+            />
+          )
+        },
       },
     ]
   }, [

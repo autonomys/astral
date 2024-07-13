@@ -208,11 +208,10 @@ export const OperatorsList: FC = () => {
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
           if (
-            !nominator &&
             row.original.status &&
             (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
           )
-            return <></>
+            excludeActions.push(OperatorActionType.Nominating)
           return (
             <ActionsDropdown
               action={action}
