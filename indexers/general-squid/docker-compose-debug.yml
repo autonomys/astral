@@ -43,7 +43,7 @@ services:
 
 # To use this setup:
 
-# First, build your custom Docker image using the Dockerfile from the previous answer:
+# First, build your custom Docker image using the Dockerfile-debug file.
 # docker build -t squid-processor:debug -f Dockerfile-debug .
 
 # Save the above docker-compose.yml file.
