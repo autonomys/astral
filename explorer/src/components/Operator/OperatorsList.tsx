@@ -31,6 +31,7 @@ import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
+import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
@@ -87,7 +88,6 @@ export const OperatorsList: FC = () => {
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
-            data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
             className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
@@ -129,7 +129,9 @@ export const OperatorsList: FC = () => {
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
           <div className='row flex items-center gap-3'>
             {row.original.operatorOwner === subspaceAccount && (
-              <AccountIcon address={row.original.id} size={26} />
+              <Tooltip text='You are the operator'>
+                <AccountIcon address={row.original.operatorOwner} size={26} />
+              </Tooltip>
             )}
             <div>{shortString(row.original.signingKey)}</div>
           </div>
