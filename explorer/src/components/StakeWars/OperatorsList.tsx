@@ -1,10 +1,9 @@
 /* eslint-disable camelcase */
 
-import { GET_ALL_OPERATORS } from '@/components/StakeWars/rewardsQuery'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
+import { countTablePages } from '@/utils/table'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
+import { GET_ALL_OPERATORS } from 'components/StakeWars/rewardsQuery'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
@@ -20,8 +19,9 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { NotStarted } from '../layout/NotStarted'
 
 type Props = {
@@ -173,7 +173,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   const totalCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

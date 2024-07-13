@@ -1,5 +1,6 @@
 'use client'
 
+import { countTablePages } from '@/utils/table'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
@@ -174,7 +175,7 @@ export const EventList: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

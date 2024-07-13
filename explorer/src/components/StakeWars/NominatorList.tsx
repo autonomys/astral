@@ -21,6 +21,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { NotStarted } from '../layout/NotStarted'
 import { NominatorWithRewards, getNominatorRewards } from './helpers/calculateNominatorReward'
 
@@ -165,7 +166,7 @@ export const NominatorList: FC<Props> = ({ currentBlock }) => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
