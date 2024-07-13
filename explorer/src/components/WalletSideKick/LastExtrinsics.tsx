@@ -1,6 +1,5 @@
 'use client'
 
-import { TransactionStatus } from '@/constants'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -17,14 +16,12 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/oldSquidTypes'
 import { useSquidQuery } from 'hooks/useSquidQuery'
-import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
-import { useTransactionsStates } from 'states/transactions'
 import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
 interface LastExtrinsicsProps {
@@ -40,19 +37,6 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
 
-  const { actingAccount } = useWallet()
-  const { pendingTransactions, markAsFinalized, moveToFinalizedTransactions } =
-    useTransactionsStates()
-  const transactions = useMemo(
-    () =>
-      actingAccount
-        ? pendingTransactions.filter(
-            (tx) =>
-              actingAccount.address === tx.from && selectedChain.urls.page == tx.chain.urls.page,
-          )
-        : [],
-    [actingAccount, pendingTransactions, selectedChain.urls.page],
-  )
   const variables = useMemo(
     () => ({
       first: 10,
@@ -81,38 +65,6 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
       (lastExtrinsics.value.extrinsics.edges as ExtrinsicsSummaryQuery['extrinsics']['edges']),
     [lastExtrinsics],
   )
-
-  const moveIfPending = useCallback(
-    (edges: ExtrinsicsSummaryQuery['extrinsics']['edges']) => {
-      if (!transactions || !transactions[0] || !transactions[0].call) return edges
-      try {
-        const timeNowPlus2min = new Date(new Date().getTime() + 2 * 60000).getTime() // 2 minutes from now
-        const pending = transactions.find(
-          (tx) => edges[0].node && edges[0].node.hash && tx.txHash === edges[0].node.hash,
-        )
-        const toMove =
-          pending &&
-          pending.finalizedAtLocalTimestamp &&
-          pending.finalizedAtLocalTimestamp.getTime() > timeNowPlus2min
-        if (pending) {
-          markAsFinalized(
-            pending,
-            edges[0].node.success ? TransactionStatus.Success : TransactionStatus.Failed,
-          )
-          if (toMove) moveToFinalizedTransactions(toMove && pending)
-        }
-      } catch (error) {
-        console.error('Error in moveIfPending', error)
-      }
-      return edges
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [transactions],
-  )
-
-  useEffect(() => {
-    if (extrinsics && extrinsics.length > 0) moveIfPending(extrinsics)
-  }, [extrinsics, moveIfPending])
 
   useEffect(() => {
     setIsVisible(inView)
