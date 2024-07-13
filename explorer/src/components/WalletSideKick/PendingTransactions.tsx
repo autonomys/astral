@@ -10,8 +10,10 @@ import type { Chain } from 'constants/chains'
 import { TransactionStatus } from 'constants/transaction'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { ExtrinsicsSummaryQuery } from 'gql/oldSquidTypes'
 import useWallet from 'hooks/useWallet'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useCallback, useEffect, useMemo } from 'react'
+import { hasValue, useQueryStates } from 'states/query'
 import { useTransactionsStates } from 'states/transactions'
 import { shortString } from 'utils/string'
 
@@ -19,14 +21,25 @@ interface PendingTransactionsProps {
   selectedChain: Chain
 }
 
+dayjs.extend(relativeTime)
+
 export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChain }) => {
-  dayjs.extend(relativeTime)
   const { actingAccount } = useWallet()
-  const { pendingTransactions, removePendingTransactions } = useTransactionsStates()
+  const {
+    pendingTransactions,
+    removePendingTransactions,
+    markAsFinalized,
+    moveToFinalizedTransactions,
+  } = useTransactionsStates()
+  const {
+    walletSidekick: { lastExtrinsics },
+  } = useQueryStates()
+
   const handleRemove = useCallback(
     (tx: Transaction) => removePendingTransactions(tx),
     [removePendingTransactions],
   )
+
   const transactions = useMemo(
     () =>
       actingAccount
@@ -41,6 +54,46 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChai
         : [],
     [actingAccount, pendingTransactions, selectedChain.urls.page],
   )
+
+  const timeNowPlus2min = new Date(new Date().getTime() + 2 * 60000).getTime() // 2 minutes from now
+  const moveIfPending = useCallback(
+    (edges: ExtrinsicsSummaryQuery['extrinsics']['edges']) => {
+      const extrinsics = edges.map((edge) => edge.node.hash)
+      if (!transactions || transactions.length === 0) return edges
+      try {
+        const pendingExtrinsics = transactions.filter((tx) => extrinsics.includes(tx.txHash))
+        for (const pending of pendingExtrinsics) {
+          const toMove =
+            pending &&
+            pending.finalizedAtLocalTimestamp &&
+            pending.finalizedAtLocalTimestamp.getTime() > timeNowPlus2min
+          if (pending) {
+            markAsFinalized(
+              pending,
+              edges[0].node.success ? TransactionStatus.Success : TransactionStatus.Failed,
+            )
+            if (toMove) moveToFinalizedTransactions(pending)
+          }
+        }
+      } catch (error) {
+        console.error('Error in moveIfPending', error)
+      }
+      return edges
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [transactions],
+  )
+
+  useEffect(() => {
+    if (hasValue(lastExtrinsics)) {
+      const intervalId = setInterval(
+        () => moveIfPending(lastExtrinsics.value.extrinsics.edges),
+        60000,
+      ) // 1 minute
+
+      return () => clearInterval(intervalId)
+    }
+  }, [lastExtrinsics, moveIfPending])
 
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
