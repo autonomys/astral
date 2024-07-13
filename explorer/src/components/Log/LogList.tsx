@@ -22,6 +22,7 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
+import { countTablePages } from 'utils/table'
 import { NotFound } from '../layout/NotFound'
 import { LogListFilter } from './LogListFilter'
 import { QUERY_LOG_CONNECTION_LIST } from './query'
@@ -150,7 +151,7 @@ export const LogList: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

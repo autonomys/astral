@@ -1,10 +1,10 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
 import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -20,6 +20,7 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
+import { countTablePages } from 'utils/table'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_BLOCK_EVENTS } from './query'
 
@@ -147,7 +148,7 @@ export const BlockDetailsEventList: FC = () => {
 
   const totalCount = useMemo(() => (events ? events.length : 0), [events])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

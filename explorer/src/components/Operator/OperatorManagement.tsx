@@ -30,6 +30,7 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { operatorReadyToUnlock, operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
@@ -193,7 +194,7 @@ export const OperatorManagement: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
