@@ -219,7 +219,10 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                     walletBalance={walletBalance}
                     tokenSymbol={tokenSymbol}
                   />
-                  <PendingTransactions selectedChain={consensusChain} />
+                  <PendingTransactions
+                    subspaceAccount={subspaceAccount}
+                    selectedChain={consensusChain}
+                  />
                   <GetDiscordRoles subspaceAccount={subspaceAccount} />
                   <StakingSummary
                     subspaceAccount={subspaceAccount}
