@@ -2780,6 +2780,14 @@ export type AccountsTopLeaderboardQueryVariables = Exact<{
 
 export type AccountsTopLeaderboardQuery = { __typename?: 'Query', farmers: { __typename?: 'AccountRewardsConnection', edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', id: string } }> }, operators: { __typename?: 'OperatorRewardsConnection', edges: Array<{ __typename?: 'OperatorRewardsEdge', cursor: string, node: { __typename?: 'OperatorRewards', amount?: any | null, id: string } }> }, nominators: { __typename?: 'AccountRewardsConnection', edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', id: string } }> } };
 
+export type PendingTransactionQueryVariables = Exact<{
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+  extrinsics?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type PendingTransactionQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, success: boolean, timestamp: any, name: string, events: Array<{ __typename?: 'Event', name: string }>, block: { __typename?: 'Block', hash: string, height: any, id: string } }> }> };
+
 export type ExtrinsicsSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   subspaceAccount?: InputMaybe<Scalars['String']['input']>;

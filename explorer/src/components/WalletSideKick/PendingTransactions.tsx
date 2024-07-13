@@ -7,23 +7,37 @@ import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { Tooltip } from 'components/common/Tooltip'
 import type { Chain } from 'constants/chains'
+import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE } from 'constants/routes'
 import { TransactionStatus } from 'constants/transaction'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { ExtrinsicsSummaryQuery } from 'gql/oldSquidTypes'
+import { PendingTransactionQuery, PendingTransactionQueryVariables } from 'gql/oldSquidTypes'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
+import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo } from 'react'
-import { hasValue, useQueryStates } from 'states/query'
+import { useInView } from 'react-intersection-observer'
 import { useTransactionsStates } from 'states/transactions'
 import { shortString } from 'utils/string'
+import { QUERY_PENDING_TX } from './query'
 
 interface PendingTransactionsProps {
+  subspaceAccount: string
   selectedChain: Chain
 }
 
 dayjs.extend(relativeTime)
 
-export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChain }) => {
+export const PendingTransactions: FC<PendingTransactionsProps> = ({
+  subspaceAccount,
+  selectedChain,
+}) => {
+  const { ref, inView } = useInView()
+  const inFocus = useWindowFocus()
+  const { get } = useSearchParams()
+  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+
   const { actingAccount } = useWallet()
   const {
     pendingTransactions,
@@ -31,9 +45,22 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChai
     markAsFinalized,
     moveToFinalizedTransactions,
   } = useTransactionsStates()
-  const {
-    walletSidekick: { lastExtrinsics },
-  } = useQueryStates()
+
+  const variables = useMemo(
+    () => ({
+      subspaceAccount,
+      extrinsics: pendingTransactions.map((tx) => tx.txHash),
+    }),
+    [pendingTransactions, subspaceAccount],
+  )
+  const { data, setIsVisible } = useSquidQuery<
+    PendingTransactionQuery,
+    PendingTransactionQueryVariables
+  >(QUERY_PENDING_TX, {
+    variables,
+    skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
+    pollInterval: 6000,
+  })
 
   const handleRemove = useCallback(
     (tx: Transaction) => removePendingTransactions(tx),
@@ -57,46 +84,44 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ selectedChai
 
   const timeNowPlus2min = new Date(new Date().getTime() + 2 * 60000).getTime() // 2 minutes from now
   const moveIfPending = useCallback(
-    (edges: ExtrinsicsSummaryQuery['extrinsics']['edges']) => {
-      const extrinsics = edges.map((edge) => edge.node.hash)
-      if (!transactions || transactions.length === 0) return edges
+    (extrinsics: PendingTransactionQuery['accounts'][0]['extrinsics']) => {
+      const extrinsicsHash = extrinsics.map((e) => e.hash.toLowerCase())
+      if (!transactions || transactions.length === 0) return
       try {
-        const pendingExtrinsics = transactions.filter((tx) => extrinsics.includes(tx.txHash))
-        for (const pending of pendingExtrinsics) {
-          const toMove =
-            pending &&
-            pending.finalizedAtLocalTimestamp &&
-            pending.finalizedAtLocalTimestamp.getTime() > timeNowPlus2min
-          if (pending) {
+        transactions
+          .filter((tx) => extrinsicsHash.includes(tx.txHash.toLowerCase()))
+          .map((tx) => {
+            const extrinsic = extrinsics.find((e) => e.hash === tx.txHash)
+            if (!extrinsic) return
             markAsFinalized(
-              pending,
-              edges[0].node.success ? TransactionStatus.Success : TransactionStatus.Failed,
+              tx,
+              extrinsic.success ? TransactionStatus.Success : TransactionStatus.Failed,
             )
-            if (toMove) moveToFinalizedTransactions(pending)
-          }
-        }
+            if (new Date(tx.submittedAtLocalTimestamp).getTime() < timeNowPlus2min)
+              moveToFinalizedTransactions(tx)
+          })
       } catch (error) {
         console.error('Error in moveIfPending', error)
       }
-      return edges
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [transactions],
   )
 
   useEffect(() => {
-    if (hasValue(lastExtrinsics)) {
-      const intervalId = setInterval(
-        () => moveIfPending(lastExtrinsics.value.extrinsics.edges),
-        60000,
-      ) // 1 minute
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
-      return () => clearInterval(intervalId)
-    }
-  }, [lastExtrinsics, moveIfPending])
+  useEffect(() => {
+    if (data) moveIfPending(data.accounts[0].extrinsics)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div
+      ref={ref}
+      className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'
+    >
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
