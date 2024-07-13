@@ -21,6 +21,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useDomainsStates } from 'states/domains'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { OperatorIdParam } from 'types/app'
 import type { Cell } from 'types/table'
@@ -42,6 +43,7 @@ export const NominatorsList: FC = () => {
     pageIndex: 0,
   })
   const { subspaceAccount } = useWallet()
+  const { domains } = useDomainsStates()
   const { operatorId } = useParams<OperatorIdParam>()
 
   const [action, setAction] = useState<OperatorAction>({
@@ -71,14 +73,13 @@ export const NominatorsList: FC = () => {
   const columns = useMemo(() => {
     const cols = [
       {
-        accessorKey: 'nominator',
+        accessorKey: 'account.id',
         header: 'Nominator',
         enableSorting: true,
         cell: ({
           row,
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <Link
-            data-testid={`operator-link-${row.original.id}`}
             className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.accounts.id.page(
               selectedChain.urls.page,
@@ -91,17 +92,29 @@ export const NominatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'currentDomainId',
+        accessorKey: 'operator.currentDomainId',
         header: 'Domain',
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.operator.currentDomainId === 0 ? 'Subspace' : 'Nova'}</div>
-        ),
+        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => {
+          const domain = domains.find(
+            (d) =>
+              (row.original.operator.currentDomainId ||
+                row.original.operator.currentDomainId === 0) &&
+              d.domainId === row.original.operator.currentDomainId.toString(),
+          )
+          return (
+            <div>
+              {domain
+                ? domain.domainName.charAt(0).toUpperCase() + domain.domainName.slice(1)
+                : '#' + row.original.operator.currentDomainId}
+            </div>
+          )
+        },
       },
       {
-        accessorKey: 'operatorId',
+        accessorKey: 'operator.id',
         header: 'OperatorId',
         enableSorting: true,
         cell: ({
@@ -109,7 +122,6 @@ export const NominatorsList: FC = () => {
         }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
           <div className='row flex items-center gap-3'>
             <Link
-              data-testid={`nominator-link-${row.original.id}`}
               className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.operators.id.page(
                 selectedChain.urls.page,
@@ -123,7 +135,7 @@ export const NominatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'stakes',
+        accessorKey: 'operator.currentTotalStake',
         header: 'Stakes',
         enableSorting: true,
         cell: ({
@@ -169,7 +181,7 @@ export const NominatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'minimumNominatorStake',
+        accessorKey: 'operator.minimumNominatorStake',
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({
@@ -179,7 +191,7 @@ export const NominatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'nominationTax',
+        accessorKey: 'operator.nominationTax',
         header: 'Nominator Tax',
         enableSorting: true,
         cell: ({
@@ -189,7 +201,7 @@ export const NominatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'currentTotalStake',
+        accessorKey: 'operator.currentTotalStake',
         header: 'Total Stake',
         enableSorting: true,
         cell: ({
@@ -199,7 +211,7 @@ export const NominatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'status',
+        accessorKey: 'operator.status',
         header: 'Status',
         enableSorting: true,
         cell: ({
@@ -244,6 +256,7 @@ export const NominatorsList: FC = () => {
     subspaceAccount,
     selectedChain.urls.page,
     selectedChain.token.symbol,
+    domains,
     selectedDomain,
     action,
     handleAction,

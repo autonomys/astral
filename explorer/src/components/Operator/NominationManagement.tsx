@@ -78,7 +78,7 @@ export const NominationManagement: FC = () => {
   const columns = useMemo(() => {
     const cols = [
       {
-        accessorKey: 'nominator',
+        accessorKey: 'account.id',
         header: 'Nominator',
         enableSorting: true,
         cell: ({
@@ -98,7 +98,7 @@ export const NominationManagement: FC = () => {
         ),
       },
       {
-        accessorKey: 'currentDomainId',
+        accessorKey: 'operator.currentDomainId',
         header: 'Domain',
         enableSorting: true,
         cell: ({
@@ -120,7 +120,7 @@ export const NominationManagement: FC = () => {
         },
       },
       {
-        accessorKey: 'operatorId',
+        accessorKey: 'operator.id',
         header: 'OperatorId',
         enableSorting: true,
         cell: ({
@@ -142,7 +142,7 @@ export const NominationManagement: FC = () => {
         ),
       },
       {
-        accessorKey: 'stakes',
+        accessorKey: 'shares',
         header: 'Stakes',
         enableSorting: true,
         cell: ({
@@ -188,7 +188,7 @@ export const NominationManagement: FC = () => {
         ),
       },
       {
-        accessorKey: 'minimumNominatorStake',
+        accessorKey: 'operator.minimumNominatorStake',
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({
@@ -198,7 +198,7 @@ export const NominationManagement: FC = () => {
         ),
       },
       {
-        accessorKey: 'nominationTax',
+        accessorKey: 'operator.nominationTax',
         header: 'Nominator Tax',
         enableSorting: true,
         cell: ({
@@ -208,7 +208,7 @@ export const NominationManagement: FC = () => {
         ),
       },
       {
-        accessorKey: 'currentTotalStake',
+        accessorKey: 'operator.currentTotalStake',
         header: 'Total Stake',
         enableSorting: true,
         cell: ({
@@ -218,7 +218,7 @@ export const NominationManagement: FC = () => {
         ),
       },
       {
-        accessorKey: 'status',
+        accessorKey: 'operator.status',
         header: 'Status',
         enableSorting: true,
         cell: ({
