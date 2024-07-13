@@ -207,7 +207,6 @@ export const OperatorManagement: FC = () => {
           row,
         }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
-            data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
             className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
