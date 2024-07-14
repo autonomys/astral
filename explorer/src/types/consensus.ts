@@ -76,7 +76,7 @@ export type OperatorIdOwner = {
 }
 
 export type Operators = {
-  id: number
+  id: string
   operatorOwner: string
   signingKey: string
   currentDomainId: number

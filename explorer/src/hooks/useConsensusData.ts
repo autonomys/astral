@@ -130,7 +130,7 @@ export const useConsensusData = () => {
         operators.map(
           (operator, key) =>
             ({
-              id: (operator[0].toHuman() as number[])[0],
+              id: (operator[0].toHuman() as string[])[0],
               operatorOwner: operatorIdOwner[key][1].toJSON() as string,
               ...(operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>),
             }) as Operators,

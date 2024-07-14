@@ -229,7 +229,7 @@ export const OperatorManagement: FC = () => {
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
-              typeof row.original.id === 'string' ? row.original.id : row.original.id.toString(),
+              typeof row.original.id,
             )}
           >
             <div>{row.original.id}</div>
