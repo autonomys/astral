@@ -13,10 +13,10 @@ export interface Domain {
   domainInstantiationDeposit: string
   initialDomainTxRange: string
   domainTxRangeAdjustmentInterval: string
-  minOperatorStake: bigint
-  minNominatorStake: bigint
-  stakeWithdrawalLockingPeriod: bigint
-  stakeEpochDuration: bigint
+  minOperatorStake: string
+  minNominatorStake: string
+  stakeWithdrawalLockingPeriod: string
+  stakeEpochDuration: string
   treasuryAccount: string
   maxPendingStakingOperation: number
   palletId: string
