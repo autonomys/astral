@@ -1,3 +1,28 @@
+export interface Domain {
+  confirmationDepthK: string
+  domainRuntimeUpgradeDelay: string
+  blockTreePruningDepth: string
+  consensusSlotProbability: string
+  maxDomainBlockSize: string
+  maxDomainBlockWeight: {
+    refTime: number
+    proofSize: number
+  }
+  maxBundlesPerBlock: string
+  maxDomainNameLength: string
+  domainInstantiationDeposit: string
+  initialDomainTxRange: string
+  domainTxRangeAdjustmentInterval: string
+  minOperatorStake: bigint
+  minNominatorStake: bigint
+  stakeWithdrawalLockingPeriod: bigint
+  stakeEpochDuration: bigint
+  treasuryAccount: string
+  maxPendingStakingOperation: number
+  palletId: string
+  bundleLongevity: string
+}
+
 export type DomainRegistry = {
   domainId: string
   ownerAccountId: string
