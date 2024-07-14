@@ -22,8 +22,11 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useConsensusStates } from 'states/consensus'
 import { useDomainsStates } from 'states/domains'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useViewStates } from 'states/view'
+import { Operators } from 'types/consensus'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
@@ -31,6 +34,7 @@ import { operatorReadyToUnlock, operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { Switch } from '../common/Switch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
@@ -45,8 +49,10 @@ export const OperatorManagement: FC = () => {
   })
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const inFocus = useWindowFocus()
+  const { useRpcData, setUseRpcData } = useViewStates()
 
   const { subspaceAccount } = useWallet()
+  const { operators: rpcOperators } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { selectedChain, selectedDomain } = useDomains()
@@ -141,10 +147,19 @@ export const OperatorManagement: FC = () => {
     () => hasValue(manageOperators) && manageOperators.value.operatorsConnection,
     [manageOperators],
   )
-  const operatorsConnection = useMemo(
-    () => (operators && operators.edges ? operators.edges.map((operator) => operator.node) : []),
-    [operators],
-  )
+  const operatorsConnection = useMemo(() => {
+    if (useRpcData)
+      return rpcOperators
+        .map((operator) => ({
+          ...operator,
+          nominators: [],
+          totalShares: operator.currentTotalShares,
+        }))
+        .filter((operator) => operator.operatorOwner === subspaceAccount)
+    if (hasValue(manageOperators) && manageOperators.value.operatorsConnection.edges)
+      return manageOperators.value.operatorsConnection.edges.map((operator) => operator.node)
+    return []
+  }, [manageOperators, rpcOperators, subspaceAccount, useRpcData])
   const totalCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
@@ -206,13 +221,15 @@ export const OperatorManagement: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <Link
             className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
-              row.original.id,
+              typeof row.original.id === 'string' ? row.original.id : row.original.id.toString(),
             )}
           >
             <div>{row.original.id}</div>
@@ -225,7 +242,9 @@ export const OperatorManagement: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
           const domain = domains.find(
             (d) =>
               (row.original.currentDomainId || row.original.currentDomainId === 0) &&
@@ -256,7 +275,9 @@ export const OperatorManagement: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
@@ -276,7 +297,9 @@ export const OperatorManagement: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
@@ -286,8 +309,18 @@ export const OperatorManagement: FC = () => {
         enableSorting: false,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
+          <div>
+            {!useRpcData &&
+            (row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
+              .nominators
+              ? (
+                  row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+                ).nominators.length
+              : 0}
+          </div>
         ),
       },
       {
@@ -296,7 +329,9 @@ export const OperatorManagement: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div>
             {selectedChain.urls.page === Chains.gemini3g
               ? row.original.status
@@ -310,7 +345,9 @@ export const OperatorManagement: FC = () => {
         enableSorting: false,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <ActionsDropdown
             action={action}
             handleAction={handleAction}
@@ -329,6 +366,7 @@ export const OperatorManagement: FC = () => {
     selectedChain.token.symbol,
     selectedDomain,
     domains,
+    useRpcData,
     lastBlock,
     action,
     handleAction,
@@ -339,6 +377,9 @@ export const OperatorManagement: FC = () => {
     if (!hasValue(manageOperators)) return <NotFound />
     return null
   }, [manageOperators])
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleSwitchDataSource = useCallback(() => setUseRpcData(!useRpcData), [useRpcData])
 
   useEffect(() => {
     if (subspaceAccount) handleSearch(subspaceAccount)
@@ -361,21 +402,35 @@ export const OperatorManagement: FC = () => {
             Pool operator
           </div>
         </div>
-        <div
-          className={`text-grayDarker ${
-            isDesktop ? 'text-2xl' : 'text-lg'
-          } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
-        >
-          Information across operators
-          {subspaceAccount && (
-            <span
-              className={`text-base ${
-                isDesktop ? 'text-base' : 'text-xs'
-              } ml-2 font-normal dark:text-blueAccent`}
-            >
-              on Account {subspaceAccount}
-            </span>
-          )}
+        <div className='flex items-center'>
+          <div className='mr-4 flex items-center'>
+            <div className='w-40'>
+              <Switch
+                title='Toggle Data Source'
+                checked={useRpcData}
+                onChange={handleSwitchDataSource}
+              />
+              <span className='ml-2 text-sm text-grayDark dark:text-white'>
+                {useRpcData ? 'RPC Data' : 'Indexed Data'}
+              </span>
+            </div>
+          </div>
+          <div
+            className={`text-grayDarker ${
+              isDesktop ? 'text-2xl' : 'text-lg'
+            } mt-4 font-bold leading-tight tracking-tight dark:text-white`}
+          >
+            Information across operators
+            {subspaceAccount && (
+              <span
+                className={`text-base ${
+                  isDesktop ? 'text-base' : 'text-xs'
+                } ml-2 font-normal dark:text-blueAccent`}
+              >
+                on Account {subspaceAccount}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
