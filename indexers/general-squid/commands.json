@@ -53,7 +53,7 @@
       "deps": ["build", "migration:apply"],
       "cmd": [
         "node",
-        "--max-old-space-size=4096",
+        "--max-old-space-size=8192",
         "--require=dotenv/config",
         "lib/main.js"
       ]
