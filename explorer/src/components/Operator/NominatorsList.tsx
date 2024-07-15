@@ -31,6 +31,7 @@ import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { DataSourceBanner } from '../common/DataSourceBanner'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
@@ -349,6 +350,7 @@ export const NominatorsList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      <DataSourceBanner />
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>

@@ -37,6 +37,7 @@ import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { DataSource } from '../common/DataSource'
+import { DataSourceBanner } from '../common/DataSourceBanner'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -373,6 +374,7 @@ export const OperatorsList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      <DataSourceBanner />
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
