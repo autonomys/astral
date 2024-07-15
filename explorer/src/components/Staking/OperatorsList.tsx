@@ -297,7 +297,7 @@ export const OperatorsList: FC = () => {
   )
 
   const where = useMemo(() => {
-    if (myPositionOnly && !searchOperator)
+    if (subspaceAccount && myPositionOnly && !searchOperator)
       return {
         OR: [
           // eslint-disable-next-line camelcase
@@ -357,7 +357,7 @@ export const OperatorsList: FC = () => {
   }, [])
 
   const operatorsConnection = useMemo(() => {
-    if (useRpcData)
+    if (useRpcData && subspaceAccount)
       return rpcOperators
         .filter((o) => (myPositionOnly ? o.operatorOwner === subspaceAccount : true))
         .map((operator) => ({
@@ -404,9 +404,11 @@ export const OperatorsList: FC = () => {
           <div className='mr-5 flex items-center'>
             <DataSource />
           </div>
-          <div className='mr-4 flex w-40 items-center'>
-            <MyPositionSwitch />
-          </div>
+          {subspaceAccount && (
+            <div className='mr-4 flex w-40 items-center'>
+              <MyPositionSwitch />
+            </div>
+          )}
           <DebouncedInput
             type='text'
             className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
