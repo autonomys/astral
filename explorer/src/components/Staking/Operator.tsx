@@ -28,7 +28,7 @@ export const Operator: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const { useRpcData } = useViewStates()
   const { operators: rpcOperators } = useConsensusStates()
-  const { loadData: loadConsensusData } = useConsensusData()
+  const { loadData: loadConsensusData, loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
   const { setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
@@ -71,6 +71,10 @@ export const Operator: FC = () => {
   useEffect(() => {
     loadConsensusData()
   }, [loadConsensusData])
+
+  useEffect(() => {
+    if (operatorId) loadDataByOperatorId(operatorId)
+  }, [operatorId, loadDataByOperatorId])
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>

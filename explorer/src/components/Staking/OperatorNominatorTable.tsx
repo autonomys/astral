@@ -16,6 +16,7 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useConsensusStates } from 'states/consensus'
 import { hasValue, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import type { Cell } from 'types/table'
@@ -42,6 +43,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     pageIndex: 0,
   })
   const { useRpcData } = useViewStates()
+  const { deposits } = useConsensusStates()
 
   const columns = useMemo(() => {
     if (!operator) return []
@@ -161,11 +163,18 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   } = useQueryStates()
 
   const nominators = useMemo(() => {
-    if (useRpcData) return []
+    if (useRpcData)
+      return deposits
+        .filter((deposit) => deposit.operatorId === Number(operatorId))
+        .map((deposit) => ({
+          id: deposit.account,
+          account: { id: deposit.account },
+          shares: deposit.shares,
+        }))
     return hasValue(operatorNominators)
       ? operatorNominators.value.nominatorsConnection.edges.map((edge) => edge.node)
       : []
-  }, [operatorNominators, useRpcData])
+  }, [deposits, operatorId, operatorNominators, useRpcData])
 
   const totalCount = useMemo(
     () =>
