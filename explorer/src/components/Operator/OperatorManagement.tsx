@@ -230,7 +230,7 @@ export const OperatorManagement: FC = () => {
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
-              typeof row.original.id,
+              row.original.id,
             )}
           >
             <div>{row.original.id}</div>
@@ -396,7 +396,6 @@ export const OperatorManagement: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <DataSourceBanner />
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div
@@ -429,7 +428,7 @@ export const OperatorManagement: FC = () => {
           </div>
         </div>
       </div>
-
+      <DataSourceBanner />
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {operatorsConnection ? (

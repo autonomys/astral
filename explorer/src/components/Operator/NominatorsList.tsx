@@ -350,13 +350,12 @@ export const NominatorsList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <DataSourceBanner />
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
           <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
         </div>
       </div>
-
+      <DataSourceBanner />
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {nominatorsConnection ? (
