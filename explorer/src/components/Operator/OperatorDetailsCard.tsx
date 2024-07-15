@@ -6,7 +6,7 @@ import { Chains } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Operator } from 'gql/graphql'
+import { OperatorByIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -18,13 +18,15 @@ import { AccountIcon } from '../common/AccountIcon'
 dayjs.extend(relativeTime)
 
 type Props = {
-  operator: Operator
+  operator: OperatorByIdQuery['operatorById']
   isDesktop?: boolean
 }
 
 export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
   const { selectedChain } = useDomains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+
+  if (!operator) return null
 
   return (
     <div className='w-full'>

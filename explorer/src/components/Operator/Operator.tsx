@@ -39,7 +39,7 @@ export const Operator: FC = () => {
   } = useQueryStates()
 
   const operatorDetails = useMemo(
-    () => (hasValue(operator) ? operator.value.operatorById : []) as TOperator,
+    () => hasValue(operator) && operator.value.operatorById,
     [operator],
   )
 
@@ -52,6 +52,8 @@ export const Operator: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
+
+  console.log('operatorDetails', operatorDetails, typeof operatorDetails)
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>
