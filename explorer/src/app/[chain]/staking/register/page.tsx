@@ -1,4 +1,4 @@
-import { RegisterOperators } from 'components/Operator/RegisterOperators'
+import { RegisterOperators } from 'components/Staking/RegisterOperators'
 import { chains } from 'constants/chains'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
