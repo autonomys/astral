@@ -1,7 +1,7 @@
-import { CallItem, Context, EventItem } from "../processor";
 import { Block, Event, Log, RewardEvent } from "../model";
-import { partitionItems, createBlock } from "./utils";
-import { ProcessBlocksDependencies, ExtrinsicsMap, CallsMap } from "./types";
+import { CallItem, Context, EventItem } from "../processor";
+import { CallsMap, ExtrinsicsMap, ProcessBlocksDependencies } from "./types";
+import { createBlock, partitionItems } from "./utils";
 
 export function processBlocksFactory({
   getSpacePledged,

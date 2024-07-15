@@ -18,8 +18,12 @@ import { decodeLog } from "./utils";
 export async function saveBlock(
   ctx: ProcessorContext<StoreWithCache>,
   block: BlockHeader,
-  author: string
-) {
+  author: string,
+  extrinsicsCount: number,
+  eventsCount: number,
+  logsCount: number,
+  callsCount: number
+): Promise<model.Block> {
   const spacePledged = totalSpacePledged.v0.get(block);
   const historySize = blockchainHistorySize.v0.get(block);
 
@@ -40,21 +44,23 @@ export async function saveBlock(
     spacePledged,
     blockchainSize: historySize,
     author,
-    extrinsicsCount: 0,
-    callsCount: 0,
-    eventsCount: 0,
-    logsCount: 0,
+    extrinsicsCount,
+    callsCount,
+    eventsCount,
+    logsCount,
   });
 
   await ctx.store.insert(entity);
+
+  // return the saved block
+  return entity;
 }
 
 export async function saveExtrinsic(
   ctx: ProcessorContext<StoreWithCache>,
+  block: model.Block,
   extrinsic: Extrinsic
 ) {
-  const block = await ctx.store.getOrFail(model.Block, extrinsic.block.id);
-
   const entity = new model.Extrinsic({
     id: extrinsic.id,
     block,
@@ -81,16 +87,13 @@ export async function saveExtrinsic(
   }
 
   await ctx.store.insert(entity);
-
-  block.extrinsicsCount += 1;
-  await ctx.store.upsert(block);
 }
 
 export async function saveCall(
   ctx: ProcessorContext<StoreWithCache>,
+  block: model.Block,
   call: Call
 ) {
-  const block = await ctx.store.getOrFail(model.Block, call.block.id);
   const extrinsic = await ctx.store.getOrFail(
     model.Extrinsic,
     call.getExtrinsic().id
@@ -117,9 +120,6 @@ export async function saveCall(
   });
   await ctx.store.insert(entity);
 
-  block.callsCount += 1;
-  await ctx.store.upsert(block);
-
   if (call.address.length == 0) {
     extrinsic.call = entity;
     await ctx.store.upsert(extrinsic);
@@ -128,9 +128,9 @@ export async function saveCall(
 
 export async function saveEvent(
   ctx: ProcessorContext<StoreWithCache>,
+  block: model.Block,
   event: Event
 ) {
-  const block = await ctx.store.getOrFail(model.Block, event.block.id);
   const extrinsic = event.extrinsic
     ? await ctx.store.getOrFail(model.Extrinsic, event.extrinsic.id)
     : undefined;
@@ -160,9 +160,6 @@ export async function saveEvent(
   });
 
   await ctx.store.insert(moduleNameEntity);
-
-  block.eventsCount += 1;
-  await ctx.store.upsert(block);
 }
 
 export async function saveLog(
@@ -181,7 +178,4 @@ export async function saveLog(
     block,
   });
   await ctx.store.insert(entity);
-
-  block.logsCount += 1;
-  await ctx.store.upsert(block);
 }
