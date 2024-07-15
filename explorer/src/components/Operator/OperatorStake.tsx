@@ -250,7 +250,7 @@ export const OperatorStake = () => {
           const keystoreContent = fileReader.result as string
           if (fileReader.readyState === 2) {
             try {
-              const seed = keystoreContent.replace(/"|_/g, '')
+              const seed = keystoreContent.replace(/"/g, '')
               setFieldValue('signingKeySeed', seed)
             } catch (error) {
               setFormError('There was an error with the keystore')

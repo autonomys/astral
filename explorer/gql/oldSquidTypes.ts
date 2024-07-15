@@ -2736,6 +2736,16 @@ export type LogByIdQueryVariables = Exact<{
 
 export type LogByIdQuery = { __typename?: 'Query', logById?: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'Event', id: string, args?: any | null, name: string, phase: string, indexInBlock: number, timestamp: any, block?: { __typename?: 'Block', height: any, hash: string } | null }> } } | null };
 
+export type StakingHeaderQueryVariables = Exact<{
+  opOrderBy: Array<OperatorOrderByInput> | OperatorOrderByInput;
+  noOrderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
+  opWhere?: InputMaybe<OperatorWhereInput>;
+  noWhere?: InputMaybe<NominatorWhereInput>;
+}>;
+
+
+export type StakingHeaderQuery = { __typename?: 'Query', operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number }, nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number } };
+
 export type OperatorsConnectionQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
@@ -2770,6 +2780,14 @@ export type AccountsTopLeaderboardQueryVariables = Exact<{
 
 export type AccountsTopLeaderboardQuery = { __typename?: 'Query', farmers: { __typename?: 'AccountRewardsConnection', edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', id: string } }> }, operators: { __typename?: 'OperatorRewardsConnection', edges: Array<{ __typename?: 'OperatorRewardsEdge', cursor: string, node: { __typename?: 'OperatorRewards', amount?: any | null, id: string } }> }, nominators: { __typename?: 'AccountRewardsConnection', edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', id: string } }> } };
 
+export type PendingTransactionQueryVariables = Exact<{
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+  extrinsics?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type PendingTransactionQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', id: string, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, success: boolean, timestamp: any, name: string, events: Array<{ __typename?: 'Event', name: string }>, block: { __typename?: 'Block', hash: string, height: any, id: string } }> }> };
+
 export type ExtrinsicsSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   subspaceAccount?: InputMaybe<Scalars['String']['input']>;
@@ -2792,3 +2810,8 @@ export type CheckRoleQueryVariables = Exact<{
 
 
 export type CheckRoleQuery = { __typename?: 'Query', isFarmer: Array<{ __typename?: 'RewardEvent', account?: { __typename?: 'Account', id: string } | null }> };
+
+export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LastBlockQuery = { __typename?: 'Query', lastBlock: Array<{ __typename?: 'Block', height: any }> };
