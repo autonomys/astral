@@ -1,5 +1,6 @@
 'use client'
 
+import { useConsensusData } from '@/hooks/useConsensusData'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
@@ -26,7 +27,8 @@ export const Operator: FC = () => {
   const inFocus = useWindowFocus()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const { useRpcData } = useViewStates()
-  const { operators: rpcOperators, nominatorCount } = useConsensusStates()
+  const { operators: rpcOperators } = useConsensusStates()
+  const { loadData: loadConsensusData } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
   const { setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
@@ -65,6 +67,10 @@ export const Operator: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
+
+  useEffect(() => {
+    loadConsensusData()
+  }, [loadConsensusData])
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>
