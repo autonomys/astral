@@ -31,6 +31,7 @@ import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { DataSourceBanner } from '../common/DataSourceBanner'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_NOMINATOR_CONNECTION_LIST } from './query'
@@ -409,7 +410,7 @@ export const NominationManagement: FC = () => {
           )}
         </div>
       </div>
-
+      <DataSourceBanner />
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {nominatorsConnection ? (
