@@ -1,8 +1,8 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -11,6 +11,7 @@ import useDomains from 'hooks/useDomains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
+import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
 
@@ -68,7 +69,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
 
   const totalCount = useMemo(() => (logs ? logs.length : 0), [logs])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 

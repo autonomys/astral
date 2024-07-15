@@ -1,28 +1,33 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { AccountIdParam } from '@/types/app'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { countTablePages } from '@/utils/table'
+import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { RewardEventOrderByInput, RewardsListQueryVariables } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { AccountIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { formatAddress } from 'utils//formatAddress'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
 import type { Account, RewardEvent, RewardsListQuery } from '../gql/graphql'
 import { NotFound } from '../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
@@ -31,6 +36,7 @@ import { QUERY_REWARDS_LIST } from './query'
 dayjs.extend(relativeTime)
 
 export const AccountRewardList: FC = () => {
+  const { ref, inView } = useInView()
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
@@ -40,8 +46,12 @@ export const AccountRewardList: FC = () => {
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { accountId } = useParams<AccountIdParam>()
+  const inFocus = useWindowFocus()
 
-  const orderBy = useMemo(() => sort(sorting, 'block_height_DESC'), [sorting])
+  const sortBy = useMemo(
+    () => sort(sorting, RewardEventOrderByInput.BlockHeightDesc) as RewardEventOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -50,18 +60,35 @@ export const AccountRewardList: FC = () => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      sortBy: orderBy,
-      accountId,
+      sortBy,
+      accountId: accountId ?? '',
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, accountId],
+    [pagination.pageSize, pagination.pageIndex, sortBy, accountId],
   )
 
-  const { data, error, loading } = useQuery<RewardsListQuery>(QUERY_REWARDS_LIST, {
-    variables,
-    pollInterval: 6000,
-  })
+  const { setIsVisible } = useSquidQuery<RewardsListQuery, RewardsListQueryVariables>(
+    QUERY_REWARDS_LIST,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+    },
+  )
 
-  useErrorHandler(error)
+  const {
+    consensus: { accountReward: consensusEntry },
+    consensus: { accountReward: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const rewardEventsConnection = useMemo(() => data && data.rewardEventsConnection, [data])
   const rewards = useMemo(
@@ -155,7 +182,7 @@ export const AccountRewardList: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
+    () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
   )
 
@@ -163,21 +190,27 @@ export const AccountRewardList: FC = () => {
   const fullDataDownloader = useCallback(
     () =>
       downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'rewardEventsConnection', {
-        orderBy,
+        sortBy,
       }),
-    [apolloClient, orderBy],
+    [apolloClient, sortBy],
   )
 
   useEffect(() => {
     sendGAEvent('event', 'visit_account_rewards_page', { value: accountId })
   }, [accountId])
 
-  if (loading) return <Spinner />
-  if (!account || !convertedAddress || !data || !rewards) return <NotFound />
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
 
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
   return (
     <div className='flex w-full flex-col align-middle'>
-      <AccountDetailsCard account={account} accountAddress={convertedAddress} />
+      <AccountDetailsCard account={account} accountAddress={convertedAddress ?? '0x'} />
 
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>
@@ -185,18 +218,22 @@ export const AccountRewardList: FC = () => {
       <div className='mt-5 flex w-full flex-col sm:mt-0'></div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
-          <div className='my-6 rounded'>
-            <SortedTable
-              data={rewards}
-              columns={columns}
-              showNavigation={true}
-              sorting={sorting}
-              onSortingChange={setSorting}
-              pagination={pagination}
-              pageCount={pageCount}
-              onPaginationChange={setPagination}
-              fullDataDownloader={fullDataDownloader}
-            />
+          <div className='my-6 rounded' ref={ref}>
+            {rewards ? (
+              <SortedTable
+                data={rewards}
+                columns={columns}
+                showNavigation={true}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                fullDataDownloader={fullDataDownloader}
+              />
+            ) : (
+              noData
+            )}
           </div>
         </div>
       </div>

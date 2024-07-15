@@ -1,17 +1,20 @@
-// import { useQuery } from '@apollo/client'
 // import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { Modal } from 'components/common/Modal'
 import { CheckMarkIcon } from 'components/icons/CheckMarkIcon'
-import { EXTERNAL_ROUTES } from 'constants/routes'; // , ROUTE_API 
-// import { ExtrinsicsByHashQuery } from 'gql/graphql'
+import { EXTERNAL_ROUTES } from 'constants/routes' // , ROUTE_API, ROUTE_EXTRA_FLAG_TYPE
+// import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
 // import useDomains from 'hooks/useDomains'
+// import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
+// import { useWindowFocus } from 'hooks/useWindowFocus'
 import { signIn, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { FC, useCallback, useState } from 'react'; // , useEffect
+import { FC, useCallback, useState } from 'react' // , useEffect
 import toast from 'react-hot-toast'
+import { useInView } from 'react-intersection-observer'
+// import { hasValue, useQueryStates } from 'states/query'
 // import { QUERY_EXTRINSIC_BY_HASH } from '../Extrinsic/query'
 
 interface StakingSummaryProps {
@@ -85,6 +88,7 @@ const ExplainerLinkAndModal: FC = () => {
 }
 
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
+  const { ref } = useInView() // , inView
   const { data: session } = useSession()
   // const { selectedChain } = useDomains()
   const { actingAccount, injector } = useWallet()
@@ -92,12 +96,22 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   // const [claimIsFinalized, setClaimIsFinalized] = useState(false)
   // const [claimError, setClaimError] = useState<string | null>(null)
   // const [claimHash, setClaimHash] = useState<string | null>(null)
+  // const inFocus = useWindowFocus()
 
-  // const { data } = useQuery<ExtrinsicsByHashQuery>(QUERY_EXTRINSIC_BY_HASH, {
-  //   variables: { hash: claimHash },
-  //   skip: claimHash === null || claimIsFinalized,
-  //   pollInterval: 6000,
-  // })
+  // const { setIsVisible } = useSquidQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
+  //   QUERY_EXTRINSIC_BY_HASH,
+  //   {
+  //     variables: { hash: claimHash ?? '' },
+  //     skip: !inFocus || claimHash === null || claimIsFinalized,
+  //     pollInterval: 6000,
+  //   },
+  //   ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
+  //   'claim',
+  // )
+
+  // const {
+  //   walletSidekick: { claim },
+  // } = useQueryStates()
 
   const handleWalletOwnership = useCallback(async () => {
     try {
@@ -164,8 +178,13 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   // }, [actingAccount, injector, selectedChain.urls.page, subspaceAccount])
 
   // useEffect(() => {
-  //   if (data && data.extrinsics && data.extrinsics.length > 0) setClaimIsFinalized(true)
-  // }, [data])
+  //   if (hasValue(claim) && claim.value.extrinsics && claim.value.extrinsics.length > 0)
+  //     setClaimIsFinalized(true)
+  // }, [claim])
+
+  // useEffect(() => {
+  //   setIsVisible(inView)
+  // }, [inView, setIsVisible])
 
   if (session?.user?.discord?.vcs.roles.farmer)
     return (
@@ -220,7 +239,10 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
     )
 
   return (
-    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
+    <div
+      className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'
+      ref={ref}
+    >
       <Accordion title='Get verified roles on Discord'>
         <List>
           <StyledListItem title='Verify the ownership of your wallet'>

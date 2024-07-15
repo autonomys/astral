@@ -1,17 +1,16 @@
 'use client'
 
-import { LogoIcon } from '@/components/icons'
-import { useQuery } from '@apollo/client'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import {
-  QUERY_NOMINATOR_CONNECTION_LIST,
-  QUERY_OPERATOR_CONNECTION_LIST,
-} from 'components/Operator/query'
+import { QUERY_STAKING_HEADER } from 'components/Operator/query'
+import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { NominatorsConnectionQuery, OperatorsConnectionQuery } from 'gql/graphql'
+import { NominatorOrderByInput, OperatorOrderByInput } from 'gql/graphql'
+import { StakingHeaderQuery, StakingHeaderQueryVariables } from 'gql/oldSquidTypes'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
@@ -26,49 +25,32 @@ export const StakingHeader = () => {
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
   const { subspaceAccount } = useWallet()
+  const inFocus = useWindowFocus()
 
-  const { data: dataOperators, refetch: refetchOperators } = useQuery<OperatorsConnectionQuery>(
-    QUERY_OPERATOR_CONNECTION_LIST,
+  const { data, refetch } = useSquidQuery<StakingHeaderQuery, StakingHeaderQueryVariables>(
+    QUERY_STAKING_HEADER,
     {
       variables: {
-        first: 1,
-        after: undefined,
         // eslint-disable-next-line camelcase
-        where: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
-        orderBy: 'id_ASC',
+        opWhere: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
+        // eslint-disable-next-line camelcase
+        noWhere: { account: { id_eq: subspaceAccount ? subspaceAccount : '' } },
+        opOrderBy: OperatorOrderByInput.IdAsc,
+        noOrderBy: NominatorOrderByInput.IdAsc,
       },
+      skip: !inFocus,
       pollInterval: 6000,
     },
   )
 
-  const { data: dataNominators, refetch: refetchNominators } = useQuery<NominatorsConnectionQuery>(
-    QUERY_NOMINATOR_CONNECTION_LIST,
-    {
-      variables: {
-        first: 1,
-        after: undefined,
-        // eslint-disable-next-line camelcase
-        where: subspaceAccount ? { account: { id_eq: subspaceAccount } } : {},
-        orderBy: 'id_ASC',
-      },
-      pollInterval: 6000,
-    },
+  const hasOperators = useMemo(
+    () => (data && data.operatorsConnection ? data.operatorsConnection.totalCount : 0),
+    [data],
   )
 
-  const operatorsConnection = useMemo(
-    () =>
-      dataOperators && dataOperators.operatorsConnection
-        ? dataOperators.operatorsConnection.edges.map((operator) => operator.node)
-        : [],
-    [dataOperators],
-  )
-
-  const nominatorsConnection = useMemo(
-    () =>
-      dataNominators && dataNominators.nominatorsConnection
-        ? dataNominators.nominatorsConnection.edges.map((operator) => operator.node)
-        : [],
-    [dataNominators],
+  const hasNominations = useMemo(
+    () => (data && data.nominatorsConnection ? data.nominatorsConnection.totalCount : 0),
+    [data],
   )
 
   const menuList = useMemo(() => {
@@ -82,22 +64,21 @@ export const StakingHeader = () => {
         link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
     ]
-    if (operatorsConnection && operatorsConnection.length > 0)
+    if (hasOperators > 0)
       general.push({
         title: 'Manage My Operator',
         link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`,
       })
-    if (nominatorsConnection && nominatorsConnection.length > 0)
+    if (hasNominations > 0)
       general.push({
         title: 'Manage My Nomination',
         link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`,
       })
     return general
-  }, [operatorsConnection, nominatorsConnection, selectedChain.urls.page])
+  }, [selectedChain.urls.page, hasOperators, hasNominations])
 
   useEffect(() => {
-    refetchOperators()
-    refetchNominators()
+    refetch()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subspaceAccount])
 
