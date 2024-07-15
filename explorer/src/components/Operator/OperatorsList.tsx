@@ -259,7 +259,6 @@ export const OperatorsList: FC = () => {
             (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
           )
             return <></>
-          console.log('nominator', nominator)
           return (
             <ActionsDropdown
               action={action}
