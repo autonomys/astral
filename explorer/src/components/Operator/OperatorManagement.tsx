@@ -52,7 +52,7 @@ export const OperatorManagement: FC = () => {
   const { useRpcData } = useViewStates()
 
   const { subspaceAccount } = useWallet()
-  const { operators: rpcOperators } = useConsensusStates()
+  const { operators: rpcOperators, nominatorCount } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { selectedChain, selectedDomain } = useDomains()
@@ -311,17 +311,22 @@ export const OperatorManagement: FC = () => {
           row,
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
-          <div>
-            {!useRpcData &&
-            (row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
-              .nominators
-              ? (
-                  row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
-                ).nominators.length
-              : 0}
-          </div>
-        ),
+        >) => {
+          if (useRpcData) {
+            const count = nominatorCount.find((o) => o.id.toString() === row.original.id)
+            return <div>{count ? count.count : 0}</div>
+          }
+          return (
+            <div>
+              {(row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
+                .nominators
+                ? (
+                    row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+                  ).nominators.length
+                : 0}
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'status',
@@ -367,6 +372,7 @@ export const OperatorManagement: FC = () => {
     selectedDomain,
     domains,
     useRpcData,
+    nominatorCount,
     lastBlock,
     action,
     handleAction,

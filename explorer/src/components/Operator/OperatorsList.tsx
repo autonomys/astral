@@ -53,7 +53,7 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators } = useConsensusStates()
+  const { operators: rpcOperators, nominatorCount } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
@@ -187,9 +187,7 @@ export const OperatorsList: FC = () => {
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
-    ]
-    if (!useRpcData)
-      cols.push({
+      {
         accessorKey: 'nominators',
         header: 'Nominators',
         enableSorting: false,
@@ -197,31 +195,40 @@ export const OperatorsList: FC = () => {
           row,
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          if (useRpcData) {
+            const count = nominatorCount.find((o) => o.id.toString() === row.original.id)
+            return <div>{count ? count.count : 0}</div>
+          }
+          return (
+            <div>
+              {(row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
+                .nominators
+                ? (
+                    row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+                  ).nominators.length
+                : 0}
+            </div>
+          )
+        },
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        enableSorting: !useRpcData,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
         >) => (
           <div>
-            {(row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
-              .nominators
-              ? (
-                  row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
-                ).nominators.length
-              : 0}
+            {selectedChain.urls.page === Chains.gemini3g
+              ? row.original.status
+              : capitalizeFirstLetter(operatorStatus(row.original.status))}
           </div>
         ),
-      })
-    cols.push({
-      accessorKey: 'status',
-      header: 'Status',
-      enableSorting: !useRpcData,
-      cell: ({
-        row,
-      }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators>) => (
-        <div>
-          {selectedChain.urls.page === Chains.gemini3g
-            ? row.original.status
-            : capitalizeFirstLetter(operatorStatus(row.original.status))}
-        </div>
-      ),
-    })
+      },
+    ]
     if (subspaceAccount)
       cols.push({
         accessorKey: 'actions',
@@ -266,12 +273,13 @@ export const OperatorsList: FC = () => {
       })
     return cols
   }, [
+    useRpcData,
     subspaceAccount,
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
     domains,
-    useRpcData,
+    nominatorCount,
     action,
     handleAction,
   ])
