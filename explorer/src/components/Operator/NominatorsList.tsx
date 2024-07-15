@@ -237,14 +237,12 @@ export const NominatorsList: FC = () => {
           const excludeActions = [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
           if (
             row.original.operator.status &&
-            (JSON.parse(row.original.operator.status) as unknown as { deregistered: object })
-              .deregistered
+            JSON.parse(row.original.operator.status ?? '{}')?.deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
           if (
             row.original.operator.status &&
-            (JSON.parse(row.original.operator.status) as unknown as { slashed: object }).slashed ===
-              null
+            JSON.parse(row.original.operator.status ?? '{}')?.slashed === null
           )
             return <></>
           return (

@@ -361,13 +361,13 @@ export const OperatorManagement: FC = () => {
           if (
             !useRpcData &&
             row.original.status &&
-            (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
+            JSON.parse(row.original.status ?? '{}')?.deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
           if (
             !useRpcData &&
             row.original.status &&
-            (JSON.parse(row.original.status) as unknown as { slashed: object }).slashed === null
+            JSON.parse(row.original.status ?? '{}')?.slashed === null
           )
             return <></>
           return (
