@@ -9,7 +9,7 @@ export const DataSourceBanner: FC = () => {
     () =>
       useRpcData
         ? 'Live data is limited to the current state of the network. It does not allow digging into specific past actions but shows their impact on the current state. Fully slashed and deregistered operators, for example, will be invisible in live data.'
-        : 'Archived data captures all actions that occurred in the past and presents, the data is indexed and stored in a more complete and traversable way. However, the indexing for staking functionality is currently under maintenance, and some of the data may be incorrect.',
+        : 'Archived data captures all actions that occurred in the past and present, the data is indexed and stored in a more complete and traversable way. However, the indexing for staking functionality is currently under maintenance, and some of the data may be incorrect. Switch to Live Data for accurate current information',
     [useRpcData],
   )
 
