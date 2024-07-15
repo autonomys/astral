@@ -112,8 +112,6 @@ export const INTERNAL_ROUTES = {
     },
     list: 'list',
     register: 'register',
-    manage: 'manage',
-    nomination: 'nomination',
   },
   search: {
     result: {

@@ -1,20 +1,14 @@
 'use client'
 
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import { QUERY_STAKING_HEADER } from 'components/Operator/query'
 import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { NominatorOrderByInput, OperatorOrderByInput } from 'gql/graphql'
-import { StakingHeaderQuery, StakingHeaderQueryVariables } from 'gql/oldSquidTypes'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
-import useWallet from 'hooks/useWallet'
-import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
@@ -24,37 +18,9 @@ export const StakingHeader = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
-  const { subspaceAccount } = useWallet()
-  const inFocus = useWindowFocus()
 
-  const { data, refetch } = useSquidQuery<StakingHeaderQuery, StakingHeaderQueryVariables>(
-    QUERY_STAKING_HEADER,
-    {
-      variables: {
-        // eslint-disable-next-line camelcase
-        opWhere: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
-        // eslint-disable-next-line camelcase
-        noWhere: { account: { id_eq: subspaceAccount ? subspaceAccount : '' } },
-        opOrderBy: OperatorOrderByInput.IdAsc,
-        noOrderBy: NominatorOrderByInput.IdAsc,
-      },
-      skip: !inFocus,
-      pollInterval: 6000,
-    },
-  )
-
-  const hasOperators = useMemo(
-    () => (data && data.operatorsConnection ? data.operatorsConnection.totalCount : 0),
-    [data],
-  )
-
-  const hasNominations = useMemo(
-    () => (data && data.nominatorsConnection ? data.nominatorsConnection.totalCount : 0),
-    [data],
-  )
-
-  const menuList = useMemo(() => {
-    const general = [
+  const menuList = useMemo(
+    () => [
       {
         title: 'Operators',
         link: `/${selectedChain.urls.page}/${Routes.staking}`,
@@ -63,24 +29,9 @@ export const StakingHeader = () => {
         title: 'Register Operator',
         link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
-    ]
-    if (hasOperators > 0)
-      general.push({
-        title: 'Manage My Operator',
-        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`,
-      })
-    if (hasNominations > 0)
-      general.push({
-        title: 'Manage My Nomination',
-        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`,
-      })
-    return general
-  }, [selectedChain.urls.page, hasOperators, hasNominations])
-
-  useEffect(() => {
-    refetch()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subspaceAccount])
+    ],
+    [selectedChain.urls.page],
+  )
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
