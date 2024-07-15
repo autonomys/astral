@@ -18,7 +18,7 @@ export const DataSource: FC = () => {
         onClick={() => handleSwitchDataSource()}
         className={`inline-flex items-center rounded-l-full bg-white p-2 text-base ${!useRpcData && 'text-pinkAccent dark:text-white'} shadow-md  hover:bg-gray-200 focus:outline-none dark:bg-pinkAccent`}
       >
-        <Tooltip text='Indexed data'>
+        <Tooltip text='Archived data'>
           <CircleStackIcon width='24' height='24' />
         </Tooltip>
       </button>
