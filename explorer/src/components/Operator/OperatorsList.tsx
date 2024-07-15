@@ -13,6 +13,7 @@ import {
   OperatorsConnectionQuery,
   OperatorsConnectionQueryVariables,
 } from 'gql/oldSquidTypes'
+import { useConsensusData } from 'hooks/useConsensusData'
 import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -22,8 +23,11 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useConsensusStates } from 'states/consensus'
 import { useDomainsStates } from 'states/domains'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useViewStates } from 'states/view'
+import { Operators } from 'types/consensus'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
@@ -32,6 +36,8 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
+import { DataSource } from '../common/DataSource'
+import { DataSourceBanner } from '../common/DataSourceBanner'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -48,13 +54,17 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
+  const { operators: rpcOperators, nominatorCount } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
+  const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
+  const { useRpcData } = useViewStates()
 
   useEffect(() => {
-    if (!domains || domains.length === 0) loadDomainsData()
-  }, [domains, loadDomainsData])
+    loadDomainsData()
+    loadConsensusData()
+  }, [loadConsensusData, loadDomainsData])
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -84,10 +94,12 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'id',
         header: 'Id',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <Link
             className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
@@ -103,10 +115,12 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'currentDomainId',
         header: 'Domain',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
           const domain = domains.find(
             (d) =>
               (row.original.currentDomainId || row.original.currentDomainId === 0) &&
@@ -124,10 +138,12 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'signingKey',
         header: 'Signing Key',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div className='row flex items-center gap-3'>
             {row.original.operatorOwner === subspaceAccount && (
               <Tooltip text='You are the operator'>
@@ -141,10 +157,12 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'minimumNominatorStake',
         header: 'Min. Stake',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
@@ -154,17 +172,19 @@ export const OperatorsList: FC = () => {
         enableSorting: true,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${row.original.nominationTax}%`}</div>
-        ),
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => <div>{`${row.original.nominationTax}%`}</div>,
       },
       {
         accessorKey: 'currentTotalStake',
         header: 'Total Stake',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
@@ -174,17 +194,34 @@ export const OperatorsList: FC = () => {
         enableSorting: false,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{row.original.nominators ? row.original.nominators.length : 0}</div>
-        ),
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          if (useRpcData) {
+            const count = nominatorCount.find((o) => o.id.toString() === row.original.id)
+            return <div>{count ? count.count : 0}</div>
+          }
+          return (
+            <div>
+              {(row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
+                .nominators
+                ? (
+                    row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+                  ).nominators.length
+                : 0}
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'status',
         header: 'Status',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => (
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => (
           <div>
             {selectedChain.urls.page === Chains.gemini3g
               ? row.original.status
@@ -200,23 +237,31 @@ export const OperatorsList: FC = () => {
         enableSorting: false,
         cell: ({
           row,
-        }: Cell<OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']>) => {
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
           const isOperator = row.original.operatorOwner === subspaceAccount
-          const nominator = row.original.nominators.find(
-            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
-          )
-          console.log('row.original.status', row.original.status)
+          const nominator =
+            !!useRpcData &&
+            (
+              row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+            ).nominators.find(
+              (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
+            )
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
           if (
+            !useRpcData &&
+            !nominator &&
             row.original.status &&
             (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
           if (
+            !useRpcData &&
             row.original.status &&
             (JSON.parse(row.original.status) as unknown as { slashed: object }).slashed === null
           )
@@ -227,18 +272,20 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator && BigInt(nominator.shares)}
+              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BigInt(0)}
             />
           )
         },
       })
     return cols
   }, [
+    useRpcData,
     subspaceAccount,
-    domains,
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
+    domains,
+    nominatorCount,
     action,
     handleAction,
   ])
@@ -295,12 +342,18 @@ export const OperatorsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const operatorsConnection = useMemo(
-    () =>
-      hasValue(operators) &&
-      operators.value.operatorsConnection.edges.map((operator) => operator.node),
-    [operators],
-  )
+  const operatorsConnection = useMemo(() => {
+    if (useRpcData)
+      return rpcOperators.map((operator) => ({
+        ...operator,
+        nominators: [],
+        totalShares: operator.currentTotalShares,
+      }))
+    if (hasValue(operators))
+      return operators.value.operatorsConnection.edges.map((operator) => operator.node)
+    return []
+  }, [operators, rpcOperators, useRpcData])
+
   const totalCount = useMemo(
     () => (hasValue(operators) ? operators.value.operatorsConnection.totalCount : 0),
     [operators],
@@ -331,15 +384,20 @@ export const OperatorsList: FC = () => {
         <div className='mt-5 flex w-full justify-between'>
           <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
-        <DebouncedInput
-          type='text'
-          className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
-          placeholder='Search by operator id'
-          onChange={handleSearch}
-          value={searchOperator}
-        />
+        <div className='flex items-center'>
+          <div className='mr-4 flex items-center'>
+            <DataSource />
+          </div>
+          <DebouncedInput
+            type='text'
+            className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+            placeholder='Search by operator id'
+            onChange={handleSearch}
+            value={searchOperator}
+          />
+        </div>
       </div>
-
+      <DataSourceBanner />
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {operatorsConnection ? (
