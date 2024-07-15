@@ -233,7 +233,18 @@ export const NominatorsList: FC = () => {
         header: 'Actions',
         enableSorting: false,
         cell: ({ row }) => {
-          if (row.original.account.id !== subspaceAccount) return <> </>
+          if (row.original.account.id !== subspaceAccount) return <></>
+          const excludeActions = [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
+          if (
+            row.original.operator.status &&
+            JSON.parse(row.original.operator.status ?? '{}')?.deregistered
+          )
+            excludeActions.push(OperatorActionType.Nominating)
+          if (
+            row.original.operator.status &&
+            JSON.parse(row.original.operator.status ?? '{}')?.slashed === null
+          )
+            return <></>
           return (
             <ActionsDropdown
               action={action}
@@ -247,7 +258,7 @@ export const NominatorsList: FC = () => {
                   },
                 } as ActionsDropdownRow
               }
-              excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockFunds]}
+              excludeActions={excludeActions}
               nominatorMaxShares={BigInt(row.original.shares)}
             />
           )

@@ -39,6 +39,8 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
     [excludeActions],
   )
 
+  if (actionsAvailable.length === 0) return <></>
+
   return (
     <Listbox
       value={action.type}

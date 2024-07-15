@@ -2,7 +2,7 @@ import { limitNumberDecimals, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { Nominator, Operator } from 'gql/graphql'
+import { Nominator, OperatorByIdQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -11,15 +11,16 @@ import type { Cell } from 'types/table'
 import { AccountIcon } from '../common/AccountIcon'
 
 interface Props {
-  operator: Operator
+  operator: OperatorByIdQuery['operatorById']
 }
 
 export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { selectedChain } = useDomains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
-  const columns = useMemo(
-    () => [
+  const columns = useMemo(() => {
+    if (!operator) return []
+    return [
       {
         accessorKey: 'account',
         header: 'Account Id',
@@ -87,20 +88,14 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         cell: ({ row }: Cell<Nominator>) =>
           operator.operatorOwner === row.original.account.id ? 'Yes' : 'No',
       },
-    ],
-    [
-      isLargeLaptop,
-      operator.currentTotalStake,
-      operator.operatorOwner,
-      operator.totalShares,
-      selectedChain.token.symbol,
-      selectedChain.urls.page,
-    ],
-  )
+    ]
+  }, [isLargeLaptop, operator, selectedChain.token.symbol, selectedChain.urls.page])
+
+  if (!operator) return null
 
   return (
     <SortedTable
-      data={operator.nominators}
+      data={operator.nominators as Nominator[]}
       columns={columns}
       showNavigation={false}
       pagination={{
