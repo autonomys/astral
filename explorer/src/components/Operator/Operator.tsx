@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { OperatorByIdQuery, OperatorByIdQueryVariables, Operator as TOperator } from 'gql/graphql'
+import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/oldSquidTypes'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -39,7 +39,7 @@ export const Operator: FC = () => {
   } = useQueryStates()
 
   const operatorDetails = useMemo(
-    () => (hasValue(operator) ? operator.value.operatorById : []) as TOperator,
+    () => hasValue(operator) && operator.value.operatorById,
     [operator],
   )
 

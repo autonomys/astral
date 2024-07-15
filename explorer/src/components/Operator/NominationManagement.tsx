@@ -239,23 +239,36 @@ export const NominationManagement: FC = () => {
         enableSorting: false,
         cell: ({
           row,
-        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <ActionsDropdown
-            action={action}
-            handleAction={handleAction}
-            row={
-              {
-                ...row,
-                original: {
-                  ...row.original,
-                  totalShares: row.original.shares,
-                },
-              } as ActionsDropdownRow
-            }
-            excludeActions={[OperatorActionType.Deregister, OperatorActionType.UnlockFunds]}
-            nominatorMaxShares={BigInt(row.original.shares)}
-          />
-        ),
+        }: Cell<NominatorsConnectionQuery['nominatorsConnection']['edges'][0]['node']>) => {
+          const excludeActions = [OperatorActionType.Deregister, OperatorActionType.UnlockFunds]
+          if (
+            row.original.operator.status &&
+            JSON.parse(row.original.operator.status ?? '{}')?.deregistered
+          )
+            excludeActions.push(OperatorActionType.Nominating)
+          if (
+            row.original.operator.status &&
+            JSON.parse(row.original.operator.status ?? '{}')?.slashed === null
+          )
+            return <></>
+          return (
+            <ActionsDropdown
+              action={action}
+              handleAction={handleAction}
+              row={
+                {
+                  ...row,
+                  original: {
+                    ...row.original,
+                    totalShares: row.original.shares,
+                  },
+                } as ActionsDropdownRow
+              }
+              excludeActions={excludeActions}
+              nominatorMaxShares={BigInt(row.original.shares)}
+            />
+          )
+        },
       },
     ]
     return cols

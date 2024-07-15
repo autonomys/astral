@@ -257,7 +257,13 @@ export const OperatorsList: FC = () => {
             !useRpcData &&
             !nominator &&
             row.original.status &&
-            (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
+            JSON.parse(row.original.status ?? '{}')?.deregistered
+          )
+            excludeActions.push(OperatorActionType.Nominating)
+          if (
+            !useRpcData &&
+            row.original.status &&
+            JSON.parse(row.original.status ?? '{}')?.slashed === null
           )
             return <></>
           return (
