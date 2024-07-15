@@ -1,36 +1,47 @@
 type Operator @entity {
   id: ID! @index
+  domainId: Int! @index
   operatorId: Int! @index
   signingKey: String! @index
-  operatorOwner: String @index
-  currentDomainId: Int
-  nextDomainId: Int
-  minimumNominatorStake: BigInt
-  nominationTax: Int
-  currentTotalStake: BigInt
-  currentEpochRewards: BigInt
-  currentTotalShares: BigInt
-  nominatorAmount: Int! @index
+  operatorOwner: String! @index
+  minimumNominatorStake: BigInt!
+  nominationTax: Int!
+  currentTotalStake: BigInt!
+  currentEpochRewards: BigInt!
+  currentTotalShares: BigInt!
   deposits: [Deposit!]!
     @derivedFrom(field: "operator")
-    @cardinality(value: 1000)
+    @cardinality(value: 1000000000)
   nominators: [Nominator!]!
     @derivedFrom(field: "operator")
-    @cardinality(value: 1000)
-  nominatorsCount: Int!
-  status: String
-  updatedAt: Int @index
+    @cardinality(value: 1000000000)
+  withdrawals: [Withdrawal!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000000000)
   operatorRewards: [OperatorRewardEvent!]!
     @derivedFrom(field: "operator")
-    @cardinality(value: 1000)
+    @cardinality(value: 1000000000)
+  operatorFees: [OperatorFeesEarned!]!
+    @derivedFrom(field: "operator")
+    @cardinality(value: 1000000000)
+  status: String
+  depositsCount: Int!
+  nominatorsCount: Int!
+  withdrawalsCount: Int!
+  updatedAt: Int @index
 }
 
 type Nominator @entity {
   id: ID! @index
-  nominatorId: Int! @index
+  account: String! @index
   operator: Operator!
-  account: Account!
-  shares: BigInt
+  shares: BigInt!
+  deposits: [Deposit!]!
+    @derivedFrom(field: "nominator")
+    @cardinality(value: 1000000000)
+  withdrawals: [Withdrawal!]!
+    @derivedFrom(field: "nominator")
+    @cardinality(value: 1000000000)
   status: String!
   updatedAt: Int
 }
@@ -38,24 +49,24 @@ type Nominator @entity {
 type Deposit @entity {
   id: ID! @index
   blockNumber: Int! @index
-  amount: BigInt
+  amount: BigInt!
   operator: Operator!
   nominator: Nominator!
   nominatorAccount: String!
   timestamp: DateTime! @index
-  extrinsicHash: String @index
+  extrinsicHash: String! @index
   status: String
 }
 
 type Withdrawal @entity {
   id: ID! @index
   blockNumber: Int! @index
-  shares: BigInt
+  shares: BigInt!
   operator: Operator!
   nominator: Nominator!
   nominatorAccount: String!
   timestamp: DateTime! @index
-  extrinsicHash: String @index
+  extrinsicHash: String! @index
   status: String
 }
 
@@ -66,8 +77,8 @@ type OperatorUnlockedFunds @entity {
   nominator: Nominator!
   nominatorAccount: String!
   timestamp: DateTime! @index
-  extrinsicHash: String @index
-  amount: BigInt
+  extrinsicHash: String! @index
+  amount: BigInt!
 }
 
 type OperatorRewardEvent @entity {
@@ -77,12 +88,13 @@ type OperatorRewardEvent @entity {
   name: String!
   timestamp: DateTime! @index
   blockNumber: Int! @index
-  extrinsicHash: String @index
+  extrinsicHash: String! @index
   amount: BigInt!
 }
 
-type OperatorReward @entity {
+type OperatorFeesEarned @entity {
   id: ID! @index
-  amount: BigInt
+  operator: Operator!
+  amount: BigInt!
   updatedAt: Int!
 }
