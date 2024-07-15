@@ -100,8 +100,31 @@ export type SuccessfulBundle = {
   bundle: string[]
 }
 
+export type RawDeposit = {
+  known: {
+    shares: number
+    storageFeeDeposit: number
+  }
+  pending: {
+    effectiveDomainEpoch: number[]
+    amount: string
+    storageFeeDeposit: string
+  }
+}
+
+export type Deposit = {
+  operatorId: number
+  account: string
+  shares: string
+  storageFeeDeposit: string
+  pending: {
+    amount: string
+    storageFeeDeposit: string
+  }
+}
+
 export type Withdrawal = {
-  id: number
+  operatorId: number
   totalWithdrawalAmount: number
   withdrawals: string[]
   withdrawalInShares: {

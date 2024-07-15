@@ -3,10 +3,12 @@ import { useCallback } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import {
   ConfirmedDomainBlock,
+  Deposit,
   DomainRegistry,
   DomainStakingSummary,
   Operators,
   PendingStakingOperationCount,
+  RawDeposit,
   SuccessfulBundle,
   Withdrawal,
 } from 'types/consensus'
@@ -24,6 +26,7 @@ export const useConsensusData = () => {
     setOperators,
     setPendingStakingOperationCount,
     setSuccessfulBundles,
+    setDeposits,
     setWithdrawals,
   } = useConsensusStates()
   const { api } = useWallet()
@@ -47,7 +50,6 @@ export const useConsensusData = () => {
         operators,
         pendingStakingOperationCount,
         successfulBundles,
-        withdrawals,
       ] = await Promise.all([
         api.rpc.system.properties(),
         api.consts.domains,
@@ -62,7 +64,6 @@ export const useConsensusData = () => {
         api.query.domains.operators.entries(),
         api.query.domains.pendingStakingOperationCount.entries(),
         api.query.domains.successfulBundles.entries(),
-        api.query.domains.withdrawals.entries(),
       ])
 
       setProperties({
@@ -159,20 +160,56 @@ export const useConsensusData = () => {
             }) as SuccessfulBundle,
         ),
       )
-      setWithdrawals(
-        withdrawals.map(
-          (withdrawal) =>
-            ({
-              id: parseInt((withdrawal[0].toHuman() as string[])[0]),
-              ...(withdrawal[1].toJSON() as Omit<Withdrawal, 'id'>),
-            }) as Withdrawal,
-        ),
-      )
     } catch (error) {
       console.error('useConsensusData', error)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api])
 
-  return { loadData }
+  const loadDataByOperatorId = useCallback(
+    async (operatorId: string) => {
+      if (!api) return
+
+      try {
+        const [deposits, withdrawals] = await Promise.all([
+          api.query.domains.deposits.entries(operatorId),
+          api.query.domains.withdrawals.entries(operatorId),
+        ])
+
+        setDeposits(
+          deposits.map((deposit) => {
+            const parsedDeposit = deposit[1].toJSON() as RawDeposit
+            return {
+              operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
+              account: (deposit[0].toHuman() as string[])[1],
+              shares: parseInt(parsedDeposit.known.shares.toString(), 16).toString(),
+              storageFeeDeposit: parseInt(
+                parsedDeposit.known.storageFeeDeposit.toString(),
+                16,
+              ).toString(),
+              pending: {
+                amount: parsedDeposit.pending.amount.toString(),
+                storageFeeDeposit: parsedDeposit.pending.storageFeeDeposit.toString(),
+              },
+            } as Deposit
+          }),
+        )
+        setWithdrawals(
+          withdrawals.map(
+            (withdrawal) =>
+              ({
+                operatorId: parseInt((withdrawal[0].toHuman() as string[])[0]),
+                ...(withdrawal[1].toJSON() as Omit<Withdrawal, 'operatorId'>),
+              }) as Withdrawal,
+          ),
+        )
+      } catch (error) {
+        console.error('useConsensusData', error)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [api],
+  )
+
+  return { loadData, loadDataByOperatorId }
 }
