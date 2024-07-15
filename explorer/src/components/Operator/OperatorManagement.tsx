@@ -320,6 +320,11 @@ export const OperatorManagement: FC = () => {
             (JSON.parse(row.original.status) as unknown as { deregistered: object }).deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
+          if (
+            row.original.status &&
+            (JSON.parse(row.original.status) as unknown as { slashed: object }).slashed === null
+          )
+            return <></>
           return (
             <ActionsDropdown
               action={action}

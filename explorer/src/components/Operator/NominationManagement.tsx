@@ -246,6 +246,12 @@ export const NominationManagement: FC = () => {
               .deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
+          if (
+            row.original.operator.status &&
+            (JSON.parse(row.original.operator.status) as unknown as { slashed: object }).slashed ===
+              null
+          )
+            return <></>
           return (
             <ActionsDropdown
               action={action}
