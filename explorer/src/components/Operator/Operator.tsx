@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { OperatorByIdQuery, OperatorByIdQueryVariables, Operator as TOperator } from 'gql/graphql'
+import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/oldSquidTypes'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -52,8 +52,6 @@ export const Operator: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
-
-  console.log('operatorDetails', operatorDetails, typeof operatorDetails)
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>
