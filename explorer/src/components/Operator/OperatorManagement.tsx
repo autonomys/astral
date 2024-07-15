@@ -34,7 +34,7 @@ import { operatorReadyToUnlock, operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { Switch } from '../common/Switch'
+import { DataSource } from '../common/DataSource'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
@@ -49,7 +49,7 @@ export const OperatorManagement: FC = () => {
   })
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const inFocus = useWindowFocus()
-  const { useRpcData, setUseRpcData } = useViewStates()
+  const { useRpcData } = useViewStates()
 
   const { subspaceAccount } = useWallet()
   const { operators: rpcOperators } = useConsensusStates()
@@ -378,9 +378,6 @@ export const OperatorManagement: FC = () => {
     return null
   }, [manageOperators])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSwitchDataSource = useCallback(() => setUseRpcData(!useRpcData), [useRpcData])
-
   useEffect(() => {
     if (subspaceAccount) handleSearch(subspaceAccount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -404,16 +401,7 @@ export const OperatorManagement: FC = () => {
         </div>
         <div className='flex items-center'>
           <div className='mr-4 flex items-center'>
-            <div className='w-40'>
-              <Switch
-                title='Toggle Data Source'
-                checked={useRpcData}
-                onChange={handleSwitchDataSource}
-              />
-              <span className='ml-2 text-sm text-grayDark dark:text-white'>
-                {useRpcData ? 'RPC Data' : 'Indexed Data'}
-              </span>
-            </div>
+            <DataSource />
           </div>
           <div
             className={`text-grayDarker ${

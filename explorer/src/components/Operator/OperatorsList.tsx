@@ -36,7 +36,7 @@ import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
-import { Switch } from '../common/Switch'
+import { DataSource } from '../common/DataSource'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -58,7 +58,7 @@ export const OperatorsList: FC = () => {
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
-  const { useRpcData, setUseRpcData } = useViewStates()
+  const { useRpcData } = useViewStates()
 
   useEffect(() => {
     loadDomainsData()
@@ -356,9 +356,6 @@ export const OperatorsList: FC = () => {
     return null
   }, [operators])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleSwitchDataSource = useCallback(() => setUseRpcData(!useRpcData), [useRpcData])
-
   useEffect(() => {
     if (operatorId) handleSearch(operatorId)
   }, [operatorId, handleSearch])
@@ -375,16 +372,7 @@ export const OperatorsList: FC = () => {
         </div>
         <div className='flex items-center'>
           <div className='mr-4 flex items-center'>
-            <div className='w-40'>
-              <Switch
-                title='Toggle Data Source'
-                checked={useRpcData}
-                onChange={handleSwitchDataSource}
-              />
-              <span className='ml-2 text-sm text-grayDark dark:text-white'>
-                {useRpcData ? 'RPC Data' : 'Indexed Data'}
-              </span>
-            </div>
+            <DataSource />
           </div>
           <DebouncedInput
             type='text'
