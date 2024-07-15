@@ -86,6 +86,7 @@ export type Operators = {
   currentTotalStake: string
   currentEpochRewards: number
   currentTotalShares: string
+  totalStorageFeeDeposit: string
   status: string
 }
 

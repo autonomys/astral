@@ -127,14 +127,19 @@ export const useConsensusData = () => {
         })),
       )
       setOperators(
-        operators.map(
-          (operator, key) =>
-            ({
-              id: (operator[0].toHuman() as string[])[0],
-              operatorOwner: operatorIdOwner[key][1].toJSON() as string,
-              ...(operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>),
-            }) as Operators,
-        ),
+        operators.map((operator, key) => {
+          const op = operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>
+          return {
+            id: (operator[0].toHuman() as string[])[0],
+            operatorOwner: operatorIdOwner[key][1].toJSON() as string,
+            ...op,
+            minimumNominatorStake: parseInt(op.minimumNominatorStake, 16).toString(),
+            currentTotalStake: parseInt(op.currentTotalStake, 16).toString(),
+            currentTotalShares: parseInt(op.currentTotalShares, 16).toString(),
+            totalStorageFeeDeposit: parseInt(op.totalStorageFeeDeposit, 16).toString(),
+            status: JSON.stringify(op.status),
+          } as Operators
+        }),
       )
       setPendingStakingOperationCount(
         pendingStakingOperationCount.map(
