@@ -4,7 +4,7 @@ import { useViewStates } from 'states/view'
 export const MyPositionSwitch: FC = () => {
   const { myPositionOnly, setMyPositionOnly } = useViewStates()
 
-  const label = useMemo(() => (myPositionOnly ? 'Staked only' : 'All'), [myPositionOnly])
+  const label = useMemo(() => (myPositionOnly ? 'Staked only' : 'All operators'), [myPositionOnly])
   const onChange = useCallback(
     () => setMyPositionOnly(!myPositionOnly),
     [myPositionOnly, setMyPositionOnly],
