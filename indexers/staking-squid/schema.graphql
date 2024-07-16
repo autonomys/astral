@@ -49,10 +49,10 @@ type Nominator @entity {
 type Deposit @entity {
   id: ID! @index
   blockNumber: Int! @index
+  account: String! @index
   amount: BigInt!
   operator: Operator!
   nominator: Nominator!
-  nominatorAccount: String!
   timestamp: DateTime! @index
   extrinsicHash: String! @index
   status: String
@@ -61,10 +61,10 @@ type Deposit @entity {
 type Withdrawal @entity {
   id: ID! @index
   blockNumber: Int! @index
+  account: String! @index
   shares: BigInt!
   operator: Operator!
   nominator: Nominator!
-  nominatorAccount: String!
   timestamp: DateTime! @index
   extrinsicHash: String! @index
   status: String
