@@ -12,7 +12,7 @@ import { assertNotNull } from "@subsquid/util-internal";
 import { calls, events } from "./types";
 
 export const processor = new SubstrateBatchProcessor()
-  // .setGateway('')
+  .setGateway("https://v2.archive.subsquid.io/network/gemini-3h")
   .setRpcEndpoint({
     // Set via .env for local runs or via secrets when deploying to Subsquid Cloud
     // https://docs.subsquid.io/deploy-squid/env-variables/
@@ -22,6 +22,9 @@ export const processor = new SubstrateBatchProcessor()
     ),
     // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
     rateLimit: 10,
+  })
+  .setBlockRange({
+    from: 0,
   })
   .addCall({
     name: [
@@ -67,15 +70,27 @@ export const processor = new SubstrateBatchProcessor()
     extrinsic: true,
   })
   .setFields({
-    event: {
-      args: true,
+    block: {
+      height: true,
+      hash: true,
+      timestamp: true,
     },
     extrinsic: {
-      hash: true,
+      index: true,
+      version: true,
       fee: true,
+      success: true,
+      hash: true,
     },
-    block: {
-      timestamp: true,
+    call: {
+      address: true,
+      name: true,
+      args: true,
+      origin: true,
+    },
+    event: {
+      name: true,
+      args: true,
     },
   });
 // Uncomment to disable RPC ingestion and drastically reduce no of RPC calls
