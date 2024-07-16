@@ -1,3 +1,10 @@
+type Domain @entity {
+  id: ID! @index
+  domainId: Int! @index
+  completedEpoch: Int! @index
+  updatedAt: Int @index
+}
+
 type Operator @entity {
   id: ID! @index
   domainId: Int! @index
@@ -6,7 +13,11 @@ type Operator @entity {
   operatorOwner: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
+  taxCollected: BigInt!
+  pendingTotalStake: BigInt!
+  pendingStorageFeeDeposit: BigInt!
   currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
   deposits: [Deposit!]!
@@ -28,6 +39,8 @@ type Operator @entity {
   depositsCount: Int!
   nominatorsCount: Int!
   withdrawalsCount: Int!
+  bundleCount: Int!
+  lastBundleAt: Int!
   updatedAt: Int @index
 }
 
@@ -51,6 +64,7 @@ type Deposit @entity {
   blockNumber: Int! @index
   account: String! @index
   amount: BigInt!
+  storageFeeDeposit: BigInt!
   operator: Operator!
   nominator: Nominator!
   timestamp: DateTime! @index
@@ -84,8 +98,6 @@ type OperatorUnlockedFunds @entity {
 type OperatorRewardEvent @entity {
   id: ID! @index
   operator: Operator!
-  indexInBlock: Int!
-  name: String!
   timestamp: DateTime! @index
   blockNumber: Int! @index
   extrinsicHash: String! @index
@@ -108,9 +120,7 @@ type Stats @entity {
   totalActiveOperators: Int!
   totalSlashedOperators: Int!
   totalStaked: BigInt!
-  totalRewards: BigInt!
   totalFees: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -126,9 +136,7 @@ type StatsPerDomain @entity {
   totalActiveOperators: Int!
   totalSlashedOperators: Int!
   totalStaked: BigInt!
-  totalRewards: BigInt!
   totalFees: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -142,9 +150,7 @@ type StatsPerOperator @entity {
   blockNumber: Int! @index
   totalNominators: Int!
   totalStaked: BigInt!
-  totalRewards: BigInt!
   totalFees: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
