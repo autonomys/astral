@@ -10,6 +10,7 @@ interface TransactionsDefaultState {
 
 interface TransactionsState extends TransactionsDefaultState {
   addPendingTransactions: (transaction: Transaction) => void
+  getNextNonceForAccount: (address: string) => number
   removePendingTransactions: (transaction: Transaction) => void
   markAsFinalized: (transaction: Transaction, status: TransactionStatus) => void
   moveToFinalizedTransactions: (transaction: Transaction) => void
@@ -23,7 +24,7 @@ const initialState: TransactionsDefaultState = {
 
 export const useTransactionsStates = create<TransactionsState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       addPendingTransactions: (transaction: Transaction) =>
         set((state) => ({
@@ -32,6 +33,13 @@ export const useTransactionsStates = create<TransactionsState>()(
             { ...transaction, submittedAtLocalTimestamp: new Date() },
           ],
         })),
+      getNextNonceForAccount: (address: string) => {
+        const tx = get()
+          .pendingTransactions.filter((t) => t.ownerAccount.address === address)
+          .sort((a, b) => a.nonce - b.nonce)
+          .pop()
+        return tx ? tx.nonce + 1 : 0
+      },
       removePendingTransactions: (transaction: Transaction) =>
         set((state) => ({
           pendingTransactions: state.pendingTransactions.filter(
