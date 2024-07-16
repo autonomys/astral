@@ -9,7 +9,7 @@ import {
 } from "@subsquid/substrate-processor";
 import { assertNotNull } from "@subsquid/util-internal";
 
-import { events } from "./types";
+import { calls, events } from "./types";
 
 export const processor = new SubstrateBatchProcessor()
   // .setGateway('')
@@ -23,22 +23,47 @@ export const processor = new SubstrateBatchProcessor()
     // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
     rateLimit: 10,
   })
+  .addCall({
+    name: [
+      // operator and nomination
+      calls.domains.registerOperator.name,
+      calls.domains.nominateOperator.name,
+      calls.domains.deregisterOperator.name,
+      // deposit and stake
+      calls.domains.withdrawStake.name,
+      calls.domains.unlockFunds.name,
+      calls.domains.unlockOperator.name,
+      calls.domains.unlockNominator.name,
+    ],
+
+    events: true,
+    extrinsic: true,
+  })
   .addEvent({
     name: [
-      events.domains.storageFeeDeposited.name,
+      // new domain
+      events.domains.domainInstantiated.name,
+      // epoch transition
+      events.domains.domainEpochCompleted.name,
+      events.domains.forceDomainEpochTransition.name,
+      // operator and nomination
       events.domains.operatorRegistered.name,
       events.domains.operatorDeregistered.name,
       events.domains.operatorNominated.name,
-      events.domains.operatorRewarded.name,
-      events.domains.operatorSlashed.name,
-      events.domains.domainEpochCompleted.name,
+      // deposit and stake
+      events.domains.storageFeeDeposited.name,
       events.domains.withdrewStake.name,
-      // new events
-      events.domains.forceDomainEpochTransition.name,
-      events.domains.operatorTaxCollected.name,
       events.domains.operatorUnlocked.name,
       events.domains.fundsUnlocked.name,
+      // bundle
+      events.domains.bundleStored.name,
+      // rewards and slashing
+      events.domains.operatorRewarded.name,
+      events.domains.operatorSlashed.name,
+      // fees
+      events.domains.operatorTaxCollected.name,
     ],
+    call: true,
     extrinsic: true,
   })
   .setFields({
