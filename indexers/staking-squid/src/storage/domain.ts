@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { emptyDomain } from "../assets";
 import { Domain } from "../model";
 import type { ProcessorContext } from "../processor";
+import { getOrCreateStats, getOrCreateStatsPerDomain } from "./stats";
 
 export const createDomain = async (
   ctx: ProcessorContext<Store>,
@@ -17,6 +18,16 @@ export const createDomain = async (
   });
 
   await ctx.store.insert(domain);
+
+  const domainsCount = await ctx.store.count(Domain);
+  ctx.log.child("domains").info(`count: ${domainsCount}`);
+
+  const stats = await getOrCreateStats(ctx, block);
+  await getOrCreateStatsPerDomain(ctx, block, props.domainId || 0);
+
+  stats.totalDomains += 1;
+
+  await ctx.store.save(stats);
 
   return domain;
 };

@@ -4,6 +4,7 @@ import { emptyOperator, emptyOperatorRewardEvent } from "../assets";
 import { Operator, OperatorRewardEvent } from "../model";
 import type { ProcessorContext } from "../processor";
 import { getOrCreateDomain } from "./domain";
+import { getOrCreateAllStats } from "./stats";
 
 export const createOperator = async (
   ctx: ProcessorContext<Store>,
@@ -20,6 +21,11 @@ export const createOperator = async (
   });
 
   await ctx.store.insert(operator);
+
+  const operatorsCount = await ctx.store.count(Operator);
+  ctx.log.child("operators").info(`count: ${operatorsCount}`);
+
+  await getOrCreateAllStats(ctx, block, props.domainId, props.operatorId);
 
   return operator;
 };
@@ -54,6 +60,13 @@ export const createOperatorRewardEvent = async (
   });
 
   await ctx.store.insert(operatorRewardEvent);
+
+  await getOrCreateAllStats(
+    ctx,
+    block,
+    props.operator?.domainId,
+    props.operator?.operatorId
+  );
 
   return operatorRewardEvent;
 };

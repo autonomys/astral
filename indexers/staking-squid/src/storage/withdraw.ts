@@ -3,6 +3,7 @@ import { randomUUID } from "crypto";
 import { emptyWithdrawal } from "../assets";
 import { Operator, Withdrawal } from "../model";
 import type { ProcessorContext } from "../processor";
+import { getOrCreateAllStats } from "./stats";
 
 export const createWithdrawal = async (
   ctx: ProcessorContext<Store>,
@@ -17,6 +18,16 @@ export const createWithdrawal = async (
   });
 
   await ctx.store.insert(withdraw);
+
+  const withdrawsCount = await ctx.store.count(Withdrawal);
+  ctx.log.child("withdraws").info(`count: ${withdrawsCount}`);
+
+  await getOrCreateAllStats(
+    ctx,
+    block,
+    props.operator?.domainId,
+    props.operator?.operatorId
+  );
 
   return withdraw;
 };
