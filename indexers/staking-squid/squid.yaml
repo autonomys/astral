@@ -11,7 +11,7 @@ deploy:
       - sqd
       - process:prod
     env:
-      RPC_ENDPOINT: ${{ secrets.RPC_CONSENSUS_HTTP }}
+      RPC_CONSENSUS_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
   api:
     cmd:
       - sqd
