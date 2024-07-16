@@ -1,23 +1,21 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyOperator } from "../assets/operator";
-import { Operator } from "../model";
+import { emptyOperator, emptyOperatorRewardEvent } from "../assets";
+import { Operator, OperatorRewardEvent } from "../model";
 import type { ProcessorContext } from "../processor";
 import { getOrCreateDomain } from "./domain";
 
 export const createOperator = async (
   ctx: ProcessorContext<Store>,
   block: ProcessorContext<Store>["blocks"][0],
-  domainId: number,
-  operatorId: number
+  props: Partial<Operator>
 ): Promise<Operator> => {
-  await getOrCreateDomain(ctx, block, domainId);
+  if (props.domainId) await getOrCreateDomain(ctx, block, props.domainId);
 
   const operator = new Operator({
     ...emptyOperator,
+    ...props,
     id: randomUUID(),
-    domainId,
-    operatorId,
     updatedAt: block.header.height,
   });
 
@@ -33,7 +31,29 @@ export const getOrCreateOperator = async (
 ): Promise<Operator> => {
   const operator = await ctx.store.findOneBy(Operator, { operatorId });
 
-  if (!operator) return await createOperator(ctx, block, 0, operatorId);
+  if (!operator)
+    return await createOperator(ctx, block, {
+      domainId: 0,
+      operatorId,
+    });
 
   return operator;
+};
+
+export const createOperatorRewardEvent = async (
+  ctx: ProcessorContext<Store>,
+  block: ProcessorContext<Store>["blocks"][0],
+  props: Partial<OperatorRewardEvent>
+): Promise<OperatorRewardEvent> => {
+  const operatorRewardEvent = new OperatorRewardEvent({
+    ...emptyOperatorRewardEvent,
+    ...props,
+    id: randomUUID(),
+    blockNumber: block.header.height,
+    timestamp: new Date(block.header.timestamp || 0),
+  });
+
+  await ctx.store.insert(operatorRewardEvent);
+
+  return operatorRewardEvent;
 };

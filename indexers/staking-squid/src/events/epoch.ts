@@ -1,8 +1,7 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
-import { emptyNominator } from "../assets/nominator";
 import { Domain, Operator } from "../model";
 import type { ProcessorContext } from "../processor";
+import { createDomain } from "../storage/domain";
 
 export async function processEpochTransitionEvent(
   ctx: ProcessorContext<Store>,
@@ -13,17 +12,12 @@ export async function processEpochTransitionEvent(
   const domainId = Number(event.args.domainId);
   const domain = await ctx.store.findOneBy(Domain, { domainId });
 
-  if (!domain) {
-    const newDomain = new Domain({
-      ...emptyNominator,
-      id: randomUUID(),
+  if (!domain)
+    await createDomain(ctx, block, {
       domainId,
       completedEpoch: Number(event.args.completedEpochIndex),
-      updatedAt: block.header.height,
     });
-
-    await ctx.store.insert(newDomain);
-  } else {
+  else {
     domain.completedEpoch = Number(event.args.completedEpochIndex);
     domain.updatedAt = block.header.height;
 

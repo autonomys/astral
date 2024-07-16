@@ -1,12 +1,11 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
-import { emptyNominator } from "../assets/nominator";
-import { emptyOperator } from "../assets/operator";
-import { Deposit, Nominator, Operator } from "../model";
+import { Nominator } from "../model";
 import type { ProcessorContext } from "../processor";
-import { getOrCreateOperator } from "../storage/operator";
+import { createDeposit } from "../storage/deposit";
+import { createNominator } from "../storage/nominator";
+import { createOperator, getOrCreateOperator } from "../storage/operator";
 import { events } from "../types";
-import { getCallSigner } from "../utils/account";
+import { getCallSigner } from "../utils";
 
 export async function processRegisterOperator(
   ctx: ProcessorContext<Store>,
@@ -24,9 +23,7 @@ export async function processRegisterOperator(
   );
 
   if (operatorRegisteredEvent) {
-    const operator = new Operator({
-      ...emptyOperator,
-      id: randomUUID(),
+    const operator = await createOperator(ctx, block, {
       domainId,
       operatorId: Number(operatorRegisteredEvent.args.operatorId),
       signingKey: extrinsic.call?.args.config.signingKey,
@@ -40,25 +37,15 @@ export async function processRegisterOperator(
         ? BigInt(storageFeeDepositedEvent.args.amount)
         : BigInt(0),
       status: JSON.stringify({ registered: null }),
-      updatedAt: block.header.height,
     });
 
-    await ctx.store.insert(operator);
-
-    const nominator = new Nominator({
-      ...emptyNominator,
-      id: randomUUID(),
+    const nominator = await createNominator(ctx, block, {
       account,
       operator,
       status: JSON.stringify({ pending: null }),
-      updatedAt: block.header.height,
     });
 
-    await ctx.store.insert(nominator);
-
-    const deposit = new Deposit({
-      id: randomUUID(),
-      blockNumber: block.header.height,
+    const deposit = await createDeposit(ctx, block, {
       account,
       amount: extrinsic.call ? BigInt(extrinsic.call.args.amount) : BigInt(0),
       storageFeeDeposit: storageFeeDepositedEvent
@@ -66,12 +53,9 @@ export async function processRegisterOperator(
         : BigInt(0),
       operator,
       nominator,
-      timestamp: new Date(block.header.timestamp || 0),
       extrinsicHash: extrinsic.hash,
       status: JSON.stringify({ pending: null }),
     });
-
-    await ctx.store.insert(deposit);
 
     operator.deposits = [deposit];
     operator.nominators = [nominator];
@@ -106,21 +90,14 @@ export async function processNominateOperator(
 
   if (operatorNominatedEvent) {
     if (!nominator) {
-      nominator = new Nominator({
-        ...emptyNominator,
-        id: randomUUID(),
+      nominator = await createNominator(ctx, block, {
         account,
         operator,
         status: JSON.stringify({ pending: null }),
-        updatedAt: block.header.height,
       });
-
-      await ctx.store.insert(nominator);
     }
 
-    const deposit = new Deposit({
-      id: randomUUID(),
-      blockNumber: block.header.height,
+    const deposit = await createDeposit(ctx, block, {
       account,
       amount: extrinsic.call ? BigInt(extrinsic.call.args.amount) : BigInt(0),
       storageFeeDeposit: storageFeeDepositedEvent
@@ -128,12 +105,9 @@ export async function processNominateOperator(
         : BigInt(0),
       operator,
       nominator,
-      timestamp: new Date(block.header.timestamp || 0),
       extrinsicHash: extrinsic.hash,
       status: JSON.stringify({ pending: null }),
     });
-
-    await ctx.store.insert(deposit);
 
     operator.pendingTotalStake += BigInt(extrinsic.call?.args.amount);
     operator.pendingStorageFeeDeposit += storageFeeDepositedEvent

@@ -1,7 +1,7 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
-import { Deposit, Nominator, Operator, OperatorRewardEvent } from "../model";
+import { Nominator, Operator } from "../model";
 import type { ProcessorContext } from "../processor";
+import { createOperatorRewardEvent } from "../storage/operator";
 
 export async function processOperatorSlashedEvent(
   ctx: ProcessorContext<Store>,
@@ -43,16 +43,11 @@ export async function processOperatorRewardedEvent(
   const operatorId = Number(event.args.operatorId);
   const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });
 
-  const opRewardEvent = new OperatorRewardEvent({
-    id: randomUUID(),
+  const opRewardEvent = await createOperatorRewardEvent(ctx, block, {
     operator,
-    timestamp: new Date(block.header.timestamp || 0),
-    blockNumber: block.header.height,
     extrinsicHash: extrinsic.hash,
     amount: BigInt(event.args.reward),
   });
-
-  await ctx.store.insert(opRewardEvent);
 
   operator.currentEpochRewards =
     operator.currentEpochRewards + BigInt(event.args.reward);

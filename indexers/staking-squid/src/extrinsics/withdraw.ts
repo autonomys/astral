@@ -1,10 +1,9 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
-import { Nominator, Withdrawal } from "../model";
+import { Nominator } from "../model";
 import type { ProcessorContext } from "../processor";
-import { getOrCreateOperator } from "../storage/operator";
+import { createWithdrawal, getOrCreateOperator } from "../storage";
 import { events } from "../types";
-import { getCallSigner } from "../utils/account";
+import { getCallSigner } from "../utils";
 
 export async function processWithdrawStake(
   ctx: ProcessorContext<Store>,
@@ -24,19 +23,14 @@ export async function processWithdrawStake(
   );
 
   if (withdrewStakeEvent) {
-    const withdrawal = new Withdrawal({
-      id: randomUUID(),
-      blockNumber: block.header.height,
+    const withdrawal = await createWithdrawal(ctx, block, {
       account,
       shares: extrinsic.call ? BigInt(extrinsic.call.args.shares) : BigInt(0),
       operator,
       nominator,
-      timestamp: new Date(block.header.timestamp || 0),
       extrinsicHash: extrinsic.hash,
       status: JSON.stringify({ pending: null }),
     });
-
-    await ctx.store.insert(withdrawal);
 
     operator.withdrawals = operator.withdrawals
       ? [...operator.withdrawals, withdrawal]

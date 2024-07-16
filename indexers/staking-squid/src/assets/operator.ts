@@ -25,3 +25,11 @@ export const emptyOperator = {
   lastBundleAt: 0,
   updatedAt: 0,
 };
+
+export const emptyOperatorRewardEvent = {
+  id: "0",
+  timestamp: new Date(0),
+  blockNumber: 0,
+  extrinsicHash: "0x",
+  amount: BigInt(0),
+};

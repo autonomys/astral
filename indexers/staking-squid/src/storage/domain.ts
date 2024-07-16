@@ -1,20 +1,21 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyDomain } from "../assets/domain";
+import { emptyDomain } from "../assets";
 import { Domain } from "../model";
 import type { ProcessorContext } from "../processor";
 
 export const createDomain = async (
   ctx: ProcessorContext<Store>,
   block: ProcessorContext<Store>["blocks"][0],
-  domainId: number
+  props: Partial<Domain>
 ): Promise<Domain> => {
   const domain = new Domain({
     ...emptyDomain,
+    ...props,
     id: randomUUID(),
-    domainId,
     updatedAt: block.header.height,
   });
+
   await ctx.store.insert(domain);
 
   return domain;
@@ -27,7 +28,7 @@ export const getOrCreateDomain = async (
 ): Promise<Domain> => {
   const domain = await ctx.store.findOneBy(Domain, { domainId });
 
-  if (!domain) return await createDomain(ctx, block, domainId);
+  if (!domain) return await createDomain(ctx, block, { domainId });
 
   return domain;
 };
