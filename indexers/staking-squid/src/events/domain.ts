@@ -9,7 +9,7 @@ export async function processDomainInstantiatedEvent(
   event: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["events"][0]
 ) {
   await createDomain(ctx, block, {
-    domainId: Number(event.args.domainId),
-    completedEpoch: Number(event.args.completedEpochIndex),
+    domainId: Number(event.args.domainId || 0),
+    completedEpoch: Number(event.args.completedEpochIndex || 0),
   });
 }
