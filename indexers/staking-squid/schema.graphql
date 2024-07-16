@@ -108,9 +108,7 @@ type Stats @entity {
   totalActiveOperators: Int!
   totalSlashedOperators: Int!
   totalStaked: BigInt!
-  totalRewards: BigInt!
   totalFees: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -126,9 +124,7 @@ type StatsPerDomain @entity {
   totalActiveOperators: Int!
   totalSlashedOperators: Int!
   totalStaked: BigInt!
-  totalRewards: BigInt!
   totalFees: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -142,9 +138,7 @@ type StatsPerOperator @entity {
   blockNumber: Int! @index
   totalNominators: Int!
   totalStaked: BigInt!
-  totalRewards: BigInt!
   totalFees: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
