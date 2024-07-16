@@ -32,13 +32,7 @@ export class Stats {
     totalStaked!: bigint
 
     @BigIntColumn_({nullable: false})
-    totalRewards!: bigint
-
-    @BigIntColumn_({nullable: false})
     totalFees!: bigint
-
-    @BigIntColumn_({nullable: false})
-    totalShares!: bigint
 
     @BigIntColumn_({nullable: false})
     totalDeposits!: bigint
