@@ -34,11 +34,10 @@ export const useTransactionsStates = create<TransactionsState>()(
           ],
         })),
       getNextNonceForAccount: (address: string) => {
-        const tx = get()
-          .pendingTransactions.filter((t) => t.ownerAccount.address === address)
-          .sort((a, b) => a.nonce - b.nonce)
-          .pop()
-        return tx ? tx.nonce + 1 : 0
+        const lastNonce = get()
+          .pendingTransactions.filter(t => t.ownerAccount.address === address)
+          .reduce((maxNonce, tx) => Math.max(maxNonce, tx.nonce), -1);
+        return lastNonce + 1;
       },
       removePendingTransactions: (transaction: Transaction) =>
         set((state) => ({
