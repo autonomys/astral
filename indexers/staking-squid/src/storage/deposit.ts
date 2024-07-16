@@ -1,9 +1,8 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyDeposit } from "../assets";
 import { Deposit, Operator } from "../model";
 import type { ProcessorContext } from "../processor";
-import { getOrCreateAllStats, updateAllStats } from "./stats";
+import { getOrCreateAllStats } from "./stats";
 
 export const createDeposit = async (
   ctx: ProcessorContext<Store>,
@@ -11,10 +10,15 @@ export const createDeposit = async (
   props: Partial<Deposit>
 ): Promise<Deposit> => {
   const deposit = new Deposit({
-    ...emptyDeposit,
-    ...props,
-    timestamp: new Date(block.header.timestamp || 0),
     id: randomUUID(),
+    account: "st",
+    amount: BigInt(0),
+    storageFeeDeposit: BigInt(0),
+    extrinsicHash: "0x",
+    status: JSON.stringify({}),
+    ...props,
+    blockNumber: block.header.height,
+    timestamp: new Date(block.header.timestamp || 0),
   });
 
   await ctx.store.insert(deposit);

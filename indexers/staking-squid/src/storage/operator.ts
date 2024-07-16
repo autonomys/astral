@@ -1,6 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyOperator, emptyOperatorRewardEvent } from "../assets";
 import { Operator, OperatorRewardEvent } from "../model";
 import type { ProcessorContext } from "../processor";
 import { getOrCreateDomain } from "./domain";
@@ -14,9 +13,31 @@ export const createOperator = async (
   if (props.domainId) await getOrCreateDomain(ctx, block, props.domainId);
 
   const operator = new Operator({
-    ...emptyOperator,
-    ...props,
     id: randomUUID(),
+    operatorId: 0,
+    signingKey: "0x",
+    operatorOwner: "st",
+    minimumNominatorStake: BigInt(0),
+    nominationTax: 0,
+    taxCollected: BigInt(0),
+    pendingTotalStake: BigInt(0),
+    pendingStorageFeeDeposit: BigInt(0),
+    currentTotalStake: BigInt(0),
+    currentStorageFeeDeposit: BigInt(0),
+    currentEpochRewards: BigInt(0),
+    currentTotalShares: BigInt(0),
+    deposits: [],
+    nominators: [],
+    withdrawals: [],
+    operatorRewards: [],
+    operatorFees: [],
+    status: JSON.stringify({}),
+    depositsCount: 0,
+    nominatorsCount: 0,
+    withdrawalsCount: 0,
+    bundleCount: 0,
+    lastBundleAt: 0,
+    ...props,
     updatedAt: block.header.height,
   });
 
@@ -52,9 +73,10 @@ export const createOperatorRewardEvent = async (
   props: Partial<OperatorRewardEvent>
 ): Promise<OperatorRewardEvent> => {
   const operatorRewardEvent = new OperatorRewardEvent({
-    ...emptyOperatorRewardEvent,
-    ...props,
     id: randomUUID(),
+    extrinsicHash: "0x",
+    amount: BigInt(0),
+    ...props,
     blockNumber: block.header.height,
     timestamp: new Date(block.header.timestamp || 0),
   });

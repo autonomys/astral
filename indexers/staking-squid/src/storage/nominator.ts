@@ -1,6 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyNominator } from "../assets";
 import { Nominator, Operator } from "../model";
 import type { ProcessorContext } from "../processor";
 import { getOrCreateAllStats } from "./stats";
@@ -11,9 +10,13 @@ export const createNominator = async (
   props: Partial<Nominator>
 ): Promise<Nominator> => {
   const nominator = new Nominator({
-    ...emptyNominator,
-    ...props,
     id: randomUUID(),
+    account: "st",
+    shares: BigInt(0),
+    deposits: [],
+    withdrawals: [],
+    status: JSON.stringify({}),
+    ...props,
     updatedAt: block.header.height,
   });
 

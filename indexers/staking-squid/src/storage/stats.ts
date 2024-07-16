@@ -1,6 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyStats } from "../assets";
 import {
   Domain,
   Nominator,
@@ -10,6 +9,20 @@ import {
   StatsPerOperator,
 } from "../model";
 import type { ProcessorContext } from "../processor";
+
+const emptyStats = {
+  blockNumber: 0,
+  totalDomains: 0,
+  totalOperators: 0,
+  totalNominators: 0,
+  totalActiveOperators: 0,
+  totalSlashedOperators: 0,
+  totalStaked: BigInt(0),
+  totalFees: BigInt(0),
+  totalDeposits: BigInt(0),
+  totalWithdrawals: BigInt(0),
+  allTimeHighStaked: BigInt(0),
+};
 
 export const createStats = async (
   ctx: ProcessorContext<Store>,

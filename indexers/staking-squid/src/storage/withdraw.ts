@@ -1,6 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyWithdrawal } from "../assets";
 import { Operator, Withdrawal } from "../model";
 import type { ProcessorContext } from "../processor";
 import { getOrCreateAllStats } from "./stats";
@@ -11,10 +10,14 @@ export const createWithdrawal = async (
   props: Partial<Withdrawal>
 ): Promise<Withdrawal> => {
   const withdraw = new Withdrawal({
-    ...emptyWithdrawal,
-    ...props,
-    timestamp: new Date(block.header.timestamp || 0),
     id: randomUUID(),
+    account: "st",
+    shares: BigInt(0),
+    extrinsicHash: "0x",
+    status: JSON.stringify({}),
+    ...props,
+    blockNumber: block.header.height,
+    timestamp: new Date(block.header.timestamp || 0),
   });
 
   await ctx.store.insert(withdraw);

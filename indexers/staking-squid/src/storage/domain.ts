@@ -1,6 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { emptyDomain } from "../assets";
 import { Domain } from "../model";
 import type { ProcessorContext } from "../processor";
 import { getOrCreateStats, getOrCreateStatsPerDomain } from "./stats";
@@ -11,9 +10,10 @@ export const createDomain = async (
   props: Partial<Domain>
 ): Promise<Domain> => {
   const domain = new Domain({
-    ...emptyDomain,
-    ...props,
     id: randomUUID(),
+    domainId: 0,
+    completedEpoch: 0,
+    ...props,
     updatedAt: block.header.height,
   });
 
