@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
+import * as v5 from '../v5'
 
 export const account =  {
     /**
@@ -192,6 +193,16 @@ export const events =  {
      *  just in case someone still reads them from within the runtime.
      */
     v1: new StorageType('System.Events', 'Default', [], sts.array(() => v1.EventRecord)) as EventsV1,
+    /**
+     *  Events deposited for the current block.
+     * 
+     *  NOTE: The item is unbound and should therefore never be read on chain.
+     *  It could otherwise inflate the PoV size of a block.
+     * 
+     *  Events have a large in-memory size. Box the events to not go out-of-memory
+     *  just in case someone still reads them from within the runtime.
+     */
+    v5: new StorageType('System.Events', 'Default', [], sts.array(() => v5.EventRecord)) as EventsV5,
 }
 
 /**
@@ -222,6 +233,21 @@ export interface EventsV1  {
     is(block: RuntimeCtx): boolean
     getDefault(block: Block): v1.EventRecord[]
     get(block: Block): Promise<(v1.EventRecord[] | undefined)>
+}
+
+/**
+ *  Events deposited for the current block.
+ * 
+ *  NOTE: The item is unbound and should therefore never be read on chain.
+ *  It could otherwise inflate the PoV size of a block.
+ * 
+ *  Events have a large in-memory size. Box the events to not go out-of-memory
+ *  just in case someone still reads them from within the runtime.
+ */
+export interface EventsV5  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v5.EventRecord[]
+    get(block: Block): Promise<(v5.EventRecord[] | undefined)>
 }
 
 export const eventCount =  {
@@ -360,4 +386,20 @@ export const authorizedUpgrade =  {
 export interface AuthorizedUpgradeV0  {
     is(block: RuntimeCtx): boolean
     get(block: Block): Promise<(v0.CodeUpgradeAuthorization | undefined)>
+}
+
+export const inherentsApplied =  {
+    /**
+     *  Whether all inherents have been applied.
+     */
+    v5: new StorageType('System.InherentsApplied', 'Default', [], sts.boolean()) as InherentsAppliedV5,
+}
+
+/**
+ *  Whether all inherents have been applied.
+ */
+export interface InherentsAppliedV5  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): boolean
+    get(block: Block): Promise<(boolean | undefined)>
 }

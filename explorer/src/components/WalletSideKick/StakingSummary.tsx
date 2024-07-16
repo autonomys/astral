@@ -3,12 +3,7 @@ import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import type { Chain } from 'constants/chains'
-import {
-  INTERNAL_ROUTES,
-  ROUTE_EXTRA_FLAG_TYPE,
-  ROUTE_FLAG_VALUE_OPEN_CLOSE,
-  Routes,
-} from 'constants/routes'
+import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
 import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -143,7 +138,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalOperatorStake'}
                   data-testid='totalOperatorStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
                     {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
@@ -155,7 +150,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalNominatedStake'}
                   data-testid='totalNominatedStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
                     {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
@@ -167,7 +162,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalOperatorCount'}
                   data-testid='totalOperatorCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
                     {totalOperatorCount}
@@ -179,7 +174,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalNominatedCount'}
                   data-testid='totalNominatedCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of nomination'>
                     {totalNominatedCount}
@@ -192,7 +187,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
               <Link
                 data-testid='totalNominatedCount-link'
                 className='hover:text-purpleAccent'
-                href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.list}`}
+                href={`/${selectedChain.urls.page}/${Routes.staking}`}
               >
                 <span className='text-sm font-medium text-grayDarker dark:text-white'>
                   Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page

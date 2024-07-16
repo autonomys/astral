@@ -113,7 +113,8 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({
   }, [inView, setIsVisible])
 
   useEffect(() => {
-    if (data) moveIfPending(data.accounts[0].extrinsics)
+    if (data && data.accounts[0] && data.accounts[0].extrinsics)
+      moveIfPending(data.accounts[0].extrinsics)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 

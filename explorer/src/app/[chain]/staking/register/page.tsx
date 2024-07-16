@@ -1,4 +1,4 @@
-import { OperatorStake } from 'components/Operator/OperatorStake'
+import { RegisterOperators } from 'components/Staking/RegisterOperators'
 import { chains } from 'constants/chains'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
@@ -22,5 +22,5 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
 }
 
 export default async function Page() {
-  return <OperatorStake />
+  return <RegisterOperators />
 }

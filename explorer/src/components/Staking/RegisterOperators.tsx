@@ -43,7 +43,7 @@ enum OwnershipProofMethod {
   keystore = 'keystore',
 }
 
-export const OperatorStake = () => {
+export const RegisterOperators = () => {
   const { selectedChain } = useDomains()
   const [isOpen, setIsOpen] = useState(false)
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
