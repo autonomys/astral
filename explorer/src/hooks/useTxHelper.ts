@@ -22,7 +22,7 @@ export interface SendAndSaveTx {
 export const useTxHelper = () => {
   const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
-  const { addPendingTransactions } = useTransactionsStates()
+  const { addPendingTransactions, getNextNonceForAccount } = useTransactionsStates()
 
   const handleTxSuccess = useCallback(
     (message: string, call: string, handleSuccess?: (message: string) => void) => {
@@ -45,16 +45,24 @@ export const useTxHelper = () => {
 
   const sendAndSaveTx = useCallback(
     async (input: SendAndSaveTx) => {
-      const { call, tx, signer, to, amount, fee, nonce, error } = input
+      const { call, tx, signer, to, amount, fee, error } = input
+      let { nonce } = input
 
       if (!api || !actingAccount || !injector)
         return handleTxError('We are not able to connect to the blockchain', call, error)
       if (!subspaceAccount) return handleTxError('Not a subspace account connected', call, error)
 
       try {
-        const block = await api.rpc.chain.getBlock()
         const from = actingAccount.address
-        const hash = await tx.signAndSend(from, { signer })
+        const [block, account] = await Promise.all([
+          api.rpc.chain.getBlock(),
+          api.query.system.account(from),
+        ])
+        const txCount = (account.toJSON() as { nonce: number }).nonce
+        const nextNonceFromPending = getNextNonceForAccount(from)
+        if (!nonce || txCount > nonce) nonce = txCount
+        if (nextNonceFromPending > nonce) nonce = nextNonceFromPending
+        const hash = await tx.signAndSend(from, { nonce, signer })
 
         addPendingTransactions({
           ownerAccount: actingAccount,
@@ -69,7 +77,7 @@ export const useTxHelper = () => {
           to: to || from,
           amount: amount || '0',
           fee: fee || '0',
-          nonce: nonce || 0,
+          nonce,
         })
         handleTxSuccess('The transaction was sent successfully', call)
 
@@ -84,6 +92,7 @@ export const useTxHelper = () => {
       injector,
       handleTxError,
       subspaceAccount,
+      getNextNonceForAccount,
       addPendingTransactions,
       selectedChain,
       handleTxSuccess,
