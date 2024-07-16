@@ -27,8 +27,10 @@ export async function processEpochTransitionEvent(
   const operators = await ctx.store.findBy(Operator, { domainId });
   for (const operator of operators) {
     operator.currentEpochRewards = BigInt(0);
-    operator.currentTotalStake = operator.pendingTotalStake;
-    operator.currentStorageFeeDeposit = operator.currentStorageFeeDeposit;
+    operator.currentTotalStake += operator.pendingTotalStake;
+    operator.currentStorageFeeDeposit += operator.pendingStorageFeeDeposit;
+    operator.pendingTotalStake = BigInt(0);
+    operator.pendingStorageFeeDeposit = BigInt(0);
     operator.updatedAt = block.header.height;
 
     await ctx.store.save(operator);
