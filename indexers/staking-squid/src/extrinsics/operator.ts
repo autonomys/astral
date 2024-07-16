@@ -1,6 +1,6 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { Nominator } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import { createDeposit } from "../storage/deposit";
 import { createNominator } from "../storage/nominator";
 import { createOperator, getOrCreateOperator } from "../storage/operator";
@@ -8,9 +8,9 @@ import { events } from "../types";
 import { getCallSigner } from "../utils";
 
 export async function processRegisterOperator(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic
 ) {
   const account = getCallSigner(extrinsic.call);
   const domainId = extrinsic.call?.args.domainId;
@@ -70,9 +70,9 @@ export async function processRegisterOperator(
 }
 
 export async function processNominateOperator(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic
 ) {
   const account = getCallSigner(extrinsic.call);
   const operatorId = Number(extrinsic.call?.args.operatorId);
@@ -128,9 +128,9 @@ export async function processNominateOperator(
 }
 
 export async function processDeregisterOperator(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic
 ) {
   const operatorId = Number(extrinsic.call?.args.operatorId);
 
@@ -147,9 +147,9 @@ export async function processDeregisterOperator(
 }
 
 export async function processUnlockOperator(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic
 ) {
   const operatorId = Number(extrinsic.call?.args.operatorId);
 

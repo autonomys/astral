@@ -8,7 +8,7 @@ import {
   StatsPerDomain,
   StatsPerOperator,
 } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock } from "../processor";
 
 const emptyStats = {
   blockNumber: 0,
@@ -25,8 +25,8 @@ const emptyStats = {
 };
 
 export const createStats = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<Stats> = {}
 ): Promise<Stats> => {
   const totalDomains = await ctx.store.count(Domain);
@@ -58,8 +58,8 @@ export const createStats = async (
 };
 
 export const getOrCreateStats = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props?: Partial<Stats>
 ): Promise<Stats> => {
   const blockNumber = block.header.height;
@@ -72,8 +72,8 @@ export const getOrCreateStats = async (
 };
 
 export const createStatsPerDomain = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<StatsPerDomain> = {}
 ): Promise<StatsPerDomain> => {
   const totalOperators = await ctx.store.count(Operator);
@@ -103,8 +103,8 @@ export const createStatsPerDomain = async (
 };
 
 export const getOrCreateStatsPerDomain = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   domainId: number,
   props?: Partial<StatsPerDomain>
 ): Promise<StatsPerDomain> => {
@@ -126,8 +126,8 @@ export const getOrCreateStatsPerDomain = async (
 };
 
 export const createStatsPerOperator = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<StatsPerOperator>
 ): Promise<StatsPerOperator> => {
   const totalNominators = await ctx.store.count(Nominator);
@@ -146,8 +146,8 @@ export const createStatsPerOperator = async (
 };
 
 export const getOrCreateStatsPerOperator = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   operatorId: number,
   props?: Partial<StatsPerOperator>
 ): Promise<StatsPerOperator> => {
@@ -173,7 +173,7 @@ export const getOrCreateStatsPerOperator = async (
 };
 
 export const updateAllStats = async (
-  ctx: ProcessorContext<Store>,
+  ctx: Ctx<Store>,
   stats: Stats,
   statsPerDomain: StatsPerDomain,
   statsPerOperator: StatsPerOperator,
@@ -194,8 +194,8 @@ export const updateAllStats = async (
 };
 
 export const getOrCreateAllStats = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   domainId: number = 0,
   operatorId: number = 0,
   props?: Partial<Stats & StatsPerDomain & StatsPerOperator>

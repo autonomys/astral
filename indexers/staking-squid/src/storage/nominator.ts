@@ -1,12 +1,12 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Nominator, Operator } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock } from "../processor";
 import { getOrCreateAllStats } from "./stats";
 
 export const createNominator = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<Nominator>
 ): Promise<Nominator> => {
   const nominator = new Nominator({
@@ -36,8 +36,8 @@ export const createNominator = async (
 };
 
 export const getOrCreateNominator = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   operator: Operator,
   account: string
 ): Promise<Nominator> => {

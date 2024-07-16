@@ -1,12 +1,12 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Domain } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock } from "../processor";
 import { getOrCreateStats, getOrCreateStatsPerDomain } from "./stats";
 
 export const createDomain = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<Domain>
 ): Promise<Domain> => {
   const domain = new Domain({
@@ -33,8 +33,8 @@ export const createDomain = async (
 };
 
 export const getOrCreateDomain = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   domainId: number
 ): Promise<Domain> => {
   const domain = await ctx.store.findOneBy(Domain, { domainId });

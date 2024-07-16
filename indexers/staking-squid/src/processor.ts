@@ -99,3 +99,7 @@ export type Event = _Event<Fields>;
 export type Call = _Call<Fields>;
 export type Extrinsic = _Extrinsic<Fields>;
 export type ProcessorContext<Store> = DataHandlerContext<Store, Fields>;
+export type Ctx<S> = ProcessorContext<S>;
+export type CtxBlock = Ctx<Fields>["blocks"][0];
+export type CtxExtrinsic = CtxBlock["extrinsics"][0];
+export type CtxEvent = CtxExtrinsic["events"][0];

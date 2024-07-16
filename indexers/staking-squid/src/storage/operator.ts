@@ -1,13 +1,13 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Operator, OperatorRewardEvent } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock } from "../processor";
 import { getOrCreateDomain } from "./domain";
 import { getOrCreateAllStats } from "./stats";
 
 export const createOperator = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<Operator>
 ): Promise<Operator> => {
   if (props.domainId) await getOrCreateDomain(ctx, block, props.domainId);
@@ -52,8 +52,8 @@ export const createOperator = async (
 };
 
 export const getOrCreateOperator = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   operatorId: number
 ): Promise<Operator> => {
   const operator = await ctx.store.findOneBy(Operator, { operatorId });
@@ -68,8 +68,8 @@ export const getOrCreateOperator = async (
 };
 
 export const createOperatorRewardEvent = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<OperatorRewardEvent>
 ): Promise<OperatorRewardEvent> => {
   const operatorRewardEvent = new OperatorRewardEvent({

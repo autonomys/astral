@@ -1,13 +1,13 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { Nominator, Operator } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { createOperatorRewardEvent } from "../storage/operator";
 
 export async function processOperatorSlashedEvent(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0],
-  event: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["events"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic,
+  event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
   const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });
@@ -35,10 +35,10 @@ export async function processOperatorSlashedEvent(
 }
 
 export async function processOperatorRewardedEvent(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0],
-  event: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["events"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic,
+  event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
   const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });
@@ -59,10 +59,10 @@ export async function processOperatorRewardedEvent(
 }
 
 export async function processOperatorTaxCollectedEvent(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0],
-  event: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["events"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic,
+  event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
   const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });

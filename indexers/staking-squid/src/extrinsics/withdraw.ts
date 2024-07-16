@@ -1,14 +1,14 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { Nominator } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import { createWithdrawal, getOrCreateOperator } from "../storage";
 import { events } from "../types";
 import { getCallSigner } from "../utils";
 
 export async function processWithdrawStake(
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
-  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
+  ctx: Ctx<Store>,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic
 ) {
   const account = getCallSigner(extrinsic.call);
   const operatorId = Number(extrinsic.call?.args.operatorId);

@@ -1,12 +1,12 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Operator, Withdrawal } from "../model";
-import type { ProcessorContext } from "../processor";
+import type { Ctx, CtxBlock } from "../processor";
 import { getOrCreateAllStats } from "./stats";
 
 export const createWithdrawal = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   props: Partial<Withdrawal>
 ): Promise<Withdrawal> => {
   const withdraw = new Withdrawal({
@@ -36,8 +36,8 @@ export const createWithdrawal = async (
 };
 
 export const getOrCreateWithdraw = async (
-  ctx: ProcessorContext<Store>,
-  block: ProcessorContext<Store>["blocks"][0],
+  ctx: Ctx<Store>,
+  block: CtxBlock,
   operator: Operator,
   account: string
 ): Promise<Withdrawal> => {

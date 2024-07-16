@@ -1,11 +1,11 @@
 import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
 import { processBlocks } from "./blocks";
-import { ProcessorContext, processor } from "./processor";
+import { Ctx, processor } from "./processor";
 
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   await processChain(ctx);
 });
 
-async function processChain(ctx: ProcessorContext<Store>) {
+async function processChain(ctx: Ctx<Store>) {
   await processBlocks(ctx);
 }
