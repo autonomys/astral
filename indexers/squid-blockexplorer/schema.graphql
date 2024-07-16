@@ -5,8 +5,8 @@ type Account @entity {
   total: BigInt @index
   updatedAt: BigInt
   nonce: BigInt
-  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer") @cardinality(value: 10)
-  rewards: [RewardEvent!]! @derivedFrom(field: "account") @cardinality(value: 10)
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer") @cardinality(value: 10) @index
+  rewards: [RewardEvent!]! @derivedFrom(field: "account") @cardinality(value: 10) @index
 }
 
 type Block @entity {
@@ -42,7 +42,7 @@ type Extrinsic @entity {
   nonce: BigInt
   name: String!
   signer: Account @index
-  signature: String
+  signature: String @index
   error: JSON
   tip: BigInt
   fee: BigInt
@@ -148,5 +148,5 @@ type AccountRewards @entity {
 type OperatorRewards @entity {
   id: ID! @index
   amount: BigInt
-  updatedAt: BigInt!
+  updatedAt: BigInt! @index
 }
