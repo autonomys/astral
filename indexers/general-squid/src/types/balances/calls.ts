@@ -1,5 +1,6 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
+import * as v5 from '../v5'
 
 export const transferAllowDeath =  {
     name: 'Balances.transfer_allow_death',
@@ -95,6 +96,24 @@ export const forceSetBalance =  {
         sts.struct({
             who: v0.MultiAddress,
             newFree: sts.bigint(),
+        })
+    ),
+}
+
+export const forceAdjustTotalIssuance =  {
+    name: 'Balances.force_adjust_total_issuance',
+    /**
+     * Adjust the total issuance in a saturating way.
+     * 
+     * Can only be called by root and always needs a positive `delta`.
+     * 
+     * # Example
+     */
+    v5: new CallType(
+        'Balances.force_adjust_total_issuance',
+        sts.struct({
+            direction: v5.AdjustmentDirection,
+            delta: sts.bigint(),
         })
     ),
 }
