@@ -13,8 +13,6 @@ export async function processRegisterOperator(
   block: ProcessorContext<Store>["blocks"][0],
   extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
 ) {
-  console.log("extrinsic.call", extrinsic.call);
-  console.log("extrinsic.events", extrinsic.events);
   const account = getCallSigner(extrinsic.call);
   const domainId = extrinsic.call?.args.domainId;
 
@@ -44,7 +42,7 @@ export async function processRegisterOperator(
       status: JSON.stringify({ registered: null }),
       updatedAt: block.header.height,
     });
-    console.log("insert.operator", operator);
+
     await ctx.store.insert(operator);
 
     const nominator = new Nominator({
@@ -55,7 +53,7 @@ export async function processRegisterOperator(
       status: JSON.stringify({ pending: null }),
       updatedAt: block.header.height,
     });
-    console.log("insert.nominator", nominator);
+
     await ctx.store.insert(nominator);
 
     const deposit = new Deposit({
@@ -72,7 +70,6 @@ export async function processRegisterOperator(
       extrinsicHash: extrinsic.hash,
       status: JSON.stringify({ pending: null }),
     });
-    console.log("deposit.insert", deposit);
 
     await ctx.store.insert(deposit);
 
@@ -93,9 +90,6 @@ export async function processNominateOperator(
   block: ProcessorContext<Store>["blocks"][0],
   extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
 ) {
-  console.log("extrinsic.call", extrinsic.call);
-  console.log("extrinsic.events", extrinsic.events);
-
   const account = getCallSigner(extrinsic.call);
   const operatorId = Number(extrinsic.call?.args.operatorId);
 
@@ -120,7 +114,7 @@ export async function processNominateOperator(
         status: JSON.stringify({ pending: null }),
         updatedAt: block.header.height,
       });
-      console.log("insert.nominator", nominator);
+
       await ctx.store.insert(nominator);
     }
 
@@ -138,7 +132,6 @@ export async function processNominateOperator(
       extrinsicHash: extrinsic.hash,
       status: JSON.stringify({ pending: null }),
     });
-    console.log("deposit.insert", deposit);
 
     await ctx.store.insert(deposit);
 
@@ -165,9 +158,6 @@ export async function processDeregisterOperator(
   block: ProcessorContext<Store>["blocks"][0],
   extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
 ) {
-  console.log("extrinsic.call", extrinsic.call);
-  console.log("extrinsic.events", extrinsic.events);
-
   const operatorId = Number(extrinsic.call?.args.operatorId);
 
   const operator = await getOrCreateOperator(ctx, block, operatorId);
@@ -187,9 +177,6 @@ export async function processUnlockOperator(
   block: ProcessorContext<Store>["blocks"][0],
   extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
 ) {
-  console.log("extrinsic.call", extrinsic.call);
-  console.log("extrinsic.events", extrinsic.events);
-
   const operatorId = Number(extrinsic.call?.args.operatorId);
 
   const operator = await getOrCreateOperator(ctx, block, operatorId);
