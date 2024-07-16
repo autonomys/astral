@@ -8,14 +8,13 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { assertNotNull } from "@subsquid/util-internal";
-
 import { calls, events } from "./types";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway("https://v2.archive.subsquid.io/network/gemini-3h")
+  .setGateway(
+    assertNotNull(process.env.CONSENSUS_GATEWAY, "No Gateway endpoint supplied")
+  )
   .setRpcEndpoint({
-    // Set via .env for local runs or via secrets when deploying to Subsquid Cloud
-    // https://docs.subsquid.io/deploy-squid/env-variables/
     url: assertNotNull(
       process.env.RPC_CONSENSUS_HTTP,
       "No RPC endpoint supplied"
@@ -93,8 +92,6 @@ export const processor = new SubstrateBatchProcessor()
       args: true,
     },
   });
-// Uncomment to disable RPC ingestion and drastically reduce no of RPC calls
-//.useArchiveOnly()
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>;
 export type Block = BlockHeader<Fields>;
