@@ -40,7 +40,7 @@ type Extrinsic @entity {
   hash: String! @index
   indexInBlock: Int!
   nonce: BigInt
-  name: String!
+  name: String! @index
   signer: Account @index
   signature: String @index
   error: JSON
@@ -63,7 +63,7 @@ type EventModuleName @entity {
 type Event @entity {
   id: ID! @index
   indexInBlock: Int!
-  name: String!
+  name: String! @index
   timestamp: DateTime! @index
   phase: String!
   pos: Int
@@ -76,7 +76,7 @@ type Event @entity {
 type RewardEvent @entity {
   id: ID! @index
   indexInBlock: Int!
-  name: String!
+  name: String! @index
   timestamp: DateTime! @index
   phase: String!
   pos: Int
@@ -89,7 +89,7 @@ type RewardEvent @entity {
 
 type Call @entity {
   id: ID! @index
-  name: String!
+  name: String! @index
   timestamp: DateTime! @index
   success: Boolean!
   args: JSON
