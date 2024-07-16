@@ -1,0 +1,12 @@
+{
+  "outDir": "src/types",
+  "specVersions": "gemini3h.jsonl",
+  "pallets": {
+    "Domains": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    }
+  }
+}
