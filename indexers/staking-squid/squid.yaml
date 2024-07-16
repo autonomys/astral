@@ -1,6 +1,6 @@
 manifestVersion: subsquid.io/v0.1
 name: staking-squid
-version: 1
+version: 3
 description: Autonomys - Astral - Staking Indexer
 build:
 deploy:
