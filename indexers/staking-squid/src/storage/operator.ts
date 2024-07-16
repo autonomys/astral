@@ -61,12 +61,20 @@ export const createOperatorRewardEvent = async (
 
   await ctx.store.insert(operatorRewardEvent);
 
-  await getOrCreateAllStats(
+  const [stats, statsPerDomain, statsPerOperator] = await getOrCreateAllStats(
     ctx,
     block,
     props.operator?.domainId,
     props.operator?.operatorId
   );
+
+  stats.totalFees += props.amount || BigInt(0);
+  statsPerDomain.totalFees += props.amount || BigInt(0);
+  statsPerOperator.totalFees += props.amount || BigInt(0);
+
+  await ctx.store.save(stats);
+  await ctx.store.save(statsPerDomain);
+  await ctx.store.save(statsPerOperator);
 
   return operatorRewardEvent;
 };

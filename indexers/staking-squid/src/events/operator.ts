@@ -49,8 +49,7 @@ export async function processOperatorRewardedEvent(
     amount: BigInt(event.args.reward),
   });
 
-  operator.currentEpochRewards =
-    operator.currentEpochRewards + BigInt(event.args.reward);
+  operator.currentEpochRewards += BigInt(event.args.reward);
   operator.operatorRewards = operator.operatorRewards
     ? [...operator.operatorRewards, opRewardEvent]
     : [opRewardEvent];
