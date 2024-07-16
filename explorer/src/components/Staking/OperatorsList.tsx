@@ -38,6 +38,7 @@ import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { DataSource } from '../common/DataSource'
 import { DataSourceBanner } from '../common/DataSourceBanner'
+import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -59,7 +60,7 @@ export const OperatorsList: FC = () => {
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
-  const { useRpcData } = useViewStates()
+  const { useRpcData, myPositionOnly } = useViewStates()
 
   useEffect(() => {
     loadDomainsData()
@@ -295,6 +296,20 @@ export const OperatorsList: FC = () => {
     [sorting],
   )
 
+  const where = useMemo(() => {
+    if (subspaceAccount && myPositionOnly && !searchOperator)
+      return {
+        OR: [
+          // eslint-disable-next-line camelcase
+          { operatorOwner_eq: subspaceAccount },
+          // eslint-disable-next-line camelcase
+          { nominators_some: { account: { id_eq: subspaceAccount } } },
+        ],
+      }
+    // eslint-disable-next-line camelcase
+    return searchOperator ? { id_eq: searchOperator } : {}
+  }, [myPositionOnly, searchOperator, subspaceAccount])
+
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -303,10 +318,9 @@ export const OperatorsList: FC = () => {
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
       orderBy,
-      // eslint-disable-next-line camelcase
-      where: searchOperator ? { id_eq: searchOperator } : {},
+      where,
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, searchOperator],
+    [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
   const { setIsVisible } = useSquidQuery<
@@ -343,16 +357,18 @@ export const OperatorsList: FC = () => {
   }, [])
 
   const operatorsConnection = useMemo(() => {
-    if (useRpcData)
-      return rpcOperators.map((operator) => ({
-        ...operator,
-        nominators: [],
-        totalShares: operator.currentTotalShares,
-      }))
+    if (useRpcData && subspaceAccount)
+      return rpcOperators
+        .filter((o) => (myPositionOnly ? o.operatorOwner === subspaceAccount : true))
+        .map((operator) => ({
+          ...operator,
+          nominators: [],
+          totalShares: operator.currentTotalShares,
+        }))
     if (hasValue(operators))
       return operators.value.operatorsConnection.edges.map((operator) => operator.node)
     return []
-  }, [operators, rpcOperators, useRpcData])
+  }, [myPositionOnly, operators, rpcOperators, subspaceAccount, useRpcData])
 
   const totalCount = useMemo(
     () => (hasValue(operators) ? operators.value.operatorsConnection.totalCount : 0),
@@ -385,9 +401,14 @@ export const OperatorsList: FC = () => {
           <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
         <div className='flex items-center'>
-          <div className='mr-4 flex items-center'>
+          <div className='mr-5 flex items-center'>
             <DataSource />
           </div>
+          {subspaceAccount && (
+            <div className='mr-4 flex w-40 items-center'>
+              <MyPositionSwitch />
+            </div>
+          )}
           <DebouncedInput
             type='text'
             className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'

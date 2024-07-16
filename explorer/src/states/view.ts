@@ -3,15 +3,18 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface ViewStates {
   useRpcData: boolean
+  myPositionOnly: boolean
 }
 
 interface ViewStatesAndFn extends ViewStates {
   setUseRpcData: (useRpcData: boolean) => void
+  setMyPositionOnly: (myPositionOnly: boolean) => void
   clear: () => void
 }
 
 const initialState: ViewStates = {
   useRpcData: false,
+  myPositionOnly: false,
 }
 
 export const useViewStates = create<ViewStatesAndFn>()(
@@ -19,6 +22,7 @@ export const useViewStates = create<ViewStatesAndFn>()(
     (set) => ({
       ...initialState,
       setUseRpcData: (useRpcData) => set(() => ({ useRpcData })),
+      setMyPositionOnly: (myPositionOnly) => set(() => ({ myPositionOnly })),
       clear: () => set(() => ({ ...initialState })),
     }),
     {
