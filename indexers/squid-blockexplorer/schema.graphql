@@ -5,37 +5,29 @@ type Account @entity {
   total: BigInt @index
   updatedAt: BigInt
   nonce: BigInt
-  extrinsics: [Extrinsic!]!
-    @derivedFrom(field: "signer")
-    @cardinality(value: 10)
-  rewards: [RewardEvent!]!
-    @derivedFrom(field: "account")
-    @cardinality(value: 10)
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "signer") @cardinality(value: 10)
+  rewards: [RewardEvent!]! @derivedFrom(field: "account") @cardinality(value: 10)
 }
 
 type Block @entity {
   id: ID! @index
   height: BigInt! @index
-  timestamp: DateTime!
-  hash: String!
+  timestamp: DateTime! @index
+  hash: String! @index
   parentHash: String!
   specId: String!
   stateRoot: String!
   extrinsicsRoot: String!
-  extrinsics: [Extrinsic!]!
-    @derivedFrom(field: "block")
-    @cardinality(value: 1000)
+  extrinsics: [Extrinsic!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   events: [Event!]! @derivedFrom(field: "block") @cardinality(value: 1000)
-  rewards: [RewardEvent!]!
-    @derivedFrom(field: "block")
-    @cardinality(value: 1000)
+  rewards: [RewardEvent!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   calls: [Call!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   logs: [Log!]! @derivedFrom(field: "block") @cardinality(value: 1000)
   spacePledged: BigInt!
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
-  author: Account
+  author: Account @index
 }
 
 type ExtrinsicModuleName @entity {
@@ -45,12 +37,12 @@ type ExtrinsicModuleName @entity {
 
 type Extrinsic @entity {
   id: ID! @index
-  hash: String!
+  hash: String! @index
   indexInBlock: Int!
   nonce: BigInt
   name: String!
-  signer: Account
-  signature: String @index
+  signer: Account @index
+  signature: String
   error: JSON
   tip: BigInt
   fee: BigInt
@@ -70,7 +62,7 @@ type EventModuleName @entity {
 
 type Event @entity {
   id: ID! @index
-  indexInBlock: Int! @index
+  indexInBlock: Int!
   name: String!
   timestamp: DateTime! @index
   phase: String!
@@ -91,7 +83,7 @@ type RewardEvent @entity {
   block: Block
   extrinsic: Extrinsic
   call: Call
-  account: Account
+  account: Account @index
   amount: BigInt
 }
 
@@ -111,6 +103,7 @@ type Call @entity {
 }
 
 type Log @entity {
+  id: ID! @index
   kind: String! @index
   value: JSON
   block: Block!
@@ -128,25 +121,23 @@ type Operator @entity {
   currentTotalStake: BigInt
   currentEpochRewards: BigInt
   totalShares: BigInt
-  nominatorAmount: Int! @index
-  nominators: [Nominator!]!
-    @derivedFrom(field: "operator")
-    @cardinality(value: 1000)
+  nominatorAmount: Int!
+  nominators: [Nominator!]! @derivedFrom(field: "operator") @cardinality(value: 1000)
   status: String
-  updatedAt: BigInt @index
+  updatedAt: BigInt
 }
 
 type Nominator @entity {
   id: ID! @index
-  operator: Operator!
-  account: Account!
+  operator: Operator! @index
+  account: Account! @index
   shares: BigInt
   updatedAt: BigInt
 }
 
 type AccountRewards @entity {
   id: ID! @index
-  account: Account!
+  account: Account! @index
   amount: BigInt
   block: BigInt @index
   vote: BigInt @index
