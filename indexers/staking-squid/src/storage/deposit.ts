@@ -1,6 +1,6 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { Deposit, Operator } from "../model";
+import { Deposit, DepositStatus, Operator } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
 import { getBlockNumber, getTimestamp } from "../utils";
 import { getOrCreateAllStats } from "./stats";
@@ -16,7 +16,7 @@ export const createDeposit = async (
     amount: BigInt(0),
     storageFeeDeposit: BigInt(0),
     extrinsicHash: "0x",
-    status: JSON.stringify({}),
+    status: DepositStatus.PENDING,
     ...props,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),

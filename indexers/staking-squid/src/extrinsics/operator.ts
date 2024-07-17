@@ -1,5 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { Nominator } from "../model";
+import { Nominator, OperatorStatus } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
@@ -39,13 +39,11 @@ export async function processRegisterOperator(
       pendingStorageFeeDeposit: storageFeeDepositedEvent
         ? BigInt(storageFeeDepositedEvent.args.amount)
         : BigInt(0),
-      status: JSON.stringify({ registered: null }),
     });
 
     const nominator = await createNominator(ctx, block, {
       account,
       operator,
-      status: JSON.stringify({ pending: null }),
     });
 
     const deposit = await createDeposit(ctx, block, {
@@ -57,7 +55,6 @@ export async function processRegisterOperator(
       operator,
       nominator,
       extrinsicHash: extrinsic.hash,
-      status: JSON.stringify({ pending: null }),
     });
 
     operator.deposits = [deposit];
@@ -96,7 +93,6 @@ export async function processNominateOperator(
       nominator = await createNominator(ctx, block, {
         account,
         operator,
-        status: JSON.stringify({ pending: null }),
       });
     }
 
@@ -109,7 +105,6 @@ export async function processNominateOperator(
       operator,
       nominator,
       extrinsicHash: extrinsic.hash,
-      status: JSON.stringify({ pending: null }),
     });
 
     operator.pendingTotalStake += BigInt(extrinsic.call?.args.amount);
@@ -143,7 +138,11 @@ export async function processDeregisterOperator(
   );
 
   if (operatorDeregisteredEvent) {
-    operator.status = JSON.stringify({ deregistered: null });
+    operator.pendingStorageFeeDeposit = BigInt(0);
+    operator.pendingTotalStake = BigInt(0);
+    operator.currentTotalStake = BigInt(0);
+    operator.currentStorageFeeDeposit = BigInt(0);
+    operator.status = OperatorStatus.DEREGISTERED;
 
     await ctx.store.save(operator);
   }
@@ -163,7 +162,7 @@ export async function processUnlockOperator(
 
   if (operatorDeregisteredEvent) {
     // To-Do: Update currentTotalStake, currentTotalShares, currentStorageFeeDeposit
-    operator.status = JSON.stringify({ unlocked: null });
+    // operator.status = JSON.stringify({ unlocked: null });
 
     await ctx.store.save(operator);
   }

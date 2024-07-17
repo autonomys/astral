@@ -4,6 +4,7 @@ import {
   Domain,
   Nominator,
   Operator,
+  OperatorStatus,
   Stats,
   StatsPerDomain,
   StatsPerOperator,
@@ -35,10 +36,10 @@ export const createStats = async (
   const totalNominators = await ctx.store.count(Nominator);
 
   const totalActiveOperators = await ctx.store.countBy(Operator, {
-    status: JSON.stringify({ registered: null }),
+    status: OperatorStatus.REGISTERED,
   });
   const totalSlashedOperators = await ctx.store.countBy(Operator, {
-    status: JSON.stringify({ slashed: null }),
+    status: OperatorStatus.SLASHED,
   });
 
   const stats = new Stats({
@@ -81,10 +82,10 @@ export const createStatsPerDomain = async (
   const totalNominators = await ctx.store.count(Nominator);
 
   const totalActiveOperators = await ctx.store.countBy(Operator, {
-    status: JSON.stringify({ registered: null }),
+    status: OperatorStatus.REGISTERED,
   });
   const totalSlashedOperators = await ctx.store.countBy(Operator, {
-    status: JSON.stringify({ slashed: null }),
+    status: OperatorStatus.SLASHED,
   });
 
   const statsPerDomain = new StatsPerDomain({

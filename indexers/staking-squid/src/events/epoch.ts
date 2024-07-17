@@ -1,5 +1,12 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { Operator } from "../model";
+import {
+  Deposit,
+  DepositStatus,
+  Nominator,
+  NominatorStatus,
+  Operator,
+  OperatorStatus,
+} from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { createDomain, getOrCreateDomain } from "../storage";
 import { getBlockNumber } from "../utils";
@@ -34,6 +41,34 @@ export async function processEpochTransitionEvent(
     operator.pendingStorageFeeDeposit = BigInt(0);
     operator.updatedAt = getBlockNumber(block);
 
+    if (operator.status === OperatorStatus.PENDING)
+      operator.status = OperatorStatus.REGISTERED;
+
     await ctx.store.save(operator);
+
+    const nominators = await ctx.store.findBy(Nominator, {
+      operator,
+      status: NominatorStatus.PENDING,
+    });
+    if (nominators && nominators.length > 0) {
+      for (const nominator of nominators) {
+        nominator.status = NominatorStatus.STAKING;
+        nominator.updatedAt = getBlockNumber(block);
+
+        await ctx.store.save(nominator);
+      }
+    }
+
+    const deposits = await ctx.store.findBy(Deposit, {
+      operator,
+      status: DepositStatus.PENDING,
+    });
+    if (deposits && deposits.length > 0) {
+      for (const deposit of deposits) {
+        deposit.status = DepositStatus.DEPOSITED;
+
+        await ctx.store.save(deposit);
+      }
+    }
   }
 }

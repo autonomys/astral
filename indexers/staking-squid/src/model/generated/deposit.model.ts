@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, IntColumn as IntColumn_, Index as Index_, StringColumn as StringColumn_, BigIntColumn as BigIntColumn_, ManyToOne as ManyToOne_, DateTimeColumn as DateTimeColumn_} from "@subsquid/typeorm-store"
 import {Operator} from "./operator.model"
 import {Nominator} from "./nominator.model"
+import {DepositStatus} from "./_depositStatus"
 
 @Entity_()
 export class Deposit {
@@ -41,6 +42,7 @@ export class Deposit {
     @StringColumn_({nullable: false})
     extrinsicHash!: string
 
-    @StringColumn_({nullable: true})
-    status!: string | undefined | null
+    @Index_()
+    @Column_("varchar", {length: 9, nullable: false})
+    status!: DepositStatus
 }

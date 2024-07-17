@@ -1,5 +1,5 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { Nominator } from "../model";
+import { Nominator, NominatorStatus, OperatorStatus } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { createOperatorRewardEvent, getOrCreateOperator } from "../storage";
 import { appendOrArray, getBlockNumber } from "../utils";
@@ -17,18 +17,14 @@ export async function processOperatorSlashedEvent(
   operator.pendingStorageFeeDeposit = BigInt(0);
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
-  operator.status = JSON.stringify({
-    slashed: event.args.reason.__kind || "unknown",
-  });
+  operator.status = OperatorStatus.SLASHED;
   operator.updatedAt = getBlockNumber(block);
 
   await ctx.store.save(operator);
 
   const nominators = await ctx.store.findBy(Nominator, { operator });
   for (const nominator of nominators) {
-    nominator.status = JSON.stringify({
-      slashed: event.args.reason.__kind || "unknown",
-    });
+    nominator.status = NominatorStatus.SLASHED;
     nominator.updatedAt = getBlockNumber(block);
 
     await ctx.store.save(nominator);

@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, IntColumn as IntColumn_, Index as Index_, StringColumn as StringColumn_, BigIntColumn as BigIntColumn_, ManyToOne as ManyToOne_, DateTimeColumn as DateTimeColumn_} from "@subsquid/typeorm-store"
 import {Operator} from "./operator.model"
 import {Nominator} from "./nominator.model"
+import {WithdrawalStatus} from "./_withdrawalStatus"
 
 @Entity_()
 export class Withdrawal {
@@ -38,6 +39,7 @@ export class Withdrawal {
     @StringColumn_({nullable: false})
     extrinsicHash!: string
 
-    @StringColumn_({nullable: true})
-    status!: string | undefined | null
+    @Index_()
+    @Column_("varchar", {length: 8, nullable: false})
+    status!: WithdrawalStatus
 }

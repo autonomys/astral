@@ -4,6 +4,7 @@ import {Nominator} from "./nominator.model"
 import {Withdrawal} from "./withdrawal.model"
 import {OperatorRewardEvent} from "./operatorRewardEvent.model"
 import {OperatorFeesEarned} from "./operatorFeesEarned.model"
+import {OperatorStatus} from "./_operatorStatus"
 
 @Entity_()
 export class Operator {
@@ -72,8 +73,9 @@ export class Operator {
     @OneToMany_(() => OperatorFeesEarned, e => e.operator)
     operatorFees!: OperatorFeesEarned[]
 
-    @StringColumn_({nullable: true})
-    status!: string | undefined | null
+    @Index_()
+    @Column_("varchar", {length: 12, nullable: false})
+    status!: OperatorStatus
 
     @IntColumn_({nullable: false})
     depositsCount!: number
@@ -89,6 +91,10 @@ export class Operator {
 
     @IntColumn_({nullable: false})
     lastBundleAt!: number
+
+    @Index_()
+    @IntColumn_({nullable: true})
+    createdAt!: number | undefined | null
 
     @Index_()
     @IntColumn_({nullable: true})

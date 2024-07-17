@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, S
 import {Operator} from "./operator.model"
 import {Deposit} from "./deposit.model"
 import {Withdrawal} from "./withdrawal.model"
+import {NominatorStatus} from "./_nominatorStatus"
 
 @Entity_()
 export class Nominator {
@@ -29,9 +30,15 @@ export class Nominator {
     @OneToMany_(() => Withdrawal, e => e.nominator)
     withdrawals!: Withdrawal[]
 
-    @StringColumn_({nullable: false})
-    status!: string
+    @Index_()
+    @Column_("varchar", {length: 12, nullable: false})
+    status!: NominatorStatus
 
+    @Index_()
+    @IntColumn_({nullable: true})
+    createdAt!: number | undefined | null
+
+    @Index_()
     @IntColumn_({nullable: true})
     updatedAt!: number | undefined | null
 }

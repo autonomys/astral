@@ -1,0 +1,6 @@
+export enum OperatorStatus {
+    PENDING = "PENDING",
+    REGISTERED = "REGISTERED",
+    DEREGISTERED = "DEREGISTERED",
+    SLASHED = "SLASHED",
+}

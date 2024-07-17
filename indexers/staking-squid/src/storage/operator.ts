@@ -1,6 +1,6 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { Operator, OperatorRewardEvent } from "../model";
+import { Operator, OperatorRewardEvent, OperatorStatus } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
 import { getBlockNumber, getTimestamp } from "../utils";
 import { getOrCreateDomain } from "./domain";
@@ -32,7 +32,7 @@ export const createOperator = async (
     withdrawals: [],
     operatorRewards: [],
     operatorFees: [],
-    status: JSON.stringify({}),
+    status: OperatorStatus.PENDING,
     depositsCount: 0,
     nominatorsCount: 0,
     withdrawalsCount: 0,

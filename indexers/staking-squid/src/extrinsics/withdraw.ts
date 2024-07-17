@@ -29,7 +29,6 @@ export async function processWithdrawStake(
       operator,
       nominator,
       extrinsicHash: extrinsic.hash,
-      status: JSON.stringify({ pending: null }),
     });
 
     operator.withdrawals = appendOrArray(operator.withdrawals, withdrawal);

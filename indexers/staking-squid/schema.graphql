@@ -5,6 +5,13 @@ type Domain @entity {
   updatedAt: Int @index
 }
 
+enum OperatorStatus {
+  PENDING
+  REGISTERED
+  DEREGISTERED
+  SLASHED
+}
+
 type Operator @entity {
   id: ID! @index
   domainId: Int! @index
@@ -35,13 +42,21 @@ type Operator @entity {
   operatorFees: [OperatorFeesEarned!]!
     @derivedFrom(field: "operator")
     @cardinality(value: 1000000000)
-  status: String
+  status: OperatorStatus! @index
   depositsCount: Int!
   nominatorsCount: Int!
   withdrawalsCount: Int!
   bundleCount: Int!
   lastBundleAt: Int!
+  createdAt: Int @index
   updatedAt: Int @index
+}
+
+enum NominatorStatus {
+  PENDING
+  STAKING
+  DEREGISTERED
+  SLASHED
 }
 
 type Nominator @entity {
@@ -55,8 +70,14 @@ type Nominator @entity {
   withdrawals: [Withdrawal!]!
     @derivedFrom(field: "nominator")
     @cardinality(value: 1000000000)
-  status: String!
-  updatedAt: Int
+  status: NominatorStatus! @index
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+enum DepositStatus {
+  PENDING
+  DEPOSITED
 }
 
 type Deposit @entity {
@@ -69,7 +90,13 @@ type Deposit @entity {
   nominator: Nominator!
   timestamp: DateTime! @index
   extrinsicHash: String! @index
-  status: String
+  status: DepositStatus! @index
+}
+
+enum WithdrawalStatus {
+  PENDING
+  READY
+  WITHDRAW
 }
 
 type Withdrawal @entity {
@@ -81,7 +108,7 @@ type Withdrawal @entity {
   nominator: Nominator!
   timestamp: DateTime! @index
   extrinsicHash: String! @index
-  status: String
+  status: WithdrawalStatus! @index
 }
 
 type OperatorUnlockedFunds @entity {
