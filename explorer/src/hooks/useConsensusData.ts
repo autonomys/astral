@@ -134,10 +134,10 @@ export const useConsensusData = () => {
             id: (operator[0].toHuman() as string[])[0],
             operatorOwner: operatorIdOwner[key][1].toJSON() as string,
             ...op,
-            minimumNominatorStake: parseInt(op.minimumNominatorStake, 16).toString(),
-            currentTotalStake: parseInt(op.currentTotalStake, 16).toString(),
-            currentTotalShares: parseInt(op.currentTotalShares, 16).toString(),
-            totalStorageFeeDeposit: parseInt(op.totalStorageFeeDeposit, 16).toString(),
+            minimumNominatorStake: BigInt(op.minimumNominatorStake).toString(10),
+            currentTotalStake: BigInt(op.currentTotalStake).toString(10),
+            currentTotalShares: BigInt(op.currentTotalShares).toString(10),
+            totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
             status: JSON.stringify(op.status),
           } as Operators
         }),
@@ -182,7 +182,7 @@ export const useConsensusData = () => {
             return {
               operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
               account: (deposit[0].toHuman() as string[])[1],
-              shares: parseInt(parsedDeposit.known.shares.toString(), 16).toString(),
+              shares: BigInt(parsedDeposit.known.shares.toString()).toString(10),
               storageFeeDeposit: parseInt(
                 parsedDeposit.known.storageFeeDeposit.toString(),
                 16,
