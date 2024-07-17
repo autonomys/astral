@@ -1,7 +1,6 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
-import * as v5 from '../v5'
 
 export const submitBundle =  {
     name: 'Domains.submit_bundle',
@@ -21,12 +20,6 @@ export const submitBundle =  {
         'Domains.submit_bundle',
         sts.struct({
             opaqueBundle: v1.Bundle,
-        })
-    ),
-    v5: new CallType(
-        'Domains.submit_bundle',
-        sts.struct({
-            opaqueBundle: v5.Bundle,
         })
     ),
 }
@@ -51,12 +44,6 @@ export const submitFraudProof =  {
             fraudProof: v1.FraudProof,
         })
     ),
-    v5: new CallType(
-        'Domains.submit_fraud_proof',
-        sts.struct({
-            fraudProof: v5.FraudProof,
-        })
-    ),
 }
 
 export const registerDomainRuntime =  {
@@ -69,14 +56,6 @@ export const registerDomainRuntime =  {
         sts.struct({
             runtimeName: sts.string(),
             runtimeType: v0.RuntimeType,
-            rawGenesisStorage: sts.bytes(),
-        })
-    ),
-    v5: new CallType(
-        'Domains.register_domain_runtime',
-        sts.struct({
-            runtimeName: sts.string(),
-            runtimeType: v5.RuntimeType,
             rawGenesisStorage: sts.bytes(),
         })
     ),
@@ -107,15 +86,6 @@ export const registerOperator =  {
             domainId: v0.DomainId,
             amount: sts.bigint(),
             config: v0.OperatorConfig,
-        })
-    ),
-    v5: new CallType(
-        'Domains.register_operator',
-        sts.struct({
-            domainId: v5.DomainId,
-            amount: sts.bigint(),
-            config: v5.OperatorConfig,
-            signingKeyProofOfOwnership: sts.bytes(),
         })
     ),
 }
@@ -246,33 +216,6 @@ export const forceStakingEpochTransition =  {
         'Domains.force_staking_epoch_transition',
         sts.struct({
             domainId: v0.DomainId,
-        })
-    ),
-}
-
-export const unlockNominator =  {
-    name: 'Domains.unlock_nominator',
-    /**
-     * Unlocks the nominator under given operator given the unlocking period is complete.
-     * A nominator can initiate their unlock given operator is already deregistered.
-     */
-    v5: new CallType(
-        'Domains.unlock_nominator',
-        sts.struct({
-            operatorId: sts.bigint(),
-        })
-    ),
-}
-
-export const setPermissionedActionAllowedBy =  {
-    name: 'Domains.set_permissioned_action_allowed_by',
-    /**
-     * Update permissioned action allowed by storage by Sudo.
-     */
-    v5: new CallType(
-        'Domains.set_permissioned_action_allowed_by',
-        sts.struct({
-            permissionedActionAllowedBy: v5.PermissionedActionAllowedBy,
         })
     ),
 }
