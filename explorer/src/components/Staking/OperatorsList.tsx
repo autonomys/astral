@@ -425,7 +425,7 @@ export const OperatorsList: FC = () => {
             <SortedTable
               data={operatorsConnection}
               columns={columns}
-              showNavigation={true}
+              showNavigation={!useRpcData}
               sorting={sorting}
               onSortingChange={setSorting}
               pagination={pagination}

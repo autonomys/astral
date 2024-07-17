@@ -3,10 +3,12 @@ import { useCallback } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import {
   ConfirmedDomainBlock,
+  Deposit,
   DomainRegistry,
   DomainStakingSummary,
   Operators,
   PendingStakingOperationCount,
+  RawDeposit,
   SuccessfulBundle,
   Withdrawal,
 } from 'types/consensus'
@@ -24,6 +26,7 @@ export const useConsensusData = () => {
     setOperators,
     setPendingStakingOperationCount,
     setSuccessfulBundles,
+    setDeposits,
     setWithdrawals,
   } = useConsensusStates()
   const { api } = useWallet()
@@ -47,7 +50,6 @@ export const useConsensusData = () => {
         operators,
         pendingStakingOperationCount,
         successfulBundles,
-        withdrawals,
       ] = await Promise.all([
         api.rpc.system.properties(),
         api.consts.domains,
@@ -62,7 +64,6 @@ export const useConsensusData = () => {
         api.query.domains.operators.entries(),
         api.query.domains.pendingStakingOperationCount.entries(),
         api.query.domains.successfulBundles.entries(),
-        api.query.domains.withdrawals.entries(),
       ])
 
       setProperties({
@@ -127,14 +128,19 @@ export const useConsensusData = () => {
         })),
       )
       setOperators(
-        operators.map(
-          (operator, key) =>
-            ({
-              id: (operator[0].toHuman() as string[])[0],
-              operatorOwner: operatorIdOwner[key][1].toJSON() as string,
-              ...(operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>),
-            }) as Operators,
-        ),
+        operators.map((operator, key) => {
+          const op = operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>
+          return {
+            id: (operator[0].toHuman() as string[])[0],
+            operatorOwner: operatorIdOwner[key][1].toJSON() as string,
+            ...op,
+            minimumNominatorStake: BigInt(op.minimumNominatorStake).toString(10),
+            currentTotalStake: BigInt(op.currentTotalStake).toString(10),
+            currentTotalShares: BigInt(op.currentTotalShares).toString(10),
+            totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
+            status: JSON.stringify(op.status),
+          } as Operators
+        }),
       )
       setPendingStakingOperationCount(
         pendingStakingOperationCount.map(
@@ -154,20 +160,56 @@ export const useConsensusData = () => {
             }) as SuccessfulBundle,
         ),
       )
-      setWithdrawals(
-        withdrawals.map(
-          (withdrawal) =>
-            ({
-              id: parseInt((withdrawal[0].toHuman() as string[])[0]),
-              ...(withdrawal[1].toJSON() as Omit<Withdrawal, 'id'>),
-            }) as Withdrawal,
-        ),
-      )
     } catch (error) {
       console.error('useConsensusData', error)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api])
 
-  return { loadData }
+  const loadDataByOperatorId = useCallback(
+    async (operatorId: string) => {
+      if (!api) return
+
+      try {
+        const [deposits, withdrawals] = await Promise.all([
+          api.query.domains.deposits.entries(operatorId),
+          api.query.domains.withdrawals.entries(operatorId),
+        ])
+
+        setDeposits(
+          deposits.map((deposit) => {
+            const parsedDeposit = deposit[1].toJSON() as RawDeposit
+            return {
+              operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
+              account: (deposit[0].toHuman() as string[])[1],
+              shares: BigInt(parsedDeposit.known.shares.toString()).toString(10),
+              storageFeeDeposit: parseInt(
+                parsedDeposit.known.storageFeeDeposit.toString(),
+                16,
+              ).toString(),
+              pending: {
+                amount: parsedDeposit.pending.amount.toString(),
+                storageFeeDeposit: parsedDeposit.pending.storageFeeDeposit.toString(),
+              },
+            } as Deposit
+          }),
+        )
+        setWithdrawals(
+          withdrawals.map(
+            (withdrawal) =>
+              ({
+                operatorId: parseInt((withdrawal[0].toHuman() as string[])[0]),
+                ...(withdrawal[1].toJSON() as Omit<Withdrawal, 'operatorId'>),
+              }) as Withdrawal,
+          ),
+        )
+      } catch (error) {
+        console.error('useConsensusData', error)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [api],
+  )
+
+  return { loadData, loadDataByOperatorId }
 }

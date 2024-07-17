@@ -2761,7 +2761,17 @@ export type OperatorByIdQueryVariables = Exact<{
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'Query', operatorById?: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null, nominators: Array<{ __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string } }> } | null };
+export type OperatorByIdQuery = { __typename?: 'Query', operatorById?: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null } | null };
+
+export type OperatorNominatorsByIdQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  orderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
+  where?: InputMaybe<NominatorWhereInput>;
+}>;
+
+
+export type OperatorNominatorsByIdQuery = { __typename?: 'Query', nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number, edges: Array<{ __typename?: 'NominatorEdge', node: { __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string } } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
 
 export type NominatorsConnectionQueryVariables = Exact<{
   first: Scalars['Int']['input'];

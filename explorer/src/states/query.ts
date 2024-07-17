@@ -87,6 +87,7 @@ interface ExplorerQueryState {
     manageNominations: QueryState<OldGqlT.NominatorsConnectionQuery>
 
     operator: QueryState<OldGqlT.OperatorByIdQuery>
+    operatorNominators: QueryState<OldGqlT.OperatorNominatorsByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
@@ -171,6 +172,7 @@ const initialState: ExplorerQueryState = {
     manageNominations: initialized,
 
     operator: initialized,
+    operatorNominators: initialized,
   },
   walletSidekick: {
     claim: initialized,

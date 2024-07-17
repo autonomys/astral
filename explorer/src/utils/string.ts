@@ -4,4 +4,4 @@ export const shortString = (value: string, initialLength = 6, endLength = -4): s
 export const camelToNormal = (text: string) => text.replace(/([A-Z])/g, ' $1').trim()
 
 export const capitalizeFirstLetter = (string: string) =>
-  string.charAt(0).toUpperCase() + string.slice(1)
+  string ? string.charAt(0).toUpperCase() + string.slice(1) : ''
