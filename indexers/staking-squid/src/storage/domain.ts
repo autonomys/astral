@@ -2,6 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Domain } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber } from "../utils";
 import { getOrCreateStats, getOrCreateStatsPerDomain } from "./stats";
 
 export const createDomain = async (
@@ -14,7 +15,7 @@ export const createDomain = async (
     domainId: 0,
     completedEpoch: 0,
     ...props,
-    updatedAt: block.header.height,
+    updatedAt: getBlockNumber(block),
   });
 
   await ctx.store.insert(domain);

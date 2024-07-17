@@ -2,7 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { Nominator } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { createOperatorRewardEvent, getOrCreateOperator } from "../storage";
-import { appendOrArray } from "../utils";
+import { appendOrArray, getBlockNumber } from "../utils";
 
 export async function processOperatorSlashedEvent(
   ctx: Ctx<Store>,
@@ -20,7 +20,7 @@ export async function processOperatorSlashedEvent(
   operator.status = JSON.stringify({
     slashed: event.args.reason.__kind || "unknown",
   });
-  operator.updatedAt = block.header.height;
+  operator.updatedAt = getBlockNumber(block);
 
   await ctx.store.save(operator);
 
@@ -29,7 +29,7 @@ export async function processOperatorSlashedEvent(
     nominator.status = JSON.stringify({
       slashed: event.args.reason.__kind || "unknown",
     });
-    nominator.updatedAt = block.header.height;
+    nominator.updatedAt = getBlockNumber(block);
 
     await ctx.store.save(nominator);
   }
@@ -55,7 +55,7 @@ export async function processOperatorRewardedEvent(
     operator.operatorRewards,
     opRewardEvent
   );
-  operator.updatedAt = block.header.height;
+  operator.updatedAt = getBlockNumber(block);
 
   await ctx.store.save(operator);
 }
@@ -70,7 +70,7 @@ export async function processOperatorTaxCollectedEvent(
   const operator = await getOrCreateOperator(ctx, block, operatorId);
 
   operator.taxCollected = operator.taxCollected + BigInt(event.args.tax);
-  operator.updatedAt = block.header.height;
+  operator.updatedAt = getBlockNumber(block);
 
   await ctx.store.save(operator);
 }

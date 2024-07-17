@@ -2,6 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Operator, Withdrawal } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber, getTimestamp } from "../utils";
 import { getOrCreateAllStats } from "./stats";
 
 export const createWithdrawal = async (
@@ -16,8 +17,8 @@ export const createWithdrawal = async (
     extrinsicHash: "0x",
     status: JSON.stringify({}),
     ...props,
-    blockNumber: block.header.height,
-    timestamp: new Date(block.header.timestamp || 0),
+    blockNumber: getBlockNumber(block),
+    timestamp: getTimestamp(block),
   });
 
   await ctx.store.insert(withdraw);
@@ -41,7 +42,7 @@ export const getOrCreateWithdraw = async (
   operator: Operator,
   account: string
 ): Promise<Withdrawal> => {
-  const blockNumber = block.header.height;
+  const blockNumber = getBlockNumber(block);
 
   const withdraw = await ctx.store.findOneBy(Withdrawal, {
     blockNumber,

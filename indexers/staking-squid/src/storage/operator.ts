@@ -2,6 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Operator, OperatorRewardEvent } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber, getTimestamp } from "../utils";
 import { getOrCreateDomain } from "./domain";
 import { getOrCreateAllStats } from "./stats";
 
@@ -38,7 +39,7 @@ export const createOperator = async (
     bundleCount: 0,
     lastBundleAt: 0,
     ...props,
-    updatedAt: block.header.height,
+    updatedAt: getBlockNumber(block),
   });
 
   await ctx.store.insert(operator);
@@ -77,8 +78,8 @@ export const createOperatorRewardEvent = async (
     extrinsicHash: "0x",
     amount: BigInt(0),
     ...props,
-    blockNumber: block.header.height,
-    timestamp: new Date(block.header.timestamp || 0),
+    blockNumber: getBlockNumber(block),
+    timestamp: getTimestamp(block),
   });
 
   await ctx.store.insert(operatorRewardEvent);

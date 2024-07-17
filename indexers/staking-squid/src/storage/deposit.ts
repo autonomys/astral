@@ -2,6 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Deposit, Operator } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber, getTimestamp } from "../utils";
 import { getOrCreateAllStats } from "./stats";
 
 export const createDeposit = async (
@@ -17,8 +18,8 @@ export const createDeposit = async (
     extrinsicHash: "0x",
     status: JSON.stringify({}),
     ...props,
-    blockNumber: block.header.height,
-    timestamp: new Date(block.header.timestamp || 0),
+    blockNumber: getBlockNumber(block),
+    timestamp: getTimestamp(block),
   });
 
   await ctx.store.insert(deposit);
@@ -60,7 +61,7 @@ export const getOrCreateDeposit = async (
   operator: Operator,
   account: string
 ): Promise<Deposit> => {
-  const blockNumber = block.header.height;
+  const blockNumber = getBlockNumber(block);
 
   const deposit = await ctx.store.findOneBy(Deposit, {
     blockNumber,

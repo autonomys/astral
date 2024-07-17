@@ -2,6 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { Operator } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { createDomain, getOrCreateDomain } from "../storage";
+import { getBlockNumber } from "../utils";
 
 export async function processEpochTransitionEvent(
   ctx: Ctx<Store>,
@@ -19,7 +20,7 @@ export async function processEpochTransitionEvent(
     });
   else {
     domain.completedEpoch = Number(event.args.completedEpochIndex);
-    domain.updatedAt = block.header.height;
+    domain.updatedAt = getBlockNumber(block);
 
     await ctx.store.save(domain);
   }
@@ -31,7 +32,7 @@ export async function processEpochTransitionEvent(
     operator.currentStorageFeeDeposit += operator.pendingStorageFeeDeposit;
     operator.pendingTotalStake = BigInt(0);
     operator.pendingStorageFeeDeposit = BigInt(0);
-    operator.updatedAt = block.header.height;
+    operator.updatedAt = getBlockNumber(block);
 
     await ctx.store.save(operator);
   }

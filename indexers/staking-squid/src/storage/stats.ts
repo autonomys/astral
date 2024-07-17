@@ -9,6 +9,7 @@ import {
   StatsPerOperator,
 } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber, getTimestamp } from "../utils";
 
 const emptyStats = {
   blockNumber: 0,
@@ -49,7 +50,7 @@ export const createStats = async (
     totalNominators,
     totalActiveOperators,
     totalSlashedOperators,
-    timestamp: new Date(block.header.timestamp || 0),
+    timestamp: getTimestamp(block),
   });
 
   await ctx.store.insert(stats);
@@ -62,7 +63,7 @@ export const getOrCreateStats = async (
   block: CtxBlock,
   props?: Partial<Stats>
 ): Promise<Stats> => {
-  const blockNumber = block.header.height;
+  const blockNumber = getBlockNumber(block);
 
   const stats = await ctx.store.findOneBy(Stats, { blockNumber });
 
@@ -94,7 +95,7 @@ export const createStatsPerDomain = async (
     totalNominators,
     totalActiveOperators,
     totalSlashedOperators,
-    timestamp: new Date(block.header.timestamp || 0),
+    timestamp: getTimestamp(block),
   });
 
   await ctx.store.insert(statsPerDomain);
@@ -108,7 +109,7 @@ export const getOrCreateStatsPerDomain = async (
   domainId: number,
   props?: Partial<StatsPerDomain>
 ): Promise<StatsPerDomain> => {
-  const blockNumber = block.header.height;
+  const blockNumber = getBlockNumber(block);
 
   const statsPerDomain = await ctx.store.findOneBy(StatsPerDomain, {
     domainId,
@@ -137,7 +138,7 @@ export const createStatsPerOperator = async (
     ...props,
     id: randomUUID(),
     totalNominators,
-    timestamp: new Date(block.header.timestamp || 0),
+    timestamp: getTimestamp(block),
   });
 
   await ctx.store.insert(statsPerOperator);
@@ -151,7 +152,7 @@ export const getOrCreateStatsPerOperator = async (
   operatorId: number,
   props?: Partial<StatsPerOperator>
 ): Promise<StatsPerOperator> => {
-  const blockNumber = block.header.height;
+  const blockNumber = getBlockNumber(block);
   const operator = await ctx.store.findOneBy(Operator, { operatorId });
   const domainId = operator?.domainId;
 

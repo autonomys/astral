@@ -2,6 +2,7 @@ import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Nominator, Operator } from "../model";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber } from "../utils";
 import { getOrCreateAllStats } from "./stats";
 
 export const createNominator = async (
@@ -17,7 +18,7 @@ export const createNominator = async (
     withdrawals: [],
     status: JSON.stringify({}),
     ...props,
-    updatedAt: block.header.height,
+    updatedAt: getBlockNumber(block),
   });
 
   await ctx.store.insert(nominator);

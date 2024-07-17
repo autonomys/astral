@@ -1,6 +1,7 @@
 import type { Store } from "@subsquid/typeorm-store";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { getOrCreateOperator } from "../storage";
+import { getBlockNumber } from "../utils";
 
 export async function processBundleStoredEvent(
   ctx: Ctx<Store>,
@@ -12,8 +13,8 @@ export async function processBundleStoredEvent(
   const operator = await getOrCreateOperator(ctx, block, operatorId);
 
   operator.bundleCount++;
-  operator.lastBundleAt = block.header.height;
-  operator.updatedAt = block.header.height;
+  operator.lastBundleAt = getBlockNumber(block);
+  operator.updatedAt = getBlockNumber(block);
 
   await ctx.store.save(operator);
 }
