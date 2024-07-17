@@ -1,4 +1,4 @@
-import { Operator } from 'components/Operator/Operator'
+import { Operator } from '@/components/Staking/Operator'
 import { chains } from 'constants/chains'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
