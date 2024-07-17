@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v3 from '../v3'
+import * as v5 from '../v5'
 
 export const nextChannelId =  {
     /**
@@ -313,4 +314,19 @@ export interface DomainChainAllowlistUpdateV3  {
     getPairs(block: Block, key: v3.DomainId): Promise<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v3.DomainId): AsyncIterable<[k: v3.DomainId, v: (v3.DomainAllowlistUpdates | undefined)][]>
+}
+
+export const messageWeightTags =  {
+    /**
+     *  Storage to store the weight tags for all the outbox and inbox response messages.
+     */
+    v5: new StorageType('Messenger.MessageWeightTags', 'Optional', [], v5.MessageWeightTags) as MessageWeightTagsV5,
+}
+
+/**
+ *  Storage to store the weight tags for all the outbox and inbox response messages.
+ */
+export interface MessageWeightTagsV5  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block): Promise<(v5.MessageWeightTags | undefined)>
 }

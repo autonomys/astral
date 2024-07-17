@@ -1,0 +1,18 @@
+manifestVersion: subsquid.io/v0.1
+name: staking-squid
+version: 1
+description: Autonomys - Astral - Staking Indexer
+build:
+deploy:
+  addons:
+    postgres:
+    rpc:
+      - kusama.http
+  processor:
+    cmd:
+      - sqd
+      - process:prod
+  api:
+    cmd:
+      - sqd
+      - serve:prod
