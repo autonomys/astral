@@ -3,7 +3,7 @@ import { Nominator } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import { createWithdrawal, getOrCreateOperator } from "../storage";
 import { events } from "../types";
-import { getCallSigner } from "../utils";
+import { appendOrArray, getCallSigner } from "../utils";
 
 export async function processWithdrawStake(
   ctx: Ctx<Store>,
@@ -32,14 +32,10 @@ export async function processWithdrawStake(
       status: JSON.stringify({ pending: null }),
     });
 
-    operator.withdrawals = operator.withdrawals
-      ? [...operator.withdrawals, withdrawal]
-      : [withdrawal];
+    operator.withdrawals = appendOrArray(operator.withdrawals, withdrawal);
     operator.withdrawalsCount++;
 
-    nominator.withdrawals = nominator.withdrawals
-      ? [...nominator.withdrawals, withdrawal]
-      : [withdrawal];
+    nominator.withdrawals = appendOrArray(nominator.withdrawals, withdrawal);
 
     await ctx.store.save(operator);
     await ctx.store.save(nominator);

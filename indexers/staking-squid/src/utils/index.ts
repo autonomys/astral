@@ -11,3 +11,6 @@ export const hexToAccount = (raw: string): string => {
 export const getCallSigner = (
   call: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["call"]
 ): string => hexToAccount((call as any).origin.value.value);
+
+export const appendOrArray = <T>(arr: T[] | undefined, item: T): T[] =>
+  !arr ? [item] : [...arr, item];

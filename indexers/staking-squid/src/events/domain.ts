@@ -1,6 +1,6 @@
 import type { Store } from "@subsquid/typeorm-store";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
-import { createDomain } from "../storage/domain";
+import { createDomain } from "../storage";
 
 export async function processDomainInstantiatedEvent(
   ctx: Ctx<Store>,

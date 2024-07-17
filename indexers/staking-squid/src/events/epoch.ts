@@ -1,7 +1,7 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { Domain, Operator } from "../model";
+import { Operator } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
-import { createDomain } from "../storage/domain";
+import { createDomain, getOrCreateDomain } from "../storage";
 
 export async function processEpochTransitionEvent(
   ctx: Ctx<Store>,
@@ -10,7 +10,7 @@ export async function processEpochTransitionEvent(
   event: CtxEvent
 ) {
   const domainId = Number(event.args.domainId);
-  const domain = await ctx.store.findOneBy(Domain, { domainId });
+  const domain = await getOrCreateDomain(ctx, block, domainId);
 
   if (!domain)
     await createDomain(ctx, block, {

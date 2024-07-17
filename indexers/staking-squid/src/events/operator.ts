@@ -1,7 +1,8 @@
 import type { Store } from "@subsquid/typeorm-store";
-import { Nominator, Operator } from "../model";
+import { Nominator } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
-import { createOperatorRewardEvent } from "../storage/operator";
+import { createOperatorRewardEvent, getOrCreateOperator } from "../storage";
+import { appendOrArray } from "../utils";
 
 export async function processOperatorSlashedEvent(
   ctx: Ctx<Store>,
@@ -10,7 +11,7 @@ export async function processOperatorSlashedEvent(
   event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
-  const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });
+  const operator = await getOrCreateOperator(ctx, block, operatorId);
 
   operator.pendingTotalStake = BigInt(0);
   operator.pendingStorageFeeDeposit = BigInt(0);
@@ -41,7 +42,7 @@ export async function processOperatorRewardedEvent(
   event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
-  const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });
+  const operator = await getOrCreateOperator(ctx, block, operatorId);
 
   const opRewardEvent = await createOperatorRewardEvent(ctx, block, {
     operator,
@@ -50,9 +51,10 @@ export async function processOperatorRewardedEvent(
   });
 
   operator.currentEpochRewards += BigInt(event.args.reward);
-  operator.operatorRewards = operator.operatorRewards
-    ? [...operator.operatorRewards, opRewardEvent]
-    : [opRewardEvent];
+  operator.operatorRewards = appendOrArray(
+    operator.operatorRewards,
+    opRewardEvent
+  );
   operator.updatedAt = block.header.height;
 
   await ctx.store.save(operator);
@@ -65,7 +67,7 @@ export async function processOperatorTaxCollectedEvent(
   event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
-  const operator = await ctx.store.findOneByOrFail(Operator, { operatorId });
+  const operator = await getOrCreateOperator(ctx, block, operatorId);
 
   operator.taxCollected = operator.taxCollected + BigInt(event.args.tax);
   operator.updatedAt = block.header.height;

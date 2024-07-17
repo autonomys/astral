@@ -1,11 +1,14 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { Nominator } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
-import { createDeposit } from "../storage/deposit";
-import { createNominator } from "../storage/nominator";
-import { createOperator, getOrCreateOperator } from "../storage/operator";
+import {
+  createDeposit,
+  createNominator,
+  createOperator,
+  getOrCreateOperator,
+} from "../storage";
 import { events } from "../types";
-import { getCallSigner } from "../utils";
+import { appendOrArray, getCallSigner } from "../utils";
 
 export async function processRegisterOperator(
   ctx: Ctx<Store>,
@@ -113,14 +116,14 @@ export async function processNominateOperator(
     operator.pendingStorageFeeDeposit += storageFeeDepositedEvent
       ? BigInt(storageFeeDepositedEvent.args.amount)
       : BigInt(0);
-    operator.deposits = [deposit];
+    operator.deposits = appendOrArray(operator.deposits, deposit);
     operator.depositsCount++;
 
     if (!nominatorExist) {
-      operator.nominators = [nominator];
+      operator.nominators = appendOrArray(operator.nominators, nominator);
       operator.nominatorsCount++;
     }
-    nominator.deposits = [deposit];
+    nominator.deposits = appendOrArray(nominator.deposits, deposit);
 
     await ctx.store.save(operator);
     await ctx.store.save(nominator);
