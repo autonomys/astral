@@ -1,7 +1,6 @@
 import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v1 from '../v1'
-import * as v5 from '../v5'
 
 export const bundleStored =  {
     name: 'Domains.BundleStored',
@@ -25,13 +24,6 @@ export const domainRuntimeCreated =  {
         sts.struct({
             runtimeId: sts.number(),
             runtimeType: v0.RuntimeType,
-        })
-    ),
-    v5: new EventType(
-        'Domains.DomainRuntimeCreated',
-        sts.struct({
-            runtimeId: sts.number(),
-            runtimeType: v5.RuntimeType,
         })
     ),
 }
@@ -226,13 +218,6 @@ export const operatorSlashed =  {
         sts.struct({
             operatorId: sts.bigint(),
             reason: v0.SlashedReason,
-        })
-    ),
-    v5: new EventType(
-        'Domains.OperatorSlashed',
-        sts.struct({
-            operatorId: sts.bigint(),
-            reason: v5.SlashedReason,
         })
     ),
 }

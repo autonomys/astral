@@ -2,7 +2,6 @@ import {sts, Block, Bytes, Option, Result, StorageType, RuntimeCtx} from '../sup
 import * as v0 from '../v0'
 import * as v1 from '../v1'
 import * as v3 from '../v3'
-import * as v5 from '../v5'
 
 export const successfulBundles =  {
     /**
@@ -88,7 +87,6 @@ export interface NextEvmChainIdV0  {
 
 export const runtimeRegistry =  {
     v0: new StorageType('Domains.RuntimeRegistry', 'Optional', [sts.number()], v0.RuntimeObject) as RuntimeRegistryV0,
-    v5: new StorageType('Domains.RuntimeRegistry', 'Optional', [sts.number()], v5.RuntimeObject) as RuntimeRegistryV5,
 }
 
 export interface RuntimeRegistryV0  {
@@ -103,20 +101,6 @@ export interface RuntimeRegistryV0  {
     getPairs(block: Block, key: number): Promise<[k: number, v: (v0.RuntimeObject | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: number, v: (v0.RuntimeObject | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: number): AsyncIterable<[k: number, v: (v0.RuntimeObject | undefined)][]>
-}
-
-export interface RuntimeRegistryV5  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: number): Promise<(v5.RuntimeObject | undefined)>
-    getMany(block: Block, keys: number[]): Promise<(v5.RuntimeObject | undefined)[]>
-    getKeys(block: Block): Promise<number[]>
-    getKeys(block: Block, key: number): Promise<number[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<number[]>
-    getKeysPaged(pageSize: number, block: Block, key: number): AsyncIterable<number[]>
-    getPairs(block: Block): Promise<[k: number, v: (v5.RuntimeObject | undefined)][]>
-    getPairs(block: Block, key: number): Promise<[k: number, v: (v5.RuntimeObject | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: number, v: (v5.RuntimeObject | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: number): AsyncIterable<[k: number, v: (v5.RuntimeObject | undefined)][]>
 }
 
 export const scheduledRuntimeUpgrades =  {
@@ -552,10 +536,6 @@ export const domainRegistry =  {
      *  The domain registry
      */
     v1: new StorageType('Domains.DomainRegistry', 'Optional', [v1.DomainId], v1.DomainObject) as DomainRegistryV1,
-    /**
-     *  The domain registry
-     */
-    v5: new StorageType('Domains.DomainRegistry', 'Optional', [v5.DomainId], v5.DomainObject) as DomainRegistryV5,
 }
 
 /**
@@ -590,23 +570,6 @@ export interface DomainRegistryV1  {
     getPairs(block: Block, key: v1.DomainId): Promise<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v1.DomainId): AsyncIterable<[k: v1.DomainId, v: (v1.DomainObject | undefined)][]>
-}
-
-/**
- *  The domain registry
- */
-export interface DomainRegistryV5  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: v5.DomainId): Promise<(v5.DomainObject | undefined)>
-    getMany(block: Block, keys: v5.DomainId[]): Promise<(v5.DomainObject | undefined)[]>
-    getKeys(block: Block): Promise<v5.DomainId[]>
-    getKeys(block: Block, key: v5.DomainId): Promise<v5.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v5.DomainId[]>
-    getKeysPaged(pageSize: number, block: Block, key: v5.DomainId): AsyncIterable<v5.DomainId[]>
-    getPairs(block: Block): Promise<[k: v5.DomainId, v: (v5.DomainObject | undefined)][]>
-    getPairs(block: Block, key: v5.DomainId): Promise<[k: v5.DomainId, v: (v5.DomainObject | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v5.DomainId, v: (v5.DomainObject | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v5.DomainId): AsyncIterable<[k: v5.DomainId, v: (v5.DomainObject | undefined)][]>
 }
 
 export const blockTree =  {
@@ -648,10 +611,6 @@ export const blockTreeNodes =  {
      *  Mapping of block tree node hash to the node, each node represent a domain block
      */
     v1: new StorageType('Domains.BlockTreeNodes', 'Optional', [v1.H256], v1.BlockTreeNode) as BlockTreeNodesV1,
-    /**
-     *  Mapping of block tree node hash to the node, each node represent a domain block
-     */
-    v5: new StorageType('Domains.BlockTreeNodes', 'Optional', [v5.H256], v5.BlockTreeNode) as BlockTreeNodesV5,
 }
 
 /**
@@ -686,23 +645,6 @@ export interface BlockTreeNodesV1  {
     getPairs(block: Block, key: v1.H256): Promise<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v1.H256): AsyncIterable<[k: v1.H256, v: (v1.BlockTreeNode | undefined)][]>
-}
-
-/**
- *  Mapping of block tree node hash to the node, each node represent a domain block
- */
-export interface BlockTreeNodesV5  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block, key: v5.H256): Promise<(v5.BlockTreeNode | undefined)>
-    getMany(block: Block, keys: v5.H256[]): Promise<(v5.BlockTreeNode | undefined)[]>
-    getKeys(block: Block): Promise<v5.H256[]>
-    getKeys(block: Block, key: v5.H256): Promise<v5.H256[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v5.H256[]>
-    getKeysPaged(pageSize: number, block: Block, key: v5.H256): AsyncIterable<v5.H256[]>
-    getPairs(block: Block): Promise<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
-    getPairs(block: Block, key: v5.H256): Promise<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: v5.H256): AsyncIterable<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
 }
 
 export const headReceiptNumber =  {
@@ -1095,132 +1037,4 @@ export interface LatestSubmittedErV3  {
     getPairs(block: Block, key: [v3.DomainId, bigint]): Promise<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: [v3.DomainId, bigint]): AsyncIterable<[k: [v3.DomainId, bigint], v: (number | undefined)][]>
-}
-
-export const operatorHighestSlot =  {
-    /**
-     *  The highest slot of the bundle submitted by an operator
-     */
-    v5: new StorageType('Domains.OperatorHighestSlot', 'Default', [sts.bigint()], sts.bigint()) as OperatorHighestSlotV5,
-}
-
-/**
- *  The highest slot of the bundle submitted by an operator
- */
-export interface OperatorHighestSlotV5  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): bigint
-    get(block: Block, key: bigint): Promise<(bigint | undefined)>
-    getMany(block: Block, keys: bigint[]): Promise<(bigint | undefined)[]>
-    getKeys(block: Block): Promise<bigint[]>
-    getKeys(block: Block, key: bigint): Promise<bigint[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<bigint[]>
-    getKeysPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<bigint[]>
-    getPairs(block: Block): Promise<[k: bigint, v: (bigint | undefined)][]>
-    getPairs(block: Block, key: bigint): Promise<[k: bigint, v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: bigint, v: (bigint | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (bigint | undefined)][]>
-}
-
-export const operatorBundleSlot =  {
-    /**
-     *  The set of slot of the bundle submitted by an operator in the current block, cleared at the
-     *  next block initialization
-     */
-    v5: new StorageType('Domains.OperatorBundleSlot', 'Default', [sts.bigint()], sts.array(() => sts.bigint())) as OperatorBundleSlotV5,
-}
-
-/**
- *  The set of slot of the bundle submitted by an operator in the current block, cleared at the
- *  next block initialization
- */
-export interface OperatorBundleSlotV5  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): bigint[]
-    get(block: Block, key: bigint): Promise<(bigint[] | undefined)>
-    getMany(block: Block, keys: bigint[]): Promise<(bigint[] | undefined)[]>
-    getKeys(block: Block): Promise<bigint[]>
-    getKeys(block: Block, key: bigint): Promise<bigint[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<bigint[]>
-    getKeysPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<bigint[]>
-    getPairs(block: Block): Promise<[k: bigint, v: (bigint[] | undefined)][]>
-    getPairs(block: Block, key: bigint): Promise<[k: bigint, v: (bigint[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: bigint, v: (bigint[] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: bigint): AsyncIterable<[k: bigint, v: (bigint[] | undefined)][]>
-}
-
-export const permissionedActionAllowedBy =  {
-    /**
-     *  Storage for PermissionedActions for domain instantiation and other permissioned calls.
-     */
-    v5: new StorageType('Domains.PermissionedActionAllowedBy', 'Optional', [], v5.PermissionedActionAllowedBy) as PermissionedActionAllowedByV5,
-}
-
-/**
- *  Storage for PermissionedActions for domain instantiation and other permissioned calls.
- */
-export interface PermissionedActionAllowedByV5  {
-    is(block: RuntimeCtx): boolean
-    get(block: Block): Promise<(v5.PermissionedActionAllowedBy | undefined)>
-}
-
-export const accumulatedTreasuryFunds =  {
-    /**
-     *  Accumulate treasury funds temporarily until the funds are above Existential despoit.
-     *  We do this to ensure minting small amounts into treasury would not fail.
-     */
-    v5: new StorageType('Domains.AccumulatedTreasuryFunds', 'Default', [], sts.bigint()) as AccumulatedTreasuryFundsV5,
-}
-
-/**
- *  Accumulate treasury funds temporarily until the funds are above Existential despoit.
- *  We do this to ensure minting small amounts into treasury would not fail.
- */
-export interface AccumulatedTreasuryFundsV5  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): bigint
-    get(block: Block): Promise<(bigint | undefined)>
-}
-
-export const domainRuntimeUpgradeRecords =  {
-    /**
-     *  Storage used to keep track of which consensus block the domain runtime upgrade happen.
-     */
-    v5: new StorageType('Domains.DomainRuntimeUpgradeRecords', 'Default', [sts.number()], sts.array(() => sts.tuple(() => [sts.number(), v5.DomainRuntimeUpgradeEntry]))) as DomainRuntimeUpgradeRecordsV5,
-}
-
-/**
- *  Storage used to keep track of which consensus block the domain runtime upgrade happen.
- */
-export interface DomainRuntimeUpgradeRecordsV5  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): [number, v5.DomainRuntimeUpgradeEntry][]
-    get(block: Block, key: number): Promise<([number, v5.DomainRuntimeUpgradeEntry][] | undefined)>
-    getMany(block: Block, keys: number[]): Promise<([number, v5.DomainRuntimeUpgradeEntry][] | undefined)[]>
-    getKeys(block: Block): Promise<number[]>
-    getKeys(block: Block, key: number): Promise<number[]>
-    getKeysPaged(pageSize: number, block: Block): AsyncIterable<number[]>
-    getKeysPaged(pageSize: number, block: Block, key: number): AsyncIterable<number[]>
-    getPairs(block: Block): Promise<[k: number, v: ([number, v5.DomainRuntimeUpgradeEntry][] | undefined)][]>
-    getPairs(block: Block, key: number): Promise<[k: number, v: ([number, v5.DomainRuntimeUpgradeEntry][] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: number, v: ([number, v5.DomainRuntimeUpgradeEntry][] | undefined)][]>
-    getPairsPaged(pageSize: number, block: Block, key: number): AsyncIterable<[k: number, v: ([number, v5.DomainRuntimeUpgradeEntry][] | undefined)][]>
-}
-
-export const domainRuntimeUpgrades =  {
-    /**
-     *  Temporary storage keep track of domain runtime upgrade happen in the current block, cleared
-     *  in the next block initialization.
-     */
-    v5: new StorageType('Domains.DomainRuntimeUpgrades', 'Default', [], sts.array(() => sts.number())) as DomainRuntimeUpgradesV5,
-}
-
-/**
- *  Temporary storage keep track of domain runtime upgrade happen in the current block, cleared
- *  in the next block initialization.
- */
-export interface DomainRuntimeUpgradesV5  {
-    is(block: RuntimeCtx): boolean
-    getDefault(block: Block): number[]
-    get(block: Block): Promise<(number[] | undefined)>
 }
