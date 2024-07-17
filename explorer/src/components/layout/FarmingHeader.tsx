@@ -2,7 +2,7 @@
 
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { EXTERNAL_ROUTES, INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ import { useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
-export const DomainHeader = () => {
+export const FarmingHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -22,12 +22,16 @@ export const DomainHeader = () => {
   const menuList = useMemo(
     () => [
       {
-        title: 'Nova',
-        link: `/${selectedChain.urls.page}/${Routes.nova}`,
+        title: 'Download Space Acres',
+        link: `/${selectedChain.urls.page}/${Routes.farming}`,
       },
       {
-        title: 'Auto-ID',
-        link: `/${selectedChain.urls.page}/${Routes.autoId}`,
+        title: 'Download Subspace CLI',
+        link: `/${EXTERNAL_ROUTES.docs}learn/intro`,
+      },
+      {
+        title: 'Documentation',
+        link: `/${EXTERNAL_ROUTES.docs}farming-&-staking/farming/advanced-cli/cli-install`,
       },
     ],
     [selectedChain.urls.page],
