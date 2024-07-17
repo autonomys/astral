@@ -1,8 +1,11 @@
 export enum Routes {
-  nova = 'nova',
   consensus = 'consensus',
-  leaderboard = 'leaderboard',
+  farming = 'farming',
   staking = 'staking',
+  leaderboard = 'leaderboard',
+  domain = 'domain',
+  nova = 'nova',
+  autoId = 'autoId',
   // Route deactivated till bugs are fixed and feature is ready
   // stake = 'stake',
 }
@@ -13,16 +16,30 @@ export const ROUTES = [
     title: 'Consensus Chain',
   },
   {
-    name: Routes.nova,
-    title: 'Nova',
+    name: Routes.farming,
+    title: 'Farming',
+  },
+  {
+    name: Routes.staking,
+    title: 'Staking',
   },
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
   },
   {
-    name: Routes.staking,
-    title: 'Staking',
+    name: Routes.domain,
+    title: 'Domain',
+    children: [
+      {
+        name: Routes.nova,
+        title: 'Nova',
+      },
+      {
+        name: Routes.autoId,
+        title: 'Auto-ID',
+      },
+    ],
   },
   // Route deactivated till bugs are fixed and feature is ready
   // {
