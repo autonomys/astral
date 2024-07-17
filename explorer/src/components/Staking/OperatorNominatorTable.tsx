@@ -46,7 +46,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { deposits } = useConsensusStates()
 
   const columns = useMemo(() => {
-    if (!operator) return []
+    if (!operator || operator.totalShares == 0) return []
     return [
       {
         accessorKey: 'account',
