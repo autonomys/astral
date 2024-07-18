@@ -253,7 +253,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       <SortedTable
         data={nominators}
         columns={columns}
-        showNavigation={true}
+        showNavigation={!useRpcData}
         sorting={sorting}
         onSortingChange={setSorting}
         pagination={pagination}
