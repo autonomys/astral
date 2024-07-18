@@ -22,12 +22,13 @@ export const formatOperators = (
 
 export const formatDeposits = (deposits: [StorageKey<AnyTuple>, Codec][]) =>
   deposits.map((deposit) => {
+    const depositHeader = deposit[0].toHuman() as [string, string]
     const parsedDeposit = deposit[1].toJSON() as RawDeposit
     return {
-      operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
-      account: (deposit[0].toHuman() as string[])[1],
-      shares: parseInt(parsedDeposit.known.shares.toString(), 16).toString(),
-      storageFeeDeposit: parseInt(parsedDeposit.known.storageFeeDeposit.toString(), 16).toString(),
+      operatorId: parseInt(depositHeader[0]),
+      account: depositHeader[1],
+      shares: BigInt(parsedDeposit.known.shares.toString()).toString(10),
+      storageFeeDeposit: BigInt(parsedDeposit.known.storageFeeDeposit.toString()).toString(10),
       pending: {
         amount: BigInt(parsedDeposit.pending.amount).toString(10),
         storageFeeDeposit: BigInt(parsedDeposit.pending.storageFeeDeposit).toString(10),
@@ -37,9 +38,11 @@ export const formatDeposits = (deposits: [StorageKey<AnyTuple>, Codec][]) =>
 
 export const formatWithdrawals = (withdrawals: [StorageKey<AnyTuple>, Codec][]) =>
   withdrawals.map((withdrawal) => {
+    const withdrawalHeader = withdrawal[0].toHuman() as [string, string]
     const parsedWithdrawal = withdrawal[1].toJSON() as Omit<Withdrawal, 'operatorId'>
     return {
-      operatorId: parseInt((withdrawal[0].toHuman() as string[])[0]),
+      operatorId: parseInt(withdrawalHeader[0]),
+      account: withdrawalHeader[1],
       totalWithdrawalAmount: parsedWithdrawal.totalWithdrawalAmount,
       withdrawals: parsedWithdrawal.withdrawals,
       withdrawalInShares: {

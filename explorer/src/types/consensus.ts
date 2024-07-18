@@ -125,6 +125,7 @@ export type Deposit = {
 
 export type Withdrawal = {
   operatorId: number
+  account: string
   totalWithdrawalAmount: number
   withdrawals: string[]
   withdrawalInShares: {
