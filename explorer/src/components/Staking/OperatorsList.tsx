@@ -170,7 +170,7 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'nominationTax',
         header: 'Nominator Tax',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
         }: Cell<
@@ -231,6 +231,39 @@ export const OperatorsList: FC = () => {
         ),
       },
     ]
+    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
+      cols.push({
+        accessorKey: 'myStake',
+        header: 'My Stake',
+        enableSorting: !useRpcData,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const deposit = deposits.find(
+            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BigInt(0)
+              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
+              : BigInt(0)
+          return (
+            <div>
+              {deposit && deposit.shares !== '0' && (
+                <>
+                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  <br />
+                </>
+              )}
+              {deposit &&
+                deposit.pending.amount !== '0' &&
+                `Pending: ${bigNumberToNumber((BigInt(deposit.pending.amount) + BigInt(deposit.pending.storageFeeDeposit)).toString())} ${selectedChain.token.symbol}`}
+            </div>
+          )
+        },
+      })
     if (subspaceAccount)
       cols.push({
         accessorKey: 'actions',
@@ -243,11 +276,14 @@ export const OperatorsList: FC = () => {
         >) => {
           const isOperator = row.original.operatorOwner === subspaceAccount
           const nominator =
-            !!useRpcData &&
-            (
-              row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
-            ).nominators.find(
-              (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
+            (!useRpcData &&
+              (
+                row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+              ).nominators.find(
+                (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
+              )) ||
+            deposits.find(
+              (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
             )
           const excludeActions = []
           if (!isOperator)
@@ -281,12 +317,14 @@ export const OperatorsList: FC = () => {
     return cols
   }, [
     useRpcData,
+    deposits,
     subspaceAccount,
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
     domains,
     nominatorCount,
+    rpcOperators,
     action,
     handleAction,
   ])
