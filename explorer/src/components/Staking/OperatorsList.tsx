@@ -189,6 +189,50 @@ export const OperatorsList: FC = () => {
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
+    ]
+    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
+      cols.push({
+        accessorKey: 'deposits',
+        header: 'Deposits',
+        enableSorting: !useRpcData,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
+          const depositShares = opDeposits.reduce(
+            (acc, deposit) => acc + BigInt(deposit.shares),
+            BigInt(0),
+          )
+          const pendingAmount = opDeposits.reduce(
+            (acc, deposit) => acc + BigInt(deposit.pending.amount),
+            BigInt(0),
+          )
+          const pendingStorageFee = opDeposits.reduce(
+            (acc, deposit) => acc + BigInt(deposit.pending.storageFeeDeposit),
+            BigInt(0),
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BigInt(0)
+              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
+              : BigInt(0)
+          return (
+            <div>
+              {depositShares > BigInt(0) && (
+                <>
+                  {`Staked: ${bigNumberToNumber(((BigInt(depositShares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  <br />
+                </>
+              )}
+              {pendingAmount > BigInt(0) &&
+                `Pending; ${bigNumberToNumber((BigInt(pendingAmount) + BigInt(pendingStorageFee)).toString())} ${selectedChain.token.symbol}`}
+            </div>
+          )
+        },
+      })
+    cols.push(
       {
         accessorKey: 'nominators',
         header: 'Nominators',
@@ -230,7 +274,7 @@ export const OperatorsList: FC = () => {
           </div>
         ),
       },
-    ]
+    )
     if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
       cols.push({
         accessorKey: 'myStake',
