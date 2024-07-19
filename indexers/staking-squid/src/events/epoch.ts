@@ -1,8 +1,13 @@
+import { operators } from "@autonomys/auto-consensus";
 import type { ApiPromise } from "@autonomys/auto-utils";
 import type { Store } from "@subsquid/typeorm-store";
-import { Operator, OperatorStatus } from "../model";
+import { Operator } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
-import { createDomain, getOrCreateDomain } from "../storage";
+import {
+  createDomain,
+  getOrCreateDomain,
+  getOrCreateOperator,
+} from "../storage";
 import { getBlockNumber } from "../utils";
 
 export async function processEpochTransitionEvent(
@@ -27,14 +32,21 @@ export async function processEpochTransitionEvent(
     await ctx.store.save(domain);
   }
 
-  const operators = await ctx.store.findBy(Operator, { domainId });
-  for (const operator of operators) {
-    operator.currentEpochRewards = BigInt(0);
-    operator.updatedAt = getBlockNumber(block);
+  const allOperators = await operators(api);
+  for (const operator of allOperators) {
+    const op = await getOrCreateOperator(
+      ctx,
+      block,
+      parseInt(operator.operatorId.toString())
+    );
+    op.currentEpochRewards = operator.operatorDetails.currentEpochRewards;
+    op.currentTotalShares = operator.operatorDetails.currentTotalShares;
+    op.currentTotalStake = operator.operatorDetails.currentTotalStake;
+    op.currentStorageFeeDeposit =
+      operator.operatorDetails.totalStorageFeeDeposit;
+    op.rawStatus = JSON.stringify(operator.operatorDetails.status);
+    op.updatedAt = getBlockNumber(block);
 
-    if (operator.status === OperatorStatus.PENDING)
-      operator.status = OperatorStatus.REGISTERED;
-
-    await ctx.store.save(operator);
+    await ctx.store.save(op);
   }
 }
