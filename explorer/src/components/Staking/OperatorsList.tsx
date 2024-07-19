@@ -55,7 +55,7 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators, nominatorCount } = useConsensusStates()
+  const { operators: rpcOperators, nominatorCount, deposits } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
@@ -357,18 +357,26 @@ export const OperatorsList: FC = () => {
   }, [])
 
   const operatorsConnection = useMemo(() => {
-    if (useRpcData && subspaceAccount)
+    if (useRpcData && subspaceAccount) {
+      const myRpcNominatorIds = deposits
+        .filter((d) => d.account === subspaceAccount)
+        .map((n) => n.operatorId.toString())
       return rpcOperators
-        .filter((o) => (myPositionOnly ? o.operatorOwner === subspaceAccount : true))
+        .filter((o) =>
+          myPositionOnly
+            ? o.operatorOwner === subspaceAccount || myRpcNominatorIds.includes(o.id)
+            : true,
+        )
         .map((operator) => ({
           ...operator,
           nominators: [],
           totalShares: operator.currentTotalShares,
         }))
+    }
     if (hasValue(operators))
       return operators.value.operatorsConnection.edges.map((operator) => operator.node)
     return []
-  }, [myPositionOnly, operators, rpcOperators, subspaceAccount, useRpcData])
+  }, [deposits, myPositionOnly, operators, rpcOperators, subspaceAccount, useRpcData])
 
   const totalCount = useMemo(
     () => (hasValue(operators) ? operators.value.operatorsConnection.totalCount : 0),

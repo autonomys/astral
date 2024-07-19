@@ -127,21 +127,20 @@ export const useConsensusData = () => {
           owner: operator[1].toJSON() as string,
         })),
       )
-      setOperators(
-        operators.map((operator, key) => {
-          const op = operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>
-          return {
-            id: (operator[0].toHuman() as string[])[0],
-            operatorOwner: operatorIdOwner[key][1].toJSON() as string,
-            ...op,
-            minimumNominatorStake: BigInt(op.minimumNominatorStake).toString(10),
-            currentTotalStake: BigInt(op.currentTotalStake).toString(10),
-            currentTotalShares: BigInt(op.currentTotalShares).toString(10),
-            totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
-            status: JSON.stringify(op.status),
-          } as Operators
-        }),
-      )
+      const formattedOperators = operators.map((operator, key) => {
+        const op = operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>
+        return {
+          id: (operator[0].toHuman() as string[])[0],
+          operatorOwner: operatorIdOwner[key][1].toJSON() as string,
+          ...op,
+          minimumNominatorStake: BigInt(op.minimumNominatorStake).toString(10),
+          currentTotalStake: BigInt(op.currentTotalStake).toString(10),
+          currentTotalShares: BigInt(op.currentTotalShares).toString(10),
+          totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
+          status: JSON.stringify(op.status),
+        } as Operators
+      })
+      setOperators(formattedOperators)
       setPendingStakingOperationCount(
         pendingStakingOperationCount.map(
           (stakingOp) =>
@@ -159,6 +158,29 @@ export const useConsensusData = () => {
               bundle: bundle[1].toHuman(),
             }) as SuccessfulBundle,
         ),
+      )
+
+      const deposits = await Promise.all(
+        formattedOperators.map((o) => api.query.domains.deposits.entries(o.id)),
+      )
+
+      setDeposits(
+        deposits.flat().map((deposit) => {
+          const parsedDeposit = deposit[1].toJSON() as RawDeposit
+          return {
+            operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
+            account: (deposit[0].toHuman() as string[])[1],
+            shares: parseInt(parsedDeposit.known.shares.toString(), 16).toString(),
+            storageFeeDeposit: parseInt(
+              parsedDeposit.known.storageFeeDeposit.toString(),
+              16,
+            ).toString(),
+            pending: {
+              amount: parsedDeposit.pending.amount.toString(),
+              storageFeeDeposit: parsedDeposit.pending.storageFeeDeposit.toString(),
+            },
+          } as Deposit
+        }),
       )
     } catch (error) {
       console.error('useConsensusData', error)
