@@ -2,6 +2,7 @@ type Domain @entity {
   id: ID! @index
   domainId: Int! @index
   completedEpoch: Int! @index
+  createdAt: Int @index
   updatedAt: Int @index
 }
 
@@ -17,7 +18,7 @@ type Operator @entity {
   domainId: Int! @index
   operatorId: Int! @index
   signingKey: String! @index
-  operatorOwner: String! @index
+  owner: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
   currentTotalStake: BigInt!
