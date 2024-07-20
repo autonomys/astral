@@ -6,6 +6,7 @@ import { Ctx, processor } from "./processor";
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   const api = await activate();
   await processChain(ctx, api);
+  await api.disconnect();
 });
 async function processChain(ctx: Ctx<Store>, api: ApiPromise) {
   await processBlocks(ctx, api);
