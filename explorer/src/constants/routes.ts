@@ -33,6 +33,7 @@ export const ROUTES = [
 
 export const EXTERNAL_ROUTES = {
   autonomys: 'https://autonomys.net/',
+  academy: 'https://academy.autonomys.net/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
   forum: 'https://forum.subspace.network/',
   gemini2guide:
@@ -41,14 +42,14 @@ export const EXTERNAL_ROUTES = {
   operatorDocs:
     'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
   social: {
-    twitter: 'https://twitter.com/NetworkSubspace',
+    twitter: 'https://x.com/AutonomysNet',
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/subspace',
     reddit: 'https://www.reddit.com/r/sub',
     medium: 'https://medium.com/subspace-network',
     youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',
-    linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
+    linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
   novaExplorer: 'https://nova.subspace.network/',
