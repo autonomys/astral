@@ -131,7 +131,12 @@ export type Deposit = {
 
 export type RawWithdrawal = {
   totalWithdrawalAmount: string
-  withdrawals: string[]
+  withdrawals: {
+    domainId: number
+    unlockAtConfirmedDomainBlockNumber: number
+    amountToUnlock: string
+    storageFeeRefund: string
+  }[]
   withdrawalInShares: {
     domainEpoch: number[]
     unlockAtConfirmedDomainBlockNumber: number
@@ -140,11 +145,18 @@ export type RawWithdrawal = {
   }
 }
 
+export type WithdrawalUnlock = {
+  domainId: number
+  unlockAtConfirmedDomainBlockNumber: number
+  amountToUnlock: bigint
+  storageFeeRefund: bigint
+}
+
 export type Withdrawal = {
   operatorId: number
   account: string
   totalWithdrawalAmount: bigint
-  withdrawals: string[]
+  withdrawals: WithdrawalUnlock[]
   withdrawalInShares: {
     domainEpoch: number[]
     unlockAtConfirmedDomainBlockNumber: number

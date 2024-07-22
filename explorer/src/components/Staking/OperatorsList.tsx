@@ -30,7 +30,7 @@ import { useViewStates } from 'states/view'
 import { Operators } from 'types/consensus'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { bigNumberToNumber, bigNumberToString, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
@@ -61,6 +61,7 @@ export const OperatorsList: FC = () => {
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
   const { useRpcData, myPositionOnly } = useViewStates()
+  console.log('withdrawals', withdrawals)
 
   useEffect(() => {
     loadDomainsData()
@@ -90,8 +91,15 @@ export const OperatorsList: FC = () => {
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
 
-  const myWithdrawals = useMemo(
-    () => withdrawals.filter((w) => w.account === subspaceAccount),
+  const myPendingWithdrawals = useMemo(
+    () =>
+      withdrawals.filter(
+        (w) => w.account === subspaceAccount && w.withdrawalInShares.shares > BIGINT_ZERO,
+      ),
+    [withdrawals, subspaceAccount],
+  )
+  const myUnlockedWithdrawals = useMemo(
+    () => withdrawals.filter((w) => w.account === subspaceAccount && w.withdrawals.length > 0),
     [withdrawals, subspaceAccount],
   )
 
@@ -486,46 +494,17 @@ export const OperatorsList: FC = () => {
     return null
   }, [operators])
 
-  useEffect(() => {
-    if (operatorId) handleSearch(operatorId)
-  }, [operatorId, handleSearch])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
-
-  return (
-    <div className='flex w-full flex-col align-middle'>
-      <div className='flex flex-col gap-2'>
-        <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
-        </div>
-        <div className='flex items-center'>
-          <div className='mr-5 flex items-center'>
-            <DataSource />
-          </div>
-          {subspaceAccount && (
-            <div className='mr-4 flex w-40 items-center'>
-              <MyPositionSwitch />
-            </div>
-          )}
-          <DebouncedInput
-            type='text'
-            className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
-            placeholder='Search by operator id'
-            onChange={handleSearch}
-            value={searchOperator}
-          />
-        </div>
-      </div>
-      <DataSourceBanner />
-      {myWithdrawals.length > 0 && (
+  const myUnlockedWithdrawalsList = useMemo(
+    () =>
+      myUnlockedWithdrawals.length > 0 && (
         <div className='mt-5 flex flex-col gap-2'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>My Withdrawals</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>
+            My Unlocked Withdrawals
+          </div>
           <div className='flex w-full flex-col sm:mt-0'>
             <div className='my-6 rounded'>
               <SortedTable
-                data={myWithdrawals}
+                data={myPendingWithdrawals}
                 columns={[
                   {
                     accessorKey: 'operatorId',
@@ -534,7 +513,140 @@ export const OperatorsList: FC = () => {
                     cell: ({ row }) => <div>{row.original.operatorId}</div>,
                   },
                   {
-                    accessorKey: 'withdrawalInShares.shares',
+                    accessorKey: 'totalWithdrawalAmount',
+                    header: 'Withdrawal Amount',
+                    enableSorting: false,
+                    cell: ({ row }) => (
+                      <div>
+                        {bigNumberToString(row.original.totalWithdrawalAmount.toString())}{' '}
+                        {selectedChain.token.symbol}
+                      </div>
+                    ),
+                  },
+                  {
+                    accessorKey: 'totalStorageFeeRefund',
+                    header: 'Storage Fee Refund',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      const totalStorageFeeRefund = row.original.withdrawals.reduce(
+                        (acc, w) => acc + w.storageFeeRefund,
+                        BIGINT_ZERO,
+                      )
+                      return (
+                        <div>
+                          {bigNumberToString(totalStorageFeeRefund.toString())}{' '}
+                          {selectedChain.token.symbol}
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'withdrawalInShares.unlockAtConfirmedDomainBlockNumber',
+                    header: 'Withdrawal at Domain Block Number',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      return (
+                        <div>
+                          {row.original.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()}
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'withdrawals',
+                    header: 'Withdrawals',
+                    enableSorting: false,
+                    cell: ({ row }) => <div>{row.original.withdrawals.length}</div>,
+                  },
+                  {
+                    accessorKey: 'total',
+                    header: 'Total Withdrawal Amount',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      const totalStorageFeeRefund = row.original.withdrawals.reduce(
+                        (acc, w) => acc + w.storageFeeRefund,
+                        BIGINT_ZERO,
+                      )
+                      const total = row.original.totalWithdrawalAmount + totalStorageFeeRefund
+                      return (
+                        <div>
+                          {bigNumberToString(total.toString())} {selectedChain.token.symbol}
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'actions',
+                    header: 'Actions',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      return (
+                        <ActionsDropdown
+                          action={action}
+                          handleAction={handleAction}
+                          row={{
+                            original: {
+                              id: row.original.operatorId.toString(),
+                              totalShares: BIGINT_ZERO,
+                            },
+                          }}
+                          excludeActions={[
+                            OperatorActionType.Nominating,
+                            OperatorActionType.Withdraw,
+                            OperatorActionType.Deregister,
+                          ]}
+                        />
+                      )
+                    },
+                  },
+                ]}
+                showNavigation={false}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='operators-my-withdrawals-list'
+                pageSizeOptions={[10]}
+                fullDataDownloader={fullDataDownloader}
+              />
+            </div>
+          </div>
+        </div>
+      ),
+    [
+      action,
+      fullDataDownloader,
+      handleAction,
+      myPendingWithdrawals,
+      myUnlockedWithdrawals.length,
+      pageCount,
+      pagination,
+      selectedChain.token.symbol,
+      sorting,
+    ],
+  )
+
+  const myPendingWithdrawalsList = useMemo(
+    () =>
+      myPendingWithdrawals.length > 0 && (
+        <div className='mt-2 flex flex-col gap-2'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>
+            My Pending Withdrawals
+          </div>
+          <div className='flex w-full flex-col sm:mt-0'>
+            <div className='my-6 rounded'>
+              <SortedTable
+                data={myPendingWithdrawals}
+                columns={[
+                  {
+                    accessorKey: 'operatorId',
+                    header: 'Operator Id',
+                    enableSorting: false,
+                    cell: ({ row }) => <div>{row.original.operatorId}</div>,
+                  },
+                  {
+                    accessorKey: 'shares',
                     header: 'Withdrawal Amount',
                     enableSorting: false,
                     cell: ({ row }) => {
@@ -562,8 +674,8 @@ export const OperatorsList: FC = () => {
                     },
                   },
                   {
-                    accessorKey: 'withdrawalInShares.storageFeeRefund',
-                    header: 'Withdrawal Storage Fee Refund',
+                    accessorKey: 'storageFeeRefund',
+                    header: 'Storage Fee Refund',
                     enableSorting: false,
                     cell: ({ row }) => {
                       const op = rpcOperators.find(
@@ -590,7 +702,33 @@ export const OperatorsList: FC = () => {
                     },
                   },
                   {
-                    accessorKey: 'withdrawalInShares.unlockAtConfirmedDomainBlockNumber',
+                    accessorKey: 'total',
+                    header: 'Total Withdrawal Amount',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      const op = rpcOperators.find(
+                        (o) => o.id === row.original.operatorId.toString(),
+                      )
+                      const sharesValue =
+                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                            BigInt(op.currentTotalShares)
+                          : BIGINT_ZERO
+                      const withdrawAmount = bigNumberToNumber(
+                        ((row.original.withdrawalInShares.shares +
+                          row.original.withdrawalInShares.storageFeeRefund) *
+                          sharesValue) /
+                          SHARES_CALCULATION_MULTIPLIER,
+                      )
+                      return (
+                        <div>
+                          {withdrawAmount} {selectedChain.token.symbol}
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'unlockAtConfirmedDomainBlockNumber',
                     header: 'Withdrawal at Domain Block Number',
                     enableSorting: false,
                     cell: ({ row }) => {
@@ -600,18 +738,6 @@ export const OperatorsList: FC = () => {
                         </div>
                       )
                     },
-                  },
-                  {
-                    accessorKey: 'totalWithdrawalAmount',
-                    header: 'Total Withdrawal Amount',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.totalWithdrawalAmount.toString()}</div>,
-                  },
-                  {
-                    accessorKey: 'withdrawals',
-                    header: 'Withdrawals',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.withdrawals.length}</div>,
                   },
                 ]}
                 showNavigation={false}
@@ -627,8 +753,57 @@ export const OperatorsList: FC = () => {
             </div>
           </div>
         </div>
-      )}
-      <div className='mt-5 flex w-full flex-col sm:mt-0'>
+      ),
+    [
+      fullDataDownloader,
+      myPendingWithdrawals,
+      pageCount,
+      pagination,
+      rpcOperators,
+      selectedChain.token.symbol,
+      sorting,
+    ],
+  )
+
+  useEffect(() => {
+    if (operatorId) handleSearch(operatorId)
+  }, [operatorId, handleSearch])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
+
+  return (
+    <div className='flex w-full flex-col align-middle'>
+      <div className='flex flex-col gap-2'>
+        <div className='mt-5 flex w-full justify-between'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>Staking</div>
+        </div>
+        <div className='flex items-center'>
+          <div className='mr-5 flex items-center'>
+            <DataSource />
+          </div>
+          {subspaceAccount && (
+            <div className='mr-4 flex w-40 items-center'>
+              <MyPositionSwitch />
+            </div>
+          )}
+          <DebouncedInput
+            type='text'
+            className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+            placeholder='Search by operator id'
+            onChange={handleSearch}
+            value={searchOperator}
+          />
+        </div>
+      </div>
+      <DataSourceBanner />
+      {myUnlockedWithdrawalsList}
+      {myPendingWithdrawalsList}
+      <div className='mt-2 flex w-full justify-between'>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
+      </div>
+      <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {operatorsConnection ? (
             <SortedTable
