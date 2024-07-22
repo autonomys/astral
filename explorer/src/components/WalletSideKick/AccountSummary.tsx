@@ -1,5 +1,5 @@
 import { shortString } from '@/utils/string'
-import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { BookOpenIcon, WrenchIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { Tooltip } from 'components/common/Tooltip'
 import type { Chain } from 'constants/chains'
@@ -8,6 +8,7 @@ import { AccountPreferenceSection } from 'constants/wallet'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { usePreferencesStates } from 'states/preferences'
 import { limitNumberDecimals } from 'utils/number'
 import { AccountIcon } from '../common/AccountIcon'
 import { AccountBadge } from './AccountBadge'
@@ -32,6 +33,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
   const { ref, inView } = useInView()
   const { topFarmers, topOperators, topNominators, setIsVisible } = useLeaderboard(subspaceAccount)
   const theme = useMemo(() => (selectedChain.isDomain ? 'ethereum' : 'beachball'), [selectedChain])
+  const { enableDevMode } = usePreferencesStates()
   const [preference, setPreference] = useState<AccountPreferenceSection>(
     AccountPreferenceSection.None,
   )
@@ -65,7 +67,12 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
               <AccountIcon address={subspaceAccount} theme={theme} />
               <div className='relative'>
                 <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
-                  {actingAccountName}
+                  {actingAccountName}{' '}
+                  {enableDevMode && (
+                    <span className='ml-2 rounded-full bg-purpleLighterAccent p-2 text-white'>
+                      <code>[Dev Mode]</code>
+                    </span>
+                  )}
                 </span>
                 <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
                   {shortString(subspaceAccount)}
@@ -122,6 +129,14 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
               className='m-2 flex cursor-default items-center justify-center rounded-full bg-purpleAccent p-2'
             >
               <BookOpenIcon className='w-8 text-white' />
+            </button>
+          </Tooltip>
+          <Tooltip text='Account settings'>
+            <button
+              onClick={() => onClick(AccountPreferenceSection.Settings)}
+              className='m-2 flex cursor-default items-center justify-center rounded-full bg-purpleAccent p-2'
+            >
+              <WrenchIcon className='w-8 text-white' />
             </button>
           </Tooltip>
         </div>
