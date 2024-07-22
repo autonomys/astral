@@ -6,12 +6,13 @@ build:
 deploy:
   addons:
     postgres:
-    rpc:
-      - kusama.http
   processor:
     cmd:
       - sqd
       - process:prod
+    env:
+      CONSENSUS_GATEWAY: ${{ secrets.CONSENSUS_GATEWAY }}
+      RPC_CONSENSUS_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
   api:
     cmd:
       - sqd
