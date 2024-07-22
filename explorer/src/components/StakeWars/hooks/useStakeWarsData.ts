@@ -1,10 +1,16 @@
-import { useQuery } from '@apollo/client'
-import { GetCurrentBlockNumberQuery } from 'gql/rewardTypes'
+import { GetCurrentBlockNumberQuery, GetCurrentBlockNumberQueryVariables } from 'gql/rewardTypes'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useErrorHandler } from 'react-error-boundary'
 import { GET_CURRENT_BLOCK_NUMBER } from '../rewardsQuery'
 
 export const useStakeWarsData = () => {
-  const { data, loading, error } = useQuery<GetCurrentBlockNumberQuery>(GET_CURRENT_BLOCK_NUMBER, {
+  const inFocus = useWindowFocus()
+  const { data, loading, error } = useSquidQuery<
+    GetCurrentBlockNumberQuery,
+    GetCurrentBlockNumberQueryVariables
+  >(GET_CURRENT_BLOCK_NUMBER, {
+    skip: !inFocus,
     context: { clientName: 'rewards' },
   })
   useErrorHandler(error)

@@ -2,8 +2,9 @@ export enum Routes {
   nova = 'nova',
   consensus = 'consensus',
   leaderboard = 'leaderboard',
-  operators = 'operators',
-  stake = 'stake',
+  staking = 'staking',
+  // Route deactivated till bugs are fixed and feature is ready
+  // stake = 'stake',
 }
 
 export const ROUTES = [
@@ -20,17 +21,18 @@ export const ROUTES = [
     title: 'Leaderboard',
   },
   {
-    name: Routes.operators,
-    title: 'Operators',
+    name: Routes.staking,
+    title: 'Staking',
   },
-  {
-    name: Routes.stake,
-    title: 'Stake Wars',
-  },
+  // Route deactivated till bugs are fixed and feature is ready
+  // {
+  //   name: Routes.stake,
+  //   title: 'Stake Wars',
+  // },
 ]
 
 export const EXTERNAL_ROUTES = {
-  subspace: 'https://subspace.network/',
+  autonomys: 'https://autonomys.net/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
   forum: 'https://forum.subspace.network/',
   gemini2guide:
@@ -49,6 +51,7 @@ export const EXTERNAL_ROUTES = {
     linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
+  novaExplorer: 'https://nova.subspace.network/',
   polkadot:
     'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
   subscan: 'https://subspace.subscan.io/',
@@ -108,10 +111,7 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/${operatorId}`,
     },
     list: 'list',
-    stake: 'stake',
-    manage: 'manage',
-    nominators: 'nominators',
-    nomination: 'nomination',
+    register: 'register',
   },
   search: {
     result: {
@@ -128,6 +128,22 @@ export const INTERNAL_ROUTES = {
   },
   notFound: '/404',
   catchAll: '*',
+}
+
+export enum API_ROUTES {
+  Auth = 'auth',
+  Claim = 'claim',
+}
+
+export enum CLAIM_TYPES {
+  OperatorDisbursement = 'operator-disbursement',
+}
+
+export const ROUTE_API = {
+  claim: {
+    operatorDisbursement: (chain: string): string =>
+      `/api/${API_ROUTES.Claim}/${chain}/${CLAIM_TYPES.OperatorDisbursement}`,
+  },
 }
 
 export enum ROUTE_EXTRA_FLAG_TYPE {

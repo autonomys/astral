@@ -7,6 +7,9 @@ export type SubspaceToken = {
     operator: boolean
     nominator: boolean
   }
+  disbursements?: {
+    stakeWars2: boolean
+  }
 }
 
 export type DiscordToken = {

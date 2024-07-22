@@ -1,6 +1,7 @@
 import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../support'
 import * as v0 from '../v0'
 import * as v3 from '../v3'
+import * as v5 from '../v5'
 
 export const initiateChannel =  {
     name: 'Messenger.initiate_channel',
@@ -12,6 +13,18 @@ export const initiateChannel =  {
         sts.struct({
             dstChainId: v0.ChainId,
             params: v0.InitiateChannelParams,
+        })
+    ),
+    /**
+     * A new Channel is initiated with a foreign chain.
+     * Next Channel ID is used to assign the new channel.
+     * Channel is set to initiated and do not accept or receive any messages.
+     */
+    v5: new CallType(
+        'Messenger.initiate_channel',
+        sts.struct({
+            dstChainId: v5.ChainId,
+            params: v5.InitiateChannelParams,
         })
     ),
 }
@@ -50,6 +63,15 @@ export const relayMessage =  {
             msg: v3.CrossDomainMessage,
         })
     ),
+    /**
+     * Receives an Inbox message that needs to be validated and processed.
+     */
+    v5: new CallType(
+        'Messenger.relay_message',
+        sts.struct({
+            msg: v5.CrossDomainMessage,
+        })
+    ),
 }
 
 export const relayMessageResponse =  {
@@ -70,6 +92,15 @@ export const relayMessageResponse =  {
         'Messenger.relay_message_response',
         sts.struct({
             msg: v3.CrossDomainMessage,
+        })
+    ),
+    /**
+     * Receives a response from the dst_chain for a message in Outbox.
+     */
+    v5: new CallType(
+        'Messenger.relay_message_response',
+        sts.struct({
+            msg: v5.CrossDomainMessage,
         })
     ),
 }

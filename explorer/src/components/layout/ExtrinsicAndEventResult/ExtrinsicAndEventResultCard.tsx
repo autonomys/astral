@@ -38,7 +38,7 @@ export const ExtrinsicAndEventResultCard: FC<Props> = ({ result }) => {
       id='extrinsic-list-extrinsic-mobile'
       header={
         <Link className='flex gap-2' href={link}>
-          <h3 className='text-sm font-medium text-[#241235] dark:text-white'>{result.id}</h3>
+          <h3 className='text-sm font-medium text-grayDarker dark:text-white'>{result.id}</h3>
         </Link>
       }
       body={body}

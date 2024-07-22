@@ -1,33 +1,36 @@
 import { limitNumberDecimals } from '@/utils/number'
 import { CopyButton } from 'components/common/CopyButton'
 import { Tooltip } from 'components/common/Tooltip'
+import useWallet from 'hooks/useWallet'
 import { FC } from 'react'
 import { ActionsButtons } from './ActionsButtons'
 
 interface AccountHeaderProps {
-  subspaceAccount: string
   walletBalance: number
   tokenSymbol: string
 }
 
-export const AccountHeader: FC<AccountHeaderProps> = ({
-  subspaceAccount,
-  walletBalance,
-  tokenSymbol,
-}) => {
+export const AccountHeader: FC<AccountHeaderProps> = ({ walletBalance, tokenSymbol }) => {
+  const { actingAccount, subspaceAccount } = useWallet()
+
+  if (!actingAccount) return null
+
   return (
     <>
       <div className='flex items-center justify-center'>
         <input
           name='subspaceAccount'
           type='text'
-          value={subspaceAccount}
+          value={subspaceAccount ?? actingAccount.address}
           readOnly
-          className='block w-[200px] rounded-xl border-[#DE67E4] bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
+          className='border-purpleAccent dark:bg-blueAccent block w-[200px] rounded-xl bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:text-white'
         />
         <div className='ml-2'>
           <Tooltip text='Copy wallet address'>
-            <CopyButton value={subspaceAccount} message='Wallet address copied' />
+            <CopyButton
+              value={subspaceAccount ?? actingAccount.address}
+              message='Wallet address copied'
+            />
           </Tooltip>
         </div>
       </div>

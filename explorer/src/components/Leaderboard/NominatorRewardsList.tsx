@@ -1,26 +1,34 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { bigNumberToString } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
-import Identicon from '@polkadot/react-identicon'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NewTable } from 'components/common/NewTable'
-import { NotAllowed } from 'components/common/NotAllowed'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import { AccountRewards, AccountsNominatorsConnectionRewardsQuery } from 'gql/graphql'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  AccountRewards,
+  AccountRewardsOrderByInput,
+  AccountsNominatorsConnectionRewardsQuery,
+  AccountsNominatorsConnectionRewardsQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToString } from 'utils/number'
+import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
+import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
-import { NominatorRewardsListCard } from './NominatorRewardsListCard'
 import { QUERY_NOMINATORS_REWARDS_LIST } from './querys'
 
 type Row = {
@@ -31,6 +39,7 @@ type Row = {
 }
 
 export const NominatorRewardsList = () => {
+  const { ref, inView } = useInView()
   const [searchAccount, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'operator', desc: true }])
   const [pagination, setPagination] = useState({
@@ -42,6 +51,7 @@ export const NominatorRewardsList = () => {
   const apolloClient = useApolloClient()
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+  const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
     return [
@@ -60,7 +70,7 @@ export const NominatorRewardsList = () => {
         cell: ({ row }: Row) => {
           return (
             <div className='row flex items-center gap-3'>
-              <Identicon value={row.original.id} size={26} theme='beachball' />
+              <AccountIcon address={row.original.id} size={26} />
               <Link
                 data-testid={`account-link-${row.index}`}
                 href={INTERNAL_ROUTES.accounts.id.page(
@@ -68,7 +78,7 @@ export const NominatorRewardsList = () => {
                   'consensus',
                   row.original.id,
                 )}
-                className='hover:text-[#DE67E4]'
+                className='hover:text-purpleAccent'
               >
                 <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
               </Link>
@@ -82,56 +92,59 @@ export const NominatorRewardsList = () => {
         enableSorting: true,
         cell: ({ row }) => (
           <div>
-            {row.original.operator ? `${bigNumberToString(row.original.operator, 10)} tSSC` : 0}
+            {row.original.operator
+              ? `${bigNumberToString(row.original.operator, 10)} ${selectedChain.token.symbol}`
+              : 0}
           </div>
         ),
       },
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const getQueryVariables = useCallback(
-    (
-      sorting: SortingState,
-      pagination: {
-        pageSize: number
-        pageIndex: number
-      },
-      searchAccount: string,
-    ) => {
-      return {
-        first: pagination.pageSize,
-        after:
-          pagination.pageIndex > 0
-            ? (pagination.pageIndex * pagination.pageSize).toString()
-            : undefined,
-        orderBy:
-          sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'operator_DESC',
-        where: searchAccount
-          ? { id_eq: searchAccount }
-          : { operator_gt: '0', operator_isNull: false },
-      }
-    },
-    [],
+  const orderBy = useMemo(
+    () => sort(sorting, AccountRewardsOrderByInput.OperatorDesc) as AccountRewardsOrderByInput,
+    [sorting],
   )
 
   const variables = useMemo(
-    () => getQueryVariables(sorting, pagination, searchAccount),
-    [sorting, pagination, searchAccount, getQueryVariables],
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy,
+      where: searchAccount
+        ? { id_eq: searchAccount }
+        : { operator_gt: '0', operator_isNull: false },
+    }),
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchAccount],
   )
 
-  const { data, error, loading } = useQuery<AccountsNominatorsConnectionRewardsQuery>(
+  const { setIsVisible } = useSquidQuery<
+    AccountsNominatorsConnectionRewardsQuery,
+    AccountsNominatorsConnectionRewardsQueryVariables
+  >(
     QUERY_NOMINATORS_REWARDS_LIST,
     {
       variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.leaderboard,
+    'nominators',
   )
 
-  useErrorHandler(error)
+  const {
+    leaderboard: { nominators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_NOMINATORS_REWARDS_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_NOMINATORS_REWARDS_LIST, 'accountRewardsConnection', {
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -142,7 +155,10 @@ export const NominatorRewardsList = () => {
     [pagination],
   )
 
-  const accountRewardsConnection = useMemo(() => data && data.accountRewardsConnection, [data])
+  const accountRewardsConnection = useMemo(
+    () => hasValue(nominators) && nominators.value.accountRewardsConnection,
+    [nominators],
+  )
   const accountRewards = useMemo(
     () =>
       accountRewardsConnection &&
@@ -154,25 +170,31 @@ export const NominatorRewardsList = () => {
     [accountRewardsConnection],
   )
   const pageCount = useMemo(
-    () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
+    () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination],
   )
 
-  if (loading) return <Spinner />
-  if (!data || !accountRewards) return <NotFound />
-  if (selectedChain.isDomain) return <NotAllowed />
+  const noData = useMemo(() => {
+    if (isLoading(nominators)) return <Spinner isSmall />
+    if (!hasValue(nominators)) return <NotFound />
+    return null
+  }, [nominators])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='flex w-full flex-col sm:mt-0'>
         <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>
             Nominators Leaderboard
           </div>
           <div className='flex gap-2'>
             <DebouncedInput
               type='text'
-              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
+              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
               placeholder='Search by account address'
               onChange={handleSearch}
               value={searchAccount}
@@ -180,36 +202,26 @@ export const NominatorRewardsList = () => {
           </div>
         </div>
         <div className='my-6 rounded'>
-          <NewTable
-            data={accountRewards}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent accountRewards={accountRewards} />}
-          />
+          <div ref={ref}>
+            {accountRewards ? (
+              <SortedTable
+                data={accountRewards}
+                columns={columns}
+                showNavigation={true}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='leaderboard-nominator-rewards-list'
+                fullDataDownloader={fullDataDownloader}
+              />
+            ) : (
+              noData
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  accountRewards: AccountRewards[]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ accountRewards }) => (
-  <div className='w-full'>
-    {accountRewards.map((account, index) => (
-      <NominatorRewardsListCard
-        index={index}
-        account={account}
-        key={`reward-list-card-${account.id}`}
-      />
-    ))}
-  </div>
-)

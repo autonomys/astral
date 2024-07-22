@@ -27,7 +27,7 @@ export async function GET(
     data: { accountById },
   }: {
     data: AccountByIdQuery
-  } = await fetch(chainMatch.urls.api, {
+  } = await fetch(chainMatch.urls.squids.old, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,9 +64,6 @@ function Screen({
   accountById: AccountByIdQuery['accountById']
 }) {
   dayjs.extend(relativeTime)
-  console.log('chainMatch', chainMatch)
-  console.log('accountId', accountId)
-  console.log('accountById', accountById)
 
   const account = {
     total: accountById?.total ?? '0',
@@ -128,7 +125,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total {numberWithCommas(bigNumberToNumber(account.total))} tSSC
+              Total {numberWithCommas(bigNumberToNumber(account.total))} ({chainMatch.token.symbol})
             </span>
             <span
               style={{
@@ -136,7 +133,8 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} tSSC
+              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} (
+              {chainMatch.token.symbol})
             </span>
             <span
               style={{
@@ -144,7 +142,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Free {numberWithCommas(bigNumberToNumber(account.free))} tSSC
+              Free {numberWithCommas(bigNumberToNumber(account.free))} ({chainMatch.token.symbol})
             </span>
           </div>
         </div>

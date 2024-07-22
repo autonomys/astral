@@ -11,9 +11,14 @@ export const formatUnitsToNumber = (value: string): number => {
 }
 
 export const formatUnits = (value: string): string => {
-  const convertedEthers = formatEther(value)
+  try {
+    const convertedEthers = formatEther(value)
 
-  return convertedEthers
+    return convertedEthers
+  } catch (error) {
+    console.error('formatUnits', error)
+    return 'NaN'
+  }
 }
 
 export const floatToStringWithDecimals = (value: number, decimals = 4): string =>

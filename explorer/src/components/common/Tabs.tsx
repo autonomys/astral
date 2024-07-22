@@ -68,7 +68,7 @@ export const Tabs: React.FC<TabsProps> = ({
   tabStyle = 'bg-white border border-slate-100 shadow rounded-lg p-4',
   tabTitleStyle = '',
   pillStyle = 'text-gray-600 bg-white dark:bg-transparent dark:text-white',
-  activePillStyle = 'text-white bg-[#241235] dark:bg-[#1E254E]',
+  activePillStyle = 'text-white bg-grayDarker dark:bg-blueAccent',
 }) => {
   const [selectedTab, setSelectedTab] = useState(0)
 

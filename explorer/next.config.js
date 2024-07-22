@@ -11,6 +11,9 @@ const nextConfig = {
       exclude: /node_modules/,
       loader: 'graphql-tag/loader',
     })
+    if (!isServer) {
+      config.resolve.fallback.fs = false
+    }
     return config
   },
 }

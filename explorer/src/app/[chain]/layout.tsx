@@ -1,8 +1,10 @@
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { chainesSet, chains } from 'constants/chains'
 import { lang, metadata } from 'constants/metadata'
 import { Metadata, Viewport } from 'next'
 import { headers } from 'next/headers'
 import { Provider } from 'providers'
+import { Toaster } from 'react-hot-toast'
 import type { ChainPageProps } from 'types/app'
 import '../../styles/index.css'
 
@@ -15,8 +17,12 @@ export default async function RootLayout({
 }: ChainPageProps & { children: React.ReactNode }) {
   return (
     <html lang={lang}>
+      {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+      )}
       <head lang='en' />
       <body>
+        <Toaster position='bottom-center' />
         <Provider>{children}</Provider>
       </body>
     </html>

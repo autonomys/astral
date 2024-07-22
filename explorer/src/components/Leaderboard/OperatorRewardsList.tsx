@@ -1,29 +1,37 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { PAGE_SIZE } from '@/constants/general'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
-import { NewTable } from 'components/common/NewTable'
-import { NotAllowed } from 'components/common/NotAllowed'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import type { OperatorsConnectionRewardsQuery } from 'gql/graphql'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  OperatorRewardsOrderByInput,
+  type OperatorsConnectionRewardsQuery,
+  type OperatorsConnectionRewardsQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { sort } from 'utils/sort'
+import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import { NotFound } from '../layout/NotFound'
-import { OperatorRewardsListCard } from './OperatorRewardsListCard'
 import { QUERY_OPERATORS_REWARDS_LIST } from './querys'
 
 export const OperatorRewardsList = () => {
+  const { ref, inView } = useInView()
   const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'amount', desc: true }])
   const [pagination, setPagination] = useState({
@@ -35,6 +43,7 @@ export const OperatorRewardsList = () => {
   const apolloClient = useApolloClient()
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+  const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
     return [
@@ -69,7 +78,7 @@ export const OperatorRewardsList = () => {
                   'consensus',
                   row.original.id,
                 )}
-                className='hover:text-[#DE67E4]'
+                className='hover:text-purpleAccent'
               >
                 <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
               </Link>
@@ -88,7 +97,7 @@ export const OperatorRewardsList = () => {
         >) => (
           <div>
             {row.original.amount
-              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} tSSC`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${selectedChain.token.symbol}`
               : 0}
           </div>
         ),
@@ -96,48 +105,48 @@ export const OperatorRewardsList = () => {
     ]
   }, [selectedChain, pagination, isLargeLaptop])
 
-  const getQueryVariables = useCallback(
-    (
-      sorting: SortingState,
-      pagination: {
-        pageSize: number
-        pageIndex: number
-      },
-      searchOperator: string,
-    ) => {
-      return {
-        first: pagination.pageSize,
-        after:
-          pagination.pageIndex > 0
-            ? (pagination.pageIndex * pagination.pageSize).toString()
-            : undefined,
-        orderBy: sorting.length
-          ? sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',')
-          : 'amount_DESC',
-        where: searchOperator ? { id_eq: searchOperator } : {},
-      }
-    },
-    [],
+  const orderBy = useMemo(
+    () => sort(sorting, OperatorRewardsOrderByInput.AmountDesc) as OperatorRewardsOrderByInput,
+    [sorting],
   )
 
   const variables = useMemo(
-    () => getQueryVariables(sorting, pagination, searchOperator),
-    [sorting, pagination, searchOperator, getQueryVariables],
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+      orderBy,
+      where: searchOperator ? { id_eq: searchOperator } : {},
+    }),
+    [pagination.pageSize, pagination.pageIndex, orderBy, searchOperator],
   )
 
-  const { data, error, loading } = useQuery<OperatorsConnectionRewardsQuery>(
+  const { setIsVisible } = useSquidQuery<
+    OperatorsConnectionRewardsQuery,
+    OperatorsConnectionRewardsQueryVariables
+  >(
     QUERY_OPERATORS_REWARDS_LIST,
     {
       variables,
+      skip: !inFocus,
       pollInterval: 6000,
     },
+    Routes.leaderboard,
+    'operators',
   )
 
-  useErrorHandler(error)
+  const {
+    leaderboard: { operators },
+  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_OPERATORS_REWARDS_LIST),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_OPERATORS_REWARDS_LIST, 'operatorRewardsConnection', {
+        orderBy,
+      }),
+    [apolloClient, orderBy],
   )
 
   const handleSearch = useCallback(
@@ -148,13 +157,16 @@ export const OperatorRewardsList = () => {
     [pagination],
   )
 
-  const operatorRewardsConnection = useMemo(() => data && data.operatorRewardsConnection, [data])
+  const operatorRewardsConnection = useMemo(
+    () => hasValue(operators) && operators.value.operatorRewardsConnection,
+    [operators],
+  )
   const totalCount = useMemo(
     () => operatorRewardsConnection && operatorRewardsConnection.totalCount,
     [operatorRewardsConnection],
   )
   const pageCount = useMemo(
-    () => (totalCount ? Math.floor(totalCount / pagination.pageSize) : 0),
+    () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination],
   )
   const operatorRewards = useMemo(
@@ -164,21 +176,27 @@ export const OperatorRewardsList = () => {
     [operatorRewardsConnection],
   )
 
-  if (loading) return <Spinner />
-  if (selectedChain.isDomain) return <NotAllowed />
-  if (!data || !operatorRewards) return <NotFound />
+  const noData = useMemo(() => {
+    if (isLoading(operators)) return <Spinner isSmall />
+    if (!hasValue(operators)) return <NotFound />
+    return null
+  }, [operators])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='flex w-full flex-col sm:mt-0'>
         <div className='flex w-full flex-col gap-4 px-4'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>
             Operators Leaderboard
           </div>
           <div className='flex gap-2'>
             <DebouncedInput
               type='text'
-              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-[#1E254E] dark:text-white'
+              className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
               placeholder='Search by operator id'
               onChange={handleSearch}
               value={searchOperator}
@@ -186,37 +204,28 @@ export const OperatorRewardsList = () => {
           </div>
         </div>
         <div className='my-6 rounded'>
-          <NewTable
-            data={operatorRewards}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operatorRewards={operatorRewards} />}
-          />
+          <div ref={ref}>
+            {operatorRewards ? (
+              <SortedTable
+                data={operatorRewards}
+                columns={columns}
+                showNavigation={true}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='leaderboard-operator-rewards-list'
+                fullDataDownloader={fullDataDownloader}
+              />
+            ) : (
+              noData
+            )}
+          </div>
         </div>
       </div>
     </div>
   )
 }
+
 export default OperatorRewardsList
-
-type MobileComponentProps = {
-  operatorRewards: OperatorsConnectionRewardsQuery['operatorRewardsConnection']['edges'][0]['node'][]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ operatorRewards }) => (
-  <div className='w-full'>
-    {operatorRewards.map((operator, index) => (
-      <OperatorRewardsListCard
-        index={index}
-        operator={operator}
-        key={`operator-list-card-${operator.id}`}
-      />
-    ))}
-  </div>
-)

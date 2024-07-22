@@ -1,4 +1,5 @@
 import { TabTitle } from 'components/common/Tabs'
+import useDomains from 'hooks/useDomains'
 import React, { FC, ReactElement, useState } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 
@@ -10,16 +11,17 @@ type Props = {
 
 export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => {
   const [selectedTab, setSelectedTab] = useState(0)
+  const { selectedChain } = useDomains()
 
   const tabStyle = isDesktop
-    ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] dark:border-none'
+    ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
     : ''
 
   const tabTitleStyle = !isDesktop
-    ? 'bg-white rounded-full mb-5 px-5 dark:bg-[#1E254E] dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2] justify-center items-center'
+    ? 'bg-white rounded-full mb-5 px-5 dark:bg-blueAccent dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset justify-center items-center'
     : ''
 
-  const activePillStyle = 'dark:text-white text-white bg-[#241235] dark:bg-[#1E254E]'
+  const activePillStyle = 'dark:text-white text-white bg-grayDarker dark:bg-blueAccent'
 
   return (
     <div className={`flex w-full flex-wrap ${tabStyle}`}>
@@ -29,7 +31,9 @@ export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false
             <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
               {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
             </div>
-            <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
+            <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
+              {selectedChain.token.symbol}
+            </div>
           </div>
 
           <div className='w-full lg:w-auto'>

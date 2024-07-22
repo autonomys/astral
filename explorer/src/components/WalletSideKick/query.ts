@@ -38,6 +38,28 @@ export const QUERY_TOP_LEADERBOARD = gql`
   }
 `
 
+export const QUERY_PENDING_TX = gql`
+  query PendingTransaction($subspaceAccount: String, $extrinsics: [String!]) {
+    accounts(where: { id_eq: $subspaceAccount }) {
+      id
+      extrinsics(where: { hash_in: $extrinsics }) {
+        hash
+        success
+        timestamp
+        name
+        events(limit: 1, orderBy: id_DESC) {
+          name
+        }
+        block {
+          hash
+          height
+          id
+        }
+      }
+    }
+  }
+`
+
 export const QUERY_EXTRINSIC_SUMMARY = gql`
   query ExtrinsicsSummary($first: Int!, $subspaceAccount: String) {
     extrinsics: extrinsicsConnection(
@@ -48,6 +70,7 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
       edges {
         node {
           id
+          hash
           success
           block {
             id

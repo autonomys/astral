@@ -1,13 +1,17 @@
+'use client'
+
+import type { SortingState } from '@tanstack/react-table'
+import { SortedTable } from 'components/common/SortedTable'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event } from 'gql/graphql'
-import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
-
-// common
-import { Column, Table } from 'components/common/Table'
-import { INTERNAL_ROUTES } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
+import Link from 'next/link'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
+import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
 
@@ -17,53 +21,79 @@ type Props = {
 
 export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
   const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = useCallback(
-    (events: Event[]): Column[] => [
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
+
+  const columns = useMemo(
+    () => [
       {
-        title: 'Event Id',
-        cells: events.map(({ block, indexInBlock, id }) => (
+        accessorKey: 'id',
+        header: 'Event Id',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
           <Link
-            key={`${id}-extrinsic-event-id`}
-            className='w-full hover:text-[#DE67E4]'
-            href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
+            key={`${row.index}-extrinsic-event-id`}
+            className='w-full hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.events.id.page(
+              selectedChain.urls.page,
+              selectedDomain,
+              row.original.id,
+            )}
           >
-            <div>{`${block?.height}-${indexInBlock}`}</div>
+            <div>{`${row.original.block?.height}-${row.index}`}</div>
           </Link>
-        )),
+        ),
       },
       {
-        title: 'Extrinsic Id',
-        cells: events.map(({ block, id, extrinsic }) => (
+        accessorKey: 'extrinsic',
+        header: 'Extrinsic Id',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
           <div
-            key={`${id}-extrinsic-event-extrinsic`}
-          >{`${block?.height}-${extrinsic?.indexInBlock}`}</div>
-        )),
+            key={`${row.index}-extrinsic-event-extrinsic`}
+          >{`${row.original.block?.height}-${row.original.extrinsic?.indexInBlock}`}</div>
+        ),
       },
       {
-        title: 'Action',
-        cells: events.map(({ name, id }) => (
-          <div key={`${id}-extrinsic-event-action`}>{name.split('.')[1]}</div>
-        )),
+        accessorKey: 'action',
+        header: 'Action',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-extrinsic-event-action`}>{row.original.name.split('.')[1]}</div>
+        ),
       },
       {
-        title: 'Type',
-        cells: events.map(({ phase, id }) => {
-          return <div key={`${id}-extrinsic-event-phase`}>{phase}</div>
-        }),
+        accessorKey: 'phase',
+        header: 'Type',
+        enableSorting: false,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-extrinsic-event-phase`}>{row.original.phase}</div>
+        ),
       },
     ],
     [selectedChain.urls.page, selectedDomain],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(events), [events, generateColumns])
+  const totalCount = useMemo(() => (events ? events.length : 0), [events])
+  const pageCount = useMemo(
+    () => countTablePages(totalCount, pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   return (
-    <Table
+    <SortedTable
+      data={events}
       columns={columns}
-      emptyMessage='There are no events to show'
-      id='extrinsic-details-event-list'
+      showNavigation={true}
+      sorting={sorting}
+      onSortingChange={setSorting}
+      pagination={pagination}
+      pageCount={pageCount}
+      onPaginationChange={setPagination}
+      filename='extrinsic-details-event-list'
     />
   )
 }

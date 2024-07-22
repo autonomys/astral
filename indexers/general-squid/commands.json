@@ -14,6 +14,10 @@
       "description": "Start a PG database",
       "cmd": ["docker", "compose", "up", "-d"]
     },
+    "up-local": {
+      "description": "Start a PG database",
+      "cmd": ["docker", "compose", "-f", "docker-compose-local.yml", "up", "-d"]
+    },
     "down": {
       "description": "Drop a PG database",
       "cmd": ["docker", "compose", "down"]
@@ -47,7 +51,12 @@
     "process": {
       "description": "Load .env and start the squid processor",
       "deps": ["build", "migration:apply"],
-      "cmd": ["node", "--require=dotenv/config", "lib/main.js"]
+      "cmd": [
+        "node",
+        "--max-old-space-size=8192",
+        "--require=dotenv/config",
+        "lib/main.js"
+      ]
     },
     "process:prod": {
       "description": "Start the squid processor",

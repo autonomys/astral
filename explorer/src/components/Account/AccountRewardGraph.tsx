@@ -1,13 +1,16 @@
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { useQuery } from '@apollo/client'
 import { ResponsiveLine } from '@nivo/line'
-import { SimpleSpinner } from 'components/common/SimpleSpinner'
-import { NotFound } from 'components/layout/NotFound'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
+import { LatestRewardsWeekQueryVariables } from 'gql/graphql'
+import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
-import { FC, useMemo } from 'react'
+import { FC, useEffect, useMemo } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, useQueryStates } from 'states/query'
 import { LatestRewardsWeekQuery } from '../gql/graphql'
 import { QUERY_LAST_WEEK_REWARDS } from './query'
 
@@ -20,13 +23,29 @@ type Props = {
 }
 
 export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
+  const { ref, inView } = useInView()
   const { isDark } = useTheme()
-
+  const { selectedChain } = useDomains()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
+  const inFocus = useWindowFocus()
 
-  const { data, error, loading } = useQuery<LatestRewardsWeekQuery>(QUERY_LAST_WEEK_REWARDS, {
-    variables: { accountId: accountId, gte: lastWeek },
-  })
+  const { setIsVisible } = useSquidQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(
+    QUERY_LAST_WEEK_REWARDS,
+    {
+      variables: { accountId: accountId, gte: lastWeek },
+      skip: !inFocus,
+    },
+  )
+
+  const {
+    consensus: { accountRewardGraph: consensusEntry },
+    consensus: { accountRewardGraph: evmEntry },
+  } = useQueryStates()
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const parsedData = useMemo(
     () =>
@@ -63,18 +82,19 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
 
   const fillColor = isDark ? '#E970F8' : '#9179EC'
 
-  if (error) return <div>An error has occur</div>
-  if (!accountId) return <NotFound />
-  if (loading) return <SimpleSpinner />
-  if (!data || !data.rewardEvents) return <NotFound />
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
-    <div className='flex w-full flex-col p-5 lg:p-0'>
+    <div className='flex w-full flex-col p-5 lg:p-0' ref={ref}>
       <div className='flex items-baseline gap-4 justify-self-start lg:hidden'>
         <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
           {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
         </div>
-        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>tSSC</div>
+        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
+          {selectedChain.token.symbol}
+        </div>
       </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>
         {parsedData.length > 0 ? (

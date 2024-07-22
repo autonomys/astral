@@ -17,7 +17,9 @@ export const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
     { name: 'Rank', value: index },
     {
       name: 'Operator reward',
-      value: operator.amount ? `${numberWithCommas(bigNumberToNumber(operator.amount))} tSSC` : 0,
+      value: operator.amount
+        ? `${numberWithCommas(bigNumberToNumber(operator.amount))} ${selectedChain.token.symbol}`
+        : 0,
     },
   ]
   return (
@@ -32,7 +34,7 @@ export const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
               operator.id,
             )}
           >
-            <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+            <p className='text-grayDarker break-all text-sm font-medium dark:text-white'>
               {operator.id}
             </p>
           </Link>

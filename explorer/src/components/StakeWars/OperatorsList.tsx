@@ -1,24 +1,27 @@
 /* eslint-disable camelcase */
 
-import { GET_ALL_OPERATORS } from '@/components/StakeWars/rewardsQuery'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { countTablePages } from '@/utils/table'
+import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { OperatorsListCard } from 'components/StakeWars/OperatorListCard'
-import { NewTable } from 'components/common/NewTable'
+import { GET_ALL_OPERATORS } from 'components/StakeWars/rewardsQuery'
+import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { GetAllOperatorsQuery } from 'gql/rewardTypes'
+import { OperatorOrderByInput } from 'gql/graphql'
+import { GetAllOperatorsQuery, GetAllOperatorsQueryVariables } from 'gql/rewardTypes'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { capitalizeFirstLetter } from 'utils/string'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { sort } from 'utils/sort'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { NotStarted } from '../layout/NotStarted'
 
 type Props = {
@@ -26,6 +29,7 @@ type Props = {
 }
 
 export const OperatorsList: FC<Props> = ({ currentBlock }) => {
+  const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'orderingId', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: STAKE_WARS_PAGE_SIZE,
@@ -34,6 +38,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   const apolloClient = useApolloClient()
 
   const { selectedChain, selectedDomain } = useDomains()
+  const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
     const cols = [
@@ -44,7 +49,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-            className='hover:text-[#DE67E4]'
+            className='hover:text-purpleAccent'
             href={INTERNAL_ROUTES.operators.id.page(
               selectedChain.urls.page,
               selectedDomain,
@@ -78,7 +83,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -86,7 +91,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Total Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} tSSC`}</div>
+          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
       {
@@ -98,12 +103,17 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         }: Cell<
           GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'] & { rewards: bigint }
         >) => (
-          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} tSSC`}</div>
+          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} ${selectedChain.token.symbol}`}</div>
         ),
       },
     ]
     return cols
-  }, [selectedChain.urls.page, selectedDomain])
+  }, [selectedChain.token.symbol, selectedChain.urls.page, selectedDomain])
+
+  const orderBy = useMemo(
+    () => sort(sorting, OperatorOrderByInput.IdAsc) as OperatorOrderByInput,
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -112,24 +122,26 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
-      orderBy: sorting.map((s) => `${s.id}_${s.desc ? 'DESC' : 'ASC'}`).join(',') || 'id_ASC',
+      orderBy,
       blockNumber_gte: STAKE_WARS_PHASES.phase2.start,
       blockNumber_lte: STAKE_WARS_PHASES.phase2.end,
     }),
-    [pagination, sorting],
+    [orderBy, pagination.pageIndex, pagination.pageSize],
   )
 
-  const { data, error, loading } = useQuery<GetAllOperatorsQuery>(GET_ALL_OPERATORS, {
-    variables: variables,
+  const { data, loading, setIsVisible } = useSquidQuery<
+    GetAllOperatorsQuery,
+    GetAllOperatorsQueryVariables
+  >(GET_ALL_OPERATORS, {
+    variables,
+    skip: !inFocus,
     pollInterval: 6000,
     context: { clientName: 'rewards' },
   })
 
-  useErrorHandler(error)
-
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, GET_ALL_OPERATORS),
-    [apolloClient],
+    () => downloadFullData(apolloClient, GET_ALL_OPERATORS, 'operatorsConnection', { orderBy }),
+    [apolloClient, orderBy],
   )
 
   const operators = useMemo(() => data && data.operatorsConnection, [data])
@@ -161,56 +173,50 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   const totalCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
-  if (loading) return <Spinner />
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
+
   if (currentBlock < STAKE_WARS_PHASES.phase2.start) return <NotStarted />
-  if (!operatorsConnection) return <NotFound />
 
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-[#282929] dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
         </div>
       </div>
 
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='my-6 rounded'>
-          <NewTable
-            data={operatorsConnection}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            fullDataDownloader={fullDataDownloader}
-            mobileComponent={<MobileComponent operators={operatorsConnection} />}
-          />
+        <div className='my-6 rounded' ref={ref}>
+          {operatorsConnection ? (
+            <SortedTable
+              data={operatorsConnection}
+              columns={columns}
+              showNavigation={true}
+              sorting={sorting}
+              onSortingChange={setSorting}
+              pagination={pagination}
+              pageCount={pageCount}
+              onPaginationChange={setPagination}
+              filename='stake-wars-operators-list'
+              fullDataDownloader={fullDataDownloader}
+            />
+          ) : (
+            noData
+          )}
         </div>
       </div>
     </div>
   )
 }
-
-type MobileComponentProps = {
-  operators: GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'][]
-}
-
-const MobileComponent: FC<MobileComponentProps> = ({ operators }) => (
-  <div className='w-full'>
-    {operators.map((operator, index) => {
-      return (
-        <OperatorsListCard
-          key={`operator-list-card-${operator.id}`}
-          operator={operator}
-          index={index}
-        />
-      )
-    })}
-  </div>
-)

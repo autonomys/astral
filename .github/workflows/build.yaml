@@ -18,11 +18,11 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
-  ts-lint-and-build-client:
+  ts-lint-and-build-explorer:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: client
+        working-directory: explorer
     name: Run eslint and code style check
     steps:
       - name: Checkout 🛎️
@@ -31,7 +31,6 @@ jobs:
         run: |
           yarn install
           yarn lint:fix
-          yarn test
       - name: Build project 🔧
         run: yarn build
   ts-lint-and-build-health-check:

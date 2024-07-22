@@ -1,13 +1,21 @@
-import { AccountIdParam } from '@/types/app'
-import { formatUnitsToNumber } from '@/utils/number'
-import { useQuery } from '@apollo/client'
+import { Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { AccountRewards, AllRewardForAccountByIdQuery } from 'gql/graphql'
+import {
+  AccountRewards,
+  AllRewardForAccountByIdQuery,
+  AllRewardForAccountByIdQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, useQueryStates } from 'states/query'
+import { AccountIdParam } from 'types/app'
 import { formatAddress } from 'utils//formatAddress'
+import { formatUnitsToNumber } from 'utils/number'
 import { QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID } from './query'
 
 dayjs.extend(relativeTime)
@@ -49,22 +57,41 @@ const defaultRewards = {
 }
 
 export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
+  const { ref, inView } = useInView()
   const [previousRewards, setRewards] = useState(defaultRewards)
 
   const { accountId } = useParams<AccountIdParam>()
   const { selectedChain } = useDomains()
+  const inFocus = useWindowFocus()
 
   const convertedAddress = useMemo(
     () => (selectedChain.isDomain ? accountId : formatAddress(accountId)),
     [accountId, selectedChain],
   )
 
-  const { data: rewardsData } = useQuery<AllRewardForAccountByIdQuery>(
+  const { setIsVisible } = useSquidQuery<
+    AllRewardForAccountByIdQuery,
+    AllRewardForAccountByIdQueryVariables
+  >(
     QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID,
     {
-      variables: { convertedAddress },
+      variables: { accountId: convertedAddress ?? '' },
+      skip: !inFocus,
     },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'accountPreviousReward',
   )
+
+  const {
+    consensus: { accountPreviousReward: consensusEntry },
+    consensus: { accountPreviousReward: evmEntry },
+  } = useQueryStates()
+
+  const rewardsData = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
+
   const rewards = useMemo(
     () =>
       rewardsData && rewardsData.accountRewards && rewardsData.accountRewards.length === 1
@@ -217,22 +244,29 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
     handleSearch()
   }, [handleSearch])
 
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
+
   return (
-    <div className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]'>
+    <div
+      className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'
+      ref={ref}
+    >
       <div className='flex w-full flex-col gap-6 py-4 pl-4'>
         <div className='grid w-full grid-cols-3 gap-8 xl:gap-8'>
-          <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Testnet
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
-            Localized tSSC
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+            Localized {selectedChain.token.symbol}
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-[#857EC2] dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Mainnet allocation %
           </div>
         </div>
         <div className='w-full'>
-          <ol className='relative border-l border-[#E6EAFA] dark:border-[#6C6BCF]'>
+          <ol className='relative border-l border-purpleLight dark:border-blueShade1'>
             {rewardsPhase.map((phase, index) => (
               <li
                 key={`${index}-account-rewards-block`}
@@ -244,18 +278,18 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
                   <div
                     className={`absolute -left-1.5 size-3 rounded-full ${
                       index === 0
-                        ? 'bg-[#DE67E4] dark:bg-[#DE67E4]'
-                        : 'bg-[#E6EAFA] dark:bg-[#6C6BCF]'
+                        ? 'bg-purpleAccent dark:bg-purpleAccent'
+                        : 'bg-purpleLight dark:bg-blueShade1'
                     }`}
                   ></div>
-                  <div className='text-[#282929 ] -mt-1 ml-4 text-[13px] font-normal dark:text-white '>
+                  <div className='-mt-1 ml-4 text-[13px] font-normal text-grayDark dark:text-white '>
                     {phase.label}
                   </div>
                 </div>
-                <div className='text-[#282929 ] -mt-1 text-[13px] font-normal dark:text-white'>
+                <div className='-mt-1 text-[13px] font-normal text-grayDark dark:text-white'>
                   {rewardsByPhase(phase.name)}
                 </div>
-                <div className='text-[#282929 ] -mt-1 text-[13px] font-normal dark:text-white'>
+                <div className='-mt-1 text-[13px] font-normal text-grayDark dark:text-white'>
                   {rewardsPercentageByPhase(phase.name)}
                 </div>
               </li>
@@ -265,10 +299,10 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
               className={'mb-[26px] grid grid-cols-3 gap-14 xl:gap-32'}
             >
               <div className=''></div>
-              <div className='text-[#4B5563 ] -mt-1 text-[13px] font-bold dark:text-white'>
+              <div className='text-grayMedium -mt-1 text-[13px] font-bold dark:text-white'>
                 Total Mainnet %
               </div>
-              <div className='text-[#4B5563 ] -mt-1 text-[13px] font-bold dark:text-white'>
+              <div className='text-grayMedium -mt-1 text-[13px] font-bold dark:text-white'>
                 {rewardsPercentageByPhase('mainnet')}
               </div>
             </li>

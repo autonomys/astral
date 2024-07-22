@@ -23,14 +23,14 @@ export const CookieBanner = () => {
             href={EXTERNAL_ROUTES.subspacePrivacyPolicy}
             target='_blank'
             rel='noreferrer'
-            className=' text-[#DE67E4] '
+            className=' text-purpleAccent '
           >
             Privacy Policy
           </a>{' '}
           for more information.
         </p>
         <button
-          className='w-32 rounded-[20px] bg-white py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'
+          className='w-32 rounded-[20px] bg-white py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-blueAccent dark:text-white'
           onClick={handleAcceptance}
         >
           Accept Cookies

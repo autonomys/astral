@@ -14,12 +14,12 @@ export const Leaderboard = () => {
   return (
     <div className='flex w-full flex-col space-y-6'>
       <div className='grid w-full lg:grid-cols-2'>
-        <div className='text-base font-medium text-[#282929] dark:text-white'>
+        <div className='text-base font-medium text-grayDark dark:text-white'>
           Testnet Leaderboard
         </div>
       </div>
       <div className='mt-7 flex w-full justify-between'>
-        <div className='text-base font-thin text-[#282929] dark:text-white'>
+        <div className='text-base font-thin text-grayDark dark:text-white'>
           Subspace Network Block and Vote rewards leaderboard
         </div>
       </div>
