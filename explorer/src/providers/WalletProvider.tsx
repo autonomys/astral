@@ -81,9 +81,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     async (account: WalletAccountWithType) => {
       try {
         const type =
-          account.type === WalletType.ethereum
-            ? WalletType.ethereum
-            : WalletType.subspace || WalletType.subspace
+          account.type === WalletType.subspace || (account as { type: string }).type === 'sr25519'
+            ? WalletType.subspace
+            : WalletType.ethereum
         setActingAccount({
           ...account,
           type,
