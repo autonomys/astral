@@ -1,6 +1,5 @@
 'use client'
 
-import { ApolloError } from '@apollo/client'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
@@ -16,8 +15,6 @@ import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
 dayjs.extend(relativeTime)
 
 interface HomeBlockListProps {
-  loading: boolean
-  error?: ApolloError | undefined
   data: HomeQueryDomainQuery | HomeQueryQuery
 }
 

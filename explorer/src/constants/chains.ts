@@ -26,24 +26,6 @@ export interface Chain {
 
 export const chains: Chain[] = [
   {
-    title: 'Localhost',
-    urls: {
-      rpc: 'ws://127.0.0.1:9944/ws',
-      page: Chains.localhost,
-      squids: {
-        old: 'http://localhost:4349/graphql',
-        general: 'http://localhost:4350/graphql',
-        rewards: 'http://localhost:4351/graphql',
-        account: 'http://localhost:4352/graphql',
-      },
-    },
-    token: {
-      symbol: 'tSSC',
-      decimals: 18,
-    },
-    isDomain: false,
-  },
-  {
     title: 'Gemini 3h',
     urls: {
       rpc: 'wss://rpc-0.gemini-3h.subspace.network/ws',
@@ -68,6 +50,24 @@ export const chains: Chain[] = [
       page: Chains.gemini3g,
       squids: {
         old: 'https://squid.gemini-3g.subspace.network/graphql',
+      },
+    },
+    token: {
+      symbol: 'tSSC',
+      decimals: 18,
+    },
+    isDomain: false,
+  },
+  {
+    title: 'Localhost',
+    urls: {
+      rpc: 'ws://127.0.0.1:9944/ws',
+      page: Chains.localhost,
+      squids: {
+        old: 'http://localhost:4349/graphql',
+        general: 'http://localhost:4350/graphql',
+        rewards: 'http://localhost:4351/graphql',
+        account: 'http://localhost:4352/graphql',
       },
     },
     token: {

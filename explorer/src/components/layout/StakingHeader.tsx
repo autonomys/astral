@@ -1,21 +1,14 @@
 'use client'
 
-import { LogoIcon } from '@/components/icons'
-import { useQuery } from '@apollo/client'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
-import {
-  QUERY_NOMINATOR_CONNECTION_LIST,
-  QUERY_OPERATOR_CONNECTION_LIST,
-} from 'components/Operator/query'
+import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { NominatorsConnectionQuery, OperatorsConnectionQuery } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
-import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
@@ -25,54 +18,9 @@ export const StakingHeader = () => {
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
   const { selectedChain } = useDomains()
-  const { subspaceAccount } = useWallet()
 
-  const { data: dataOperators, refetch: refetchOperators } = useQuery<OperatorsConnectionQuery>(
-    QUERY_OPERATOR_CONNECTION_LIST,
-    {
-      variables: {
-        first: 1,
-        after: undefined,
-        // eslint-disable-next-line camelcase
-        where: { operatorOwner_eq: subspaceAccount ? subspaceAccount : '' },
-        orderBy: 'id_ASC',
-      },
-      pollInterval: 6000,
-    },
-  )
-
-  const { data: dataNominators, refetch: refetchNominators } = useQuery<NominatorsConnectionQuery>(
-    QUERY_NOMINATOR_CONNECTION_LIST,
-    {
-      variables: {
-        first: 1,
-        after: undefined,
-        // eslint-disable-next-line camelcase
-        where: subspaceAccount ? { account: { id_eq: subspaceAccount } } : {},
-        orderBy: 'id_ASC',
-      },
-      pollInterval: 6000,
-    },
-  )
-
-  const operatorsConnection = useMemo(
-    () =>
-      dataOperators && dataOperators.operatorsConnection
-        ? dataOperators.operatorsConnection.edges.map((operator) => operator.node)
-        : [],
-    [dataOperators],
-  )
-
-  const nominatorsConnection = useMemo(
-    () =>
-      dataNominators && dataNominators.nominatorsConnection
-        ? dataNominators.nominatorsConnection.edges.map((operator) => operator.node)
-        : [],
-    [dataNominators],
-  )
-
-  const menuList = useMemo(() => {
-    const general = [
+  const menuList = useMemo(
+    () => [
       {
         title: 'Operators',
         link: `/${selectedChain.urls.page}/${Routes.staking}`,
@@ -81,25 +29,9 @@ export const StakingHeader = () => {
         title: 'Register Operator',
         link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
-    ]
-    if (operatorsConnection && operatorsConnection.length > 0)
-      general.push({
-        title: 'Manage My Operator',
-        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`,
-      })
-    if (nominatorsConnection && nominatorsConnection.length > 0)
-      general.push({
-        title: 'Manage My Nomination',
-        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`,
-      })
-    return general
-  }, [operatorsConnection, nominatorsConnection, selectedChain.urls.page])
-
-  useEffect(() => {
-    refetchOperators()
-    refetchNominators()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subspaceAccount])
+    ],
+    [selectedChain.urls.page],
+  )
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">

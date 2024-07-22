@@ -1,6 +1,7 @@
 import { useAddressBookStates } from '@/states/addressBook'
 import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import { camelToNormal, shortString } from '@/utils/string'
+import { remark, transfer } from '@autonomys/auto-consensus'
 import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SignerResult } from '@polkadot/api/types'
@@ -188,7 +189,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         const to = values.receiver
         const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
 
-        const tx = await api.tx.balances.transferKeepAlive(to, amount)
+        const tx = await transfer(api, to, amount)
         const hash = await sendAndSaveTx({
           call: 'balances.transferKeepAlive',
           tx,
@@ -253,7 +254,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     ) => {
       if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
       try {
-        const tx = await api.tx.system.remark(values.message)
+        const tx = await remark(api, values.message)
         const hash = await sendAndSaveTx({
           call: 'system.remark',
           tx,

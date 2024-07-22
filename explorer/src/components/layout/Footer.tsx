@@ -30,7 +30,7 @@ const Footer: FC = () => {
             <div>
               <h2 className='title-font mb-6 text-xs font-semibold uppercase text-white'>Links:</h2>
               <ul className='text-whiteOpaque dark:text-gray-400'>
-                <li className='mb-4'>
+                <li key='forum' className='mb-4'>
                   <a
                     href={EXTERNAL_ROUTES.forum}
                     target='_blank'
@@ -40,7 +40,7 @@ const Footer: FC = () => {
                     Forum
                   </a>
                 </li>
-                <li className='mb-4'>
+                <li key='docs' className='mb-4'>
                   <a
                     href={EXTERNAL_ROUTES.docs}
                     target='_blank'
@@ -50,7 +50,7 @@ const Footer: FC = () => {
                     Docs
                   </a>
                 </li>
-                <li>
+                <li key='autonomys'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.autonomys}
@@ -67,7 +67,7 @@ const Footer: FC = () => {
                 Social:
               </h2>
               <ul className='space-y-4 text-gray-600 dark:text-gray-400'>
-                <li>
+                <li key='twitter'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.twitter}
@@ -77,7 +77,7 @@ const Footer: FC = () => {
                     Twitter
                   </a>
                 </li>
-                <li>
+                <li key='discord'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.discord}
@@ -87,7 +87,7 @@ const Footer: FC = () => {
                     Discord
                   </a>
                 </li>
-                <li>
+                <li key='telegram'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.telegram}
@@ -97,7 +97,7 @@ const Footer: FC = () => {
                     Telegram
                   </a>
                 </li>
-                <li>
+                <li key='github'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.github}
@@ -109,7 +109,7 @@ const Footer: FC = () => {
                 </li>
               </ul>
               <ul className='space-y-4 text-gray-600 dark:text-gray-400'>
-                <li>
+                <li key='medium'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.medium}
@@ -119,7 +119,7 @@ const Footer: FC = () => {
                     Medium
                   </a>
                 </li>
-                <li>
+                <li key='youtube'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.youtube}
@@ -129,7 +129,7 @@ const Footer: FC = () => {
                     Youtube
                   </a>
                 </li>
-                <li>
+                <li key='linkedin'>
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.linkedin}

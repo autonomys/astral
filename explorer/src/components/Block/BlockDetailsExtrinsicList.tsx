@@ -1,21 +1,26 @@
 'use client'
 
-import { PAGE_SIZE } from '@/constants/general'
-import { shortString } from '@/utils/string'
-import { useQuery } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { PAGE_SIZE } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Extrinsic, ExtrinsicsByBlockIdQuery } from 'gql/graphql'
+import { Extrinsic, ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FC, useMemo, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
+import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
+import { NotFound } from '../layout/NotFound'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
 
 dayjs.extend(relativeTime)
@@ -25,6 +30,7 @@ type Props = {
 }
 
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
+  const { ref, inView } = useInView()
   const { blockId } = useParams()
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
@@ -32,11 +38,36 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
 
   const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
-  const { data, error, loading } = useQuery<ExtrinsicsByBlockIdQuery>(QUERY_BLOCK_EXTRINSICS, {
-    variables: { blockId: Number(blockId), first },
-  })
+  const { setIsVisible } = useSquidQuery<
+    ExtrinsicsByBlockIdQuery,
+    ExtrinsicsByBlockIdQueryVariables
+  >(
+    QUERY_BLOCK_EXTRINSICS,
+    {
+      variables: { blockId: Number(blockId), first },
+      skip: !inFocus,
+    },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'blockDetailsExtrinsic',
+  )
+
+  const {
+    consensus: { blockDetailsExtrinsic: consensusEntry },
+    consensus: { blockDetailsExtrinsic: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -113,44 +144,37 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
 
   const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
-  if (error)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <p className='text-sm font-light text-gray-600 dark:text-white'>There was an error</p>
-      </div>
-    )
-  if (loading)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <div className='size-20 '>
-          <Spinner />
-        </div>
-      </div>
-    )
-  if (!data || !columns || !extrinsics)
-    return (
-      <div className='mt-5 flex w-full items-center justify-center sm:mt-0'>
-        <p className='text-sm font-light text-gray-600 dark:text-white'>There was an error</p>
-      </div>
-    )
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
-    <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0'>
-      <SortedTable
-        data={extrinsics}
-        columns={columns}
-        showNavigation={true}
-        sorting={sorting}
-        onSortingChange={setSorting}
-        pagination={pagination}
-        pageCount={pageCount}
-        onPaginationChange={setPagination}
-        filename='block-details-extrinsics-list'
-      />
+    <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
+      {extrinsics ? (
+        <SortedTable
+          data={extrinsics}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='block-details-extrinsics-list'
+        />
+      ) : (
+        noData
+      )}
     </div>
   )
 }

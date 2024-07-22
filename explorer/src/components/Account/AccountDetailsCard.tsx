@@ -1,5 +1,4 @@
 import { shortString } from '@/utils/string'
-import Identicon from '@polkadot/react-identicon'
 import { Accordion } from 'components/common/Accordion'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
@@ -7,6 +6,7 @@ import { Account } from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
 import { FC } from 'react'
 import { accountIdToHex } from 'utils//formatAddress'
+import { AccountIcon } from '../common/AccountIcon'
 
 type Props = {
   account: Account | undefined
@@ -25,7 +25,7 @@ export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDeskt
         <Accordion
           title={
             <div className='flex w-full items-center gap-3'>
-              <Identicon value={accountAddress} size={48} theme={theme} />
+              <AccountIcon address={accountAddress} theme={theme} />
 
               <h3 className='break-all text-sm font-medium leading-none text-grayDark dark:text-white'>
                 {accountAddress}

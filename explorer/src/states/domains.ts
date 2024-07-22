@@ -1,4 +1,5 @@
 import type { Domain } from 'types/domain'
+import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -28,7 +29,10 @@ export const useDomainsStates = create<DomainsState>()(
     }),
     {
       name: 'domains-storage',
+      version: 3,
       storage: createJSONStorage(() => localStorage),
+      serialize: (state) => JSON.stringify(state, bigIntSerializer),
+      deserialize: (str) => JSON.parse(str, bigIntDeserializer),
     },
   ),
 )

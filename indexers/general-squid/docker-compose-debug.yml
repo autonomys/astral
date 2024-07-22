@@ -1,0 +1,68 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: general-squid
+      POSTGRES_PASSWORD: postgres
+    shm_size: 1gb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+
+  api:
+    image: squid-processor:debug  # Use your custom image
+    environment:
+      - DB_NAME=general-squid
+      - DB_PORT=5432
+      - DB_HOST=db
+      - DB_PASS=postgres
+      - GQL_PORT=4350
+    ports:
+      - "4350:4350"
+    command: ["run-with-clinic.sh", "serve:prod"]
+    depends_on:
+      - db
+
+  processor:
+    image: squid-processor:debug  # Use your custom image
+    environment:
+      - DB_NAME=general-squid
+      - DB_PORT=5432
+      - DB_HOST=db
+      - DB_PASS=postgres
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # For Clinic.js
+    volumes:
+      - ./clinic-output:/squid/.clinic  # Mount a volume for Clinic.js output
+    command: ["run-with-clinic.sh", "doctor", "process:prod"]  # Run with Clinic Doctor
+    depends_on:
+      - db
+
+
+# To use this setup:
+
+# First, build your custom Docker image using the Dockerfile-debug file.
+# docker build -t squid-processor:debug -f Dockerfile-debug .
+
+# Save the above docker-compose.yml file.
+# Run your application with Docker Compose:
+# docker-compose up
+
+
+# This configuration runs the processor with Clinic Doctor. To use different profilers, you can modify the command for the processor service:
+
+# For Bubbleprof:
+# command: ["run-with-clinic.sh", "bubbleprof", "process:prod"]
+
+# For Flame:
+# command: ["run-with-clinic.sh", "flame", "process:prod"]
+
+# For Heapprofiler:
+# command: ["run-with-clinic.sh", "heapprofiler", "process:prod"]
+
+# To run without profiling:
+# command: ["run-with-clinic.sh", "process:prod"]
+
+# After running, you can find the Clinic.js output in the ./clinic-output directory on your host machine.

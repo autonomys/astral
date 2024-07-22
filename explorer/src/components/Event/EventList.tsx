@@ -1,23 +1,31 @@
 'use client'
 
-import { PAGE_SIZE, searchTypes } from '@/constants'
-import { numberWithCommas } from '@/utils/number'
-import { useQuery } from '@apollo/client'
+import { countTablePages } from '@/utils/table'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Event, EventWhereInput, EventsConnectionQuery } from 'gql/graphql'
+import {
+  Event,
+  EventWhereInput,
+  EventsConnectionQuery,
+  EventsConnectionQueryVariables,
+} from 'gql/graphql'
 import useDomains from 'hooks/useDomains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
+import { numberWithCommas } from 'utils/number'
 import { NotFound } from '../layout/NotFound'
 import { EventListFilter } from './EventListFilter'
 import { QUERY_EVENT_CONNECTION_LIST } from './query'
@@ -25,12 +33,14 @@ import { QUERY_EVENT_CONNECTION_LIST } from './query'
 dayjs.extend(relativeTime)
 
 export const EventList: FC = () => {
+  const { ref, inView } = useInView()
   const { selectedChain, selectedDomain } = useDomains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
   const [filters, setFilters] = useState<EventWhereInput>({})
   const novaExplorerBanner = useEvmExplorerBanner()
 
@@ -45,12 +55,31 @@ export const EventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { data, error, loading } = useQuery<EventsConnectionQuery>(QUERY_EVENT_CONNECTION_LIST, {
-    variables,
-    pollInterval: 6000,
-  })
+  const { setIsVisible } = useSquidQuery<EventsConnectionQuery, EventsConnectionQueryVariables>(
+    QUERY_EVENT_CONNECTION_LIST,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+    },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'events',
+  )
 
-  useErrorHandler(error)
+  const {
+    consensus: { events: consensusEntry },
+    nova: { events: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, selectedChain])
+
+  const data = useMemo(() => {
+    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, selectedChain])
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
   const events = useMemo(
@@ -146,12 +175,19 @@ export const EventList: FC = () => {
   )
 
   const pageCount = useMemo(
-    () => Math.floor(totalCount / pagination.pageSize),
+    () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
-  if (loading) return <Spinner />
-  if (!data || !modules || !events) return <NotFound />
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -159,30 +195,38 @@ export const EventList: FC = () => {
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[4]} />
       </div>
-      <div className='mt-5 flex w-full justify-between'>
-        <EventListFilter
-          title={
-            <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
-          }
-          filters={filters}
-          modules={modules}
-          setFilters={setFilters}
-        />
-      </div>
+      {modules && (
+        <div className='mt-5 flex w-full justify-between'>
+          <EventListFilter
+            title={
+              <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
+            }
+            filters={filters}
+            modules={modules}
+            setFilters={setFilters}
+          />
+        </div>
+      )}
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded'>
-            <SortedTable
-              data={events}
-              columns={columns}
-              showNavigation={true}
-              sorting={sorting}
-              onSortingChange={setSorting}
-              pagination={pagination}
-              pageCount={pageCount}
-              onPaginationChange={setPagination}
-              filename='events-list'
-            />
+            <div ref={ref}>
+              {events ? (
+                <SortedTable
+                  data={events}
+                  columns={columns}
+                  showNavigation={true}
+                  sorting={sorting}
+                  onSortingChange={setSorting}
+                  pagination={pagination}
+                  pageCount={pageCount}
+                  onPaginationChange={setPagination}
+                  filename='events-list'
+                />
+              ) : (
+                noData
+              )}
+            </div>
           </div>
         </div>
       </div>

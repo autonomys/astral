@@ -1,13 +1,17 @@
 import { bigNumberToNumber } from '@/utils/number'
-import { useQuery } from '@apollo/client'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import type { Chain } from 'constants/chains'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { StakingSummaryQuery } from 'gql/graphql'
+import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
+import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { FC, useEffect, useMemo } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { QUERY_STAKING_SUMMARY } from './query'
 
 interface StakingSummaryProps {
@@ -21,19 +25,37 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
   selectedChain,
   tokenSymbol,
 }) => {
-  const summaryVariables = useMemo(
+  const { ref, inView } = useInView()
+  const inFocus = useWindowFocus()
+  const { get } = useSearchParams()
+  const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
+
+  const variables = useMemo(
     () => ({
       first: 10,
       subspaceAccount,
     }),
     [subspaceAccount],
   )
-  const { data, error, loading } = useQuery<StakingSummaryQuery>(QUERY_STAKING_SUMMARY, {
-    variables: summaryVariables,
-    pollInterval: 6000,
-  })
+  const { setIsVisible } = useSquidQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
+    QUERY_STAKING_SUMMARY,
+    {
+      variables,
+      skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
+      pollInterval: 6000,
+    },
+    ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
+    'stakingSummary',
+  )
 
-  const operators = useMemo(() => data && data.operators, [data])
+  const {
+    walletSidekick: { stakingSummary },
+  } = useQueryStates()
+
+  const operators = useMemo(
+    () => hasValue(stakingSummary) && stakingSummary.value.operators,
+    [stakingSummary],
+  )
   const totalOperatorCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
   const totalOperatorStake = useMemo(
     () =>
@@ -45,7 +67,10 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
     [operators],
   )
 
-  const nominators = useMemo(() => data && data.nominators, [data])
+  const nominators = useMemo(
+    () => hasValue(stakingSummary) && stakingSummary.value.nominators,
+    [stakingSummary],
+  )
   const nominatorsConnection = useMemo(
     () => nominators && nominators.edges.map((nominator) => nominator.node),
     [nominators],
@@ -77,97 +102,101 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
     [totalOperatorStake, totalNominatedStake],
   )
 
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
+
   return (
-    <div className='bg-grayLight dark:bg-blueAccent m-2 mt-0 rounded-[20px] p-5 dark:text-white'>
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion
         title={
           <div className='m-2 mb-0 flex items-center pt-4'>
-            <span className='text-grayDarker text-base font-medium dark:text-white'>
+            <span className='text-base font-medium text-grayDarker dark:text-white'>
               Staking Summary
             </span>
           </div>
         }
       >
-        {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
-        {error && (
-          <div className='m-2 flex items-center pt-4'>
-            <span className='text-grayDarker text-base font-medium dark:text-white'>
-              We are unable to load your wallet data
-            </span>
-          </div>
-        )}
-        {totalStake !== '0' ? (
-          <List>
-            <StyledListItem title='Your total staked'>
-              {bigNumberToNumber(totalStake)} {tokenSymbol}
-            </StyledListItem>
-            {totalOperatorStake !== '0' && (
-              <li key={'totalOperatorStake'}>
+        <div ref={ref}>
+          {isLoading(stakingSummary) && (
+            <ExclamationTriangleIcon className='size-5' stroke='orange' />
+          )}
+          {isError(stakingSummary) && (
+            <div className='m-2 flex items-center pt-4'>
+              <span className='text-base font-medium text-grayDarker dark:text-white'>
+                We are unable to load your wallet data
+              </span>
+            </div>
+          )}
+          {totalStake !== '0' ? (
+            <List>
+              <StyledListItem title='Your total staked'>
+                {bigNumberToNumber(totalStake)} {tokenSymbol}
+              </StyledListItem>
+              {totalOperatorStake !== '0' && (
                 <Link
+                  key={'totalOperatorStake'}
                   data-testid='totalOperatorStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
                     {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
                   </StyledListItem>
                 </Link>
-              </li>
-            )}
-            {totalNominatedStake !== '0' && (
-              <li key={'totalNominatedStake'}>
+              )}
+              {totalNominatedStake !== '0' && (
                 <Link
+                  key={'totalNominatedStake'}
                   data-testid='totalNominatedStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
                     {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
                   </StyledListItem>
                 </Link>
-              </li>
-            )}
-            {totalOperatorCount > 0 && (
-              <li key={'totalOperatorCount'}>
+              )}
+              {totalOperatorCount > 0 && (
                 <Link
+                  key={'totalOperatorCount'}
                   data-testid='totalOperatorCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.manage}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
                     {totalOperatorCount}
                   </StyledListItem>
                 </Link>
-              </li>
-            )}
-            {totalNominatedCount > 0 && (
-              <li key={'totalNominatedCount'}>
+              )}
+              {totalNominatedCount > 0 && (
                 <Link
+                  key={'totalNominatedCount'}
                   data-testid='totalNominatedCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.nomination}`}
+                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of nomination'>
                     {totalNominatedCount}
                   </StyledListItem>
                 </Link>
-              </li>
-            )}
-          </List>
-        ) : (
-          <div className='m-2 flex items-center pt-4'>
-            <Link
-              data-testid='totalNominatedCount-link'
-              className='hover:text-purpleAccent'
-              href={`/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.list}`}
-            >
-              <span className='text-grayDarker text-sm font-medium dark:text-white'>
-                Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page to
-                stake your {tokenSymbol}
-              </span>
-            </Link>
-          </div>
-        )}
+              )}
+            </List>
+          ) : (
+            <div className='m-2 flex items-center pt-4'>
+              <Link
+                data-testid='totalNominatedCount-link'
+                className='hover:text-purpleAccent'
+                href={`/${selectedChain.urls.page}/${Routes.staking}`}
+              >
+                <span className='text-sm font-medium text-grayDarker dark:text-white'>
+                  Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page
+                  to stake your {tokenSymbol}
+                </span>
+              </Link>
+            </div>
+          )}
+        </div>
       </Accordion>
     </div>
   )
