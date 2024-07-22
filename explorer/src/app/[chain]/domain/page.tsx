@@ -1,3 +1,4 @@
+import { DomainPage } from 'components/Domain'
 import { chains } from 'constants/chains'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
@@ -22,7 +23,7 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
 }
 
 const Page: FC = () => {
-  return <>Domain page</>
+  return <DomainPage />
 }
 
 export default Page
