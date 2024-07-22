@@ -16,8 +16,8 @@
     "url": "https://www.autonomys.net"
   },
   "dependencies": {
-    "@autonomys/auto-consensus": "^0.1.5",
-    "@autonomys/auto-utils": "^0.1.5",
+    "@autonomys/auto-consensus": "^0.1.6",
+    "@autonomys/auto-utils": "^0.1.6",
     "@subsquid/graphql-server": "^4.5.1",
     "@subsquid/ss58": "^2.0.2",
     "@subsquid/substrate-processor": "^8.3.0",
