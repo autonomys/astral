@@ -61,7 +61,7 @@ export const OperatorsList: FC = () => {
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
   const { useRpcData, myPositionOnly } = useViewStates()
-  console.log('withdrawals', withdrawals)
+
   useEffect(() => {
     loadDomainsData()
     loadConsensusData()
