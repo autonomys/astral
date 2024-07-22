@@ -1,4 +1,4 @@
-import type { ApiPromise } from "@autonomys/auto-utils";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import { Nominator, NominatorStatus, OperatorStatus } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
@@ -7,7 +7,7 @@ import { getBlockNumber } from "../utils";
 
 export async function processOperatorSlashedEvent(
   ctx: Ctx<Store>,
-  api: ApiPromise,
+  apiAt: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -33,6 +33,7 @@ export async function processOperatorSlashedEvent(
 
 export async function processOperatorTaxCollectedEvent(
   ctx: Ctx<Store>,
+  apiAt: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent

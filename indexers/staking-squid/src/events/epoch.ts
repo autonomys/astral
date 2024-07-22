@@ -1,7 +1,6 @@
-import { operators } from "@autonomys/auto-consensus";
-import type { ApiPromise } from "@autonomys/auto-utils";
+import { parseOperator } from "@autonomys/auto-consensus";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
-import { Operator } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createDomain,
@@ -12,7 +11,7 @@ import { getBlockNumber } from "../utils";
 
 export async function processEpochTransitionEvent(
   ctx: Ctx<Store>,
-  api: ApiPromise,
+  apiAt: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -32,7 +31,10 @@ export async function processEpochTransitionEvent(
     await ctx.store.save(domain);
   }
 
-  const allOperators = await operators(api);
+  const operatorsAll = await apiAt.query.domains.operators.entries();
+  const allOperators = (operatorsAll as unknown as any[]).map((o) =>
+    parseOperator(o)
+  );
   for (const operator of allOperators) {
     const op = await getOrCreateOperator(
       ctx,

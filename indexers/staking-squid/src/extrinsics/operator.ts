@@ -1,4 +1,4 @@
-import type { ApiPromise } from "@autonomys/auto-utils";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import { OperatorStatus } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
@@ -8,7 +8,7 @@ import { getCallSigner } from "../utils";
 
 export async function processRegisterOperator(
   ctx: Ctx<Store>,
-  api: ApiPromise,
+  api: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {
@@ -47,7 +47,7 @@ export async function processRegisterOperator(
 
 export async function processDeregisterOperator(
   ctx: Ctx<Store>,
-  api: ApiPromise,
+  api: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {

@@ -1,11 +1,11 @@
-import type { ApiPromise } from "@autonomys/auto-utils";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { createDomain } from "../storage";
 
 export async function processDomainInstantiatedEvent(
   ctx: Ctx<Store>,
-  api: ApiPromise,
+  apiAt: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent

@@ -1,4 +1,4 @@
-import type { ApiPromise } from "@autonomys/auto-utils";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import type { ProcessorContext } from "../processor";
 import { events } from "../types";
@@ -12,18 +12,18 @@ import {
 
 export async function processEvents(
   ctx: ProcessorContext<Store>,
-  api: ApiPromise,
+  apiAt: ApiDecoration<"promise">,
   block: ProcessorContext<Store>["blocks"][0],
   extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
 ) {
   for (let event of extrinsic.events) {
-    await processEvent(ctx, api, block, extrinsic, event);
+    await processEvent(ctx, apiAt, block, extrinsic, event);
   }
 }
 
 async function processEvent(
   ctx: ProcessorContext<Store>,
-  api: ApiPromise,
+  apiAt: ApiDecoration<"promise">,
   block: ProcessorContext<Store>["blocks"][0],
   extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0],
   event: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["events"][0]
@@ -33,7 +33,7 @@ async function processEvent(
     case events.domains.domainInstantiated.name:
       return await processDomainInstantiatedEvent(
         ctx,
-        api,
+        apiAt,
         block,
         extrinsic,
         event
@@ -44,7 +44,7 @@ async function processEvent(
     case events.domains.forceDomainEpochTransition.name:
       return await processEpochTransitionEvent(
         ctx,
-        api,
+        apiAt,
         block,
         extrinsic,
         event
@@ -52,7 +52,13 @@ async function processEvent(
 
     // bundle
     case events.domains.bundleStored.name:
-      return await processBundleStoredEvent(ctx, api, block, extrinsic, event);
+      return await processBundleStoredEvent(
+        ctx,
+        apiAt,
+        block,
+        extrinsic,
+        event
+      );
 
     // rewards and slashing
     case events.domains.operatorRewarded.name:
@@ -61,7 +67,7 @@ async function processEvent(
     case events.domains.operatorSlashed.name:
       return await processOperatorSlashedEvent(
         ctx,
-        api,
+        apiAt,
         block,
         extrinsic,
         event
@@ -71,6 +77,7 @@ async function processEvent(
     case events.domains.operatorTaxCollected.name:
       return await processOperatorTaxCollectedEvent(
         ctx,
+        apiAt,
         block,
         extrinsic,
         event

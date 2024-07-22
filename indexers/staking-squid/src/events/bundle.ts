@@ -1,4 +1,4 @@
-import type { ApiPromise } from "@autonomys/auto-utils";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { getOrCreateOperator } from "../storage";
@@ -6,7 +6,7 @@ import { getBlockNumber } from "../utils";
 
 export async function processBundleStoredEvent(
   ctx: Ctx<Store>,
-  api: ApiPromise,
+  apiAt: ApiDecoration<"promise">,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent

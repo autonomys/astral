@@ -1,14 +1,20 @@
 import type { ApiPromise } from "@autonomys/auto-utils";
+import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import { processExtrinsics } from "../extrinsics";
 import type { Ctx, CtxBlock } from "../processor";
 
 export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   for (let block of ctx.blocks) {
-    await processBlock(ctx, api, block);
+    const apiAt = await api.at(block.header.hash);
+    await processBlock(ctx, apiAt, block);
   }
 }
 
-async function processBlock(ctx: Ctx<Store>, api: ApiPromise, block: CtxBlock) {
-  await processExtrinsics(ctx, api, block, block.extrinsics);
+async function processBlock(
+  ctx: Ctx<Store>,
+  apiAt: ApiDecoration<"promise">,
+  block: CtxBlock
+) {
+  await processExtrinsics(ctx, apiAt, block, block.extrinsics);
 }
