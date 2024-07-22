@@ -6,7 +6,7 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { Chains, PAGE_SIZE } from 'constants/'
+import { BIGINT_ZERO, Chains, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorOrderByInput,
@@ -55,7 +55,7 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators, nominatorCount } = useConsensusStates()
+  const { operators: rpcOperators, nominatorCount, deposits, withdrawals } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
@@ -89,6 +89,11 @@ export const OperatorsList: FC = () => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
+
+  const myWithdrawals = useMemo(
+    () => withdrawals.filter((w) => w.account === subspaceAccount),
+    [withdrawals, subspaceAccount],
+  )
 
   const columns = useMemo(() => {
     const cols = [
@@ -170,7 +175,7 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'nominationTax',
         header: 'Nominator Tax',
-        enableSorting: true,
+        enableSorting: !useRpcData,
         cell: ({
           row,
         }: Cell<
@@ -189,6 +194,52 @@ export const OperatorsList: FC = () => {
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
+    ]
+    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
+      cols.push({
+        accessorKey: 'deposits',
+        header: 'Deposits',
+        enableSorting: !useRpcData,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
+          const depositShares = opDeposits.reduce(
+            (acc, deposit) => acc + deposit.shares,
+            BIGINT_ZERO,
+          )
+          const pendingAmount = opDeposits.reduce(
+            (acc, deposit) => (deposit.pending !== null ? acc + deposit.pending.amount : acc),
+            BIGINT_ZERO,
+          )
+          const pendingStorageFee = opDeposits.reduce(
+            (acc, deposit) =>
+              deposit.pending !== null ? acc + deposit.pending.storageFeeDeposit : acc,
+            BIGINT_ZERO,
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          return (
+            <div>
+              {depositShares > BIGINT_ZERO && (
+                <>
+                  {`Staked: ${bigNumberToNumber((depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
+                  <br />
+                </>
+              )}
+              {pendingAmount > BIGINT_ZERO &&
+                `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`}
+            </div>
+          )
+        },
+      })
+    cols.push(
       {
         accessorKey: 'nominators',
         header: 'Nominators',
@@ -230,7 +281,42 @@ export const OperatorsList: FC = () => {
           </div>
         ),
       },
-    ]
+    )
+    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
+      cols.push({
+        accessorKey: 'myStake',
+        header: 'My Stake',
+        enableSorting: !useRpcData,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const deposit = deposits.find(
+            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          return (
+            <div>
+              {deposit && deposit.shares > BIGINT_ZERO && (
+                <>
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
+                  <br />
+                </>
+              )}
+              {deposit &&
+                deposit.pending !== null &&
+                deposit.pending.amount > BIGINT_ZERO &&
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${selectedChain.token.symbol}`}
+            </div>
+          )
+        },
+      })
     if (subspaceAccount)
       cols.push({
         accessorKey: 'actions',
@@ -242,13 +328,17 @@ export const OperatorsList: FC = () => {
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
         >) => {
           const isOperator = row.original.operatorOwner === subspaceAccount
+          const deposit = deposits.find(
+            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+          )
           const nominator =
-            !!useRpcData &&
-            (
-              row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
-            ).nominators.find(
-              (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
-            )
+            (!useRpcData &&
+              (
+                row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
+              ).nominators.find(
+                (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
+              )) ||
+            deposit
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
@@ -273,7 +363,7 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BigInt(0)}
+              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BIGINT_ZERO}
             />
           )
         },
@@ -281,12 +371,14 @@ export const OperatorsList: FC = () => {
     return cols
   }, [
     useRpcData,
+    deposits,
     subspaceAccount,
     selectedChain.urls.page,
     selectedChain.token.symbol,
     selectedDomain,
     domains,
     nominatorCount,
+    rpcOperators,
     action,
     handleAction,
   ])
@@ -357,18 +449,26 @@ export const OperatorsList: FC = () => {
   }, [])
 
   const operatorsConnection = useMemo(() => {
-    if (useRpcData && subspaceAccount)
+    if (useRpcData && subspaceAccount) {
+      const myRpcNominatorIds = deposits
+        .filter((d) => d.account === subspaceAccount)
+        .map((n) => n.operatorId.toString())
       return rpcOperators
-        .filter((o) => (myPositionOnly ? o.operatorOwner === subspaceAccount : true))
+        .filter((o) =>
+          myPositionOnly
+            ? o.operatorOwner === subspaceAccount || myRpcNominatorIds.includes(o.id)
+            : true,
+        )
         .map((operator) => ({
           ...operator,
           nominators: [],
           totalShares: operator.currentTotalShares,
         }))
+    }
     if (hasValue(operators))
       return operators.value.operatorsConnection.edges.map((operator) => operator.node)
     return []
-  }, [myPositionOnly, operators, rpcOperators, subspaceAccount, useRpcData])
+  }, [deposits, myPositionOnly, operators, rpcOperators, subspaceAccount, useRpcData])
 
   const totalCount = useMemo(
     () => (hasValue(operators) ? operators.value.operatorsConnection.totalCount : 0),
@@ -419,13 +519,122 @@ export const OperatorsList: FC = () => {
         </div>
       </div>
       <DataSourceBanner />
+      {myWithdrawals.length > 0 && (
+        <div className='mt-5 flex flex-col gap-2'>
+          <div className='text-base font-medium text-grayDark dark:text-white'>My Withdrawals</div>
+          <div className='flex w-full flex-col sm:mt-0'>
+            <div className='my-6 rounded'>
+              <SortedTable
+                data={myWithdrawals}
+                columns={[
+                  {
+                    accessorKey: 'operatorId',
+                    header: 'Operator Id',
+                    enableSorting: false,
+                    cell: ({ row }) => <div>{row.original.operatorId}</div>,
+                  },
+                  {
+                    accessorKey: 'withdrawalInShares.shares',
+                    header: 'Withdrawal Amount',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      const op = rpcOperators.find(
+                        (o) => o.id === row.original.operatorId.toString(),
+                      )
+                      const sharesValue =
+                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                            BigInt(op.currentTotalShares)
+                          : BIGINT_ZERO
+                      const withdrawAmount = bigNumberToNumber(
+                        (row.original.withdrawalInShares.shares * sharesValue) /
+                          SHARES_CALCULATION_MULTIPLIER,
+                      )
+                      return (
+                        <div>
+                          <Tooltip
+                            text={`Shares: ${row.original.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
+                          >
+                            {withdrawAmount} {selectedChain.token.symbol}
+                          </Tooltip>
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'withdrawalInShares.storageFeeRefund',
+                    header: 'Withdrawal Storage Fee Refund',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      const op = rpcOperators.find(
+                        (o) => o.id === row.original.operatorId.toString(),
+                      )
+                      const sharesValue =
+                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                            BigInt(op.currentTotalShares)
+                          : BIGINT_ZERO
+                      const withdrawAmount = bigNumberToNumber(
+                        (row.original.withdrawalInShares.storageFeeRefund * sharesValue) /
+                          SHARES_CALCULATION_MULTIPLIER,
+                      )
+                      return (
+                        <div>
+                          <Tooltip
+                            text={`Shares: ${row.original.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
+                          >
+                            {withdrawAmount} {selectedChain.token.symbol}
+                          </Tooltip>
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'withdrawalInShares.unlockAtConfirmedDomainBlockNumber',
+                    header: 'Withdrawal at Domain Block Number',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      return (
+                        <div>
+                          {row.original.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()}
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'totalWithdrawalAmount',
+                    header: 'Total Withdrawal Amount',
+                    enableSorting: false,
+                    cell: ({ row }) => <div>{row.original.totalWithdrawalAmount.toString()}</div>,
+                  },
+                  {
+                    accessorKey: 'withdrawals',
+                    header: 'Withdrawals',
+                    enableSorting: false,
+                    cell: ({ row }) => <div>{row.original.withdrawals.length}</div>,
+                  },
+                ]}
+                showNavigation={false}
+                sorting={sorting}
+                onSortingChange={setSorting}
+                pagination={pagination}
+                pageCount={pageCount}
+                onPaginationChange={setPagination}
+                filename='operators-my-withdrawals-list'
+                pageSizeOptions={[10]}
+                fullDataDownloader={fullDataDownloader}
+              />
+            </div>
+          </div>
+        </div>
+      )}
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {operatorsConnection ? (
             <SortedTable
               data={operatorsConnection}
               columns={columns}
-              showNavigation={true}
+              showNavigation={!useRpcData}
               sorting={sorting}
               onSortingChange={setSorting}
               pagination={pagination}

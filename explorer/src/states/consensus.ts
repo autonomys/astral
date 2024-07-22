@@ -1,5 +1,6 @@
 import {
   ConfirmedDomainBlock,
+  Deposit,
   Domain,
   DomainRegistry,
   DomainStakingSummary,
@@ -10,6 +11,7 @@ import {
   SuccessfulBundle,
   Withdrawal,
 } from 'types/consensus'
+import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -35,6 +37,7 @@ export interface ConsensusDefaultState {
   // pendingSlashes: PendingSlashes[]
   pendingStakingOperationCount: PendingStakingOperationCount[]
   successfulBundles: SuccessfulBundle[]
+  deposits: Deposit[]
   withdrawals: Withdrawal[]
 }
 
@@ -57,6 +60,7 @@ interface ConsensusState extends ConsensusDefaultState {
     pendingStakingOperationCount: PendingStakingOperationCount[],
   ) => void
   setSuccessfulBundles: (successfulBundles: SuccessfulBundle[]) => void
+  setDeposits: (deposits: Deposit[]) => void
   setWithdrawals: (withdrawals: Withdrawal[]) => void
   clear: () => void
 }
@@ -82,6 +86,7 @@ const initialState: ConsensusDefaultState = {
   // pendingSlashes: [],
   pendingStakingOperationCount: [],
   successfulBundles: [],
+  deposits: [],
   withdrawals: [],
 }
 
@@ -108,12 +113,16 @@ export const useConsensusStates = create<ConsensusState>()(
       setPendingStakingOperationCount: (pendingStakingOperationCount) =>
         set(() => ({ pendingStakingOperationCount })),
       setSuccessfulBundles: (successfulBundles) => set(() => ({ successfulBundles })),
+      setDeposits: (deposits) => set(() => ({ deposits })),
       setWithdrawals: (withdrawals) => set(() => ({ withdrawals })),
       clear: () => set(() => ({ ...initialState })),
     }),
     {
       name: 'consensus-storage',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      serialize: (state) => JSON.stringify(state, bigIntSerializer),
+      deserialize: (str) => JSON.parse(str, bigIntDeserializer),
     },
   ),
 )

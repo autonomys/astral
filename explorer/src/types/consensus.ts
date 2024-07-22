@@ -86,6 +86,7 @@ export type Operators = {
   currentTotalStake: string
   currentEpochRewards: number
   currentTotalShares: string
+  totalStorageFeeDeposit: string
   status: string
 }
 
@@ -99,14 +100,55 @@ export type SuccessfulBundle = {
   bundle: string[]
 }
 
-export type Withdrawal = {
-  id: number
-  totalWithdrawalAmount: number
+export type RawDeposit = {
+  known: {
+    shares: number
+    storageFeeDeposit: number
+  }
+  pending: {
+    effectiveDomainEpoch: [number, number]
+    amount: string
+    storageFeeDeposit: string
+  } | null
+}
+
+export type Deposit = {
+  operatorId: number
+  account: string
+  shares: bigint
+  storageFeeDeposit: bigint
+  known: {
+    shares: bigint
+    storageFeeDeposit: bigint
+  }
+  pending: {
+    effectiveDomainId: number
+    effectiveDomainEpoch: number
+    amount: bigint
+    storageFeeDeposit: bigint
+  } | null
+}
+
+export type RawWithdrawal = {
+  totalWithdrawalAmount: string
   withdrawals: string[]
   withdrawalInShares: {
     domainEpoch: number[]
     unlockAtConfirmedDomainBlockNumber: number
     shares: string
     storageFeeRefund: string
+  }
+}
+
+export type Withdrawal = {
+  operatorId: number
+  account: string
+  totalWithdrawalAmount: bigint
+  withdrawals: string[]
+  withdrawalInShares: {
+    domainEpoch: number[]
+    unlockAtConfirmedDomainBlockNumber: number
+    shares: bigint
+    storageFeeRefund: bigint
   }
 }
