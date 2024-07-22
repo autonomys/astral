@@ -40,3 +40,5 @@ export const searchTypes: SearchType[] = [
 ]
 
 export const SUBSPACE_ACC_PREFIX = 2254
+
+export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000)

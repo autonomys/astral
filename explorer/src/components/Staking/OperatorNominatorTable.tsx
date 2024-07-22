@@ -152,14 +152,15 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
               : BigInt(0)
           return (
             <div>
-              {deposit && deposit.shares !== '0' && (
+              {deposit && deposit.shares > BigInt(0) && (
                 <>
                   {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
               {deposit &&
-                deposit.pending.amount !== '0' &&
+                deposit.pending !== null &&
+                deposit.pending.amount > BigInt(0) &&
                 `Pending: ${bigNumberToNumber((BigInt(deposit.pending.amount) + BigInt(deposit.pending.storageFeeDeposit)).toString())} ${selectedChain.token.symbol}`}
             </div>
           )
