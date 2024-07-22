@@ -5,7 +5,7 @@ export enum Routes {
   leaderboard = 'leaderboard',
   domain = 'domain',
   nova = 'nova',
-  autoId = 'autoId',
+  autoid = 'autoid',
   // Route deactivated till bugs are fixed and feature is ready
   // stake = 'stake',
 }
@@ -36,7 +36,7 @@ export const ROUTES = [
         title: 'Nova',
       },
       {
-        name: Routes.autoId,
+        name: Routes.autoid,
         title: 'Auto-ID',
       },
     ],

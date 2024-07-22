@@ -22,7 +22,7 @@ export const DomainPage: FC = () => {
       {
         title: 'Auto-ID',
         description: 'Identity domain',
-        href: `/${selectedChain.urls.page}/${Routes.autoId}`,
+        href: `/${selectedChain.urls.page}/${Routes.autoid}`,
         icon: <DocIcon />,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleDeep dark:to-purplePastel',
       },

@@ -42,7 +42,7 @@ export const FarmingHeader = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.staking}`}
+            href={`/${selectedChain.urls.page}/${Routes.farming}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>
