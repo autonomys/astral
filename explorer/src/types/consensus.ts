@@ -106,32 +106,49 @@ export type RawDeposit = {
     storageFeeDeposit: number
   }
   pending: {
-    effectiveDomainEpoch: number[]
+    effectiveDomainEpoch: [number, number]
     amount: string
     storageFeeDeposit: string
-  }
+  } | null
 }
 
 export type Deposit = {
   operatorId: number
   account: string
-  shares: string
-  storageFeeDeposit: string
-  pending: {
-    amount: string
-    storageFeeDeposit: string
+  shares: bigint
+  storageFeeDeposit: bigint
+  known: {
+    shares: bigint
+    storageFeeDeposit: bigint
   }
+  pending: {
+    effectiveDomainId: number
+    effectiveDomainEpoch: number
+    amount: bigint
+    storageFeeDeposit: bigint
+  } | null
 }
 
-export type Withdrawal = {
-  operatorId: number
-  account: string
-  totalWithdrawalAmount: number
+export type RawWithdrawal = {
+  totalWithdrawalAmount: string
   withdrawals: string[]
   withdrawalInShares: {
     domainEpoch: number[]
     unlockAtConfirmedDomainBlockNumber: number
     shares: string
     storageFeeRefund: string
+  }
+}
+
+export type Withdrawal = {
+  operatorId: number
+  account: string
+  totalWithdrawalAmount: bigint
+  withdrawals: string[]
+  withdrawalInShares: {
+    domainEpoch: number[]
+    unlockAtConfirmedDomainBlockNumber: number
+    shares: bigint
+    storageFeeRefund: bigint
   }
 }
