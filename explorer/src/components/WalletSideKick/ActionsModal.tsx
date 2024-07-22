@@ -424,7 +424,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                     >
                                       {({ selected }) => {
                                         const subAccount =
-                                          account.type === WalletType.subspace
+                                          account.type === WalletType.subspace ||
+                                          (account as { type: string }).type === 'sr25519'
                                             ? formatAddress(account.address)
                                             : account.address
                                         const formattedAccount =
