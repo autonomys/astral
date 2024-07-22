@@ -6,7 +6,7 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { Chains, PAGE_SIZE } from 'constants/'
+import { BIGINT_ZERO, Chains, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorOrderByInput,
@@ -61,7 +61,7 @@ export const OperatorsList: FC = () => {
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
   const { useRpcData, myPositionOnly } = useViewStates()
-
+  console.log('withdrawals', withdrawals)
   useEffect(() => {
     loadDomainsData()
     loadConsensusData()
@@ -207,32 +207,34 @@ export const OperatorsList: FC = () => {
         >) => {
           const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
           const depositShares = opDeposits.reduce(
-            (acc, deposit) => acc + BigInt(deposit.shares),
-            BigInt(0),
+            (acc, deposit) => acc + deposit.shares,
+            BIGINT_ZERO,
           )
           const pendingAmount = opDeposits.reduce(
-            (acc, deposit) => acc + BigInt(deposit.pending.amount),
-            BigInt(0),
+            (acc, deposit) => (deposit.pending !== null ? acc + deposit.pending.amount : acc),
+            BIGINT_ZERO,
           )
           const pendingStorageFee = opDeposits.reduce(
-            (acc, deposit) => acc + BigInt(deposit.pending.storageFeeDeposit),
-            BigInt(0),
+            (acc, deposit) =>
+              deposit.pending !== null ? acc + deposit.pending.storageFeeDeposit : acc,
+            BIGINT_ZERO,
           )
           const op = rpcOperators.find((o) => o.id === row.original.id)
           const sharesValue =
-            op && BigInt(op.currentTotalShares) > BigInt(0)
-              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
-              : BigInt(0)
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
           return (
             <div>
-              {depositShares > BigInt(0) && (
+              {depositShares > BIGINT_ZERO && (
                 <>
-                  {`Staked: ${bigNumberToNumber(((depositShares * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber((depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
-              {pendingAmount > BigInt(0) &&
-                `Pending; ${bigNumberToNumber((pendingAmount + pendingStorageFee).toString())} ${selectedChain.token.symbol}`}
+              {pendingAmount > BIGINT_ZERO &&
+                `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`}
             </div>
           )
         },
@@ -295,20 +297,22 @@ export const OperatorsList: FC = () => {
           )
           const op = rpcOperators.find((o) => o.id === row.original.id)
           const sharesValue =
-            op && BigInt(op.currentTotalShares) > BigInt(0)
-              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
-              : BigInt(0)
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
           return (
             <div>
-              {deposit && deposit.shares !== '0' && (
+              {deposit && deposit.shares > BIGINT_ZERO && (
                 <>
-                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
               {deposit &&
-                deposit.pending.amount !== '0' &&
-                `Pending: ${bigNumberToNumber((BigInt(deposit.pending.amount) + BigInt(deposit.pending.storageFeeDeposit)).toString())} ${selectedChain.token.symbol}`}
+                deposit.pending !== null &&
+                deposit.pending.amount > BIGINT_ZERO &&
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${selectedChain.token.symbol}`}
             </div>
           )
         },
@@ -359,7 +363,7 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BigInt(0)}
+              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BIGINT_ZERO}
             />
           )
         },
@@ -530,16 +534,78 @@ export const OperatorsList: FC = () => {
                     cell: ({ row }) => <div>{row.original.operatorId}</div>,
                   },
                   {
-                    accessorKey: 'withdrawalInShares',
-                    header: 'Withdrawal In Shares',
+                    accessorKey: 'withdrawalInShares.shares',
+                    header: 'Withdrawal Amount',
                     enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.withdrawalInShares.shares}</div>,
+                    cell: ({ row }) => {
+                      const op = rpcOperators.find(
+                        (o) => o.id === row.original.operatorId.toString(),
+                      )
+                      const sharesValue =
+                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                            BigInt(op.currentTotalShares)
+                          : BIGINT_ZERO
+                      const withdrawAmount = bigNumberToNumber(
+                        (row.original.withdrawalInShares.shares * sharesValue) /
+                          SHARES_CALCULATION_MULTIPLIER,
+                      )
+                      return (
+                        <div>
+                          <Tooltip
+                            text={`Shares: ${row.original.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
+                          >
+                            {withdrawAmount} {selectedChain.token.symbol}
+                          </Tooltip>
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'withdrawalInShares.storageFeeRefund',
+                    header: 'Withdrawal Storage Fee Refund',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      const op = rpcOperators.find(
+                        (o) => o.id === row.original.operatorId.toString(),
+                      )
+                      const sharesValue =
+                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                            BigInt(op.currentTotalShares)
+                          : BIGINT_ZERO
+                      const withdrawAmount = bigNumberToNumber(
+                        (row.original.withdrawalInShares.storageFeeRefund * sharesValue) /
+                          SHARES_CALCULATION_MULTIPLIER,
+                      )
+                      return (
+                        <div>
+                          <Tooltip
+                            text={`Shares: ${row.original.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
+                          >
+                            {withdrawAmount} {selectedChain.token.symbol}
+                          </Tooltip>
+                        </div>
+                      )
+                    },
+                  },
+                  {
+                    accessorKey: 'withdrawalInShares.unlockAtConfirmedDomainBlockNumber',
+                    header: 'Withdrawal at Domain Block Number',
+                    enableSorting: false,
+                    cell: ({ row }) => {
+                      return (
+                        <div>
+                          {row.original.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()}
+                        </div>
+                      )
+                    },
                   },
                   {
                     accessorKey: 'totalWithdrawalAmount',
                     header: 'Total Withdrawal Amount',
                     enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.totalWithdrawalAmount}</div>,
+                    cell: ({ row }) => <div>{row.original.totalWithdrawalAmount.toString()}</div>,
                   },
                   {
                     accessorKey: 'withdrawals',
