@@ -27,7 +27,7 @@ export const DomainPage: FC = () => {
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleDeep dark:to-purplePastel',
       },
     ],
-    [],
+    [selectedChain.urls.page],
   )
 
   return (
