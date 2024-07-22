@@ -73,7 +73,7 @@ async function processEvent(
         event
       );
 
-    // fees
+    // tax on fees
     case events.domains.operatorTaxCollected.name:
       return await processOperatorTaxCollectedEvent(
         ctx,
