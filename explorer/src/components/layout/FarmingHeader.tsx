@@ -26,12 +26,12 @@ export const FarmingHeader = () => {
         link: `/${selectedChain.urls.page}/${Routes.farming}`,
       },
       {
-        title: 'Download Subspace CLI',
-        link: `/${EXTERNAL_ROUTES.docs}learn/intro`,
+        title: 'Advance CLI',
+        link: `${EXTERNAL_ROUTES.docs}docs/category/advanced-cli`,
       },
       {
         title: 'Documentation',
-        link: `/${EXTERNAL_ROUTES.docs}farming-&-staking/farming/advanced-cli/cli-install`,
+        link: `${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`,
       },
     ],
     [selectedChain.urls.page],

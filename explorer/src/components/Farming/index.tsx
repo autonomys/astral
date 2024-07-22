@@ -1,7 +1,7 @@
 'use client'
 
+import { EXTERNAL_ROUTES } from '@/constants'
 import Image from 'next/image'
-import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 
 interface ReleaseAsset {
@@ -32,9 +32,7 @@ export const DownloadPage: FC = () => {
   useEffect(() => {
     const fetchLatestRelease = async () => {
       try {
-        const response = await fetch(
-          'https://api.github.com/repos/subspace/space-acres/releases/latest',
-        )
+        const response = await fetch(EXTERNAL_ROUTES.spaceAcres)
         if (response.status === 200) {
           const data: ReleaseData = await response.json()
           setReleaseAssets(data.assets)
@@ -216,8 +214,8 @@ export const DownloadPage: FC = () => {
                 For more detailed instructions, troubleshooting, and advanced usage, please refer to
                 the{' '}
                 <a
-                  href='https://docs.subspace.network/docs/farming-&-staking/farming/space-acres/space-acres-install'
-                  className='text-blue-500 underline'
+                  href={`${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`}
+                  className='text-blue-500 underline dark:text-blue-300'
                 >
                   Space Acres documentation
                 </a>
@@ -226,18 +224,11 @@ export const DownloadPage: FC = () => {
               <p>
                 Need help? Visit our{' '}
                 <a
-                  href='https://docs.subspace.network/docs/category/farming'
-                  className='text-blue-500 underline'
+                  href={EXTERNAL_ROUTES.social.discord}
+                  className='text-blue-500 underline dark:text-blue-300'
                 >
-                  support page
-                </a>{' '}
-                or contact us at support@subspace.network.
-              </p>
-              <p>
-                Stay up to date with the latest news and updates by subscribing to our{' '}
-                <Link href='#' className='text-blue-500 underline'>
-                  newsletter
-                </Link>
+                  Discord server
+                </a>
                 .
               </p>
             </div>
