@@ -223,7 +223,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                     subspaceAccount={subspaceAccount}
                     selectedChain={consensusChain}
                   />
-                  <GetDiscordRoles subspaceAccount={subspaceAccount} />
+                  <GetDiscordRoles />
                   <StakingSummary
                     subspaceAccount={subspaceAccount}
                     selectedChain={consensusChain}
