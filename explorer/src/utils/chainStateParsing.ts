@@ -26,7 +26,7 @@ export const formatDeposits = (deposits: [StorageKey<AnyTuple>, Codec][]) =>
     return {
       operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
       account: (deposit[0].toHuman() as string[])[1],
-      shares: parseInt(parsedDeposit.known.shares.toString(), 16).toString(),
+      shares: BigInt(parsedDeposit.known.shares).toString(10),
       storageFeeDeposit: parseInt(parsedDeposit.known.storageFeeDeposit.toString(), 16).toString(),
       pending: {
         amount: BigInt(parsedDeposit.pending.amount).toString(10),

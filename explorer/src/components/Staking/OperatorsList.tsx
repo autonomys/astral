@@ -222,12 +222,12 @@ export const OperatorsList: FC = () => {
             <div>
               {depositShares > BigInt(0) && (
                 <>
-                  {`Staked: ${bigNumberToNumber(((BigInt(depositShares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber(((depositShares * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
               {pendingAmount > BigInt(0) &&
-                `Pending; ${bigNumberToNumber((BigInt(pendingAmount) + BigInt(pendingStorageFee)).toString())} ${selectedChain.token.symbol}`}
+                `Pending; ${bigNumberToNumber((pendingAmount + pendingStorageFee).toString())} ${selectedChain.token.symbol}`}
             </div>
           )
         },
@@ -297,7 +297,7 @@ export const OperatorsList: FC = () => {
             <div>
               {deposit && deposit.shares !== '0' && (
                 <>
-                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
