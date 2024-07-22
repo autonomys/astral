@@ -205,7 +205,7 @@ export const DownloadPage: FC = () => {
         </div>
 
         <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
-          <div className='flow-root  text-gray-900 dark:text-white '>
+          <div className='flow-root  text-gray-900 dark:text-white'>
             <div className='mx-auto mb-4 w-3/4'>{renderDownloadSection}</div>
             <div className='mt-8'>{renderDownloadSection && downloadButton}</div>
             <div className='support-section mt-12 items-center justify-center text-center'>
@@ -238,5 +238,3 @@ export const DownloadPage: FC = () => {
     </div>
   )
 }
-
-export default DownloadPage
