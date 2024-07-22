@@ -205,41 +205,36 @@ export const OperatorsList: FC = () => {
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
         >) => {
-          try {
-            const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
-            const depositShares = opDeposits.reduce(
-              (acc, deposit) => acc + BigInt(deposit.shares),
-              BigInt(0),
-            )
-            const pendingAmount = opDeposits.reduce(
-              (acc, deposit) => acc + BigInt(deposit.pending.amount),
-              BigInt(0),
-            )
-            const pendingStorageFee = opDeposits.reduce(
-              (acc, deposit) => acc + BigInt(deposit.pending.storageFeeDeposit),
-              BigInt(0),
-            )
-            const op = rpcOperators.find((o) => o.id === row.original.id)
-            const sharesValue =
-              op && BigInt(op.currentTotalShares) > BigInt(0)
-                ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
-                : BigInt(0)
-            return (
-              <div>
-                {depositShares > BigInt(0) && (
-                  <>
-                    {`Staked: ${bigNumberToNumber(((BigInt(depositShares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
-                    <br />
-                  </>
-                )}
-                {pendingAmount > BigInt(0) &&
-                  `Pending; ${bigNumberToNumber((BigInt(pendingAmount) + BigInt(pendingStorageFee)).toString())} ${selectedChain.token.symbol}`}
-              </div>
-            )
-          } catch (e) {
-            console.error('deposits-parsing error', e)
-            return <></>
-          }
+          const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
+          const depositShares = opDeposits.reduce(
+            (acc, deposit) => acc + BigInt(deposit.shares),
+            BigInt(0),
+          )
+          const pendingAmount = opDeposits.reduce(
+            (acc, deposit) => acc + BigInt(deposit.pending.amount),
+            BigInt(0),
+          )
+          const pendingStorageFee = opDeposits.reduce(
+            (acc, deposit) => acc + BigInt(deposit.pending.storageFeeDeposit),
+            BigInt(0),
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BigInt(0)
+              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
+              : BigInt(0)
+          return (
+            <div>
+              {depositShares > BigInt(0) && (
+                <>
+                  {`Staked: ${bigNumberToNumber(((depositShares * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  <br />
+                </>
+              )}
+              {pendingAmount > BigInt(0) &&
+                `Pending; ${bigNumberToNumber((pendingAmount + pendingStorageFee).toString())} ${selectedChain.token.symbol}`}
+            </div>
+          )
         },
       })
     cols.push(
@@ -307,7 +302,7 @@ export const OperatorsList: FC = () => {
             <div>
               {deposit && deposit.shares !== '0' && (
                 <>
-                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
