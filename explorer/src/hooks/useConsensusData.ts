@@ -5,11 +5,10 @@ import {
   ConfirmedDomainBlock,
   DomainRegistry,
   DomainStakingSummary,
-  Operators,
   PendingStakingOperationCount,
   SuccessfulBundle,
-  Withdrawal,
 } from 'types/consensus'
+import { formatDeposits, formatOperators, formatWithdrawals } from 'utils/chainStateParsing'
 
 export const useConsensusData = () => {
   const {
@@ -24,6 +23,7 @@ export const useConsensusData = () => {
     setOperators,
     setPendingStakingOperationCount,
     setSuccessfulBundles,
+    setDeposits,
     setWithdrawals,
   } = useConsensusStates()
   const { api } = useWallet()
@@ -47,7 +47,6 @@ export const useConsensusData = () => {
         operators,
         pendingStakingOperationCount,
         successfulBundles,
-        withdrawals,
       ] = await Promise.all([
         api.rpc.system.properties(),
         api.consts.domains,
@@ -62,7 +61,6 @@ export const useConsensusData = () => {
         api.query.domains.operators.entries(),
         api.query.domains.pendingStakingOperationCount.entries(),
         api.query.domains.successfulBundles.entries(),
-        api.query.domains.withdrawals.entries(),
       ])
 
       setProperties({
@@ -126,16 +124,8 @@ export const useConsensusData = () => {
           owner: operator[1].toJSON() as string,
         })),
       )
-      setOperators(
-        operators.map(
-          (operator, key) =>
-            ({
-              id: (operator[0].toHuman() as string[])[0],
-              operatorOwner: operatorIdOwner[key][1].toJSON() as string,
-              ...(operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>),
-            }) as Operators,
-        ),
-      )
+      const formattedOperators = formatOperators(operators, operatorIdOwner)
+      setOperators(formattedOperators)
       setPendingStakingOperationCount(
         pendingStakingOperationCount.map(
           (stakingOp) =>
@@ -154,20 +144,41 @@ export const useConsensusData = () => {
             }) as SuccessfulBundle,
         ),
       )
-      setWithdrawals(
-        withdrawals.map(
-          (withdrawal) =>
-            ({
-              id: parseInt((withdrawal[0].toHuman() as string[])[0]),
-              ...(withdrawal[1].toJSON() as Omit<Withdrawal, 'id'>),
-            }) as Withdrawal,
-        ),
+
+      const deposits = await Promise.all(
+        formattedOperators.map((o) => api.query.domains.deposits.entries(o.id)),
       )
+      const withdrawals = await Promise.all(
+        formattedOperators.map((o) => api.query.domains.withdrawals.entries(o.id)),
+      )
+
+      setDeposits(formatDeposits(deposits.flat()))
+      setWithdrawals(formatWithdrawals(withdrawals.flat()))
     } catch (error) {
       console.error('useConsensusData', error)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api])
 
-  return { loadData }
+  const loadDataByOperatorId = useCallback(
+    async (operatorId: string) => {
+      if (!api) return
+
+      try {
+        const [deposits, withdrawals] = await Promise.all([
+          api.query.domains.deposits.entries(operatorId),
+          api.query.domains.withdrawals.entries(operatorId),
+        ])
+
+        setDeposits(formatDeposits(deposits))
+        setWithdrawals(formatWithdrawals(withdrawals))
+      } catch (error) {
+        console.error('useConsensusData', error)
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [api],
+  )
+
+  return { loadData, loadDataByOperatorId }
 }

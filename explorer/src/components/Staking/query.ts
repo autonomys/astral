@@ -73,13 +73,34 @@ export const QUERY_OPERATOR_BY_ID = gql`
       status
       totalShares
       updatedAt
-      nominators(limit: 300) {
-        id
-        shares
-        account {
+    }
+  }
+`
+
+export const QUERY_OPERATOR_NOMINATORS_BY_ID = gql`
+  query OperatorNominatorsById(
+    $first: Int!
+    $after: String
+    $orderBy: [NominatorOrderByInput!]!
+    $where: NominatorWhereInput
+  ) {
+    nominatorsConnection(first: $first, after: $after, orderBy: $orderBy, where: $where) {
+      edges {
+        node {
           id
+          shares
+          account {
+            id
+          }
         }
       }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
     }
   }
 `
