@@ -1,5 +1,6 @@
 import { TransactionStatus } from 'constants/transaction'
 import type { Transaction, TransactionWithMetadata } from 'types/transaction'
+import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -35,9 +36,9 @@ export const useTransactionsStates = create<TransactionsState>()(
         })),
       getNextNonceForAccount: (address: string) => {
         const lastNonce = get()
-          .pendingTransactions.filter(t => t.ownerAccount.address === address)
-          .reduce((maxNonce, tx) => Math.max(maxNonce, tx.nonce), -1);
-        return lastNonce + 1;
+          .pendingTransactions.filter((t) => t.ownerAccount.address === address)
+          .reduce((maxNonce, tx) => Math.max(maxNonce, tx.nonce), -1)
+        return lastNonce + 1
       },
       removePendingTransactions: (transaction: Transaction) =>
         set((state) => ({
@@ -78,7 +79,10 @@ export const useTransactionsStates = create<TransactionsState>()(
     }),
     {
       name: 'transactions-storage',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      serialize: (state) => JSON.stringify(state, bigIntSerializer),
+      deserialize: (str) => JSON.parse(str, bigIntDeserializer),
     },
   ),
 )

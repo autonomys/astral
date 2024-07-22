@@ -3,15 +3,12 @@ import { useCallback } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import {
   ConfirmedDomainBlock,
-  Deposit,
   DomainRegistry,
   DomainStakingSummary,
-  Operators,
   PendingStakingOperationCount,
-  RawDeposit,
   SuccessfulBundle,
-  Withdrawal,
 } from 'types/consensus'
+import { formatDeposits, formatOperators, formatWithdrawals } from 'utils/chainStateParsing'
 
 export const useConsensusData = () => {
   const {
@@ -127,19 +124,7 @@ export const useConsensusData = () => {
           owner: operator[1].toJSON() as string,
         })),
       )
-      const formattedOperators = operators.map((operator, key) => {
-        const op = operator[1].toJSON() as Omit<Operators, 'id' | 'operatorOwner'>
-        return {
-          id: (operator[0].toHuman() as string[])[0],
-          operatorOwner: operatorIdOwner[key][1].toJSON() as string,
-          ...op,
-          minimumNominatorStake: BigInt(op.minimumNominatorStake).toString(10),
-          currentTotalStake: BigInt(op.currentTotalStake).toString(10),
-          currentTotalShares: BigInt(op.currentTotalShares).toString(10),
-          totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
-          status: JSON.stringify(op.status),
-        } as Operators
-      })
+      const formattedOperators = formatOperators(operators, operatorIdOwner)
       setOperators(formattedOperators)
       setPendingStakingOperationCount(
         pendingStakingOperationCount.map(
@@ -163,25 +148,12 @@ export const useConsensusData = () => {
       const deposits = await Promise.all(
         formattedOperators.map((o) => api.query.domains.deposits.entries(o.id)),
       )
-
-      setDeposits(
-        deposits.flat().map((deposit) => {
-          const parsedDeposit = deposit[1].toJSON() as RawDeposit
-          return {
-            operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
-            account: (deposit[0].toHuman() as string[])[1],
-            shares: parseInt(parsedDeposit.known.shares.toString(), 16).toString(),
-            storageFeeDeposit: parseInt(
-              parsedDeposit.known.storageFeeDeposit.toString(),
-              16,
-            ).toString(),
-            pending: {
-              amount: parsedDeposit.pending.amount.toString(),
-              storageFeeDeposit: parsedDeposit.pending.storageFeeDeposit.toString(),
-            },
-          } as Deposit
-        }),
+      const withdrawals = await Promise.all(
+        formattedOperators.map((o) => api.query.domains.withdrawals.entries(o.id)),
       )
+
+      setDeposits(formatDeposits(deposits.flat()))
+      setWithdrawals(formatWithdrawals(withdrawals.flat()))
     } catch (error) {
       console.error('useConsensusData', error)
     }
@@ -198,33 +170,8 @@ export const useConsensusData = () => {
           api.query.domains.withdrawals.entries(operatorId),
         ])
 
-        setDeposits(
-          deposits.map((deposit) => {
-            const parsedDeposit = deposit[1].toJSON() as RawDeposit
-            return {
-              operatorId: parseInt((deposit[0].toHuman() as string[])[0]),
-              account: (deposit[0].toHuman() as string[])[1],
-              shares: BigInt(parsedDeposit.known.shares.toString()).toString(10),
-              storageFeeDeposit: parseInt(
-                parsedDeposit.known.storageFeeDeposit.toString(),
-                16,
-              ).toString(),
-              pending: {
-                amount: parsedDeposit.pending.amount.toString(),
-                storageFeeDeposit: parsedDeposit.pending.storageFeeDeposit.toString(),
-              },
-            } as Deposit
-          }),
-        )
-        setWithdrawals(
-          withdrawals.map(
-            (withdrawal) =>
-              ({
-                operatorId: parseInt((withdrawal[0].toHuman() as string[])[0]),
-                ...(withdrawal[1].toJSON() as Omit<Withdrawal, 'operatorId'>),
-              }) as Withdrawal,
-          ),
-        )
+        setDeposits(formatDeposits(deposits))
+        setWithdrawals(formatWithdrawals(withdrawals))
       } catch (error) {
         console.error('useConsensusData', error)
       }

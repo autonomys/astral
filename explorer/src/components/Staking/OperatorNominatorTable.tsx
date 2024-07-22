@@ -1,6 +1,6 @@
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { PAGE_SIZE } from 'constants/general'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   NominatorOrderByInput,
@@ -11,6 +11,7 @@ import {
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
+import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -20,7 +21,7 @@ import { useConsensusStates } from 'states/consensus'
 import { hasValue, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import type { Cell } from 'types/table'
-import { limitNumberDecimals, numberWithCommas } from 'utils/number'
+import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
@@ -33,6 +34,7 @@ type Props = {
 
 export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { ref, inView } = useInView()
+  const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
   const { selectedChain } = useDomains()
@@ -43,11 +45,16 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     pageIndex: 0,
   })
   const { useRpcData } = useViewStates()
-  const { deposits } = useConsensusStates()
+  const { operators: rpcOperators, deposits } = useConsensusStates()
+
+  const op = useMemo(
+    () => rpcOperators.find((o) => o.id.toString() === operatorId),
+    [operatorId, rpcOperators],
+  )
 
   const columns = useMemo(() => {
     if (!operator || operator.totalShares == 0) return []
-    return [
+    const cols = [
       {
         accessorKey: 'account',
         header: 'Account Id',
@@ -77,22 +84,24 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         header: 'Stakes',
         cell: ({
           row,
-        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => (
-          <div>
-            {numberWithCommas(
-              limitNumberDecimals(
-                Number(
+        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => {
+          return (
+            <div>
+              {numberWithCommas(
+                limitNumberDecimals(
                   Number(
-                    (BigInt(operator.currentTotalStake) / BigInt(operator.totalShares)) *
-                      BigInt(row.original.shares),
-                  ) /
-                    10 ** 18,
+                    Number(
+                      (BigInt(operator.currentTotalStake) / BigInt(operator.totalShares)) *
+                        BigInt(row.original.shares),
+                    ) /
+                      10 ** 18,
+                  ),
                 ),
-              ),
-            )}{' '}
-            {selectedChain.token.symbol}
-          </div>
-        ),
+              )}{' '}
+              {selectedChain.token.symbol}
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'shares',
@@ -124,7 +133,52 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
           operator.operatorOwner === row.original.account.id ? 'Yes' : 'No',
       },
     ]
-  }, [isLargeLaptop, operator, selectedChain.token.symbol, selectedChain.urls.page])
+    if (
+      useRpcData &&
+      deposits.find((d) => d.account === subspaceAccount && d.operatorId.toString() === operatorId)
+    )
+      cols.push({
+        accessorKey: 'myStake',
+        header: 'My Stake',
+        cell: ({
+          row,
+        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => {
+          const deposit = deposits.find(
+            (d) => d.account === row.original.account.id && d.operatorId.toString() === operatorId,
+          )
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          return (
+            <div>
+              {deposit && deposit.shares > BIGINT_ZERO && (
+                <>
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
+                  <br />
+                </>
+              )}
+              {deposit &&
+                deposit.pending !== null &&
+                deposit.pending.amount > BIGINT_ZERO &&
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${selectedChain.token.symbol}`}
+            </div>
+          )
+        },
+      })
+    return cols
+  }, [
+    deposits,
+    isLargeLaptop,
+    op,
+    operator,
+    operatorId,
+    selectedChain.token.symbol,
+    selectedChain.urls.page,
+    subspaceAccount,
+    useRpcData,
+  ])
 
   const orderBy = useMemo(
     () => sort(sorting, NominatorOrderByInput.IdAsc) as NominatorOrderByInput,
@@ -201,7 +255,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       <SortedTable
         data={nominators}
         columns={columns}
-        showNavigation={true}
+        showNavigation={!useRpcData}
         sorting={sorting}
         onSortingChange={setSorting}
         pagination={pagination}
