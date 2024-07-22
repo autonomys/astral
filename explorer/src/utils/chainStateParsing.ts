@@ -39,8 +39,8 @@ export const formatDeposits = (deposits: [StorageKey<AnyTuple>, Codec][]) =>
       shares: BigInt(parsedDeposit.known.shares.toString()),
       storageFeeDeposit: BigInt(parsedDeposit.known.storageFeeDeposit.toString()),
       known: {
-        shares: BigInt(0), // BigInt(parsedDeposit.known.shares.toString()),
-        storageFeeDeposit: BigInt(0), // BigInt(parsedDeposit.known.storageFeeDeposit.toString()),
+        shares: BigInt(parsedDeposit.known.shares.toString()),
+        storageFeeDeposit: BigInt(parsedDeposit.known.storageFeeDeposit.toString()),
       },
       pending,
     } as Deposit
