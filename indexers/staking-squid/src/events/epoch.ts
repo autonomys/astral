@@ -18,6 +18,7 @@ export async function processEpochTransitionEvent(
 ) {
   const domainId = Number(event.args.domainId);
   const domain = await getOrCreateDomain(ctx, block, domainId);
+  const completedEpoch = Number(event.args.completedEpochIndex);
 
   if (!domain)
     await createDomain(ctx, block, {
@@ -51,4 +52,7 @@ export async function processEpochTransitionEvent(
 
     await ctx.store.save(op);
   }
+  ctx.log
+    .child(`DomainId ${domainId} - Current epoch`)
+    .info(completedEpoch.toString());
 }

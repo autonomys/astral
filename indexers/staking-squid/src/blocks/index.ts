@@ -3,6 +3,7 @@ import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import { processExtrinsics } from "../extrinsics";
 import type { Ctx, CtxBlock } from "../processor";
+import { getBlockNumber } from "../utils";
 
 export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   for (let block of ctx.blocks) {
@@ -17,4 +18,5 @@ async function processBlock(
   block: CtxBlock
 ) {
   await processExtrinsics(ctx, apiAt, block, block.extrinsics);
+  ctx.log.child(`Last block`).info(getBlockNumber(block).toString());
 }
