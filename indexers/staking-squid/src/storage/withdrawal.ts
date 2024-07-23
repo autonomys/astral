@@ -1,17 +1,17 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { Deposit, DepositStatus, Operator } from "../model";
+import { Operator, Withdrawal, WithdrawalStatus } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getCallSigner, getTimestamp } from "../utils";
 import { getOrCreateNominator } from "./nominator";
 import { getOrCreateOperator } from "./operator";
 
-export const createDeposit = async (
+export const createWithdrawal = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  props: Partial<Deposit>
-): Promise<Deposit> => {
+  props: Partial<Withdrawal>
+): Promise<Withdrawal> => {
   const account = getCallSigner(extrinsic.call);
   if (props.operator) props.operator = await getOrCreateOperator(ctx, block, 0);
   if (props.nominator && props.operator)
@@ -22,43 +22,45 @@ export const createDeposit = async (
       account
     );
 
-  const deposit = new Deposit({
+  const withdrawal = new Withdrawal({
     id: randomUUID(),
     account: "st",
-    amount: BigInt(0),
-    storageFeeDeposit: BigInt(0),
-    status: DepositStatus.PENDING,
+    shares: BigInt(0),
+    status: WithdrawalStatus.PENDING,
     ...props,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
     extrinsicHash: extrinsic.hash,
   });
 
-  await ctx.store.insert(deposit);
+  await ctx.store.insert(withdrawal);
 
-  const count = await ctx.store.count(Deposit);
-  ctx.log.child("deposits").info(`count: ${count}`);
+  const count = await ctx.store.count(Withdrawal);
+  ctx.log.child("withdrawals").info(`count: ${count}`);
 
-  return deposit;
+  return withdrawal;
 };
 
-export const getOrCreateDeposit = async (
+export const getOrCreateWithdrawal = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operator: Operator,
   account: string,
-  props: Partial<Deposit> = {}
-): Promise<Deposit> => {
+  props: Partial<Withdrawal> = {}
+): Promise<Withdrawal> => {
   const blockNumber = getBlockNumber(block);
-  const deposit = await ctx.store.findOneBy(Deposit, { account, blockNumber });
+  const withdrawal = await ctx.store.findOneBy(Withdrawal, {
+    account,
+    blockNumber,
+  });
 
-  if (!deposit)
-    return await createDeposit(ctx, block, extrinsic, {
+  if (!withdrawal)
+    return await createWithdrawal(ctx, block, extrinsic, {
       account,
       operator,
       ...props,
     });
 
-  return deposit;
+  return withdrawal;
 };

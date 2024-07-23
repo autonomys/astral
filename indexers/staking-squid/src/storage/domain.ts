@@ -20,8 +20,8 @@ export const createDomain = async (
 
   await ctx.store.insert(domain);
 
-  const domainsCount = await ctx.store.count(Domain);
-  ctx.log.child("domains").info(`count: ${domainsCount}`);
+  const count = await ctx.store.count(Domain);
+  ctx.log.child("domains").info(`count: ${count}`);
 
   return domain;
 };

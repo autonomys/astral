@@ -44,8 +44,8 @@ export const createOperator = async (
 
   await ctx.store.insert(operator);
 
-  const operatorsCount = await ctx.store.count(Operator);
-  ctx.log.child("operators").info(`count: ${operatorsCount}`);
+  const count = await ctx.store.count(Operator);
+  ctx.log.child("operators").info(`count: ${count}`);
 
   return operator;
 };
