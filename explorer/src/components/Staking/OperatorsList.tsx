@@ -210,7 +210,7 @@ export const OperatorsList: FC = () => {
       {
         accessorKey: 'deposits',
         header: 'Deposits',
-        enableSorting: !useRpcData,
+        enableSorting: false,
         cell: ({
           row,
         }: Cell<
@@ -248,12 +248,68 @@ export const OperatorsList: FC = () => {
             tooltip += `Staked: ${bigNumberToNumber(
               (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
             )} ${selectedChain.token.symbol}`
-          return (
+          return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
                 {bigNumberToNumber(total)} {selectedChain.token.symbol}
               </Tooltip>
             </div>
+          ) : (
+            <div>0 {selectedChain.token.symbol}</div>
+          )
+        },
+      },
+      {
+        accessorKey: 'withdrawals',
+        header: 'Withdrawals',
+        enableSorting: false,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const opWithdrawals = withdrawals.filter(
+            (d) => d.operatorId.toString() === row.original.id,
+          )
+          const totalPending = opWithdrawals.reduce(
+            (acc, withdrawal) =>
+              acc +
+              withdrawal.withdrawalInShares.shares +
+              withdrawal.withdrawalInShares.storageFeeRefund,
+            BIGINT_ZERO,
+          )
+          const totalUnlocked = opWithdrawals.reduce(
+            (acc, withdrawal) =>
+              withdrawal.withdrawals
+                ? acc +
+                  withdrawal.withdrawals.reduce(
+                    (acc, w) => acc + w.amountToUnlock + w.storageFeeRefund,
+                    BIGINT_ZERO,
+                  )
+                : BIGINT_ZERO,
+            BIGINT_ZERO,
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          const total = (totalPending * sharesValue) / SHARES_CALCULATION_MULTIPLIER + totalUnlocked
+          let tooltip = ''
+          if (totalPending > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${selectedChain.token.symbol}`
+          if (totalUnlocked > BIGINT_ZERO && totalPending > BIGINT_ZERO) tooltip += ' - '
+          if (totalUnlocked > BIGINT_ZERO)
+            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${selectedChain.token.symbol}`
+          return total > BIGINT_ZERO ? (
+            <div>
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
+            </div>
+          ) : (
+            <div>0 {selectedChain.token.symbol}</div>
           )
         },
       },
@@ -403,8 +459,9 @@ export const OperatorsList: FC = () => {
     selectedChain.token.symbol,
     selectedDomain,
     domains,
-    nominatorCount,
     rpcOperators,
+    withdrawals,
+    nominatorCount,
     action,
     handleAction,
   ])
