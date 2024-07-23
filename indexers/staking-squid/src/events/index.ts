@@ -6,6 +6,7 @@ import { processBundleStoredEvent } from "./bundle";
 import { processDomainInstantiatedEvent } from "./domain";
 import { processEpochTransitionEvent } from "./epoch";
 import {
+  processOperatorNominatedEvent,
   processOperatorSlashedEvent,
   processOperatorTaxCollectedEvent,
 } from "./operator";
@@ -43,6 +44,16 @@ async function processEvent(
     case events.domains.domainEpochCompleted.name:
     case events.domains.forceDomainEpochTransition.name:
       return await processEpochTransitionEvent(
+        ctx,
+        apiAt,
+        block,
+        extrinsic,
+        event
+      );
+
+    // operator and nomination
+    case events.domains.operatorNominated.name:
+      return await processOperatorNominatedEvent(
         ctx,
         apiAt,
         block,

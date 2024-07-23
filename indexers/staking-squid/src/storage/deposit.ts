@@ -12,14 +12,15 @@ export const createDeposit = async (
   extrinsic: CtxExtrinsic,
   props: Partial<Deposit>
 ): Promise<Deposit> => {
-  const account = getCallSigner(extrinsic.call);
-  if (props.operator) props.operator = await getOrCreateOperator(ctx, block, 0);
-  if (props.nominator && props.operator)
+  if (!props.account) props.account = getCallSigner(extrinsic.call);
+  if (!props.operator)
+    props.operator = await getOrCreateOperator(ctx, block, 0);
+  if (!props.nominator && props.operator)
     props.nominator = await getOrCreateNominator(
       ctx,
       block,
-      props.operator,
-      account
+      extrinsic,
+      props.operator
     );
 
   const deposit = new Deposit({
@@ -47,9 +48,9 @@ export const getOrCreateDeposit = async (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operator: Operator,
-  account: string,
   props: Partial<Deposit> = {}
 ): Promise<Deposit> => {
+  const account = getCallSigner(extrinsic.call);
   const blockNumber = getBlockNumber(block);
   const deposit = await ctx.store.findOneBy(Deposit, { account, blockNumber });
 

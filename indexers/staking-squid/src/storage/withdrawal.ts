@@ -12,14 +12,15 @@ export const createWithdrawal = async (
   extrinsic: CtxExtrinsic,
   props: Partial<Withdrawal>
 ): Promise<Withdrawal> => {
-  const account = getCallSigner(extrinsic.call);
-  if (props.operator) props.operator = await getOrCreateOperator(ctx, block, 0);
-  if (props.nominator && props.operator)
+  if (!props.account) props.account = getCallSigner(extrinsic.call);
+  if (!props.operator)
+    props.operator = await getOrCreateOperator(ctx, block, 0);
+  if (!props.nominator && props.operator)
     props.nominator = await getOrCreateNominator(
       ctx,
       block,
-      props.operator,
-      account
+      extrinsic,
+      props.operator
     );
 
   const withdrawal = new Withdrawal({
@@ -46,9 +47,9 @@ export const getOrCreateWithdrawal = async (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operator: Operator,
-  account: string,
   props: Partial<Withdrawal> = {}
 ): Promise<Withdrawal> => {
+  const account = getCallSigner(extrinsic.call);
   const blockNumber = getBlockNumber(block);
   const withdrawal = await ctx.store.findOneBy(Withdrawal, {
     account,

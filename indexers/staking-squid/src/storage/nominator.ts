@@ -1,16 +1,19 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import { Nominator, NominatorStatus, Operator } from "../model";
-import type { Ctx, CtxBlock } from "../processor";
-import { getBlockNumber } from "../utils";
+import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
+import { getBlockNumber, getCallSigner } from "../utils";
 import { getOrCreateOperator } from "./operator";
 
 export const createNominator = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
+  extrinsic: CtxExtrinsic,
   props: Partial<Nominator>
 ): Promise<Nominator> => {
-  if (props.operator) props.operator = await getOrCreateOperator(ctx, block, 0);
+  if (!props.account) props.account = getCallSigner(extrinsic.call);
+  if (!props.operator)
+    props.operator = await getOrCreateOperator(ctx, block, 0);
 
   const nominator = new Nominator({
     id: randomUUID(),
@@ -38,14 +41,15 @@ export const createNominator = async (
 export const getOrCreateNominator = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
+  extrinsic: CtxExtrinsic,
   operator: Operator,
-  account: string,
   props: Partial<Nominator> = {}
 ): Promise<Nominator> => {
+  const account = getCallSigner(extrinsic.call);
   const nominator = await ctx.store.findOneBy(Nominator, { account, operator });
 
   if (!nominator)
-    return await createNominator(ctx, block, {
+    return await createNominator(ctx, block, extrinsic, {
       account,
       operator,
       ...props,
