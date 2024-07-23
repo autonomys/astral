@@ -88,9 +88,9 @@ export const DownloadPage: FC = () => {
             <p>Minimum Requirements:</p>
             <ul className='list-inside list-disc'>
               <li>OS: Windows 10 or higher</li>
-              <li>Processor: Intel Core i3 or equivalent</li>
-              <li>RAM: 4 GB</li>
-              <li>Disk Space: 500 MB</li>
+              <li>CPU: 4 Core </li>
+              <li>RAM: 8 GB</li>
+              <li>Disk Space: 100 GB</li>
             </ul>
             <a href={downloadLink} className='btn-download mt-4'>
               Download
@@ -198,10 +198,8 @@ export const DownloadPage: FC = () => {
             By contributing storage and compute to the network, you play a crucial role in securing
             it, while also earning rewards.
           </h3>
-          <h3 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
-            Your work is recognized and compensated based on your active participation, not through
-            passive handouts. This approach ensures a self-sustaining and equitable ecosystem.
-          </h3>
+         
+          
         </div>
 
         <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
