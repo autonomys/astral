@@ -16,7 +16,7 @@ export const formatOperators = (
       currentTotalStake: BigInt(op.currentTotalStake).toString(10),
       currentTotalShares: BigInt(op.currentTotalShares).toString(10),
       totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
-      status: JSON.stringify(op.status.toString()),
+      status: JSON.stringify(op.status),
     } as Operators
   })
 
