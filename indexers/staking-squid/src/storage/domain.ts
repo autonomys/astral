@@ -13,6 +13,7 @@ export const createDomain = async (
     id: randomUUID(),
     domainId: 0,
     completedEpoch: 0,
+    lastDomainBlockNumber: 0,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
