@@ -20,13 +20,50 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
   const { withdrawals } = useConsensusStates()
   const myUnlockedWithdrawals = useMemo(
     () =>
-      withdrawals.filter(
-        (w) =>
-          w.account === subspaceAccount &&
-          w.totalWithdrawalAmount > BIGINT_ZERO &&
-          w.withdrawals.length > 0,
-      ),
-    [withdrawals, subspaceAccount],
+      withdrawals
+        .filter(
+          (w) =>
+            w.account === subspaceAccount &&
+            w.totalWithdrawalAmount > BIGINT_ZERO &&
+            w.withdrawals.length > 0,
+        )
+        .map((w) => {
+          const totalStorageFeeRefund = w.withdrawals.reduce(
+            (acc, w) => acc + w.storageFeeRefund,
+            BIGINT_ZERO,
+          )
+          return {
+            operatorId: {
+              value: w.operatorId.toString(),
+              sortValue: w.operatorId,
+            },
+            totalWithdrawalAmount: {
+              value: `${bigNumberToString(w.totalWithdrawalAmount.toString())} ${selectedChain.token.symbol}`,
+              sortValue: w.totalWithdrawalAmount,
+            },
+            totalStorageFeeRefund: {
+              value: `${bigNumberToString(
+                totalStorageFeeRefund.toString(),
+              )} ${selectedChain.token.symbol}`,
+              sortValue: totalStorageFeeRefund,
+            },
+            unlockAtConfirmedDomainBlockNumber: {
+              value: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString(),
+              sortValue: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
+            },
+            withdrawalsCount: {
+              value: w.withdrawals.length.toString(),
+              sortValue: w.withdrawals.length,
+            },
+            total: {
+              value: `${bigNumberToString(
+                (w.totalWithdrawalAmount + totalStorageFeeRefund).toString(),
+              )} ${selectedChain.token.symbol}`,
+              sortValue: w.totalWithdrawalAmount + totalStorageFeeRefund,
+            },
+          }
+        }),
+    [withdrawals, subspaceAccount, selectedChain.token.symbol],
   )
 
   const myUnlockedWithdrawalsList = useMemo(
@@ -42,79 +79,42 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                 data={myUnlockedWithdrawals}
                 columns={[
                   {
-                    accessorKey: 'operatorId',
+                    accessorKey: 'operatorId.sortValue',
                     header: 'Operator Id',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.operatorId}</div>,
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.operatorId.value}</div>,
                   },
                   {
-                    accessorKey: 'totalWithdrawalAmount',
+                    accessorKey: 'totalWithdrawalAmount.sortValue',
                     header: 'Withdrawal Amount',
-                    enableSorting: false,
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.totalWithdrawalAmount.value}</div>,
+                  },
+                  {
+                    accessorKey: 'totalStorageFeeRefund.sortValue',
+                    header: 'Storage Fee Refund',
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.totalStorageFeeRefund.value}</div>,
+                  },
+                  {
+                    accessorKey: 'unlockAtConfirmedDomainBlockNumber.sortValue',
+                    header: 'Withdrawal at Domain Block Number',
+                    enableSorting: true,
                     cell: ({ row }) => (
-                      <div>
-                        {bigNumberToString(row.original.totalWithdrawalAmount.toString())}{' '}
-                        {selectedChain.token.symbol}
-                      </div>
+                      <div>{row.original.unlockAtConfirmedDomainBlockNumber.value}</div>
                     ),
                   },
                   {
-                    accessorKey: 'totalStorageFeeRefund',
-                    header: 'Storage Fee Refund',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const totalStorageFeeRefund =
-                        row.original.withdrawals &&
-                        row.original.withdrawals.reduce(
-                          (acc, w) => acc + w.storageFeeRefund,
-                          BIGINT_ZERO,
-                        )
-                      return (
-                        <div>
-                          {bigNumberToString(totalStorageFeeRefund.toString())}{' '}
-                          {selectedChain.token.symbol}
-                        </div>
-                      )
-                    },
+                    accessorKey: 'withdrawalsCount.sortValue',
+                    header: 'Withdrawals Count',
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.withdrawalsCount.value}</div>,
                   },
                   {
-                    accessorKey: 'withdrawalInShares.unlockAtConfirmedDomainBlockNumber',
-                    header: 'Withdrawal at Domain Block Number',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      return (
-                        <div>
-                          {row.original.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()}
-                        </div>
-                      )
-                    },
-                  },
-                  {
-                    accessorKey: 'withdrawals',
-                    header: 'Withdrawals',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.withdrawals.length}</div>,
-                  },
-                  {
-                    accessorKey: 'total',
+                    accessorKey: 'total.sortValue',
                     header: 'Total Withdrawal Amount',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const totalStorageFeeRefund =
-                        row.original.withdrawals &&
-                        row.original.withdrawals.reduce(
-                          (acc, w) => acc + w.storageFeeRefund,
-                          BIGINT_ZERO,
-                        )
-                      const total = totalStorageFeeRefund
-                        ? BigInt(row.original.totalWithdrawalAmount) + totalStorageFeeRefund
-                        : BigInt(row.original.totalWithdrawalAmount)
-                      return (
-                        <div>
-                          {bigNumberToString(total.toString())} {selectedChain.token.symbol}
-                        </div>
-                      )
-                    },
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.total.value}</div>,
                   },
                   {
                     accessorKey: 'actions',
@@ -149,7 +149,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
           </div>
         </div>
       ),
-    [action, handleAction, myUnlockedWithdrawals, selectedChain.token.symbol],
+    [action, handleAction, myUnlockedWithdrawals],
   )
 
   return myUnlockedWithdrawalsList
@@ -161,10 +161,51 @@ export const MyPendingWithdrawals: FC = () => {
   const { operators, withdrawals } = useConsensusStates()
   const myPendingWithdrawals = useMemo(
     () =>
-      withdrawals.filter(
-        (w) => w.account === subspaceAccount && w.withdrawalInShares.shares > BIGINT_ZERO,
-      ),
-    [withdrawals, subspaceAccount],
+      withdrawals
+        .filter((w) => w.account === subspaceAccount && w.withdrawalInShares.shares > BIGINT_ZERO)
+        .map((w) => {
+          const op = operators.find((o) => o.id === w.operatorId.toString())
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          const sharesWithdrawAmount = bigNumberToNumber(
+            (w.withdrawalInShares.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+          )
+          const storageFeeWithdrawAmount = bigNumberToNumber(
+            (w.withdrawalInShares.storageFeeRefund * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+          )
+          const total =
+            ((w.withdrawalInShares.shares + w.withdrawalInShares.storageFeeRefund) * sharesValue) /
+            SHARES_CALCULATION_MULTIPLIER
+
+          return {
+            operatorId: {
+              value: w.operatorId.toString(),
+              sortValue: w.operatorId,
+            },
+            shares: {
+              value: `${sharesWithdrawAmount} ${selectedChain.token.symbol}`,
+              tooltip: `Shares: ${w.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${sharesWithdrawAmount}`,
+              sortValue: w.withdrawalInShares.shares,
+            },
+            storageFeeRefund: {
+              value: `${storageFeeWithdrawAmount} ${selectedChain.token.symbol}`,
+              tooltip: `Storage Fee Refund: ${w.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${storageFeeWithdrawAmount}`,
+              sortValue: w.withdrawalInShares.storageFeeRefund,
+            },
+            total: {
+              value: `${bigNumberToString(total.toString())} ${selectedChain.token.symbol}`,
+              sortValue: total,
+            },
+            unlockAtConfirmedDomainBlockNumber: {
+              value: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString(),
+              sortValue: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
+            },
+          }
+        }),
+    [withdrawals, subspaceAccount, operators, selectedChain.token.symbol],
   )
 
   const myPendingWithdrawalsList = useMemo(
@@ -180,98 +221,36 @@ export const MyPendingWithdrawals: FC = () => {
                 data={myPendingWithdrawals}
                 columns={[
                   {
-                    accessorKey: 'operatorId',
+                    accessorKey: 'operatorId.sortValue',
                     header: 'Operator Id',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.operatorId}</div>,
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.operatorId.value}</div>,
                   },
                   {
-                    accessorKey: 'shares',
+                    accessorKey: 'shares.sortValue',
                     header: 'Withdrawal Amount',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const op = operators.find((o) => o.id === row.original.operatorId.toString())
-                      const sharesValue =
-                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
-                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
-                            BigInt(op.currentTotalShares)
-                          : BIGINT_ZERO
-                      const withdrawAmount = bigNumberToNumber(
-                        (row.original.withdrawalInShares.shares * sharesValue) /
-                          SHARES_CALCULATION_MULTIPLIER,
-                      )
-                      return (
-                        <div>
-                          <Tooltip
-                            text={`Shares: ${row.original.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
-                          >
-                            {withdrawAmount} {selectedChain.token.symbol}
-                          </Tooltip>
-                        </div>
-                      )
-                    },
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.shares.value}</div>,
                   },
                   {
-                    accessorKey: 'storageFeeRefund',
+                    accessorKey: 'storageFeeRefund.sortValue',
                     header: 'Storage Fee Refund',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const op = operators.find((o) => o.id === row.original.operatorId.toString())
-                      const sharesValue =
-                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
-                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
-                            BigInt(op.currentTotalShares)
-                          : BIGINT_ZERO
-                      const withdrawAmount = bigNumberToNumber(
-                        (row.original.withdrawalInShares.storageFeeRefund * sharesValue) /
-                          SHARES_CALCULATION_MULTIPLIER,
-                      )
-                      return (
-                        <div>
-                          <Tooltip
-                            text={`Shares: ${row.original.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
-                          >
-                            {withdrawAmount} {selectedChain.token.symbol}
-                          </Tooltip>
-                        </div>
-                      )
-                    },
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.storageFeeRefund.value}</div>,
                   },
                   {
-                    accessorKey: 'total',
+                    accessorKey: 'total.sortValue',
                     header: 'Total Withdrawal Amount',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const op = operators.find((o) => o.id === row.original.operatorId.toString())
-                      const sharesValue =
-                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
-                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
-                            BigInt(op.currentTotalShares)
-                          : BIGINT_ZERO
-                      const withdrawAmount = bigNumberToNumber(
-                        ((row.original.withdrawalInShares.shares +
-                          row.original.withdrawalInShares.storageFeeRefund) *
-                          sharesValue) /
-                          SHARES_CALCULATION_MULTIPLIER,
-                      )
-                      return (
-                        <div>
-                          {withdrawAmount} {selectedChain.token.symbol}
-                        </div>
-                      )
-                    },
+                    enableSorting: true,
+                    cell: ({ row }) => <div>{row.original.total.value}</div>,
                   },
                   {
-                    accessorKey: 'unlockAtConfirmedDomainBlockNumber',
+                    accessorKey: 'unlockAtConfirmedDomainBlockNumber.sortValue',
                     header: 'Withdrawal at Domain Block Number',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      return (
-                        <div>
-                          {row.original.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()}
-                        </div>
-                      )
-                    },
+                    enableSorting: true,
+                    cell: ({ row }) => (
+                      <div>{row.original.unlockAtConfirmedDomainBlockNumber.value}</div>
+                    ),
                   },
                 ]}
                 showNavigation={false}
@@ -282,7 +261,7 @@ export const MyPendingWithdrawals: FC = () => {
           </div>
         </div>
       ),
-    [myPendingWithdrawals, operators, selectedChain.token.symbol],
+    [myPendingWithdrawals],
   )
 
   return myPendingWithdrawalsList
