@@ -5,7 +5,6 @@ import useWallet from 'hooks/useWallet'
 import { FC, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import { SortedTable } from '../common/SortedTable'
-import { Tooltip } from '../common/Tooltip'
 import { ActionsDropdown } from './ActionsDropdown'
 import { OperatorAction, OperatorActionType } from './ActionsModal'
 
