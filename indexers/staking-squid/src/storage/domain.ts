@@ -29,11 +29,12 @@ export const createDomain = async (
 export const getOrCreateDomain = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
-  domainId: number
+  domainId: number,
+  props: Partial<Domain> = {}
 ): Promise<Domain> => {
   const domain = await ctx.store.findOneBy(Domain, { domainId });
 
-  if (!domain) return await createDomain(ctx, block, { domainId });
+  if (!domain) return await createDomain(ctx, block, { domainId, ...props });
 
   return domain;
 };

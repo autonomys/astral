@@ -39,7 +39,8 @@ export const getOrCreateNominator = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
   operator: Operator,
-  account: string
+  account: string,
+  props: Partial<Nominator> = {}
 ): Promise<Nominator> => {
   const nominator = await ctx.store.findOneBy(Nominator, { account, operator });
 
@@ -47,6 +48,7 @@ export const getOrCreateNominator = async (
     return await createNominator(ctx, block, {
       account,
       operator,
+      ...props,
     });
 
   return nominator;
