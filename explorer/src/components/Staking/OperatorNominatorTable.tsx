@@ -1,6 +1,6 @@
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { PAGE_SIZE } from 'constants/general'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   NominatorOrderByInput,
@@ -147,20 +147,22 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
             (d) => d.account === row.original.account.id && d.operatorId.toString() === operatorId,
           )
           const sharesValue =
-            op && BigInt(op.currentTotalShares) > BigInt(0)
-              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
-              : BigInt(0)
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
           return (
             <div>
-              {deposit && deposit.shares !== '0' && (
+              {deposit && deposit.shares > BIGINT_ZERO && (
                 <>
-                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * BigInt(sharesValue)) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
                   <br />
                 </>
               )}
               {deposit &&
-                deposit.pending.amount !== '0' &&
-                `Pending: ${bigNumberToNumber((BigInt(deposit.pending.amount) + BigInt(deposit.pending.storageFeeDeposit)).toString())} ${selectedChain.token.symbol}`}
+                deposit.pending !== null &&
+                deposit.pending.amount > BIGINT_ZERO &&
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${selectedChain.token.symbol}`}
             </div>
           )
         },
