@@ -682,29 +682,14 @@ export const OperatorsList: FC = () => {
                   },
                 ]}
                 showNavigation={false}
-                sorting={sorting}
-                onSortingChange={setSorting}
-                pagination={pagination}
-                pageCount={pageCount}
-                onPaginationChange={setPagination}
-                filename='operators-my-withdrawals-list'
-                pageSizeOptions={[10]}
-                fullDataDownloader={fullDataDownloader}
+                pageCount={1}
+                filename='staking-my-pending-withdrawals-list'
               />
             </div>
           </div>
         </div>
       ),
-    [
-      action,
-      fullDataDownloader,
-      handleAction,
-      myUnlockedWithdrawals,
-      pageCount,
-      pagination,
-      selectedChain.token.symbol,
-      sorting,
-    ],
+    [action, handleAction, myUnlockedWithdrawals, selectedChain.token.symbol],
   )
 
   const myPendingWithdrawalsList = useMemo(
@@ -821,28 +806,14 @@ export const OperatorsList: FC = () => {
                   },
                 ]}
                 showNavigation={false}
-                sorting={sorting}
-                onSortingChange={setSorting}
-                pagination={pagination}
-                pageCount={pageCount}
-                onPaginationChange={setPagination}
-                filename='operators-my-withdrawals-list'
-                pageSizeOptions={[10]}
-                fullDataDownloader={fullDataDownloader}
+                pageCount={1}
+                filename='staking-my-pending-withdrawals-list'
               />
             </div>
           </div>
         </div>
       ),
-    [
-      fullDataDownloader,
-      myPendingWithdrawals,
-      pageCount,
-      pagination,
-      rpcOperators,
-      selectedChain.token.symbol,
-      sorting,
-    ],
+    [myPendingWithdrawals, rpcOperators, selectedChain.token.symbol],
   )
 
   useEffect(() => {
