@@ -1,5 +1,3 @@
-import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
-import { camelToNormal, shortString } from '@/utils/string'
 import { remark, transfer } from '@autonomys/auto-consensus'
 import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -23,7 +21,10 @@ import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
 import { FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useAddressBookStates } from 'states/addressBook'
 import { formatAddress } from 'utils//formatAddress'
+import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
+import { camelToNormal, shortString } from 'utils/string'
 import * as Yup from 'yup'
 import {
   CustomExtrinsicFormValues,
@@ -62,6 +63,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
   const [addressBookIsOpen, setAddressBookIsOpen] = useState<boolean>(false)
   const { sendAndSaveTx, handleTxError } = useTxHelper()
+  const { addresses } = useAddressBookStates()
 
   const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
@@ -422,7 +424,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                     >
                                       {({ selected }) => {
                                         const subAccount =
-                                          account.type === WalletType.subspace
+                                          account.type === WalletType.subspace ||
+                                          (account as { type: string }).type === 'sr25519'
                                             ? formatAddress(account.address)
                                             : account.address
                                         const formattedAccount =
@@ -432,7 +435,43 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                             <span
                                               className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                             >
-                                              {account.name} {formattedAccount}
+                                              {account.name} {formattedAccount}{' '}
+                                              <span className='my-0 ml-4 rounded-full bg-grayDarker text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                                                Wallet
+                                              </span>
+                                            </span>
+                                          </div>
+                                        )
+                                      }}
+                                    </Listbox.Option>
+                                  ))}
+                                {addresses &&
+                                  addresses.map((address, index) => (
+                                    <Listbox.Option
+                                      key={`address-book-saved-${index}-label-${address.label}`}
+                                      className={({ active }) =>
+                                        `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
+                                          active && 'bg-gray-100 dark:bg-blueDarkAccent'
+                                        }`
+                                      }
+                                      value={address.address}
+                                      onClick={() => setFieldValue('receiver', address.address)}
+                                    >
+                                      {({ selected }) => {
+                                        const subAccount = !address.address.startsWith('st')
+                                          ? formatAddress(address.address)
+                                          : address.address
+                                        const formattedAccount =
+                                          subAccount && shortString(subAccount)
+                                        return (
+                                          <div className='px-2'>
+                                            <span
+                                              className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                                            >
+                                              {address.label} {formattedAccount}{' '}
+                                              <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                                                Saved
+                                              </span>
                                             </span>
                                           </div>
                                         )
@@ -746,6 +785,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     maxAmount,
     ErrorPlaceholder,
     accounts,
+    addresses,
     addressBookIsOpen,
     handleSendRemark,
     handleSignMessage,

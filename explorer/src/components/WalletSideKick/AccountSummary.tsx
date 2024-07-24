@@ -1,13 +1,17 @@
-import { limitNumberDecimals } from '@/utils/number'
 import { shortString } from '@/utils/string'
+import { BookOpenIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
+import { Tooltip } from 'components/common/Tooltip'
 import type { Chain } from 'constants/chains'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { AccountPreferenceSection } from 'constants/wallet'
 import Link from 'next/link'
-import { FC, useEffect } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { limitNumberDecimals } from 'utils/number'
 import { AccountIcon } from '../common/AccountIcon'
 import { AccountBadge } from './AccountBadge'
+import { AccountPreferencesModal } from './AccountPreferencesModal'
 import { useLeaderboard } from './Leaderboard'
 
 interface AccountSummaryProps {
@@ -27,7 +31,18 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
 }) => {
   const { ref, inView } = useInView()
   const { topFarmers, topOperators, topNominators, setIsVisible } = useLeaderboard(subspaceAccount)
-  const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
+  const theme = useMemo(() => (selectedChain.isDomain ? 'ethereum' : 'beachball'), [selectedChain])
+  const [preference, setPreference] = useState<AccountPreferenceSection>(
+    AccountPreferenceSection.None,
+  )
+  const [preferenceIsOpen, setPreferenceIsOpen] = useState(false)
+
+  const onClose = useCallback(() => setPreferenceIsOpen(false), [])
+
+  const onClick = useCallback((section: AccountPreferenceSection) => {
+    setPreference(section)
+    setPreferenceIsOpen(true)
+  }, [])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -100,6 +115,21 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
         <div className='m-2 flex items-center'>
           {limitNumberDecimals(walletBalance)} {tokenSymbol}
         </div>
+        <div className='flex items-center justify-center gap-3'>
+          <Tooltip text='Address book'>
+            <button
+              onClick={() => onClick(AccountPreferenceSection.AddressBook)}
+              className='m-2 flex cursor-default items-center justify-center rounded-full bg-purpleAccent p-2'
+            >
+              <BookOpenIcon className='w-8 text-white' />
+            </button>
+          </Tooltip>
+        </div>
+        <AccountPreferencesModal
+          isOpen={preferenceIsOpen}
+          preference={preference}
+          onClose={onClose}
+        />
       </Accordion>
     </div>
   )
