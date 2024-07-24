@@ -33,3 +33,8 @@ export enum SupportedWalletExtension {
   SubwalletJs = 'subwallet-js',
   Nova = 'nova',
 }
+
+export enum AccountPreferenceSection {
+  None = 'None',
+  AddressBook = 'addressBook',
+}
