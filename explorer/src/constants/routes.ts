@@ -41,14 +41,14 @@ export const EXTERNAL_ROUTES = {
   operatorDocs:
     'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
   social: {
-    twitter: 'https://twitter.com/NetworkSubspace',
+    twitter: 'https://x.com/AutonomysNet',
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/subspace',
     reddit: 'https://www.reddit.com/r/sub',
     medium: 'https://medium.com/subspace-network',
     youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',
-    linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
+    linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
   novaExplorer: 'https://nova.subspace.network/',
