@@ -14,8 +14,8 @@ export async function processBundleStoredEvent(
   const domainId = Number(event.args.domainId);
   const operatorId = Number(event.args.bundleAuthor);
   const lastDomainBlockNumber = Number(
-    extrinsic.call?.args[0].value.sealed_header.header.receipt
-      .domain_block_number
+    extrinsic.call?.args.opaqueBundle.sealedHeader.header.receipt
+      .domainBlockNumber
   );
   const domain = await getOrCreateDomain(ctx, block, domainId);
   const operator = await getOrCreateOperator(ctx, block, operatorId);
