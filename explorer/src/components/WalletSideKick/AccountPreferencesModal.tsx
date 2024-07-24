@@ -1,7 +1,6 @@
 import { isAddress } from '@polkadot/util-crypto'
 import { Modal } from 'components/common/Modal'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
-import { isAddress as isEvmAddress } from 'ethers'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useMemo, useState } from 'react'
@@ -41,7 +40,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
           .test(
             'is-valid-address',
             'Invalid address (must be a valid Polkadot or Ethereum address)',
-            (value) => isAddress(value) || isEvmAddress(value),
+            (value) => isAddress(value),
           )
           .required('Address is required'),
         label: Yup.string()
