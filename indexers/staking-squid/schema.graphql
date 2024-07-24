@@ -147,16 +147,18 @@ type OperatorFeesEarned @entity {
 type Stats @entity {
   id: ID! @index
   blockNumber: Int! @index
-  totalDomains: Int!
-  totalOperators: Int!
-  totalNominators: Int!
-  totalActiveOperators: Int!
-  totalSlashedOperators: Int!
   totalStaked: BigInt!
   totalFees: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
+  domainsCount: Int!
+  operatorsCount: Int!
+  activeOperatorsCount: Int!
+  slashedOperatorsCount: Int!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
   timestamp: DateTime! @index
 }
 
@@ -164,15 +166,17 @@ type StatsPerDomain @entity {
   id: ID! @index
   domainId: Int! @index
   blockNumber: Int! @index
-  totalOperators: Int!
-  totalNominators: Int!
-  totalActiveOperators: Int!
-  totalSlashedOperators: Int!
   totalStaked: BigInt!
   totalFees: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
+  operatorsCount: Int!
+  activeOperatorsCount: Int!
+  slashedOperatorsCount: Int!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
   timestamp: DateTime! @index
 }
 
@@ -181,11 +185,13 @@ type StatsPerOperator @entity {
   domainId: Int! @index
   operatorId: Int! @index
   blockNumber: Int! @index
-  totalNominators: Int!
   totalStaked: BigInt!
   totalFees: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
   timestamp: DateTime! @index
 }
