@@ -16,7 +16,7 @@ export const formatOperators = (
       currentTotalStake: BigInt(op.currentTotalStake).toString(10),
       currentTotalShares: BigInt(op.currentTotalShares).toString(10),
       totalStorageFeeDeposit: BigInt(op.totalStorageFeeDeposit).toString(10),
-      status: JSON.stringify(op.status.toString()),
+      status: JSON.stringify(op.status),
     } as Operators
   })
 
@@ -54,7 +54,6 @@ export const formatWithdrawals = (withdrawals: [StorageKey<AnyTuple>, Codec][]) 
       operatorId: parseInt(withdrawalHeader[0]),
       account: withdrawalHeader[1],
       totalWithdrawalAmount: BigInt(parsedWithdrawal.totalWithdrawalAmount),
-      withdrawals: parsedWithdrawal.withdrawals,
       withdrawalInShares: {
         domainEpoch: parsedWithdrawal.withdrawalInShares.domainEpoch,
         unlockAtConfirmedDomainBlockNumber:
@@ -62,5 +61,14 @@ export const formatWithdrawals = (withdrawals: [StorageKey<AnyTuple>, Codec][]) 
         shares: BigInt(parsedWithdrawal.withdrawalInShares.shares),
         storageFeeRefund: BigInt(parsedWithdrawal.withdrawalInShares.storageFeeRefund),
       },
+      withdrawals:
+        parsedWithdrawal.withdrawals &&
+        parsedWithdrawal.withdrawals.length > 0 &&
+        parsedWithdrawal.withdrawals.map((w) => ({
+          domainId: w.domainId,
+          unlockAtConfirmedDomainBlockNumber: w.unlockAtConfirmedDomainBlockNumber,
+          amountToUnlock: BigInt(w.amountToUnlock),
+          storageFeeRefund: BigInt(w.storageFeeRefund),
+        })),
     } as Withdrawal
   })
