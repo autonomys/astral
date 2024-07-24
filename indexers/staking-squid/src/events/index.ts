@@ -10,6 +10,7 @@ import {
   processOperatorSlashedEvent,
   processOperatorTaxCollectedEvent,
 } from "./operator";
+import { processWithdrewStakeEvent } from "./withdraw";
 
 export async function processEvents(
   ctx: ProcessorContext<Store>,
@@ -54,6 +55,16 @@ async function processEvent(
     // operator and nomination
     case events.domains.operatorNominated.name:
       return await processOperatorNominatedEvent(
+        ctx,
+        apiAt,
+        block,
+        extrinsic,
+        event
+      );
+
+    // deposit and stake
+    case events.domains.withdrewStake.name:
+      return await processWithdrewStakeEvent(
         ctx,
         apiAt,
         block,

@@ -1,6 +1,6 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { Operator, Withdrawal, WithdrawalStatus } from "../model";
+import { Nominator, Operator, Withdrawal, WithdrawalStatus } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getCallSigner, getTimestamp } from "../utils";
 import { getOrCreateNominator } from "./nominator";
@@ -47,6 +47,7 @@ export const getOrCreateWithdrawal = async (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operator: Operator,
+  nominator: Nominator,
   props: Partial<Withdrawal> = {}
 ): Promise<Withdrawal> => {
   const account = getCallSigner(extrinsic.call);
@@ -54,12 +55,15 @@ export const getOrCreateWithdrawal = async (
   const withdrawal = await ctx.store.findOneBy(Withdrawal, {
     account,
     blockNumber,
+    operator,
+    nominator,
   });
 
   if (!withdrawal)
     return await createWithdrawal(ctx, block, extrinsic, {
       account,
       operator,
+      nominator,
       ...props,
     });
 

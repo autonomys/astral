@@ -1,6 +1,6 @@
 import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { Deposit, DepositStatus, Operator } from "../model";
+import { Deposit, DepositStatus, Nominator, Operator } from "../model";
 import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getCallSigner, getTimestamp } from "../utils";
 import { getOrCreateNominator } from "./nominator";
@@ -48,16 +48,23 @@ export const getOrCreateDeposit = async (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operator: Operator,
+  nominator: Nominator,
   props: Partial<Deposit> = {}
 ): Promise<Deposit> => {
   const account = getCallSigner(extrinsic.call);
   const blockNumber = getBlockNumber(block);
-  const deposit = await ctx.store.findOneBy(Deposit, { account, blockNumber });
+  const deposit = await ctx.store.findOneBy(Deposit, {
+    account,
+    blockNumber,
+    operator,
+    nominator,
+  });
 
   if (!deposit)
     return await createDeposit(ctx, block, extrinsic, {
       account,
       operator,
+      nominator,
       ...props,
     });
 

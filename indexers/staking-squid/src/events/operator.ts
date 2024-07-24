@@ -43,10 +43,17 @@ export async function processOperatorNominatedEvent(
       shares,
     }
   );
-  const deposit = await getOrCreateDeposit(ctx, block, extrinsic, operator, {
-    amount,
-    storageFeeDeposit,
-  });
+  const deposit = await getOrCreateDeposit(
+    ctx,
+    block,
+    extrinsic,
+    operator,
+    nominator,
+    {
+      amount,
+      storageFeeDeposit,
+    }
+  );
 
   operator.totalDeposits += deposit.amount;
 
