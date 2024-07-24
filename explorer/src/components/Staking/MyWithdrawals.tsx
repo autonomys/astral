@@ -70,7 +70,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
       myUnlockedWithdrawals.length > 0 && (
         <div className='mt-5 flex flex-col gap-2'>
           <div className='text-base font-medium text-grayDark dark:text-white'>
-            My Unlocked Withdrawals ({myUnlockedWithdrawals.length})
+            My Withdrawals ready to be Unlocked ({myUnlockedWithdrawals.length})
           </div>
           <div className='flex w-full flex-col sm:mt-0'>
             <div className='my-6 rounded'>
