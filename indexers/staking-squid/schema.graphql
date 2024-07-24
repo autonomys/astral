@@ -2,6 +2,8 @@ type Domain @entity {
   id: ID! @index
   domainId: Int! @index
   completedEpoch: Int! @index
+  lastOperatorBundleProduced: Operator!
+  lastDomainBlockNumber: Int! @index
   createdAt: Int @index
   updatedAt: Int @index
 }
@@ -71,6 +73,9 @@ type Nominator @entity {
   withdrawals: [Withdrawal!]!
     @derivedFrom(field: "nominator")
     @cardinality(value: 1000000000)
+  totalDeposits: BigInt!
+  depositsCount: Int!
+  withdrawalsCount: Int!
   status: NominatorStatus! @index
   createdAt: Int @index
   updatedAt: Int @index

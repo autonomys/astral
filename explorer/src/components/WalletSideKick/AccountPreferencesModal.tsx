@@ -1,3 +1,4 @@
+import { isAddress } from '@polkadot/util-crypto'
 import { Modal } from 'components/common/Modal'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
@@ -48,6 +49,11 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
           .notOneOf(
             addresses.map((a) => a.address),
             'Address already exists in the address book',
+          )
+          .test(
+            'is-valid-address',
+            'Invalid address (must be a valid Polkadot or Ethereum address)',
+            (value) => isAddress(value),
           )
           .required('Address is required'),
         label: Yup.string()
