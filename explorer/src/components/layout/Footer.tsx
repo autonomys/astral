@@ -30,6 +30,16 @@ const Footer: FC = () => {
             <div>
               <h2 className='title-font mb-6 text-xs font-semibold uppercase text-white'>Links:</h2>
               <ul className='text-whiteOpaque dark:text-gray-400'>
+                <li key='academy' className='mb-4'>
+                  <a
+                    target='_blank'
+                    href={EXTERNAL_ROUTES.academy}
+                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    rel='noreferrer'
+                  >
+                    Academy
+                  </a>
+                </li>
                 <li key='forum' className='mb-4'>
                   <a
                     href={EXTERNAL_ROUTES.forum}
@@ -74,7 +84,7 @@ const Footer: FC = () => {
                     className='text-xs text-whiteOpaque hover:text-purpleAccent'
                     rel='noreferrer'
                   >
-                    Twitter
+                    X / Twitter
                   </a>
                 </li>
                 <li key='discord'>

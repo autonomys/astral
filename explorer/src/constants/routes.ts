@@ -33,6 +33,7 @@ export const ROUTES = [
 
 export const EXTERNAL_ROUTES = {
   autonomys: 'https://autonomys.net/',
+  academy: 'https://academy.autonomys.net/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
   forum: 'https://forum.subspace.network/',
   gemini2guide:
