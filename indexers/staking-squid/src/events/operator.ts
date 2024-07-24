@@ -2,8 +2,76 @@ import type { ApiDecoration } from "@polkadot/api/types";
 import type { Store } from "@subsquid/typeorm-store";
 import { Nominator, NominatorStatus, OperatorStatus } from "../model";
 import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
-import { getOrCreateOperator } from "../storage";
-import { getBlockNumber } from "../utils";
+import {
+  getOrCreateDeposit,
+  getOrCreateNominator,
+  getOrCreateOperator,
+} from "../storage";
+import { events } from "../types";
+import { appendOrArray, getBlockNumber } from "../utils";
+
+export async function processOperatorNominatedEvent(
+  ctx: Ctx<Store>,
+  apiAt: ApiDecoration<"promise">,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic,
+  event: CtxEvent
+) {
+  const operatorId = Number(event.args.operatorId);
+
+  const storageFeeDepositedEvent = extrinsic.events.find(
+    (e) => e.name === events.domains.storageFeeDeposited.name
+  );
+
+  const shares = extrinsic.call
+    ? BigInt(extrinsic.call.args.shares)
+    : BigInt(0);
+  const amount = extrinsic.call
+    ? BigInt(extrinsic.call.args.amount)
+    : BigInt(0);
+  const storageFeeDeposit = storageFeeDepositedEvent
+    ? BigInt(storageFeeDepositedEvent.args.amount)
+    : BigInt(0);
+
+  const operator = await getOrCreateOperator(ctx, block, operatorId);
+  const nominator = await getOrCreateNominator(
+    ctx,
+    block,
+    extrinsic,
+    operator,
+    {
+      shares,
+    }
+  );
+  const deposit = await getOrCreateDeposit(ctx, block, extrinsic, operator, {
+    amount,
+    storageFeeDeposit,
+  });
+
+  operator.totalDeposits += deposit.amount;
+
+  const operatorNominators = appendOrArray(operator.nominators, nominator);
+  operator.nominators = operatorNominators;
+  operator.nominatorsCount = operatorNominators.length;
+
+  const operatorDeposits = appendOrArray(operator.deposits, deposit);
+  operator.deposits = operatorDeposits;
+  operator.depositsCount = operatorDeposits.length;
+
+  operator.updatedAt = getBlockNumber(block);
+
+  await ctx.store.save(operator);
+
+  nominator.totalDeposits += deposit.amount;
+
+  const nominatorDeposits = appendOrArray(nominator.deposits, deposit);
+  nominator.deposits = nominatorDeposits;
+  nominator.depositsCount = nominatorDeposits.length;
+
+  nominator.updatedAt = getBlockNumber(block);
+
+  await ctx.store.save(nominator);
+}
 
 export async function processOperatorSlashedEvent(
   ctx: Ctx<Store>,
