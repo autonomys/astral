@@ -5,7 +5,8 @@
     "node": ">=16"
   },
   "scripts": {
-    "build": "rm -rf lib && tsc"
+    "build": "rm -rf lib && tsc",
+    "deploy": "sqd deploy --org autonomys-labs ."
   },
   "repository": {
     "type": "git",
