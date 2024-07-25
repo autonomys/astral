@@ -45,7 +45,7 @@ export const EXTERNAL_ROUTES = {
     twitter: 'https://x.com/AutonomysNet',
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
-    github: 'https://github.com/subspace',
+    github: 'https://github.com/autonomys',
     reddit: 'https://www.reddit.com/r/sub',
     medium: 'https://medium.com/subspace-network',
     youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',

@@ -52,7 +52,7 @@ For more details on development workflow, please, refer to the Squid template [D
 
 This repository utilizes GitHub workflow to build Docker images and push them to container registry. For more details check [`gh-container-image.yml`](../.github/workflows/gh-container-image.yml).
 
-Guide on setting up the environment, including sample `docker-compose.yml` and Nginx config can be found [here](https://github.com/subspace/infra/tree/main/_docs/8_BlockExplorerSquid)
+Guide on setting up the environment, including sample `docker-compose.yml` and Nginx config can be found [here](https://github.com/autonomys/infra/tree/main/_docs/8_BlockExplorerSquid)
 
 ## End-to-end testing
 

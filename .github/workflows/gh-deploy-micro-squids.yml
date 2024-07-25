@@ -39,7 +39,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
           ssh ${SSH_USER}@${{ secrets.SQUID_HOST }} "
             if [ ! -d ${DEPLOY_PATH} ]; then
-              git clone https://github.com/subspace/astral.git ${DEPLOY_PATH}
+              git clone https://github.com/autonomys/astral.git ${DEPLOY_PATH}
             else
               cd ${DEPLOY_PATH}
               git pull

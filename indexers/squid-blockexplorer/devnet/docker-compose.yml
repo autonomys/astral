@@ -19,22 +19,32 @@ services:
         ipv4_address: 172.20.0.6
     restart: unless-stopped
     command: [
-      # using `--chain dev` for e2e tests setup
-      "--chain", "dev",
-      "--base-path", "/var/subspace",
-      "--execution", "wasm",
-      "--blocks-pruning", "archive",
-      "--state-pruning", "archive",
-      "--port", "30333",
-      "--dsn-listen-on", "/ip4/172.20.0.6/tcp/30433",
-      "--rpc-cors", "all",
-      "--rpc-methods", "safe",
-      "--unsafe-ws-external",
-      "--validator",
-      "--name", "LOCAL_SUBSPACE_TESNET_NODE",
-      "--force-authoring",
-      "--force-synced"
-    ]
+        # using `--chain dev` for e2e tests setup
+        "--chain",
+        "dev",
+        "--base-path",
+        "/var/subspace",
+        "--execution",
+        "wasm",
+        "--blocks-pruning",
+        "archive",
+        "--state-pruning",
+        "archive",
+        "--port",
+        "30333",
+        "--dsn-listen-on",
+        "/ip4/172.20.0.6/tcp/30433",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "safe",
+        "--unsafe-ws-external",
+        "--validator",
+        "--name",
+        "LOCAL_SUBSPACE_TESNET_NODE",
+        "--force-authoring",
+        "--force-synced",
+      ]
     healthcheck:
       timeout: 5s
       interval: 30s
@@ -54,14 +64,20 @@ services:
       mynetwork:
         ipv4_address: 172.20.0.7
     restart: unless-stopped
-    command: [
-      "--base-path", "/var/subspace",
-      "farm",
-      "--node-rpc-url", "ws://node:9944",
-      "--listen-on", "/ip4/0.0.0.0/tcp/30533",
-      "--reward-address", "JHsf5YvwXqatWnMjYqWNuWNqgNrEMZJAqp25P6LQ5SAmtRM",
-      "--plot-size", "10G"
-    ]
+    command:
+      [
+        "--base-path",
+        "/var/subspace",
+        "farm",
+        "--node-rpc-url",
+        "ws://node:9944",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30533",
+        "--reward-address",
+        "JHsf5YvwXqatWnMjYqWNuWNqgNrEMZJAqp25P6LQ5SAmtRM",
+        "--plot-size",
+        "10G",
+      ]
 
   db:
     depends_on:
@@ -78,12 +94,17 @@ services:
       - db
     restart: on-failure
     image: subsquid/substrate-ingest:firesquid
-    command: [
-      "-e", "ws://host.docker.internal:9944",
-      "-c", "10",
-      "--prom-port", "9090",
-      "--out", "postgres://postgres:postgres@db:5432/squid-archive"
-    ]
+    command:
+      [
+        "-e",
+        "ws://host.docker.internal:9944",
+        "-c",
+        "10",
+        "--prom-port",
+        "9090",
+        "--out",
+        "postgres://postgres:postgres@db:5432/squid-archive",
+      ]
 
   gateway:
     depends_on:
@@ -92,10 +113,13 @@ services:
     environment:
       RUST_LOG: "substrate_gateway=info,actix_server=info"
     command: [
-       "--database-url", "postgres://postgres:postgres@db:5432/squid-archive",
-       "--database-max-connections", "3", # max number of concurrent database connections
-       "--scan-start-value", "20", # works as batch size but for a whole archive, default is 100
-    ]
+        "--database-url",
+        "postgres://postgres:postgres@db:5432/squid-archive",
+        "--database-max-connections",
+        "3", # max number of concurrent database connections
+        "--scan-start-value",
+        "20", # works as batch size but for a whole archive, default is 100
+      ]
     ports:
       - "8888:8000"
 

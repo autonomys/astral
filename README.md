@@ -1,4 +1,4 @@
-![build](https://github.com/subspace/blockexplorer/actions/workflows/build.yaml/badge.svg)
+![build](https://github.com/autonomys//blockexplorer/actions/workflows/build.yaml/badge.svg)
 
 # Astral
 
@@ -13,16 +13,16 @@
         <td width="50%" valign="top" border="0">
         <picture>
           <source 
-              srcset="https://github.com/subspace/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
+              srcset="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
               media="(prefers-color-scheme: dark)"
           />
           <source
-              srcset="https://github.com/subspace/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
+              srcset="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
               media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
           />
           <img
             alt="Astral Block Explorer"
-            src="https://github.com/subspace/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
+            src="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
             align="left"
             width="100%"
         />
@@ -31,16 +31,16 @@
     <td width="50%" valign="top" border="0">
       <picture>
       <source 
-          srcset="https://github.com/subspace/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
+          srcset="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
           media="(prefers-color-scheme: dark)"
       />
       <source
-          srcset="https://github.com/subspace/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
+          srcset="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
           media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
       />
       <img
           alt="Astral Block Explorer"
-          src="https://github.com/subspace/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
+          src="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
           align="left"
           width="100%"
       />
@@ -51,11 +51,11 @@
 
 ## Astral Subsquid Playground
 
-![Astral Subsquid Playground](https://github.com/subspace/astral/assets/82244926/24ee475d-b6e6-446c-a54c-3ecdb3b72dfd)
+![Astral Subsquid Playground](https://github.com/autonomys/astral/assets/82244926/24ee475d-b6e6-446c-a54c-3ecdb3b72dfd)
 
 ## Subspace Network Status Page
 
-![Subspace Network Status Page](https://github.com/subspace/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
+![Subspace Network Status Page](https://github.com/autonomys/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
 
 ## Overview
 
@@ -82,7 +82,7 @@ You can also find the instructions for setting up the Squid backend and Health c
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/subspace/astral.git
+   git clone https://github.com/autonomys/astral.git
    cd astral
    ```
 
