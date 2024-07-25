@@ -98,17 +98,17 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@autonomys/auto-consensus@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.1.4.tgz#6d8a6022a3f5ff54265b60c67a0e48849cbcd2ad"
-  integrity sha512-LH2vZnLAsz6NScH/+/ehiKJP9Mtug9wKZf75h5Lflk3mFzjCaB+6RQOosKdNRKk4Oh+5y2XM8SbfUaERk8omqw==
+"@autonomys/auto-consensus@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.1.8.tgz#3d15cfdc8bc8e06f43ae939099b0c61c0b189222"
+  integrity sha512-bo+U6l3xEQtiUATzI6wJ0aZ7abqbg3+SphVFR/bT9HZ7G3wgwOIbzvoXmghJbehcLY+i51WDiqsB5hbDI3U0qg==
   dependencies:
-    "@autonomys/auto-utils" "^0.1.4"
+    "@autonomys/auto-utils" "^0.1.8"
 
-"@autonomys/auto-utils@^0.1.4":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.1.4.tgz#084cb164762c5eafa41f1d23b9795e065a83f205"
-  integrity sha512-+GSO9/a/IRobMS+Hgad1UKanDsiSVDihXWF9EEJ+UJj5xJZaq+Sszc665srJ2BcW0MupXbR9kblErjWBjRKbSg==
+"@autonomys/auto-utils@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.1.8.tgz#269090c20e339f6f62d55218c2b4bb019c476b3f"
+  integrity sha512-0Ak93TYNh8UZbx/zLKXeo4+CuHcj50O1ql+/CO/SqeLRhgzA/l++lOlGRb4vWpr2IVReWGPY76986Yo4kSqHXQ==
   dependencies:
     "@polkadot/api" "^11.2.1"
     "@polkadot/extension-dapp" "^0.47.5"
@@ -2461,7 +2461,7 @@
     rxjs "^7.8.1"
     tslib "^2.6.2"
 
-"@polkadot/api@10.12.1", "@polkadot/api@^10.11.3", "@polkadot/api@^10.12.1":
+"@polkadot/api@10.12.1", "@polkadot/api@^10.11.3":
   version "10.12.1"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-10.12.1.tgz#a2fa0bde2dafd74a2374ab166f85d80bf1ca588b"
   integrity sha512-6pZPpgyxSphse9PCZ/QxUygk0BYbcCNjr5ERZZsTE/F1znZ62Ce63A8AE0bwga9ITkiVISLDSU36hghKs3tVhA==
