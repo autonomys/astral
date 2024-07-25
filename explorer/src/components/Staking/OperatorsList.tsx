@@ -6,7 +6,7 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { Chains, PAGE_SIZE } from 'constants/'
+import { BIGINT_ZERO, Chains, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorOrderByInput,
@@ -43,6 +43,7 @@ import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
+import { MyPendingWithdrawals, MyUnlockedWithdrawals } from './MyWithdrawals'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorsList: FC = () => {
@@ -55,7 +56,7 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators, nominatorCount, deposits } = useConsensusStates()
+  const { operators: rpcOperators, nominatorCount, deposits, withdrawals } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
@@ -189,12 +190,10 @@ export const OperatorsList: FC = () => {
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
-    ]
-    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
-      cols.push({
+      {
         accessorKey: 'deposits',
         header: 'Deposits',
-        enableSorting: !useRpcData,
+        enableSorting: false,
         cell: ({
           row,
         }: Cell<
@@ -202,37 +201,101 @@ export const OperatorsList: FC = () => {
         >) => {
           const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
           const depositShares = opDeposits.reduce(
-            (acc, deposit) => acc + BigInt(deposit.shares),
-            BigInt(0),
+            (acc, deposit) => acc + deposit.shares,
+            BIGINT_ZERO,
           )
           const pendingAmount = opDeposits.reduce(
-            (acc, deposit) => acc + BigInt(deposit.pending.amount),
-            BigInt(0),
+            (acc, deposit) => (deposit.pending !== null ? acc + deposit.pending.amount : acc),
+            BIGINT_ZERO,
           )
           const pendingStorageFee = opDeposits.reduce(
-            (acc, deposit) => acc + BigInt(deposit.pending.storageFeeDeposit),
-            BigInt(0),
+            (acc, deposit) =>
+              deposit.pending !== null ? acc + deposit.pending.storageFeeDeposit : acc,
+            BIGINT_ZERO,
           )
           const op = rpcOperators.find((o) => o.id === row.original.id)
           const sharesValue =
-            op && BigInt(op.currentTotalShares) > BigInt(0)
-              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
-              : BigInt(0)
-          return (
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          const total =
+            (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER +
+            pendingAmount +
+            pendingStorageFee
+          let tooltip = ''
+          if (pendingAmount > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`
+          if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
+          if (depositShares > BIGINT_ZERO)
+            tooltip += `Staked: ${bigNumberToNumber(
+              (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+            )} ${selectedChain.token.symbol}`
+          return total > BIGINT_ZERO ? (
             <div>
-              {depositShares > BigInt(0) && (
-                <>
-                  {`Staked: ${bigNumberToNumber(((depositShares * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
-                  <br />
-                </>
-              )}
-              {pendingAmount > BigInt(0) &&
-                `Pending; ${bigNumberToNumber((pendingAmount + pendingStorageFee).toString())} ${selectedChain.token.symbol}`}
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
             </div>
+          ) : (
+            <div>0 {selectedChain.token.symbol}</div>
           )
         },
-      })
-    cols.push(
+      },
+      {
+        accessorKey: 'withdrawals',
+        header: 'Withdrawals',
+        enableSorting: false,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const opWithdrawals = withdrawals.filter(
+            (d) => d.operatorId.toString() === row.original.id,
+          )
+          const totalPending = opWithdrawals.reduce(
+            (acc, withdrawal) =>
+              acc +
+              withdrawal.withdrawalInShares.shares +
+              withdrawal.withdrawalInShares.storageFeeRefund,
+            BIGINT_ZERO,
+          )
+          const totalUnlocked = opWithdrawals.reduce(
+            (acc, withdrawal) =>
+              withdrawal.withdrawals
+                ? acc +
+                  withdrawal.withdrawals.reduce(
+                    (acc, w) => acc + w.amountToUnlock + w.storageFeeRefund,
+                    BIGINT_ZERO,
+                  )
+                : BIGINT_ZERO,
+            BIGINT_ZERO,
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          const total = (totalPending * sharesValue) / SHARES_CALCULATION_MULTIPLIER + totalUnlocked
+          let tooltip = ''
+          if (totalPending > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${selectedChain.token.symbol}`
+          if (totalUnlocked > BIGINT_ZERO && totalPending > BIGINT_ZERO) tooltip += ' - '
+          if (totalUnlocked > BIGINT_ZERO)
+            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${selectedChain.token.symbol}`
+          return total > BIGINT_ZERO ? (
+            <div>
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
+            </div>
+          ) : (
+            <div>0 {selectedChain.token.symbol}</div>
+          )
+        },
+      },
       {
         accessorKey: 'nominators',
         header: 'Nominators',
@@ -274,7 +337,7 @@ export const OperatorsList: FC = () => {
           </div>
         ),
       },
-    )
+    ]
     if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
       cols.push({
         accessorKey: 'myStake',
@@ -290,20 +353,31 @@ export const OperatorsList: FC = () => {
           )
           const op = rpcOperators.find((o) => o.id === row.original.id)
           const sharesValue =
-            op && BigInt(op.currentTotalShares) > BigInt(0)
-              ? (BigInt(op.currentTotalStake) * BigInt(1000)) / BigInt(op.currentTotalShares)
-              : BigInt(0)
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          const pendingAmount =
+            deposit && deposit.pending
+              ? deposit.pending.amount + deposit.pending.storageFeeDeposit
+              : BIGINT_ZERO
+          const depositShares = deposit ? deposit.shares : BIGINT_ZERO
+          const total = deposit
+            ? (deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER + pendingAmount
+            : BIGINT_ZERO
+          let tooltip = ''
+          if (pendingAmount > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${selectedChain.token.symbol}`
+          if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
+          if (depositShares > BIGINT_ZERO)
+            tooltip += `Staked: ${bigNumberToNumber(
+              (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+            )} ${selectedChain.token.symbol}`
           return (
             <div>
-              {deposit && deposit.shares !== '0' && (
-                <>
-                  {`Staked: ${bigNumberToNumber(((BigInt(deposit.shares) * sharesValue) / BigInt(1000)).toString())} ${selectedChain.token.symbol}`}
-                  <br />
-                </>
-              )}
-              {deposit &&
-                deposit.pending.amount !== '0' &&
-                `Pending: ${bigNumberToNumber((BigInt(deposit.pending.amount) + BigInt(deposit.pending.storageFeeDeposit)).toString())} ${selectedChain.token.symbol}`}
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
             </div>
           )
         },
@@ -319,6 +393,9 @@ export const OperatorsList: FC = () => {
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
         >) => {
           const isOperator = row.original.operatorOwner === subspaceAccount
+          const deposit = deposits.find(
+            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+          )
           const nominator =
             (!useRpcData &&
               (
@@ -326,9 +403,7 @@ export const OperatorsList: FC = () => {
               ).nominators.find(
                 (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
               )) ||
-            deposits.find(
-              (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
-            )
+            deposit
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
@@ -353,7 +428,7 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BigInt(0)}
+              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BIGINT_ZERO}
             />
           )
         },
@@ -367,8 +442,9 @@ export const OperatorsList: FC = () => {
     selectedChain.token.symbol,
     selectedDomain,
     domains,
-    nominatorCount,
     rpcOperators,
+    withdrawals,
+    nominatorCount,
     action,
     handleAction,
   ])
@@ -488,7 +564,7 @@ export const OperatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>Staking</div>
         </div>
         <div className='flex items-center'>
           <div className='mr-5 flex items-center'>
@@ -509,7 +585,12 @@ export const OperatorsList: FC = () => {
         </div>
       </div>
       <DataSourceBanner />
-      <div className='mt-5 flex w-full flex-col sm:mt-0'>
+      <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
+      <MyPendingWithdrawals />
+      <div className='mt-2 flex w-full justify-between'>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
+      </div>
+      <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {operatorsConnection ? (
             <SortedTable

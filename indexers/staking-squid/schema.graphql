@@ -1,14 +1,34 @@
+type Domain @entity {
+  id: ID! @index
+  domainId: Int! @index
+  completedEpoch: Int! @index
+  lastOperatorBundleProduced: Operator!
+  lastDomainBlockNumber: Int! @index
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+enum OperatorStatus {
+  PENDING
+  REGISTERED
+  DEREGISTERED
+  SLASHED
+}
+
 type Operator @entity {
   id: ID! @index
   domainId: Int! @index
   operatorId: Int! @index
   signingKey: String! @index
-  operatorOwner: String! @index
+  owner: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
   currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
+  totalDeposits: BigInt!
+  totalTaxCollected: BigInt!
   deposits: [Deposit!]!
     @derivedFrom(field: "operator")
     @cardinality(value: 1000000000)
@@ -24,11 +44,22 @@ type Operator @entity {
   operatorFees: [OperatorFeesEarned!]!
     @derivedFrom(field: "operator")
     @cardinality(value: 1000000000)
-  status: String
-  depositsCount: Int!
+  rawStatus: String
+  status: OperatorStatus! @index
   nominatorsCount: Int!
+  depositsCount: Int!
   withdrawalsCount: Int!
+  bundleCount: Int!
+  lastBundleAt: Int!
+  createdAt: Int @index
   updatedAt: Int @index
+}
+
+enum NominatorStatus {
+  PENDING
+  STAKING
+  DEREGISTERED
+  SLASHED
 }
 
 type Nominator @entity {
@@ -42,8 +73,17 @@ type Nominator @entity {
   withdrawals: [Withdrawal!]!
     @derivedFrom(field: "nominator")
     @cardinality(value: 1000000000)
-  status: String!
-  updatedAt: Int
+  totalDeposits: BigInt!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  status: NominatorStatus! @index
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+enum DepositStatus {
+  PENDING
+  DEPOSITED
 }
 
 type Deposit @entity {
@@ -51,11 +91,18 @@ type Deposit @entity {
   blockNumber: Int! @index
   account: String! @index
   amount: BigInt!
+  storageFeeDeposit: BigInt!
   operator: Operator!
   nominator: Nominator!
   timestamp: DateTime! @index
   extrinsicHash: String! @index
-  status: String
+  status: DepositStatus! @index
+}
+
+enum WithdrawalStatus {
+  PENDING
+  READY
+  WITHDRAW
 }
 
 type Withdrawal @entity {
@@ -67,7 +114,7 @@ type Withdrawal @entity {
   nominator: Nominator!
   timestamp: DateTime! @index
   extrinsicHash: String! @index
-  status: String
+  status: WithdrawalStatus! @index
 }
 
 type OperatorUnlockedFunds @entity {
@@ -84,8 +131,6 @@ type OperatorUnlockedFunds @entity {
 type OperatorRewardEvent @entity {
   id: ID! @index
   operator: Operator!
-  indexInBlock: Int!
-  name: String!
   timestamp: DateTime! @index
   blockNumber: Int! @index
   extrinsicHash: String! @index

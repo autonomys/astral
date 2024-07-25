@@ -1,7 +1,6 @@
 import { TransactionStatus } from '@/constants'
+import type { ISubmittableResult, Signer, SubmittableExtrinsic } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
-import type { Signer, SubmittableExtrinsic } from '@polkadot/api/types'
-import type { ISubmittableResult } from '@polkadot/types/types'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
 import { useCallback } from 'react'
@@ -11,7 +10,8 @@ import { useTransactionsStates } from 'states/transactions'
 export interface SendAndSaveTx {
   call: string
   tx: SubmittableExtrinsic<'promise', ISubmittableResult>
-  signer: Signer
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signer: Signer | any
   to?: string
   amount?: string
   fee?: string

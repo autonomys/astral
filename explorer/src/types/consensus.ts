@@ -99,38 +99,3 @@ export type SuccessfulBundle = {
   id: number
   bundle: string[]
 }
-
-export type RawDeposit = {
-  known: {
-    shares: number
-    storageFeeDeposit: number
-  }
-  pending: {
-    effectiveDomainEpoch: number[]
-    amount: string
-    storageFeeDeposit: string
-  }
-}
-
-export type Deposit = {
-  operatorId: number
-  account: string
-  shares: string
-  storageFeeDeposit: string
-  pending: {
-    amount: string
-    storageFeeDeposit: string
-  }
-}
-
-export type Withdrawal = {
-  operatorId: number
-  totalWithdrawalAmount: number
-  withdrawals: string[]
-  withdrawalInShares: {
-    domainEpoch: number[]
-    unlockAtConfirmedDomainBlockNumber: number
-    shares: string
-    storageFeeRefund: string
-  }
-}

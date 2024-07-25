@@ -1,8 +1,7 @@
 'use client'
 
 import { useLazyQuery } from '@apollo/client'
-import { isHex } from '@polkadot/util'
-import { isAddress } from '@polkadot/util-crypto'
+import { isAddress, isHex } from '@autonomys/auto-utils'
 import { GET_RESULTS } from 'components/common/queries'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { useRouter } from 'next/navigation'

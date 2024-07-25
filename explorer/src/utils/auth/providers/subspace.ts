@@ -1,4 +1,4 @@
-import { cryptoWaitReady, signatureVerify } from '@polkadot/util-crypto'
+import { cryptoWaitReady, signatureVerify } from '@autonomys/auto-utils'
 import { AuthProvider, DEFAULT_DISCORD_TOKEN } from 'constants/session'
 import { User } from 'next-auth'
 import type { Provider } from 'next-auth/providers'

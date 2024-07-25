@@ -1,34 +1,16 @@
-import { SubstrateBlock } from "@subsquid/substrate-processor";
-import {
-  Account,
-  AccountRewards,
-  Block,
-  Event,
-  Nominator,
-  Operator,
-  OperatorRewards,
-  RewardEvent,
-} from "../model";
-import { Context, EventItem } from "../processor";
-import { CallsMap, ExtrinsicsMap } from "./types";
+import { SubstrateBlock } from '@subsquid/substrate-processor';
+import { Account, AccountRewards, Block, Event, Nominator, Operator, OperatorRewards, RewardEvent } from '../model';
+import { Context, EventItem } from '../processor';
+import { CallsMap, ExtrinsicsMap } from './types';
 
 export function processEventsFactory(
   ctx: Context,
-  getOrCreateAccount: (
-    header: SubstrateBlock,
-    accountId: string
-  ) => Promise<Account>,
+  getOrCreateAccount: (header: SubstrateBlock, accountId: string) => Promise<Account>,
   addEventModuleName: (name: string) => Promise<void>,
   getOrCreateOperator: (operatorId: bigint) => Promise<Operator | undefined>,
   getOrCreateNominators: (operator: Operator) => Promise<Nominator[]>,
-  getOrCreateAccountRewards: (
-    header: SubstrateBlock,
-    account: Account
-  ) => Promise<AccountRewards>,
-  getOrCreateOperatorRewards: (
-    header: SubstrateBlock,
-    operator: Operator
-  ) => Promise<OperatorRewards>
+  getOrCreateAccountRewards: (header: SubstrateBlock, account: Account) => Promise<AccountRewards>,
+  getOrCreateOperatorRewards: (header: SubstrateBlock, operator: Operator) => Promise<OperatorRewards>
 ) {
   async function getExtrinsicAndCallFromEventItem(
     eventItem: EventItem,
@@ -50,34 +32,22 @@ export function processEventsFactory(
     eventItem: EventItem,
     header: SubstrateBlock,
     block: Block,
-    extrinsic: any,
-    call: any
+    extrinsic: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    call: any // eslint-disable-line @typescript-eslint/no-explicit-any
   ) {
     await addEventModuleName(eventItem.event.name);
 
     switch (eventItem.name) {
-      case "Domains.OperatorRegistered":
-      case "Domains.OperatorDeregistered":
-      case "Domains.OperatorSlashed":
+      case 'Domains.OperatorRegistered':
+      case 'Domains.OperatorDeregistered':
+      case 'Domains.OperatorSlashed':
         await createOrUpdateOperator(eventItem);
         return null;
-      case "Domains.OperatorRewarded":
-        return await processOperatorRewardedEvent(
-          eventItem,
-          header,
-          block,
-          extrinsic,
-          call
-        );
-      case "Rewards.BlockReward":
-      case "Rewards.VoteReward":
-        return await processRewardEvent(
-          eventItem,
-          header,
-          block,
-          extrinsic,
-          call
-        );
+      case 'Domains.OperatorRewarded':
+        return await processOperatorRewardedEvent(eventItem, header, block, extrinsic, call);
+      case 'Rewards.BlockReward':
+      case 'Rewards.VoteReward':
+        return await processRewardEvent(eventItem, header, block, extrinsic, call);
       default:
         return null;
     }
@@ -92,11 +62,11 @@ export function processEventsFactory(
     eventItem: EventItem,
     header: SubstrateBlock,
     block: Block,
-    extrinsic: any,
-    call: any
+    extrinsic: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    call: any // eslint-disable-line @typescript-eslint/no-explicit-any
   ) {
     const operatorEvents: RewardEvent[] = [];
-  
+
     const operatorId = BigInt(eventItem.event.args?.operatorId);
     const operator = await getOrCreateOperator(operatorId);
     if (!operator) return;
@@ -106,9 +76,7 @@ export function processEventsFactory(
 
     const updatedOperatorRewards = new OperatorRewards({
       ...operatorRewards,
-      amount: operatorRewards.amount
-        ? operatorRewards.amount + rewardAmount
-        : rewardAmount,
+      amount: operatorRewards.amount ? operatorRewards.amount + rewardAmount : rewardAmount,
       updatedAt: BigInt(header.height),
     });
 
@@ -117,10 +85,7 @@ export function processEventsFactory(
     const nominators = await getOrCreateNominators(operator);
     const nominatorsLength = nominators.length;
 
-    if (
-      nominatorsLength === 1 &&
-      nominators[0].account.id === operator.operatorOwner
-    ) {
+    if (nominatorsLength === 1 && nominators[0].account.id === operator.operatorOwner) {
       const account = await getOrCreateAccount(header, operator.operatorOwner);
       const rewardEvent = new RewardEvent({
         ...eventItem.event,
@@ -139,9 +104,7 @@ export function processEventsFactory(
         ...accountRewards,
         account,
         operator: rewardAmount,
-        amount: accountRewards.amount
-          ? accountRewards.amount + rewardAmount
-          : rewardAmount,
+        amount: accountRewards.amount ? accountRewards.amount + rewardAmount : rewardAmount,
         updatedAt: BigInt(header.height),
       });
 
@@ -153,14 +116,9 @@ export function processEventsFactory(
     } else {
       // add tax amount to operator owner
       if (operator.operatorOwner) {
-        const rewardTax = operator.nominationTax
-          ? BigInt(operator.nominationTax)
-          : BigInt(0);
+        const rewardTax = operator.nominationTax ? BigInt(operator.nominationTax) : BigInt(0);
 
-        const ownerAccount = await getOrCreateAccount(
-          header,
-          operator.operatorOwner
-        );
+        const ownerAccount = await getOrCreateAccount(header, operator.operatorOwner);
 
         const nominationTaxAmount = rewardAmount * (rewardTax / BigInt(100));
 
@@ -181,12 +139,7 @@ export function processEventsFactory(
       for (const nominator of nominators) {
         const account = await getOrCreateAccount(header, nominator.account.id);
         const accountRewards = await getOrCreateAccountRewards(header, account);
-        const rewardDetails = calculateNominatorReward(
-          eventItem,
-          operator,
-          nominator,
-          accountRewards
-        );
+        const rewardDetails = calculateNominatorReward(eventItem, operator, nominator, accountRewards);
 
         if (rewardDetails.operatorReward) {
           const updatedReward = new AccountRewards({
@@ -224,24 +177,14 @@ export function processEventsFactory(
     nominator: Nominator,
     accountRewards: AccountRewards
   ) {
-    const rewardTax = operator.nominationTax
-      ? BigInt(operator.nominationTax)
-      : BigInt(0);
+    const rewardTax = operator.nominationTax ? BigInt(operator.nominationTax) : BigInt(0);
     const rewardAmount = BigInt(eventItem.event.args.reward);
     const reward = rewardAmount - rewardAmount * (rewardTax / BigInt(100));
-    const totalShares = operator.totalShares
-      ? BigInt(operator.totalShares)
-      : BigInt(0);
-    const nominatorShares = nominator.shares
-      ? BigInt(nominator.shares)
-      : BigInt(0);
+    const totalShares = operator.totalShares ? BigInt(operator.totalShares) : BigInt(0);
+    const nominatorShares = nominator.shares ? BigInt(nominator.shares) : BigInt(0);
     const nominatorReward = reward * (nominatorShares / totalShares);
-    const accountRewardAmount = accountRewards.amount
-      ? nominatorReward + accountRewards.amount
-      : nominatorReward;
-    const operatorReward = accountRewards.operator
-      ? nominatorReward + accountRewards.operator
-      : nominatorReward;
+    const accountRewardAmount = accountRewards.amount ? nominatorReward + accountRewards.amount : nominatorReward;
+    const operatorReward = accountRewards.operator ? nominatorReward + accountRewards.operator : nominatorReward;
 
     return { nominatorReward, accountRewardAmount, operatorReward };
   }
@@ -250,22 +193,15 @@ export function processEventsFactory(
     eventItem: EventItem,
     header: SubstrateBlock,
     block: Block,
-    extrinsic: any,
-    call: any
+    extrinsic: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    call: any // eslint-disable-line @typescript-eslint/no-explicit-any
   ) {
-    const address =
-      eventItem.event.args?.voter || eventItem.event.args?.blockAuthor;
+    const address = eventItem.event.args?.voter || eventItem.event.args?.blockAuthor;
     const account = await getOrCreateAccount(header, address);
     const accountRewards = await getOrCreateAccountRewards(header, account);
-    const rewardType =
-      eventItem.name === "Rewards.BlockReward" ? "block" : "vote";
+    const rewardType = eventItem.name === 'Rewards.BlockReward' ? 'block' : 'vote';
     const reward = BigInt(eventItem.event.args.reward);
-    const updatedAccountRewards = updateAccountRewards(
-      accountRewards,
-      reward,
-      rewardType,
-      header
-    );
+    const updatedAccountRewards = updateAccountRewards(accountRewards, reward, rewardType, header);
 
     if (updatedAccountRewards) {
       await ctx.store.save(updatedAccountRewards);
@@ -287,16 +223,12 @@ export function processEventsFactory(
   function updateAccountRewards(
     accountRewards: AccountRewards,
     reward: bigint,
-    rewardType: "block" | "vote",
+    rewardType: 'block' | 'vote',
     header: SubstrateBlock
   ) {
     const currentTypeBalance = accountRewards[rewardType];
-    const rewardAmount = currentTypeBalance
-      ? reward + currentTypeBalance
-      : reward;
-    const accountRewardAmount = accountRewards.amount
-      ? reward + accountRewards.amount
-      : reward;
+    const rewardAmount = currentTypeBalance ? reward + currentTypeBalance : reward;
+    const accountRewardAmount = accountRewards.amount ? reward + accountRewards.amount : reward;
 
     if (!rewardAmount) return null;
 
@@ -320,19 +252,9 @@ export function processEventsFactory(
     const rewardEvents: RewardEvent[] = [];
 
     for (const eventItem of eventItems) {
-      const { extrinsic, call } = await getExtrinsicAndCallFromEventItem(
-        eventItem,
-        extrinsicsMap,
-        callsMap
-      );
+      const { extrinsic, call } = await getExtrinsicAndCallFromEventItem(eventItem, extrinsicsMap, callsMap);
 
-      const rewardEvent = await processEventBasedOnName(
-        eventItem,
-        header,
-        block,
-        extrinsic,
-        call
-      );
+      const rewardEvent = await processEventBasedOnName(eventItem, header, block, extrinsic, call);
 
       if (rewardEvent) {
         Array.isArray(rewardEvent) ? rewardEvents.push(...rewardEvent) : rewardEvents.push(rewardEvent);

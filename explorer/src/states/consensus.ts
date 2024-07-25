@@ -1,6 +1,6 @@
+import type { Deposit, Withdrawal } from '@autonomys/auto-consensus'
 import {
   ConfirmedDomainBlock,
-  Deposit,
   Domain,
   DomainRegistry,
   DomainStakingSummary,
@@ -9,8 +9,8 @@ import {
   Operators,
   PendingStakingOperationCount,
   SuccessfulBundle,
-  Withdrawal,
 } from 'types/consensus'
+import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
@@ -118,7 +118,10 @@ export const useConsensusStates = create<ConsensusState>()(
     }),
     {
       name: 'consensus-storage',
+      version: 2,
       storage: createJSONStorage(() => localStorage),
+      serialize: (state) => JSON.stringify(state, bigIntSerializer),
+      deserialize: (str) => JSON.parse(str, bigIntDeserializer),
     },
   ),
 )

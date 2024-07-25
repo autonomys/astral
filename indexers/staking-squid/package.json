@@ -9,13 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/subspace/astral"
+    "url": "https://github.com/autonomys/astral"
   },
   "author": {
     "name": "Autonomys",
     "url": "https://www.autonomys.net"
   },
   "dependencies": {
+    "@autonomys/auto-consensus": "^0.1.6",
+    "@autonomys/auto-utils": "^0.1.6",
     "@subsquid/graphql-server": "^4.5.1",
     "@subsquid/ss58": "^2.0.2",
     "@subsquid/substrate-processor": "^8.3.0",
