@@ -37,4 +37,5 @@ export enum SupportedWalletExtension {
 export enum AccountPreferenceSection {
   None = 'None',
   AddressBook = 'addressBook',
+  Settings = 'settings',
 }

@@ -43,6 +43,7 @@ import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
+import { MyPendingWithdrawals, MyUnlockedWithdrawals } from './MyWithdrawals'
 import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
 
 export const OperatorsList: FC = () => {
@@ -89,11 +90,6 @@ export const OperatorsList: FC = () => {
 
   const { selectedChain, selectedDomain } = useDomains()
   const apolloClient = useApolloClient()
-
-  const myWithdrawals = useMemo(
-    () => withdrawals.filter((w) => w.account === subspaceAccount),
-    [withdrawals, subspaceAccount],
-  )
 
   const columns = useMemo(() => {
     const cols = [
@@ -194,12 +190,10 @@ export const OperatorsList: FC = () => {
           <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
         ),
       },
-    ]
-    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
-      cols.push({
+      {
         accessorKey: 'deposits',
         header: 'Deposits',
-        enableSorting: !useRpcData,
+        enableSorting: false,
         cell: ({
           row,
         }: Cell<
@@ -225,21 +219,83 @@ export const OperatorsList: FC = () => {
               ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
                 BigInt(op.currentTotalShares)
               : BIGINT_ZERO
-          return (
+          const total =
+            (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER +
+            pendingAmount +
+            pendingStorageFee
+          let tooltip = ''
+          if (pendingAmount > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`
+          if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
+          if (depositShares > BIGINT_ZERO)
+            tooltip += `Staked: ${bigNumberToNumber(
+              (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+            )} ${selectedChain.token.symbol}`
+          return total > BIGINT_ZERO ? (
             <div>
-              {depositShares > BIGINT_ZERO && (
-                <>
-                  {`Staked: ${bigNumberToNumber((depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
-                  <br />
-                </>
-              )}
-              {pendingAmount > BIGINT_ZERO &&
-                `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`}
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
             </div>
+          ) : (
+            <div>0 {selectedChain.token.symbol}</div>
           )
         },
-      })
-    cols.push(
+      },
+      {
+        accessorKey: 'withdrawals',
+        header: 'Withdrawals',
+        enableSorting: false,
+        cell: ({
+          row,
+        }: Cell<
+          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
+        >) => {
+          const opWithdrawals = withdrawals.filter(
+            (d) => d.operatorId.toString() === row.original.id,
+          )
+          const totalPending = opWithdrawals.reduce(
+            (acc, withdrawal) =>
+              acc +
+              withdrawal.withdrawalInShares.shares +
+              withdrawal.withdrawalInShares.storageFeeRefund,
+            BIGINT_ZERO,
+          )
+          const totalUnlocked = opWithdrawals.reduce(
+            (acc, withdrawal) =>
+              withdrawal.withdrawals
+                ? acc +
+                  withdrawal.withdrawals.reduce(
+                    (acc, w) => acc + w.amountToUnlock + w.storageFeeRefund,
+                    BIGINT_ZERO,
+                  )
+                : BIGINT_ZERO,
+            BIGINT_ZERO,
+          )
+          const op = rpcOperators.find((o) => o.id === row.original.id)
+          const sharesValue =
+            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                BigInt(op.currentTotalShares)
+              : BIGINT_ZERO
+          const total = (totalPending * sharesValue) / SHARES_CALCULATION_MULTIPLIER + totalUnlocked
+          let tooltip = ''
+          if (totalPending > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${selectedChain.token.symbol}`
+          if (totalUnlocked > BIGINT_ZERO && totalPending > BIGINT_ZERO) tooltip += ' - '
+          if (totalUnlocked > BIGINT_ZERO)
+            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${selectedChain.token.symbol}`
+          return total > BIGINT_ZERO ? (
+            <div>
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
+            </div>
+          ) : (
+            <div>0 {selectedChain.token.symbol}</div>
+          )
+        },
+      },
       {
         accessorKey: 'nominators',
         header: 'Nominators',
@@ -281,7 +337,7 @@ export const OperatorsList: FC = () => {
           </div>
         ),
       },
-    )
+    ]
     if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
       cols.push({
         accessorKey: 'myStake',
@@ -301,18 +357,27 @@ export const OperatorsList: FC = () => {
               ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
                 BigInt(op.currentTotalShares)
               : BIGINT_ZERO
+          const pendingAmount =
+            deposit && deposit.pending
+              ? deposit.pending.amount + deposit.pending.storageFeeDeposit
+              : BIGINT_ZERO
+          const depositShares = deposit ? deposit.shares : BIGINT_ZERO
+          const total = deposit
+            ? (deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER + pendingAmount
+            : BIGINT_ZERO
+          let tooltip = ''
+          if (pendingAmount > BIGINT_ZERO)
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${selectedChain.token.symbol}`
+          if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
+          if (depositShares > BIGINT_ZERO)
+            tooltip += `Staked: ${bigNumberToNumber(
+              (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+            )} ${selectedChain.token.symbol}`
           return (
             <div>
-              {deposit && deposit.shares > BIGINT_ZERO && (
-                <>
-                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
-                  <br />
-                </>
-              )}
-              {deposit &&
-                deposit.pending !== null &&
-                deposit.pending.amount > BIGINT_ZERO &&
-                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${selectedChain.token.symbol}`}
+              <Tooltip text={tooltip}>
+                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+              </Tooltip>
             </div>
           )
         },
@@ -377,8 +442,9 @@ export const OperatorsList: FC = () => {
     selectedChain.token.symbol,
     selectedDomain,
     domains,
-    nominatorCount,
     rpcOperators,
+    withdrawals,
+    nominatorCount,
     action,
     handleAction,
   ])
@@ -498,7 +564,7 @@ export const OperatorsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='flex flex-col gap-2'>
         <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
+          <div className='text-base font-medium text-grayDark dark:text-white'>Staking</div>
         </div>
         <div className='flex items-center'>
           <div className='mr-5 flex items-center'>
@@ -519,116 +585,12 @@ export const OperatorsList: FC = () => {
         </div>
       </div>
       <DataSourceBanner />
-      {myWithdrawals.length > 0 && (
-        <div className='mt-5 flex flex-col gap-2'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>My Withdrawals</div>
-          <div className='flex w-full flex-col sm:mt-0'>
-            <div className='my-6 rounded'>
-              <SortedTable
-                data={myWithdrawals}
-                columns={[
-                  {
-                    accessorKey: 'operatorId',
-                    header: 'Operator Id',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.operatorId}</div>,
-                  },
-                  {
-                    accessorKey: 'withdrawalInShares.shares',
-                    header: 'Withdrawal Amount',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const op = rpcOperators.find(
-                        (o) => o.id === row.original.operatorId.toString(),
-                      )
-                      const sharesValue =
-                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
-                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
-                            BigInt(op.currentTotalShares)
-                          : BIGINT_ZERO
-                      const withdrawAmount = bigNumberToNumber(
-                        (row.original.withdrawalInShares.shares * sharesValue) /
-                          SHARES_CALCULATION_MULTIPLIER,
-                      )
-                      return (
-                        <div>
-                          <Tooltip
-                            text={`Shares: ${row.original.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
-                          >
-                            {withdrawAmount} {selectedChain.token.symbol}
-                          </Tooltip>
-                        </div>
-                      )
-                    },
-                  },
-                  {
-                    accessorKey: 'withdrawalInShares.storageFeeRefund',
-                    header: 'Withdrawal Storage Fee Refund',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      const op = rpcOperators.find(
-                        (o) => o.id === row.original.operatorId.toString(),
-                      )
-                      const sharesValue =
-                        op && BigInt(op.currentTotalShares) > BIGINT_ZERO
-                          ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
-                            BigInt(op.currentTotalShares)
-                          : BIGINT_ZERO
-                      const withdrawAmount = bigNumberToNumber(
-                        (row.original.withdrawalInShares.storageFeeRefund * sharesValue) /
-                          SHARES_CALCULATION_MULTIPLIER,
-                      )
-                      return (
-                        <div>
-                          <Tooltip
-                            text={`Shares: ${row.original.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${withdrawAmount}`}
-                          >
-                            {withdrawAmount} {selectedChain.token.symbol}
-                          </Tooltip>
-                        </div>
-                      )
-                    },
-                  },
-                  {
-                    accessorKey: 'withdrawalInShares.unlockAtConfirmedDomainBlockNumber',
-                    header: 'Withdrawal at Domain Block Number',
-                    enableSorting: false,
-                    cell: ({ row }) => {
-                      return (
-                        <div>
-                          {row.original.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString()}
-                        </div>
-                      )
-                    },
-                  },
-                  {
-                    accessorKey: 'totalWithdrawalAmount',
-                    header: 'Total Withdrawal Amount',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.totalWithdrawalAmount.toString()}</div>,
-                  },
-                  {
-                    accessorKey: 'withdrawals',
-                    header: 'Withdrawals',
-                    enableSorting: false,
-                    cell: ({ row }) => <div>{row.original.withdrawals.length}</div>,
-                  },
-                ]}
-                showNavigation={false}
-                sorting={sorting}
-                onSortingChange={setSorting}
-                pagination={pagination}
-                pageCount={pageCount}
-                onPaginationChange={setPagination}
-                filename='operators-my-withdrawals-list'
-                pageSizeOptions={[10]}
-                fullDataDownloader={fullDataDownloader}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-      <div className='mt-5 flex w-full flex-col sm:mt-0'>
+      <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
+      <MyPendingWithdrawals />
+      <div className='mt-2 flex w-full justify-between'>
+        <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
+      </div>
+      <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
           {operatorsConnection ? (
             <SortedTable

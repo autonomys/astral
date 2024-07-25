@@ -1,7 +1,5 @@
-import { SUBSPACE_ACC_PREFIX } from '@/constants/general'
-import Keyring from '@polkadot/keyring'
-import { u8aToHex } from '@polkadot/util'
-import { decodeAddress, isAddress } from '@polkadot/util-crypto'
+import { decode, isAddress, Keyring, u8aToHex } from '@autonomys/auto-utils'
+import { SUBSPACE_ACC_PREFIX } from 'constants/general'
 
 export const formatAddress = (accountId?: string): string | undefined => {
   if (!accountId || !isAddress(accountId)) return undefined
@@ -18,7 +16,7 @@ export const formatAddress = (accountId?: string): string | undefined => {
 }
 
 export const accountIdToHex = (accountId: string): string => {
-  const hex = u8aToHex(decodeAddress(accountId))
+  const hex = u8aToHex(decode(accountId))
 
   return hex
 }

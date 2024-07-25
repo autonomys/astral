@@ -1,7 +1,7 @@
 'use client'
 
+import { activate, ApiPromise } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
-import { ApiPromise, WsProvider } from '@polkadot/api'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
 import { Chains, chains } from 'constants/chains'
@@ -9,7 +9,7 @@ import { WalletType } from 'constants/wallet'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getSession, signOut } from 'next-auth/react'
 import { useParams } from 'next/navigation'
-import { FC, ReactNode, createContext, useCallback, useEffect, useState } from 'react'
+import { createContext, FC, ReactNode, useCallback, useEffect, useState } from 'react'
 import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
@@ -55,10 +55,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const prepareApi = useCallback(async (chain: (typeof chains)[0]) => {
     try {
-      const wsProvider = new WsProvider(chain.urls.rpc)
-      const api = await ApiPromise.create({ provider: wsProvider })
-      await api.isReady
-      return api
+      return await activate({ networkId: 'autonomys-' + chain.urls.page })
     } catch (error) {
       console.error('Failed to prepare API for chain', chain.title, 'error:', error)
     }

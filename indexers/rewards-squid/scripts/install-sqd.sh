@@ -25,7 +25,7 @@ else
     echo 'export NODE_OPTIONS="--max-old-space-size=4096"' >> ~/.bash_profile
 
     cd ~/
-    git clone https://github.com/subspace/astral.git
+    git clone https://github.com/autonomys/astral.git
 
     ln -s astral/rewards-squid rewards-squid
 

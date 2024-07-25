@@ -1,8 +1,7 @@
 import { remark, transfer } from '@autonomys/auto-consensus'
+import { Hash, SignerResult } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
-import { SignerResult } from '@polkadot/api/types'
-import { Hash } from '@polkadot/types/interfaces'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
 import { Tooltip } from 'components/common/Tooltip'
@@ -22,6 +21,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { FC, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useAddressBookStates } from 'states/addressBook'
+import { usePreferencesStates } from 'states/preferences'
 import { formatAddress } from 'utils//formatAddress'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import { camelToNormal, shortString } from 'utils/string'
@@ -41,11 +41,15 @@ type ActionsModalProps = {
   onClose: () => void
 }
 
-interface SendTokenFormValues {
+interface OptionalTxFormValues {
+  nonce?: number
+}
+
+interface SendTokenFormValues extends OptionalTxFormValues {
   receiver: string
   amount: number
 }
-interface MessageFormValues {
+interface MessageFormValues extends OptionalTxFormValues {
   message: string
 }
 
@@ -64,6 +68,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [addressBookIsOpen, setAddressBookIsOpen] = useState<boolean>(false)
   const { sendAndSaveTx, handleTxError } = useTxHelper()
   const { addresses } = useAddressBookStates()
+  const { enableDevMode } = usePreferencesStates()
 
   const resetCategory = useCallback((extra?: () => void) => {
     setSelectedCategory(null)
@@ -79,16 +84,18 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     () => ({
       receiver: '',
       amount: 0,
+      nonce: -1,
     }),
     [],
   )
   const initialMessageValues: MessageFormValues = useMemo(
     () => ({
       message: '',
+      nonce: -1,
     }),
     [],
   )
-  const initialCustomExtrinsicValues: CustomExtrinsicFormValues = useMemo(
+  const initialCustomExtrinsicValues: CustomExtrinsicFormValues & OptionalTxFormValues = useMemo(
     () =>
       selectedCategory &&
       selectedMethod &&
@@ -96,7 +103,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       extrinsicsList[selectedCategory][selectedMethod].args
         ? Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
             (acc, key) => ({ ...acc, [key]: '' }),
-            {},
+            { nonce: -1 },
           )
         : {},
     [selectedCategory, selectedMethod, extrinsicsList],
@@ -116,12 +123,13 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
       selectedMethod &&
       extrinsicsList[selectedCategory][selectedMethod] &&
       extrinsicsList[selectedCategory][selectedMethod].args &&
-      Yup.object().shape(
-        Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
+      Yup.object().shape({
+        ...Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
           (acc, key) => ({ ...acc, [key]: Yup.string().required('This field is required') }),
           {},
         ),
-      ),
+        nonce: Yup.number().min(-1, 'Nonce must be greater or -1'),
+      }),
     [selectedCategory, selectedMethod, extrinsicsList],
   )
 
@@ -132,6 +140,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           .min(0, `Amount  need to be greater than 0 ${tokenSymbol}`)
           .max(maxAmount, `Amount need to be less than ${maxAmount} ${tokenSymbol}`)
           .required('Amount to stake is required'),
+        nonce: Yup.number().min(-1, 'Nonce must be greater or -1'),
       }),
     [maxAmount, tokenSymbol],
   )
@@ -196,6 +205,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           signer: injector.signer,
           to,
           amount,
+          nonce: values.nonce,
           error: setFormError,
         })
         if (hash) {
@@ -259,6 +269,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           call: 'system.remark',
           tx,
           signer: injector.signer,
+          nonce: values.nonce,
           error: setFormError,
         })
         if (hash) {
@@ -293,6 +304,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           call: `${selectedCategory}.${selectedMethod}`,
           tx,
           signer: injector.signer,
+          nonce: typeof values.nonce === 'string' ? parseInt(values.nonce) : values.nonce,
           error: setFormError,
         })
         if (hash) {
@@ -536,6 +548,37 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     ) : (
                       <div className='text-md mt-2 h-8' data-testid='placeHolder' />
                     )}
+                    {enableDevMode && (
+                      <>
+                        <span className='text-base font-medium text-grayDarker dark:text-white'>
+                          Nonce
+                        </span>
+                        <FieldArray
+                          name='dischargeNorms'
+                          render={() => (
+                            <div className={addressBookIsOpen ? 'relative z-10' : 'relative'}>
+                              <Field
+                                name='nonce'
+                                type='number'
+                                placeholder={`Nonce'
+                                }`}
+                                className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                  errors.nonce &&
+                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                }`}
+                              />
+                            </div>
+                          )}
+                        />
+                        {errors.nonce && touched.nonce ? (
+                          <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                            {errors.nonce}
+                          </div>
+                        ) : (
+                          <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                        )}
+                      </>
+                    )}
                     {ErrorPlaceholder}
                     {!actingAccount ? (
                       <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
@@ -631,6 +674,37 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                    )}
+                    {enableDevMode && action === WalletAction.SendRemark && (
+                      <>
+                        <span className='text-base font-medium text-grayDarker dark:text-white'>
+                          Nonce
+                        </span>
+                        <FieldArray
+                          name='dischargeNorms'
+                          render={() => (
+                            <div className={addressBookIsOpen ? 'relative z-10' : 'relative'}>
+                              <Field
+                                name='nonce'
+                                type='number'
+                                placeholder={`Nonce'
+                                }`}
+                                className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                  errors.nonce &&
+                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                }`}
+                              />
+                            </div>
+                          )}
+                        />
+                        {errors.nonce && touched.nonce ? (
+                          <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                            {errors.nonce}
+                          </div>
+                        ) : (
+                          <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                        )}
+                      </>
                     )}
                     {ErrorPlaceholder}
                     {!actingAccount ? (
@@ -742,6 +816,37 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                         setSelectedValues={setFieldValue}
                       />
                     )}
+                    {enableDevMode && (
+                      <>
+                        <span className='text-base font-medium text-grayDarker dark:text-white'>
+                          Nonce
+                        </span>
+                        <FieldArray
+                          name='dischargeNorms'
+                          render={() => (
+                            <div className={addressBookIsOpen ? 'relative z-10' : 'relative'}>
+                              <Field
+                                name='nonce'
+                                type='number'
+                                placeholder={`Nonce'
+                                }`}
+                                className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                                  errors.nonce &&
+                                  'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                                }`}
+                              />
+                            </div>
+                          )}
+                        />
+                        {errors.nonce && touched.nonce ? (
+                          <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                            {errors.nonce}
+                          </div>
+                        ) : (
+                          <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                        )}
+                      </>
+                    )}
                     {ErrorPlaceholder}
                     {!actingAccount && (
                       <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
@@ -783,6 +888,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     handleCopy,
     handleSendToken,
     maxAmount,
+    enableDevMode,
     ErrorPlaceholder,
     accounts,
     addresses,
