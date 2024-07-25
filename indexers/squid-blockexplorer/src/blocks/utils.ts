@@ -1,12 +1,12 @@
-import { ApiPromise } from "@polkadot/api";
-import { HexSink } from "@subsquid/scale-codec";
-import * as ss58 from "@subsquid/ss58";
-import { SubstrateBlock, decodeHex } from "@subsquid/substrate-processor";
-import { toHex } from "@subsquid/util-internal-hex";
-import { xxhash128 } from "@subsquid/util-xxhash";
-import { randomUUID } from "crypto";
-import { createSystemAccountStorage } from "../balances/storage";
-import config from "../config";
+import { ApiPromise } from '@polkadot/api';
+import { HexSink } from '@subsquid/scale-codec';
+import * as ss58 from '@subsquid/ss58';
+import { SubstrateBlock, decodeHex } from '@subsquid/substrate-processor';
+import { toHex } from '@subsquid/util-internal-hex';
+import { xxhash128 } from '@subsquid/util-xxhash';
+import { randomUUID } from 'crypto';
+import { createSystemAccountStorage } from '../balances/storage';
+import config from '../config';
 import {
   Account,
   AccountRewards,
@@ -18,8 +18,8 @@ import {
   Nominator,
   Operator,
   OperatorRewards,
-} from "../model";
-import { CallItem, Context, EventItem } from "../processor";
+} from '../model';
+import { CallItem, Context, EventItem } from '../processor';
 
 /**
  * Takes a predicate and a list of items and returns the
@@ -92,12 +92,7 @@ export function createExtrinsic(
   });
 }
 
-export function createCall(
-  { call }: CallItem,
-  block: Block,
-  extrinsic: Extrinsic,
-  parent: Call | null
-) {
+export function createCall({ call }: CallItem, block: Block, extrinsic: Extrinsic, parent: Call | null) {
   return new Call({
     ...call,
     timestamp: block.timestamp,
@@ -204,12 +199,9 @@ export function decodeLog(value: null | Uint8Array | Uint8Array[]) {
  * const account = await getOrCreateAccount(blockHeight, accountId);
  */
 export function getOrCreateAccountFactory(ctx: Context) {
-  return async function getOrCreateAccount(
-    header: SubstrateBlock,
-    accountId: string
-  ): Promise<Account> {
+  return async function getOrCreateAccount(header: SubstrateBlock, accountId: string): Promise<Account> {
     const storage = createSystemAccountStorage(ctx, header);
-    const isHex = accountId.startsWith("0x");
+    const isHex = accountId.startsWith('0x');
     let account, accountInfo, convertedId;
     if (isHex) {
       const accountBufferId = decodeHex(accountId);
@@ -238,10 +230,7 @@ export function getOrCreateAccountFactory(ctx: Context) {
 }
 
 export function getOrCreateAccountRewardsFactory(ctx: Context) {
-  return async function getOrCreateAccountRewards(
-    header: SubstrateBlock,
-    account: Account
-  ): Promise<AccountRewards> {
+  return async function getOrCreateAccountRewards(header: SubstrateBlock, account: Account): Promise<AccountRewards> {
     let accountRewards = await ctx.store.get(AccountRewards, account.id);
 
     if (!accountRewards) {
@@ -338,9 +327,7 @@ export function addEventModuleNameFactory(ctx: Context) {
  * @returns
  */
 export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
-  return async function getOrCreateOperator(
-    operatorId: bigint
-  ): Promise<Operator | undefined> {
+  return async function getOrCreateOperator(operatorId: bigint): Promise<Operator | undefined> {
     const block = ctx.blocks[ctx.blocks.length - 1];
     let operator = await ctx.store.get(Operator, operatorId.toString());
 
@@ -349,13 +336,9 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
     const nominatorsLength = nominators.length;
 
     if (!operator) {
-      const operatorInfo = (
-        await api.query.domains.operators(operatorId)
-      ).toJSON() as any;
+      const operatorInfo = (await api.query.domains.operators(operatorId)).toJSON() as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-      const ownerAccount = (
-        await api.query.domains.operatorIdOwner(operatorId)
-      ).toJSON();
+      const ownerAccount = (await api.query.domains.operatorIdOwner(operatorId)).toJSON();
       if (operatorInfo) {
         operator = new Operator({
           id: operatorId.toString(),
@@ -377,9 +360,7 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
         await ctx.store.insert(operator);
       }
     } else {
-      const operatorInfo = (
-        await api.query.domains.operators(operatorId)
-      ).toJSON() as any;
+      const operatorInfo = (await api.query.domains.operators(operatorId)).toJSON() as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       if (operatorInfo) {
         operator = new Operator({
@@ -414,14 +395,9 @@ export function getOrCreateOperatorFactory(ctx: Context, api: ApiPromise) {
 export function getOrCreateNominatorsFactory(
   ctx: Context,
   api: ApiPromise,
-  getOrCreateAccount: (
-    header: SubstrateBlock,
-    accountId: string
-  ) => Promise<Account>
+  getOrCreateAccount: (header: SubstrateBlock, accountId: string) => Promise<Account>
 ) {
-  return async function getOrCreateNominators(
-    operator: Operator
-  ): Promise<Nominator[]> {
+  return async function getOrCreateNominators(operator: Operator): Promise<Nominator[]> {
     const nominatorsList: Nominator[] = [];
     const operatorId = BigInt(operator.id);
     const block = ctx.blocks[ctx.blocks.length - 1];
@@ -433,17 +409,12 @@ export function getOrCreateNominatorsFactory(
     for (let i = 0; i < nominatorsLength; i++) {
       const nominatorId = nominators[i][0].args[1].toString();
 
-      let nominator = await ctx.store.get(
-        Nominator,
-        `${operator.id}-${nominatorId}`
-      );
+      let nominator = await ctx.store.get(Nominator, `${operator.id}-${nominatorId}`);
 
-      const nominatorInfo = nominators[i][1].toJSON() as any;
+      const nominatorInfo = nominators[i][1].toJSON() as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const existingNominator = await ctx.store.get(Nominator, nominatorId);
-      const hexAccountId = api.registry
-        .createType("AccountId", nominatorId)
-        .toHex();
+      const hexAccountId = api.registry.createType('AccountId', nominatorId).toHex();
       const account = await getOrCreateAccount(block.header, hexAccountId);
 
       nominator = new Nominator({
