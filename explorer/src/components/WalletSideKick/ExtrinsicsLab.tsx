@@ -1,9 +1,9 @@
-import { camelToNormal } from '@/utils/string'
+import { SubmittableModuleExtrinsics } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
-import { SubmittableModuleExtrinsics } from '@polkadot/api/types'
 import { Field, FieldArray, FormikErrors, FormikTouched } from 'formik'
 import { FC, Fragment, useCallback, useMemo, useState } from 'react'
+import { camelToNormal } from 'utils/string'
 
 export type ExtrinsicModule = SubmittableModuleExtrinsics<'promise'>
 export type ExtrinsicsList = { [key: string]: ExtrinsicModule }

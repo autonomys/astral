@@ -1,4 +1,4 @@
-import { isAddress } from '@polkadot/util-crypto'
+import { isAddress } from '@autonomys/auto-utils'
 import { Modal } from 'components/common/Modal'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
