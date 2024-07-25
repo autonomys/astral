@@ -1,10 +1,8 @@
 import tap from 'tap';
 import { createBlock, createCall, createExtrinsic } from '../../blocks/utils';
-import { Account, Block, Call, Extrinsic } from '../../model';
 import BlockHeaderMock from '../../mocks/BlockHeader.json';
-import { callItemWithSignature, contextMock } from '../../mocks/mocks';
-import { getOrCreateAccountFactory } from '../../blocks/utils';
-import { Context } from '../../processor';
+import { callItemWithSignature } from '../../mocks/mocks';
+import { Account, Block, Call, Extrinsic } from '../../model';
 
 const spacePledged = BigInt(1);
 const blockchainSize = BigInt(2);
@@ -41,10 +39,10 @@ const blockchainSize = BigInt(2);
 //   t.end();
 // });
 
-tap.test('createBlock should create instance of a Block', (t) => {
+tap.test('createBlock should create instance of a Block', t => {
   const result = createBlock({
-    header: BlockHeaderMock, 
-    spacePledged, 
+    header: BlockHeaderMock,
+    spacePledged,
     blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
@@ -66,10 +64,10 @@ tap.test('createBlock should create instance of a Block', (t) => {
   t.end();
 });
 
-tap.test('createCall should create instance of Call without parent Call', (t) => {
+tap.test('createCall should create instance of Call without parent Call', t => {
   const block = createBlock({
-    header: BlockHeaderMock, 
-    spacePledged, 
+    header: BlockHeaderMock,
+    spacePledged,
     blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
@@ -83,10 +81,10 @@ tap.test('createCall should create instance of Call without parent Call', (t) =>
 
 tap.todo('createCall should create instance of Call with parent Call');
 
-tap.test('createExtrinsic should create instance of Extrinsic without signature', (t) => {
+tap.test('createExtrinsic should create instance of Extrinsic without signature', t => {
   const block = createBlock({
-    header: BlockHeaderMock, 
-    spacePledged, 
+    header: BlockHeaderMock,
+    spacePledged,
     blockchainSize,
     extrinsicsCount: 2,
     eventsCount: 5,
@@ -113,4 +111,3 @@ tap.test('createExtrinsic should create instance of Extrinsic without signature'
 });
 
 tap.todo('createExtrinsic should create instance of Extrinsic with signature');
-
