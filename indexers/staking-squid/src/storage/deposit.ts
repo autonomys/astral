@@ -37,9 +37,6 @@ export const createDeposit = async (
 
   await ctx.store.insert(deposit);
 
-  const count = await ctx.store.count(Deposit);
-  ctx.log.child("deposits").info(`count: ${count}`);
-
   return deposit;
 };
 

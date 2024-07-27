@@ -41,9 +41,6 @@ export const createStatsPerOperator = async (
 
   await ctx.store.insert(statsPerOperator);
 
-  const count = await ctx.store.count(StatsPerOperator);
-  ctx.log.child("statsPerOperators").info(`count: ${count}`);
-
   return statsPerOperator;
 };
 
@@ -117,9 +114,6 @@ export const createStatsPerDomain = async (
 
   await ctx.store.insert(statsPerDomain);
 
-  const count = await ctx.store.count(StatsPerDomain);
-  ctx.log.child("statsPerDomains").info(`count: ${count}`);
-
   return statsPerDomain;
 };
 
@@ -188,9 +182,6 @@ export const createStats = async (
   });
 
   await ctx.store.insert(stats);
-
-  const count = await ctx.store.count(Stats);
-  ctx.log.child("stats").info(`count: ${count}`);
 
   return stats;
 };

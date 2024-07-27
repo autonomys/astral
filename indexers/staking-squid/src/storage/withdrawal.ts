@@ -36,9 +36,6 @@ export const createWithdrawal = async (
 
   await ctx.store.insert(withdrawal);
 
-  const count = await ctx.store.count(Withdrawal);
-  ctx.log.child("withdrawals").info(`count: ${count}`);
-
   return withdrawal;
 };
 

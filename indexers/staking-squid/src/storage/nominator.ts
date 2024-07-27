@@ -32,9 +32,6 @@ export const createNominator = async (
 
   await ctx.store.insert(nominator);
 
-  const count = await ctx.store.count(Nominator);
-  ctx.log.child("nominators").info(`count: ${count}`);
-
   return nominator;
 };
 
