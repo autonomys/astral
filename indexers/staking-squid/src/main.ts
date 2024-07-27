@@ -7,7 +7,7 @@ import { save } from "./utils/cache";
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   const api = await activate();
 
-  const cache = await processBlocks(ctx.blocks, api);
+  const cache = await processBlocks(ctx, api);
 
   await save(ctx, cache);
 

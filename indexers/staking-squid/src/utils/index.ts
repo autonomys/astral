@@ -18,6 +18,8 @@ export const getBlockNumber = (block: CtxBlock): number => block.header.height;
 export const getTimestamp = (block: CtxBlock): Date =>
   new Date(block.header.timestamp || 0);
 
+export const domainUID = (domainId: number): string => `${domainId}`;
+
 export const operatorUID = (domainId: number, signingKey: string): string =>
   `${domainId}-${signingKey}`;
 

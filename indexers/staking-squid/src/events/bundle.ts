@@ -16,7 +16,7 @@ export function processBundleStoredEvent(
       .domainBlockNumber
   );
   const domain = getOrCreateDomain(cache, block, domainId);
-  const operator = getOrCreateOperator(cache, block, operatorId);
+  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
 
   domain.lastOperatorBundleProduced = operator;
   domain.lastDomainBlockNumber = lastDomainBlockNumber;

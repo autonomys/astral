@@ -39,7 +39,13 @@ async function processEvent(
     // epoch transition
     case events.domains.domainEpochCompleted.name:
     case events.domains.forceDomainEpochTransition.name:
-      return await processEpochTransitionEvent(cache, apiAt, block, event);
+      return await processEpochTransitionEvent(
+        cache,
+        apiAt,
+        block,
+        extrinsic,
+        event
+      );
 
     // operator and nomination
     case events.domains.operatorNominated.name:
@@ -63,11 +69,11 @@ async function processEvent(
       return cache;
 
     case events.domains.operatorSlashed.name:
-      return processOperatorSlashedEvent(cache, block, event);
+      return processOperatorSlashedEvent(cache, block, extrinsic, event);
 
     // tax on fees
     case events.domains.operatorTaxCollected.name:
-      return processOperatorTaxCollectedEvent(cache, block, event);
+      return processOperatorTaxCollectedEvent(cache, block, extrinsic, event);
 
     default:
       return cache;

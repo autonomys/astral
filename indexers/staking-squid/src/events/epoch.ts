@@ -1,8 +1,7 @@
-import { parseOperator } from "@autonomys/auto-consensus";
+import { operators as getOperators } from "@autonomys/auto-consensus";
 import type { ApiDecoration } from "@polkadot/api/types";
-import type { CtxBlock, CtxEvent } from "../processor";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
-  createDomain,
   createStats,
   createStatsPerDomain,
   createStatsPerOperator,
@@ -16,30 +15,23 @@ export async function processEpochTransitionEvent(
   cache: Cache,
   apiAt: ApiDecoration<"promise">,
   block: CtxBlock,
+  extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
   const domainId = Number(event.args.domainId);
   const domain = getOrCreateDomain(cache, block, domainId);
   const completedEpoch = Number(event.args.completedEpochIndex);
 
-  if (!domain) {
-    const domain = createDomain(block, { domainId, completedEpoch });
-    cache.domains.set(domain.id, domain);
-  } else {
-    domain.completedEpoch = Number(event.args.completedEpochIndex);
-    domain.updatedAt = getBlockNumber(block);
-
-    cache.domains.set(domain.id, domain);
-  }
-
-  const operatorsAll = await apiAt.query.domains.operators.entries();
-  const allOperators = (operatorsAll as unknown as any[]).map((o) =>
-    parseOperator(o)
+  const operatorsAll = await getOperators(apiAt);
+  const allOperators = operatorsAll.filter(
+    (o) => o.operatorDetails.currentDomainId === BigInt(domainId)
   );
+
   for (const operator of allOperators) {
     const op = getOrCreateOperator(
       cache,
       block,
+      extrinsic,
       parseInt(operator.operatorId.toString())
     );
     op.currentEpochRewards = operator.operatorDetails.currentEpochRewards;
@@ -52,6 +44,20 @@ export async function processEpochTransitionEvent(
 
     cache.operators.set(op.id, op);
   }
+
+  domain.currentTotalStake = allOperators.reduce(
+    (acc, o) => acc + o.operatorDetails.currentTotalStake,
+    BigInt(0)
+  );
+  domain.currentStorageFeeDeposit = allOperators.reduce(
+    (acc, o) => acc + o.operatorDetails.totalStorageFeeDeposit,
+    BigInt(0)
+  );
+
+  domain.completedEpoch = completedEpoch;
+  domain.updatedAt = getBlockNumber(block);
+
+  cache.domains.set(domain.id, domain);
 
   // Stats on epoch transition
   const stats = createStats(cache, block);

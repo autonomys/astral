@@ -2,6 +2,7 @@ import { Nominator, NominatorStatus, Operator } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getCallSigner, nominatorUID } from "../utils";
 import { Cache } from "../utils/cache";
+import { getOrCreateAccount } from "./account";
 import { getOrCreateOperator } from "./operator";
 
 export const createNominator = (
@@ -10,13 +11,15 @@ export const createNominator = (
   extrinsic: CtxExtrinsic,
   props: Partial<Nominator>
 ): Nominator => {
-  if (!props.account) props.account = getCallSigner(extrinsic.call);
-  if (!props.operator) props.operator = getOrCreateOperator(cache, block, 0);
+  const address = getCallSigner(extrinsic.call);
+  if (!props.account)
+    props.account = props.account = getOrCreateAccount(cache, block, address);
+  if (!props.operator)
+    props.operator = getOrCreateOperator(cache, block, extrinsic, 0);
   if (!props.domain) props.domain = props.operator.domain;
 
   const nominator = new Nominator({
-    id: nominatorUID(props.operator.operatorId, props.account),
-    account: "st",
+    id: nominatorUID(props.operator.operatorId, address),
     shares: BigInt(0),
     deposits: [],
     withdrawals: [],
@@ -39,9 +42,10 @@ export const getOrCreateNominator = (
   operator: Operator,
   props: Partial<Nominator> = {}
 ): Nominator => {
-  const account = getCallSigner(extrinsic.call);
+  const address = getCallSigner(extrinsic.call);
+  const account = getOrCreateAccount(cache, block, address);
   const nominator = cache.nominators.get(
-    nominatorUID(operator.operatorId, account)
+    nominatorUID(operator.operatorId, address)
   );
 
   if (!nominator)

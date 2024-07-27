@@ -1,4 +1,5 @@
 export * from "./domain.model"
+export * from "./account.model"
 export * from "./operator.model"
 export * from "./_operatorStatus"
 export * from "./nominator.model"
