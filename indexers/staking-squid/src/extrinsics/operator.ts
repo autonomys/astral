@@ -18,8 +18,7 @@ export function processRegisterOperator(
   extrinsic: CtxExtrinsic
 ) {
   const address = getCallSigner(extrinsic.call);
-  const account = getOrCreateAccount(cache, block, address);
-  const domainId = extrinsic.call?.args.domainId;
+  const domainId = Number(extrinsic.call?.args.domainId);
 
   const operatorRegisteredEvent = extrinsic.events.find(
     (e) => e.name === events.domains.operatorRegistered.name
@@ -39,6 +38,7 @@ export function processRegisterOperator(
     ? BigInt(storageFeeDepositedEvent.args.amount)
     : BigInt(0);
 
+  const account = getOrCreateAccount(cache, block, address);
   const domain = getOrCreateDomain(cache, block, domainId);
 
   if (operatorRegisteredEvent) {
@@ -56,9 +56,11 @@ export function processRegisterOperator(
         : BigInt(0),
     });
     const nominator = getOrCreateNominator(cache, block, extrinsic, operator, {
+      domain,
       account,
     });
     const deposit = createDeposit(cache, block, extrinsic, {
+      domain,
       account,
       operator,
       nominator,

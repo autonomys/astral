@@ -3,6 +3,7 @@ import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
   getOrCreateAccount,
+  getOrCreateDomain,
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
@@ -19,6 +20,7 @@ export function processOperatorNominatedEvent(
   const address = getCallSigner(extrinsic.call);
   const blockNumber = getBlockNumber(block);
   const operatorId = Number(event.args.operatorId);
+  const domainId = Number(extrinsic.call?.args.domainId);
 
   const storageFeeDepositedEvent = extrinsic.events.find(
     (e) => e.name === events.domains.storageFeeDeposited.name
@@ -35,6 +37,8 @@ export function processOperatorNominatedEvent(
     : BigInt(0);
 
   const account = getOrCreateAccount(cache, block, address);
+  const domain = getOrCreateDomain(cache, block, domainId);
+
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
     account,
   });
@@ -74,7 +78,6 @@ export function processOperatorNominatedEvent(
 
   cache.nominators.set(nominator.id, nominator);
 
-  const domain = operator.domain;
   const domainNominators = appendOrArray(domain.nominators, nominator);
   domain.nominators = domainNominators;
   domain.nominatorsCount = domainNominators.length;
