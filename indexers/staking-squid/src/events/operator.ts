@@ -1,18 +1,16 @@
-import type { ApiDecoration } from "@polkadot/api/types";
-import type { Store } from "@subsquid/typeorm-store";
-import { Nominator, NominatorStatus, OperatorStatus } from "../model";
-import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
+import { NominatorStatus, OperatorStatus } from "../model";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
-  getOrCreateDeposit,
+  createDeposit,
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
 import { events } from "../types";
 import { appendOrArray, getBlockNumber } from "../utils";
+import { Cache } from "../utils/cache";
 
-export async function processOperatorNominatedEvent(
-  ctx: Ctx<Store>,
-  apiAt: ApiDecoration<"promise">,
+export function processOperatorNominatedEvent(
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -33,27 +31,16 @@ export async function processOperatorNominatedEvent(
     ? BigInt(storageFeeDepositedEvent.args.amount)
     : BigInt(0);
 
-  const operator = await getOrCreateOperator(ctx, block, operatorId);
-  const nominator = await getOrCreateNominator(
-    ctx,
-    block,
-    extrinsic,
-    operator,
-    {
-      shares,
-    }
-  );
-  const deposit = await getOrCreateDeposit(
-    ctx,
-    block,
-    extrinsic,
+  const operator = getOrCreateOperator(cache, block, operatorId);
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operator, {
+    shares,
+  });
+  const deposit = createDeposit(cache, block, extrinsic, {
     operator,
     nominator,
-    {
-      amount,
-      storageFeeDeposit,
-    }
-  );
+    amount,
+    storageFeeDeposit,
+  });
 
   operator.totalDeposits += deposit.amount;
 
@@ -67,7 +54,7 @@ export async function processOperatorNominatedEvent(
 
   operator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(operator);
+  cache.operators.set(operator.id, operator);
 
   nominator.totalDeposits += deposit.amount;
 
@@ -77,48 +64,52 @@ export async function processOperatorNominatedEvent(
 
   nominator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(nominator);
+  cache.nominators.set(nominator.id, nominator);
+
+  return cache;
 }
 
-export async function processOperatorSlashedEvent(
-  ctx: Ctx<Store>,
-  apiAt: ApiDecoration<"promise">,
+export function processOperatorSlashedEvent(
+  cache: Cache,
   block: CtxBlock,
-  extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
-  const operator = await getOrCreateOperator(ctx, block, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId);
 
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
   operator.status = OperatorStatus.SLASHED;
   operator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(operator);
+  cache.operators.set(operator.id, operator);
 
-  const nominators = await ctx.store.findBy(Nominator, { operator });
+  const nominators = Array.from(cache.nominators.values()).filter(
+    (n) => n.operator.id === operator.id
+  );
   for (const nominator of nominators) {
     nominator.status = NominatorStatus.SLASHED;
     nominator.updatedAt = getBlockNumber(block);
 
-    await ctx.store.save(nominator);
+    cache.nominators.set(nominator.id, nominator);
   }
+
+  return cache;
 }
 
-export async function processOperatorTaxCollectedEvent(
-  ctx: Ctx<Store>,
-  apiAt: ApiDecoration<"promise">,
+export function processOperatorTaxCollectedEvent(
+  cache: Cache,
   block: CtxBlock,
-  extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
-  const operator = await getOrCreateOperator(ctx, block, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId);
 
   operator.totalTaxCollected =
     operator.totalTaxCollected + BigInt(event.args.tax);
   operator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(operator);
+  cache.operators.set(operator.id, operator);
+
+  return cache;
 }

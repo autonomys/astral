@@ -1,13 +1,15 @@
-import { activate, ApiPromise } from "@autonomys/auto-utils";
-import { Store, TypeormDatabase } from "@subsquid/typeorm-store";
+import { activate } from "@autonomys/auto-utils";
+import { TypeormDatabase } from "@subsquid/typeorm-store";
 import { processBlocks } from "./blocks";
-import { Ctx, processor } from "./processor";
+import { processor } from "./processor";
+import { save } from "./utils/cache";
 
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   const api = await activate();
-  await processChain(ctx, api);
+
+  const cache = await processBlocks(ctx.blocks, api);
+
+  await save(ctx, cache);
+
   await api.disconnect();
 });
-async function processChain(ctx: Ctx<Store>, api: ApiPromise) {
-  await processBlocks(ctx, api);
-}

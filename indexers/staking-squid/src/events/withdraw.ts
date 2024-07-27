@@ -1,17 +1,14 @@
-import type { ApiDecoration } from "@polkadot/api/types";
-import type { Store } from "@subsquid/typeorm-store";
-import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
-  getOrCreateDomain,
+  createWithdrawal,
   getOrCreateNominator,
   getOrCreateOperator,
-  getOrCreateWithdrawal,
 } from "../storage";
 import { appendOrArray, getBlockNumber } from "../utils";
+import { Cache } from "../utils/cache";
 
-export async function processWithdrewStakeEvent(
-  ctx: Ctx<Store>,
-  apiAt: ApiDecoration<"promise">,
+export function processWithdrewStakeEvent(
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -19,16 +16,13 @@ export async function processWithdrewStakeEvent(
   const operatorId = Number(event.args.operatorId);
   const shares = extrinsic.call?.args.shares.toBigInt();
 
-  const operator = await getOrCreateOperator(ctx, block, operatorId);
-  const nominator = await getOrCreateNominator(ctx, block, extrinsic, operator);
-  const withdrawal = await getOrCreateWithdrawal(
-    ctx,
-    block,
-    extrinsic,
+  const operator = getOrCreateOperator(cache, block, operatorId);
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operator);
+  const withdrawal = createWithdrawal(cache, block, extrinsic, {
     operator,
     nominator,
-    { shares }
-  );
+    shares,
+  });
 
   const operatorWithdrawals = appendOrArray(operator.withdrawals, withdrawal);
   operator.withdrawals = operatorWithdrawals;
@@ -36,7 +30,7 @@ export async function processWithdrewStakeEvent(
 
   operator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(operator);
+  cache.operators.set(operator.id, operator);
 
   const nominatorWithdrawals = appendOrArray(nominator.withdrawals, withdrawal);
   nominator.withdrawals = nominatorWithdrawals;
@@ -44,5 +38,7 @@ export async function processWithdrewStakeEvent(
 
   nominator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(nominator);
+  cache.nominators.set(nominator.id, nominator);
+
+  return cache;
 }

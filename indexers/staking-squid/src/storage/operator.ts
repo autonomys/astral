@@ -1,19 +1,18 @@
-import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
 import { Operator, OperatorStatus } from "../model";
-import type { Ctx, CtxBlock } from "../processor";
-import { getBlockNumber } from "../utils";
+import type { CtxBlock } from "../processor";
+import { getBlockNumber, operatorUID } from "../utils";
+import { Cache } from "../utils/cache";
 import { getOrCreateDomain } from "./domain";
 
-export const createOperator = async (
-  ctx: Ctx<Store>,
+export const createOperator = (
+  cache: Cache,
   block: CtxBlock,
   props: Partial<Operator>
-): Promise<Operator> => {
-  if (props.domainId) await getOrCreateDomain(ctx, block, props.domainId);
+): Operator => {
+  if (props.domain) props.domain = getOrCreateDomain(cache, block, 0);
 
   const operator = new Operator({
-    id: randomUUID(),
+    id: operatorUID(props.domain?.domainId || 0, props.signingKey || "0x"),
     operatorId: 0,
     signingKey: "0x",
     owner: "st",
@@ -42,22 +41,21 @@ export const createOperator = async (
     updatedAt: getBlockNumber(block),
   });
 
-  await ctx.store.insert(operator);
-
   return operator;
 };
 
-export const getOrCreateOperator = async (
-  ctx: Ctx<Store>,
+export const getOrCreateOperator = (
+  cache: Cache,
   block: CtxBlock,
   operatorId: number,
   props: Partial<Operator> = {}
-): Promise<Operator> => {
-  const operator = await ctx.store.findOneBy(Operator, { operatorId });
+): Operator => {
+  const operator = cache.operators.get(
+    operatorUID(props.domain?.domainId || 0 || 0, props.signingKey || "0x")
+  );
 
   if (!operator)
-    return await createOperator(ctx, block, {
-      domainId: 0,
+    return createOperator(cache, block, {
       operatorId,
       ...props,
     });

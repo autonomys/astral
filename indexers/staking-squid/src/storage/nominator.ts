@@ -1,22 +1,21 @@
-import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
 import { Nominator, NominatorStatus, Operator } from "../model";
-import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
-import { getBlockNumber, getCallSigner } from "../utils";
+import type { CtxBlock, CtxExtrinsic } from "../processor";
+import { getBlockNumber, getCallSigner, nominatorUID } from "../utils";
+import { Cache } from "../utils/cache";
 import { getOrCreateOperator } from "./operator";
 
-export const createNominator = async (
-  ctx: Ctx<Store>,
+export const createNominator = (
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   props: Partial<Nominator>
-): Promise<Nominator> => {
+): Nominator => {
   if (!props.account) props.account = getCallSigner(extrinsic.call);
-  if (!props.operator)
-    props.operator = await getOrCreateOperator(ctx, block, 0);
+  if (!props.operator) props.operator = getOrCreateOperator(cache, block, 0);
+  if (!props.domain) props.domain = props.operator.domain;
 
   const nominator = new Nominator({
-    id: randomUUID(),
+    id: nominatorUID(props.operator.operatorId, props.account),
     account: "st",
     shares: BigInt(0),
     deposits: [],
@@ -30,23 +29,23 @@ export const createNominator = async (
     updatedAt: getBlockNumber(block),
   });
 
-  await ctx.store.insert(nominator);
-
   return nominator;
 };
 
-export const getOrCreateNominator = async (
-  ctx: Ctx<Store>,
+export const getOrCreateNominator = (
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operator: Operator,
   props: Partial<Nominator> = {}
-): Promise<Nominator> => {
+): Nominator => {
   const account = getCallSigner(extrinsic.call);
-  const nominator = await ctx.store.findOneBy(Nominator, { account, operator });
+  const nominator = cache.nominators.get(
+    nominatorUID(operator.operatorId, account)
+  );
 
   if (!nominator)
-    return await createNominator(ctx, block, extrinsic, {
+    return createNominator(cache, block, extrinsic, {
       account,
       operator,
       ...props,

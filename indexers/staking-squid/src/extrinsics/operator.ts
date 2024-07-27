@@ -1,14 +1,16 @@
-import type { ApiDecoration } from "@polkadot/api/types";
-import type { Store } from "@subsquid/typeorm-store";
 import { OperatorStatus } from "../model";
-import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
-import { createOperator, getOrCreateOperator } from "../storage";
+import type { CtxBlock, CtxExtrinsic } from "../processor";
+import {
+  createOperator,
+  getOrCreateDomain,
+  getOrCreateOperator,
+} from "../storage";
 import { events } from "../types";
 import { getCallSigner } from "../utils";
+import { Cache } from "../utils/cache";
 
-export async function processRegisterOperator(
-  ctx: Ctx<Store>,
-  api: ApiDecoration<"promise">,
+export function processRegisterOperator(
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {
@@ -18,17 +20,14 @@ export async function processRegisterOperator(
   const operatorRegisteredEvent = extrinsic.events.find(
     (e) => e.name === events.domains.operatorRegistered.name
   );
-  const storageFeeDepositedEvent = extrinsic.events.find(
-    (e) => e.name === events.domains.storageFeeDeposited.name
-  );
 
   const operatorId = operatorRegisteredEvent
     ? Number(operatorRegisteredEvent.args.operatorId)
     : 0;
 
   if (operatorRegisteredEvent) {
-    const operator = await createOperator(ctx, block, {
-      domainId,
+    const operator = createOperator(cache, block, {
+      domain: getOrCreateDomain(cache, block, domainId),
       operatorId,
       signingKey: extrinsic.call?.args.config.signingKey,
       owner,
@@ -41,19 +40,20 @@ export async function processRegisterOperator(
         : BigInt(0),
     });
 
-    await ctx.store.save(operator);
+    cache.operators.set(operator.id, operator);
   }
+
+  return cache;
 }
 
-export async function processDeregisterOperator(
-  ctx: Ctx<Store>,
-  api: ApiDecoration<"promise">,
+export function processDeregisterOperator(
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {
   const operatorId = Number(extrinsic.call?.args.operatorId);
 
-  const operator = await getOrCreateOperator(ctx, block, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId);
   const operatorDeregisteredEvent = extrinsic.events.find(
     (e) => e.name === events.domains.operatorDeregistered.name
   );
@@ -63,6 +63,8 @@ export async function processDeregisterOperator(
     operator.currentStorageFeeDeposit = BigInt(0);
     operator.status = OperatorStatus.DEREGISTERED;
 
-    await ctx.store.save(operator);
+    cache.operators.set(operator.id, operator);
   }
+
+  return cache;
 }

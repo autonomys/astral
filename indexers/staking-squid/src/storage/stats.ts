@@ -1,31 +1,24 @@
-import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
 import {
-  Deposit,
   Domain,
-  Nominator,
   Operator,
   OperatorStatus,
   Stats,
   StatsPerDomain,
   StatsPerOperator,
-  Withdrawal,
 } from "../model";
-import type { Ctx, CtxBlock } from "../processor";
+import type { CtxBlock } from "../processor";
 import { getBlockNumber, getTimestamp } from "../utils";
-import { getOrCreateOperator } from "./operator";
+import { Cache } from "../utils/cache";
 
-export const createStatsPerOperator = async (
-  ctx: Ctx<Store>,
+export const createStatsPerOperator = (
   block: CtxBlock,
-  props: Partial<StatsPerOperator>
-): Promise<StatsPerOperator> => {
-  const operator = await getOrCreateOperator(ctx, block, props.operatorId || 0);
-
+  operator: Operator
+): StatsPerOperator => {
   const statsPerOperator = new StatsPerOperator({
     id: randomUUID(),
-    domainId: operator.domainId,
-    operatorId: operator.operatorId,
+    domain: operator.domain,
+    operator: operator,
     totalStaked: operator.currentTotalStake,
     totalFees: BigInt(0),
     totalDeposits: operator.totalDeposits,
@@ -34,48 +27,33 @@ export const createStatsPerOperator = async (
     nominatorsCount: operator.nominatorsCount,
     depositsCount: operator.depositsCount,
     withdrawalsCount: operator.withdrawalsCount,
-    ...props,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
 
-  await ctx.store.insert(statsPerOperator);
-
   return statsPerOperator;
 };
 
-export const getOrCreateStatsPerOperator = async (
-  ctx: Ctx<Store>,
+export const createStatsPerDomain = (
+  cache: Cache,
   block: CtxBlock,
-  domainId: number,
-  operatorId: number,
-  props: Partial<StatsPerOperator> = {}
-): Promise<StatsPerOperator> => {
-  const blockNumber = getBlockNumber(block);
-  const statsPerOperator = await ctx.store.findOneBy(StatsPerOperator, {
-    domainId,
-    operatorId,
-    blockNumber,
-  });
-
-  if (!statsPerOperator)
-    return await createStatsPerOperator(ctx, block, {
-      domainId,
-      operatorId,
-      blockNumber,
-      ...props,
-    });
-
-  return statsPerOperator;
-};
-
-export const createStatsPerDomain = async (
-  ctx: Ctx<Store>,
-  block: CtxBlock,
-  props: Partial<StatsPerDomain>
-): Promise<StatsPerDomain> => {
-  const filter = { domainId: props.domainId || 0 };
-  const operators = await ctx.store.findBy(Operator, filter);
+  domain: Domain
+): StatsPerDomain => {
+  const operators = Array.from(cache.operators.values()).filter(
+    (n) => n.domain.domainId === domain.domainId
+  );
+  const nominatorsCount = operators.reduce(
+    (total, operator) => total + operator.nominatorsCount,
+    0
+  );
+  const depositsCount = operators.reduce(
+    (total, operator) => total + operator.depositsCount,
+    0
+  );
+  const withdrawalsCount = operators.reduce(
+    (total, operator) => total + operator.withdrawalsCount,
+    0
+  );
 
   const activeOperatorsCount = operators.filter(
     (operator) => operator.status === OperatorStatus.REGISTERED
@@ -95,7 +73,7 @@ export const createStatsPerDomain = async (
 
   const statsPerDomain = new StatsPerDomain({
     id: randomUUID(),
-    domainId: 0,
+    domain,
     totalStaked,
     totalFees: BigInt(0),
     totalDeposits,
@@ -104,47 +82,18 @@ export const createStatsPerDomain = async (
     operatorsCount: operators.length,
     activeOperatorsCount,
     slashedOperatorsCount,
-    nominatorsCount: 0,
-    depositsCount: 0,
-    withdrawalsCount: 0,
-    ...props,
+    nominatorsCount,
+    depositsCount,
+    withdrawalsCount,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
 
-  await ctx.store.insert(statsPerDomain);
-
   return statsPerDomain;
 };
 
-export const getOrCreateStatsPerDomain = async (
-  ctx: Ctx<Store>,
-  block: CtxBlock,
-  domainId: number,
-  props: Partial<StatsPerDomain> = {}
-): Promise<StatsPerDomain> => {
-  const blockNumber = getBlockNumber(block);
-  const statsPerDomain = await ctx.store.findOneBy(StatsPerDomain, {
-    domainId,
-    blockNumber,
-  });
-
-  if (!statsPerDomain)
-    return await createStatsPerDomain(ctx, block, {
-      domainId,
-      blockNumber,
-      ...props,
-    });
-
-  return statsPerDomain;
-};
-
-export const createStats = async (
-  ctx: Ctx<Store>,
-  block: CtxBlock,
-  props: Partial<Stats>
-): Promise<Stats> => {
-  const operators = await ctx.store.find(Operator);
+export const createStats = (cache: Cache, block: CtxBlock): Stats => {
+  const operators = Array.from(cache.operators.values());
 
   const activeOperatorsCount = operators.filter(
     (operator) => operator.status === OperatorStatus.REGISTERED
@@ -169,38 +118,16 @@ export const createStats = async (
     totalDeposits,
     totalWithdrawals: BigInt(0),
     allTimeHighStaked: BigInt(0),
-    domainsCount: await ctx.store.count(Domain),
+    domainsCount: cache.domains.size,
     operatorsCount: operators.length,
     activeOperatorsCount,
     slashedOperatorsCount,
-    nominatorsCount: await ctx.store.count(Nominator),
-    depositsCount: await ctx.store.count(Deposit),
-    withdrawalsCount: await ctx.store.count(Withdrawal),
-    ...props,
+    nominatorsCount: cache.nominators.size,
+    depositsCount: cache.deposits.size,
+    withdrawalsCount: cache.withdrawals.size,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
-
-  await ctx.store.insert(stats);
-
-  return stats;
-};
-
-export const getOrCreateStats = async (
-  ctx: Ctx<Store>,
-  block: CtxBlock,
-  props: Partial<Stats> = {}
-): Promise<Stats> => {
-  const blockNumber = getBlockNumber(block);
-  const stats = await ctx.store.findOneBy(Stats, {
-    blockNumber,
-  });
-
-  if (!stats)
-    return await createStats(ctx, block, {
-      blockNumber,
-      ...props,
-    });
 
   return stats;
 };

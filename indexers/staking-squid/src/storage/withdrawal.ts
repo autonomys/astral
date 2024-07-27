@@ -1,23 +1,23 @@
-import type { Store } from "@subsquid/typeorm-store";
 import { randomUUID } from "crypto";
-import { Nominator, Operator, Withdrawal, WithdrawalStatus } from "../model";
-import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
+import { Withdrawal, WithdrawalStatus } from "../model";
+import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getCallSigner, getTimestamp } from "../utils";
+import { Cache } from "../utils/cache";
 import { getOrCreateNominator } from "./nominator";
 import { getOrCreateOperator } from "./operator";
 
-export const createWithdrawal = async (
-  ctx: Ctx<Store>,
+export const createWithdrawal = (
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   props: Partial<Withdrawal>
-): Promise<Withdrawal> => {
+): Withdrawal => {
   if (!props.account) props.account = getCallSigner(extrinsic.call);
-  if (!props.operator)
-    props.operator = await getOrCreateOperator(ctx, block, 0);
+  if (!props.operator) props.operator = getOrCreateOperator(cache, block, 0);
+  if (!props.domain) props.domain = props.operator.domain;
   if (!props.nominator && props.operator)
-    props.nominator = await getOrCreateNominator(
-      ctx,
+    props.nominator = getOrCreateNominator(
+      cache,
       block,
       extrinsic,
       props.operator
@@ -33,36 +33,6 @@ export const createWithdrawal = async (
     timestamp: getTimestamp(block),
     extrinsicHash: extrinsic.hash,
   });
-
-  await ctx.store.insert(withdrawal);
-
-  return withdrawal;
-};
-
-export const getOrCreateWithdrawal = async (
-  ctx: Ctx<Store>,
-  block: CtxBlock,
-  extrinsic: CtxExtrinsic,
-  operator: Operator,
-  nominator: Nominator,
-  props: Partial<Withdrawal> = {}
-): Promise<Withdrawal> => {
-  const account = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-  const withdrawal = await ctx.store.findOneBy(Withdrawal, {
-    account,
-    blockNumber,
-    operator,
-    nominator,
-  });
-
-  if (!withdrawal)
-    return await createWithdrawal(ctx, block, extrinsic, {
-      account,
-      operator,
-      nominator,
-      ...props,
-    });
 
   return withdrawal;
 };
