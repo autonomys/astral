@@ -12,6 +12,7 @@ export interface Chain {
     page: Chains
     squids: {
       old: string
+      staking?: string
       general?: string
       account?: string
       rewards?: string
@@ -32,6 +33,9 @@ export const chains: Chain[] = [
       page: Chains.gemini3h,
       squids: {
         old: 'https://squid.gemini-3h.subspace.network/graphql',
+
+        staking: 'https://autonomys-labs.squids.live/staking-squid/v/v3/graphql',
+
         general: 'https://squid.green.gemini-3h.subspace.network/graphql',
         rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
         account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',

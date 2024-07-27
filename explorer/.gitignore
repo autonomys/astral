@@ -1,5 +1,8 @@
 .next
 node_modules
 
+# Generated files
+gql/types
+
 # local env files
 .env

@@ -39,6 +39,9 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, c
     uri: ({ getContext }: Operation) => {
       const { clientName } = getContext()
 
+      if (clientName === 'staking' && selectedChain.urls.squids.staking)
+        return selectedChain.urls.squids.staking
+
       if (clientName === 'general' && selectedChain.urls.squids.general)
         return selectedChain.urls.squids.general
       if (clientName === 'account' && selectedChain.urls.squids.account)
