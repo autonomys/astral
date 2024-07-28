@@ -23,23 +23,26 @@ export const QUERY_OPERATOR_CONNECTION_LIST = gql`
     $orderBy: [OperatorOrderByInput!]!
     $where: OperatorWhereInput
   ) {
-    lastBlock: blocks(limit: 1, orderBy: height_DESC) {
-      height
-    }
     operatorsConnection(orderBy: $orderBy, first: $first, after: $after, where: $where) {
       edges {
         node {
           id
-          operatorOwner
-          currentDomainId
+          operatorId
+          account {
+            id
+          }
+          domain {
+            domainId
+          }
           currentEpochRewards
           currentTotalStake
+          currentTotalShares
+          currentStorageFeeDeposit
           minimumNominatorStake
-          nextDomainId
           nominationTax
           signingKey
           status
-          totalShares
+          rawStatus
           updatedAt
           nominators(limit: 256) {
             id
@@ -62,16 +65,22 @@ export const QUERY_OPERATOR_BY_ID = gql`
   query OperatorById($operatorId: String!) {
     operatorById(id: $operatorId) {
       id
-      operatorOwner
-      currentDomainId
+      operatorId
+      account {
+        id
+      }
+      domain {
+        domainId
+      }
       currentEpochRewards
       currentTotalStake
+      currentStorageFeeDeposit
+      currentTotalShares
       minimumNominatorStake
-      nextDomainId
       nominationTax
       signingKey
       status
-      totalShares
+      rawStatus
       updatedAt
     }
   }
@@ -122,16 +131,21 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
           }
           operator {
             id
-            operatorOwner
-            currentDomainId
+            account {
+              id
+            }
+            domain {
+              domainId
+            }
             currentEpochRewards
             currentTotalStake
+            currentTotalShares
+            currentStorageFeeDeposit
             minimumNominatorStake
-            nextDomainId
             nominationTax
             signingKey
             status
-            totalShares
+            rawStatus
             updatedAt
           }
           updatedAt
