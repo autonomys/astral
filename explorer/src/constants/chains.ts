@@ -34,7 +34,7 @@ export const chains: Chain[] = [
       squids: {
         old: 'https://squid.gemini-3h.subspace.network/graphql',
 
-        staking: 'https://autonomys-labs.squids.live/staking-squid/v/v5/graphql',
+        staking: 'https://autonomys-labs.squids.live/staking-squid/v/v6/graphql',
 
         general: 'https://squid.green.gemini-3h.subspace.network/graphql',
         rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
