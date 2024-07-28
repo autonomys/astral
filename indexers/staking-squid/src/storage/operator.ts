@@ -11,8 +11,8 @@ export const createOperator = (
   extrinsic: CtxExtrinsic,
   props: Partial<Operator>
 ): Operator => {
-  if (props.domain) props.domain = getOrCreateDomain(cache, block, 0);
-  if (props.account)
+  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
+  if (!props.account)
     props.account = getOrCreateAccount(
       cache,
       block,
