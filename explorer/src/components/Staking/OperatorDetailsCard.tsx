@@ -1,18 +1,17 @@
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { Chains } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import type { OperatorByIdQuery } from 'gql/oldSquidTypes'
+import type { OperatorByIdQuery } from 'gql/types/staking'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 
 dayjs.extend(relativeTime)
@@ -39,30 +38,28 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
         <div className='flow-root'>
           <List>
             <StyledListItem title='Operator Owner'>
-              <CopyButton value={operator.operatorOwner || ''} message='Operator owner key copied'>
+              <CopyButton value={operator.account.id || ''} message='Operator owner key copied'>
                 {isDesktop ? (
                   <>
-                    <AccountIcon address={operator.operatorOwner} size={26} />
-                    {operator.operatorOwner && (
+                    <AccountIcon address={operator.account.id} size={26} />
+                    {operator.account.id && (
                       <Link
-                        data-testid={`nominator-link-${operator.operatorOwner}}`}
+                        data-testid={`nominator-link-${operator.account.id}}`}
                         className='hover:text-purpleAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
                           selectedChain.urls.page,
                           Routes.consensus,
-                          operator.operatorOwner,
+                          operator.account.id,
                         )}
                       >
                         <div>
-                          {isLargeLaptop
-                            ? operator.operatorOwner
-                            : shortString(operator.operatorOwner)}
+                          {isLargeLaptop ? operator.account.id : shortString(operator.account.id)}
                         </div>
                       </Link>
                     )}
                   </>
                 ) : (
-                  shortString(operator.operatorOwner || '')
+                  shortString(operator.account.id || '')
                 )}
               </CopyButton>
             </StyledListItem>
@@ -78,7 +75,9 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
             <StyledListItem title='Current Stake'>
               {bigNumberToNumber(operator.currentTotalStake)} {selectedChain.token.symbol}
             </StyledListItem>
-            <StyledListItem title='Shares'>{numberWithCommas(operator.totalShares)}</StyledListItem>
+            <StyledListItem title='Shares'>
+              {numberWithCommas(operator.currentTotalShares)}
+            </StyledListItem>
             <StyledListItem title='Status'>
               {selectedChain.urls.page === Chains.gemini3g
                 ? operator.status

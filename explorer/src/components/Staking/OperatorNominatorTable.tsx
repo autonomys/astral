@@ -7,7 +7,7 @@ import {
   OperatorByIdQuery,
   OperatorNominatorsByIdQuery,
   OperatorNominatorsByIdQueryVariables,
-} from 'gql/oldSquidTypes'
+} from 'gql/types/staking'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -26,11 +26,12 @@ import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
-import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query'
+import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query.staking'
 
 type Props = {
   operator: OperatorByIdQuery['operatorById']
 }
+type Row = OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']
 
 export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { ref, inView } = useInView()
@@ -53,14 +54,12 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   )
 
   const columns = useMemo(() => {
-    if (!operator || operator.totalShares == 0) return []
+    if (!operator || operator.currentTotalShares == 0) return []
     const cols = [
       {
         accessorKey: 'account',
         header: 'Account Id',
-        cell: ({
-          row,
-        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
             <AccountIcon address={row.original.account.id} size={26} />
             <Link
@@ -82,16 +81,14 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       {
         accessorKey: 'stakes',
         header: 'Stakes',
-        cell: ({
-          row,
-        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => {
+        cell: ({ row }: Cell<Row>) => {
           return (
             <div>
               {numberWithCommas(
                 limitNumberDecimals(
                   Number(
                     Number(
-                      (BigInt(operator.currentTotalStake) / BigInt(operator.totalShares)) *
+                      (BigInt(operator.currentTotalStake) / BigInt(operator.currentTotalShares)) *
                         BigInt(row.original.shares),
                     ) /
                       10 ** 18,
@@ -106,16 +103,14 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       {
         accessorKey: 'shares',
         header: 'Shares',
-        cell: ({
-          row,
-        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div>
             {numberWithCommas(
               limitNumberDecimals(
                 Number(
                   Number(
                     (BigInt(row.original.shares) * BigInt(1000000000)) /
-                      BigInt(operator.totalShares),
+                      BigInt(operator.currentTotalShares),
                   ) / 1000000000,
                 ) * 100,
               ),
@@ -127,22 +122,17 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       {
         accessorKey: 'owner',
         header: 'is Owner',
-        cell: ({
-          row,
-        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) =>
-          operator.operatorOwner === row.original.account.id ? 'Yes' : 'No',
+        cell: ({ row }: Cell<Row>) =>
+          operator.account.id === row.original.account.id ? 'Yes' : 'No',
       },
     ]
     if (
-      useRpcData &&
       deposits.find((d) => d.account === subspaceAccount && d.operatorId.toString() === operatorId)
     )
       cols.push({
         accessorKey: 'myStake',
         header: 'My Stake',
-        cell: ({
-          row,
-        }: Cell<OperatorNominatorsByIdQuery['nominatorsConnection']['edges'][0]['node']>) => {
+        cell: ({ row }: Cell<Row>) => {
           const deposit = deposits.find(
             (d) => d.account === row.original.account.id && d.operatorId.toString() === operatorId,
           )
@@ -177,7 +167,6 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     selectedChain.token.symbol,
     selectedChain.urls.page,
     subspaceAccount,
-    useRpcData,
   ])
 
   const orderBy = useMemo(
@@ -207,6 +196,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     {
       variables,
       skip: !inFocus,
+      context: { clientName: 'staking' },
     },
     Routes.staking,
     'operatorNominators',
@@ -217,14 +207,13 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   } = useQueryStates()
 
   const nominators = useMemo(() => {
-    if (useRpcData)
-      return deposits
-        .filter((deposit) => deposit.operatorId === Number(operatorId))
-        .map((deposit) => ({
-          id: deposit.account,
-          account: { id: deposit.account },
-          shares: deposit.shares,
-        }))
+    if (hasValue(operatorNominators) && useRpcData) {
+      const rpcDeposits = deposits.filter((deposit) => deposit.operatorId === Number(operatorId))
+      return operatorNominators.value.nominatorsConnection.edges.map((edge) => {
+        const nomDeposit = rpcDeposits.find((deposit) => deposit.account === edge.node.account.id)
+        return nomDeposit ? { ...edge.node, shares: nomDeposit.shares } : edge.node
+      })
+    }
     return hasValue(operatorNominators)
       ? operatorNominators.value.nominatorsConnection.edges.map((edge) => edge.node)
       : []

@@ -7,8 +7,8 @@ import { ActionsInRed, OperatorAction, OperatorActionType } from './ActionsModal
 
 export type ActionsDropdownRow = {
   original: {
-    id: string
-    totalShares: bigint
+    operatorId: number
+    currentTotalShares: bigint
   }
 }
 
@@ -47,8 +47,8 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
       onChange={(val) =>
         handleAction({
           type: val,
-          operatorId: parseInt(row.original.id),
-          maxShares: nominatorMaxShares ? nominatorMaxShares : BigInt(row.original.totalShares),
+          operatorId: row.original.operatorId,
+          maxShares: nominatorMaxShares ? nominatorMaxShares : row.original.currentTotalShares,
         })
       }
     >

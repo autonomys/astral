@@ -432,7 +432,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                                 (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100),
                               )
                             }}
-                            style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right
+                            style={{ flexGrow: 1, marginRight: '10px' }}
                           />
                           <button
                             className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'

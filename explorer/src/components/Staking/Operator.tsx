@@ -1,10 +1,10 @@
 'use client'
 
-import { useConsensusData } from '@/hooks/useConsensusData'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/oldSquidTypes'
+import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/types/staking'
+import { useConsensusData } from 'hooks/useConsensusData'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -18,7 +18,7 @@ import { DataSource } from '../common/DataSource'
 import { DataSourceBanner } from '../common/DataSourceBanner'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
-import { QUERY_OPERATOR_BY_ID } from './query'
+import { QUERY_OPERATOR_BY_ID } from './query.staking'
 
 export const Operator: FC = () => {
   const { ref, inView } = useInView()
@@ -30,12 +30,13 @@ export const Operator: FC = () => {
   const { operators: rpcOperators } = useConsensusStates()
   const { loadData: loadConsensusData, loadDataByOperatorId } = useConsensusData()
 
-  const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
+  const variables = useMemo(() => ({ operatorId: operatorId ?? '0' }), [operatorId])
   const { setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
     QUERY_OPERATOR_BY_ID,
     {
       variables,
       skip: !inFocus,
+      context: { clientName: 'staking' },
     },
     Routes.staking,
     'operator',
@@ -46,14 +47,13 @@ export const Operator: FC = () => {
   } = useQueryStates()
 
   const operatorDetails = useMemo(() => {
-    if (useRpcData) {
-      const operator = rpcOperators.find((operator) => operator.id === operatorId)
-      if (!operator) return null
+    if (hasValue(operator) && useRpcData) {
+      const rpcOperator = rpcOperators.find((operator) => operator.id === operatorId)
+      if (!rpcOperator || !operator.value.operatorById) return null
       return {
-        ...operator,
-        nominators: [],
-        totalShares: operator.currentTotalShares,
-      }
+        ...operator.value.operatorById,
+        ...rpcOperator,
+      } as OperatorByIdQuery['operatorById']
     }
     return hasValue(operator) && operator.value.operatorById
   }, [operator, operatorId, rpcOperators, useRpcData])

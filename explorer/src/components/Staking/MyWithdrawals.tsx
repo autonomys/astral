@@ -126,8 +126,8 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                           handleAction={handleAction}
                           row={{
                             original: {
-                              id: row.original.operatorId.toString(),
-                              totalShares: BIGINT_ZERO,
+                              operatorId: row.original.operatorId.sortValue,
+                              currentTotalShares: BIGINT_ZERO,
                             },
                           }}
                           excludeActions={[
