@@ -10,6 +10,4 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   const cache = await processBlocks(ctx, api);
 
   await save(ctx, cache);
-
-  await api.disconnect();
 });
