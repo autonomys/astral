@@ -53,6 +53,7 @@ export function processOperatorNominatedEvent(
     amount,
     storageFeeDeposit,
   });
+  cache.deposits.set(deposit.id, deposit);
 
   operator.totalDeposits += deposit.amount;
 

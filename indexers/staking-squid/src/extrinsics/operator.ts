@@ -67,6 +67,7 @@ export function processRegisterOperator(
       amount,
       storageFeeDeposit,
     });
+    cache.deposits.set(deposit.id, deposit);
 
     operator.totalDeposits += deposit.amount;
 
@@ -85,6 +86,8 @@ export function processRegisterOperator(
     const nominatorDeposits = appendOrArray(nominator.deposits, deposit);
     nominator.deposits = nominatorDeposits;
     nominator.depositsCount = nominatorDeposits.length;
+
+    cache.nominators.set(nominator.id, nominator);
 
     const domainOperators = appendOrArray(domain.operators, operator);
     domain.operators = domainOperators;
