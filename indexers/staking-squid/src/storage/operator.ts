@@ -20,7 +20,7 @@ export const createOperator = (
     );
 
   const operator = new Operator({
-    id: operatorUID(props.domain?.domainId || 0, props.signingKey || "0x"),
+    id: operatorUID(props.operatorId || 0),
     operatorId: 0,
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
@@ -58,9 +58,7 @@ export const getOrCreateOperator = (
   operatorId: number,
   props: Partial<Operator> = {}
 ): Operator => {
-  const operator = cache.operators.get(
-    operatorUID(props.domain?.domainId || 0 || 0, props.signingKey || "0x")
-  );
+  const operator = cache.operators.get(operatorUID(operatorId));
 
   if (!operator)
     return createOperator(cache, block, extrinsic, {

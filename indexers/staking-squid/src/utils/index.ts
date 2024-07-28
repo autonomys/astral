@@ -20,8 +20,7 @@ export const getTimestamp = (block: CtxBlock): Date =>
 
 export const domainUID = (domainId: number): string => `${domainId}`;
 
-export const operatorUID = (domainId: number, signingKey: string): string =>
-  `${domainId}-${signingKey}`;
+export const operatorUID = (operatorId: number): string => `${operatorId}`;
 
 export const nominatorUID = (operatorId: number, account: string): string =>
   `${operatorId}-${account}`;
