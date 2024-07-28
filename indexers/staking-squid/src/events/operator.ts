@@ -145,15 +145,12 @@ export function processOperatorTaxCollectedEvent(
   extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
-  const address = getCallSigner(extrinsic.call);
   const blockNumber = getBlockNumber(block);
   const operatorId = Number(event.args.operatorId);
   const tax = BigInt(event.args.tax);
 
-  const account = getOrCreateAccount(cache, block, address);
-  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
-    account,
-  });
+  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
+  const account = operator.account;
 
   operator.totalTaxCollected += tax;
   operator.updatedAt = blockNumber;

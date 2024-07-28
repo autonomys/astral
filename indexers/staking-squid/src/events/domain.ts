@@ -1,5 +1,5 @@
 import type { CtxBlock, CtxEvent } from "../processor";
-import { createDomain } from "../storage";
+import { getOrCreateDomain } from "../storage";
 import { Cache } from "../utils/cache";
 
 export function processDomainInstantiatedEvent(
@@ -7,8 +7,8 @@ export function processDomainInstantiatedEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const domain = createDomain(block, {
-    domainId: Number(event.args.domainId || 0),
+  const domainId = Number(event.args.domainId || 0);
+  const domain = getOrCreateDomain(cache, block, domainId, {
     completedEpoch: Number(event.args.completedEpochIndex || 0),
   });
 

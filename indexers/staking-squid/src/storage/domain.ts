@@ -5,11 +5,12 @@ import { Cache } from "../utils/cache";
 
 export const createDomain = (
   block: CtxBlock,
+  domainId: number,
   props: Partial<Domain>
 ): Domain => {
   const domain = new Domain({
-    id: domainUID(props.domainId || 0),
-    domainId: 0,
+    id: domainUID(domainId),
+    domainId,
     completedEpoch: 0,
     lastDomainBlockNumber: 0,
     currentTotalStake: BigInt(0),
@@ -40,9 +41,9 @@ export const getOrCreateDomain = (
   domainId: number,
   props: Partial<Domain> = {}
 ): Domain => {
-  const domain = cache.domains.get(domainUID(props.domainId || 0));
+  const domain = cache.domains.get(domainUID(domainId));
 
-  if (!domain) return createDomain(block, { domainId, ...props });
+  if (!domain) return createDomain(block, domainId, props);
 
   return domain;
 };
