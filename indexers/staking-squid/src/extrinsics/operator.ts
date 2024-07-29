@@ -2,10 +2,10 @@ import { OperatorStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
+  createNominator,
   createOperator,
   getOrCreateAccount,
   getOrCreateDomain,
-  getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
 import { events } from "../types";
@@ -38,14 +38,19 @@ export function processRegisterOperator(
     ? BigInt(storageFeeDepositedEvent.args.amount)
     : BigInt(0);
 
-  const account = getOrCreateAccount(cache, block, address);
   const domain = getOrCreateDomain(cache, block, domainId);
+  cache.domains.set(domain.id, domain);
+
+  const account = getOrCreateAccount(cache, block, address);
+  cache.accounts.set(account.id, account);
 
   if (operatorRegisteredEvent) {
-    const operator = createOperator(cache, block, extrinsic, {
-      account,
-      domain,
+    const operator = createOperator(cache, block, extrinsic, operatorId, {
       operatorId,
+      domain,
+      domainId: domain.id,
+      account,
+      accountId: account.id,
       signingKey: extrinsic.call?.args.config.signingKey,
       minimumNominatorStake: BigInt(
         extrinsic.call?.args.config.minimumNominatorStake
@@ -55,15 +60,27 @@ export function processRegisterOperator(
         ? BigInt(extrinsic.call.args.amount)
         : BigInt(0),
     });
-    const nominator = getOrCreateNominator(cache, block, extrinsic, operator, {
+    cache.operators.set(operator.id, operator);
+
+    const nominator = createNominator(cache, block, extrinsic, {
       domain,
+      domainId: domain.id,
       account,
+      accountId: account.id,
+      operator,
+      operatorId: operator.id,
     });
+    cache.nominators.set(nominator.id, nominator);
+
     const deposit = createDeposit(cache, block, extrinsic, {
       domain,
+      domainId: domain.id,
       account,
+      accountId: account.id,
       operator,
+      operatorId: operator.id,
       nominator,
+      nominatorId: nominator.id,
       amount,
       storageFeeDeposit,
     });

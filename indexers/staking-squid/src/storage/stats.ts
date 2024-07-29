@@ -37,10 +37,11 @@ export const createStatsPerOperator = (
 export const createStatsPerDomain = (
   cache: Cache,
   block: CtxBlock,
-  domain: Domain
+  domain: Domain,
+  domainId: number
 ): StatsPerDomain => {
   const operators = Array.from(cache.operators.values()).filter(
-    (n) => n.domain.domainId === domain.domainId
+    (n) => n.domain.domainId === domainId
   );
   const nominatorsCount = operators.reduce(
     (total, operator) => total + operator.nominatorsCount,

@@ -20,7 +20,6 @@ export function processOperatorNominatedEvent(
   const address = getCallSigner(extrinsic.call);
   const blockNumber = getBlockNumber(block);
   const operatorId = Number(event.args.operatorId);
-  const domainId = Number(extrinsic.call?.args.domainId);
 
   const storageFeeDepositedEvent = extrinsic.events.find(
     (e) => e.name === events.domains.storageFeeDeposited.name
@@ -37,19 +36,35 @@ export function processOperatorNominatedEvent(
     : BigInt(0);
 
   const account = getOrCreateAccount(cache, block, address);
-  const domain = getOrCreateDomain(cache, block, domainId);
+  cache.accounts.set(account.id, account);
 
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
     account,
+    accountId: account.id,
   });
-  const nominator = getOrCreateNominator(cache, block, extrinsic, operator, {
+  cache.operators.set(operator.id, operator);
+
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  cache.domains.set(domain.id, domain);
+
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId, {
     account,
+    accountId: account.id,
+    domain,
+    domainId: domain.id,
     shares,
   });
+  cache.nominators.set(nominator.id, nominator);
+
   const deposit = createDeposit(cache, block, extrinsic, {
     account,
+    accountId: account.id,
+    domain,
+    domainId: domain.id,
     operator,
+    operatorId: operator.id,
     nominator,
+    nominatorId: nominator.id,
     amount,
     storageFeeDeposit,
   });
@@ -127,7 +142,7 @@ export function processOperatorSlashedEvent(
   cache.operators.set(operator.id, operator);
 
   const nominators = Array.from(cache.nominators.values()).filter(
-    (n) => n.operator.id === operator.id
+    (n) => n.operatorId === operator.id
   );
   for (const nominator of nominators) {
     nominator.status = NominatorStatus.SLASHED;
@@ -150,7 +165,13 @@ export function processOperatorTaxCollectedEvent(
   const tax = BigInt(event.args.tax);
 
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
-  const account = operator.account;
+  cache.operators.set(operator.id, operator);
+
+  const account = getOrCreateAccount(cache, block, operator.accountId);
+  cache.accounts.set(account.id, account);
+
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  cache.domains.set(domain.id, domain);
 
   operator.totalTaxCollected += tax;
   operator.updatedAt = blockNumber;
@@ -161,8 +182,6 @@ export function processOperatorTaxCollectedEvent(
   account.updatedAt = blockNumber;
 
   cache.accounts.set(account.id, account);
-
-  const domain = operator.domain;
 
   domain.totalTaxCollected += tax;
 

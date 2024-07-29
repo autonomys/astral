@@ -9,9 +9,11 @@ export const createOperator = (
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  operatorId: number | string,
   props: Partial<Operator>
 ): Operator => {
-  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
+  if (!props.domain)
+    props.domain = getOrCreateDomain(cache, block, props.domainId || 0);
   if (!props.account)
     props.account = getOrCreateAccount(
       cache,
@@ -20,8 +22,11 @@ export const createOperator = (
     );
 
   const operator = new Operator({
-    id: operatorUID(props.operatorId || 0),
-    operatorId: 0,
+    id: typeof operatorId === "string" ? operatorId : operatorUID(operatorId),
+    operatorId:
+      typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
+    domainId: props.domain.id,
+    accountId: props.account.id,
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,
@@ -55,16 +60,15 @@ export const getOrCreateOperator = (
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  operatorId: number,
+  operatorId: number | string,
   props: Partial<Operator> = {}
 ): Operator => {
-  const operator = cache.operators.get(operatorUID(operatorId));
+  const operator = cache.operators.get(
+    typeof operatorId === "string" ? operatorId : operatorUID(operatorId)
+  );
 
   if (!operator)
-    return createOperator(cache, block, extrinsic, {
-      operatorId,
-      ...props,
-    });
+    return createOperator(cache, block, extrinsic, operatorId, props);
 
   return operator;
 };

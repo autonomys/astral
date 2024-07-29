@@ -2,6 +2,7 @@ import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createWithdrawal,
   getOrCreateAccount,
+  getOrCreateDomain,
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
@@ -19,19 +20,38 @@ export function processWithdrewStakeEvent(
   const shares = extrinsic.call?.args.shares.toBigInt();
 
   const account = getOrCreateAccount(cache, block, address);
+  cache.accounts.set(account.id, account);
+
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
     account,
+    accountId: account.id,
   });
-  const nominator = getOrCreateNominator(cache, block, extrinsic, operator, {
+  cache.operators.set(operator.id, operator);
+
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  cache.domains.set(domain.id, domain);
+
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId, {
     account,
+    accountId: account.id,
+    domain,
+    domainId: domain.id,
     shares,
   });
+  cache.nominators.set(nominator.id, nominator);
+
   const withdrawal = createWithdrawal(cache, block, extrinsic, {
     account,
+    accountId: account.id,
+    domain,
+    domainId: domain.id,
     operator,
+    operatorId: operator.id,
     nominator,
+    nominatorId: nominator.id,
     shares,
   });
+  cache.withdrawals.set(withdrawal.id, withdrawal);
 
   const operatorWithdrawals = appendOrArray(operator.withdrawals, withdrawal);
   operator.withdrawals = operatorWithdrawals;
@@ -49,7 +69,6 @@ export function processWithdrewStakeEvent(
 
   cache.nominators.set(nominator.id, nominator);
 
-  const domain = operator.domain;
   const domainWithdrawals = appendOrArray(domain.withdrawals, withdrawal);
   domain.withdrawals = domainWithdrawals;
   domain.withdrawalsCount = domainWithdrawals.length;
