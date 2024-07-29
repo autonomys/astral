@@ -44,8 +44,8 @@ export const createOperator = async (
 
   await ctx.store.insert(operator);
 
-  const operatorsCount = await ctx.store.count(Operator);
-  ctx.log.child("operators").info(`count: ${operatorsCount}`);
+  const count = await ctx.store.count(Operator);
+  ctx.log.child("operators").info(`count: ${count}`);
 
   return operator;
 };
@@ -53,7 +53,8 @@ export const createOperator = async (
 export const getOrCreateOperator = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
-  operatorId: number
+  operatorId: number,
+  props: Partial<Operator> = {}
 ): Promise<Operator> => {
   const operator = await ctx.store.findOneBy(Operator, { operatorId });
 
@@ -61,6 +62,7 @@ export const getOrCreateOperator = async (
     return await createOperator(ctx, block, {
       domainId: 0,
       operatorId,
+      ...props,
     });
 
   return operator;

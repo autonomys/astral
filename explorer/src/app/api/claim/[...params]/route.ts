@@ -1,9 +1,13 @@
 import { AuthProvider } from '@/constants'
 import { balance, transfer } from '@autonomys/auto-consensus'
-import { ActivateWalletInput, activateWallet } from '@autonomys/auto-utils'
-import type { ApiPromise } from '@polkadot/api'
-import { stringToU8a } from '@polkadot/util'
-import { decodeAddress, signatureVerify } from '@polkadot/util-crypto'
+import {
+  activateWallet,
+  ActivateWalletParams,
+  ApiPromise,
+  decode,
+  signatureVerify,
+  stringToU8a,
+} from '@autonomys/auto-utils'
 import { chains } from 'constants/chains'
 import { CLAIM_TYPES } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
@@ -54,7 +58,7 @@ export const POST = async (req: NextRequest) => {
     const { message, signature, address } = claim
 
     // Verify the signature
-    const publicKey = decodeAddress(address)
+    const publicKey = decode(address)
     const isValid = signatureVerify(stringToU8a(message), signature, publicKey).isValid
     if (!isValid) return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
 
@@ -66,7 +70,7 @@ export const POST = async (req: NextRequest) => {
     } = await activateWallet({
       uri: process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI,
       networkId: 'autonomys-' + chainMatch.urls.page,
-    } as ActivateWalletInput)
+    } as ActivateWalletParams)
 
     // Get wallet free balance
     const { free } = await balance(api as unknown as ApiPromise, wallet.address)

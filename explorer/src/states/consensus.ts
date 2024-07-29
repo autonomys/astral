@@ -1,6 +1,6 @@
+import type { Deposit, Withdrawal } from '@autonomys/auto-consensus'
 import {
   ConfirmedDomainBlock,
-  Deposit,
   Domain,
   DomainRegistry,
   DomainStakingSummary,
@@ -9,7 +9,6 @@ import {
   Operators,
   PendingStakingOperationCount,
   SuccessfulBundle,
-  Withdrawal,
 } from 'types/consensus'
 import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'

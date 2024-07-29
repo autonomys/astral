@@ -13,6 +13,7 @@ export const createDomain = async (
     id: randomUUID(),
     domainId: 0,
     completedEpoch: 0,
+    lastDomainBlockNumber: 0,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
@@ -20,8 +21,8 @@ export const createDomain = async (
 
   await ctx.store.insert(domain);
 
-  const domainsCount = await ctx.store.count(Domain);
-  ctx.log.child("domains").info(`count: ${domainsCount}`);
+  const count = await ctx.store.count(Domain);
+  ctx.log.child("domains").info(`count: ${count}`);
 
   return domain;
 };
@@ -29,11 +30,12 @@ export const createDomain = async (
 export const getOrCreateDomain = async (
   ctx: Ctx<Store>,
   block: CtxBlock,
-  domainId: number
+  domainId: number,
+  props: Partial<Domain> = {}
 ): Promise<Domain> => {
   const domain = await ctx.store.findOneBy(Domain, { domainId });
 
-  if (!domain) return await createDomain(ctx, block, { domainId });
+  if (!domain) return await createDomain(ctx, block, { domainId, ...props });
 
   return domain;
 };

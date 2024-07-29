@@ -25,7 +25,7 @@ version: "3.7"
 
 services:
   pg-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
@@ -37,7 +37,7 @@ services:
       - 8080:8080
 
   prom-health-check:
-    image: ghcr.io/subspace/health-check:latest
+    image: ghcr.io/autonomys/health-check:latest
     environment:
       # assuming we're running `ingest` service within same docker-compose.yml
       PROMETHEUS_HOST: http://ingest:9090
