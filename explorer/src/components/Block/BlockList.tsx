@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   Block,
+  BlockOrderByInput,
   BlocksConnectionDomainQuery,
   BlocksConnectionDomainQueryVariables,
   BlocksConnectionQuery,
@@ -49,6 +50,7 @@ export const BlockList: FC = () => {
     [selectedChain.isDomain],
   )
 
+  const orderBy = useMemo(() => BlockOrderByInput.HeightDesc, [])
   const variables = useMemo(
     () => ({
       first: pagination.pageSize,
@@ -56,8 +58,9 @@ export const BlockList: FC = () => {
         pagination.pageIndex > 0
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
+      orderBy,
     }),
-    [pagination.pageSize, pagination.pageIndex],
+    [pagination.pageSize, pagination.pageIndex, orderBy],
   )
 
   const { setIsVisible } = useSquidQuery<

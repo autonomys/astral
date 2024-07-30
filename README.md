@@ -1,4 +1,4 @@
-![build](https://github.com/autonomys//blockexplorer/actions/workflows/build.yaml/badge.svg)
+![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
 
 # Astral
 

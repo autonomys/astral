@@ -5,3 +5,6 @@ export const camelToNormal = (text: string) => text.replace(/([A-Z])/g, ' $1').t
 
 export const capitalizeFirstLetter = (string: string) =>
   string ? string.charAt(0).toUpperCase() + string.slice(1) : ''
+
+export const limitText = (text: string, limit = 20) =>
+  text.length > limit ? text.slice(0, limit) + '...' : text

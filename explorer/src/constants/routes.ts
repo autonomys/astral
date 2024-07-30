@@ -1,8 +1,11 @@
 export enum Routes {
-  nova = 'nova',
   consensus = 'consensus',
-  leaderboard = 'leaderboard',
+  farming = 'farming',
   staking = 'staking',
+  leaderboard = 'leaderboard',
+  domains = 'domains',
+  nova = 'nova',
+  autoid = 'autoid',
   // Route deactivated till bugs are fixed and feature is ready
   // stake = 'stake',
 }
@@ -13,16 +16,30 @@ export const ROUTES = [
     title: 'Consensus Chain',
   },
   {
-    name: Routes.nova,
-    title: 'Nova',
+    name: Routes.farming,
+    title: 'Farming',
+  },
+  {
+    name: Routes.staking,
+    title: 'Staking',
   },
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
   },
   {
-    name: Routes.staking,
-    title: 'Staking',
+    name: Routes.domains,
+    title: 'Domains',
+    children: [
+      {
+        name: Routes.nova,
+        title: 'Nova',
+      },
+      {
+        name: Routes.autoid,
+        title: 'Auto-ID',
+      },
+    ],
   },
   // Route deactivated till bugs are fixed and feature is ready
   // {
@@ -56,6 +73,7 @@ export const EXTERNAL_ROUTES = {
   polkadot:
     'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
   subscan: 'https://subspace.subscan.io/',
+  spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
 }
 
 export const INTERNAL_ROUTES = {
