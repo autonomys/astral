@@ -59,6 +59,16 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [sorting],
   )
 
+  const where = useMemo(
+    () => ({
+      ...filters,
+      signer: {
+        id_eq: accountId,
+      },
+    }),
+    [accountId, filters],
+  )
+
   const variables = useMemo(() => {
     return {
       first: pagination.pageSize,
@@ -67,14 +77,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
       orderBy,
-      where: {
-        ...filters,
-        signer: {
-          id_eq: accountId,
-        },
-      },
+      where,
     }
-  }, [accountId, filters, orderBy, pagination.pageIndex, pagination.pageSize])
+  }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
   const { setIsVisible } = useSquidQuery<
     ExtrinsicsByAccountIdQuery,
@@ -107,8 +112,11 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'extrinsicsConnection', { orderBy }),
-    [apolloClient, orderBy],
+      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'extrinsicsConnection', {
+        orderBy,
+        where,
+      }),
+    [apolloClient, orderBy, where],
   )
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
