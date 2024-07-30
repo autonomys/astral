@@ -3,7 +3,7 @@ export enum Routes {
   farming = 'farming',
   staking = 'staking',
   leaderboard = 'leaderboard',
-  domain = 'domain',
+  domains = 'domains',
   nova = 'nova',
   autoid = 'autoid',
   // Route deactivated till bugs are fixed and feature is ready
@@ -29,7 +29,7 @@ export const ROUTES = [
   },
   {
     name: Routes.domain,
-    title: 'Domain',
+    title: 'Domains',
     children: [
       {
         name: Routes.nova,
