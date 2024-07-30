@@ -8,7 +8,7 @@ import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { RewardEventOrderByInput, RewardsListQueryVariables } from 'gql/graphql'
@@ -73,6 +73,8 @@ export const AccountRewardList: FC = () => {
       skip: !inFocus,
       pollInterval: 6000,
     },
+    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    'accountReward',
   )
 
   const {
@@ -208,9 +210,12 @@ export const AccountRewardList: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
+
   return (
     <div className='flex w-full flex-col align-middle'>
-      <AccountDetailsCard account={account} accountAddress={convertedAddress ?? '0x'} />
+      {convertedAddress && (
+        <AccountDetailsCard account={account} accountAddress={convertedAddress} />
+      )}
 
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>
