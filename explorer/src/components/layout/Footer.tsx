@@ -114,7 +114,7 @@ const Footer: FC = () => {
                     className='text-xs text-whiteOpaque hover:text-purpleAccent'
                     rel='noreferrer'
                   >
-                    Github
+                    GitHub
                   </a>
                 </li>
               </ul>
@@ -136,7 +136,7 @@ const Footer: FC = () => {
                     className='text-xs text-whiteOpaque hover:text-purpleAccent'
                     rel='noreferrer'
                   >
-                    Youtube
+                    YouTube
                   </a>
                 </li>
                 <li key='linkedin'>

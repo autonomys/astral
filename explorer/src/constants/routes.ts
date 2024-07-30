@@ -49,12 +49,12 @@ export const ROUTES = [
 ]
 
 export const EXTERNAL_ROUTES = {
-  autonomys: 'https://autonomys.net/',
-  academy: 'https://academy.autonomys.net/',
+  autonomys: 'https://autonomys.xyz/',
+  academy: 'https://academy.autonomys.xyz/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
-  forum: 'https://forum.subspace.network/',
+  forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
-    'https://forum.subspace.network/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
+    'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
   docs: 'https://docs.subspace.network/',
   operatorDocs:
     'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
@@ -65,7 +65,7 @@ export const EXTERNAL_ROUTES = {
     github: 'https://github.com/autonomys',
     reddit: 'https://www.reddit.com/r/sub',
     medium: 'https://medium.com/subspace-network',
-    youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',
+    youtube: 'https://www.youtube.com/@AutonomysNetwork',
     linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
