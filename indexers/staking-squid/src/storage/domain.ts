@@ -25,8 +25,6 @@ export const createDomain = (
     nominatorsCount: 0,
     depositsCount: 0,
     withdrawalsCount: 0,
-    bundleCount: 0,
-    lastBundleAt: 0,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),

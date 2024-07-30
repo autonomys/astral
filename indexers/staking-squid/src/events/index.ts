@@ -2,7 +2,6 @@ import type { ApiDecoration } from "@polkadot/api/types";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { events } from "../types";
 import { Cache } from "../utils/cache";
-import { processBundleStoredEvent } from "./bundle";
 import { processDomainInstantiatedEvent } from "./domain";
 import { processEpochTransitionEvent } from "./epoch";
 import {
@@ -54,15 +53,6 @@ async function processEvent(
     // deposit and stake
     case events.domains.withdrewStake.name:
       return processWithdrewStakeEvent(cache, block, extrinsic, event);
-
-    // // bundle
-    // // case events.domains.bundleStored.name:
-    // //   return processBundleStoredEvent(
-    // //     cache,
-    // //     block,
-    // //     extrinsic,
-    // //     event
-    // //   );
 
     // rewards and slashing
     case events.domains.operatorRewarded.name:

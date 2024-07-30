@@ -2,7 +2,6 @@ type Domain @entity {
   id: ID! @index
   domainId: Int! @index
   completedEpoch: Int! @index
-  lastOperatorBundleProduced: Operator!
   lastDomainBlockNumber: Int! @index
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
@@ -24,8 +23,6 @@ type Domain @entity {
   nominatorsCount: Int!
   depositsCount: Int!
   withdrawalsCount: Int!
-  bundleCount: Int!
-  lastBundleAt: Int!
   createdAt: Int @index
   updatedAt: Int @index
 }

@@ -70,7 +70,7 @@ export function processOperatorNominatedEvent(
   });
   cache.deposits.set(deposit.id, deposit);
 
-  operator.totalDeposits += deposit.amount;
+  operator.totalDeposits += amount;
 
   const operatorNominators = appendOrArray(operator.nominators, nominator);
   operator.nominators = operatorNominators;
