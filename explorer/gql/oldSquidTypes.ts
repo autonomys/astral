@@ -2602,6 +2602,7 @@ export type AllRewardForAccountByIdQuery = { __typename?: 'Query', accountReward
 export type BlocksConnectionQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
+  orderBy: Array<BlockOrderByInput> | BlockOrderByInput;
 }>;
 
 
