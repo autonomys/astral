@@ -40,31 +40,24 @@ export function processOperatorNominatedEvent(
 
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
     account,
-    accountId: account.id,
   });
   cache.operators.set(operator.id, operator);
 
-  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  const domain = getOrCreateDomain(cache, block, operator.domain.id);
   cache.domains.set(domain.id, domain);
 
   const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId, {
     account,
-    accountId: account.id,
     domain,
-    domainId: domain.id,
     shares,
   });
   cache.nominators.set(nominator.id, nominator);
 
   const deposit = createDeposit(cache, block, extrinsic, {
     account,
-    accountId: account.id,
     domain,
-    domainId: domain.id,
     operator,
-    operatorId: operator.id,
     nominator,
-    nominatorId: nominator.id,
     amount,
     storageFeeDeposit,
   });
@@ -142,7 +135,7 @@ export function processOperatorSlashedEvent(
   cache.operators.set(operator.id, operator);
 
   const nominators = Array.from(cache.nominators.values()).filter(
-    (n) => n.operatorId === operator.id
+    (n) => n.operator.id === operator.id
   );
   for (const nominator of nominators) {
     nominator.status = NominatorStatus.SLASHED;
@@ -167,10 +160,10 @@ export function processOperatorTaxCollectedEvent(
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
   cache.operators.set(operator.id, operator);
 
-  const account = getOrCreateAccount(cache, block, operator.accountId);
+  const account = getOrCreateAccount(cache, block, operator.account.id);
   cache.accounts.set(account.id, account);
 
-  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  const domain = getOrCreateDomain(cache, block, operator.domain.id);
   cache.domains.set(domain.id, domain);
 
   operator.totalTaxCollected += tax;

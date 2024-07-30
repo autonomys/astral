@@ -17,30 +17,15 @@ export const createDeposit = (
   const address = getCallSigner(extrinsic.call);
   if (!props.account)
     props.account = props.account = getOrCreateAccount(cache, block, address);
-  if (!props.domain)
-    props.domain = getOrCreateDomain(cache, block, props.domainId || 0);
+  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
 
   if (!props.operator)
-    props.operator = getOrCreateOperator(
-      cache,
-      block,
-      extrinsic,
-      props.operatorId || 0
-    );
+    props.operator = getOrCreateOperator(cache, block, extrinsic, 0);
   if (!props.nominator)
-    props.nominator = getOrCreateNominator(
-      cache,
-      block,
-      extrinsic,
-      props.operatorId || 0
-    );
+    props.nominator = getOrCreateNominator(cache, block, extrinsic, 0);
 
   const deposit = new Deposit({
     id: randomUUID(),
-    domainId: props.domain.id,
-    accountId: props.account.id,
-    operatorId: props.operator.id,
-    nominatorId: props.nominator.id,
     amount: BigInt(0),
     storageFeeDeposit: BigInt(0),
     status: DepositStatus.PENDING,

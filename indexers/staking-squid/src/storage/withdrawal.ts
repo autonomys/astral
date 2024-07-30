@@ -16,33 +16,17 @@ export const createWithdrawal = (
 ): Withdrawal => {
   const address = getCallSigner(extrinsic.call);
 
-  if (!props.domain)
-    props.domain = getOrCreateDomain(cache, block, props.domainId || 0);
+  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
   if (!props.account) props.account = getOrCreateAccount(cache, block, address);
-  if (!props.domain)
-    props.domain = getOrCreateDomain(cache, block, props.domainId || 0);
+  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
 
   if (!props.operator)
-    props.operator = getOrCreateOperator(
-      cache,
-      block,
-      extrinsic,
-      props.operatorId || 0
-    );
+    props.operator = getOrCreateOperator(cache, block, extrinsic, 0);
   if (!props.nominator)
-    props.nominator = getOrCreateNominator(
-      cache,
-      block,
-      extrinsic,
-      props.operatorId || 0
-    );
+    props.nominator = getOrCreateNominator(cache, block, extrinsic, 0);
 
   const withdrawal = new Withdrawal({
     id: randomUUID(),
-    domainId: props.domain.id,
-    accountId: props.account.id,
-    operatorId: props.operator.id,
-    nominatorId: props.nominator.id,
     shares: BigInt(0),
     status: WithdrawalStatus.PENDING,
     ...props,

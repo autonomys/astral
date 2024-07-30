@@ -12,8 +12,7 @@ export const createOperator = (
   operatorId: number | string,
   props: Partial<Operator>
 ): Operator => {
-  if (!props.domain)
-    props.domain = getOrCreateDomain(cache, block, props.domainId || 0);
+  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
   if (!props.account)
     props.account = getOrCreateAccount(
       cache,
@@ -25,8 +24,6 @@ export const createOperator = (
     id: typeof operatorId === "string" ? operatorId : operatorUID(operatorId),
     operatorId:
       typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
-    domainId: props.domain.id,
-    accountId: props.account.id,
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,

@@ -24,31 +24,24 @@ export function processWithdrewStakeEvent(
 
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
     account,
-    accountId: account.id,
   });
   cache.operators.set(operator.id, operator);
 
-  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  const domain = getOrCreateDomain(cache, block, operator.id);
   cache.domains.set(domain.id, domain);
 
   const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId, {
     account,
-    accountId: account.id,
     domain,
-    domainId: domain.id,
     shares,
   });
   cache.nominators.set(nominator.id, nominator);
 
   const withdrawal = createWithdrawal(cache, block, extrinsic, {
     account,
-    accountId: account.id,
     domain,
-    domainId: domain.id,
     operator,
-    operatorId: operator.id,
     nominator,
-    nominatorId: nominator.id,
     shares,
   });
   cache.withdrawals.set(withdrawal.id, withdrawal);

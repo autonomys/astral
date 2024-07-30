@@ -60,10 +60,8 @@ enum OperatorStatus {
 
 type Operator @entity {
   id: ID! @index
-  account: Account!
-  accountId: String! @index
-  domain: Domain!
-  domainId: String! @index
+  account: Account! @index
+  domain: Domain! @index
   operatorId: Int! @index
   signingKey: String! @index
   minimumNominatorStake: BigInt!
@@ -109,12 +107,9 @@ enum NominatorStatus {
 
 type Nominator @entity {
   id: ID! @index
-  account: Account!
-  accountId: String! @index
-  domain: Domain!
-  domainId: String! @index
+  account: Account! @index
+  domain: Domain! @index
   operator: Operator! @index
-  operatorId: String! @index
   shares: BigInt!
   deposits: [Deposit!]!
     @derivedFrom(field: "nominator")
@@ -138,16 +133,12 @@ enum DepositStatus {
 type Deposit @entity {
   id: ID! @index
   blockNumber: Int! @index
-  account: Account!
-  accountId: String! @index
-  domain: Domain!
-  domainId: String! @index
+  account: Account! @index
+  domain: Domain! @index
   amount: BigInt!
   storageFeeDeposit: BigInt!
-  operator: Operator!
-  operatorId: String! @index
-  nominator: Nominator!
-  nominatorId: String! @index
+  operator: Operator! @index
+  nominator: Nominator! @index
   timestamp: DateTime! @index
   extrinsicHash: String! @index
   status: DepositStatus! @index
@@ -162,15 +153,11 @@ enum WithdrawalStatus {
 type Withdrawal @entity {
   id: ID! @index
   blockNumber: Int! @index
-  account: Account!
-  accountId: String! @index
-  domain: Domain!
-  domainId: String! @index
+  account: Account! @index
+  domain: Domain! @index
   shares: BigInt!
-  operator: Operator!
-  operatorId: String! @index
-  nominator: Nominator!
-  nominatorId: String! @index
+  operator: Operator! @index
+  nominator: Nominator! @index
   timestamp: DateTime! @index
   extrinsicHash: String! @index
   status: WithdrawalStatus! @index

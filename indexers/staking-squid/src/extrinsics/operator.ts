@@ -48,9 +48,7 @@ export function processRegisterOperator(
     const operator = createOperator(cache, block, extrinsic, operatorId, {
       operatorId,
       domain,
-      domainId: domain.id,
       account,
-      accountId: account.id,
       signingKey: extrinsic.call?.args.config.signingKey,
       minimumNominatorStake: BigInt(
         extrinsic.call?.args.config.minimumNominatorStake
@@ -64,23 +62,16 @@ export function processRegisterOperator(
 
     const nominator = createNominator(cache, block, extrinsic, {
       domain,
-      domainId: domain.id,
       account,
-      accountId: account.id,
       operator,
-      operatorId: operator.id,
     });
     cache.nominators.set(nominator.id, nominator);
 
     const deposit = createDeposit(cache, block, extrinsic, {
       domain,
-      domainId: domain.id,
       account,
-      accountId: account.id,
       operator,
-      operatorId: operator.id,
       nominator,
-      nominatorId: nominator.id,
       amount,
       storageFeeDeposit,
     });
