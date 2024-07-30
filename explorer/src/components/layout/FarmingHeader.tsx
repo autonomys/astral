@@ -2,7 +2,7 @@
 
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { EXTERNAL_ROUTES, INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useDomains from 'hooks/useDomains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -12,7 +12,7 @@ import { useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
-export const DomainHeader = () => {
+export const FarmingHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
@@ -22,12 +22,16 @@ export const DomainHeader = () => {
   const menuList = useMemo(
     () => [
       {
-        title: 'Nova',
-        link: `/${selectedChain.urls.page}/${Routes.nova}`,
+        title: 'Download Space Acres',
+        link: `/${selectedChain.urls.page}/${Routes.farming}`,
       },
       {
-        title: 'Auto-ID',
-        link: `/${selectedChain.urls.page}/${Routes.autoid}`,
+        title: 'Advance CLI',
+        link: `${EXTERNAL_ROUTES.docs}docs/category/advanced-cli`,
+      },
+      {
+        title: 'Documentation',
+        link: `${EXTERNAL_ROUTES.docs}docs/farming-&-staking/farming/space-acres/space-acres-install`,
       },
     ],
     [selectedChain.urls.page],
@@ -38,7 +42,7 @@ export const DomainHeader = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.domains}`}
+            href={`/${selectedChain.urls.page}/${Routes.farming}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>

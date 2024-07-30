@@ -1,8 +1,11 @@
 export enum Routes {
-  nova = 'nova',
   consensus = 'consensus',
-  leaderboard = 'leaderboard',
+  farming = 'farming',
   staking = 'staking',
+  leaderboard = 'leaderboard',
+  domains = 'domains',
+  nova = 'nova',
+  autoid = 'autoid',
   // Route deactivated till bugs are fixed and feature is ready
   // stake = 'stake',
 }
@@ -13,16 +16,30 @@ export const ROUTES = [
     title: 'Consensus Chain',
   },
   {
-    name: Routes.nova,
-    title: 'Nova',
+    name: Routes.farming,
+    title: 'Farming',
+  },
+  {
+    name: Routes.staking,
+    title: 'Staking',
   },
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
   },
   {
-    name: Routes.staking,
-    title: 'Staking',
+    name: Routes.domains,
+    title: 'Domains',
+    children: [
+      {
+        name: Routes.nova,
+        title: 'Nova',
+      },
+      {
+        name: Routes.autoid,
+        title: 'Auto-ID',
+      },
+    ],
   },
   // Route deactivated till bugs are fixed and feature is ready
   // {
@@ -32,12 +49,12 @@ export const ROUTES = [
 ]
 
 export const EXTERNAL_ROUTES = {
-  autonomys: 'https://autonomys.net/',
-  academy: 'https://academy.autonomys.net/',
+  autonomys: 'https://autonomys.xyz/',
+  academy: 'https://academy.autonomys.xyz/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
-  forum: 'https://forum.subspace.network/',
+  forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
-    'https://forum.subspace.network/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
+    'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
   docs: 'https://docs.subspace.network/',
   operatorDocs:
     'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
@@ -48,7 +65,7 @@ export const EXTERNAL_ROUTES = {
     github: 'https://github.com/autonomys',
     reddit: 'https://www.reddit.com/r/sub',
     medium: 'https://medium.com/subspace-network',
-    youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',
+    youtube: 'https://www.youtube.com/@AutonomysNetwork',
     linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
@@ -56,6 +73,7 @@ export const EXTERNAL_ROUTES = {
   polkadot:
     'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
   subscan: 'https://subspace.subscan.io/',
+  spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
 }
 
 export const INTERNAL_ROUTES = {

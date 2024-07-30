@@ -62,13 +62,14 @@ export const useOutOfSyncBanner = () => {
 
   const outOfSyncBanner = useMemo(
     () =>
+      !selectedChain.isDomain &&
       data &&
       lastBlock &&
       lastChainBlock !== null &&
       lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastChainBlock ? (
         <OutOfSyncBanner />
       ) : null,
-    [data, lastBlock, lastChainBlock],
+    [data, lastBlock, lastChainBlock, selectedChain.isDomain],
   )
 
   useEffect(() => {

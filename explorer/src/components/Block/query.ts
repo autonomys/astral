@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_BLOCK_LIST_CONNECTION = gql`
-  query BlocksConnection($first: Int!, $after: String) {
-    blocksConnection(orderBy: height_DESC, first: $first, after: $after) {
+  query BlocksConnection($first: Int!, $after: String, $orderBy: [BlockOrderByInput!]!) {
+    blocksConnection(orderBy: $orderBy, first: $first, after: $after) {
       edges {
         cursor
         node {

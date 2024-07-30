@@ -2,9 +2,9 @@
 
 import { PolkadotIcon } from '@/components/icons/PolkadotIcon'
 import { SubWalletIcon } from '@/components/icons/SubWalletIcon'
-import { shortString } from '@/utils/string'
+import { limitText, shortString } from '@/utils/string'
 import { Listbox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { SupportedWalletExtension, WalletType } from 'constants/wallet'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
@@ -40,31 +40,27 @@ function AccountListDropdown() {
             <Listbox.Option
               key={chainIdx}
               className={({ active }) =>
-                `relative cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white md:pl-10 ${
-                  active && 'dark:bg-blueDarkAccent bg-gray-100'
+                `w-120 relative cursor-pointer select-none py-2 text-gray-900 dark:text-white ${
+                  active && 'bg-gray-100 dark:bg-blueDarkAccent'
                 }`
               }
               value={account}
             >
               {({ selected }) => {
                 const subAccount =
-                  account.type === WalletType.subspace
+                  account.type === WalletType.subspace ||
+                  (account as { type: string }).type === 'sr25519'
                     ? formatAddress(account.address)
                     : account.address
                 const formattedAccount = subAccount && shortString(subAccount)
                 return (
                   <div className='px-2'>
                     <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                      {account.name}
+                      {account.name ? limitText(account.name, 16) : 'Account ' + chainIdx}
                     </span>
                     <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
                       {formattedAccount}
                     </span>
-                    {selected ? (
-                      <span className='text-greenBright absolute inset-y-0 left-0 flex items-center pl-3'>
-                        <CheckIcon className='hidden size-5 md:block' aria-hidden='true' />
-                      </span>
-                    ) : null}
                   </div>
                 )
               }}
@@ -88,8 +84,8 @@ function AccountListDropdown() {
         <Listbox.Button
           className={`relative w-full cursor-default font-["Montserrat"] ${
             isDesktop
-              ? 'from-pinkAccent to-purpleDeepAccent rounded-full pr-10 dark:bg-gradient-to-r'
-              : 'dark:bg-pinkAccent rounded-l-full pr-6'
+              ? 'rounded-full from-pinkAccent to-purpleDeepAccent pr-10 dark:bg-gradient-to-r'
+              : 'rounded-l-full pr-6 dark:bg-pinkAccent'
           } bg-white py-2 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:text-white sm:text-sm`}
         >
           <div className='flex items-center justify-center'>
@@ -117,11 +113,11 @@ function AccountListDropdown() {
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='dark:bg-blueAccent absolute right-0 mt-1 max-h-80 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute right-0 mt-1 max-h-80 w-full overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm'>
             {walletList}
             <button
               onClick={handleDisconnectWallet}
-              className='dark:bg-blueDarkAccent relative cursor-default select-none py-2 pr-8 text-gray-900 dark:text-white md:pl-5'
+              className='relative cursor-pointer select-none py-2 pr-4 text-gray-900 dark:bg-blueDarkAccent dark:text-white'
             >
               <span className='block truncate px-2 font-normal'>Disconnect wallet</span>
             </button>
