@@ -28,7 +28,7 @@ export const ROUTES = [
     title: 'Leaderboard',
   },
   {
-    name: Routes.domain,
+    name: Routes.domains,
     title: 'Domains',
     children: [
       {
