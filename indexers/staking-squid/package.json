@@ -13,7 +13,7 @@
   },
   "author": {
     "name": "Autonomys",
-    "url": "https://www.autonomys.net"
+    "url": "https://www.autonomys.zyx"
   },
   "dependencies": {
     "@autonomys/auto-consensus": "^0.1.6",
