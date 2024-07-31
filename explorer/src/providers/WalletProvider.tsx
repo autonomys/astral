@@ -180,7 +180,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   }, [actingAccount])
 
   useEffect(() => {
-    if (!injector) return
     setup()
   }, [injector, setup])
 
