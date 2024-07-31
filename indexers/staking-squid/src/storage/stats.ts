@@ -12,10 +12,20 @@ import { getBlockNumber, getTimestamp } from "../utils";
 import { Cache } from "../utils/cache";
 
 export const createStatsPerOperator = (
+  cache: Cache,
   block: CtxBlock,
   domain: Domain,
   operator: Operator
 ): StatsPerOperator => {
+  const nominators = Array.from(cache.nominators.values()).filter(
+    (o) => o.domainId === domain.id
+  );
+  const deposits = Array.from(cache.deposits.values()).filter(
+    (o) => o.domainId === domain.id
+  );
+  const withdrawals = Array.from(cache.withdrawals.values()).filter(
+    (o) => o.domainId === domain.id
+  );
   return new StatsPerOperator({
     id: randomUUID(),
     domainId: domain.id,
@@ -25,15 +35,38 @@ export const createStatsPerOperator = (
     totalDeposits: operator.totalDeposits,
     totalWithdrawals: BigInt(0),
     allTimeHighStaked: BigInt(0),
+    nominatorsCount: nominators.length,
+    depositsCount: deposits.length,
+    withdrawalsCount: withdrawals.length,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
 };
 
 export const createStatsPerDomain = (
+  cache: Cache,
   block: CtxBlock,
   domain: Domain
 ): StatsPerDomain => {
+  const operators = Array.from(cache.operators.values()).filter(
+    (o) => o.domainId === domain.id
+  );
+  const nominators = Array.from(cache.nominators.values()).filter(
+    (o) => o.domainId === domain.id
+  );
+  const deposits = Array.from(cache.deposits.values()).filter(
+    (o) => o.domainId === domain.id
+  );
+  const withdrawals = Array.from(cache.withdrawals.values()).filter(
+    (o) => o.domainId === domain.id
+  );
+  const activeOperatorsCount = operators.filter(
+    (operator) => operator.status === OperatorStatus.REGISTERED
+  ).length;
+  const slashedOperatorsCount = operators.filter(
+    (operator) => operator.status === OperatorStatus.SLASHED
+  ).length;
+
   return new StatsPerDomain({
     id: randomUUID(),
     domainId: domain.id,
@@ -42,6 +75,12 @@ export const createStatsPerDomain = (
     totalDeposits: domain.totalDeposits,
     totalWithdrawals: BigInt(0),
     allTimeHighStaked: BigInt(0),
+    operatorsCount: operators.length,
+    activeOperatorsCount,
+    slashedOperatorsCount,
+    nominatorsCount: nominators.length,
+    depositsCount: deposits.length,
+    withdrawalsCount: withdrawals.length,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });

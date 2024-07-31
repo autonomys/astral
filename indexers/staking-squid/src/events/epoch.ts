@@ -64,14 +64,19 @@ export async function processEpochTransitionEvent(
 
   const domains = Array.from(cache.domains.values());
   for (const domain of domains) {
-    const statsPerDomain = createStatsPerDomain(block, domain);
+    const statsPerDomain = createStatsPerDomain(cache, block, domain);
     cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
 
     const operators = Array.from(cache.operators.values()).filter(
       (o) => o.domainId === domain.id
     );
     for (const operator of operators) {
-      const statsPerOperator = createStatsPerOperator(block, domain, operator);
+      const statsPerOperator = createStatsPerOperator(
+        cache,
+        block,
+        domain,
+        operator
+      );
       cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
     }
   }
