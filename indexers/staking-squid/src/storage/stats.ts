@@ -13,20 +13,18 @@ import { Cache } from "../utils/cache";
 
 export const createStatsPerOperator = (
   block: CtxBlock,
+  domain: Domain,
   operator: Operator
 ): StatsPerOperator => {
   return new StatsPerOperator({
     id: randomUUID(),
-    domain: operator.domain,
-    operator: operator,
+    domainId: domain.id,
+    operatorId: operator.id,
     totalStaked: operator.currentTotalStake,
     totalFees: BigInt(0),
     totalDeposits: operator.totalDeposits,
     totalWithdrawals: BigInt(0),
     allTimeHighStaked: BigInt(0),
-    nominatorsCount: operator.nominatorsCount,
-    depositsCount: operator.depositsCount,
-    withdrawalsCount: operator.withdrawalsCount,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
@@ -38,18 +36,12 @@ export const createStatsPerDomain = (
 ): StatsPerDomain => {
   return new StatsPerDomain({
     id: randomUUID(),
-    domain,
+    domainId: domain.id,
     totalStaked: domain.currentTotalStake,
     totalFees: BigInt(0),
     totalDeposits: domain.totalDeposits,
     totalWithdrawals: BigInt(0),
     allTimeHighStaked: BigInt(0),
-    operatorsCount: domain.operatorsCount,
-    activeOperatorsCount: domain.operatorsCount,
-    slashedOperatorsCount: domain.operatorsCount,
-    nominatorsCount: domain.nominatorsCount,
-    depositsCount: domain.depositsCount,
-    withdrawalsCount: domain.withdrawalsCount,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });

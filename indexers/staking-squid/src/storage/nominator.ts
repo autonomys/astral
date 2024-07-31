@@ -1,44 +1,25 @@
-import { Nominator, NominatorStatus, Operator } from "../model";
+import { Nominator, NominatorStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
-import {
-  getBlockNumber,
-  getCallSigner,
-  nominatorUID,
-  operatorUID,
-} from "../utils";
+import { getBlockNumber, getCallSigner, nominatorUID } from "../utils";
 import { Cache } from "../utils/cache";
-import { getOrCreateAccount } from "./account";
-import { getOrCreateDomain } from "./domain";
-import { getOrCreateOperator } from "./operator";
 
 export const createNominator = (
-  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  operatorId: number,
   props: Partial<Nominator>
 ): Nominator => {
   const address = getCallSigner(extrinsic.call);
-  if (!props.account)
-    props.account = props.account = getOrCreateAccount(cache, block, address);
-  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
-  if (!props.operator)
-    props.operator = getOrCreateOperator(cache, block, extrinsic, 0);
 
-  const nominator = new Nominator({
-    id: nominatorUID(props.operator.operatorId, address),
+  return new Nominator({
+    id: nominatorUID(operatorId, address),
     shares: BigInt(0),
-    deposits: [],
-    withdrawals: [],
-    depositsCount: 0,
-    withdrawalsCount: 0,
     totalDeposits: BigInt(0),
     status: NominatorStatus.PENDING,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
   });
-
-  return nominator;
 };
 
 export const getOrCreateNominator = (
@@ -49,10 +30,6 @@ export const getOrCreateNominator = (
   props: Partial<Nominator> = {}
 ): Nominator => {
   const address = getCallSigner(extrinsic.call);
-  const account = getOrCreateAccount(cache, block, address);
-  const operator = cache.operators.get(
-    typeof operatorId === "string" ? operatorId : operatorUID(operatorId)
-  );
   const nominator = cache.nominators.get(
     typeof operatorId === "string"
       ? operatorId
@@ -60,11 +37,14 @@ export const getOrCreateNominator = (
   );
 
   if (!nominator)
-    return createNominator(cache, block, extrinsic, {
-      account,
-      operator,
-      ...props,
-    });
+    return createNominator(
+      block,
+      extrinsic,
+      typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
+      {
+        ...props,
+      }
+    );
 
   return nominator;
 };

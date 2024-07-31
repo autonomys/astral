@@ -1,29 +1,16 @@
 import { Operator, OperatorStatus } from "../model";
-import type { CtxBlock, CtxExtrinsic } from "../processor";
-import { getBlockNumber, getCallSigner, operatorUID } from "../utils";
+import type { CtxBlock } from "../processor";
+import { getBlockNumber, operatorUID } from "../utils";
 import { Cache } from "../utils/cache";
-import { getOrCreateAccount } from "./account";
-import { getOrCreateDomain } from "./domain";
 
 export const createOperator = (
-  cache: Cache,
   block: CtxBlock,
-  extrinsic: CtxExtrinsic,
   operatorId: number | string,
   props: Partial<Operator>
-): Operator => {
-  if (!props.domain) props.domain = getOrCreateDomain(cache, block, 0);
-  if (!props.account)
-    props.account = getOrCreateAccount(
-      cache,
-      block,
-      getCallSigner(extrinsic.call)
-    );
-
-  const operator = new Operator({
+): Operator =>
+  new Operator({
     id: typeof operatorId === "string" ? operatorId : operatorUID(operatorId),
-    operatorId:
-      typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
+    sortId: typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,
@@ -33,30 +20,17 @@ export const createOperator = (
     currentTotalShares: BigInt(0),
     totalDeposits: BigInt(0),
     totalTaxCollected: BigInt(0),
-    nominators: [],
-    deposits: [],
-    withdrawals: [],
-    operatorRewards: [],
-    operatorFees: [],
     rawStatus: JSON.stringify({}),
     status: OperatorStatus.PENDING,
-    nominatorsCount: 0,
-    depositsCount: 0,
-    withdrawalsCount: 0,
-    bundleCount: 0,
     lastBundleAt: 0,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
   });
 
-  return operator;
-};
-
 export const getOrCreateOperator = (
   cache: Cache,
   block: CtxBlock,
-  extrinsic: CtxExtrinsic,
   operatorId: number | string,
   props: Partial<Operator> = {}
 ): Operator => {
@@ -64,8 +38,7 @@ export const getOrCreateOperator = (
     typeof operatorId === "string" ? operatorId : operatorUID(operatorId)
   );
 
-  if (!operator)
-    return createOperator(cache, block, extrinsic, operatorId, props);
+  if (!operator) return createOperator(block, operatorId, props);
 
   return operator;
 };

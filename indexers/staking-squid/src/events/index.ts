@@ -56,8 +56,8 @@ async function processEvent(
       return processWithdrewStakeEvent(cache, block, extrinsic, event);
 
     // rewards and slashing
-    // case events.domains.operatorRewarded.name:
-    //   return cache;
+    case events.domains.operatorRewarded.name:
+      return cache;
 
     case events.domains.operatorSlashed.name:
       return processOperatorSlashedEvent(cache, block, extrinsic, event);

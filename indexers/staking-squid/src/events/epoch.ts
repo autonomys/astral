@@ -31,7 +31,6 @@ export async function processEpochTransitionEvent(
     const op = getOrCreateOperator(
       cache,
       block,
-      extrinsic,
       parseInt(operator.operatorId.toString())
     );
     op.currentEpochRewards = operator.operatorDetails.currentEpochRewards;
@@ -67,11 +66,14 @@ export async function processEpochTransitionEvent(
   for (const domain of domains) {
     const statsPerDomain = createStatsPerDomain(block, domain);
     cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
-  }
-  const operators = Array.from(cache.operators.values());
-  for (const operator of operators) {
-    const statsPerOperator = createStatsPerOperator(block, operator);
-    cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
+
+    const operators = Array.from(cache.operators.values()).filter(
+      (o) => o.domainId === domain.id
+    );
+    for (const operator of operators) {
+      const statsPerOperator = createStatsPerOperator(block, domain, operator);
+      cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
+    }
   }
 
   return cache;

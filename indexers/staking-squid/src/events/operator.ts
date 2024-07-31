@@ -8,7 +8,7 @@ import {
   getOrCreateOperator,
 } from "../storage";
 import { events } from "../types";
-import { appendOrArray, getBlockNumber, getCallSigner } from "../utils";
+import { getBlockNumber, getCallSigner } from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processOperatorNominatedEvent(
@@ -38,79 +38,46 @@ export function processOperatorNominatedEvent(
   const account = getOrCreateAccount(cache, block, address);
   cache.accounts.set(account.id, account);
 
-  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
-    account,
-  });
+  const operator = getOrCreateOperator(cache, block, operatorId, {});
   cache.operators.set(operator.id, operator);
 
-  const domain = getOrCreateDomain(cache, block, operator.domain.id);
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
   cache.domains.set(domain.id, domain);
 
   const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId, {
-    account,
-    domain,
+    domainId: domain.id,
+    accountId: account.id,
+    operatorId: operator.id,
     shares,
   });
   cache.nominators.set(nominator.id, nominator);
 
-  const deposit = createDeposit(cache, block, extrinsic, {
-    account,
-    domain,
-    operator,
-    nominator,
+  const deposit = createDeposit(block, extrinsic, {
+    domainId: domain.id,
+    accountId: account.id,
+    operatorId: operator.id,
+    nominatorId: nominator.id,
     amount,
     storageFeeDeposit,
   });
   cache.deposits.set(deposit.id, deposit);
 
   operator.totalDeposits += amount;
-
-  const operatorNominators = appendOrArray(operator.nominators, nominator);
-  operator.nominators = operatorNominators;
-  operator.nominatorsCount = operatorNominators.length;
-
-  const operatorDeposits = appendOrArray(operator.deposits, deposit);
-  operator.deposits = operatorDeposits;
-  operator.depositsCount = operatorDeposits.length;
-
   operator.updatedAt = blockNumber;
 
   cache.operators.set(operator.id, operator);
 
   nominator.totalDeposits += amount;
-
-  const nominatorDeposits = appendOrArray(nominator.deposits, deposit);
-  nominator.deposits = nominatorDeposits;
-  nominator.depositsCount = nominatorDeposits.length;
-
   nominator.updatedAt = blockNumber;
 
   cache.nominators.set(nominator.id, nominator);
 
-  const domainNominators = appendOrArray(domain.nominators, nominator);
-  domain.nominators = domainNominators;
-  domain.nominatorsCount = domainNominators.length;
-
-  const domainDeposits = appendOrArray(domain.deposits, deposit);
-  domain.deposits = domainDeposits;
-  domain.depositsCount = domainDeposits.length;
-
   domain.totalDeposits += amount;
-
   domain.updatedAt = blockNumber;
 
   cache.domains.set(domain.id, domain);
 
-  const accountNominators = appendOrArray(account.nominators, nominator);
-  account.nominators = accountNominators;
-  account.nominatorsCount = accountNominators.length;
-
-  const accountDeposit = appendOrArray(account.deposits, deposit);
-  account.deposits = accountDeposit;
-  account.depositsCount = accountDeposit.length;
-
   account.totalDeposits += amount;
-
   account.updatedAt = blockNumber;
 
   cache.accounts.set(account.id, account);
@@ -125,7 +92,7 @@ export function processOperatorSlashedEvent(
   event: CtxEvent
 ) {
   const operatorId = Number(event.args.operatorId);
-  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId);
 
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
@@ -135,7 +102,7 @@ export function processOperatorSlashedEvent(
   cache.operators.set(operator.id, operator);
 
   const nominators = Array.from(cache.nominators.values()).filter(
-    (n) => n.operator.id === operator.id
+    (n) => n.operatorId === operator.id
   );
   for (const nominator of nominators) {
     nominator.status = NominatorStatus.SLASHED;
@@ -157,30 +124,30 @@ export function processOperatorTaxCollectedEvent(
   const operatorId = Number(event.args.operatorId);
   const tax = BigInt(event.args.tax);
 
-  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId);
   cache.operators.set(operator.id, operator);
 
-  // const account = getOrCreateAccount(cache, block, operator.account.id);
-  // cache.accounts.set(account.id, account);
+  const account = getOrCreateAccount(cache, block, operator.accountId);
+  cache.accounts.set(account.id, account);
 
-  // const domain = getOrCreateDomain(cache, block, operator.domain.id);
-  // cache.domains.set(domain.id, domain);
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  cache.domains.set(domain.id, domain);
 
   operator.totalTaxCollected += tax;
   operator.updatedAt = blockNumber;
 
   cache.operators.set(operator.id, operator);
 
-  // account.totalTaxCollected += tax;
-  // account.updatedAt = blockNumber;
+  account.totalTaxCollected += tax;
+  account.updatedAt = blockNumber;
 
-  // cache.accounts.set(account.id, account);
+  cache.accounts.set(account.id, account);
 
-  // domain.totalTaxCollected += tax;
+  domain.totalTaxCollected += tax;
 
-  // domain.updatedAt = blockNumber;
+  domain.updatedAt = blockNumber;
 
-  // cache.domains.set(domain.id, domain);
+  cache.domains.set(domain.id, domain);
 
   return cache;
 }

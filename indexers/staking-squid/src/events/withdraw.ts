@@ -6,7 +6,7 @@ import {
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { appendOrArray, getBlockNumber, getCallSigner } from "../utils";
+import { getCallSigner } from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processWithdrewStakeEvent(
@@ -22,57 +22,28 @@ export function processWithdrewStakeEvent(
   const account = getOrCreateAccount(cache, block, address);
   cache.accounts.set(account.id, account);
 
-  const operator = getOrCreateOperator(cache, block, extrinsic, operatorId, {
-    account,
-  });
+  const operator = getOrCreateOperator(cache, block, operatorId, {});
   cache.operators.set(operator.id, operator);
 
-  const domain = getOrCreateDomain(cache, block, operator.id);
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
   cache.domains.set(domain.id, domain);
 
   const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId, {
-    account,
-    domain,
+    domainId: domain.id,
+    accountId: account.id,
+    operatorId: operator.id,
     shares,
   });
   cache.nominators.set(nominator.id, nominator);
 
-  const withdrawal = createWithdrawal(cache, block, extrinsic, {
-    account,
-    domain,
-    operator,
-    nominator,
+  const withdrawal = createWithdrawal(block, extrinsic, {
+    domainId: domain.id,
+    accountId: account.id,
+    operatorId: operator.id,
+    nominatorId: nominator.id,
     shares,
   });
   cache.withdrawals.set(withdrawal.id, withdrawal);
-
-  const operatorWithdrawals = appendOrArray(operator.withdrawals, withdrawal);
-  operator.withdrawals = operatorWithdrawals;
-  operator.withdrawalsCount = operatorWithdrawals.length;
-
-  operator.updatedAt = getBlockNumber(block);
-
-  cache.operators.set(operator.id, operator);
-
-  const nominatorWithdrawals = appendOrArray(nominator.withdrawals, withdrawal);
-  nominator.withdrawals = nominatorWithdrawals;
-  nominator.withdrawalsCount = nominatorWithdrawals.length;
-
-  nominator.updatedAt = getBlockNumber(block);
-
-  cache.nominators.set(nominator.id, nominator);
-
-  const domainWithdrawals = appendOrArray(domain.withdrawals, withdrawal);
-  domain.withdrawals = domainWithdrawals;
-  domain.withdrawalsCount = domainWithdrawals.length;
-
-  cache.domains.set(domain.id, domain);
-
-  const accountWithdrawal = appendOrArray(account.withdrawals, withdrawal);
-  account.withdrawals = accountWithdrawal;
-  account.withdrawalsCount = accountWithdrawal.length;
-
-  cache.accounts.set(account.id, account);
 
   return cache;
 }
