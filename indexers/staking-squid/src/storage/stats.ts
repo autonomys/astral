@@ -15,7 +15,7 @@ export const createStatsPerOperator = (
   block: CtxBlock,
   operator: Operator
 ): StatsPerOperator => {
-  const statsPerOperator = new StatsPerOperator({
+  return new StatsPerOperator({
     id: randomUUID(),
     domain: operator.domain,
     operator: operator,
@@ -30,67 +30,29 @@ export const createStatsPerOperator = (
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
-
-  return statsPerOperator;
 };
 
 export const createStatsPerDomain = (
-  cache: Cache,
   block: CtxBlock,
-  domain: Domain,
-  domainId: number
+  domain: Domain
 ): StatsPerDomain => {
-  const operators = Array.from(cache.operators.values()).filter(
-    (n) => n.domain.domainId === domainId
-  );
-  const nominatorsCount = operators.reduce(
-    (total, operator) => total + operator.nominatorsCount,
-    0
-  );
-  const depositsCount = operators.reduce(
-    (total, operator) => total + operator.depositsCount,
-    0
-  );
-  const withdrawalsCount = operators.reduce(
-    (total, operator) => total + operator.withdrawalsCount,
-    0
-  );
-
-  const activeOperatorsCount = operators.filter(
-    (operator) => operator.status === OperatorStatus.REGISTERED
-  ).length;
-  const slashedOperatorsCount = operators.filter(
-    (operator) => operator.status === OperatorStatus.SLASHED
-  ).length;
-
-  const totalStaked = operators.reduce(
-    (total, operator) => total + operator.currentTotalStake,
-    BigInt(0)
-  );
-  const totalDeposits = operators.reduce(
-    (total, operator) => total + operator.totalDeposits,
-    BigInt(0)
-  );
-
-  const statsPerDomain = new StatsPerDomain({
+  return new StatsPerDomain({
     id: randomUUID(),
     domain,
-    totalStaked,
+    totalStaked: domain.currentTotalStake,
     totalFees: BigInt(0),
-    totalDeposits,
+    totalDeposits: domain.totalDeposits,
     totalWithdrawals: BigInt(0),
     allTimeHighStaked: BigInt(0),
-    operatorsCount: operators.length,
-    activeOperatorsCount,
-    slashedOperatorsCount,
-    nominatorsCount,
-    depositsCount,
-    withdrawalsCount,
+    operatorsCount: domain.operatorsCount,
+    activeOperatorsCount: domain.operatorsCount,
+    slashedOperatorsCount: domain.operatorsCount,
+    nominatorsCount: domain.nominatorsCount,
+    depositsCount: domain.depositsCount,
+    withdrawalsCount: domain.withdrawalsCount,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
-
-  return statsPerDomain;
 };
 
 export const createStats = (cache: Cache, block: CtxBlock): Stats => {
@@ -112,7 +74,7 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     BigInt(0)
   );
 
-  const stats = new Stats({
+  return new Stats({
     id: randomUUID(),
     totalStaked,
     totalFees: BigInt(0),
@@ -129,6 +91,4 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
-
-  return stats;
 };

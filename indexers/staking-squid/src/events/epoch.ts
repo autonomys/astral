@@ -65,12 +65,7 @@ export async function processEpochTransitionEvent(
 
   const domains = Array.from(cache.domains.values());
   for (const domain of domains) {
-    const statsPerDomain = createStatsPerDomain(
-      cache,
-      block,
-      domain,
-      domain.domainId
-    );
+    const statsPerDomain = createStatsPerDomain(block, domain);
     cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
   }
   const operators = Array.from(cache.operators.values());

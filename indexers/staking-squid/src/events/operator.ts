@@ -160,27 +160,27 @@ export function processOperatorTaxCollectedEvent(
   const operator = getOrCreateOperator(cache, block, extrinsic, operatorId);
   cache.operators.set(operator.id, operator);
 
-  const account = getOrCreateAccount(cache, block, operator.account.id);
-  cache.accounts.set(account.id, account);
+  // const account = getOrCreateAccount(cache, block, operator.account.id);
+  // cache.accounts.set(account.id, account);
 
-  const domain = getOrCreateDomain(cache, block, operator.domain.id);
-  cache.domains.set(domain.id, domain);
+  // const domain = getOrCreateDomain(cache, block, operator.domain.id);
+  // cache.domains.set(domain.id, domain);
 
   operator.totalTaxCollected += tax;
   operator.updatedAt = blockNumber;
 
   cache.operators.set(operator.id, operator);
 
-  account.totalTaxCollected += tax;
-  account.updatedAt = blockNumber;
+  // account.totalTaxCollected += tax;
+  // account.updatedAt = blockNumber;
 
-  cache.accounts.set(account.id, account);
+  // cache.accounts.set(account.id, account);
 
-  domain.totalTaxCollected += tax;
+  // domain.totalTaxCollected += tax;
 
-  domain.updatedAt = blockNumber;
+  // domain.updatedAt = blockNumber;
 
-  cache.domains.set(domain.id, domain);
+  // cache.domains.set(domain.id, domain);
 
   return cache;
 }
