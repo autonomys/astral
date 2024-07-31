@@ -515,7 +515,7 @@ export const OperatorsList: FC = () => {
   }, [])
 
   const operatorsConnection = useMemo(() => {
-    if (useRpcData && subspaceAccount) {
+    if (useRpcData) {
       const myRpcNominatorIds = deposits
         .filter((d) => d.account === subspaceAccount)
         .map((n) => n.operatorId.toString())

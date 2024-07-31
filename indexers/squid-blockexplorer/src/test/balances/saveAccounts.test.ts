@@ -1,18 +1,9 @@
-import tap from 'tap';
 import sinon from 'sinon';
+import tap from 'tap';
 import { saveAccountsFactory } from '../../balances/saveAccounts';
-import { contextMock, accountIdU8 } from '../../mocks/mocks';
-import BlockHeaderMock from '../../mocks/BlockHeader.json';
 import { BalanceStorage } from '../../balances/storage';
-
-const balanceStorageMock = {
-  getBalance() {
-    return Promise.resolve({
-      free: BigInt(10),
-      reserved: BigInt(11),
-    });
-  }
-} as unknown as BalanceStorage;
+import BlockHeaderMock from '../../mocks/BlockHeader.json';
+import { accountIdU8, contextMock } from '../../mocks/mocks';
 
 tap.afterEach(function () {
   sinon.restore();
@@ -43,11 +34,11 @@ tap.afterEach(function () {
 //   t.end();
 // });
 
-tap.test('saveAccounts should not save anything if there are no balances', async (t) => {
+tap.test('saveAccounts should not save anything if there are no balances', async t => {
   const storageNoBalance = {
     getBalance() {
       return Promise.resolve(undefined);
-    }
+    },
   } as unknown as BalanceStorage;
 
   const getBalanceSpy = sinon.spy(storageNoBalance, 'getBalance');

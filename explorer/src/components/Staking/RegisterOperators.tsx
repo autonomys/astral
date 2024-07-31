@@ -1,12 +1,10 @@
 'use client'
 
 import { registerOperator } from '@autonomys/auto-consensus'
+import { createAccountIdType, isHex, Keyring, u8aToHex } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
-import { Keyring } from '@polkadot/api'
-import { createType } from '@polkadot/types'
-import { isHex, u8aToHex } from '@polkadot/util'
 import { WalletIcon } from 'components/icons'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
 import { EXTERNAL_ROUTES } from 'constants/routes'
@@ -209,9 +207,7 @@ export const RegisterOperators = () => {
         const Operator = OperatorKeyring.addFromUri(seed)
 
         const signingKey = u8aToHex(Operator.publicKey)
-        const signature = Operator.sign(
-          createType(api.registry, 'AccountId', actingAccount.address).toU8a(),
-        )
+        const signature = Operator.sign(createAccountIdType(api, actingAccount.address))
         setFieldValue('signingKey', signingKey)
         setFieldValue('signature', signature)
       } catch (error) {
