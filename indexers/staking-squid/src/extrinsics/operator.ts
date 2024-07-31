@@ -23,6 +23,7 @@ export function processRegisterOperator(
   const operatorRegisteredEvent = extrinsic.events.find(
     (e) => e.name === events.domains.operatorRegistered.name
   );
+  if (!operatorRegisteredEvent) return cache;
 
   const storageFeeDepositedEvent = extrinsic.events.find(
     (e) => e.name === events.domains.storageFeeDeposited.name
@@ -97,6 +98,7 @@ export function processDeregisterOperator(
   const operatorDeregisteredEvent = extrinsic.events.find(
     (e) => e.name === events.domains.operatorDeregistered.name
   );
+  if (!operatorDeregisteredEvent) return cache;
 
   if (operatorDeregisteredEvent) {
     operator.currentTotalStake = BigInt(0);
