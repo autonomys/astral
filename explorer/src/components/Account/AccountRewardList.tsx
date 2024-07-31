@@ -193,8 +193,9 @@ export const AccountRewardList: FC = () => {
     () =>
       downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'rewardEventsConnection', {
         sortBy,
+        accountId: accountId ?? '',
       }),
-    [apolloClient, sortBy],
+    [accountId, apolloClient, sortBy],
   )
 
   useEffect(() => {
