@@ -2,7 +2,7 @@
 
 # Astral
 
-- [Astral Block Explorer](https://explorer.subspace.network/) Astral Block Explorer
+- [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
 - [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid
 - [Health Check](https://uptime.subspace.network/status/network) Subspace Network Status Page
 

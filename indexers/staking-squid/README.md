@@ -1,7 +1,7 @@
 # Staking squid
 
 Our Staking Indexer using [Squid](https://subsquid.io).
-It is in use at [Astral - Staking](https://explorer.subspace.network/gemini-3h/staking) Autonomus Explorer, Staking section.
+It is in use at [Astral - Staking](https://explorer.autonomys.xyz/gemini-3h/staking) Autonomys Explorer, Staking section.
 
 ## Summary
 

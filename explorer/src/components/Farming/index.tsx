@@ -187,7 +187,7 @@ export const DownloadPage: FC = () => {
               alt='Space Acres Screenshot Installation'
               width={800}
               height={400}
-              src='https://docs.subspace.network/assets/images/space-acres-setup-7-3490cba2e75635efdea0006d06da9936.png'
+              src='https://docs.autonomys.xyz/assets/images/space-acres-setup-7-3490cba2e75635efdea0006d06da9936.png'
               className='mx-auto'
             />
           </div>
@@ -198,8 +198,6 @@ export const DownloadPage: FC = () => {
             By contributing storage and compute to the network, you play a crucial role in securing
             it, while also earning rewards.
           </h3>
-         
-          
         </div>
 
         <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
