@@ -57,7 +57,15 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
   };
 };
 
-export const save = async (ctx: Ctx<Store>, cache: Cache) =>
-  Object.keys(cache).forEach(
-    async (key) => await ctx.store.save([...cache[key as keyof Cache].values()])
-  );
+export const save = async (ctx: Ctx<Store>, cache: Cache) => {
+  await ctx.store.save(Array.from(cache.domains.values()));
+  await ctx.store.save(Array.from(cache.accounts.values()));
+  await ctx.store.save(Array.from(cache.operators.values()));
+  await ctx.store.save(Array.from(cache.nominators.values()));
+  await ctx.store.save(Array.from(cache.deposits.values()));
+  await ctx.store.save(Array.from(cache.withdrawals.values()));
+
+  await ctx.store.save(Array.from(cache.stats.values()));
+  await ctx.store.save(Array.from(cache.statsPerDomain.values()));
+  await ctx.store.save(Array.from(cache.statsPerOperator.values()));
+};

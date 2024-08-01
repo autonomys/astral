@@ -1,5 +1,5 @@
 import { operators as getOperators } from "@autonomys/auto-consensus";
-import type { ApiDecoration } from "@polkadot/api/types";
+import type { ApiPromise } from "@autonomys/auto-utils";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createStats,
@@ -13,7 +13,7 @@ import { Cache } from "../utils/cache";
 
 export async function processEpochTransitionEvent(
   cache: Cache,
-  apiAt: ApiDecoration<"promise">,
+  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -21,6 +21,8 @@ export async function processEpochTransitionEvent(
   const domainId = Number(event.args.domainId);
   const domain = getOrCreateDomain(cache, block, domainId);
   const completedEpoch = Number(event.args.completedEpochIndex);
+
+  const apiAt = await api.at(block.header.hash);
 
   const operatorsAll = await getOperators(apiAt);
   const allOperators = operatorsAll.filter(

@@ -1,5 +1,4 @@
 import type { ApiPromise } from "@autonomys/auto-utils";
-import type { ApiDecoration } from "@polkadot/api/types";
 import { Store } from "@subsquid/typeorm-store";
 import { processExtrinsics } from "../extrinsics";
 import type { Ctx, CtxBlock } from "../processor";
@@ -8,11 +7,9 @@ import { Cache, load, save } from "../utils/cache";
 
 export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   let cache: Cache = await load(ctx);
-
+  console.log("Processing " + ctx.blocks.length + " blocks");
   for (let block of ctx.blocks) {
-    const apiAt = await api.at(block.header.hash);
-
-    cache = await processBlock(cache, apiAt, block);
+    cache = await processBlock(cache, api, block);
 
     ctx.log.child("completed block").info(getBlockNumber(block).toString());
 
@@ -20,10 +17,6 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   }
 }
 
-async function processBlock(
-  cache: Cache,
-  apiAt: ApiDecoration<"promise">,
-  block: CtxBlock
-) {
-  return await processExtrinsics(cache, apiAt, block, block.extrinsics);
+async function processBlock(cache: Cache, api: ApiPromise, block: CtxBlock) {
+  return await processExtrinsics(cache, api, block, block.extrinsics);
 }

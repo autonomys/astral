@@ -1,4 +1,4 @@
-import type { ApiDecoration } from "@polkadot/api/types";
+import type { ApiPromise } from "@autonomys/auto-utils";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { events } from "../types";
 import { Cache } from "../utils/cache";
@@ -13,19 +13,19 @@ import { processWithdrewStakeEvent } from "./withdraw";
 
 export async function processEvents(
   cache: Cache,
-  apiAt: ApiDecoration<"promise">,
+  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {
   for (let event of extrinsic.events) {
-    cache = await processEvent(cache, apiAt, block, extrinsic, event);
+    cache = await processEvent(cache, api, block, extrinsic, event);
   }
   return cache;
 }
 
 async function processEvent(
   cache: Cache,
-  apiAt: ApiDecoration<"promise">,
+  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -41,7 +41,7 @@ async function processEvent(
     case events.domains.forceDomainEpochTransition.name:
       return await processEpochTransitionEvent(
         cache,
-        apiAt,
+        api,
         block,
         extrinsic,
         event

@@ -1,4 +1,4 @@
-import type { ApiDecoration } from "@polkadot/api/types";
+import type { ApiPromise } from "@autonomys/auto-utils";
 import { processEvents } from "../events";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { calls } from "../types";
@@ -7,19 +7,19 @@ import { processDeregisterOperator, processRegisterOperator } from "./operator";
 
 export async function processExtrinsics(
   cache: Cache,
-  apiAt: ApiDecoration<"promise">,
+  api: ApiPromise,
   block: CtxBlock,
   extrinsics: CtxExtrinsic[]
 ) {
   for (let extrinsic of extrinsics) {
-    cache = await processExtrinsic(cache, apiAt, block, extrinsic);
+    cache = await processExtrinsic(cache, api, block, extrinsic);
   }
   return cache;
 }
 
 export async function processExtrinsic(
   cache: Cache,
-  apiAt: ApiDecoration<"promise">,
+  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {
@@ -37,6 +37,6 @@ export async function processExtrinsic(
     case calls.domains.unlockFunds.name:
     case calls.domains.unlockNominator.name:
     default:
-      return await processEvents(cache, apiAt, block, extrinsic);
+      return await processEvents(cache, api, block, extrinsic);
   }
 }
