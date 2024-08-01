@@ -2,7 +2,7 @@ import useWallet from 'hooks/useWallet'
 import { useCallback } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import {
-  ConfirmedDomainBlock,
+  ConfirmedDomainExecutionReceipt,
   DomainRegistry,
   DomainStakingSummary,
   PendingStakingOperationCount,
@@ -17,7 +17,7 @@ export const useConsensusData = () => {
     setSystem,
     setDomainRegistry,
     setDomainStakingSummary,
-    setLatestConfirmedDomainBlock,
+    setLatestConfirmedDomainExecutionReceipt,
     setNominatorCount,
     setOperatorIdOwner,
     setOperators,
@@ -41,7 +41,7 @@ export const useConsensusData = () => {
         // domains
         domainRegistry,
         domainStakingSummary,
-        latestConfirmedDomainBlock,
+        latestConfirmedDomainExecutionReceipt,
         nominatorCount,
         operatorIdOwner,
         operators,
@@ -53,9 +53,10 @@ export const useConsensusData = () => {
         // system
         api.rpc.system.chain(),
         api.rpc.system.name(),
+        // domains
         api.query.domains.domainRegistry.entries(),
         api.query.domains.domainStakingSummary.entries(),
-        api.query.domains.latestConfirmedDomainBlock.entries(),
+        api.query.domains.latestConfirmedDomainExecutionReceipt.entries(),
         api.query.domains.nominatorCount.entries(),
         api.query.domains.operatorIdOwner.entries(),
         api.query.domains.operators.entries(),
@@ -106,10 +107,10 @@ export const useConsensusData = () => {
       setDomainStakingSummary(
         domainStakingSummary.map((domain) => domain[1].toJSON() as DomainStakingSummary),
       )
-      setLatestConfirmedDomainBlock(
-        latestConfirmedDomainBlock.map((domainBlock) => ({
+      setLatestConfirmedDomainExecutionReceipt(
+        latestConfirmedDomainExecutionReceipt.map((domainBlock) => ({
           id: parseInt((domainBlock[0].toHuman() as string[])[0]),
-          ...(domainBlock[1].toJSON() as Omit<ConfirmedDomainBlock, 'id'>),
+          ...(domainBlock[1].toJSON() as Omit<ConfirmedDomainExecutionReceipt, 'id'>),
         })),
       )
       setNominatorCount(
