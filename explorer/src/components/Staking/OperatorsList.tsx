@@ -55,7 +55,7 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators, nominatorCount, deposits, withdrawals } = useConsensusStates()
+  const { operators: rpcOperators, deposits, withdrawals } = useConsensusStates()
   const { domains } = useDomainsStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()

@@ -37,6 +37,7 @@ export const QUERY_OPERATOR_LIST = gql`
       }
       nominators(limit: 256) {
         id
+        shares
       }
     }
   }
