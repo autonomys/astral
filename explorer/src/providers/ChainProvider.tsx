@@ -41,6 +41,8 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, c
 
       if (clientName === 'general' && selectedChain.urls.squids.general)
         return selectedChain.urls.squids.general
+      if (clientName === 'staking' && selectedChain.urls.squids.staking)
+        return selectedChain.urls.squids.staking
       if (clientName === 'account' && selectedChain.urls.squids.account)
         return selectedChain.urls.squids.account
       if (clientName === 'rewards' && selectedChain.urls.squids.rewards)

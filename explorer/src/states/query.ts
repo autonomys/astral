@@ -1,6 +1,7 @@
 import { ROUTE_EXTRA_FLAG_TYPE, Routes } from 'constants/routes'
 import * as GqlT from 'gql/graphql'
 import * as OldGqlT from 'gql/oldSquidTypes'
+import * as StakingQuery from 'gql/types/staking'
 import { create } from 'zustand'
 
 export type Init = {
@@ -81,13 +82,10 @@ interface ExplorerQueryState {
     operators: QueryState<GqlT.OperatorsConnectionRewardsQuery>
   }
   [Routes.staking]: {
-    operators: QueryState<OldGqlT.OperatorsConnectionQuery>
-    nominators: QueryState<OldGqlT.NominatorsConnectionQuery>
-    manageOperators: QueryState<OldGqlT.OperatorsConnectionQuery>
-    manageNominations: QueryState<OldGqlT.NominatorsConnectionQuery>
+    operators: QueryState<StakingQuery.OperatorsListQuery>
 
-    operator: QueryState<OldGqlT.OperatorByIdQuery>
-    operatorNominators: QueryState<OldGqlT.OperatorNominatorsByIdQuery>
+    operator: QueryState<StakingQuery.OperatorByIdQuery>
+    operatorNominators: QueryState<StakingQuery.OperatorNominatorsByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
@@ -167,9 +165,6 @@ const initialState: ExplorerQueryState = {
   },
   staking: {
     operators: initialized,
-    nominators: initialized,
-    manageOperators: initialized,
-    manageNominations: initialized,
 
     operator: initialized,
     operatorNominators: initialized,
