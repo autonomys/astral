@@ -56,8 +56,10 @@ export const processor = new SubstrateBatchProcessor()
       events.domains.operatorUnlocked.name,
       events.domains.fundsUnlocked.name,
       events.domains.storageFeeDeposited.name,
+      // bundle
+      events.domains.bundleStored.name,
       // rewards and slashing
-      // events.domains.operatorRewarded.name,
+      events.domains.operatorRewarded.name,
       events.domains.operatorSlashed.name,
       // fees
       events.domains.operatorTaxCollected.name,

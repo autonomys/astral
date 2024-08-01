@@ -5,6 +5,7 @@ import {
   Domain,
   Nominator,
   Operator,
+  OperatorRewardEvent,
   Stats,
   StatsPerDomain,
   StatsPerOperator,
@@ -20,6 +21,8 @@ export type Cache = {
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
 
+  operatorRewardedEvents: Map<string, OperatorRewardEvent>;
+
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
@@ -32,6 +35,8 @@ export const initCache: Cache = {
   nominators: new Map(),
   deposits: new Map(),
   withdrawals: new Map(),
+
+  operatorRewardedEvents: new Map(),
 
   stats: new Map(),
   statsPerDomain: new Map(),
@@ -57,7 +62,17 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
   };
 };
 
-export const save = async (ctx: Ctx<Store>, cache: Cache) =>
-  Object.keys(cache).forEach(
-    async (key) => await ctx.store.save([...cache[key as keyof Cache].values()])
-  );
+export const save = async (ctx: Ctx<Store>, cache: Cache) => {
+  await ctx.store.save([...cache.domains.values()]);
+  await ctx.store.save([...cache.accounts.values()]);
+  await ctx.store.save([...cache.operators.values()]);
+  await ctx.store.save([...cache.nominators.values()]);
+  await ctx.store.save([...cache.deposits.values()]);
+  await ctx.store.save([...cache.withdrawals.values()]);
+
+  await ctx.store.save([...cache.operatorRewardedEvents.values()]);
+
+  await ctx.store.save([...cache.stats.values()]);
+  await ctx.store.save([...cache.statsPerDomain.values()]);
+  await ctx.store.save([...cache.statsPerOperator.values()]);
+};

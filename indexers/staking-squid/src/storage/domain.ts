@@ -17,6 +17,7 @@ export const createDomain = (
     currentStorageFeeDeposit: BigInt(0),
     totalDeposits: BigInt(0),
     totalTaxCollected: BigInt(0),
+    totalRewardsCollected: BigInt(0),
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
