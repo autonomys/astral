@@ -25,9 +25,6 @@ export function processOperatorNominatedEvent(
     (e) => e.name === events.domains.storageFeeDeposited.name
   );
 
-  const shares = extrinsic.call
-    ? BigInt(extrinsic.call.args.shares)
-    : BigInt(0);
   const amount = extrinsic.call
     ? BigInt(extrinsic.call.args.amount)
     : BigInt(0);
@@ -48,7 +45,6 @@ export function processOperatorNominatedEvent(
     domainId: domain.id,
     accountId: account.id,
     operatorId: operator.id,
-    shares,
   });
   cache.nominators.set(nominator.id, nominator);
 
