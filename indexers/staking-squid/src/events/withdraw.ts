@@ -17,7 +17,10 @@ export function processWithdrewStakeEvent(
 ) {
   const address = getCallSigner(extrinsic.call);
   const operatorId = Number(event.args.operatorId);
-  const shares = extrinsic.call?.args.shares.toBigInt();
+
+  const shares = extrinsic.call
+    ? BigInt(extrinsic.call.args.shares)
+    : BigInt(0);
 
   const account = getOrCreateAccount(cache, block, address);
   cache.accounts.set(account.id, account);
