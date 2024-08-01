@@ -6,6 +6,11 @@ dotenv.config()
 
 const config: CodegenConfig = {
   generates: {
+    './gql/types/staking.ts': {
+      schema: defaultChain.urls.squids.staking,
+      documents: ['./src/**/staking.query.ts'],
+      plugins: ['typescript', 'typescript-operations'],
+    },
     './gql/rewardTypes.ts': {
       schema: defaultChain.urls.squids.rewards,
       documents: ['./src/**/rewardsQuery.ts'],
