@@ -36,7 +36,6 @@ export async function processExtrinsic(
     case calls.domains.unlockOperator.name:
     case calls.domains.unlockFunds.name:
     case calls.domains.unlockNominator.name:
-      return cache;
     default:
       return await processEvents(cache, apiAt, block, extrinsic);
   }
