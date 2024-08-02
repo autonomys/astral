@@ -1,5 +1,6 @@
 import { operators as getOperators } from "@autonomys/auto-consensus";
 import type { ApiPromise } from "@autonomys/auto-utils";
+import { NominatorStatus, OperatorStatus } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createStats,
@@ -35,15 +36,35 @@ export async function processEpochTransitionEvent(
       block,
       parseInt(operator.operatorId.toString())
     );
+
+    const rawStatus = JSON.stringify(operator.operatorDetails.status);
     op.currentEpochRewards = operator.operatorDetails.currentEpochRewards;
     op.currentTotalShares = operator.operatorDetails.currentTotalShares;
     op.currentTotalStake = operator.operatorDetails.currentTotalStake;
     op.currentStorageFeeDeposit =
       operator.operatorDetails.totalStorageFeeDeposit;
-    op.rawStatus = JSON.stringify(operator.operatorDetails.status);
+    op.rawStatus = rawStatus;
     op.updatedAt = getBlockNumber(block);
 
     cache.operators.set(op.id, op);
+
+    try {
+      const rawStatusKey = Object.keys(rawStatus);
+      if (rawStatusKey[0] === "deregistered") {
+        const unlockBlock = (
+          rawStatus as unknown as {
+            deregistered: { unlockAtConfirmedDomainBlockNumber: number };
+          }
+        ).deregistered.unlockAtConfirmedDomainBlockNumber;
+
+        if (unlockBlock <= domain.lastDomainBlockNumber) {
+          op.status = OperatorStatus.READY_TO_UNLOCK;
+          cache.operators.set(op.id, op);
+        }
+      }
+    } catch (e) {
+      console.error("Error in processEpochTransitionEvent", e);
+    }
   }
 
   domain.currentTotalStake = allOperators.reduce(
