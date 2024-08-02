@@ -160,7 +160,10 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({
                     </span>
                   </div>
                   <div className='m-2 p-2'>
-                    <StatusIcon status={tx.status !== TransactionStatus.Pending} />
+                    <StatusIcon
+                      status={tx.status === TransactionStatus.Success}
+                      isPending={tx.status === TransactionStatus.Pending}
+                    />
                   </div>
                   <div className='m-2 p-2'>
                     <TrashIcon className='size-5' stroke='red' onClick={() => handleRemove(tx)} />

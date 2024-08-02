@@ -1,12 +1,10 @@
-import type { ApiDecoration } from "@polkadot/api/types";
-import type { Store } from "@subsquid/typeorm-store";
-import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { getOrCreateDomain, getOrCreateOperator } from "../storage";
 import { getBlockNumber } from "../utils";
+import { Cache } from "../utils/cache";
 
-export async function processBundleStoredEvent(
-  ctx: Ctx<Store>,
-  apiAt: ApiDecoration<"promise">,
+export function processBundleStoredEvent(
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
@@ -14,21 +12,22 @@ export async function processBundleStoredEvent(
   const domainId = Number(event.args.domainId);
   const operatorId = Number(event.args.bundleAuthor);
   const lastDomainBlockNumber = Number(
-    extrinsic.call?.args[0].value.sealed_header.header.receipt
-      .domain_block_number
+    extrinsic.call?.args.opaqueBundle.sealedHeader.header.receipt
+      .domainBlockNumber
   );
-  const domain = await getOrCreateDomain(ctx, block, domainId);
-  const operator = await getOrCreateOperator(ctx, block, operatorId);
+  const domain = getOrCreateDomain(cache, block, domainId);
+  const operator = getOrCreateOperator(cache, block, operatorId);
 
-  domain.lastOperatorBundleProduced = operator;
   domain.lastDomainBlockNumber = lastDomainBlockNumber;
   domain.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(domain);
+  cache.domains.set(domain.id, domain);
 
   operator.bundleCount++;
   operator.lastBundleAt = getBlockNumber(block);
   operator.updatedAt = getBlockNumber(block);
 
-  await ctx.store.save(operator);
+  cache.operators.set(operator.id, operator);
+
+  return cache;
 }
