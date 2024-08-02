@@ -1,6 +1,6 @@
 import type { Deposit, Withdrawal } from '@autonomys/auto-consensus'
 import {
-  ConfirmedDomainBlock,
+  ConfirmedDomainExecutionReceipt,
   Domain,
   DomainRegistry,
   DomainStakingSummary,
@@ -28,7 +28,7 @@ export interface ConsensusDefaultState {
   // domains
   domainRegistry: DomainRegistry[]
   domainStakingSummary: DomainStakingSummary[]
-  latestConfirmedDomainBlock: ConfirmedDomainBlock[]
+  latestConfirmedDomainExecutionReceipt: ConfirmedDomainExecutionReceipt[]
   // latestSubmittedER: LatestSubmittedER[]
   nominatorCount: NominatorCount[]
   operatorIdOwner: OperatorIdOwner[]
@@ -51,7 +51,9 @@ interface ConsensusState extends ConsensusDefaultState {
   setSystem: (params: { chain: string; name: string }) => void
   setDomainRegistry: (domainRegistry: DomainRegistry[]) => void
   setDomainStakingSummary: (domainStakingSummary: DomainStakingSummary[]) => void
-  setLatestConfirmedDomainBlock: (latestConfirmedDomainBlock: ConfirmedDomainBlock[]) => void
+  setLatestConfirmedDomainExecutionReceipt: (
+    latestConfirmedDomainExecutionReceipt: ConfirmedDomainExecutionReceipt[],
+  ) => void
   setNominatorCount: (nominatorCount: NominatorCount[]) => void
   setOperatorIdOwner: (operatorIdOwner: OperatorIdOwner[]) => void
   setOperators: (operators: Operators[]) => void
@@ -77,7 +79,7 @@ const initialState: ConsensusDefaultState = {
   // domains
   domainRegistry: [],
   domainStakingSummary: [],
-  latestConfirmedDomainBlock: [],
+  latestConfirmedDomainExecutionReceipt: [],
   // latestSubmittedER: [],
   nominatorCount: [],
   operatorIdOwner: [],
@@ -104,8 +106,8 @@ export const useConsensusStates = create<ConsensusState>()(
       setSystem: (params) => set(() => ({ chain: params.chain, name: params.name })),
       setDomainRegistry: (domainRegistry) => set(() => ({ domainRegistry })),
       setDomainStakingSummary: (domainStakingSummary) => set(() => ({ domainStakingSummary })),
-      setLatestConfirmedDomainBlock: (latestConfirmedDomainBlock) =>
-        set(() => ({ latestConfirmedDomainBlock })),
+      setLatestConfirmedDomainExecutionReceipt: (latestConfirmedDomainExecutionReceipt) =>
+        set(() => ({ latestConfirmedDomainExecutionReceipt })),
       setNominatorCount: (nominatorCount) => set(() => ({ nominatorCount })),
       setOperatorIdOwner: (operatorIdOwner) => set(() => ({ operatorIdOwner })),
       setOperators: (operators) => set(() => ({ operators })),
