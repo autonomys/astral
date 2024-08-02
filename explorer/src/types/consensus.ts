@@ -56,13 +56,9 @@ export type DomainStakingSummary = {
   }
 }
 
-export type ConfirmedDomainBlock = {
+export type ConfirmedDomainExecutionReceipt = {
   id: number
-  blockNumber: number
-  blockHash: string
-  parentBlockReceiptHash: string
-  stateRoot: string
-  extrinsicsRoot: string
+  domainBlockNumber: number
 }
 
 export type NominatorCount = {

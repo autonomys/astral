@@ -1,59 +1,50 @@
-import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
-import { Nominator, NominatorStatus, Operator } from "../model";
-import type { Ctx, CtxBlock, CtxExtrinsic } from "../processor";
-import { getBlockNumber, getCallSigner } from "../utils";
-import { getOrCreateOperator } from "./operator";
+import { Nominator, NominatorStatus } from "../model";
+import type { CtxBlock, CtxExtrinsic } from "../processor";
+import { getBlockNumber, getCallSigner, nominatorUID } from "../utils";
+import { Cache } from "../utils/cache";
 
-export const createNominator = async (
-  ctx: Ctx<Store>,
+export const createNominator = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  operatorId: number,
   props: Partial<Nominator>
-): Promise<Nominator> => {
-  if (!props.account) props.account = getCallSigner(extrinsic.call);
-  if (!props.operator)
-    props.operator = await getOrCreateOperator(ctx, block, 0);
+): Nominator => {
+  const address = getCallSigner(extrinsic.call);
 
-  const nominator = new Nominator({
-    id: randomUUID(),
-    account: "st",
+  return new Nominator({
+    id: nominatorUID(operatorId, address),
     shares: BigInt(0),
-    deposits: [],
-    withdrawals: [],
-    depositsCount: 0,
-    withdrawalsCount: 0,
     totalDeposits: BigInt(0),
     status: NominatorStatus.PENDING,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
   });
-
-  await ctx.store.insert(nominator);
-
-  const count = await ctx.store.count(Nominator);
-  ctx.log.child("nominators").info(`count: ${count}`);
-
-  return nominator;
 };
 
-export const getOrCreateNominator = async (
-  ctx: Ctx<Store>,
+export const getOrCreateNominator = (
+  cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  operator: Operator,
+  operatorId: number | string,
   props: Partial<Nominator> = {}
-): Promise<Nominator> => {
-  const account = getCallSigner(extrinsic.call);
-  const nominator = await ctx.store.findOneBy(Nominator, { account, operator });
+): Nominator => {
+  const address = getCallSigner(extrinsic.call);
+  const nominator = cache.nominators.get(
+    typeof operatorId === "string"
+      ? operatorId
+      : nominatorUID(operatorId, address)
+  );
 
   if (!nominator)
-    return await createNominator(ctx, block, extrinsic, {
-      account,
-      operator,
-      ...props,
-    });
+    return createNominator(
+      block,
+      extrinsic,
+      typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
+      {
+        ...props,
+      }
+    );
 
   return nominator;
 };
