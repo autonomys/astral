@@ -30,7 +30,7 @@ export const Nova = () => {
 
         const verifyParams: VerifyParams = {
           signature,
-          domain: 'subspace.network',
+          domain: 'autonomys.xyz',
           nonce: await getCsrfToken({ req }),
         }
 
