@@ -51,11 +51,13 @@ export async function processEpochTransitionEvent(
     try {
       const rawStatusKey = Object.keys(rawStatus);
       if (rawStatusKey[0] === "deregistered") {
-        const unlockBlock = (
-          rawStatus as unknown as {
-            deregistered: { unlockAtConfirmedDomainBlockNumber: number };
-          }
-        ).deregistered.unlockAtConfirmedDomainBlockNumber;
+        const unlockBlock = Number(
+          (
+            rawStatus as unknown as {
+              deregistered: { unlockAtConfirmedDomainBlockNumber: number };
+            }
+          ).deregistered.unlockAtConfirmedDomainBlockNumber
+        );
 
         if (unlockBlock <= domain.lastDomainBlockNumber) {
           op.status = OperatorStatus.READY_TO_UNLOCK;
