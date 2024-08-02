@@ -1,6 +1,7 @@
-import { Operator, OperatorStatus } from "../model";
-import type { CtxBlock } from "../processor";
-import { getBlockNumber, operatorUID } from "../utils";
+import { randomUUID } from "crypto";
+import { Operator, OperatorRewardEvent, OperatorStatus } from "../model";
+import type { CtxBlock, CtxExtrinsic } from "../processor";
+import { getBlockNumber, getTimestamp, operatorUID } from "../utils";
 import { Cache } from "../utils/cache";
 
 export const createOperator = (
@@ -42,3 +43,16 @@ export const getOrCreateOperator = (
 
   return operator;
 };
+
+export const createOperatorRewardEvent = (
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic,
+  props: Partial<OperatorRewardEvent>
+): OperatorRewardEvent =>
+  new OperatorRewardEvent({
+    id: randomUUID(),
+    ...props,
+    blockNumber: getBlockNumber(block),
+    timestamp: getTimestamp(block),
+    extrinsicHash: extrinsic.hash.toString(),
+  });

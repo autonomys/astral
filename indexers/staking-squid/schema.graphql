@@ -5,6 +5,7 @@ type Domain @entity {
   lastDomainBlockNumber: Int! @index
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
   createdAt: Int @index
@@ -23,6 +24,7 @@ enum OperatorStatus {
   PENDING
   REGISTERED
   DEREGISTERED
+  READY_TO_UNLOCK
   SLASHED
 }
 
@@ -40,8 +42,10 @@ type Operator @entity {
   currentTotalShares: BigInt!
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   rawStatus: String
   status: OperatorStatus! @index
+  bundleCount: Int!
   lastBundleAt: Int!
   createdAt: Int @index
   updatedAt: Int @index
@@ -117,18 +121,12 @@ type OperatorUnlockedFunds @entity {
 
 type OperatorRewardEvent @entity {
   id: ID! @index
-  operator: Operator!
+  domainId: String! @index
+  operatorId: String! @index
+  amount: BigInt!
   timestamp: DateTime! @index
   blockNumber: Int! @index
   extrinsicHash: String! @index
-  amount: BigInt!
-}
-
-type OperatorFeesEarned @entity {
-  id: ID! @index
-  operator: Operator!
-  amount: BigInt!
-  updatedAt: Int!
 }
 
 type Stats @entity {

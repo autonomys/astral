@@ -2,10 +2,12 @@ import type { ApiPromise } from "@autonomys/auto-utils";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { events } from "../types";
 import { Cache } from "../utils/cache";
+import { processBundleStoredEvent } from "./bundle";
 import { processDomainInstantiatedEvent } from "./domain";
 import { processEpochTransitionEvent } from "./epoch";
 import {
   processOperatorNominatedEvent,
+  processOperatorRewardedEvent,
   processOperatorSlashedEvent,
   processOperatorTaxCollectedEvent,
 } from "./operator";
@@ -51,13 +53,17 @@ async function processEvent(
     case events.domains.operatorNominated.name:
       return processOperatorNominatedEvent(cache, block, extrinsic, event);
 
+    // bundle
+    case events.domains.bundleStored.name:
+      return processBundleStoredEvent(cache, block, extrinsic, event);
+
     // deposit and stake
     case events.domains.withdrewStake.name:
       return processWithdrewStakeEvent(cache, block, extrinsic, event);
 
     // rewards and slashing
     case events.domains.operatorRewarded.name:
-      return cache;
+      return processOperatorRewardedEvent(cache, block, extrinsic, event);
 
     case events.domains.operatorSlashed.name:
       return processOperatorSlashedEvent(cache, block, extrinsic, event);
