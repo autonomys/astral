@@ -3506,3 +3506,8 @@ export type NominatorsConnectionQueryVariables = Exact<{
 
 
 export type NominatorsConnectionQuery = { __typename?: 'query_root', nominator_aggregate: { __typename?: 'nominator_aggregate', aggregate?: { __typename?: 'nominator_aggregate_fields', count: number } | null }, nominator: Array<{ __typename?: 'nominator', id: string, shares: any, account_id: string, domain_id: string, updated_at?: number | null, operator?: { __typename?: 'operator', id: string, account_id: string, domain_id: string, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, minimum_nominator_stake: any, nomination_tax: number, signing_key: string, status: string, raw_status?: string | null, updated_at?: number | null } | null }> };
+
+export type DomainsLastBlockQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DomainsLastBlockQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, last_domain_block_number: number, completed_epoch: number }> };

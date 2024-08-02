@@ -122,3 +122,13 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
     }
   }
 `
+
+export const QUERY_DOMAIN_LAST_BLOCK = gql`
+  query DomainsLastBlock {
+    domain {
+      id
+      last_domain_block_number
+      completed_epoch
+    }
+  }
+`
