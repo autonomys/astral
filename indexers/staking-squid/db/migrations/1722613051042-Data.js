@@ -1,8 +1,8 @@
-module.exports = class Data1722554216173 {
-    name = 'Data1722554216173'
+module.exports = class Data1722613051042 {
+    name = 'Data1722613051042'
 
     async up(db) {
-        await db.query(`CREATE TABLE "domain" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "completed_epoch" integer NOT NULL, "last_domain_block_number" integer NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_27e3ec3ea0ae02c8c5bceab3ba9" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "domain" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "completed_epoch" integer NOT NULL, "last_domain_block_number" integer NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_27e3ec3ea0ae02c8c5bceab3ba9" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_c1e90b3654ffe0a5544e502edb" ON "domain" ("sort_id") `)
         await db.query(`CREATE INDEX "IDX_80867983eb3f6e204acfea4214" ON "domain" ("completed_epoch") `)
         await db.query(`CREATE INDEX "IDX_e3a1b94f40001682587d9b0a3d" ON "domain" ("last_domain_block_number") `)
@@ -11,7 +11,7 @@ module.exports = class Data1722554216173 {
         await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_2740156ea8742b8df1ad9d9774" ON "account" ("created_at") `)
         await db.query(`CREATE INDEX "IDX_8bed31488e09ed64770378600b" ON "account" ("updated_at") `)
-        await db.query(`CREATE TABLE "operator" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "account_id" text NOT NULL, "domain_id" text NOT NULL, "signing_key" text NOT NULL, "minimum_nominator_stake" numeric NOT NULL, "nomination_tax" integer NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "current_epoch_rewards" numeric NOT NULL, "current_total_shares" numeric NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "raw_status" text, "status" character varying(12) NOT NULL, "last_bundle_at" integer NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_8b950e1572745d9f69be7748ae8" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "operator" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "account_id" text NOT NULL, "domain_id" text NOT NULL, "signing_key" text NOT NULL, "minimum_nominator_stake" numeric NOT NULL, "nomination_tax" integer NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "current_epoch_rewards" numeric NOT NULL, "current_total_shares" numeric NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "raw_status" text, "status" character varying(15) NOT NULL, "bundle_count" integer NOT NULL, "last_bundle_at" integer NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_8b950e1572745d9f69be7748ae8" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_ed3a1bcef6df98998f07a571a7" ON "operator" ("sort_id") `)
         await db.query(`CREATE INDEX "IDX_91b197ab29ad85b5e616289ea0" ON "operator" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_1c800426a1f738c1b202ff839f" ON "operator" ("domain_id") `)
@@ -50,13 +50,12 @@ module.exports = class Data1722554216173 {
         await db.query(`CREATE INDEX "IDX_2fff22e92b7b71ed2f39466e57" ON "operator_unlocked_funds" ("nominator_id") `)
         await db.query(`CREATE INDEX "IDX_48c8e45b0ff8c212f11e4a68df" ON "operator_unlocked_funds" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_f01f1314fe38bc670d2a48fe1a" ON "operator_unlocked_funds" ("extrinsic_hash") `)
-        await db.query(`CREATE TABLE "operator_reward_event" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "block_number" integer NOT NULL, "extrinsic_hash" text NOT NULL, "amount" numeric NOT NULL, "operator_id" character varying, CONSTRAINT "PK_721a9f907ad1f01a5abed1f2e8e" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "operator_reward_event" ("id" character varying NOT NULL, "domain_id" text NOT NULL, "operator_id" text NOT NULL, "amount" numeric NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "block_number" integer NOT NULL, "extrinsic_hash" text NOT NULL, CONSTRAINT "PK_721a9f907ad1f01a5abed1f2e8e" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_bf9ca379132cf6ba98f9073986" ON "operator_reward_event" ("domain_id") `)
         await db.query(`CREATE INDEX "IDX_b9cf23c6256a9fc7e01a271376" ON "operator_reward_event" ("operator_id") `)
         await db.query(`CREATE INDEX "IDX_2b8b8fd9152da4d7ba4b71080c" ON "operator_reward_event" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_d878c755d920f1be253bad97dd" ON "operator_reward_event" ("block_number") `)
         await db.query(`CREATE INDEX "IDX_83b9c467963de152d3e83dcf58" ON "operator_reward_event" ("extrinsic_hash") `)
-        await db.query(`CREATE TABLE "operator_fees_earned" ("id" character varying NOT NULL, "amount" numeric NOT NULL, "updated_at" integer NOT NULL, "operator_id" character varying, CONSTRAINT "PK_65191b997e44f43ec2c5d68c7e1" PRIMARY KEY ("id"))`)
-        await db.query(`CREATE INDEX "IDX_c9dda7e56175bc755c449c5e02" ON "operator_fees_earned" ("operator_id") `)
         await db.query(`CREATE TABLE "stats" ("id" character varying NOT NULL, "block_number" integer NOT NULL, "total_staked" numeric NOT NULL, "total_fees" numeric NOT NULL, "total_deposits" numeric NOT NULL, "total_withdrawals" numeric NOT NULL, "all_time_high_staked" numeric NOT NULL, "domains_count" integer NOT NULL, "operators_count" integer NOT NULL, "active_operators_count" integer NOT NULL, "slashed_operators_count" integer NOT NULL, "nominators_count" integer NOT NULL, "deposits_count" integer NOT NULL, "withdrawals_count" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_c76e93dfef28ba9b6942f578ab1" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_0b3890ae3ba62ee77fe94af26e" ON "stats" ("block_number") `)
         await db.query(`CREATE INDEX "IDX_ea4b2bcf5920a1b06f4454bb91" ON "stats" ("timestamp") `)
@@ -71,8 +70,6 @@ module.exports = class Data1722554216173 {
         await db.query(`CREATE INDEX "IDX_3260a5fceb17a3d817e5678d7f" ON "stats_per_operator" ("timestamp") `)
         await db.query(`ALTER TABLE "operator_unlocked_funds" ADD CONSTRAINT "FK_8d1c61c4fa2cbdf5da095a3ffd0" FOREIGN KEY ("operator_id") REFERENCES "operator"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
         await db.query(`ALTER TABLE "operator_unlocked_funds" ADD CONSTRAINT "FK_2fff22e92b7b71ed2f39466e57f" FOREIGN KEY ("nominator_id") REFERENCES "nominator"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-        await db.query(`ALTER TABLE "operator_reward_event" ADD CONSTRAINT "FK_b9cf23c6256a9fc7e01a2713761" FOREIGN KEY ("operator_id") REFERENCES "operator"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
-        await db.query(`ALTER TABLE "operator_fees_earned" ADD CONSTRAINT "FK_c9dda7e56175bc755c449c5e02f" FOREIGN KEY ("operator_id") REFERENCES "operator"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     }
 
     async down(db) {
@@ -125,12 +122,11 @@ module.exports = class Data1722554216173 {
         await db.query(`DROP INDEX "public"."IDX_48c8e45b0ff8c212f11e4a68df"`)
         await db.query(`DROP INDEX "public"."IDX_f01f1314fe38bc670d2a48fe1a"`)
         await db.query(`DROP TABLE "operator_reward_event"`)
+        await db.query(`DROP INDEX "public"."IDX_bf9ca379132cf6ba98f9073986"`)
         await db.query(`DROP INDEX "public"."IDX_b9cf23c6256a9fc7e01a271376"`)
         await db.query(`DROP INDEX "public"."IDX_2b8b8fd9152da4d7ba4b71080c"`)
         await db.query(`DROP INDEX "public"."IDX_d878c755d920f1be253bad97dd"`)
         await db.query(`DROP INDEX "public"."IDX_83b9c467963de152d3e83dcf58"`)
-        await db.query(`DROP TABLE "operator_fees_earned"`)
-        await db.query(`DROP INDEX "public"."IDX_c9dda7e56175bc755c449c5e02"`)
         await db.query(`DROP TABLE "stats"`)
         await db.query(`DROP INDEX "public"."IDX_0b3890ae3ba62ee77fe94af26e"`)
         await db.query(`DROP INDEX "public"."IDX_ea4b2bcf5920a1b06f4454bb91"`)
@@ -145,7 +141,5 @@ module.exports = class Data1722554216173 {
         await db.query(`DROP INDEX "public"."IDX_3260a5fceb17a3d817e5678d7f"`)
         await db.query(`ALTER TABLE "operator_unlocked_funds" DROP CONSTRAINT "FK_8d1c61c4fa2cbdf5da095a3ffd0"`)
         await db.query(`ALTER TABLE "operator_unlocked_funds" DROP CONSTRAINT "FK_2fff22e92b7b71ed2f39466e57f"`)
-        await db.query(`ALTER TABLE "operator_reward_event" DROP CONSTRAINT "FK_b9cf23c6256a9fc7e01a2713761"`)
-        await db.query(`ALTER TABLE "operator_fees_earned" DROP CONSTRAINT "FK_c9dda7e56175bc755c449c5e02f"`)
     }
 }
