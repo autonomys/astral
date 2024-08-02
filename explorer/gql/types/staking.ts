@@ -737,6 +737,7 @@ export type Domain = {
   operators_aggregate: Operator_Aggregate;
   sort_id: Scalars['Int']['output'];
   total_deposits: Scalars['numeric']['output'];
+  total_rewards_collected: Scalars['numeric']['output'];
   total_tax_collected: Scalars['numeric']['output'];
   updated_at?: Maybe<Scalars['Int']['output']>;
   /** An array relationship */
@@ -865,6 +866,7 @@ export type Domain_Avg_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -888,6 +890,7 @@ export type Domain_Bool_Exp = {
   operators_aggregate?: InputMaybe<Operator_Aggregate_Bool_Exp>;
   sort_id?: InputMaybe<Int_Comparison_Exp>;
   total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
+  total_rewards_collected?: InputMaybe<Numeric_Comparison_Exp>;
   total_tax_collected?: InputMaybe<Numeric_Comparison_Exp>;
   updated_at?: InputMaybe<Int_Comparison_Exp>;
   withdrawals?: InputMaybe<Withdrawal_Bool_Exp>;
@@ -905,6 +908,7 @@ export type Domain_Max_Fields = {
   last_domain_block_number?: Maybe<Scalars['Int']['output']>;
   sort_id?: Maybe<Scalars['Int']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
+  total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['Int']['output']>;
 };
@@ -920,6 +924,7 @@ export type Domain_Min_Fields = {
   last_domain_block_number?: Maybe<Scalars['Int']['output']>;
   sort_id?: Maybe<Scalars['Int']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
+  total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['Int']['output']>;
 };
@@ -937,6 +942,7 @@ export type Domain_Order_By = {
   operators_aggregate?: InputMaybe<Operator_Aggregate_Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   withdrawals_aggregate?: InputMaybe<Withdrawal_Aggregate_Order_By>;
@@ -961,6 +967,8 @@ export enum Domain_Select_Column {
   /** column name */
   TotalDeposits = 'total_deposits',
   /** column name */
+  TotalRewardsCollected = 'total_rewards_collected',
+  /** column name */
   TotalTaxCollected = 'total_tax_collected',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -976,6 +984,7 @@ export type Domain_Stddev_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -990,6 +999,7 @@ export type Domain_Stddev_Pop_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -1004,6 +1014,7 @@ export type Domain_Stddev_Samp_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -1026,6 +1037,7 @@ export type Domain_Stream_Cursor_Value_Input = {
   last_domain_block_number?: InputMaybe<Scalars['Int']['input']>;
   sort_id?: InputMaybe<Scalars['Int']['input']>;
   total_deposits?: InputMaybe<Scalars['numeric']['input']>;
+  total_rewards_collected?: InputMaybe<Scalars['numeric']['input']>;
   total_tax_collected?: InputMaybe<Scalars['numeric']['input']>;
   updated_at?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -1040,6 +1052,7 @@ export type Domain_Sum_Fields = {
   last_domain_block_number?: Maybe<Scalars['Int']['output']>;
   sort_id?: Maybe<Scalars['Int']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
+  total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['Int']['output']>;
 };
@@ -1054,6 +1067,7 @@ export type Domain_Var_Pop_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -1068,6 +1082,7 @@ export type Domain_Var_Samp_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -1082,6 +1097,7 @@ export type Domain_Variance_Fields = {
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
@@ -1503,6 +1519,7 @@ export type Operator = {
   /** An object relationship */
   account?: Maybe<Account>;
   account_id: Scalars['String']['output'];
+  bundle_count: Scalars['Int']['output'];
   created_at?: Maybe<Scalars['Int']['output']>;
   current_epoch_rewards: Scalars['numeric']['output'];
   current_storage_fee_deposit: Scalars['numeric']['output'];
@@ -1528,6 +1545,7 @@ export type Operator = {
   sort_id: Scalars['Int']['output'];
   status: Scalars['String']['output'];
   total_deposits: Scalars['numeric']['output'];
+  total_rewards_collected: Scalars['numeric']['output'];
   total_tax_collected: Scalars['numeric']['output'];
   updated_at?: Maybe<Scalars['Int']['output']>;
   /** An array relationship */
@@ -1655,6 +1673,7 @@ export type Operator_Aggregate_Order_By = {
 /** aggregate avg on columns */
 export type Operator_Avg_Fields = {
   __typename?: 'operator_avg_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -1665,12 +1684,14 @@ export type Operator_Avg_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "operator" */
 export type Operator_Avg_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1681,6 +1702,7 @@ export type Operator_Avg_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1692,6 +1714,7 @@ export type Operator_Bool_Exp = {
   _or?: InputMaybe<Array<Operator_Bool_Exp>>;
   account?: InputMaybe<Account_Bool_Exp>;
   account_id?: InputMaybe<String_Comparison_Exp>;
+  bundle_count?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Int_Comparison_Exp>;
   current_epoch_rewards?: InputMaybe<Numeric_Comparison_Exp>;
   current_storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
@@ -1712,6 +1735,7 @@ export type Operator_Bool_Exp = {
   sort_id?: InputMaybe<Int_Comparison_Exp>;
   status?: InputMaybe<String_Comparison_Exp>;
   total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
+  total_rewards_collected?: InputMaybe<Numeric_Comparison_Exp>;
   total_tax_collected?: InputMaybe<Numeric_Comparison_Exp>;
   updated_at?: InputMaybe<Int_Comparison_Exp>;
   withdrawals?: InputMaybe<Withdrawal_Bool_Exp>;
@@ -1722,6 +1746,7 @@ export type Operator_Bool_Exp = {
 export type Operator_Max_Fields = {
   __typename?: 'operator_max_fields';
   account_id?: Maybe<Scalars['String']['output']>;
+  bundle_count?: Maybe<Scalars['Int']['output']>;
   created_at?: Maybe<Scalars['Int']['output']>;
   current_epoch_rewards?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -1737,6 +1762,7 @@ export type Operator_Max_Fields = {
   sort_id?: Maybe<Scalars['Int']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
+  total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['Int']['output']>;
 };
@@ -1744,6 +1770,7 @@ export type Operator_Max_Fields = {
 /** order by max() on columns of table "operator" */
 export type Operator_Max_Order_By = {
   account_id?: InputMaybe<Order_By>;
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1759,6 +1786,7 @@ export type Operator_Max_Order_By = {
   sort_id?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1767,6 +1795,7 @@ export type Operator_Max_Order_By = {
 export type Operator_Min_Fields = {
   __typename?: 'operator_min_fields';
   account_id?: Maybe<Scalars['String']['output']>;
+  bundle_count?: Maybe<Scalars['Int']['output']>;
   created_at?: Maybe<Scalars['Int']['output']>;
   current_epoch_rewards?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -1782,6 +1811,7 @@ export type Operator_Min_Fields = {
   sort_id?: Maybe<Scalars['Int']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
+  total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['Int']['output']>;
 };
@@ -1789,6 +1819,7 @@ export type Operator_Min_Fields = {
 /** order by min() on columns of table "operator" */
 export type Operator_Min_Order_By = {
   account_id?: InputMaybe<Order_By>;
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1804,6 +1835,7 @@ export type Operator_Min_Order_By = {
   sort_id?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1812,6 +1844,7 @@ export type Operator_Min_Order_By = {
 export type Operator_Order_By = {
   account?: InputMaybe<Account_Order_By>;
   account_id?: InputMaybe<Order_By>;
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1830,6 +1863,7 @@ export type Operator_Order_By = {
   sort_id?: InputMaybe<Order_By>;
   status?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
   withdrawals_aggregate?: InputMaybe<Withdrawal_Aggregate_Order_By>;
@@ -1839,6 +1873,8 @@ export type Operator_Order_By = {
 export enum Operator_Select_Column {
   /** column name */
   AccountId = 'account_id',
+  /** column name */
+  BundleCount = 'bundle_count',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -1870,6 +1906,8 @@ export enum Operator_Select_Column {
   /** column name */
   TotalDeposits = 'total_deposits',
   /** column name */
+  TotalRewardsCollected = 'total_rewards_collected',
+  /** column name */
   TotalTaxCollected = 'total_tax_collected',
   /** column name */
   UpdatedAt = 'updated_at'
@@ -1878,6 +1916,7 @@ export enum Operator_Select_Column {
 /** aggregate stddev on columns */
 export type Operator_Stddev_Fields = {
   __typename?: 'operator_stddev_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -1888,12 +1927,14 @@ export type Operator_Stddev_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "operator" */
 export type Operator_Stddev_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1904,6 +1945,7 @@ export type Operator_Stddev_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1911,6 +1953,7 @@ export type Operator_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Operator_Stddev_Pop_Fields = {
   __typename?: 'operator_stddev_pop_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -1921,12 +1964,14 @@ export type Operator_Stddev_Pop_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_pop() on columns of table "operator" */
 export type Operator_Stddev_Pop_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1937,6 +1982,7 @@ export type Operator_Stddev_Pop_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1944,6 +1990,7 @@ export type Operator_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Operator_Stddev_Samp_Fields = {
   __typename?: 'operator_stddev_samp_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -1954,12 +2001,14 @@ export type Operator_Stddev_Samp_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev_samp() on columns of table "operator" */
 export type Operator_Stddev_Samp_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -1970,6 +2019,7 @@ export type Operator_Stddev_Samp_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -1985,6 +2035,7 @@ export type Operator_Stream_Cursor_Input = {
 /** Initial value of the column from where the streaming should start */
 export type Operator_Stream_Cursor_Value_Input = {
   account_id?: InputMaybe<Scalars['String']['input']>;
+  bundle_count?: InputMaybe<Scalars['Int']['input']>;
   created_at?: InputMaybe<Scalars['Int']['input']>;
   current_epoch_rewards?: InputMaybe<Scalars['numeric']['input']>;
   current_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
@@ -2000,6 +2051,7 @@ export type Operator_Stream_Cursor_Value_Input = {
   sort_id?: InputMaybe<Scalars['Int']['input']>;
   status?: InputMaybe<Scalars['String']['input']>;
   total_deposits?: InputMaybe<Scalars['numeric']['input']>;
+  total_rewards_collected?: InputMaybe<Scalars['numeric']['input']>;
   total_tax_collected?: InputMaybe<Scalars['numeric']['input']>;
   updated_at?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -2007,6 +2059,7 @@ export type Operator_Stream_Cursor_Value_Input = {
 /** aggregate sum on columns */
 export type Operator_Sum_Fields = {
   __typename?: 'operator_sum_fields';
+  bundle_count?: Maybe<Scalars['Int']['output']>;
   created_at?: Maybe<Scalars['Int']['output']>;
   current_epoch_rewards?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
@@ -2017,12 +2070,14 @@ export type Operator_Sum_Fields = {
   nomination_tax?: Maybe<Scalars['Int']['output']>;
   sort_id?: Maybe<Scalars['Int']['output']>;
   total_deposits?: Maybe<Scalars['numeric']['output']>;
+  total_rewards_collected?: Maybe<Scalars['numeric']['output']>;
   total_tax_collected?: Maybe<Scalars['numeric']['output']>;
   updated_at?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "operator" */
 export type Operator_Sum_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -2033,6 +2088,7 @@ export type Operator_Sum_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2040,6 +2096,7 @@ export type Operator_Sum_Order_By = {
 /** aggregate var_pop on columns */
 export type Operator_Var_Pop_Fields = {
   __typename?: 'operator_var_pop_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -2050,12 +2107,14 @@ export type Operator_Var_Pop_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_pop() on columns of table "operator" */
 export type Operator_Var_Pop_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -2066,6 +2125,7 @@ export type Operator_Var_Pop_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2073,6 +2133,7 @@ export type Operator_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Operator_Var_Samp_Fields = {
   __typename?: 'operator_var_samp_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -2083,12 +2144,14 @@ export type Operator_Var_Samp_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by var_samp() on columns of table "operator" */
 export type Operator_Var_Samp_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -2099,6 +2162,7 @@ export type Operator_Var_Samp_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2106,6 +2170,7 @@ export type Operator_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Operator_Variance_Fields = {
   __typename?: 'operator_variance_fields';
+  bundle_count?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
   current_epoch_rewards?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
@@ -2116,12 +2181,14 @@ export type Operator_Variance_Fields = {
   nomination_tax?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
   total_deposits?: Maybe<Scalars['Float']['output']>;
+  total_rewards_collected?: Maybe<Scalars['Float']['output']>;
   total_tax_collected?: Maybe<Scalars['Float']['output']>;
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "operator" */
 export type Operator_Variance_Order_By = {
+  bundle_count?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   current_epoch_rewards?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
@@ -2132,6 +2199,7 @@ export type Operator_Variance_Order_By = {
   nomination_tax?: InputMaybe<Order_By>;
   sort_id?: InputMaybe<Order_By>;
   total_deposits?: InputMaybe<Order_By>;
+  total_rewards_collected?: InputMaybe<Order_By>;
   total_tax_collected?: InputMaybe<Order_By>;
   updated_at?: InputMaybe<Order_By>;
 };
@@ -2184,6 +2252,18 @@ export type Query_Root = {
   operator_aggregate: Operator_Aggregate;
   /** fetch data from the table: "operator" using primary key columns */
   operator_by_pk?: Maybe<Operator>;
+  /** fetch data from the table: "stats" */
+  stats: Array<Stats>;
+  /** fetch data from the table: "stats" using primary key columns */
+  stats_by_pk?: Maybe<Stats>;
+  /** fetch data from the table: "stats_per_domain" */
+  stats_per_domain: Array<Stats_Per_Domain>;
+  /** fetch data from the table: "stats_per_domain" using primary key columns */
+  stats_per_domain_by_pk?: Maybe<Stats_Per_Domain>;
+  /** fetch data from the table: "stats_per_operator" */
+  stats_per_operator: Array<Stats_Per_Operator>;
+  /** fetch data from the table: "stats_per_operator" using primary key columns */
+  stats_per_operator_by_pk?: Maybe<Stats_Per_Operator>;
   /** fetch data from the table: "withdrawal" */
   withdrawal: Array<Withdrawal>;
   /** fetch aggregated fields from the table: "withdrawal" */
@@ -2308,6 +2388,48 @@ export type Query_RootOperator_By_PkArgs = {
 };
 
 
+export type Query_RootStatsArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Order_By>>;
+  where?: InputMaybe<Stats_Bool_Exp>;
+};
+
+
+export type Query_RootStats_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStats_Per_DomainArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Per_Domain_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Per_Domain_Order_By>>;
+  where?: InputMaybe<Stats_Per_Domain_Bool_Exp>;
+};
+
+
+export type Query_RootStats_Per_Domain_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootStats_Per_OperatorArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Per_Operator_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Per_Operator_Order_By>>;
+  where?: InputMaybe<Stats_Per_Operator_Bool_Exp>;
+};
+
+
+export type Query_RootStats_Per_Operator_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type Query_RootWithdrawalArgs = {
   distinct_on?: InputMaybe<Array<Withdrawal_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -2328,6 +2450,372 @@ export type Query_RootWithdrawal_AggregateArgs = {
 
 export type Query_RootWithdrawal_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+/** columns and relationships of "stats" */
+export type Stats = {
+  __typename?: 'stats';
+  active_operators_count: Scalars['Int']['output'];
+  all_time_high_staked: Scalars['numeric']['output'];
+  block_number: Scalars['Int']['output'];
+  deposits_count: Scalars['Int']['output'];
+  domains_count: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  nominators_count: Scalars['Int']['output'];
+  operators_count: Scalars['Int']['output'];
+  slashed_operators_count: Scalars['Int']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+  total_deposits: Scalars['numeric']['output'];
+  total_fees: Scalars['numeric']['output'];
+  total_staked: Scalars['numeric']['output'];
+  total_withdrawals: Scalars['numeric']['output'];
+  withdrawals_count: Scalars['Int']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats". All fields are combined with a logical 'AND'. */
+export type Stats_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Bool_Exp>>;
+  active_operators_count?: InputMaybe<Int_Comparison_Exp>;
+  all_time_high_staked?: InputMaybe<Numeric_Comparison_Exp>;
+  block_number?: InputMaybe<Int_Comparison_Exp>;
+  deposits_count?: InputMaybe<Int_Comparison_Exp>;
+  domains_count?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  nominators_count?: InputMaybe<Int_Comparison_Exp>;
+  operators_count?: InputMaybe<Int_Comparison_Exp>;
+  slashed_operators_count?: InputMaybe<Int_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
+  total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
+  total_fees?: InputMaybe<Numeric_Comparison_Exp>;
+  total_staked?: InputMaybe<Numeric_Comparison_Exp>;
+  total_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
+  withdrawals_count?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats". */
+export type Stats_Order_By = {
+  active_operators_count?: InputMaybe<Order_By>;
+  all_time_high_staked?: InputMaybe<Order_By>;
+  block_number?: InputMaybe<Order_By>;
+  deposits_count?: InputMaybe<Order_By>;
+  domains_count?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominators_count?: InputMaybe<Order_By>;
+  operators_count?: InputMaybe<Order_By>;
+  slashed_operators_count?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  total_deposits?: InputMaybe<Order_By>;
+  total_fees?: InputMaybe<Order_By>;
+  total_staked?: InputMaybe<Order_By>;
+  total_withdrawals?: InputMaybe<Order_By>;
+  withdrawals_count?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "stats_per_domain" */
+export type Stats_Per_Domain = {
+  __typename?: 'stats_per_domain';
+  active_operators_count: Scalars['Int']['output'];
+  all_time_high_staked: Scalars['numeric']['output'];
+  block_number: Scalars['Int']['output'];
+  deposits_count: Scalars['Int']['output'];
+  /** An object relationship */
+  domain?: Maybe<Domain>;
+  domain_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  nominators_count: Scalars['Int']['output'];
+  operators_count: Scalars['Int']['output'];
+  slashed_operators_count: Scalars['Int']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+  total_deposits: Scalars['numeric']['output'];
+  total_fees: Scalars['numeric']['output'];
+  total_staked: Scalars['numeric']['output'];
+  total_withdrawals: Scalars['numeric']['output'];
+  withdrawals_count: Scalars['Int']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats_per_domain". All fields are combined with a logical 'AND'. */
+export type Stats_Per_Domain_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Per_Domain_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Per_Domain_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Per_Domain_Bool_Exp>>;
+  active_operators_count?: InputMaybe<Int_Comparison_Exp>;
+  all_time_high_staked?: InputMaybe<Numeric_Comparison_Exp>;
+  block_number?: InputMaybe<Int_Comparison_Exp>;
+  deposits_count?: InputMaybe<Int_Comparison_Exp>;
+  domain?: InputMaybe<Domain_Bool_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  nominators_count?: InputMaybe<Int_Comparison_Exp>;
+  operators_count?: InputMaybe<Int_Comparison_Exp>;
+  slashed_operators_count?: InputMaybe<Int_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
+  total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
+  total_fees?: InputMaybe<Numeric_Comparison_Exp>;
+  total_staked?: InputMaybe<Numeric_Comparison_Exp>;
+  total_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
+  withdrawals_count?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats_per_domain". */
+export type Stats_Per_Domain_Order_By = {
+  active_operators_count?: InputMaybe<Order_By>;
+  all_time_high_staked?: InputMaybe<Order_By>;
+  block_number?: InputMaybe<Order_By>;
+  deposits_count?: InputMaybe<Order_By>;
+  domain?: InputMaybe<Domain_Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominators_count?: InputMaybe<Order_By>;
+  operators_count?: InputMaybe<Order_By>;
+  slashed_operators_count?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  total_deposits?: InputMaybe<Order_By>;
+  total_fees?: InputMaybe<Order_By>;
+  total_staked?: InputMaybe<Order_By>;
+  total_withdrawals?: InputMaybe<Order_By>;
+  withdrawals_count?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "stats_per_domain" */
+export enum Stats_Per_Domain_Select_Column {
+  /** column name */
+  ActiveOperatorsCount = 'active_operators_count',
+  /** column name */
+  AllTimeHighStaked = 'all_time_high_staked',
+  /** column name */
+  BlockNumber = 'block_number',
+  /** column name */
+  DepositsCount = 'deposits_count',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NominatorsCount = 'nominators_count',
+  /** column name */
+  OperatorsCount = 'operators_count',
+  /** column name */
+  SlashedOperatorsCount = 'slashed_operators_count',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  TotalDeposits = 'total_deposits',
+  /** column name */
+  TotalFees = 'total_fees',
+  /** column name */
+  TotalStaked = 'total_staked',
+  /** column name */
+  TotalWithdrawals = 'total_withdrawals',
+  /** column name */
+  WithdrawalsCount = 'withdrawals_count'
+}
+
+/** Streaming cursor of the table "stats_per_domain" */
+export type Stats_Per_Domain_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Per_Domain_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Per_Domain_Stream_Cursor_Value_Input = {
+  active_operators_count?: InputMaybe<Scalars['Int']['input']>;
+  all_time_high_staked?: InputMaybe<Scalars['numeric']['input']>;
+  block_number?: InputMaybe<Scalars['Int']['input']>;
+  deposits_count?: InputMaybe<Scalars['Int']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  nominators_count?: InputMaybe<Scalars['Int']['input']>;
+  operators_count?: InputMaybe<Scalars['Int']['input']>;
+  slashed_operators_count?: InputMaybe<Scalars['Int']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamptz']['input']>;
+  total_deposits?: InputMaybe<Scalars['numeric']['input']>;
+  total_fees?: InputMaybe<Scalars['numeric']['input']>;
+  total_staked?: InputMaybe<Scalars['numeric']['input']>;
+  total_withdrawals?: InputMaybe<Scalars['numeric']['input']>;
+  withdrawals_count?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** columns and relationships of "stats_per_operator" */
+export type Stats_Per_Operator = {
+  __typename?: 'stats_per_operator';
+  all_time_high_staked: Scalars['numeric']['output'];
+  block_number: Scalars['Int']['output'];
+  deposits_count: Scalars['Int']['output'];
+  /** An object relationship */
+  domain?: Maybe<Domain>;
+  domain_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  nominators_count: Scalars['Int']['output'];
+  /** An object relationship */
+  operator?: Maybe<Operator>;
+  operator_id: Scalars['String']['output'];
+  timestamp: Scalars['timestamptz']['output'];
+  total_deposits: Scalars['numeric']['output'];
+  total_fees: Scalars['numeric']['output'];
+  total_staked: Scalars['numeric']['output'];
+  total_withdrawals: Scalars['numeric']['output'];
+  withdrawals_count: Scalars['Int']['output'];
+};
+
+/** Boolean expression to filter rows from the table "stats_per_operator". All fields are combined with a logical 'AND'. */
+export type Stats_Per_Operator_Bool_Exp = {
+  _and?: InputMaybe<Array<Stats_Per_Operator_Bool_Exp>>;
+  _not?: InputMaybe<Stats_Per_Operator_Bool_Exp>;
+  _or?: InputMaybe<Array<Stats_Per_Operator_Bool_Exp>>;
+  all_time_high_staked?: InputMaybe<Numeric_Comparison_Exp>;
+  block_number?: InputMaybe<Int_Comparison_Exp>;
+  deposits_count?: InputMaybe<Int_Comparison_Exp>;
+  domain?: InputMaybe<Domain_Bool_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  nominators_count?: InputMaybe<Int_Comparison_Exp>;
+  operator?: InputMaybe<Operator_Bool_Exp>;
+  operator_id?: InputMaybe<String_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamptz_Comparison_Exp>;
+  total_deposits?: InputMaybe<Numeric_Comparison_Exp>;
+  total_fees?: InputMaybe<Numeric_Comparison_Exp>;
+  total_staked?: InputMaybe<Numeric_Comparison_Exp>;
+  total_withdrawals?: InputMaybe<Numeric_Comparison_Exp>;
+  withdrawals_count?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "stats_per_operator". */
+export type Stats_Per_Operator_Order_By = {
+  all_time_high_staked?: InputMaybe<Order_By>;
+  block_number?: InputMaybe<Order_By>;
+  deposits_count?: InputMaybe<Order_By>;
+  domain?: InputMaybe<Domain_Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nominators_count?: InputMaybe<Order_By>;
+  operator?: InputMaybe<Operator_Order_By>;
+  operator_id?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  total_deposits?: InputMaybe<Order_By>;
+  total_fees?: InputMaybe<Order_By>;
+  total_staked?: InputMaybe<Order_By>;
+  total_withdrawals?: InputMaybe<Order_By>;
+  withdrawals_count?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "stats_per_operator" */
+export enum Stats_Per_Operator_Select_Column {
+  /** column name */
+  AllTimeHighStaked = 'all_time_high_staked',
+  /** column name */
+  BlockNumber = 'block_number',
+  /** column name */
+  DepositsCount = 'deposits_count',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NominatorsCount = 'nominators_count',
+  /** column name */
+  OperatorId = 'operator_id',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  TotalDeposits = 'total_deposits',
+  /** column name */
+  TotalFees = 'total_fees',
+  /** column name */
+  TotalStaked = 'total_staked',
+  /** column name */
+  TotalWithdrawals = 'total_withdrawals',
+  /** column name */
+  WithdrawalsCount = 'withdrawals_count'
+}
+
+/** Streaming cursor of the table "stats_per_operator" */
+export type Stats_Per_Operator_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Per_Operator_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Per_Operator_Stream_Cursor_Value_Input = {
+  all_time_high_staked?: InputMaybe<Scalars['numeric']['input']>;
+  block_number?: InputMaybe<Scalars['Int']['input']>;
+  deposits_count?: InputMaybe<Scalars['Int']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  nominators_count?: InputMaybe<Scalars['Int']['input']>;
+  operator_id?: InputMaybe<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamptz']['input']>;
+  total_deposits?: InputMaybe<Scalars['numeric']['input']>;
+  total_fees?: InputMaybe<Scalars['numeric']['input']>;
+  total_staked?: InputMaybe<Scalars['numeric']['input']>;
+  total_withdrawals?: InputMaybe<Scalars['numeric']['input']>;
+  withdrawals_count?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** select columns of table "stats" */
+export enum Stats_Select_Column {
+  /** column name */
+  ActiveOperatorsCount = 'active_operators_count',
+  /** column name */
+  AllTimeHighStaked = 'all_time_high_staked',
+  /** column name */
+  BlockNumber = 'block_number',
+  /** column name */
+  DepositsCount = 'deposits_count',
+  /** column name */
+  DomainsCount = 'domains_count',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  NominatorsCount = 'nominators_count',
+  /** column name */
+  OperatorsCount = 'operators_count',
+  /** column name */
+  SlashedOperatorsCount = 'slashed_operators_count',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  TotalDeposits = 'total_deposits',
+  /** column name */
+  TotalFees = 'total_fees',
+  /** column name */
+  TotalStaked = 'total_staked',
+  /** column name */
+  TotalWithdrawals = 'total_withdrawals',
+  /** column name */
+  WithdrawalsCount = 'withdrawals_count'
+}
+
+/** Streaming cursor of the table "stats" */
+export type Stats_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Stats_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Stats_Stream_Cursor_Value_Input = {
+  active_operators_count?: InputMaybe<Scalars['Int']['input']>;
+  all_time_high_staked?: InputMaybe<Scalars['numeric']['input']>;
+  block_number?: InputMaybe<Scalars['Int']['input']>;
+  deposits_count?: InputMaybe<Scalars['Int']['input']>;
+  domains_count?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  nominators_count?: InputMaybe<Scalars['Int']['input']>;
+  operators_count?: InputMaybe<Scalars['Int']['input']>;
+  slashed_operators_count?: InputMaybe<Scalars['Int']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamptz']['input']>;
+  total_deposits?: InputMaybe<Scalars['numeric']['input']>;
+  total_fees?: InputMaybe<Scalars['numeric']['input']>;
+  total_staked?: InputMaybe<Scalars['numeric']['input']>;
+  total_withdrawals?: InputMaybe<Scalars['numeric']['input']>;
+  withdrawals_count?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Subscription_Root = {
@@ -2372,6 +2860,24 @@ export type Subscription_Root = {
   operator_by_pk?: Maybe<Operator>;
   /** fetch data from the table in a streaming manner: "operator" */
   operator_stream: Array<Operator>;
+  /** fetch data from the table: "stats" */
+  stats: Array<Stats>;
+  /** fetch data from the table: "stats" using primary key columns */
+  stats_by_pk?: Maybe<Stats>;
+  /** fetch data from the table: "stats_per_domain" */
+  stats_per_domain: Array<Stats_Per_Domain>;
+  /** fetch data from the table: "stats_per_domain" using primary key columns */
+  stats_per_domain_by_pk?: Maybe<Stats_Per_Domain>;
+  /** fetch data from the table in a streaming manner: "stats_per_domain" */
+  stats_per_domain_stream: Array<Stats_Per_Domain>;
+  /** fetch data from the table: "stats_per_operator" */
+  stats_per_operator: Array<Stats_Per_Operator>;
+  /** fetch data from the table: "stats_per_operator" using primary key columns */
+  stats_per_operator_by_pk?: Maybe<Stats_Per_Operator>;
+  /** fetch data from the table in a streaming manner: "stats_per_operator" */
+  stats_per_operator_stream: Array<Stats_Per_Operator>;
+  /** fetch data from the table in a streaming manner: "stats" */
+  stats_stream: Array<Stats>;
   /** fetch data from the table: "withdrawal" */
   withdrawal: Array<Withdrawal>;
   /** fetch aggregated fields from the table: "withdrawal" */
@@ -2530,6 +3036,69 @@ export type Subscription_RootOperator_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Operator_Stream_Cursor_Input>>;
   where?: InputMaybe<Operator_Bool_Exp>;
+};
+
+
+export type Subscription_RootStatsArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Order_By>>;
+  where?: InputMaybe<Stats_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Per_DomainArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Per_Domain_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Per_Domain_Order_By>>;
+  where?: InputMaybe<Stats_Per_Domain_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Per_Domain_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Per_Domain_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Per_Domain_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Per_Domain_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Per_OperatorArgs = {
+  distinct_on?: InputMaybe<Array<Stats_Per_Operator_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Stats_Per_Operator_Order_By>>;
+  where?: InputMaybe<Stats_Per_Operator_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_Per_Operator_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootStats_Per_Operator_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Per_Operator_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Per_Operator_Bool_Exp>;
+};
+
+
+export type Subscription_RootStats_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Stats_Stream_Cursor_Input>>;
+  where?: InputMaybe<Stats_Bool_Exp>;
 };
 
 
