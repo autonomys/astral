@@ -1,58 +1,130 @@
-import { parseOperator } from "@autonomys/auto-consensus";
-import type { ApiDecoration } from "@polkadot/api/types";
-import type { Store } from "@subsquid/typeorm-store";
-import type { Ctx, CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
+import { operators as getOperators } from "@autonomys/auto-consensus";
+import type { ApiPromise } from "@autonomys/auto-utils";
+import { DepositStatus, NominatorStatus, OperatorStatus } from "../model";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
-  createDomain,
+  createStats,
+  createStatsPerDomain,
+  createStatsPerOperator,
   getOrCreateDomain,
   getOrCreateOperator,
 } from "../storage";
 import { getBlockNumber } from "../utils";
+import { Cache } from "../utils/cache";
 
 export async function processEpochTransitionEvent(
-  ctx: Ctx<Store>,
-  apiAt: ApiDecoration<"promise">,
+  cache: Cache,
+  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
   const domainId = Number(event.args.domainId);
-  const domain = await getOrCreateDomain(ctx, block, domainId);
+  const domain = getOrCreateDomain(cache, block, domainId);
   const completedEpoch = Number(event.args.completedEpochIndex);
 
-  if (!domain)
-    await createDomain(ctx, block, {
-      domainId,
-      completedEpoch: Number(event.args.completedEpochIndex),
-    });
-  else {
-    domain.completedEpoch = Number(event.args.completedEpochIndex);
-    domain.updatedAt = getBlockNumber(block);
+  const apiAt = await api.at(block.header.hash);
 
-    await ctx.store.save(domain);
-  }
-
-  const operatorsAll = await apiAt.query.domains.operators.entries();
-  const allOperators = (operatorsAll as unknown as any[]).map((o) =>
-    parseOperator(o)
+  const operatorsAll = await getOperators(apiAt);
+  const allOperators = operatorsAll.filter(
+    (o) => o.operatorDetails.currentDomainId === BigInt(domainId)
   );
+
   for (const operator of allOperators) {
-    const op = await getOrCreateOperator(
-      ctx,
+    const op = getOrCreateOperator(
+      cache,
       block,
       parseInt(operator.operatorId.toString())
     );
+
+    const rawStatus = JSON.stringify(operator.operatorDetails.status);
     op.currentEpochRewards = operator.operatorDetails.currentEpochRewards;
     op.currentTotalShares = operator.operatorDetails.currentTotalShares;
     op.currentTotalStake = operator.operatorDetails.currentTotalStake;
     op.currentStorageFeeDeposit =
       operator.operatorDetails.totalStorageFeeDeposit;
-    op.rawStatus = JSON.stringify(operator.operatorDetails.status);
+    op.rawStatus = rawStatus;
     op.updatedAt = getBlockNumber(block);
 
-    await ctx.store.save(op);
+    cache.operators.set(op.id, op);
+
+    try {
+      const rawStatusKey = Object.keys(rawStatus);
+      if (rawStatusKey[0] === "deregistered") {
+        const unlockBlock = (
+          rawStatus as unknown as {
+            deregistered: { unlockAtConfirmedDomainBlockNumber: number };
+          }
+        ).deregistered.unlockAtConfirmedDomainBlockNumber;
+
+        if (unlockBlock <= domain.lastDomainBlockNumber) {
+          op.status = OperatorStatus.READY_TO_UNLOCK;
+          cache.operators.set(op.id, op);
+        }
+      }
+    } catch (e) {
+      console.error("Error in processEpochTransitionEvent", e);
+    }
   }
-  ctx.log
-    .child(`DomainId ${domainId} - Current epoch`)
-    .info(completedEpoch.toString());
+
+  domain.currentTotalStake = allOperators.reduce(
+    (acc, o) => acc + o.operatorDetails.currentTotalStake,
+    BigInt(0)
+  );
+  domain.currentStorageFeeDeposit = allOperators.reduce(
+    (acc, o) => acc + o.operatorDetails.totalStorageFeeDeposit,
+    BigInt(0)
+  );
+
+  domain.completedEpoch = completedEpoch;
+  domain.updatedAt = getBlockNumber(block);
+
+  cache.domains.set(domain.id, domain);
+
+  // Switch Pending to Active
+  Array.from(cache.operators.values())
+    .filter((o) => o.status === OperatorStatus.PENDING)
+    .map((o) => {
+      o.status = OperatorStatus.REGISTERED;
+      o.updatedAt = getBlockNumber(block);
+      cache.operators.set(o.id, o);
+    });
+  Array.from(cache.nominators.values())
+    .filter((n) => n.status === NominatorStatus.PENDING)
+    .map((n) => {
+      n.status = NominatorStatus.STAKING;
+      n.updatedAt = getBlockNumber(block);
+      cache.nominators.set(n.id, n);
+    });
+  Array.from(cache.deposits.values())
+    .filter((d) => d.status === DepositStatus.PENDING)
+    .map((d) => {
+      d.status = DepositStatus.DEPOSITED;
+      cache.deposits.set(d.id, d);
+    });
+
+  // Stats on epoch transition
+  const stats = createStats(cache, block);
+  cache.stats.set(stats.id, stats);
+
+  const domains = Array.from(cache.domains.values());
+  for (const domain of domains) {
+    const statsPerDomain = createStatsPerDomain(cache, block, domain);
+    cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
+
+    const operators = Array.from(cache.operators.values()).filter(
+      (o) => o.domainId === domain.id
+    );
+    for (const operator of operators) {
+      const statsPerOperator = createStatsPerOperator(
+        cache,
+        block,
+        domain,
+        operator
+      );
+      cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
+    }
+  }
+
+  return cache;
 }
