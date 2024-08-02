@@ -272,7 +272,7 @@ export const OperatorsList: FC = () => {
         cell: ({ row }: Cell<Row>) => (
           <div>
             {selectedChain.urls.page === Chains.gemini3g
-              ? row.original.status
+              ? row.original.raw_status
               : capitalizeFirstLetter(operatorStatus(row.original.raw_status))}
           </div>
         ),
@@ -339,11 +339,14 @@ export const OperatorsList: FC = () => {
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
           if (
             !nominator &&
-            row.original.status &&
-            JSON.parse(row.original.status ?? '{}')?.deregistered
+            row.original.raw_status &&
+            JSON.parse(row.original.raw_status ?? '{}')?.deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
-          if (row.original.status && JSON.parse(row.original.status ?? '{}')?.slashed === null)
+          if (
+            row.original.raw_status &&
+            JSON.parse(row.original.raw_status ?? '{}')?.slashed === null
+          )
             return <></>
           return (
             <ActionsDropdown

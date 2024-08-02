@@ -81,8 +81,8 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
             </StyledListItem>
             <StyledListItem title='Status'>
               {selectedChain.urls.page === Chains.gemini3g
-                ? operator.status
-                : capitalizeFirstLetter(operatorStatus(operator.status))}
+                ? operator.raw_status
+                : capitalizeFirstLetter(operatorStatus(operator.raw_status))}
             </StyledListItem>
           </List>
         </div>
