@@ -55,7 +55,7 @@ async function processEvent(
 
     // bundle
     case events.domains.bundleStored.name:
-      return processBundleStoredEvent(cache, block, extrinsic, event);
+      return await processBundleStoredEvent(cache, block, extrinsic, event);
 
     // deposit and stake
     case events.domains.withdrewStake.name:

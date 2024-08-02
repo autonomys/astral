@@ -63,13 +63,24 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
 };
 
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
+  console.log("Saving " + cache.domains.size + " domains");
   await ctx.store.save(Array.from(cache.domains.values()));
+  console.log("Saving " + cache.accounts.size + " accounts");
   await ctx.store.save(Array.from(cache.accounts.values()));
+  console.log("Saving " + cache.operators.size + " operators");
   await ctx.store.save(Array.from(cache.operators.values()));
+  console.log("Saving " + cache.nominators.size + " nominators");
   await ctx.store.save(Array.from(cache.nominators.values()));
+  console.log("Saving " + cache.deposits.size + " deposits");
   await ctx.store.save(Array.from(cache.deposits.values()));
+  console.log("Saving " + cache.withdrawals.size + " withdrawals");
   await ctx.store.save(Array.from(cache.withdrawals.values()));
 
+  console.log(
+    "Saving " +
+      cache.operatorRewardedEvents.size +
+      " operatorRewardedEvents events"
+  );
   await ctx.store.save(Array.from(cache.operatorRewardedEvents.values()));
 
   await ctx.store.save(Array.from(cache.stats.values()));
