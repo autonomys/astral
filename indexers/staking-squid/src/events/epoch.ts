@@ -81,23 +81,39 @@ export async function processEpochTransitionEvent(
 
   cache.domains.set(domain.id, domain);
 
+  Array.from(cache.operators.values())
+    .filter(
+      (o) => o.status === OperatorStatus.REGISTERED && o.domainId === domain.id
+    )
+    .map((o) => {
+      ++o.activeEpochCount;
+      o.updatedAt = getBlockNumber(block);
+      cache.operators.set(o.id, o);
+    });
+
   // Switch Pending to Active
   Array.from(cache.operators.values())
-    .filter((o) => o.status === OperatorStatus.PENDING)
+    .filter(
+      (o) => o.status === OperatorStatus.PENDING && o.domainId === domain.id
+    )
     .map((o) => {
       o.status = OperatorStatus.REGISTERED;
       o.updatedAt = getBlockNumber(block);
       cache.operators.set(o.id, o);
     });
   Array.from(cache.nominators.values())
-    .filter((n) => n.status === NominatorStatus.PENDING)
+    .filter(
+      (n) => n.status === NominatorStatus.PENDING && n.domainId === domain.id
+    )
     .map((n) => {
       n.status = NominatorStatus.STAKING;
       n.updatedAt = getBlockNumber(block);
       cache.nominators.set(n.id, n);
     });
   Array.from(cache.deposits.values())
-    .filter((d) => d.status === DepositStatus.PENDING)
+    .filter(
+      (d) => d.status === DepositStatus.PENDING && d.domainId === domain.id
+    )
     .map((d) => {
       d.status = DepositStatus.DEPOSITED;
       cache.deposits.set(d.id, d);
