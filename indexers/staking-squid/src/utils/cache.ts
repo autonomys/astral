@@ -86,4 +86,13 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   await ctx.store.save(Array.from(cache.stats.values()));
   await ctx.store.save(Array.from(cache.statsPerDomain.values()));
   await ctx.store.save(Array.from(cache.statsPerOperator.values()));
+
+  // Clear the cache after saving for entry not needed for reference
+
+  cache.deposits.clear();
+  cache.withdrawals.clear();
+  cache.operatorRewardedEvents.clear();
+  cache.stats.clear();
+  cache.statsPerDomain.clear();
+  cache.statsPerOperator.clear();
 };
