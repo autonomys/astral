@@ -1,41 +1,39 @@
-import type { Store } from "@subsquid/typeorm-store";
-import { randomUUID } from "crypto";
 import { Domain } from "../model";
-import type { Ctx, CtxBlock } from "../processor";
-import { getBlockNumber } from "../utils";
+import type { CtxBlock } from "../processor";
+import { domainUID, getBlockNumber } from "../utils";
+import { Cache } from "../utils/cache";
 
-export const createDomain = async (
-  ctx: Ctx<Store>,
+export const createDomain = (
   block: CtxBlock,
+  domainId: number | string,
   props: Partial<Domain>
-): Promise<Domain> => {
-  const domain = new Domain({
-    id: randomUUID(),
-    domainId: 0,
+): Domain =>
+  new Domain({
+    id: typeof domainId === "string" ? domainId : domainUID(domainId),
+    sortId: typeof domainId === "string" ? parseInt(domainId) : domainId,
     completedEpoch: 0,
     lastDomainBlockNumber: 0,
+    totalDeposits: BigInt(0),
+    totalTaxCollected: BigInt(0),
+    totalRewardsCollected: BigInt(0),
+    currentTotalStake: BigInt(0),
+    currentStorageFeeDeposit: BigInt(0),
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
   });
 
-  await ctx.store.insert(domain);
-
-  const count = await ctx.store.count(Domain);
-  ctx.log.child("domains").info(`count: ${count}`);
-
-  return domain;
-};
-
-export const getOrCreateDomain = async (
-  ctx: Ctx<Store>,
+export const getOrCreateDomain = (
+  cache: Cache,
   block: CtxBlock,
-  domainId: number,
+  domainId: number | string,
   props: Partial<Domain> = {}
-): Promise<Domain> => {
-  const domain = await ctx.store.findOneBy(Domain, { domainId });
+): Domain => {
+  const domain = cache.domains.get(
+    typeof domainId === "string" ? domainId : domainUID(domainId)
+  );
 
-  if (!domain) return await createDomain(ctx, block, { domainId, ...props });
+  if (!domain) return createDomain(block, domainId, props);
 
   return domain;
 };
