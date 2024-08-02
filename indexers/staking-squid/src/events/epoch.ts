@@ -1,6 +1,6 @@
 import { operators as getOperators } from "@autonomys/auto-consensus";
 import type { ApiPromise } from "@autonomys/auto-utils";
-import { NominatorStatus, OperatorStatus } from "../model";
+import { DepositStatus, NominatorStatus, OperatorStatus } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createStats,
@@ -80,6 +80,28 @@ export async function processEpochTransitionEvent(
   domain.updatedAt = getBlockNumber(block);
 
   cache.domains.set(domain.id, domain);
+
+  // Switch Pending to Active
+  Array.from(cache.operators.values())
+    .filter((o) => o.status === OperatorStatus.PENDING)
+    .map((o) => {
+      o.status = OperatorStatus.REGISTERED;
+      o.updatedAt = getBlockNumber(block);
+      cache.operators.set(o.id, o);
+    });
+  Array.from(cache.nominators.values())
+    .filter((n) => n.status === NominatorStatus.PENDING)
+    .map((n) => {
+      n.status = NominatorStatus.STAKING;
+      n.updatedAt = getBlockNumber(block);
+      cache.nominators.set(n.id, n);
+    });
+  Array.from(cache.deposits.values())
+    .filter((d) => d.status === DepositStatus.PENDING)
+    .map((d) => {
+      d.status = DepositStatus.DEPOSITED;
+      cache.deposits.set(d.id, d);
+    });
 
   // Stats on epoch transition
   const stats = createStats(cache, block);
