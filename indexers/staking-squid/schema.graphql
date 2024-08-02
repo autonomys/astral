@@ -45,6 +45,7 @@ type Operator @entity {
   totalRewardsCollected: BigInt!
   rawStatus: String
   status: OperatorStatus! @index
+  activeEpochCount: Int!
   bundleCount: Int!
   lastBundleAt: Int!
   createdAt: Int @index

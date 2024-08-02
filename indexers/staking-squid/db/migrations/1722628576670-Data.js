@@ -1,5 +1,5 @@
-module.exports = class Data1722613051042 {
-    name = 'Data1722613051042'
+module.exports = class Data1722628576670 {
+    name = 'Data1722628576670'
 
     async up(db) {
         await db.query(`CREATE TABLE "domain" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "completed_epoch" integer NOT NULL, "last_domain_block_number" integer NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_27e3ec3ea0ae02c8c5bceab3ba9" PRIMARY KEY ("id"))`)
@@ -11,7 +11,7 @@ module.exports = class Data1722613051042 {
         await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_2740156ea8742b8df1ad9d9774" ON "account" ("created_at") `)
         await db.query(`CREATE INDEX "IDX_8bed31488e09ed64770378600b" ON "account" ("updated_at") `)
-        await db.query(`CREATE TABLE "operator" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "account_id" text NOT NULL, "domain_id" text NOT NULL, "signing_key" text NOT NULL, "minimum_nominator_stake" numeric NOT NULL, "nomination_tax" integer NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "current_epoch_rewards" numeric NOT NULL, "current_total_shares" numeric NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "raw_status" text, "status" character varying(15) NOT NULL, "bundle_count" integer NOT NULL, "last_bundle_at" integer NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_8b950e1572745d9f69be7748ae8" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "operator" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "account_id" text NOT NULL, "domain_id" text NOT NULL, "signing_key" text NOT NULL, "minimum_nominator_stake" numeric NOT NULL, "nomination_tax" integer NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "current_epoch_rewards" numeric NOT NULL, "current_total_shares" numeric NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "raw_status" text, "status" character varying(15) NOT NULL, "active_epoch_count" integer NOT NULL, "bundle_count" integer NOT NULL, "last_bundle_at" integer NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_8b950e1572745d9f69be7748ae8" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_ed3a1bcef6df98998f07a571a7" ON "operator" ("sort_id") `)
         await db.query(`CREATE INDEX "IDX_91b197ab29ad85b5e616289ea0" ON "operator" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_1c800426a1f738c1b202ff839f" ON "operator" ("domain_id") `)

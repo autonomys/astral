@@ -24,6 +24,7 @@ export const createOperator = (
     totalRewardsCollected: BigInt(0),
     rawStatus: JSON.stringify({}),
     status: OperatorStatus.PENDING,
+    activeEpochCount: 0,
     bundleCount: 0,
     lastBundleAt: 0,
     ...props,
