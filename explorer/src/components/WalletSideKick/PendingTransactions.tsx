@@ -161,7 +161,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({
                   </div>
                   <div className='m-2 p-2'>
                     <StatusIcon
-                      status={tx.status !== TransactionStatus.Pending}
+                      status={tx.status === TransactionStatus.Success}
                       isPending={tx.status === TransactionStatus.Pending}
                     />
                   </div>
