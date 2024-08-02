@@ -1,7 +1,8 @@
-import { NominatorStatus, OperatorStatus } from "../model";
+import { DepositStatus, NominatorStatus, OperatorStatus } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
+  createOperatorRewardEvent,
   getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateNominator,
@@ -97,15 +98,13 @@ export function processOperatorSlashedEvent(
 
   cache.operators.set(operator.id, operator);
 
-  const nominators = Array.from(cache.nominators.values()).filter(
-    (n) => n.operatorId === operator.id
-  );
-  for (const nominator of nominators) {
-    nominator.status = NominatorStatus.SLASHED;
-    nominator.updatedAt = getBlockNumber(block);
-
-    cache.nominators.set(nominator.id, nominator);
-  }
+  Array.from(cache.nominators.values())
+    .filter((n) => n.operatorId === operator.id)
+    .map((n) => {
+      n.status = NominatorStatus.SLASHED;
+      n.updatedAt = getBlockNumber(block);
+      cache.nominators.set(n.id, n);
+    });
 
   return cache;
 }
@@ -144,6 +143,37 @@ export function processOperatorTaxCollectedEvent(
   domain.updatedAt = blockNumber;
 
   cache.domains.set(domain.id, domain);
+
+  return cache;
+}
+
+export function processOperatorRewardedEvent(
+  cache: Cache,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic,
+  event: CtxEvent
+) {
+  const operatorId = Number(event.args.operatorId);
+  const amount = BigInt(event.args.reward);
+
+  const operator = getOrCreateOperator(cache, block, operatorId);
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
+
+  operator.totalRewardsCollected += amount;
+  cache.operators.set(operator.id, operator);
+
+  domain.totalRewardsCollected += amount;
+  cache.domains.set(domain.id, domain);
+
+  const operatorRewardedEvent = createOperatorRewardEvent(block, extrinsic, {
+    operatorId: operator.id,
+    domainId: operator.domainId,
+    amount,
+  });
+  cache.operatorRewardedEvents.set(
+    operatorRewardedEvent.id,
+    operatorRewardedEvent
+  );
 
   return cache;
 }
