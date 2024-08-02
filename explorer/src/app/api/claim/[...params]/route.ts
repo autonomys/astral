@@ -69,7 +69,7 @@ export const POST = async (req: NextRequest) => {
       accounts: [wallet],
     } = await activateWallet({
       uri: process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI,
-      networkId: 'autonomys-' + chainMatch.urls.page,
+      networkId: chainMatch.urls.page,
     } as ActivateWalletParams)
 
     // Get wallet free balance

@@ -51,7 +51,7 @@ export const useOutOfSyncBanner = () => {
   })
 
   const getChainLastBlock = useCallback(async () => {
-    const api = await activate({ networkId: 'autonomys-' + selectedChain?.urls.page })
+    const api = await activate({ networkId: selectedChain?.urls.page })
 
     const block = await api.rpc.chain.getBlock()
 

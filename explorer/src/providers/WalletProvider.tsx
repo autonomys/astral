@@ -55,7 +55,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
 
   const prepareApi = useCallback(async (chain: (typeof chains)[0]) => {
     try {
-      return await activate({ networkId: 'autonomys-' + chain.urls.page })
+      return await activate({ networkId: chain.urls.page })
     } catch (error) {
       console.error('Failed to prepare API for chain', chain.title, 'error:', error)
     }
