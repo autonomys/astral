@@ -1,15 +1,15 @@
-import { shortString } from '@/utils/string'
 import { BookOpenIcon, WrenchIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { Tooltip } from 'components/common/Tooltip'
-import type { Chain } from 'constants/chains'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection } from 'constants/wallet'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { usePreferencesStates } from 'states/preferences'
 import { limitNumberDecimals } from 'utils/number'
+import { shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 import { AccountBadge } from './AccountBadge'
 import { AccountPreferencesModal } from './AccountPreferencesModal'
@@ -17,7 +17,6 @@ import { useLeaderboard } from './Leaderboard'
 
 interface AccountSummaryProps {
   subspaceAccount: string
-  selectedChain: Chain
   actingAccountName: string | undefined
   walletBalance: number
   tokenSymbol: string
@@ -25,14 +24,13 @@ interface AccountSummaryProps {
 
 export const AccountSummary: FC<AccountSummaryProps> = ({
   subspaceAccount,
-  selectedChain,
   actingAccountName = '',
   walletBalance,
   tokenSymbol,
 }) => {
   const { ref, inView } = useInView()
+  const { network } = useChains()
   const { topFarmers, topOperators, topNominators, setIsVisible } = useLeaderboard(subspaceAccount)
-  const theme = useMemo(() => (selectedChain.isDomain ? 'ethereum' : 'beachball'), [selectedChain])
   const { enableDevMode } = usePreferencesStates()
   const [preference, setPreference] = useState<AccountPreferenceSection>(
     AccountPreferenceSection.None,
@@ -57,14 +55,10 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           <Link
             data-testid='wallet-link'
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.accounts.id.page(
-              selectedChain.urls.page,
-              Routes.consensus,
-              subspaceAccount,
-            )}
+            href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, subspaceAccount)}
           >
             <div className='m-2 flex items-center'>
-              <AccountIcon address={subspaceAccount} theme={theme} />
+              <AccountIcon address={subspaceAccount} theme={'beachball'} />
               <div className='relative'>
                 <span className='ml-2 hidden w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white sm:block md:w-full'>
                   {actingAccountName}{' '}
@@ -85,19 +79,19 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
         <div ref={ref}>
           {topFarmers > 0 && (
             <AccountBadge
-              to={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
+              to={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
               label={`Top ${Math.ceil(topFarmers / 10) * 10} Farmer`}
             />
           )}
           {topOperators > 0 && (
             <AccountBadge
-              to={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
+              to={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
               label={`Top ${Math.ceil(topOperators / 10) * 10} Operator`}
             />
           )}
           {topFarmers > 0 && (
             <AccountBadge
-              to={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
+              to={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
               label={`Top ${Math.ceil(topNominators / 10) * 10} Nominator`}
             />
           )}

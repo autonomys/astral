@@ -14,7 +14,7 @@ import type {
   AccountsConnectionQuery,
   AccountsConnectionQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -32,7 +32,7 @@ import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -59,8 +59,9 @@ export const AccountList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'accounts',
   )
 
@@ -70,14 +71,14 @@ export const AccountList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const accountsConnection = useMemo(() => data && data.accountsConnection, [data])
   const accounts = useMemo(
@@ -90,7 +91,7 @@ export const AccountList: FC = () => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
-  const theme = useMemo(() => (selectedChain.isDomain ? 'ethereum' : 'beachball'), [selectedChain])
+  const theme = useMemo(() => (isEvm ? 'ethereum' : 'beachball'), [isEvm])
 
   const columns = useMemo(
     () => [
@@ -113,11 +114,7 @@ export const AccountList: FC = () => {
             <AccountIcon address={row.original.id} size={26} theme={theme} />
             <Link
               data-testid={`account-link-${row.index}`}
-              href={INTERNAL_ROUTES.accounts.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                row.original.id,
-              )}
+              href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.id)}
               className='hover:text-purpleAccent'
             >
               <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
@@ -154,7 +151,7 @@ export const AccountList: FC = () => {
         ),
       },
     ],
-    [isLargeLaptop, selectedChain.urls.page, selectedDomain, theme, totalCount],
+    [isLargeLaptop, network, section, theme, totalCount],
   )
 
   const pageCount = useMemo(

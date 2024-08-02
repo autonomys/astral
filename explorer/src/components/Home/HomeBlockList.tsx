@@ -6,7 +6,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
@@ -19,7 +19,7 @@ interface HomeBlockListProps {
 }
 
 export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   const blocks = useMemo(() => data.blocks as Block[], [data.blocks])
 
@@ -32,11 +32,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
           <Link
             className='flex gap-2 hover:text-purpleAccent'
             key={`${row.index}-home-block-height`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.height,
-            )}
+            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.height)}
           >
             <div>#{row.original.height}</div>
           </Link>
@@ -66,7 +62,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   return (
@@ -76,9 +72,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
           Latest Blocks
         </div>
         <Link
-          href={
-            '/' + selectedChain.urls.page + '/' + selectedDomain + '/' + INTERNAL_ROUTES.blocks.list
-          }
+          href={'/' + network + '/' + section + '/' + INTERNAL_ROUTES.blocks.list}
           data-testid='testLinkBlocks'
           className='p-2 transition duration-150 ease-in-out'
         >

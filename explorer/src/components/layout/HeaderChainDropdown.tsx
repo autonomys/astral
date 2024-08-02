@@ -1,56 +1,41 @@
+import { NetworkId } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
+import { AutonomysSymbol } from 'components/icons'
+import { Indexer, indexers } from 'constants/indexers'
+import useChains from 'hooks/useChains'
 import { useRouter } from 'next/navigation'
-import { FC, Fragment, useEffect, useMemo } from 'react'
-
-// common
-import { AutonomysSymbol } from '@/components/icons'
-import { Chain, Chains } from 'constants/chains'
-import { domains } from 'constants/domains'
-import { Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import { FC, Fragment, useCallback, useMemo } from 'react'
 
 export const HeaderChainDropdown: FC = () => {
-  const { setSelectedChain, chains, selectedChain, selectedDomain } = useDomains()
+  const { indexerSet, section } = useChains()
   const { push } = useRouter()
 
-  const handleChainChange = (chain: Chain) => {
-    setSelectedChain(chain)
-    push(`/${chain.urls.page}/${selectedDomain}`)
-  }
+  const handleChainChange = useCallback(
+    (chain: Indexer) => {
+      push(`/${chain.network}/${section}`)
+    },
+    [push, section],
+  )
 
   const filteredChains = useMemo(() => {
     if (
       process.env.NEXT_PUBLIC_SHOW_LOCALHOST &&
       process.env.NEXT_PUBLIC_SHOW_LOCALHOST === 'true'
     ) {
-      return chains
+      return indexers
     }
-    return chains.filter((chain) => chain.urls.page !== Chains.localhost)
-  }, [chains])
-
-  useEffect(() => {
-    if (selectedDomain === Routes.nova) {
-      const novaChain = domains.find(
-        (domain) => domain.urls.page === selectedChain.urls.page,
-      ) as Chain
-
-      setSelectedChain(novaChain)
-    }
-
-    if (selectedDomain === 'consensus') {
-      setSelectedChain(selectedChain)
-    }
-  }, [setSelectedChain, selectedDomain, selectedChain])
+    return indexers.filter((indexer) => indexer.network !== NetworkId.LOCALHOST)
+  }, [])
 
   return (
-    <Listbox value={selectedChain} onChange={handleChainChange}>
+    <Listbox value={indexerSet} onChange={handleChainChange}>
       <div className='relative'>
         <Listbox.Button className='relative w-full cursor-default rounded-full bg-white py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-blueAccent dark:text-white sm:text-sm'>
           <div className='flex items-center justify-center'>
             <AutonomysSymbol />
             <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full '>
-              {selectedChain.title}
+              {indexerSet.title}
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon

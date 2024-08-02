@@ -1,11 +1,12 @@
-import { shortString } from '@/utils/string'
 import { Accordion } from 'components/common/Accordion'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
+import { Routes } from 'constants/routes'
 import { Account } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { FC } from 'react'
 import { accountIdToHex } from 'utils//formatAddress'
+import { shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 
 type Props = {
@@ -16,9 +17,9 @@ type Props = {
 
 export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = false }) => {
   const publicKey = accountIdToHex(accountAddress)
-  const { selectedChain } = useDomains()
+  const { section } = useChains()
 
-  const theme = selectedChain.isDomain ? 'ethereum' : 'beachball'
+  const theme = section === Routes.nova ? 'ethereum' : 'beachball'
   return (
     <div className='mb-4 rounded-[20px] border border-slate-100 bg-white p-6 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset md:p-4'>
       <div className='flex w-full items-center gap-3'>

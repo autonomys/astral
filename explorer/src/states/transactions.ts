@@ -79,7 +79,7 @@ export const useTransactionsStates = create<TransactionsState>()(
     }),
     {
       name: 'transactions-storage',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),

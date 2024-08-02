@@ -7,11 +7,11 @@ import { GET_ALL_OPERATORS } from 'components/StakeWars/rewardsQuery'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES } from 'constants/general'
+import { STAKE_WARS_PAGE_SIZE, STAKE_WARS_PHASES, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorOrderByInput } from 'gql/graphql'
 import { GetAllOperatorsQuery, GetAllOperatorsQueryVariables } from 'gql/rewardTypes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -37,7 +37,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
   })
   const apolloClient = useApolloClient()
 
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
@@ -50,11 +50,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.operators.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.operators.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>
           </Link>
@@ -83,7 +79,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -91,7 +87,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         header: 'Total Stake',
         enableSorting: true,
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
+          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -103,12 +99,12 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         }: Cell<
           GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node'] & { rewards: bigint }
         >) => (
-          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} ${selectedChain.token.symbol}`}</div>
+          <div>{`${row.original.rewards ? bigNumberToNumber(row.original.rewards.toString()) : 0} ${TOKEN.symbol}`}</div>
         ),
       },
     ]
     return cols
-  }, [selectedChain.token.symbol, selectedChain.urls.page, selectedDomain])
+  }, [network, section])
 
   const orderBy = useMemo(
     () => sort(sorting, OperatorOrderByInput.IdAsc) as OperatorOrderByInput,

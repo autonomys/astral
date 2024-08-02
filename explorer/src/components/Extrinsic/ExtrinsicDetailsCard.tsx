@@ -11,7 +11,7 @@ import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 
 dayjs.extend(relativeTime)
 
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   const [module, call] = extrinsic.name.split('.')
 
@@ -48,11 +48,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                 </StyledListItem>
                 <StyledListItem title='Block Number'>
                   <Link
-                    href={INTERNAL_ROUTES.blocks.id.page(
-                      selectedChain.urls.page,
-                      selectedDomain,
-                      extrinsic.block.height,
-                    )}
+                    href={INTERNAL_ROUTES.blocks.id.page(network, section, extrinsic.block.height)}
                   >
                     <div> {extrinsic.block.height}</div>
                   </Link>
