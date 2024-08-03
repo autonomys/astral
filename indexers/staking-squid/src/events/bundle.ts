@@ -15,46 +15,58 @@ export function processBundleStoredEvent(
   extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
-  const domainId = Number(event.args.domainId);
-  const operatorId = Number(event.args.bundleAuthor);
+  const { domainId, bundleAuthor } = event.args;
+  const domainIdNum = Number(domainId);
+  const operatorId = Number(bundleAuthor);
 
   const sealedHeader = extrinsic.call?.args.opaqueBundle
     .sealedHeader as SealedBundleHeader;
-  const domain = getOrCreateDomain(cache, block, domainId);
+  const domain = getOrCreateDomain(cache, block, domainIdNum);
   const operator = getOrCreateOperator(cache, block, operatorId);
   const account = getOrCreateAccount(cache, block, operator.accountId);
 
   const receipt = sealedHeader.header.receipt as ExecutionReceipt;
-  const transfers = receipt.transfers as Transfers;
+  const { transfers } = receipt;
+
   const totalTransfersIn = transfers.transfersIn.reduce(
-    (acc, t) => acc + BigInt(t[1]),
+    (acc, [, amount]) => acc + BigInt(amount),
     BigInt(0)
   );
-  const transfersInCount = Number(transfers.transfersIn.length);
+  const transfersInCount = transfers.transfersIn.length;
+
   const totalTransfersOut = transfers.transfersOut.reduce(
-    (acc, t) => acc + BigInt(t[1]),
+    (acc, [, amount]) => acc + BigInt(amount),
     BigInt(0)
   );
-  const transfersOutCount = Number(transfers.transfersOut.length);
+  const transfersOutCount = transfers.transfersOut.length;
+
   const totalRejectedTransfersClaimed =
     transfers.rejectedTransfersClaimed.reduce(
-      (acc, t) => acc + BigInt(t[1]),
+      (acc, [, amount]) => acc + BigInt(amount),
       BigInt(0)
     );
-  const rejectedTransfersClaimedCount = Number(
-    transfers.rejectedTransfersClaimed.length
-  );
+  const rejectedTransfersClaimedCount =
+    transfers.rejectedTransfersClaimed.length;
+
   const totalTransfersRejected = transfers.transfersRejected.reduce(
-    (acc, t) => acc + BigInt(t[1]),
+    (acc, [, amount]) => acc + BigInt(amount),
     BigInt(0)
   );
-  const transfersRejectedCount = Number(transfers.transfersRejected.length);
+  const transfersRejectedCount = transfers.transfersRejected.length;
+
   const totalVolume = totalTransfersIn + totalTransfersOut;
 
+  const {
+    domainBlockNumber,
+    consensusBlockNumber,
+    consensusBlockHash,
+    blockFees,
+  } = receipt;
+
   const bundle = createBundle(account.id, domain.id, operator.id, {
-    domainBlockNumber: Number(receipt.domainBlockNumber),
-    consensusBlockNumber: Number(receipt.consensusBlockNumber),
-    consensusBlockHash: receipt.consensusBlockHash,
+    domainBlockNumber: Number(domainBlockNumber),
+    consensusBlockNumber: Number(consensusBlockNumber),
+    consensusBlockHash,
     totalTransfersIn,
     transfersInCount,
     totalTransfersOut,
@@ -64,13 +76,14 @@ export function processBundleStoredEvent(
     totalTransfersRejected,
     transfersRejectedCount,
     totalVolume,
-    consensusStorageFee: BigInt(receipt.blockFees.consensusStorageFee),
-    domainExecutionFee: BigInt(receipt.blockFees.domainExecutionFee),
-    burnedBalance: BigInt(receipt.blockFees.burnedBalance),
+    consensusStorageFee: BigInt(blockFees.consensusStorageFee),
+    domainExecutionFee: BigInt(blockFees.domainExecutionFee),
+    burnedBalance: BigInt(blockFees.burnedBalance),
   });
+
   cache.bundles.set(bundle.id, bundle);
 
-  domain.lastDomainBlockNumber = Number(receipt.domainBlockNumber);
+  domain.lastDomainBlockNumber = Number(domainBlockNumber);
   domain.totalTransfersIn += totalTransfersIn;
   domain.transfersInCount += transfersInCount;
   domain.totalTransfersOut += totalTransfersOut;
@@ -80,14 +93,10 @@ export function processBundleStoredEvent(
   domain.totalTransfersRejected += totalTransfersRejected;
   domain.transfersRejectedCount += transfersRejectedCount;
   domain.totalVolume += totalVolume;
-  (domain.totalConsensusStorageFee += BigInt(
-    receipt.blockFees.consensusStorageFee
-  )),
-    (domain.totalDomainExecutionFee += BigInt(
-      receipt.blockFees.domainExecutionFee
-    )),
-    (domain.totalBurnedBalance += BigInt(receipt.blockFees.burnedBalance)),
-    domain.bundleCount++;
+  domain.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
+  domain.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
+  domain.totalBurnedBalance += BigInt(blockFees.burnedBalance);
+  domain.bundleCount++;
   domain.lastBundleAt = getBlockNumber(block);
   domain.updatedAt = getBlockNumber(block);
 
@@ -101,14 +110,10 @@ export function processBundleStoredEvent(
   operator.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
   operator.totalTransfersRejected += totalTransfersRejected;
   operator.transfersRejectedCount += transfersRejectedCount;
-  (operator.totalConsensusStorageFee += BigInt(
-    receipt.blockFees.consensusStorageFee
-  )),
-    (operator.totalDomainExecutionFee += BigInt(
-      receipt.blockFees.domainExecutionFee
-    )),
-    (operator.totalBurnedBalance += BigInt(receipt.blockFees.burnedBalance)),
-    (operator.totalVolume += totalVolume);
+  operator.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
+  operator.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
+  operator.totalBurnedBalance += BigInt(blockFees.burnedBalance);
+  operator.totalVolume += totalVolume;
   operator.bundleCount++;
   operator.lastBundleAt = getBlockNumber(block);
   operator.updatedAt = getBlockNumber(block);

@@ -15,11 +15,14 @@ import {
 } from "../model";
 import type { Ctx } from "../processor";
 
-export type Cache = {
+export type PermanentCache = {
   domains: Map<string, Domain>;
   accounts: Map<string, Account>;
   operators: Map<string, Operator>;
   nominators: Map<string, Nominator>;
+};
+
+export type TemporaryCache = {
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
@@ -28,6 +31,8 @@ export type Cache = {
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
 };
+
+export type Cache = PermanentCache & TemporaryCache;
 
 export const initCache: Cache = {
   domains: new Map(),
@@ -44,15 +49,12 @@ export const initCache: Cache = {
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [domains, accounts, operators, nominators, deposits, withdrawals] =
-    await Promise.all([
-      ctx.store.find(Domain),
-      ctx.store.find(Account),
-      ctx.store.find(Operator),
-      ctx.store.find(Nominator),
-      ctx.store.find(Deposit),
-      ctx.store.find(Withdrawal),
-    ]);
+  const [domains, accounts, operators, nominators] = await Promise.all([
+    ctx.store.find(Domain),
+    ctx.store.find(Account),
+    ctx.store.find(Operator),
+    ctx.store.find(Nominator),
+  ]);
 
   return {
     ...initCache,
@@ -60,8 +62,6 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     accounts: new Map(accounts.map((a) => [a.id, a])),
     operators: new Map(operators.map((o) => [o.id, o])),
     nominators: new Map(nominators.map((n) => [n.id, n])),
-    deposits: new Map(deposits.map((d) => [d.id, d])),
-    withdrawals: new Map(withdrawals.map((w) => [w.id, w])),
   };
 };
 
@@ -71,32 +71,21 @@ const saveEntry = async <E extends Entity>(
   name: keyof Cache
 ) => {
   try {
-    const entityMap = cache[name] as unknown as Map<string, E>;
-    if (entityMap.size === 0) return;
+    const entity = cache[name] as unknown as Map<string, E>;
+    if (entity.size === 0) return;
 
-    console.log(`Saving ${entityMap.size} ${name}`);
+    console.log(`Saving ${entity.size} ${name} entries to the database.`);
 
-    const entries = Array.from(entityMap.values());
-    await ctx.store.save(entries);
+    await ctx.store.save(Array.from(entity.values()));
   } catch (e) {
     console.error(`Failed to save ${name} with error:`, e);
   }
 };
 
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
-  await Promise.all([
-    saveEntry(ctx, cache, "domains"),
-    saveEntry(ctx, cache, "accounts"),
-    saveEntry(ctx, cache, "operators"),
-    saveEntry(ctx, cache, "nominators"),
-    saveEntry(ctx, cache, "deposits"),
-    saveEntry(ctx, cache, "withdrawals"),
-    saveEntry(ctx, cache, "bundles"),
-    saveEntry(ctx, cache, "operatorRewardedEvents"),
-    saveEntry(ctx, cache, "stats"),
-    saveEntry(ctx, cache, "statsPerDomain"),
-    saveEntry(ctx, cache, "statsPerOperator"),
-  ]);
+  await Promise.all(
+    Object.keys(cache).map((k) => saveEntry(ctx, cache, k as keyof Cache))
+  );
 
   // Clear the cache for entries not needed for reference
   cache.deposits.clear();
