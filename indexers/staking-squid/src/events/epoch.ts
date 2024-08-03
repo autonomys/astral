@@ -49,20 +49,21 @@ export async function processEpochTransitionEvent(
     cache.operators.set(op.id, op);
 
     try {
-      const rawStatusKey = Object.keys(rawStatus);
-      if (rawStatusKey[0] === "deregistered") {
-        const unlockBlock = Number(
-          (
-            rawStatus as unknown as {
-              deregistered: { unlockAtConfirmedDomainBlockNumber: number };
-            }
-          ).deregistered.unlockAtConfirmedDomainBlockNumber
-        );
-
-        if (unlockBlock <= domain.lastDomainBlockNumber) {
-          op.status = OperatorStatus.READY_TO_UNLOCK;
-          cache.operators.set(op.id, op);
-        }
+      const _status = JSON.parse(rawStatus) as unknown as {
+        registered?: null;
+        deregistered?: {
+          domainEpoch: [number, number];
+          unlockAtConfirmedDomainBlockNumber: number;
+        };
+      };
+      if (
+        Object.keys(JSON.parse(rawStatus))[0] === "deregistered" &&
+        _status.deregistered &&
+        _status.deregistered.unlockAtConfirmedDomainBlockNumber <=
+          domain.lastDomainBlockNumber
+      ) {
+        op.status = OperatorStatus.READY_TO_UNLOCK;
+        cache.operators.set(op.id, op);
       }
     } catch (e) {
       console.error("Error in processEpochTransitionEvent", e);
