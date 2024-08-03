@@ -130,7 +130,7 @@ export async function processEpochTransitionEvent(
   cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
 
   const operators = Array.from(cache.operators.values()).filter(
-    (o) => o.domainId === domain.id
+    (o) => o.domainId === domain.id && o.status === OperatorStatus.REGISTERED
   );
   for (const operator of operators) {
     const statsPerOperator = createStatsPerOperator(
