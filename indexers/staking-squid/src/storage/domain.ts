@@ -1,4 +1,4 @@
-import { Domain } from "../model";
+import { Domain, DomainRuntime } from "../model";
 import type { CtxBlock } from "../processor";
 import { domainUID, getBlockNumber } from "../utils";
 import { Cache } from "../utils/cache";
@@ -11,6 +11,11 @@ export const createDomain = (
   new Domain({
     id: typeof domainId === "string" ? domainId : domainUID(domainId),
     sortId: typeof domainId === "string" ? parseInt(domainId) : domainId,
+    accountId: "0x",
+    name: "",
+    runtimeId: 0,
+    runtime: DomainRuntime.EVM,
+    runtimeInfo: JSON.stringify({}),
     completedEpoch: 0,
     lastDomainBlockNumber: 0,
     totalDeposits: BigInt(0),

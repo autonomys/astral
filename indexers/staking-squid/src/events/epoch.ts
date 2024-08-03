@@ -1,6 +1,11 @@
 import { operators as getOperators } from "@autonomys/auto-consensus";
 import type { ApiPromise } from "@autonomys/auto-utils";
-import { DepositStatus, NominatorStatus, OperatorStatus } from "../model";
+import {
+  DepositStatus,
+  DomainRuntime,
+  NominatorStatus,
+  OperatorStatus,
+} from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createStats,
@@ -25,10 +30,65 @@ export async function processEpochTransitionEvent(
 
   const apiAt = await api.at(block.header.hash);
 
-  const operatorsAll = await getOperators(apiAt);
+  const [domainRegistry, operatorsAll] = await Promise.all([
+    apiAt.query.domains.domainRegistry.entries(),
+    getOperators(apiAt),
+  ]);
+
+  const formattedDomains = domainRegistry.map((domain) => {
+    return {
+      domainId: (domain[0].toHuman() as string[])[0],
+      ...(domain[1].toJSON() as Omit<
+        {
+          domainId: string;
+          ownerAccountId: string;
+          createdAt: number;
+          genesisReceiptHash: string;
+          domainConfig: {
+            domainName: string;
+            runtimeId: number;
+            maxBlockSize: number;
+            maxBlockWeight: {
+              refTime: number;
+              proofSize: string;
+            };
+            bundleSlotProbability: number[];
+            targetBundlesPerBlock: number;
+            operatorAllowList: {
+              operators: string[];
+            };
+          };
+          domainRuntimeInfo: object;
+        },
+        "domainId"
+      >),
+    };
+  });
   const allOperators = operatorsAll.filter(
     (o) => o.operatorDetails.currentDomainId === BigInt(domainId)
   );
+
+  for (const formattedDomain of formattedDomains) {
+    const _domain = getOrCreateDomain(
+      cache,
+      block,
+      parseInt(formattedDomain.domainId)
+    );
+
+    _domain.accountId = formattedDomain.ownerAccountId;
+    _domain.name = formattedDomain.domainConfig.domainName;
+    _domain.runtimeId = formattedDomain.domainConfig.runtimeId;
+    const stringifiedRuntime = JSON.stringify(
+      formattedDomain.domainRuntimeInfo
+    );
+    _domain.runtime = stringifiedRuntime.includes("AutoId")
+      ? DomainRuntime.AutoId
+      : DomainRuntime.EVM;
+    _domain.runtimeInfo = stringifiedRuntime;
+    _domain.updatedAt = getBlockNumber(block);
+
+    cache.domains.set(_domain.id, _domain);
+  }
 
   for (const operator of allOperators) {
     const op = getOrCreateOperator(

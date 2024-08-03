@@ -1,6 +1,16 @@
+enum DomainRuntime {
+  EVM
+  AutoId
+}
+
 type Domain @entity {
   id: ID! @index
   sortId: Int! @index
+  accountId: String! @index
+  name: String! @index
+  runtimeId: Int! @index
+  runtime: DomainRuntime! @index
+  runtimeInfo: String
   completedEpoch: Int! @index
   lastDomainBlockNumber: Int! @index
   totalDeposits: BigInt!

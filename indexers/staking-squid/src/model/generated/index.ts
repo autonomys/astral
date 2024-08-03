@@ -1,4 +1,5 @@
 export * from "./domain.model"
+export * from "./_domainRuntime"
 export * from "./account.model"
 export * from "./operator.model"
 export * from "./_operatorStatus"
