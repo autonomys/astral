@@ -22,10 +22,8 @@ export type Cache = {
   nominators: Map<string, Nominator>;
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
-
   bundles: Map<string, Bundle>;
   operatorRewardedEvents: Map<string, OperatorRewardEvent>;
-
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
@@ -38,22 +36,23 @@ export const initCache: Cache = {
   nominators: new Map(),
   deposits: new Map(),
   withdrawals: new Map(),
-
   bundles: new Map(),
   operatorRewardedEvents: new Map(),
-
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const domains = await ctx.store.find(Domain);
-  const accounts = await ctx.store.find(Account);
-  const operators = await ctx.store.find(Operator);
-  const nominators = await ctx.store.find(Nominator);
-  const deposits = await ctx.store.find(Deposit);
-  const withdrawals = await ctx.store.find(Withdrawal);
+  const [domains, accounts, operators, nominators, deposits, withdrawals] =
+    await Promise.all([
+      ctx.store.find(Domain),
+      ctx.store.find(Account),
+      ctx.store.find(Operator),
+      ctx.store.find(Nominator),
+      ctx.store.find(Deposit),
+      ctx.store.find(Withdrawal),
+    ]);
 
   return {
     ...initCache,
@@ -72,41 +71,38 @@ const saveEntry = async <E extends Entity>(
   name: keyof Cache
 ) => {
   try {
-    const entity = cache[name] as unknown as Map<string, E>;
-    if (entity.size === 0) return;
+    const entityMap = cache[name] as unknown as Map<string, E>;
+    if (entityMap.size === 0) return;
 
-    console.log("Saving " + entity.size + " " + name);
+    console.log(`Saving ${entityMap.size} ${name}`);
 
-    const entries = Array.from(entity.values());
-
+    const entries = Array.from(entityMap.values());
     await ctx.store.save(entries);
   } catch (e) {
-    console.error("Failed to save " + name + " with error: " + e);
+    console.error(`Failed to save ${name} with error:`, e);
   }
 };
 
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
-  await saveEntry(ctx, cache, "domains");
-  await saveEntry(ctx, cache, "accounts");
-  await saveEntry(ctx, cache, "operators");
-  await saveEntry(ctx, cache, "nominators");
-  await saveEntry(ctx, cache, "deposits");
-  await saveEntry(ctx, cache, "withdrawals");
+  await Promise.all([
+    saveEntry(ctx, cache, "domains"),
+    saveEntry(ctx, cache, "accounts"),
+    saveEntry(ctx, cache, "operators"),
+    saveEntry(ctx, cache, "nominators"),
+    saveEntry(ctx, cache, "deposits"),
+    saveEntry(ctx, cache, "withdrawals"),
+    saveEntry(ctx, cache, "bundles"),
+    saveEntry(ctx, cache, "operatorRewardedEvents"),
+    saveEntry(ctx, cache, "stats"),
+    saveEntry(ctx, cache, "statsPerDomain"),
+    saveEntry(ctx, cache, "statsPerOperator"),
+  ]);
 
-  await saveEntry(ctx, cache, "bundles");
-  await saveEntry(ctx, cache, "operatorRewardedEvents");
-
-  await saveEntry(ctx, cache, "stats");
-  await saveEntry(ctx, cache, "statsPerDomain");
-  await saveEntry(ctx, cache, "statsPerOperator");
-
-  // Clear the cache after saving for entry not needed for reference
+  // Clear the cache for entries not needed for reference
   cache.deposits.clear();
   cache.withdrawals.clear();
-
   cache.bundles.clear();
   cache.operatorRewardedEvents.clear();
-
   cache.stats.clear();
   cache.statsPerDomain.clear();
   cache.statsPerOperator.clear();
