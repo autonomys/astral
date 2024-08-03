@@ -5,6 +5,7 @@ import {
   DomainRuntime,
   NominatorStatus,
   OperatorStatus,
+  WithdrawalStatus,
 } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
@@ -123,6 +124,26 @@ export async function processEpochTransitionEvent(
       ) {
         op.status = OperatorStatus.READY_TO_UNLOCK;
         cache.operators.set(op.id, op);
+
+        Array.from(cache.nominators.values())
+          .filter(
+            (n) =>
+              n.status === NominatorStatus.STAKING && n.operatorId === op.id
+          )
+          .map((n) => {
+            n.status = NominatorStatus.READY_TO_UNLOCK;
+            n.updatedAt = getBlockNumber(block);
+            cache.nominators.set(n.id, n);
+          });
+        Array.from(cache.withdrawals.values())
+          .filter(
+            (w) =>
+              w.status === WithdrawalStatus.PENDING && w.domainId === domain.id
+          )
+          .map((w) => {
+            w.status = WithdrawalStatus.READY;
+            cache.withdrawals.set(w.id, w);
+          });
       }
     } catch (e) {
       console.error("Error in processEpochTransitionEvent", e);

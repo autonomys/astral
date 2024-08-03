@@ -66,6 +66,7 @@ enum NominatorStatus {
   PENDING
   STAKING
   DEREGISTERED
+  READY_TO_UNLOCK
   SLASHED
 }
 
