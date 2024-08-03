@@ -1,29 +1,14 @@
-import { shortString } from '@/utils/string'
 import { Extrinsic } from 'components/Extrinsic/Extrinsic'
-import { chains } from 'constants/chains'
-import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps, ExtrinsicIdPageProps } from 'types/app'
+import { generateMetadataWithLabel } from 'utils/metadata'
+import { shortString } from 'utils/string'
 
-export async function generateMetadata({
+export const generateMetadata = ({
   params: { chain, extrinsicId },
-}: ChainPageProps & ExtrinsicIdPageProps): Promise<Metadata> {
-  const chainTitle = chains.find((c) => c.urls.page === chain)?.title || 'Unknown chain'
-  const title = `${metadata.title} - ${chainTitle} - Extrinsic ${extrinsicId ? shortString(extrinsicId) : ''}`
-  return {
-    ...metadata,
-    title,
-    openGraph: {
-      ...metadata.openGraph,
-      title,
-    },
-    twitter: {
-      ...metadata.twitter,
-      title,
-    },
-  }
-}
+}: ChainPageProps & ExtrinsicIdPageProps): Metadata =>
+  generateMetadataWithLabel(chain, `Extrinsic ${extrinsicId ? shortString(extrinsicId) : ''}`)
 
 const Page: FC = () => {
   return <Extrinsic />

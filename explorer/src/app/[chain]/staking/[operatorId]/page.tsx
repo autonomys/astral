@@ -1,28 +1,13 @@
-import { Operator } from '@/components/Staking/Operator'
-import { chains } from 'constants/chains'
-import { metadata } from 'constants/metadata'
+import { Operator } from 'components/Staking/Operator'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { AccountIdPageProps, ChainPageProps } from 'types/app'
+import { generateMetadataWithLabel } from 'utils/metadata'
 
-export async function generateMetadata({
+export const generateMetadata = ({
   params: { chain, accountId },
-}: ChainPageProps & AccountIdPageProps): Promise<Metadata> {
-  const chainTitle = chains.find((c) => c.urls.page === chain)?.title || 'Unknown chain'
-  const title = `${metadata.title} - ${chainTitle} - Operator #${accountId}`
-  return {
-    ...metadata,
-    title,
-    openGraph: {
-      ...metadata.openGraph,
-      title,
-    },
-    twitter: {
-      ...metadata.twitter,
-      title,
-    },
-  }
-}
+}: ChainPageProps & AccountIdPageProps): Metadata =>
+  generateMetadataWithLabel(chain, `Operator #${accountId}`)
 
 const Page: FC = () => {
   return <Operator />
