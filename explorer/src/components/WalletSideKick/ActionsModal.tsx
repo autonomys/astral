@@ -1,5 +1,5 @@
 import { remark, transfer } from '@autonomys/auto-consensus'
-import { Hash, SignerResult } from '@autonomys/auto-utils'
+import { Hash, networks, SignerResult } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
@@ -45,12 +45,113 @@ interface OptionalTxFormValues {
   nonce?: number
 }
 
+enum NetworkSource {
+  CONSENSUS = 'consensus',
+  DOMAIN = 'domain',
+}
+
 interface SendTokenFormValues extends OptionalTxFormValues {
+  sender: string
+  sourceNetwork: NetworkSource
+  sourceDomainId: string
   receiver: string
+  destinationNetwork: NetworkSource
+  destinationDomainId: string
   amount: number
 }
 interface MessageFormValues extends OptionalTxFormValues {
   message: string
+}
+
+const NetworkSelector: FC<{
+  isOpen: boolean
+  setOpen: (value: boolean) => void
+  setNetwork: (value: NetworkSource) => void
+  setDomainId: (value: string) => void
+}> = ({ isOpen, setOpen, setNetwork, setDomainId }) => {
+  const network = useMemo(() => networks[0], [])
+
+  if (!network) return null
+
+  return (
+    <Listbox value={network['domains']}>
+      <Listbox.Button
+        className={
+          'absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+        }
+        style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+        onClick={() => setOpen(!isOpen)}
+      >
+        Network
+      </Listbox.Button>
+      <Transition
+        as={Fragment}
+        leave='transition ease-in duration-100'
+        leaveFrom='opacity-100'
+        leaveTo='opacity-0'
+      >
+        <Listbox.Options className='absolute right-0 z-50 mt-1 max-h-40 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Option
+            key={`domain-book-saved-${network.id}-label-${network.name}`}
+            className={({ active }) =>
+              `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
+                active && 'bg-gray-100 dark:bg-blueDarkAccent'
+              }`
+            }
+            value={network.id}
+            onClick={() => {
+              setNetwork(NetworkSource.CONSENSUS)
+              setDomainId('')
+            }}
+          >
+            {({ selected }) => {
+              return (
+                <div className='px-2'>
+                  <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                    {network.name}{' '}
+                    <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                      Consensus
+                    </span>
+                  </span>
+                </div>
+              )
+            }}
+          </Listbox.Option>
+          {network['domains'] &&
+            network['domains'].map((domain, index) => (
+              <Listbox.Option
+                key={`network-source-${index}`}
+                className={({ active }) =>
+                  `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
+                    active && 'bg-gray-100 dark:bg-blueDarkAccent'
+                  }`
+                }
+                value={domain.id}
+                onClick={() => {
+                  setNetwork(NetworkSource.DOMAIN)
+                  setDomainId(domain.id)
+                }}
+              >
+                {({ selected }) => {
+                  return (
+                    <div className='px-2'>
+                      <span
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                      >
+                        {domain.name}{' '}
+                        <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                          Domain
+                        </span>
+                      </span>
+                    </div>
+                  )
+                }}
+              </Listbox.Option>
+            ))}
+        </Listbox.Options>
+      </Transition>
+    </Listbox>
+  )
 }
 
 export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose }) => {
@@ -66,6 +167,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
   const [addressBookIsOpen, setAddressBookIsOpen] = useState<boolean>(false)
+  const [networkSourceBookIsOpen, setNetworkSourceBookIsOpen] = useState<boolean>(false)
+  const [networkDestinationBookIsOpen, setNetworkDestinationBookIsOpen] = useState<boolean>(false)
   const { sendAndSaveTx, handleTxError } = useTxHelper()
   const { addresses } = useAddressBookStates()
   const { enableDevMode } = usePreferencesStates()
@@ -82,11 +185,16 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
 
   const initialSendTokenValues: SendTokenFormValues = useMemo(
     () => ({
+      sender: subspaceAccount || '',
+      sourceNetwork: NetworkSource.CONSENSUS,
+      sourceDomainId: '',
       receiver: '',
+      destinationNetwork: NetworkSource.CONSENSUS,
+      destinationDomainId: '',
       amount: 0,
       nonce: -1,
     }),
-    [],
+    [subspaceAccount],
   )
   const initialMessageValues: MessageFormValues = useMemo(
     () => ({
@@ -355,6 +463,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     }
   }, [action, hash, signature])
 
+  const network = useMemo(() => networks[0], [])
+
   const ActionBody = useMemo(() => {
     switch (WalletAction[action]) {
       case WalletAction.SendToken:
@@ -386,11 +496,100 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 validationSchema={sendTokenFormValidationSchema}
                 onSubmit={(values, { resetForm }) => handleSendToken(values, resetForm)}
               >
-                {({ errors, touched, handleSubmit, setFieldValue }) => (
+                {({ values, errors, touched, handleSubmit, setFieldValue }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
+                    <span className='text-base font-medium text-grayDarker dark:text-white'>
+                      Send from
+                    </span>
+                    <FieldArray
+                      name='dischargeNorms'
+                      render={() => (
+                        <div className='relative'>
+                          <Field
+                            name='sourceNetwork'
+                            type='text'
+                            readOnly
+                            placeholder='Source network'
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                              errors.sourceNetwork &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            }`}
+                            value={
+                              values.sourceNetwork === NetworkSource.CONSENSUS
+                                ? network.name
+                                : network['domains'].find(
+                                    (domain) => domain.id === values.sourceDomainId,
+                                  )?.name || ' DomainId: ' + values.sourceDomainId
+                            }
+                          />
+                          <NetworkSelector
+                            isOpwn={networkSourceBookIsOpen}
+                            setOpen={setNetworkSourceBookIsOpen}
+                            setNetwork={(e) => setFieldValue('sourceNetwork', e)}
+                            setDomainId={(e) => setFieldValue('sourceDomainId', e)}
+                          />
+                        </div>
+                      )}
+                    />
+                    <FieldArray
+                      name='dischargeNorms'
+                      render={() => (
+                        <div className='relative'>
+                          <Field
+                            name='sender'
+                            type='text'
+                            readOnly
+                            placeholder='Send from'
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                              errors.sender &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            }`}
+                          />
+                        </div>
+                      )}
+                    />
+                    {errors.sender && touched.sender ? (
+                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                        {errors.sender}
+                      </div>
+                    ) : (
+                      <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                    )}
                     <span className='text-base font-medium text-grayDarker dark:text-white'>
                       Send to
                     </span>
+
+                    <FieldArray
+                      name='dischargeNorms'
+                      render={() => (
+                        <div className='relative'>
+                          <Field
+                            name='destinationNetwork'
+                            type='text'
+                            readOnly
+                            placeholder='Destination network'
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                              errors.destinationNetwork &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            }`}
+                            value={
+                              values.destinationNetwork === NetworkSource.CONSENSUS
+                                ? network.name
+                                : network['domains'].find(
+                                    (domain) => domain.id === values.destinationDomainId,
+                                  )?.name || ' DomainId: ' + values.destinationDomainId
+                            }
+                          />
+                          <NetworkSelector
+                            isOpwn={networkDestinationBookIsOpen}
+                            setOpen={setNetworkDestinationBookIsOpen}
+                            setNetwork={(e) => setFieldValue('destinationNetwork', e)}
+                            setDomainId={(e) => setFieldValue('destinationDomainId', e)}
+                          />
+                        </div>
+                      )}
+                    />
+
                     <FieldArray
                       name='dischargeNorms'
                       render={() => (
@@ -890,6 +1089,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     maxAmount,
     enableDevMode,
     ErrorPlaceholder,
+    network,
+    networkSourceBookIsOpen,
+    networkDestinationBookIsOpen,
     accounts,
     addresses,
     addressBookIsOpen,
