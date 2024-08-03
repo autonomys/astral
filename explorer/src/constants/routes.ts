@@ -6,6 +6,8 @@ export enum Routes {
   domains = 'domains',
   nova = 'nova',
   autoid = 'autoid',
+  transfer = 'transfer',
+  swap = 'swap',
   // Route deactivated till bugs are fixed and feature is ready
   // stake = 'stake',
 }
@@ -40,6 +42,11 @@ export const ROUTES = [
         title: 'Auto-ID',
       },
     ],
+  },
+  {
+    name: Routes.swap,
+    title: 'Transfer / Swap',
+    alias: [Routes.transfer],
   },
   // Route deactivated till bugs are fixed and feature is ready
   // {
