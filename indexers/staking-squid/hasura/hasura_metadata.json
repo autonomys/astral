@@ -1,5 +1,5 @@
 {
-  "resource_version": 5,
+  "resource_version": 16,
   "metadata": {
     "version": 3,
     "sources": [
@@ -13,6 +13,21 @@
               "schema": "public"
             },
             "array_relationships": [
+              {
+                "name": "bundles",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "account_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "bundle",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
               {
                 "name": "deposits",
                 "using": {
@@ -102,6 +117,89 @@
                   ],
                   "filter": {},
                   "allow_aggregations": true
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "bundle",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "account",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "account_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "account",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "domain",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "operator",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "operator_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "operator",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "consensus_block_number",
+                    "domain_block_number",
+                    "rejected_transfers_claimed_count",
+                    "transfers_in_count",
+                    "transfers_out_count",
+                    "transfers_rejected_count",
+                    "burned_balance",
+                    "consensus_storage_fee",
+                    "domain_execution_fee",
+                    "total_rejected_transfers_claimed",
+                    "total_transfers_in",
+                    "total_transfers_out",
+                    "total_transfers_rejected",
+                    "total_volume",
+                    "account_id",
+                    "consensus_block_hash",
+                    "domain_id",
+                    "operator_id"
+                  ],
+                  "filter": {}
                 },
                 "comment": ""
               }
@@ -222,6 +320,21 @@
             ],
             "array_relationships": [
               {
+                "name": "bundles",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "domain_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "bundle",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "deposits",
                 "using": {
                   "manual_configuration": {
@@ -267,6 +380,21 @@
                 }
               },
               {
+                "name": "rewards",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "domain_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "operator_reward_event",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "withdrawals",
                 "using": {
                   "manual_configuration": {
@@ -287,22 +415,36 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "account_id",
+                    "id",
+                    "runtime",
+                    "bundle_count",
                     "completed_epoch",
                     "created_at",
+                    "last_bundle_at",
+                    "last_domain_block_number",
+                    "rejected_transfers_claimed_count",
+                    "runtime_id",
+                    "sort_id",
+                    "transfers_in_count",
+                    "transfers_out_count",
+                    "transfers_rejected_count",
+                    "updated_at",
                     "current_storage_fee_deposit",
                     "current_total_stake",
-                    "id",
-                    "last_domain_block_number",
-                    "name",
-                    "runtime",
-                    "runtime_id",
-                    "runtime_info",
-                    "sort_id",
+                    "total_burned_balance",
+                    "total_consensus_storage_fee",
                     "total_deposits",
+                    "total_domain_execution_fee",
+                    "total_rejected_transfers_claimed",
                     "total_rewards_collected",
                     "total_tax_collected",
-                    "updated_at"
+                    "total_transfers_in",
+                    "total_transfers_out",
+                    "total_transfers_rejected",
+                    "total_volume",
+                    "account_id",
+                    "name",
+                    "runtime_info"
                   ],
                   "filter": {},
                   "allow_aggregations": true
@@ -456,6 +598,21 @@
             ],
             "array_relationships": [
               {
+                "name": "bundles",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "operator_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "bundle",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "deposits",
                 "using": {
                   "manual_configuration": {
@@ -486,6 +643,21 @@
                 }
               },
               {
+                "name": "rewards",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "id": "operator_id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "operator_reward_event",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "withdrawals",
                 "using": {
                   "manual_configuration": {
@@ -506,27 +678,39 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "account_id",
+                    "id",
+                    "status",
                     "active_epoch_count",
                     "bundle_count",
                     "created_at",
+                    "last_bundle_at",
+                    "nomination_tax",
+                    "rejected_transfers_claimed_count",
+                    "sort_id",
+                    "transfers_in_count",
+                    "transfers_out_count",
+                    "transfers_rejected_count",
+                    "updated_at",
                     "current_epoch_rewards",
                     "current_storage_fee_deposit",
                     "current_total_shares",
                     "current_total_stake",
-                    "domain_id",
-                    "id",
-                    "last_bundle_at",
                     "minimum_nominator_stake",
-                    "nomination_tax",
-                    "raw_status",
-                    "signing_key",
-                    "sort_id",
-                    "status",
+                    "total_burned_balance",
+                    "total_consensus_storage_fee",
                     "total_deposits",
+                    "total_domain_execution_fee",
+                    "total_rejected_transfers_claimed",
                     "total_rewards_collected",
                     "total_tax_collected",
-                    "updated_at"
+                    "total_transfers_in",
+                    "total_transfers_out",
+                    "total_transfers_rejected",
+                    "total_volume",
+                    "account_id",
+                    "domain_id",
+                    "raw_status",
+                    "signing_key"
                   ],
                   "filter": {},
                   "allow_aggregations": true
@@ -540,6 +724,38 @@
               "name": "operator_reward_event",
               "schema": "public"
             },
+            "object_relationships": [
+              {
+                "name": "domain",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "operator",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "operator_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "operator",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
             "select_permissions": [
               {
                 "role": "user",
