@@ -16,8 +16,22 @@ type Domain @entity {
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
+  totalTransfersIn: BigInt!
+  transfersInCount: Int!
+  totalTransfersOut: BigInt!
+  transfersOutCount: Int!
+  totalRejectedTransfersClaimed: BigInt!
+  rejectedTransfersClaimedCount: Int!
+  totalTransfersRejected: BigInt!
+  transfersRejectedCount: Int!
+  totalVolume: BigInt! @index
+  totalConsensusStorageFee: BigInt!
+  totalDomainExecutionFee: BigInt!
+  totalBurnedBalance: BigInt!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
+  bundleCount: Int!
+  lastBundleAt: Int!
   createdAt: Int @index
   updatedAt: Int @index
 }
@@ -53,6 +67,18 @@ type Operator @entity {
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
+  totalTransfersIn: BigInt!
+  transfersInCount: Int!
+  totalTransfersOut: BigInt!
+  transfersOutCount: Int!
+  totalRejectedTransfersClaimed: BigInt!
+  rejectedTransfersClaimedCount: Int!
+  totalTransfersRejected: BigInt!
+  transfersRejectedCount: Int!
+  totalVolume: BigInt! @index
+  totalConsensusStorageFee: BigInt!
+  totalDomainExecutionFee: BigInt!
+  totalBurnedBalance: BigInt!
   rawStatus: String
   status: OperatorStatus! @index
   activeEpochCount: Int!
@@ -67,25 +93,18 @@ type Bundle @entity {
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
-
   domainBlockNumber: Int! @index
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
-
   totalTransfersIn: BigInt!
   transfersInCount: Int!
-
   totalTransfersOut: BigInt!
   transfersOutCount: Int!
-
   totalRejectedTransfersClaimed: BigInt!
   rejectedTransfersClaimedCount: Int!
-
   totalTransfersRejected: BigInt!
   transfersRejectedCount: Int!
-
   totalVolume: BigInt! @index
-
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!

@@ -71,10 +71,30 @@ export function processBundleStoredEvent(
   cache.bundles.set(bundle.id, bundle);
 
   domain.lastDomainBlockNumber = Number(receipt.domainBlockNumber);
+  domain.totalTransfersIn += totalTransfersIn;
+  domain.transfersInCount += transfersInCount;
+  domain.totalTransfersOut += totalTransfersOut;
+  domain.transfersOutCount += transfersOutCount;
+  domain.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
+  domain.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
+  domain.totalTransfersRejected += totalTransfersRejected;
+  domain.transfersRejectedCount += transfersRejectedCount;
+  domain.totalVolume += totalVolume;
+  domain.bundleCount++;
+  domain.lastBundleAt = getBlockNumber(block);
   domain.updatedAt = getBlockNumber(block);
 
   cache.domains.set(domain.id, domain);
 
+  operator.totalTransfersIn += totalTransfersIn;
+  operator.transfersInCount += transfersInCount;
+  operator.totalTransfersOut += totalTransfersOut;
+  operator.transfersOutCount += transfersOutCount;
+  operator.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
+  operator.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
+  operator.totalTransfersRejected += totalTransfersRejected;
+  operator.transfersRejectedCount += transfersRejectedCount;
+  operator.totalVolume += totalVolume;
   operator.bundleCount++;
   operator.lastBundleAt = getBlockNumber(block);
   operator.updatedAt = getBlockNumber(block);
