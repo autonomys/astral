@@ -5,6 +5,11 @@ export enum Chains {
   localhost = 'localhost',
 }
 
+export enum NetworkSource {
+  CONSENSUS = 'consensus',
+  DOMAIN = 'domain',
+}
+
 export interface Chain {
   title: string
   urls: {
