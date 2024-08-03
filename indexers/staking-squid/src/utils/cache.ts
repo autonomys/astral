@@ -1,4 +1,5 @@
-import type { Store } from "@subsquid/typeorm-store";
+import { Store } from "@subsquid/typeorm-store";
+import { Entity } from "@subsquid/typeorm-store/src/store";
 import {
   Account,
   Deposit,
@@ -62,30 +63,38 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
   };
 };
 
+const saveEntry = async <E extends Entity>(
+  ctx: Ctx<Store>,
+  cache: Cache,
+  name: keyof Cache
+) => {
+  try {
+    const entity = cache[name] as unknown as Map<string, E>;
+    if (entity.size === 0) return;
+
+    console.log("Saving " + entity.size + " " + name);
+
+    const entries = Array.from(entity.values());
+
+    await ctx.store.save(entries);
+  } catch (e) {
+    console.error("Failed to save " + name + " with error: " + e);
+  }
+};
+
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
-  console.log("Saving " + cache.domains.size + " domains");
-  await ctx.store.save(Array.from(cache.domains.values()));
-  console.log("Saving " + cache.accounts.size + " accounts");
-  await ctx.store.save(Array.from(cache.accounts.values()));
-  console.log("Saving " + cache.operators.size + " operators");
-  await ctx.store.save(Array.from(cache.operators.values()));
-  console.log("Saving " + cache.nominators.size + " nominators");
-  await ctx.store.save(Array.from(cache.nominators.values()));
-  console.log("Saving " + cache.deposits.size + " deposits");
-  await ctx.store.save(Array.from(cache.deposits.values()));
-  console.log("Saving " + cache.withdrawals.size + " withdrawals");
-  await ctx.store.save(Array.from(cache.withdrawals.values()));
+  await saveEntry(ctx, cache, "domains");
+  await saveEntry(ctx, cache, "accounts");
+  await saveEntry(ctx, cache, "operators");
+  await saveEntry(ctx, cache, "nominators");
+  await saveEntry(ctx, cache, "deposits");
+  await saveEntry(ctx, cache, "withdrawals");
 
-  console.log(
-    "Saving " +
-      cache.operatorRewardedEvents.size +
-      " operatorRewardedEvents events"
-  );
-  await ctx.store.save(Array.from(cache.operatorRewardedEvents.values()));
+  await saveEntry(ctx, cache, "operatorRewardedEvents");
 
-  await ctx.store.save(Array.from(cache.stats.values()));
-  await ctx.store.save(Array.from(cache.statsPerDomain.values()));
-  await ctx.store.save(Array.from(cache.statsPerOperator.values()));
+  await saveEntry(ctx, cache, "stats");
+  await saveEntry(ctx, cache, "statsPerDomain");
+  await saveEntry(ctx, cache, "statsPerOperator");
 
   // Clear the cache after saving for entry not needed for reference
 
