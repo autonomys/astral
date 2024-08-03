@@ -1,9 +1,13 @@
-module.exports = class Data1722628576670 {
-    name = 'Data1722628576670'
+module.exports = class Data1722650651091 {
+    name = 'Data1722650651091'
 
     async up(db) {
-        await db.query(`CREATE TABLE "domain" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "completed_epoch" integer NOT NULL, "last_domain_block_number" integer NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_27e3ec3ea0ae02c8c5bceab3ba9" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "domain" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "account_id" text NOT NULL, "name" text NOT NULL, "runtime_id" integer NOT NULL, "runtime" character varying(6) NOT NULL, "runtime_info" text, "completed_epoch" integer NOT NULL, "last_domain_block_number" integer NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_27e3ec3ea0ae02c8c5bceab3ba9" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_c1e90b3654ffe0a5544e502edb" ON "domain" ("sort_id") `)
+        await db.query(`CREATE INDEX "IDX_c117722589b2b0f927aa16e25f" ON "domain" ("account_id") `)
+        await db.query(`CREATE INDEX "IDX_26a07113f90df161f919c7d5a6" ON "domain" ("name") `)
+        await db.query(`CREATE INDEX "IDX_36bfbe927612b8c0712c25f5a0" ON "domain" ("runtime_id") `)
+        await db.query(`CREATE INDEX "IDX_9f96c312a490b7a2a3d017721e" ON "domain" ("runtime") `)
         await db.query(`CREATE INDEX "IDX_80867983eb3f6e204acfea4214" ON "domain" ("completed_epoch") `)
         await db.query(`CREATE INDEX "IDX_e3a1b94f40001682587d9b0a3d" ON "domain" ("last_domain_block_number") `)
         await db.query(`CREATE INDEX "IDX_35b49bec8ab1e3864de09a60d6" ON "domain" ("created_at") `)
@@ -75,6 +79,10 @@ module.exports = class Data1722628576670 {
     async down(db) {
         await db.query(`DROP TABLE "domain"`)
         await db.query(`DROP INDEX "public"."IDX_c1e90b3654ffe0a5544e502edb"`)
+        await db.query(`DROP INDEX "public"."IDX_c117722589b2b0f927aa16e25f"`)
+        await db.query(`DROP INDEX "public"."IDX_26a07113f90df161f919c7d5a6"`)
+        await db.query(`DROP INDEX "public"."IDX_36bfbe927612b8c0712c25f5a0"`)
+        await db.query(`DROP INDEX "public"."IDX_9f96c312a490b7a2a3d017721e"`)
         await db.query(`DROP INDEX "public"."IDX_80867983eb3f6e204acfea4214"`)
         await db.query(`DROP INDEX "public"."IDX_e3a1b94f40001682587d9b0a3d"`)
         await db.query(`DROP INDEX "public"."IDX_35b49bec8ab1e3864de09a60d6"`)
