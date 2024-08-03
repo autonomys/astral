@@ -11,6 +11,7 @@ import {
   createStats,
   createStatsPerDomain,
   createStatsPerOperator,
+  getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateOperator,
 } from "../storage";
@@ -35,7 +36,7 @@ export async function processEpochTransitionEvent(
     getOperators(apiAt),
   ]);
 
-  const formattedDomains = domainRegistry.map((domain) => {
+  const parsedDomains = domainRegistry.map((domain) => {
     return {
       domainId: (domain[0].toHuman() as string[])[0],
       ...(domain[1].toJSON() as Omit<
@@ -68,19 +69,17 @@ export async function processEpochTransitionEvent(
     (o) => o.operatorDetails.currentDomainId === BigInt(domainId)
   );
 
-  for (const formattedDomain of formattedDomains) {
-    const _domain = getOrCreateDomain(
-      cache,
-      block,
-      parseInt(formattedDomain.domainId)
+  for (const pDomain of parsedDomains) {
+    cache.accounts.set(
+      pDomain.ownerAccountId,
+      getOrCreateAccount(cache, block, pDomain.ownerAccountId)
     );
+    const _domain = getOrCreateDomain(cache, block, parseInt(pDomain.domainId));
 
-    _domain.accountId = formattedDomain.ownerAccountId;
-    _domain.name = formattedDomain.domainConfig.domainName;
-    _domain.runtimeId = formattedDomain.domainConfig.runtimeId;
-    const stringifiedRuntime = JSON.stringify(
-      formattedDomain.domainRuntimeInfo
-    );
+    _domain.accountId = pDomain.ownerAccountId;
+    _domain.name = pDomain.domainConfig.domainName;
+    _domain.runtimeId = pDomain.domainConfig.runtimeId;
+    const stringifiedRuntime = JSON.stringify(pDomain.domainRuntimeInfo);
     _domain.runtime = stringifiedRuntime.includes("AutoId")
       ? DomainRuntime.AutoId
       : DomainRuntime.EVM;
