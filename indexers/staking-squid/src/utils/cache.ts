@@ -2,6 +2,7 @@ import { Store } from "@subsquid/typeorm-store";
 import { Entity } from "@subsquid/typeorm-store/src/store";
 import {
   Account,
+  Bundle,
   Deposit,
   Domain,
   Nominator,
@@ -22,6 +23,7 @@ export type Cache = {
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
 
+  bundles: Map<string, Bundle>;
   operatorRewardedEvents: Map<string, OperatorRewardEvent>;
 
   stats: Map<string, Stats>;
@@ -37,6 +39,7 @@ export const initCache: Cache = {
   deposits: new Map(),
   withdrawals: new Map(),
 
+  bundles: new Map(),
   operatorRewardedEvents: new Map(),
 
   stats: new Map(),
@@ -90,6 +93,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   await saveEntry(ctx, cache, "deposits");
   await saveEntry(ctx, cache, "withdrawals");
 
+  await saveEntry(ctx, cache, "bundles");
   await saveEntry(ctx, cache, "operatorRewardedEvents");
 
   await saveEntry(ctx, cache, "stats");
@@ -97,10 +101,12 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   await saveEntry(ctx, cache, "statsPerOperator");
 
   // Clear the cache after saving for entry not needed for reference
-
   cache.deposits.clear();
   cache.withdrawals.clear();
+
+  cache.bundles.clear();
   cache.operatorRewardedEvents.clear();
+
   cache.stats.clear();
   cache.statsPerDomain.clear();
   cache.statsPerOperator.clear();

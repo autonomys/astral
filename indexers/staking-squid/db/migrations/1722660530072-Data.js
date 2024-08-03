@@ -1,5 +1,5 @@
-module.exports = class Data1722654576048 {
-    name = 'Data1722654576048'
+module.exports = class Data1722660530072 {
+    name = 'Data1722660530072'
 
     async up(db) {
         await db.query(`CREATE TABLE "domain" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "account_id" text NOT NULL, "name" text NOT NULL, "runtime_id" integer NOT NULL, "runtime" character varying(6) NOT NULL, "runtime_info" text, "completed_epoch" integer NOT NULL, "last_domain_block_number" integer NOT NULL, "total_deposits" numeric NOT NULL, "total_tax_collected" numeric NOT NULL, "total_rewards_collected" numeric NOT NULL, "current_total_stake" numeric NOT NULL, "current_storage_fee_deposit" numeric NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_27e3ec3ea0ae02c8c5bceab3ba9" PRIMARY KEY ("id"))`)
@@ -23,6 +23,14 @@ module.exports = class Data1722654576048 {
         await db.query(`CREATE INDEX "IDX_c7fd0bf382a9832cf1db87827c" ON "operator" ("status") `)
         await db.query(`CREATE INDEX "IDX_d6260ed02d20cf8231ebb742d6" ON "operator" ("created_at") `)
         await db.query(`CREATE INDEX "IDX_d6d18ca05472785030a7a3963b" ON "operator" ("updated_at") `)
+        await db.query(`CREATE TABLE "bundle" ("id" character varying NOT NULL, "account_id" text NOT NULL, "domain_id" text NOT NULL, "operator_id" text NOT NULL, "domain_block_number" integer NOT NULL, "consensus_block_number" integer NOT NULL, "consensus_block_hash" text NOT NULL, "total_transfers_in" numeric NOT NULL, "transfers_in_count" integer NOT NULL, "total_transfers_out" numeric NOT NULL, "transfers_out_count" integer NOT NULL, "total_rejected_transfers_claimed" numeric NOT NULL, "rejected_transfers_claimed_count" integer NOT NULL, "total_transfers_rejected" numeric NOT NULL, "transfers_rejected_count" integer NOT NULL, "total_volume" numeric NOT NULL, "consensus_storage_fee" numeric NOT NULL, "domain_execution_fee" numeric NOT NULL, "burned_balance" numeric NOT NULL, CONSTRAINT "PK_637e3f87e837d6532109c198dea" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_ff3a1311a556605695ae534097" ON "bundle" ("account_id") `)
+        await db.query(`CREATE INDEX "IDX_82b7b684e1b50da245f72d6020" ON "bundle" ("domain_id") `)
+        await db.query(`CREATE INDEX "IDX_74f4813b760e4ab18e662e2394" ON "bundle" ("operator_id") `)
+        await db.query(`CREATE INDEX "IDX_b5c951f317cc0451d9d3c21aaa" ON "bundle" ("domain_block_number") `)
+        await db.query(`CREATE INDEX "IDX_5c848822e75fbe863d43231468" ON "bundle" ("consensus_block_number") `)
+        await db.query(`CREATE INDEX "IDX_33b73ddabaa5e322cff6ab15b1" ON "bundle" ("consensus_block_hash") `)
+        await db.query(`CREATE INDEX "IDX_e49c7ec4d50ca7652f97f57172" ON "bundle" ("total_volume") `)
         await db.query(`CREATE TABLE "nominator" ("id" character varying NOT NULL, "account_id" text NOT NULL, "domain_id" text NOT NULL, "operator_id" text NOT NULL, "shares" numeric NOT NULL, "total_deposits" numeric NOT NULL, "status" character varying(15) NOT NULL, "created_at" integer, "updated_at" integer, CONSTRAINT "PK_7489b7a79b066f2660eab25f60b" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_917636e6d1130ea9506eaeafef" ON "nominator" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_b017cafe03fa79059bd8164c4e" ON "nominator" ("domain_id") `)
@@ -98,6 +106,14 @@ module.exports = class Data1722654576048 {
         await db.query(`DROP INDEX "public"."IDX_c7fd0bf382a9832cf1db87827c"`)
         await db.query(`DROP INDEX "public"."IDX_d6260ed02d20cf8231ebb742d6"`)
         await db.query(`DROP INDEX "public"."IDX_d6d18ca05472785030a7a3963b"`)
+        await db.query(`DROP TABLE "bundle"`)
+        await db.query(`DROP INDEX "public"."IDX_ff3a1311a556605695ae534097"`)
+        await db.query(`DROP INDEX "public"."IDX_82b7b684e1b50da245f72d6020"`)
+        await db.query(`DROP INDEX "public"."IDX_74f4813b760e4ab18e662e2394"`)
+        await db.query(`DROP INDEX "public"."IDX_b5c951f317cc0451d9d3c21aaa"`)
+        await db.query(`DROP INDEX "public"."IDX_5c848822e75fbe863d43231468"`)
+        await db.query(`DROP INDEX "public"."IDX_33b73ddabaa5e322cff6ab15b1"`)
+        await db.query(`DROP INDEX "public"."IDX_e49c7ec4d50ca7652f97f57172"`)
         await db.query(`DROP TABLE "nominator"`)
         await db.query(`DROP INDEX "public"."IDX_917636e6d1130ea9506eaeafef"`)
         await db.query(`DROP INDEX "public"."IDX_b017cafe03fa79059bd8164c4e"`)

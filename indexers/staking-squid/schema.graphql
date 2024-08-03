@@ -62,6 +62,35 @@ type Operator @entity {
   updatedAt: Int @index
 }
 
+type Bundle @entity {
+  id: ID! @index
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+
+  domainBlockNumber: Int! @index
+  consensusBlockNumber: Int! @index
+  consensusBlockHash: String! @index
+
+  totalTransfersIn: BigInt!
+  transfersInCount: Int!
+
+  totalTransfersOut: BigInt!
+  transfersOutCount: Int!
+
+  totalRejectedTransfersClaimed: BigInt!
+  rejectedTransfersClaimedCount: Int!
+
+  totalTransfersRejected: BigInt!
+  transfersRejectedCount: Int!
+
+  totalVolume: BigInt! @index
+
+  consensusStorageFee: BigInt!
+  domainExecutionFee: BigInt!
+  burnedBalance: BigInt!
+}
+
 enum NominatorStatus {
   PENDING
   STAKING
