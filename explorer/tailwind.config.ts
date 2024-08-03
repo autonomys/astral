@@ -27,7 +27,9 @@ const config: Config = {
         // Grays and Blacks
         grayDark: '#282929',
         grayDarker: '#241235',
+        grayText: '#8F9BB3',
         grayLight: '#DDEFF1',
+        grayLighter: '#F3F5FA',
 
         // Whites
         white: '#FFFFFF',
@@ -48,13 +50,13 @@ const config: Config = {
         purpleTint: '#AC70E1',
         purpleTinge: '#E6ADDC',
         purpleUndertone: '#3A2D85',
-        purpleRoyal: '#4524C1', 
-        purpleSoft: '#D3DEF5', 
-        purpleElectric: '#E970F8', 
-        purpleMist: '#EFFDFF', 
+        purpleRoyal: '#4524C1',
+        purpleSoft: '#D3DEF5',
+        purpleElectric: '#E970F8',
+        purpleMist: '#EFFDFF',
 
         // Blues
-        blueShade1: '#6C6BCF', 
+        blueShade1: '#6C6BCF',
         blueShade2: '#D9F0FC',
         blueAccent: '#1E254E',
         blueLight: '#F3FBFF',
@@ -69,7 +71,7 @@ const config: Config = {
 
         // Misc
         pinkAccent: '#EA71F9',
-        bronze: '#F1F7F8', 
+        bronze: '#F1F7F8',
       },
     },
     fontFamily: {

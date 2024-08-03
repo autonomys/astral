@@ -2,13 +2,19 @@ import { FC } from 'react'
 
 type AutonomysSymbolProps = {
   fill?: string
+  width?: string
+  height?: string
 }
 
-export const AutonomysSymbol: FC<AutonomysSymbolProps> = ({ fill = 'currentColor' }) => {
+export const AutonomysSymbol: FC<AutonomysSymbolProps> = ({
+  fill = 'currentColor',
+  width = '23',
+  height = '23',
+}) => {
   return (
     <svg
-      width='22'
-      height='23'
+      width={width}
+      height={height}
       viewBox='0 0 139 137'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
