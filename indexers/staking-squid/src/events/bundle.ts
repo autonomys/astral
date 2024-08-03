@@ -80,7 +80,14 @@ export function processBundleStoredEvent(
   domain.totalTransfersRejected += totalTransfersRejected;
   domain.transfersRejectedCount += transfersRejectedCount;
   domain.totalVolume += totalVolume;
-  domain.bundleCount++;
+  (domain.totalConsensusStorageFee += BigInt(
+    receipt.blockFees.consensusStorageFee
+  )),
+    (domain.totalDomainExecutionFee += BigInt(
+      receipt.blockFees.domainExecutionFee
+    )),
+    (domain.totalBurnedBalance += BigInt(receipt.blockFees.burnedBalance)),
+    domain.bundleCount++;
   domain.lastBundleAt = getBlockNumber(block);
   domain.updatedAt = getBlockNumber(block);
 
@@ -94,7 +101,14 @@ export function processBundleStoredEvent(
   operator.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
   operator.totalTransfersRejected += totalTransfersRejected;
   operator.transfersRejectedCount += transfersRejectedCount;
-  operator.totalVolume += totalVolume;
+  (operator.totalConsensusStorageFee += BigInt(
+    receipt.blockFees.consensusStorageFee
+  )),
+    (operator.totalDomainExecutionFee += BigInt(
+      receipt.blockFees.domainExecutionFee
+    )),
+    (operator.totalBurnedBalance += BigInt(receipt.blockFees.burnedBalance)),
+    (operator.totalVolume += totalVolume);
   operator.bundleCount++;
   operator.lastBundleAt = getBlockNumber(block);
   operator.updatedAt = getBlockNumber(block);
