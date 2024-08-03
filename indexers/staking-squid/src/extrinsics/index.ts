@@ -23,7 +23,6 @@ export async function processExtrinsic(
   block: CtxBlock,
   extrinsic: CtxExtrinsic
 ) {
-  console.log("extrinsic", extrinsic.call?.name);
   switch (extrinsic.call?.name) {
     case calls.domains.registerOperator.name:
       return processRegisterOperator(cache, block, extrinsic);

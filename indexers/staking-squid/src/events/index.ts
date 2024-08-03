@@ -32,7 +32,6 @@ async function processEvent(
   extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
-  console.log("event", event.name);
   switch (event.name) {
     // new domain
     case events.domains.domainInstantiated.name:
