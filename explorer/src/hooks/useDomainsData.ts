@@ -1,36 +1,24 @@
+import { Block } from '@/types/consensus'
 import useWallet from 'hooks/useWallet'
-import { useCallback } from 'react'
 import { useDomainsStates } from 'states/domains'
-import type { Domain, OperatorAllowList } from 'types/domain'
 
 export const useDomainsData = () => {
-  const { api } = useWallet()
-  const { setDomains, setMinOperatorStake } = useDomainsStates()
+  const { domainsApis } = useWallet()
+  const { setDomainsLastBlockNumber } = useDomainsStates()
 
-  const loadData = useCallback(async () => {
-    if (!api) return
-
-    const [domains, domainRegistry, properties] = await Promise.all([
-      api.consts.domains,
-      api.query.domains.domainRegistry.entries(),
-      api.rpc.system.properties(),
-    ])
-
-    setDomains(
-      domainRegistry.map((domain, index) => {
-        return {
-          domainId: index.toString(),
-          domainName: (domain[1].toJSON() as { domainConfig: { domainName: string } }).domainConfig
-            .domainName,
-          operatorAllowList: (
-            domain[1].toJSON() as { domainConfig: { operatorAllowList: OperatorAllowList } }
-          ).domainConfig.operatorAllowList,
-        } as Domain
-      }),
-    )
-    const _tokenDecimals = (properties.tokenDecimals.toPrimitive() as number[])[0]
-    setMinOperatorStake((domains.minOperatorStake.toPrimitive() as number) / 10 ** _tokenDecimals)
-  }, [api, setDomains, setMinOperatorStake])
+  const loadData = async () => {
+    if (!domainsApis) return
+    try {
+      const domainsBlocks = await Promise.all(
+        Object.values(domainsApis).map((d) => d.rpc.chain.getBlock()),
+      )
+      domainsBlocks.map((block, index) =>
+        setDomainsLastBlockNumber(index.toString(), (block.toJSON() as Block).block.header.number),
+      )
+    } catch (error) {
+      console.error('Failed to load domains data', error)
+    }
+  }
 
   return { loadData }
 }

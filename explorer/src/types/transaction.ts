@@ -1,10 +1,10 @@
-import type { Chain } from 'constants/chains'
+import type { NetworkId } from '@autonomys/auto-utils'
 import type { TransactionStatus } from 'constants/transaction'
 import type { WalletAccountWithType } from 'types/wallet'
 
 export interface Transaction {
   ownerAccount: WalletAccountWithType
-  chain: Chain
+  chain: NetworkId
   status: TransactionStatus
   submittedAtBlockHash: string
   submittedAtBlockNumber: number

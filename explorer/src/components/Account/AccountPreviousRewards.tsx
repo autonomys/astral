@@ -1,3 +1,4 @@
+import { TOKEN } from 'constants/general'
 import { Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -6,7 +7,7 @@ import {
   AllRewardForAccountByIdQuery,
   AllRewardForAccountByIdQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -61,12 +62,12 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const [previousRewards, setRewards] = useState(defaultRewards)
 
   const { accountId } = useParams<AccountIdParam>()
-  const { selectedChain } = useDomains()
+  const { isEvm } = useChains()
   const inFocus = useWindowFocus()
 
   const convertedAddress = useMemo(
-    () => (selectedChain.isDomain ? accountId : formatAddress(accountId)),
-    [accountId, selectedChain],
+    () => (isEvm ? accountId : formatAddress(accountId)),
+    [accountId, isEvm],
   )
 
   const { setIsVisible } = useSquidQuery<
@@ -77,8 +78,9 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
     {
       variables: { accountId: convertedAddress ?? '' },
       skip: !inFocus,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'accountPreviousReward',
   )
 
@@ -88,9 +90,9 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   } = useQueryStates()
 
   const rewardsData = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const rewards = useMemo(
     () =>
@@ -259,7 +261,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
             Testnet
           </div>
           <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
-            Localized {selectedChain.token.symbol}
+            Localized {TOKEN.symbol}
           </div>
           <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
             Mainnet allocation %

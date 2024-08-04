@@ -1,5 +1,6 @@
-import { Chains, defaultChain } from '@/constants/chains'
 import { Routes } from '@/constants/routes'
+import { NetworkId } from '@autonomys/auto-utils'
+import { defaultIndexer } from 'constants/indexers'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
@@ -21,11 +22,13 @@ export async function middleware(req: NextRequest) {
 
   if (req.nextUrl.pathname === '/') {
     return NextResponse.redirect(
-      new URL(`/${defaultChain.urls.page}/${Routes.consensus}/${urlParams}`, req.url),
+      new URL(`/${defaultIndexer.network}/${Routes.consensus}/${urlParams}`, req.url),
     )
-  } else if (Object.values(Chains).includes(req.nextUrl.pathname.replace('/', '') as Chains)) {
+  } else if (
+    Object.values(NetworkId).includes(req.nextUrl.pathname.replace('/', '') as NetworkId)
+  ) {
     return NextResponse.redirect(
-      new URL(`/${defaultChain.urls.page}/${Routes.consensus}/${urlParams}`, req.url),
+      new URL(`/${defaultIndexer.network}/${Routes.consensus}/${urlParams}`, req.url),
     )
   }
 

@@ -3,35 +3,37 @@
 import { CpuChipIcon, GlobeAltIcon, QueueListIcon, TrophyIcon } from '@heroicons/react/24/outline'
 import { WalletButton } from 'components/WalletButton'
 import { WalletSidekick } from 'components/WalletSideKick'
-import { chains } from 'constants/chains'
-import { domains } from 'constants/domains'
+// import { indexers } from 'constants/indexers'
+// import { domains } from 'constants/domains'
 import { ROUTES, Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+// import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { FC, useCallback, useMemo } from 'react'
+import type { ChainParam } from 'types/app'
 import AccountListDropdown from '../WalletButton/AccountListDropdown'
 
 export const SectionHeader: FC = () => {
+  const { chain } = useParams<ChainParam>()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const pathname = usePathname()
 
-  const { push } = useRouter()
+  // const { push } = useRouter()
 
-  const { setSelectedChain, selectedChain, setSelectedDomain } = useDomains()
+  // const { setSelectedChain, selectedChain, setSelectedDomain } = useChains()
   const { actingAccount } = useWallet()
 
-  const handleDomainSelected = useCallback(
-    (domain: string) => {
-      setSelectedDomain(domain)
-      if (domain === Routes.nova) setSelectedChain(domains[0])
-      else setSelectedChain(chains[0])
-      push(`/${selectedChain.urls.page}/${domain}`)
-    },
-    [push, setSelectedChain, setSelectedDomain, selectedChain.urls.page],
-  )
+  // const handleDomainSelected = useCallback(
+  //   (domain: string) => {
+  //     setSelectedDomain(domain)
+  //     if (domain === Routes.nova) setSelectedChain(domains[0])
+  //     else setSelectedChain(chains[0])
+  //     push(`/${network}/${domain}`)
+  //   },
+  //   [push, setSelectedChain, setSelectedDomain, network],
+  // )
 
   const domainIcon = useCallback((domain: (typeof ROUTES)[0], isActive: boolean) => {
     const className = `w-6 h-6 ${isActive ? 'text-white' : 'text-grayDark'} dark:text-white`
@@ -52,15 +54,14 @@ export const SectionHeader: FC = () => {
   const domainsOptions = useMemo(
     () =>
       ROUTES.map((item, index) => {
-        const isActive = pathname.includes(`${selectedChain.urls.page}/${item.name}`)
+        const isActive = pathname.includes(`${chain}/${item.name}`)
         return (
           <div className='flex items-center text-[13px] font-semibold' key={`${item}-${index}`}>
             <Link
-              href={`/${selectedChain.urls.page}/${item.name}`}
+              href={`/${chain}/${item.name}`}
               className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
             >
               <button
-                onClick={() => handleDomainSelected(item.name)}
                 className={
                   isActive
                     ? 'rounded-full bg-grayDarker px-4 py-2 text-white dark:bg-purpleAccent'
@@ -73,7 +74,7 @@ export const SectionHeader: FC = () => {
           </div>
         )
       }),
-    [handleDomainSelected, isDesktop, pathname, selectedChain.urls.page, domainIcon],
+    [isDesktop, pathname, chain, domainIcon],
   )
 
   return (

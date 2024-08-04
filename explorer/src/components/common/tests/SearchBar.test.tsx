@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react'
-import { BrowserRouter } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
+import { BrowserRouter } from 'react-router-dom'
 
 // common - searchBar
-import { SearchBar } from 'common/components'
 import { MockedProvider } from '@apollo/client/testing'
+import { SearchBar } from 'common/components'
 import { ChainProvider } from 'common/providers/ChainProvider'
 
 const mockUseDomains = () => ({
@@ -18,7 +18,7 @@ const mockUseDomains = () => ({
 
 describe('Search bar', () => {
   beforeEach(() => {
-    jest.mock('common/hooks/useDomains', () => mockUseDomains)
+    jest.mock('common/hooks/useChains', () => mockUseDomains)
   })
   it('renders properly', async () => {
     const { getByTestId } = render(

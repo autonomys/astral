@@ -18,7 +18,7 @@ import {
   BlocksConnectionQuery,
   BlocksConnectionQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -36,7 +36,7 @@ dayjs.extend(relativeTime)
 
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const novaExplorerBanner = useEvmExplorerBanner('blocks')
 
   const [pagination, setPagination] = useState({
@@ -45,9 +45,8 @@ export const BlockList: FC = () => {
   })
   const inFocus = useWindowFocus()
   const BlockListQuery = useMemo(
-    () =>
-      selectedChain.isDomain ? QUERY_BLOCK_LIST_CONNECTION_DOMAIN : QUERY_BLOCK_LIST_CONNECTION,
-    [selectedChain.isDomain],
+    () => (isEvm ? QUERY_BLOCK_LIST_CONNECTION_DOMAIN : QUERY_BLOCK_LIST_CONNECTION),
+    [isEvm],
   )
 
   const orderBy = useMemo(() => BlockOrderByInput.HeightDesc, [])
@@ -72,8 +71,9 @@ export const BlockList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'blocks',
   )
 
@@ -83,14 +83,14 @@ export const BlockList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const blocksConnection = useMemo(() => data && data.blocksConnection, [data])
   const blocks = useMemo(
@@ -103,7 +103,7 @@ export const BlockList: FC = () => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
-  const chain = useMemo(() => selectedChain.urls.page, [selectedChain])
+  const chain = useMemo(() => network, [network])
 
   const columns = useMemo(
     () => [
@@ -116,7 +116,7 @@ export const BlockList: FC = () => {
             key={`${row.index}-block-height`}
             data-testid={`block-link-${row.index}`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(chain, selectedDomain, row.original.height)}
+            href={INTERNAL_ROUTES.blocks.id.page(chain, section, row.original.height)}
           >
             <div>{row.original.height}</div>
           </Link>
@@ -170,7 +170,7 @@ export const BlockList: FC = () => {
           <div key={`${row.index}-block-author`}>
             <CopyButton value={row.original.author?.id || 'Unkown'} message='Author account copied'>
               <BlockAuthor
-                domain={selectedDomain}
+                domain={section}
                 chain={chain}
                 author={row.original.author?.id}
                 isDesktop={false}
@@ -180,7 +180,7 @@ export const BlockList: FC = () => {
         ),
       },
     ],
-    [chain, selectedDomain],
+    [chain, section],
   )
 
   const pageCount = useMemo(

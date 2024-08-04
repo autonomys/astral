@@ -18,7 +18,7 @@ import {
   ExtrinsicsConnectionQuery,
   ExtrinsicsConnectionQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import Link from 'next/link'
 import { FC, useEffect, useMemo, useState } from 'react'
@@ -35,7 +35,7 @@ dayjs.extend(relativeTime)
 
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -63,8 +63,9 @@ export const ExtrinsicList: FC = () => {
     {
       variables,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'extrinsics',
   )
 
@@ -74,14 +75,14 @@ export const ExtrinsicList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -114,11 +115,7 @@ export const ExtrinsicList: FC = () => {
           <Link
             key={`${row.index}-extrinsic-block`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             <div>{`${row.original.block.height}-${row.index}`}</div>
           </Link>
@@ -170,7 +167,7 @@ export const ExtrinsicList: FC = () => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const noData = useMemo(() => {

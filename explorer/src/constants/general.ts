@@ -44,3 +44,8 @@ export const SUBSPACE_ACC_PREFIX = 2254
 export const BIGINT_ZERO = BigInt(0)
 
 export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000)
+
+export const TOKEN = {
+  symbol: 'tSSC',
+  decimals: 18,
+}

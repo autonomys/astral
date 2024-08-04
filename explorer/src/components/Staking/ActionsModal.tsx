@@ -1,7 +1,6 @@
 'use client'
 
 import { WalletType } from '@/constants'
-import { floatToStringWithDecimals, formatUnitsToNumber } from '@/utils/number'
 import {
   deregisterOperator,
   nominateOperator,
@@ -11,13 +10,14 @@ import {
 } from '@autonomys/auto-consensus'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
+import { TOKEN } from 'constants/general'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
-import useDomains from 'hooks/useDomains'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import * as Yup from 'yup'
 
 export enum OperatorActionType {
@@ -54,7 +54,6 @@ interface FormValues {
 const AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT = 0.0001
 
 export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
-  const { selectedChain } = useDomains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
@@ -325,7 +324,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                         ? 'stake'
                         : 'withdraw'
                     }`}{' '}
-                    ({selectedChain.token.symbol})
+                    ({TOKEN.symbol})
                   </span>
                   <FieldArray
                     name='dischargeNorms'
@@ -533,7 +532,6 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     handleUnlockNominator,
     handleAddFunds,
     handleWithdraw,
-    selectedChain.token.symbol,
     maxAmountToAdd,
     actingAccount,
     sliderValue,
