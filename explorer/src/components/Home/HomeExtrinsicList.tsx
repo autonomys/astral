@@ -8,7 +8,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
@@ -21,7 +21,7 @@ interface HomeExtrinsicListProps {
 }
 
 export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   const extrinsics = useMemo(() => data.extrinsics as Extrinsic[], [data.extrinsics])
 
@@ -34,11 +34,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
           <Link
             className='hover:text-purpleAccent'
             key={`${row.index}-home-extrinsic-hash`}
-            href={INTERNAL_ROUTES.extrinsics.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             <div>{shortString(row.original.hash)}</div>
           </Link>
@@ -82,7 +78,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   return (
@@ -93,14 +89,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
         </div>
         <Link
           data-testid='testLinkExtrinsics'
-          href={
-            '/' +
-            selectedChain.urls.page +
-            '/' +
-            selectedDomain +
-            '/' +
-            INTERNAL_ROUTES.extrinsics.list
-          }
+          href={'/' + network + '/' + section + '/' + INTERNAL_ROUTES.extrinsics.list}
           className='p-2 transition duration-150 ease-in-out'
         >
           <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />

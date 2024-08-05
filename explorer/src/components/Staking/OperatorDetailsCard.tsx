@@ -1,18 +1,17 @@
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import { Chains } from 'constants/'
+import { TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import type { OperatorByIdQuery } from 'gql/types/staking'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
+import { bigNumberToNumber } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 
 dayjs.extend(relativeTime)
@@ -23,7 +22,7 @@ type Props = {
 }
 
 export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   if (!operator) return null
@@ -48,7 +47,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
                         data-testid={`nominator-link-${operator.account_id}}`}
                         className='hover:text-purpleAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
-                          selectedChain.urls.page,
+                          network,
                           Routes.consensus,
                           operator.account_id,
                         )}
@@ -70,19 +69,14 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Minimum Stake'>
-              {bigNumberToNumber(operator.minimum_nominator_stake)} {selectedChain.token.symbol}
+              {bigNumberToNumber(operator.minimum_nominator_stake)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Nominator Tax'>{operator.nomination_tax} %</StyledListItem>
             <StyledListItem title='Current Stake'>
-              {bigNumberToNumber(operator.current_total_stake)} {selectedChain.token.symbol}
-            </StyledListItem>
-            <StyledListItem title='Shares'>
-              {numberWithCommas(operator.current_total_shares)}
+              {bigNumberToNumber(operator.current_total_stake)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Status'>
-              {selectedChain.urls.page === Chains.gemini3g
-                ? operator.raw_status
-                : capitalizeFirstLetter(operatorStatus(operator.raw_status))}
+              {capitalizeFirstLetter(operatorStatus(operator.raw_status))}
             </StyledListItem>
           </List>
         </div>

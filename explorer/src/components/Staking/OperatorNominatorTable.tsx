@@ -1,6 +1,6 @@
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
@@ -8,7 +8,7 @@ import {
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
 } from 'gql/types/staking'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
@@ -38,7 +38,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -66,7 +66,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
               data-testid={`nominator-link-${row.original.id}-${row.original.account_id}-${row.index}}`}
               className='hover:text-purpleAccent'
               href={INTERNAL_ROUTES.accounts.id.page(
-                selectedChain.urls.page,
+                network,
                 Routes.consensus,
                 row.original.account_id,
               )}
@@ -96,7 +96,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
                   ),
                 ),
               )}{' '}
-              {selectedChain.token.symbol}
+              {TOKEN.symbol}
             </div>
           )
         },
@@ -147,30 +147,20 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
             <div>
               {deposit && deposit.shares > BIGINT_ZERO && (
                 <>
-                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${selectedChain.token.symbol}`}
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${TOKEN.symbol}`}
                   <br />
                 </>
               )}
               {deposit &&
                 deposit.pending !== null &&
                 deposit.pending.amount > BIGINT_ZERO &&
-                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${selectedChain.token.symbol}`}
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${TOKEN.symbol}`}
             </div>
           )
         },
       })
     return cols
-  }, [
-    deposits,
-    isLargeLaptop,
-    op,
-    operator,
-    operatorId,
-    selectedChain.token.symbol,
-    selectedChain.urls.page,
-    subspaceAccount,
-    useRpcData,
-  ])
+  }, [deposits, isLargeLaptop, op, operator, operatorId, network, subspaceAccount, useRpcData])
 
   const orderBy = useMemo(
     () =>

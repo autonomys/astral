@@ -13,7 +13,7 @@ import type {
   LogsConnectionQuery,
   LogsConnectionQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -29,7 +29,7 @@ import { QUERY_LOG_CONNECTION_LIST } from './query'
 
 export const LogList: FC = () => {
   const { ref, inView } = useInView()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -56,8 +56,9 @@ export const LogList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'logs',
   )
 
@@ -67,14 +68,14 @@ export const LogList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [isEvm, evmEntry, consensusEntry])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const logsConnection = useMemo(() => data && data.logsConnection, [data])
   const logs = useMemo(
@@ -102,11 +103,7 @@ export const LogList: FC = () => {
             <Link
               className='w-full hover:text-purpleAccent'
               data-testid={`log-link-${row.index}`}
-              href={INTERNAL_ROUTES.logs.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                row.original.id,
-              )}
+              href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
             >
               <div>{row.original.id}</div>
             </Link>
@@ -147,7 +144,7 @@ export const LogList: FC = () => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const pageCount = useMemo(

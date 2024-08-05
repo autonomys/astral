@@ -7,7 +7,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export const LogDetailsEventList: FC<Props> = ({ events }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -38,11 +38,7 @@ export const LogDetailsEventList: FC<Props> = ({ events }) => {
           <div className='flex w-full gap-1' key={`${row.index}-log-event-id`}>
             <Link
               className='w-full hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.events.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                row.original.id,
-              )}
+              href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
               {`${row.original.block?.height}-${row.index}`}
             </Link>
@@ -74,7 +70,7 @@ export const LogDetailsEventList: FC<Props> = ({ events }) => {
         cell: ({ row }: Cell<Event>) => <div key={`${row.index}-phase`}>{row.original.phase}</div>,
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const totalCount = useMemo(() => (events ? events.length : 0), [events])

@@ -4,7 +4,7 @@ import { List, StyledListItem } from 'components/common/List'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { FC } from 'react'
 import { BlockAuthor } from './BlockAuthor'
 
@@ -16,8 +16,8 @@ type Props = {
 }
 
 export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
-  const { selectedChain, selectedDomain } = useDomains()
-  const chain = selectedChain.urls.page
+  const { network, section } = useChains()
+  const chain = network
 
   return (
     <div className='w-full'>
@@ -37,7 +37,7 @@ export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
             <StyledListItem title='Author'>
               <CopyButton value={block.author?.id || ''} message='Block author copied'>
                 <BlockAuthor
-                  domain={selectedDomain}
+                  domain={section}
                   chain={chain}
                   author={block.author?.id}
                   isDesktop={isDesktop}

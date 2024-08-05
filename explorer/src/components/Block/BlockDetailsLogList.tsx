@@ -7,7 +7,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Log } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
@@ -20,7 +20,7 @@ type Props = {
 }
 
 export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -37,11 +37,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
           <Link
             key={`${row.index}-block-log-id`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.logs.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
           >
             {row.original.id}
           </Link>
@@ -64,7 +60,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const totalCount = useMemo(() => (logs ? logs.length : 0), [logs])

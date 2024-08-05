@@ -4,7 +4,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { EventByIdQuery, EventByIdQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -18,15 +18,16 @@ import { QUERY_EVENT_BY_ID } from './query'
 export const Event: FC = () => {
   const { ref, inView } = useInView()
   const { eventId } = useParams<EventIdParam>()
-  const { selectedChain } = useDomains()
+  const { isEvm } = useChains()
   const inFocus = useWindowFocus()
   const { setIsVisible } = useSquidQuery<EventByIdQuery, EventByIdQueryVariables>(
     QUERY_EVENT_BY_ID,
     {
       variables: { eventId: eventId ?? '' },
       skip: !inFocus,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'event',
   )
 
@@ -36,14 +37,14 @@ export const Event: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const event = useMemo(() => data && data.eventById, [data])
 

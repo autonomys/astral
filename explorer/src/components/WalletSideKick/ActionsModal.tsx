@@ -5,6 +5,7 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
 import { Tooltip } from 'components/common/Tooltip'
+import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT,
@@ -13,7 +14,7 @@ import {
   WalletType,
 } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -54,7 +55,7 @@ interface MessageFormValues extends OptionalTxFormValues {
 }
 
 export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose }) => {
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const { api, actingAccount, accounts, injector, subspaceAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)
@@ -507,7 +508,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       {`Amount to ${
                         WalletAction[action] === WalletAction.SendToken ? 'send' : 'withdraw'
                       }`}{' '}
-                      ({selectedChain.token.symbol})
+                      ({TOKEN.symbol})
                     </span>
                     <FieldArray
                       name='dischargeNorms'
@@ -734,11 +735,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                   <Link
                     data-testid='wallet-link'
                     className='pr-2 hover:text-purpleAccent'
-                    href={INTERNAL_ROUTES.accounts.id.page(
-                      selectedChain.urls.page,
-                      'consensus',
-                      subspaceAccount,
-                    )}
+                    href={INTERNAL_ROUTES.accounts.id.page(network, 'consensus', subspaceAccount)}
                   >
                     <span className='ml-2 w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white md:w-full'>
                       {actingAccount.name}
@@ -881,8 +878,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     messageFormValidationSchema,
     subspaceAccount,
     actingAccount,
-    selectedChain.urls.page,
-    selectedChain.token.symbol,
+    network,
     initialCustomExtrinsicValues,
     customExtrinsicFormValidationSchema,
     handleCopy,

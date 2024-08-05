@@ -9,7 +9,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -40,11 +40,7 @@ export const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
           <Link
             key={`${row.index}-extrinsic-block`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             <div>{`${row.original.block.height}-${row.index}`}</div>
           </Link>
@@ -96,7 +92,7 @@ export const ExtrinsicTable: FC<Props> = ({ extrinsics }) => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])

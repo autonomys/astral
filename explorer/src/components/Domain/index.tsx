@@ -2,19 +2,19 @@
 
 import { BlockIcon, DocIcon } from '@/components/icons'
 import { Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 
 export const DomainPage: FC = () => {
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
 
   const listOfCards = useMemo(
     () => [
       {
         title: 'Nova',
         description: 'EVM domain',
-        href: `/${selectedChain.urls.page}/${Routes.nova}`,
+        href: `/${network}/${Routes.nova}`,
         icon: <BlockIcon />,
         darkBgClass:
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleMedium dark:to-purplePale',
@@ -22,12 +22,12 @@ export const DomainPage: FC = () => {
       {
         title: 'Auto-ID',
         description: 'Identity domain',
-        href: `/${selectedChain.urls.page}/${Routes.autoid}`,
+        href: `/${network}/${Routes.autoid}`,
         icon: <DocIcon />,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleDeep dark:to-purplePastel',
       },
     ],
-    [selectedChain.urls.page],
+    [network],
   )
 
   return (

@@ -9,7 +9,7 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event, EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -29,7 +29,7 @@ dayjs.extend(relativeTime)
 export const BlockDetailsEventList: FC = () => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -58,8 +58,9 @@ export const BlockDetailsEventList: FC = () => {
     {
       variables,
       skip: !inFocus,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'blockDetailsEvent',
   )
 
@@ -69,14 +70,14 @@ export const BlockDetailsEventList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
   const events = useMemo(
@@ -94,11 +95,7 @@ export const BlockDetailsEventList: FC = () => {
           <div className='flex w-full gap-1' key={`${row.index}-block-event-id`}>
             <Link
               className='w-full hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.events.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                row.original.id,
-              )}
+              href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
               {`${row.original.block?.height}-${row.index}`}
             </Link>
@@ -134,7 +131,7 @@ export const BlockDetailsEventList: FC = () => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const fullDataDownloader = useCallback(
