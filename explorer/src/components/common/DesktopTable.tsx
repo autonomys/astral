@@ -1,13 +1,14 @@
 import { ChevronDownIcon, ChevronUpDownIcon, ChevronUpIcon } from '@heroicons/react/20/solid'
 import { Table, flexRender } from '@tanstack/react-table'
+import type { SortingOptions } from '@tanstack/table-core/build/lib/features/Sorting'
 
 interface TableProps<T extends object> {
   table: Table<T>
 }
 
 export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
-  <table className="min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-[#4141B3] dark:via-[#6B5ACF] dark:to-[#896BD2]">
-    <thead className='border-b border-gray-200 text-sm text-[#857EC2] dark:text-white/75'>
+  <table className="dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r">
+    <thead className='text-purpleShade2 border-b border-gray-200 text-sm dark:text-white/75'>
       {table.getHeaderGroups().map((headerGroup) => (
         <tr key={headerGroup.id}>
           {headerGroup.headers.map((header) => (
@@ -22,21 +23,25 @@ export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
                 {header.isPlaceholder
                   ? null
                   : flexRender(header.column.columnDef.header, header.getContext())}
-                {header.column.getIsSorted() === 'asc' ? (
-                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-[#DE67E4] focus:z-20 dark:border-none  dark:text-white'>
-                    <span className='sr-only'>Up</span>
-                    <ChevronUpIcon className='size-5' aria-hidden='true' />
-                  </span>
-                ) : header.column.getIsSorted() === 'desc' ? (
-                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-[#DE67E4] focus:z-20 dark:border-none  dark:text-white'>
-                    <span className='sr-only'>Up</span>
-                    <ChevronDownIcon className='size-5' aria-hidden='true' />
-                  </span>
-                ) : (
-                  <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-[#DE67E4] focus:z-20 dark:border-none  dark:text-white'>
-                    <span className='sr-only'>Up</span>
-                    <ChevronUpDownIcon className='size-5' aria-hidden='true' />
-                  </span>
+                {(header.column.columnDef as SortingOptions<T>).enableSorting && (
+                  <>
+                    {header.column.getIsSorted() === 'asc' ? (
+                      <span className='text-purpleAccent relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm  font-medium focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='sr-only'>Up</span>
+                        <ChevronUpIcon className='size-5' aria-hidden='true' />
+                      </span>
+                    ) : header.column.getIsSorted() === 'desc' ? (
+                      <span className='text-purpleAccent relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='sr-only'>Up</span>
+                        <ChevronDownIcon className='size-5' aria-hidden='true' />
+                      </span>
+                    ) : (
+                      <span className='text-purpleAccent relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm  font-medium focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='sr-only'>Up</span>
+                        <ChevronUpDownIcon className='size-5' aria-hidden='true' />
+                      </span>
+                    )}
+                  </>
                 )}
               </div>
             </th>
@@ -62,7 +67,7 @@ export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
         ))
       ) : (
         <div className='flex w-full p-6 hover:bg-gray-100 dark:hover:bg-transparent/10'>
-          <div className='text-sm text-[#857EC2] dark:text-white/75'>No entries to show</div>
+          <div className='text-purpleShade2 text-sm dark:text-white/75'>No entries to show</div>
         </div>
       )}
     </tbody>

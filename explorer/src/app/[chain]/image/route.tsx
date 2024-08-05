@@ -2,15 +2,15 @@
 import { QUERY_HOME } from 'components/Home/query'
 import { HomeQueryQuery } from 'components/gql/graphql'
 import {
+  AutonomysSymbol,
   BlockIcon,
   DocIcon,
   LogoIcon,
   PieChartIcon,
-  SubspaceSymbol,
   WalletIcon,
 } from 'components/icons'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
-import { chains } from 'constants/chains'
+import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -24,7 +24,7 @@ import { formatSpacePledged, numberWithCommas } from 'utils/number'
 export async function GET(req: NextRequest, { params: { chain } }: ChainPageProps) {
   if (!chain) notFound()
 
-  const chainMatch = chains.find((c) => c.urls.page === chain)
+  const chainMatch = indexers.find((c) => c.network === chain)
 
   if (!chainMatch) notFound()
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
     data,
   }: {
     data: HomeQueryQuery
-  } = await fetch(chainMatch.urls.api, {
+  } = await fetch(chainMatch.squids.old, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function Screen({
   chainMatch,
   data,
 }: {
-  chainMatch: (typeof chains)[number]
+  chainMatch: (typeof indexers)[number]
   data: HomeQueryQuery
 }) {
   dayjs.extend(relativeTime)
@@ -89,7 +89,7 @@ function Screen({
           >
             {metadata.title}
           </h2>
-          <div tw='absolute flex flex-row border-none rounded-[20px] bg-[#1E254E] text-xl text-white ml-230 mt-12 mb-4 p-2 pl-4 w-44 h-12'>
+          <div tw='absolute flex flex-row border-none rounded-[20px] bg-blueAccent text-xl text-white ml-230 mt-12 mb-4 p-2 pl-4 w-44 h-12'>
             {chainMatch.title}
           </div>
         </div>
@@ -204,7 +204,7 @@ function Screen({
       </div>
       <div tw='absolute flex flex-row border-none w-full h-full'>
         <div tw='flex flex-col w-full justify-center ml-250 mt-140'>
-          <SubspaceSymbol fill='#000000' />
+          <AutonomysSymbol fill='#000000' />
           <span
             style={{
               fontFamily: 'Montserrat',

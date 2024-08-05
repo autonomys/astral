@@ -1,8 +1,8 @@
-![build](https://github.com/subspace/blockexplorer/actions/workflows/build.yaml/badge.svg)
+![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
 
 # Astral
 
-- [Astral Block Explorer](https://explorer.subspace.network/) Astral Block Explorer
+- [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
 - [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid
 - [Health Check](https://uptime.subspace.network/status/network) Subspace Network Status Page
 
@@ -13,16 +13,16 @@
         <td width="50%" valign="top" border="0">
         <picture>
           <source 
-              srcset="https://github.com/subspace/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
+              srcset="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
               media="(prefers-color-scheme: dark)"
           />
           <source
-              srcset="https://github.com/subspace/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
+              srcset="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
               media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
           />
           <img
             alt="Astral Block Explorer"
-            src="https://github.com/subspace/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
+            src="https://github.com/autonomys/astral/assets/82244926/e7614121-ed11-4f82-9af6-971df3ed0ef0"
             align="left"
             width="100%"
         />
@@ -31,16 +31,16 @@
     <td width="50%" valign="top" border="0">
       <picture>
       <source 
-          srcset="https://github.com/subspace/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
+          srcset="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
           media="(prefers-color-scheme: dark)"
       />
       <source
-          srcset="https://github.com/subspace/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
+          srcset="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
           media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
       />
       <img
           alt="Astral Block Explorer"
-          src="https://github.com/subspace/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
+          src="https://github.com/autonomys/astral/assets/82244926/b440c10f-8051-4107-b5e4-0ead524a9254"
           align="left"
           width="100%"
       />
@@ -51,16 +51,16 @@
 
 ## Astral Subsquid Playground
 
-![Astral Subsquid Playground](https://github.com/subspace/astral/assets/82244926/24ee475d-b6e6-446c-a54c-3ecdb3b72dfd)
+![Astral Subsquid Playground](https://github.com/autonomys/astral/assets/82244926/24ee475d-b6e6-446c-a54c-3ecdb3b72dfd)
 
 ## Subspace Network Status Page
 
-![Subspace Network Status Page](https://github.com/subspace/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
+![Subspace Network Status Page](https://github.com/autonomys/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
 
 ## Overview
 
 - [Explorer](./explorer/README.md) - Next.js app based on React and Tailwind CSS, uses Apollo Client to fetch data from Astral Subsquid
-- [Squid](./squid-blockexplorer/README.md) - backend app, utilizes [Subsquid Framework](https://docs.subsquid.io/overview/) for indexing and transforming chain data as well as exposing it using GraphQL
+- [Indexers](./indexers/README.md) - Includes various Subsquid indexers like blockexplorer-subsquid and other smaller Subsquid services.
 - [Health check](./health-check/README.md) - utility service to check health status of an internal service and expose it as a REST API endpoint
 
 ## Development
@@ -72,7 +72,7 @@ Ensure you have the following installed on your local development machine:
 - Node.js (v18.x or later)
 - Yarn (v2.x or later)
 
-You can check your Node and Yarn versions with `node -v` and `yarn -v` respectively.
+You can check your Node and Yarn versions with 'node -v' and 'yarn -v' respectively.
 
 ### Installation
 
@@ -82,7 +82,7 @@ You can also find the instructions for setting up the Squid backend and Health c
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/subspace/astral.git
+   git clone https://github.com/autonomys/astral.git
    cd astral
    ```
 

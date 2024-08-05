@@ -1,12 +1,9 @@
 import { formatSpacePledged, numberWithCommas } from '@/utils/number'
-import { ApolloError } from '@apollo/client'
 import { FC } from 'react'
 import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
 import { HomeCards } from './HomeCards'
 
 interface HomeChainInfo {
-  loading: boolean
-  error?: ApolloError | undefined
   data: HomeQueryQuery | HomeQueryDomainQuery
 }
 

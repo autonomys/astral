@@ -3,7 +3,7 @@
 import { LogoIcon } from '@/components/icons'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -17,24 +17,24 @@ export const LeaderboardHeader: FC = () => {
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
 
   const menuList = useMemo(
     () => [
       {
         title: 'Farmers Leaderboard',
-        link: `/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`,
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`,
       },
       {
         title: 'Operators Leaderboard',
-        link: `/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`,
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`,
       },
       {
         title: 'Nominators Leaderboard',
-        link: `/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`,
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`,
       },
     ],
-    [selectedChain.urls.page],
+    [network],
   )
 
   return (
@@ -42,26 +42,25 @@ export const LeaderboardHeader: FC = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.leaderboard}`}
+            href={`/${network}/${Routes.leaderboard}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
-            <span className='text-xl text-[#282929] dark:text-white'>
+            <span className='text-xl text-grayDark dark:text-white'>
               <LogoIcon fillColor='currentColor' />
             </span>
           </Link>
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link)
-              const isInitialPath =
-                pathname === `/${selectedChain.urls.page}/leaderboard` && index === 0
+              const isInitialPath = pathname === `/${network}/leaderboard` && index === 0
 
               return (
                 <Link
                   key={index}
                   className={
                     isCurrentPath || isInitialPath
-                      ? 'block rounded-full bg-[#241235] px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-[#DE67E4]'
-                      : 'bg-none text-[13px] font-semibold leading-4 text-[#282929] dark:text-white'
+                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-purpleAccent'
+                      : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}
                 >
@@ -74,7 +73,7 @@ export const LeaderboardHeader: FC = () => {
             <HeaderChainDropdown />
             <button
               onClick={toggleTheme}
-              className='ml-4 inline-flex items-center rounded-full bg-[#241235] p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-[#FFFFFF]'
+              className='ml-4 inline-flex items-center rounded-full bg-grayDarker p-2 text-base hover:bg-gray-200 focus:outline-none dark:bg-white'
             >
               {isDark ? (
                 <SunIcon
@@ -107,7 +106,7 @@ export const LeaderboardHeader: FC = () => {
           <div className='flex items-center gap-4'>
             <HeaderChainDropdown />
             <button
-              className='items-center rounded-full bg-[#241235] p-3 text-white dark:bg-white dark:text-[#1E254E]'
+              className='items-center rounded-full bg-grayDarker p-3 text-white dark:bg-white dark:text-blueAccent'
               onClick={() => setIsOpen(true)}
             >
               <Bars3BottomRightIcon className='size-4' fill='currentColor' stroke='currentColor' />

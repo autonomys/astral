@@ -20,7 +20,7 @@ export const EventCard: FC<EventCardProps> = ({ event, id }) => {
     <MobileCard
       id={id}
       header={
-        <h3 className='text-sm font-medium text-[#241235] dark:text-white'>{`${event.block?.height}-${event.indexInBlock}`}</h3>
+        <h3 className='text-sm font-medium text-grayDarker dark:text-white'>{`${event.block?.height}-${event.indexInBlock}`}</h3>
       }
       body={body}
     />

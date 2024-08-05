@@ -1,52 +1,96 @@
 'use client'
 
-import { useQuery } from '@apollo/client'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import useDomains from 'hooks/useDomains'
+import { Routes } from 'constants/routes'
+import {
+  BlockByIdDomainQueryVariables,
+  BlockByIdQueryVariables,
+  Block as BlockResult,
+} from 'gql/graphql'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
-import { FC } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
+import { FC, useEffect, useMemo } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { BlockIdParam } from 'types/app'
+import { BlockByIdDomainQuery, BlockByIdQuery } from '../gql/graphql'
 import { BlockDetailsCard } from './BlockDetailsCard'
 import { BlockDetailsTabs } from './BlockDetailsTabs'
 import { QUERY_BLOCK_BY_ID, QUERY_BLOCK_BY_ID_DOMAIN } from './query'
 
 export const Block: FC = () => {
+  const { ref, inView } = useInView()
   const { blockId } = useParams<BlockIdParam>()
-
-  const { selectedChain } = useDomains()
-
-  const BlockIdQuery = selectedChain.isDomain ? QUERY_BLOCK_BY_ID_DOMAIN : QUERY_BLOCK_BY_ID
-
-  const { data, error, loading } = useQuery(BlockIdQuery, {
-    variables: { blockId: Number(blockId) },
-  })
-
+  const { isEvm } = useChains()
+  const novaExplorerBanner = useEvmExplorerBanner('block/' + blockId)
   const isDesktop = useMediaQuery('(min-width: 640px)')
+  const inFocus = useWindowFocus()
 
-  useErrorHandler(error)
+  const query = useMemo(() => (isEvm ? QUERY_BLOCK_BY_ID_DOMAIN : QUERY_BLOCK_BY_ID), [isEvm])
+  const { setIsVisible } = useSquidQuery<
+    BlockByIdDomainQuery | BlockByIdQuery,
+    BlockByIdDomainQueryVariables | BlockByIdQueryVariables
+  >(
+    query,
+    {
+      variables: { blockId: Number(blockId) },
+      skip: !inFocus,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
+    },
+    isEvm ? Routes.nova : Routes.consensus,
+    'block',
+  )
 
-  if (loading) {
-    return <Spinner />
-  }
+  const {
+    consensus: { block: consensusEntry },
+    nova: { block: evmEntry },
+  } = useQueryStates()
 
-  if (!data.blocks.length) {
-    return <NotFound />
-  }
+  const loading = useMemo(() => {
+    if (isEvm) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, isEvm])
 
-  const [block] = data.blocks
+  const data = useMemo(() => {
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, isEvm])
+
+  const block = useMemo(() => data && (data.blocks[0] as BlockResult), [data])
+
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
+
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='w-full'>
-      <BlockDetailsCard block={block} isDesktop={isDesktop} />
-      <BlockDetailsTabs
-        logs={block.logs}
-        extrinsicsCount={block.extrinsicsCount}
-        eventsCount={block.eventsCount}
-        isDesktop={isDesktop}
-      />
+      {novaExplorerBanner}
+      <div ref={ref}>
+        {block ? (
+          <>
+            <BlockDetailsCard block={block} isDesktop={isDesktop} />
+            <BlockDetailsTabs
+              logs={block.logs}
+              extrinsicsCount={block.extrinsicsCount}
+              eventsCount={block.eventsCount}
+              isDesktop={isDesktop}
+            />
+          </>
+        ) : (
+          noData
+        )}
+      </div>
     </div>
   )
 }

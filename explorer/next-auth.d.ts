@@ -1,5 +1,6 @@
+import type { Expr } from 'faunadb'
 import 'next-auth'
-import { DiscordToken, SubspaceToken } from 'types/jwt'
+import type { DiscordToken, SubspaceToken } from 'types/jwt'
 
 // Extending the 'next-auth' module to include custom user and session types
 declare module 'next-auth' {
@@ -16,6 +17,11 @@ declare module 'next-auth' {
   export interface Session {
     user: User | null
     token: string
+  }
+
+  export interface SavedUser extends User {
+    createdAt: Expr
+    updatedAt: Expr
   }
 }
 

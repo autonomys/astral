@@ -1,41 +1,88 @@
 'use client'
 
-import { useQuery } from '@apollo/client'
-import { Extrinsic, ExtrinsicWhereInput, ExtrinsicsConnectionQuery } from 'gql/graphql'
-import { FC, useCallback, useMemo, useState } from 'react'
-import { useErrorHandler } from 'react-error-boundary'
-
-// extrinsic
+import { sendGAEvent } from '@next/third-parties/google'
+import type { SortingState } from '@tanstack/react-table'
+import { CopyButton } from 'components/common/CopyButton'
+import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
+import { SearchBar } from 'components/common/SearchBar'
+import { SortedTable } from 'components/common/SortedTable'
+import { Spinner } from 'components/common/Spinner'
+import { StatusIcon } from 'components/common/StatusIcon'
+import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import {
+  Extrinsic,
+  ExtrinsicWhereInput,
+  ExtrinsicsConnectionQuery,
+  ExtrinsicsConnectionQueryVariables,
+} from 'gql/graphql'
+import useChains from 'hooks/useChains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
+import Link from 'next/link'
+import { FC, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
+import type { Cell } from 'types/table'
+import { numberWithCommas } from 'utils/number'
+import { shortString } from 'utils/string'
+import { NotFound } from '../layout/NotFound'
 import { ExtrinsicListFilter } from './ExtrinsicListFilter'
-import { ExtrinsicTable } from './ExtrinsicTable'
 import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
 
-// common
-import { numberWithCommas } from '@/utils/number'
-import { ExportButton } from 'components/common/ExportButton'
-import { Pagination } from 'components/common/Pagination'
-import { SearchBar } from 'components/common/SearchBar'
-import { Spinner } from 'components/common/Spinner'
-import useMediaQuery from 'hooks/useMediaQuery'
-import { NotFound } from '../layout/NotFound'
+dayjs.extend(relativeTime)
 
 export const ExtrinsicList: FC = () => {
-  const [currentPage, setCurrentPage] = useState(0)
-  const [lastCursor, setLastCursor] = useState<string | undefined>(undefined)
+  const { ref, inView } = useInView()
+  const { network, section, isEvm } = useChains()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
-  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const novaExplorerBanner = useEvmExplorerBanner('txs')
 
-  const PAGE_SIZE = 10
-
-  const { data, error, loading } = useQuery<ExtrinsicsConnectionQuery>(
-    QUERY_EXTRINSIC_LIST_CONNECTION,
-    {
-      variables: { first: PAGE_SIZE, after: lastCursor, where: filters },
-      pollInterval: 6000,
-    },
+  const variables = useMemo(
+    () => ({
+      first: pagination.pageSize,
+      after:
+        pagination.pageIndex > 0
+          ? (pagination.pageIndex * pagination.pageSize).toString()
+          : undefined,
+    }),
+    [pagination.pageSize, pagination.pageIndex],
   )
 
-  useErrorHandler(error)
+  const { setIsVisible } = useSquidQuery<
+    ExtrinsicsConnectionQuery,
+    ExtrinsicsConnectionQueryVariables
+  >(
+    QUERY_EXTRINSIC_LIST_CONNECTION,
+    {
+      variables,
+      pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
+    },
+    isEvm ? Routes.nova : Routes.consensus,
+    'extrinsics',
+  )
+
+  const {
+    consensus: { extrinsics: consensusEntry },
+    nova: { extrinsics: evmEntry },
+  } = useQueryStates()
+
+  const loading = useMemo(() => {
+    if (isEvm) return isLoading(evmEntry)
+    return isLoading(consensusEntry)
+  }, [evmEntry, consensusEntry, isEvm])
+
+  const data = useMemo(() => {
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
+    if (hasValue(consensusEntry)) return consensusEntry.value
+  }, [consensusEntry, evmEntry, isEvm])
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -48,74 +95,140 @@ export const ExtrinsicList: FC = () => {
     () => extrinsicsConnection && extrinsicsConnection.totalCount,
     [extrinsicsConnection],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-  const pageInfo = useMemo(
-    () => extrinsicsConnection && extrinsicsConnection.pageInfo,
-    [extrinsicsConnection],
+  const pageCount = useMemo(
+    () => Math.ceil(Number(totalCount) / pagination.pageSize),
+    [totalCount, pagination],
   )
+  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const modules = useMemo(
     () => data && data.extrinsicModuleNames.map((module) => module.name.split('.')[0]),
     [data],
   )
 
-  const handleNextPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev + 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'block',
+        header: 'Extrinsic Id',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <Link
+            key={`${row.index}-extrinsic-block`}
+            className='hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
+          >
+            <div>{`${row.original.block.height}-${row.index}`}</div>
+          </Link>
+        ),
+      },
+      {
+        accessorKey: 'timestamp',
+        header: 'Time',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-extrinsic-time`}>
+            {dayjs(row.original.block.timestamp).fromNow(true)}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div
+            className='md:flex md:items-center md:justify-start md:pl-5'
+            key={`${row.index}-home-extrinsic-status`}
+          >
+            <StatusIcon status={row.original.success} />
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'action',
+        header: 'Action',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-extrinsic-action`}>
+            {row.original.name.split('.')[1].toUpperCase()}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'blockhash',
+        header: 'Block hash',
+        enableSorting: false,
+        cell: ({ row }: Cell<Extrinsic>) => (
+          <div key={`${row.index}-extrinsic-hash}`}>
+            <CopyButton value={row.original.hash} message='Hash copied'>
+              {shortString(row.original.hash)}
+            </CopyButton>
+          </div>
+        ),
+      },
+    ],
+    [network, section],
+  )
 
-  const handlePreviousPage = useCallback(() => {
-    if (!pageInfo) return
-    setCurrentPage((prev) => prev - 1)
-    setLastCursor(pageInfo.endCursor)
-  }, [pageInfo])
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
+    return null
+  }, [data, loading])
 
-  const onChange = useCallback((page: number) => {
-    setCurrentPage(Number(page))
+  useEffect(() => {
+    try {
+      sendGAEvent('event', 'extrinsic_filter', { value: `filters:${filters.toString()}` })
+    } catch (error) {
+      console.log('Error sending GA event', error)
+    }
+  }, [filters])
 
-    const newCount = page > 0 ? PAGE_SIZE * Number(page + 1) : PAGE_SIZE
-    const endCursor = newCount - PAGE_SIZE
-
-    if (endCursor === 0 || endCursor < 0) return setLastCursor(undefined)
-    setLastCursor(endCursor.toString())
-  }, [])
-
-  if (loading) return <Spinner />
-  if (!data || !modules || !extrinsics) return <NotFound />
+  useEffect(() => {
+    setIsVisible(inView)
+  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
+      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar />
+        <SearchBar fixSearchType={searchTypes[2]} />
       </div>
-      <div className='mt-5 flex w-full justify-between'>
-        <ExtrinsicListFilter
-          title={
-            <div className=' font-medium text-[#282929] dark:text-white'>
-              Extrinsics {totalLabel}
-            </div>
-          }
-          filters={filters}
-          modules={modules}
-          setFilters={setFilters}
-        />
-      </div>
+      {modules && (
+        <div className='mt-5 flex w-full justify-between'>
+          <ExtrinsicListFilter
+            title={
+              <div className=' font-medium text-grayDark dark:text-white'>
+                Extrinsics {totalLabel}
+              </div>
+            }
+            filters={filters}
+            modules={modules}
+            setFilters={setFilters}
+          />
+        </div>
+      )}
       <div className='mt-8 flex w-full flex-col sm:mt-0'>
-        <ExtrinsicTable extrinsics={extrinsics} isDesktop={isDesktop} />
-        <div className='flex w-full justify-between gap-2'>
-          <ExportButton data={extrinsics} filename='extrinsic-list' />
-          {totalCount && pageInfo && (
-            <Pagination
-              nextPage={handleNextPage}
-              previousPage={handlePreviousPage}
-              currentPage={currentPage}
-              pageSize={PAGE_SIZE}
-              totalCount={totalCount}
-              hasNextPage={pageInfo.hasNextPage}
-              hasPreviousPage={pageInfo.hasPreviousPage}
-              onChange={onChange}
-            />
-          )}
+        <div className='w-full'>
+          <div className='my-6 rounded'>
+            <div ref={ref}>
+              {extrinsics ? (
+                <SortedTable
+                  data={extrinsics}
+                  columns={columns}
+                  showNavigation={true}
+                  sorting={sorting}
+                  onSortingChange={setSorting}
+                  pagination={pagination}
+                  pageCount={pageCount}
+                  onPaginationChange={setPagination}
+                  filename='extrinsics-list'
+                />
+              ) : (
+                noData
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

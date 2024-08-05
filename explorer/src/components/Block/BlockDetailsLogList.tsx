@@ -1,11 +1,17 @@
-import { Column, Table } from 'components/common/Table'
+'use client'
+
+import type { SortingState } from '@tanstack/react-table'
+import { SortedTable } from 'components/common/SortedTable'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Log } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
-import { FC } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
+import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
 
@@ -14,39 +20,66 @@ type Props = {
 }
 
 export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
-  const { selectedChain, selectedDomain } = useDomains()
-  // methods
-  const generateColumns = (logs: Log[]): Column[] => [
-    {
-      title: 'Log Index',
-      cells: logs.map(({ id }) => (
-        <Link
-          key={`${id}-block-log-id`}
-          className='hover:text-[#DE67E4]'
-          href={INTERNAL_ROUTES.logs.id.page(selectedChain.urls.page, selectedDomain, id)}
-        >
-          {id}
-        </Link>
-      )),
-    },
-    {
-      title: 'Block',
-      cells: logs.map(({ block, id }) => <div key={`${id}-block-log-block`}>{block.height}</div>),
-    },
-    {
-      title: 'Type',
-      cells: logs.map(({ kind, id }) => <div key={`${id}-block-log-type`}>{kind}</div>),
-    },
-  ]
+  const { network, section } = useChains()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
 
-  // constants
-  const columns = generateColumns(logs)
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: 'id',
+        header: 'Log Index',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <Link
+            key={`${row.index}-block-log-id`}
+            className='hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
+          >
+            {row.original.id}
+          </Link>
+        ),
+      },
+      {
+        accessorKey: 'block',
+        header: 'Block',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-block-log-block`}>{row.original.block.height}</div>
+        ),
+      },
+      {
+        accessorKey: 'kind',
+        header: 'Type',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-block-log-type`}>{row.original.kind}</div>
+        ),
+      },
+    ],
+    [network, section],
+  )
+
+  const totalCount = useMemo(() => (logs ? logs.length : 0), [logs])
+  const pageCount = useMemo(
+    () => countTablePages(totalCount, pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   return (
-    <Table
+    <SortedTable
+      data={logs}
       columns={columns}
-      emptyMessage='There are no logs to show'
-      id='block-details-logs-list'
+      showNavigation={true}
+      sorting={sorting}
+      onSortingChange={setSorting}
+      pagination={pagination}
+      pageCount={pageCount}
+      onPaginationChange={setPagination}
+      filename='block-details-logs-list'
     />
   )
 }

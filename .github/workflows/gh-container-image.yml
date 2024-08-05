@@ -29,11 +29,11 @@ jobs:
 
       - name: Build processor image
         run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
-        working-directory: squid-blockexplorer
+        working-directory: indexers/squid-blockexplorer
 
       - name: Build API server image
         run: docker build . --target query-node -t graphql-server --tag $API_SERVER_NAME
-        working-directory: squid-blockexplorer
+        working-directory: indexers/squid-blockexplorer
       
       - name: Build Health check image
         run: docker build . --file Dockerfile --tag $HEALTH_CHECK_NAME

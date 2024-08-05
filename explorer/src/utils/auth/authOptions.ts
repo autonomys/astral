@@ -2,6 +2,7 @@ import { TOKEN_EXPIRATION } from 'constants/session'
 import { sign, verify } from 'jsonwebtoken'
 import { AuthOptions } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
+import { saveUserToken } from 'utils/fauna'
 import { providers } from './providers'
 
 const { NEXTAUTH_SECRET } = process.env
@@ -21,6 +22,7 @@ export const authOptions: AuthOptions = {
   callbacks: {
     jwt: async ({ token, user }) => {
       if (user) {
+        await saveUserToken(user)
         token.id = user.id
         token.DIDs = user.DIDs
         token.subspace = user.subspace

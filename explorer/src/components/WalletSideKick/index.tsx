@@ -3,27 +3,63 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { LogoIcon, WalletIcon } from '@/components/icons'
+import { WalletType } from '@/constants'
 import { formatUnitsToNumber } from '@/utils/number'
+import { sendGAEvent } from '@next/third-parties/google'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
-import { chains } from 'constants/chains'
-import { ROUTE_EXTRA_FLAGS, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
+import {
+  ROUTE_EXTRA_FLAGS,
+  ROUTE_EXTRA_FLAG_TYPE,
+  ROUTE_FLAG_VALUE_OPEN_CLOSE,
+} from 'constants/routes'
 import dayjs from 'dayjs'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { SelectedChainProvider } from 'providers/ChainProvider'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useTransactionsStates } from 'states/transactions'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
 import { LastExtrinsics } from './LastExtrinsics'
 import { Leaderboard } from './Leaderboard'
+import { PendingTransactions } from './PendingTransactions'
 import { StakingSummary } from './StakingSummary'
 
 type DrawerProps = {
   isOpen: boolean
   onClose: () => void
+}
+
+export const PendingTransactionsLabel: FC = () => {
+  const { pendingTransactions } = useTransactionsStates()
+  const isDesktop = useMediaQuery('(min-width: 1024px)')
+  const count = useMemo(
+    () => (pendingTransactions ? pendingTransactions.length : 0),
+    [pendingTransactions],
+  )
+
+  useEffect(() => {
+    sendGAEvent('event', 'walletSideKick_pending_transactions', { value: count })
+  }, [count])
+
+  if (count === 0) return null
+
+  return (
+    <div
+      className={
+        !isDesktop
+          ? 'inline-flex items-center bg-pinkAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
+          : 'ml-4 rounded-full from-pinkAccent to-purpleDeepAccent p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
+      }
+    >
+      <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
+        {count}
+      </Link>
+    </div>
+  )
 }
 
 export const WalletSidekick: FC = () => {
@@ -57,13 +93,18 @@ export const WalletSidekick: FC = () => {
     if (search === 'open') setIsOpen(true)
   }, [search])
 
+  useEffect(() => {
+    sendGAEvent('event', 'walletSideKick_open_close', { value: isOpen ? 'open' : 'close' })
+  }, [isOpen])
+
   return (
     <>
+      <PendingTransactionsLabel />
       <button
         onClick={onClick}
         className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
-        } from-[#EA71F9] to-[#4D397A] shadow-md dark:bg-gradient-to-r`}
+        } from-pinkAccent to-purpleDeepAccent shadow-md dark:bg-gradient-to-r`}
       >
         <WalletIcon width='24' height='24' />
       </button>
@@ -74,16 +115,10 @@ export const WalletSidekick: FC = () => {
 
 const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { push } = useRouter()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const { api, actingAccount, subspaceAccount } = useWallet()
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
-
-  const consensusChain = useMemo(
-    () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
-    [selectedChain],
-  )
-  const consensusApi = useMemo(() => api && api[consensusChain.urls.page], [api, consensusChain])
 
   const handleNavigate = useCallback(
     (url: string) => {
@@ -94,30 +129,33 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   )
 
   const loadData = useCallback(async () => {
-    if (!consensusApi) return
+    if (!api) return
 
-    const properties = await consensusApi.rpc.system.properties()
+    const properties = await api.rpc.system.properties()
     setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
-  }, [consensusApi])
+  }, [api])
 
   const loadWalletBalance = useCallback(async () => {
-    if (!consensusApi || !actingAccount) return
+    if (!api || !actingAccount) return
 
-    const balance = await consensusApi.query.system.account(actingAccount.address)
-    setWalletBalance(
-      formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
-    )
-  }, [consensusApi, actingAccount])
+    if (actingAccount.type === WalletType.subspace) {
+      const balance = await api.query.system.account(actingAccount.address)
+      setWalletBalance(
+        formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
+      )
+    }
+  }, [api, actingAccount])
 
   useEffect(() => {
     loadData()
-  }, [consensusApi, loadData])
+  }, [api, loadData])
 
   useEffect(() => {
     loadWalletBalance()
-  }, [consensusApi, actingAccount, loadWalletBalance])
+  }, [api, actingAccount, loadWalletBalance])
 
-  if (!subspaceAccount || !actingAccount) return null
+  if (!isOpen) return null
+  if (!actingAccount) return null
 
   return (
     // backdrop
@@ -141,42 +179,36 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
           <article className='relative flex h-full w-screen max-w-lg flex-col gap-2 overflow-y-scroll pb-10'>
             <div className='flex items-center justify-between p-5 align-middle'>
               <button
-                onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
+                onClick={() => handleNavigate(`/${network}/${section}`)}
                 className='title-font flex items-center font-medium text-gray-900 dark:text-white'
               >
                 <LogoIcon fillColor='currentColor' />
               </button>
               <div className='flex items-center gap-3'>
                 <button
-                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-[#1E254E] dark:text-white'
+                  className='items-center rounded-full bg-white px-4 py-2 dark:bg-blueAccent dark:text-white'
                   onClick={onClose}
                 >
                   x
                 </button>
               </div>
             </div>
-            <SelectedChainProvider selectedChain={consensusChain}>
-              <AccountHeader
-                subspaceAccount={subspaceAccount}
-                walletBalance={walletBalance}
-                tokenSymbol={tokenSymbol}
-              />
-              <AccountSummary
-                subspaceAccount={subspaceAccount}
-                selectedChain={consensusChain}
-                actingAccountName={actingAccount.name}
-                walletBalance={walletBalance}
-                tokenSymbol={tokenSymbol}
-              />
-              <GetDiscordRoles subspaceAccount={subspaceAccount} />
-              <StakingSummary
-                subspaceAccount={subspaceAccount}
-                selectedChain={consensusChain}
-                tokenSymbol={tokenSymbol}
-              />
-              <LastExtrinsics subspaceAccount={subspaceAccount} selectedChain={consensusChain} />
-              <Leaderboard subspaceAccount={subspaceAccount} />
-            </SelectedChainProvider>
+            <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
+            {subspaceAccount && (
+              <>
+                <AccountSummary
+                  subspaceAccount={subspaceAccount}
+                  actingAccountName={actingAccount.name}
+                  walletBalance={walletBalance}
+                  tokenSymbol={tokenSymbol}
+                />
+                <PendingTransactions subspaceAccount={subspaceAccount} />
+                <GetDiscordRoles />
+                <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
+                <LastExtrinsics subspaceAccount={subspaceAccount} />
+                <Leaderboard subspaceAccount={subspaceAccount} />
+              </>
+            )}
             <div className='flex'>
               <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
                 <p className='text-gray text-center text-sm sm:text-left'>

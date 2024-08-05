@@ -18,7 +18,7 @@ The application is built with Next.js, React.js, Tailwind CSS and TypeScript. Fo
 1. Clone the repository and navigate to the `explorer` directory:
 
 ```bash
-git clone git@github.com:subspace/astral.git
+git clone git@github.com:autonomys/astral.git
 cd astral/explorer
 ```
 

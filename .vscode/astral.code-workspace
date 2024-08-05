@@ -9,23 +9,35 @@
       "path": "../explorer"
     },
     {
-      "name": "client",
-      "path": "../client"
-    },
-    {
       "name": "health-check",
       "path": "../health-check"
     },
     {
-      "name": "squid-blockexplorer",
-      "path": "../squid-blockexplorer"
+      "name": "indexers",
+      "path": "../indexers"
+    },
+    {
+      "name": "indexer - General Squid",
+      "path": "../indexers/general-squid"
+    },
+    {
+      "name": "indexer - Account Squid",
+      "path": "../indexers/account-squid"
+    },
+    {
+      "name": "indexer - Staking Squid",
+      "path": "../indexers/staking-squid"
+    },
+    {
+      "name": "indexer - Rewards Squid",
+      "path": "../indexers/rewards-squid"
     }
   ],
   "settings": {
     "editor.codeActionsOnSave": {
-      "source.sortImports": true,
-      "source.fixAll.eslint": true,
-      "source.fixAll.tslint": true
+      "source.sortImports": "explicit",
+      "source.fixAll.eslint": "explicit",
+      "source.fixAll.tslint": "explicit"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "javascript.updateImportsOnFileMove.enabled": "always",
@@ -35,6 +47,8 @@
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
     "editor.formatOnSave": true,
     "cSpell.words": [
+      "autonomys",
+      "autoid",
       "extrinsics",
       "gemini",
       "graphiql",

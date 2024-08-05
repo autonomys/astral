@@ -62,7 +62,7 @@ export const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters 
   return (
     <div className='relative z-10'>
       <Listbox value={selectedPeople} onChange={handleSelect} multiple>
-        <Listbox.Button className='inline-flex w-full justify-center justify-items-end gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-[#DE67E4] shadow-sm dark:bg-[#241235] dark:text-white'>
+        <Listbox.Button className='inline-flex w-full justify-center justify-items-end gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-purpleAccent shadow-sm dark:bg-grayDarker dark:text-white'>
           <div className='size-3'>
             <FunnelIcon />
           </div>
@@ -73,8 +73,8 @@ export const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters 
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <div className='absolute flex w-max flex-col items-center rounded-[11px] bg-white px-1 py-3 shadow-sm dark:bg-[#241235]'>
-            <Listbox.Options className='w-max rounded-[11px] bg-white py-3 shadow-sm dark:bg-[#241235]'>
+          <div className='absolute flex w-max flex-col items-center rounded-[11px] bg-white px-1 py-3 shadow-sm dark:bg-grayDarker'>
+            <Listbox.Options className='w-max rounded-[11px] bg-white py-3 shadow-sm dark:bg-grayDarker'>
               {ACTIONS.map((person) => (
                 <Listbox.Option
                   key={person.id}
@@ -87,7 +87,7 @@ export const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters 
                       {selectedPeople.some((selectedPerson) =>
                         Object.values(selectedPerson).includes(person.id),
                       ) ? (
-                        <CheckCircleIcon className='size-5 text-[#37D058]' />
+                        <CheckCircleIcon className='size-5 text-greenBright' />
                       ) : (
                         <div className='size-4 pt-[3px]'>
                           <EmptyCircleIcon />
@@ -101,13 +101,13 @@ export const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters 
 
             <div className='flex gap-2'>
               <button
-                className='w-20 rounded-[20px] bg-white py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'
+                className='w-20 rounded-[20px] bg-white py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-blueAccent dark:text-white'
                 onClick={handleFilter}
               >
                 Filter
               </button>
               <button
-                className='w-20 rounded-[20px] bg-white py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'
+                className='w-20 rounded-[20px] bg-white py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-blueAccent dark:text-white'
                 onClick={clearFilters}
               >
                 Clear

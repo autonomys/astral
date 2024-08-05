@@ -3,7 +3,7 @@ import { MobileCard } from 'components/common/MobileCard'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Block } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { FC } from 'react'
 
 dayjs.extend(relativeTime)
@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const HomeBlockCard: FC<Props> = ({ block }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const blockDate = dayjs(block.timestamp).fromNow(true)
   const body = [
     { name: 'Extrinsics', value: block.extrinsics?.length || 0 },
@@ -23,13 +23,7 @@ export const HomeBlockCard: FC<Props> = ({ block }) => {
   return (
     <MobileCard
       id='home-block-list-mobile'
-      header={
-        <HeaderBlockLink
-          chain={selectedChain.urls.page}
-          domain={selectedDomain}
-          height={block.height}
-        />
-      }
+      header={<HeaderBlockLink chain={network} domain={section} height={block.height} />}
       body={body}
     />
   )

@@ -1,6 +1,24 @@
 export const PAGE_SIZE = 10
+export const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50]
+
+export const STAKE_WARS_PAGE_SIZE = 150
 
 export const MAX_DOWNLOADER_BATCH_SIZE = 100
+
+export const STAKE_WARS_PHASES = {
+  phase2: {
+    start: 334753,
+    end: 536562,
+  },
+  phase3: {
+    start: 536562,
+    end: 1040169,
+  },
+  endgame: {
+    start: 1040169,
+    end: 1040169,
+  },
+}
 
 export type Pagination = {
   pageSize: number
@@ -22,3 +40,12 @@ export const searchTypes: SearchType[] = [
 ]
 
 export const SUBSPACE_ACC_PREFIX = 2254
+
+export const BIGINT_ZERO = BigInt(0)
+
+export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000)
+
+export const TOKEN = {
+  symbol: 'tSSC',
+  decimals: 18,
+}

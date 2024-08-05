@@ -10,7 +10,7 @@ exports[`Common table test table display 1`] = `
     >
       <thead>
         <tr
-          class="text-[#857EC2] text-sm dark:text-white/75 undefined"
+          class="text-purpleShade2 text-sm dark:text-white/75 undefined"
         >
           <th
             class="font-normal"

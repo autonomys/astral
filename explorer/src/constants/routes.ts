@@ -1,8 +1,13 @@
 export enum Routes {
-  nova = 'nova',
   consensus = 'consensus',
+  farming = 'farming',
+  staking = 'staking',
   leaderboard = 'leaderboard',
-  operators = 'operators',
+  domains = 'domains',
+  nova = 'nova',
+  autoid = 'autoid',
+  // Route deactivated till bugs are fixed and feature is ready
+  // stake = 'stake',
 }
 
 export const ROUTES = [
@@ -11,42 +16,64 @@ export const ROUTES = [
     title: 'Consensus Chain',
   },
   {
-    name: Routes.nova,
-    title: 'Nova',
+    name: Routes.farming,
+    title: 'Farming',
+  },
+  {
+    name: Routes.staking,
+    title: 'Staking',
   },
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
   },
   {
-    name: Routes.operators,
-    title: 'Operators',
+    name: Routes.domains,
+    title: 'Domains',
+    children: [
+      {
+        name: Routes.nova,
+        title: 'Nova',
+      },
+      {
+        name: Routes.autoid,
+        title: 'Auto-ID',
+      },
+    ],
   },
+  // Route deactivated till bugs are fixed and feature is ready
+  // {
+  //   name: Routes.stake,
+  //   title: 'Stake Wars',
+  // },
 ]
 
 export const EXTERNAL_ROUTES = {
-  subspace: 'https://subspace.network/',
+  autonomys: 'https://autonomys.xyz/',
+  academy: 'https://academy.autonomys.xyz/',
   subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
-  forum: 'https://forum.subspace.network/',
+  forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
-    'https://forum.subspace.network/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
-  docs: 'https://docs.subspace.network/',
+    'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
+  docs: 'https://docs.autonomys.xyz/',
   operatorDocs:
-    'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
+    'https://docs.autonomys.xyz/docs/farming-&-staking/staking/operators/register-operator',
   social: {
-    twitter: 'https://twitter.com/NetworkSubspace',
+    twitter: 'https://x.com/AutonomysNet',
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
-    github: 'https://github.com/subspace',
+    github: 'https://github.com/autonomys',
     reddit: 'https://www.reddit.com/r/sub',
     medium: 'https://medium.com/subspace-network',
-    youtube: 'https://www.youtube.com/channel/UCojYRCZOtVTJHJXivOYJzeQ',
-    linkedin: 'https://www.linkedin.com/company/subspace-blockchain/',
+    youtube: 'https://www.youtube.com/@AutonomysNetwork',
+    linkedin: 'https://www.linkedin.com/company/autonomys/',
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
+  novaExplorer: 'https://nova.subspace.network/',
   polkadot:
     'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
   subscan: 'https://subspace.subscan.io/',
+  spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
 }
 
 export const INTERNAL_ROUTES = {
@@ -103,10 +130,7 @@ export const INTERNAL_ROUTES = {
         `/${chain}/${domain}/${operatorId}`,
     },
     list: 'list',
-    stake: 'stake',
-    manage: 'manage',
-    nominators: 'nominators',
-    nomination: 'nomination',
+    register: 'register',
   },
   search: {
     result: {
@@ -123,6 +147,22 @@ export const INTERNAL_ROUTES = {
   },
   notFound: '/404',
   catchAll: '*',
+}
+
+export enum API_ROUTES {
+  Auth = 'auth',
+  Claim = 'claim',
+}
+
+export enum CLAIM_TYPES {
+  OperatorDisbursement = 'operator-disbursement',
+}
+
+export const ROUTE_API = {
+  claim: {
+    operatorDisbursement: (chain: string): string =>
+      `/api/${API_ROUTES.Claim}/${chain}/${CLAIM_TYPES.OperatorDisbursement}`,
+  },
 }
 
 export enum ROUTE_EXTRA_FLAG_TYPE {

@@ -1,10 +1,11 @@
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { MobileCard } from 'components/common/MobileCard'
+import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { OperatorRewards } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 
 type Props = {
   operator: OperatorRewards
@@ -12,12 +13,14 @@ type Props = {
 }
 
 export const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const body = [
     { name: 'Rank', value: index },
     {
       name: 'Operator reward',
-      value: operator.amount ? `${numberWithCommas(bigNumberToNumber(operator.amount))} tSSC` : 0,
+      value: operator.amount
+        ? `${numberWithCommas(bigNumberToNumber(operator.amount))} ${TOKEN.symbol}`
+        : 0,
     },
   ]
   return (
@@ -25,14 +28,8 @@ export const OperatorRewardsListCard: FC<Props> = ({ operator, index }) => {
       id='account-list-mobile'
       header={
         <div key={`${operator.id}-account-id`} className='row -mx-1 -mt-3 flex items-center gap-3'>
-          <Link
-            href={INTERNAL_ROUTES.operators.id.page(
-              selectedChain.urls.page,
-              'consensus',
-              operator.id,
-            )}
-          >
-            <p className='break-all text-sm font-medium text-[#241235] dark:text-white'>
+          <Link href={INTERNAL_ROUTES.operators.id.page(network, 'consensus', operator.id)}>
+            <p className='break-all text-sm font-medium text-grayDarker dark:text-white'>
               {operator.id}
             </p>
           </Link>

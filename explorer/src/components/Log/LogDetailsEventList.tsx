@@ -1,12 +1,18 @@
-import { shortString } from '@/utils/string'
-import { Column, Table } from 'components/common/Table'
+'use client'
+
+import type { SortingState } from '@tanstack/react-table'
+import { SortedTable } from 'components/common/SortedTable'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
-import { FC, useCallback, useMemo } from 'react'
+import { FC, useMemo, useState } from 'react'
+import type { Cell } from 'types/table'
+import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
 
@@ -15,54 +21,75 @@ type Props = {
 }
 
 export const LogDetailsEventList: FC<Props> = ({ events }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [pagination, setPagination] = useState({
+    pageSize: PAGE_SIZE,
+    pageIndex: 0,
+  })
 
-  // methods
-  const generateColumns = useCallback(
-    (events: Event[]): Column[] => [
+  const columns = useMemo(
+    () => [
       {
-        title: 'Event Id',
-        cells: events.map(({ block, indexInBlock, id }) => (
-          <div className='flex w-full gap-1' key={`${id}-log-event-id`}>
+        accessorKey: 'id',
+        header: 'Event Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Event>) => (
+          <div className='flex w-full gap-1' key={`${row.index}-log-event-id`}>
             <Link
-              className='w-full hover:text-[#DE67E4]'
-              href={INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, id)}
+              className='w-full hover:text-purpleAccent'
+              href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
-              {`${block?.height}-${indexInBlock}`}
+              {`${row.original.block?.height}-${row.index}`}
             </Link>
           </div>
-        )),
+        ),
       },
       {
-        title: 'Hash',
-        cells: events.map(({ block, id }) => (
-          <div key={`${id}-log-event-hash`}>{`${block && shortString(block.hash)}`}</div>
-        )),
+        accessorKey: 'block',
+        header: 'Hash',
+        enableSorting: true,
+        cell: ({ row }: Cell<Event>) => (
+          <div
+            key={`${row.index}-block`}
+          >{`${row.original.block && shortString(row.original.block.hash)}`}</div>
+        ),
       },
       {
-        title: 'Action',
-        cells: events.map(({ name, id }) => (
-          <div key={`${id}-extrinsic-event-action`}>{name.split('.')[1]}</div>
-        )),
+        accessorKey: 'name',
+        header: 'Action',
+        enableSorting: true,
+        cell: ({ row }: Cell<Event>) => (
+          <div key={`${row.index}-name`}>{row.original.name.split('.')[1]}</div>
+        ),
       },
       {
-        title: 'Type',
-        cells: events.map(({ phase, id }) => {
-          return <div key={`${id}-extrinsic-event-phase`}>{phase}</div>
-        }),
+        accessorKey: 'phase',
+        header: 'Type',
+        enableSorting: true,
+        cell: ({ row }: Cell<Event>) => <div key={`${row.index}-phase`}>{row.original.phase}</div>,
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
-  // constants
-  const columns = useMemo(() => generateColumns(events), [events, generateColumns])
+  const totalCount = useMemo(() => (events ? events.length : 0), [events])
+  const pageCount = useMemo(
+    () => countTablePages(totalCount, pagination.pageSize),
+    [totalCount, pagination],
+  )
 
   return (
-    <Table
+    <SortedTable
+      data={events}
       columns={columns}
-      emptyMessage='There are no events to show'
-      id='log-details-event-list'
+      showNavigation={true}
+      sorting={sorting}
+      onSortingChange={setSorting}
+      pagination={pagination}
+      pageCount={pageCount}
+      onPaginationChange={setPagination}
+      filename='event-list'
     />
   )
 }

@@ -1,6 +1,17 @@
 /** @type {import('next').NextConfig;} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'docs.autonomys.xyz',
+        port: '',
+        pathname: '**',
+      },
+    ],
+  },
   webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -11,6 +22,9 @@ const nextConfig = {
       exclude: /node_modules/,
       loader: 'graphql-tag/loader',
     })
+    if (!isServer) {
+      config.resolve.fallback.fs = false
+    }
     return config
   },
 }

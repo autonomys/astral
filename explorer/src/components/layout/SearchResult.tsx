@@ -1,7 +1,6 @@
-import { ExtrinsicAndEventResultTable } from '@/components/layout/ExtrinsicAndEventResult'
 import { ExtrinsicTable } from 'components/Extrinsic/ExtrinsicTable'
 import { SearchBar } from 'components/common/SearchBar'
-import useMediaQuery from 'hooks/useMediaQuery'
+import { ExtrinsicAndEventResultTable } from 'components/layout/ExtrinsicAndEventResult'
 import { useSearch } from 'hooks/useSearch'
 import { useParams } from 'next/navigation'
 import { FC } from 'react'
@@ -9,7 +8,6 @@ import { FC } from 'react'
 const SearchResult: FC = () => {
   const { type } = useParams()
   const { state } = useSearch()
-  const isDesktop = useMediaQuery('(min-width: 640px)')
 
   return (
     <div className='flex w-full flex-col align-middle'>
@@ -17,13 +15,13 @@ const SearchResult: FC = () => {
         <SearchBar />
       </div>
       <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-[#282929] dark:text-white'>Search results</div>
+        <div className='text-base font-medium text-grayDark dark:text-white'>Search results</div>
       </div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         {type === 'extrinsics' ? (
-          <ExtrinsicTable extrinsics={state.extrinsics} isDesktop={isDesktop} />
+          <ExtrinsicTable extrinsics={state.extrinsics} />
         ) : (
-          <ExtrinsicAndEventResultTable results={state.results} isDesktop={isDesktop} />
+          <ExtrinsicAndEventResultTable results={state.results} />
         )}
       </div>
     </div>

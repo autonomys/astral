@@ -12,6 +12,8 @@
   "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
   "editor.formatOnSave": true,
   "cSpell.words": [
+    "autonomys",
+    "autoid",
     "extrinsics",
     "gemini",
     "graphiql",

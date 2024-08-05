@@ -1,13 +1,15 @@
-import { chainesSet, chains } from 'constants/chains'
+import { GoogleAnalytics } from '@next/third-parties/google'
+import { indexers, networks } from 'constants/indexers'
 import { lang, metadata } from 'constants/metadata'
 import { Metadata, Viewport } from 'next'
 import { headers } from 'next/headers'
 import { Provider } from 'providers'
+import { Toaster } from 'react-hot-toast'
 import type { ChainPageProps } from 'types/app'
 import '../../styles/index.css'
 
 export async function generateStaticParams() {
-  return Array.from(chainesSet).map((chain) => ({ chain }))
+  return Array.from(networks).map((chain) => ({ chain }))
 }
 
 export default async function RootLayout({
@@ -15,8 +17,12 @@ export default async function RootLayout({
 }: ChainPageProps & { children: React.ReactNode }) {
   return (
     <html lang={lang}>
+      {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID && (
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID} />
+      )}
       <head lang='en' />
       <body>
+        <Toaster position='bottom-center' />
         <Provider>{children}</Provider>
       </body>
     </html>
@@ -35,7 +41,7 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
   const domain = headersList.get('x-forwarded-host') || ''
   const protocol = headersList.get('x-forwarded-proto') || ''
 
-  const chainTitle = chains.find((c) => c.urls.page === chain)?.title || 'Unknown chain'
+  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
   return {
     ...metadata,
     title: `${metadata.title} - ${chainTitle}`,

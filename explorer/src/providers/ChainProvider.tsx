@@ -1,27 +1,27 @@
 'use client'
 
-import { ApolloClient, ApolloLink, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client'
+import { Routes } from '@/constants'
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  InMemoryCache,
+  Operation,
+  createHttpLink,
+} from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
-import { chains } from 'constants/chains'
+import { NetworkId } from '@autonomys/auto-utils'
+import { Indexer, defaultIndexer } from 'constants/indexers'
 import Cookies from 'js-cookie'
 import { FC, ReactNode, createContext, useCallback, useState } from 'react'
 
-export type Chain = {
-  title: string
-  urls: {
-    api: string
-    page: string
-    rpc?: string
-  }
-  isDomain: boolean
-}
-
 export type ChainContextValue = {
-  selectedChain: Chain
-  setSelectedChain: (children: Chain) => void
-  selectedDomain: string
-  setSelectedDomain: (children: string) => void
-  chains: Chain[]
+  indexerSet: Indexer
+  network: NetworkId
+  section: Routes
+  isEvm: boolean
+  setIndexerSet: (children: Indexer) => void
+  setSection: (section: Routes) => void
 }
 
 export const ChainContext = createContext<ChainContextValue>(
@@ -34,12 +34,25 @@ type Props = {
 }
 
 interface SelectedChainProps extends Props {
-  selectedChain: Chain
+  indexerSet: Indexer
 }
 
-export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {
+export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
+  const httpLink = createHttpLink({
+    uri: ({ getContext }: Operation) => {
+      const { clientName } = getContext()
+
+      if (clientName === 'general' && indexerSet.squids.general) return indexerSet.squids.general
+      if (clientName === 'account' && indexerSet.squids.account) return indexerSet.squids.account
+      if (clientName === 'rewards' && indexerSet.squids.rewards) return indexerSet.squids.rewards
+      if (clientName === 'nova' && indexerSet.squids.nova) return indexerSet.squids.nova
+
+      return indexerSet.squids.old
+    },
+  })
+
   const client = new ApolloClient({
-    link: ApolloLink.from([new RetryLink(), new HttpLink({ uri: selectedChain.urls.api })]),
+    link: ApolloLink.from([new RetryLink(), httpLink]),
     cache: new InMemoryCache(),
   })
 
@@ -47,28 +60,31 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, c
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
-  const [selectedDomain, setSelectedDomain] = useState('consensus')
+  const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
+  const [network, setNetwork] = useState<NetworkId>(defaultIndexer.network)
+  const [section, setSection] = useState<Routes>(Routes.consensus)
 
-  const handleSelectChain = useCallback(
-    (chain: Chain) => {
-      if (chain) Cookies.set('selectedChain', chain.urls.page, { expires: 1 })
-      setSelectedChain(chain)
+  const setIndexerSet = useCallback(
+    (indexer: Indexer) => {
+      Cookies.set('selected-network', indexer.network, { expires: 1 })
+      _setIndexerSet(indexer)
+      setNetwork(indexer.network)
     },
-    [setSelectedChain],
+    [_setIndexerSet],
   )
 
   return (
     <ChainContext.Provider
       value={{
-        selectedChain,
-        setSelectedChain: handleSelectChain,
-        selectedDomain,
-        setSelectedDomain,
-        chains,
+        indexerSet,
+        network,
+        section,
+        isEvm: section === Routes.nova,
+        setIndexerSet,
+        setSection,
       }}
     >
-      <SelectedChainProvider selectedChain={selectedChain}>{children}</SelectedChainProvider>
+      <SelectedChainProvider indexerSet={indexerSet}>{children}</SelectedChainProvider>
     </ChainContext.Provider>
   )
 }

@@ -4,23 +4,28 @@ type OperatorDeregisteredStatus = { deregistered: { unlockAtConfirmedDomainBlock
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const operatorStatus = (status: any, lastBlock?: number) => {
-  if (!status) return 'Unknown'
-  if (typeof status === 'string') {
-    const statusParsed = JSON.parse(status)
-    const statusKey = Object.keys(statusParsed)[0]
+  try {
+    if (!status) return 'Unknown'
+    if (typeof status === 'string') {
+      const statusParsed = JSON.parse(status)
+      const statusKey = Object.keys(statusParsed)[0]
 
-    if (lastBlock && statusKey === 'deregistered') {
-      const unlockBlock = (statusParsed as OperatorDeregisteredStatus).deregistered
-        .unlockAtConfirmedDomainBlockNumber
+      if (lastBlock && statusKey === 'deregistered') {
+        const unlockBlock = (statusParsed as OperatorDeregisteredStatus).deregistered
+          .unlockAtConfirmedDomainBlockNumber
 
-      if (unlockBlock > lastBlock)
-        return statusKey + ', unlock in ' + (unlockBlock - lastBlock) + ' blocks'
+        if (unlockBlock > lastBlock)
+          return statusKey + ', unlock in ' + (unlockBlock - lastBlock) + ' blocks'
 
-      return statusKey + ', funds ready to unlock'
+        return statusKey + ', funds ready to unlock'
+      }
+      return statusKey
     }
-    return statusKey
+    return Object.keys(status)[0]
+  } catch (error) {
+    console.error('operatorStatus', error)
+    return 'Unknown'
   }
-  return Object.keys(status)[0]
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

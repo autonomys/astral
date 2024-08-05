@@ -1,3 +1,8 @@
+export enum WalletType {
+  subspace = 'subspace',
+  ethereum = 'ethereum',
+}
+
 export enum WalletAction {
   None = 'None',
   SendToken = 'SendToken',
@@ -27,4 +32,10 @@ export enum SupportedWalletExtension {
   PolkadotJs = 'polkadot-js',
   SubwalletJs = 'subwallet-js',
   Nova = 'nova',
+}
+
+export enum AccountPreferenceSection {
+  None = 'None',
+  AddressBook = 'addressBook',
+  Settings = 'settings',
 }

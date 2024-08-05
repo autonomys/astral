@@ -11,15 +11,22 @@ export const formatUnitsToNumber = (value: string): number => {
 }
 
 export const formatUnits = (value: string): string => {
-  const convertedEthers = formatEther(value)
+  try {
+    const convertedEthers = formatEther(value)
 
-  return convertedEthers
+    return convertedEthers
+  } catch (error) {
+    console.error('formatUnits', error)
+    return 'NaN'
+  }
 }
 
 export const floatToStringWithDecimals = (value: number, decimals = 4): string =>
   BigInt(value * 10 ** decimals).toString()
 
-export const bigNumberToNumber = (bigNumber: string, precision = 4): number => {
+export const bigNumberToNumber = (bigNumber: string | bigint, precision = 4): number => {
+  if (typeof bigNumber === 'bigint') bigNumber = bigNumber.toString()
+
   const number = formatUnits(bigNumber)
 
   return limitNumberDecimals(number, precision)
@@ -92,3 +99,11 @@ export const numberPositionSuffix = (number: number) => {
   if (j === 3 && k !== 13) return number + 'rd'
   return number + 'th'
 }
+
+export const bigIntSerializer = (key: string, value: bigint | unknown): string | unknown =>
+  typeof value === 'bigint' ? value.toString() + 'n' : value
+
+export const bigIntDeserializer = (key: string, value: string | unknown): bigint | unknown =>
+  typeof value === 'string' && /^\d+n$/.test(value as string)
+    ? BigInt(value.toString().slice(0, -1))
+    : value

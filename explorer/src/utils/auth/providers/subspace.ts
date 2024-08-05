@@ -1,7 +1,9 @@
 import { cryptoWaitReady, signatureVerify } from '@polkadot/util-crypto'
-import { DEFAULT_DISCORD_TOKEN, DEFAULT_GITHUB_TOKEN } from 'constants/session'
+import { AuthProvider, DEFAULT_DISCORD_TOKEN, DEFAULT_GITHUB_TOKEN } from 'constants/session'
+import { User } from 'next-auth'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import { findUserByID, saveUser, updateUser } from 'utils/fauna'
 import { verifySubspaceAccountRoles } from '../vcs/subspace'
 
 export const Subspace = () => {
@@ -36,8 +38,10 @@ export const Subspace = () => {
         // Verify Subspace VCs
         const { farmer, operator, nominator } = await verifySubspaceAccountRoles(account)
 
-        // Return the user object if the credentials are valid
-        return {
+        const savedUser = await findUserByID(did)
+
+        // create the user object if the credentials are valid
+        const user: User = {
           id: did,
           DIDs: [did],
           subspace: {
@@ -52,6 +56,24 @@ export const Subspace = () => {
           },
           discord: DEFAULT_DISCORD_TOKEN,
           github: DEFAULT_GITHUB_TOKEN,
+        }
+
+        if (!savedUser || savedUser.length === 0) {
+          console.log('User does not exist, saving user:', user)
+          await saveUser(user)
+
+          return user
+        }
+        await updateUser(
+          savedUser[0].ref,
+          savedUser[0].data,
+          AuthProvider.subspace,
+          user.subspace ?? {},
+        )
+
+        return {
+          ...savedUser[0].data,
+          [AuthProvider.subspace]: user[AuthProvider.subspace],
         }
       } catch (error) {
         console.error('Error verify Subspace wallet ownership:', error)

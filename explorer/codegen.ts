@@ -1,17 +1,20 @@
 import type { CodegenConfig } from '@graphql-codegen/cli'
 import * as dotenv from 'dotenv'
-import { defaultChain } from './src/constants/chains'
+import { defaultIndexer } from './src/constants/indexers'
 
 dotenv.config()
 
 const config: CodegenConfig = {
-  overwrite: true,
-  schema: defaultChain.urls.api,
-  documents: './src/**/*.{ts,tsx}',
   generates: {
-    './gql/': {
-      preset: 'client',
-      plugins: [],
+    './gql/rewardTypes.ts': {
+      schema: defaultIndexer.squids.rewards,
+      documents: ['./src/**/rewardsQuery.ts'],
+      plugins: ['typescript', 'typescript-operations'],
+    },
+    './gql/oldSquidTypes.ts': {
+      schema: defaultIndexer.squids.old,
+      documents: ['./src/**/query.ts'],
+      plugins: ['typescript', 'typescript-operations'],
     },
   },
 }

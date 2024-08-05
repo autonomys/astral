@@ -1,0 +1,182 @@
+type Domain @entity {
+  id: ID! @index
+  sortId: Int! @index
+  completedEpoch: Int! @index
+  lastDomainBlockNumber: Int! @index
+  totalDeposits: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
+  currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+type Account @entity {
+  id: ID! @index
+  totalDeposits: BigInt!
+  totalTaxCollected: BigInt!
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+enum OperatorStatus {
+  PENDING
+  REGISTERED
+  DEREGISTERED
+  READY_TO_UNLOCK
+  SLASHED
+}
+
+type Operator @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  domainId: String! @index
+  signingKey: String! @index
+  minimumNominatorStake: BigInt!
+  nominationTax: Int!
+  currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
+  currentEpochRewards: BigInt!
+  currentTotalShares: BigInt!
+  totalDeposits: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
+  rawStatus: String
+  status: OperatorStatus! @index
+  bundleCount: Int!
+  lastBundleAt: Int!
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+enum NominatorStatus {
+  PENDING
+  STAKING
+  DEREGISTERED
+  SLASHED
+}
+
+type Nominator @entity {
+  id: ID! @index
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  shares: BigInt!
+  totalDeposits: BigInt!
+  status: NominatorStatus! @index
+  createdAt: Int @index
+  updatedAt: Int @index
+}
+
+enum DepositStatus {
+  PENDING
+  DEPOSITED
+}
+
+type Deposit @entity {
+  id: ID! @index
+  blockNumber: Int! @index
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  amount: BigInt!
+  storageFeeDeposit: BigInt!
+  timestamp: DateTime! @index
+  extrinsicHash: String! @index
+  status: DepositStatus! @index
+}
+
+enum WithdrawalStatus {
+  PENDING
+  READY
+  WITHDRAW
+}
+
+type Withdrawal @entity {
+  id: ID! @index
+  blockNumber: Int! @index
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  shares: BigInt!
+  timestamp: DateTime! @index
+  extrinsicHash: String! @index
+  status: WithdrawalStatus! @index
+}
+
+type OperatorUnlockedFunds @entity {
+  id: ID! @index
+  blockNumber: Int! @index
+  operator: Operator!
+  nominator: Nominator!
+  nominatorAccount: String!
+  timestamp: DateTime! @index
+  extrinsicHash: String! @index
+  amount: BigInt!
+}
+
+type OperatorRewardEvent @entity {
+  id: ID! @index
+  domainId: String! @index
+  operatorId: String! @index
+  amount: BigInt!
+  timestamp: DateTime! @index
+  blockNumber: Int! @index
+  extrinsicHash: String! @index
+}
+
+type Stats @entity {
+  id: ID! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalFees: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  allTimeHighStaked: BigInt!
+  domainsCount: Int!
+  operatorsCount: Int!
+  activeOperatorsCount: Int!
+  slashedOperatorsCount: Int!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
+
+type StatsPerDomain @entity {
+  id: ID! @index
+  domainId: String! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalFees: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  allTimeHighStaked: BigInt!
+  operatorsCount: Int!
+  activeOperatorsCount: Int!
+  slashedOperatorsCount: Int!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
+
+type StatsPerOperator @entity {
+  id: ID! @index
+  domainId: String! @index
+  operatorId: String! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalFees: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  allTimeHighStaked: BigInt!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
