@@ -74,7 +74,17 @@ export const GetDiscordRoles: FC = () => {
       <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
-            <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
+            {session?.user?.discord?.vcs.roles.farmer && (
+              <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.operator && (
+              <StyledListItem title='You are a Verified Nominator on Discord'>🌐</StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.nominator && (
+              <StyledListItem title='You are a Verified Operator on Discord'>🤝</StyledListItem>
+            )}
+            <VerifyWalletOwnership />
+            <ConnectDiscord />
           </List>
           {/* <ClaimStakingToken /> */}
         </Accordion>
