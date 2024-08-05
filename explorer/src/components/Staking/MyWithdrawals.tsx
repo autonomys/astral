@@ -1,7 +1,9 @@
+import { INTERNAL_ROUTES } from '@/constants'
 import { bigNumberToNumber, bigNumberToString } from '@/utils/number'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import useDomains from 'hooks/useDomains'
 import useWallet from 'hooks/useWallet'
+import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import { SortedTable } from '../common/SortedTable'
@@ -15,7 +17,7 @@ interface MyUnlockedWithdrawalsProps {
 
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const { withdrawals } = useConsensusStates()
   const myUnlockedWithdrawals = useMemo(
     () =>
@@ -81,7 +83,18 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     accessorKey: 'operatorId.sortValue',
                     header: 'Operator Id',
                     enableSorting: true,
-                    cell: ({ row }) => <div>{row.original.operatorId.value}</div>,
+                    cell: ({ row }) => (
+                      <Link
+                        className='hover:text-purpleAccent'
+                        href={INTERNAL_ROUTES.operators.id.page(
+                          selectedChain.urls.page,
+                          selectedDomain,
+                          row.original.operatorId.value,
+                        )}
+                      >
+                        <div>{row.original.operatorId.value}</div>
+                      </Link>
+                    ),
                   },
                   {
                     accessorKey: 'totalWithdrawalAmount.sortValue',
@@ -149,7 +162,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
           </div>
         </div>
       ),
-    [action, handleAction, myUnlockedWithdrawals],
+    [myUnlockedWithdrawals, selectedChain.urls.page, selectedDomain, action, handleAction],
   )
 
   return myUnlockedWithdrawalsList
@@ -157,7 +170,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
 
 export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
-  const { selectedChain } = useDomains()
+  const { selectedChain, selectedDomain } = useDomains()
   const { operators, withdrawals } = useConsensusStates()
   const myPendingWithdrawals = useMemo(
     () =>
@@ -224,7 +237,18 @@ export const MyPendingWithdrawals: FC = () => {
                     accessorKey: 'operatorId.sortValue',
                     header: 'Operator Id',
                     enableSorting: true,
-                    cell: ({ row }) => <div>{row.original.operatorId.value}</div>,
+                    cell: ({ row }) => (
+                      <Link
+                        className='hover:text-purpleAccent'
+                        href={INTERNAL_ROUTES.operators.id.page(
+                          selectedChain.urls.page,
+                          selectedDomain,
+                          row.original.operatorId.value,
+                        )}
+                      >
+                        <div>{row.original.operatorId.value}</div>
+                      </Link>
+                    ),
                   },
                   {
                     accessorKey: 'shares.sortValue',
@@ -261,7 +285,7 @@ export const MyPendingWithdrawals: FC = () => {
           </div>
         </div>
       ),
-    [myPendingWithdrawals],
+    [myPendingWithdrawals, selectedChain.urls.page, selectedDomain],
   )
 
   return myPendingWithdrawalsList
