@@ -14,7 +14,7 @@
   },
   "author": {
     "name": "Autonomys",
-    "url": "https://www.autonomys.net"
+    "url": "https://www.autonomys.xyz"
   },
   "dependencies": {
     "@autonomys/auto-consensus": "^0.2.0",

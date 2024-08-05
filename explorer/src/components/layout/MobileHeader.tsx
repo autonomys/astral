@@ -3,7 +3,7 @@
 import { LogoIcon } from '@/components/icons'
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
 import dayjs from 'dayjs'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, ReactNode } from 'react'
@@ -30,7 +30,7 @@ export default MobileHeader
 export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
   const { push } = useRouter()
   const { isDark, toggleTheme } = useTheme()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   const handleNavigate = (url: string) => {
     setIsOpen(false)
@@ -56,7 +56,7 @@ export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => 
         <article className='relative flex h-full w-screen max-w-lg flex-col gap-10 space-y-6 overflow-y-scroll pb-10'>
           <div className='flex items-center justify-between p-5 align-middle'>
             <button
-              onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
+              onClick={() => handleNavigate(`/${network}/${section}`)}
               className='title-font flex items-center font-medium  text-gray-900 dark:text-white'
             >
               <LogoIcon fillColor='currentColor' />

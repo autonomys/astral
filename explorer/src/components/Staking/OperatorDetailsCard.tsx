@@ -2,12 +2,12 @@ import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { shortString } from '@/utils/string'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import { Chains } from 'constants/'
+import { TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import type { OperatorByIdQuery } from 'gql/oldSquidTypes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   if (!operator) return null
@@ -48,7 +48,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
                         data-testid={`nominator-link-${operator.operatorOwner}}`}
                         className='hover:text-purpleAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
-                          selectedChain.urls.page,
+                          network,
                           Routes.consensus,
                           operator.operatorOwner,
                         )}
@@ -72,17 +72,15 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Minimum Stake'>
-              {bigNumberToNumber(operator.minimumNominatorStake)} {selectedChain.token.symbol}
+              {bigNumberToNumber(operator.minimumNominatorStake)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Nominator Tax'>{operator.nominationTax} %</StyledListItem>
             <StyledListItem title='Current Stake'>
-              {bigNumberToNumber(operator.currentTotalStake)} {selectedChain.token.symbol}
+              {bigNumberToNumber(operator.currentTotalStake)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Shares'>{numberWithCommas(operator.totalShares)}</StyledListItem>
             <StyledListItem title='Status'>
-              {selectedChain.urls.page === Chains.gemini3g
-                ? operator.status
-                : capitalizeFirstLetter(operatorStatus(operator.status))}
+              {capitalizeFirstLetter(operatorStatus(operator.status))}
             </StyledListItem>
           </List>
         </div>

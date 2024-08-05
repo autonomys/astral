@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react'
 import { MockedProvider } from '@apollo/client/testing'
+import { render, screen } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 
 // home
@@ -18,7 +18,7 @@ const mockUseDomains = () => ({
 
 describe('Home unit tests', () => {
   beforeEach(() => {
-    jest.mock('common/hooks/useDomains', () => mockUseDomains)
+    jest.mock('common/hooks/useChains', () => mockUseDomains)
   })
 
   it('renders without error', async () => {

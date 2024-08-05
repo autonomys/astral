@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
 import { formatSearchResult } from 'utils//formatSearchResult'
-import useDomains from './useDomains'
+import useChains from './useChains'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
@@ -22,7 +22,7 @@ export const useSearch = (): Values => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [state, setState] = useState<any>({})
   const { push } = useRouter()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   const [getResults] = useLazyQuery(GET_RESULTS, { fetchPolicy: 'network-only' })
 
@@ -48,46 +48,38 @@ export const useSearch = (): Values => {
         })
 
         if (data?.accountById) {
-          push(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, term))
+          push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
         } else if (data?.extrinsicById && data?.eventById) {
           setState(formatSearchResult(data.eventById, data.extrinsicById))
           push(
-            `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.search.result.page(
-              selectedChain.urls.page,
-              selectedDomain,
+            `/${network}/${section}/${INTERNAL_ROUTES.search.result.page(
+              network,
+              section,
               'extrinsicAndEvent',
             )}`,
           )
         } else if (data?.extrinsicById) {
-          push(INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, term))
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
         } else if (data?.extrinsics?.length > 0) {
           if (data.extrinsics.length > 1) {
             setState({ extrinsics: data.extrinsics })
             push(
-              `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.search.result.page(
-                selectedChain.urls.page,
-                selectedDomain,
+              `/${network}/${section}/${INTERNAL_ROUTES.search.result.page(
+                network,
+                section,
                 'extrinsics',
               )}`,
             )
           } else {
             const [extrinsic] = data.extrinsics
-            push(
-              INTERNAL_ROUTES.extrinsics.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                extrinsic.id,
-              ),
-            )
+            push(INTERNAL_ROUTES.extrinsics.id.page(network, section, extrinsic.id))
           }
         } else if (data?.blocks?.length > 0 && data.blocks[0].height >= 0) {
-          push(
-            INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, Number(term)),
-          )
+          push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
         } else if (data?.eventById) {
-          push(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, term))
+          push(INTERNAL_ROUTES.events.id.page(network, section, term))
         } else {
-          push(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
+          push(INTERNAL_ROUTES.search.empty(network, section))
         }
 
         if (error) {
@@ -101,24 +93,22 @@ export const useSearch = (): Values => {
       case 2: {
         const blockId = Number(term)
         if (isNaN(blockId)) {
-          return push(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
+          return push(INTERNAL_ROUTES.search.empty(network, section))
         }
-        push(INTERNAL_ROUTES.blocks.id.page(selectedChain.urls.page, selectedDomain, Number(term)))
+        push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
         break
       }
       case 3:
-        return push(
-          INTERNAL_ROUTES.extrinsics.id.page(selectedChain.urls.page, selectedDomain, term),
-        )
+        return push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
       case 4:
         if (!isAddress(term)) {
-          return push(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
+          return push(INTERNAL_ROUTES.search.empty(network, section))
         }
-        return push(INTERNAL_ROUTES.accounts.id.page(selectedChain.urls.page, selectedDomain, term))
+        return push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
       case 5:
-        return push(INTERNAL_ROUTES.events.id.page(selectedChain.urls.page, selectedDomain, term))
+        return push(INTERNAL_ROUTES.events.id.page(network, section, term))
       default:
-        return push(INTERNAL_ROUTES.search.empty(selectedChain.urls.page, selectedDomain))
+        return push(INTERNAL_ROUTES.search.empty(network, section))
     }
   }
 

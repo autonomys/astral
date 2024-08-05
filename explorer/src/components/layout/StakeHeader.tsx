@@ -3,7 +3,7 @@
 import { LogoIcon } from '@/components/icons'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { useTheme } from 'providers/ThemeProvider'
@@ -15,14 +15,14 @@ export const StakeHeader: FC = () => {
   const { isDark, toggleTheme } = useTheme()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.leaderboard}`}
+            href={`/${network}/${Routes.leaderboard}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>

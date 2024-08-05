@@ -3,7 +3,7 @@ const organization = 'Subspace Labs'
 const description = 'Subspace Labs Gemini Block Explorer'
 const keywords =
   'Subspace, Subspace Network, Subspace Explorer, Subspace Labs, Subspace Labs Gemini, Subspace Labs Gemini Block Explorer'
-export const url = process.env.NEXTAUTH_URL || 'https://explorer.subspace.network'
+export const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
 const twitter = '@SubspaceLabs'
 const images = {
   url: url + '/images/share.png',

@@ -1,10 +1,9 @@
-import { bigNumberToNumber } from '@/utils/number'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
-import type { Chain } from 'constants/chains'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
 import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -12,20 +11,17 @@ import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
+import { bigNumberToNumber } from 'utils/number'
 import { QUERY_STAKING_SUMMARY } from './query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
-  selectedChain: Chain
   tokenSymbol: string
 }
 
-export const StakingSummary: FC<StakingSummaryProps> = ({
-  subspaceAccount,
-  selectedChain,
-  tokenSymbol,
-}) => {
+export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, tokenSymbol }) => {
   const { ref, inView } = useInView()
+  const { network } = useChains()
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -138,7 +134,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalOperatorStake'}
                   data-testid='totalOperatorStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
                     {bigNumberToNumber(totalOperatorStake)} {tokenSymbol}
@@ -150,7 +146,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalNominatedStake'}
                   data-testid='totalNominatedStake-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
                     {bigNumberToNumber(totalNominatedStake)} {tokenSymbol}
@@ -162,7 +158,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalOperatorCount'}
                   data-testid='totalOperatorCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
                     {totalOperatorCount}
@@ -174,7 +170,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
                   key={'totalNominatedCount'}
                   data-testid='totalNominatedCount-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.staking}`}
+                  href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of nomination'>
                     {totalNominatedCount}
@@ -187,7 +183,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({
               <Link
                 data-testid='totalNominatedCount-link'
                 className='hover:text-purpleAccent'
-                href={`/${selectedChain.urls.page}/${Routes.staking}`}
+                href={`/${network}/${Routes.staking}`}
               >
                 <span className='text-sm font-medium text-grayDarker dark:text-white'>
                   Your wallet has not staked any {tokenSymbol} yet! Head over to the operators page

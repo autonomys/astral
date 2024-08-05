@@ -55,9 +55,9 @@ export const EXTERNAL_ROUTES = {
   forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
     'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
-  docs: 'https://docs.subspace.network/',
+  docs: 'https://docs.autonomys.xyz/',
   operatorDocs:
-    'https://docs.subspace.network/docs/farming-&-staking/staking/operators/register-operator',
+    'https://docs.autonomys.xyz/docs/farming-&-staking/staking/operators/register-operator',
   social: {
     twitter: 'https://x.com/AutonomysNet',
     discord: 'https://discord.gg/subspace-network',

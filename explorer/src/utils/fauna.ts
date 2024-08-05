@@ -1,4 +1,4 @@
-import type { Chains } from 'constants/chains'
+import type { NetworkId } from '@autonomys/auto-utils'
 import type { AuthProvider } from 'constants/session'
 import { Client, Expr, ExprArg, FaunaHttpErrorResponseContent, query as q } from 'faunadb'
 import type { SavedUser, User } from 'next-auth'
@@ -10,7 +10,7 @@ type UserStats = {
 }
 type SavedClaim = {
   id: string
-  chain: Chains
+  chain: NetworkId
   claimType: string
   claim: object
   user: object
@@ -19,7 +19,7 @@ type SavedClaim = {
   updatedAt: Expr
 }
 type SavedStats = {
-  chain: Chains
+  chain: NetworkId
   claimType: string
   totalClaims: number
   users: UserStats[]
@@ -80,7 +80,7 @@ export const findUserByAuthProviderId = async (provider: AuthProvider, userID: s
 
 export const saveClaim = async (
   user: User,
-  chain: Chains,
+  chain: NetworkId,
   claimType: string,
   claim: object,
   tx: object,
@@ -100,7 +100,7 @@ export const saveClaim = async (
 
 export const saveClaimStats = async (
   user: User,
-  chain: Chains,
+  chain: NetworkId,
   claimType: string,
   slackMessageId: string,
 ) => {

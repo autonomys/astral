@@ -6,7 +6,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'docs.subspace.network',
+        hostname: 'docs.autonomys.xyz',
         port: '',
         pathname: '**',
       },

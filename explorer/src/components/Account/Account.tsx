@@ -6,7 +6,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { AccountByIdEvmQueryVariables, AccountByIdQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -31,14 +31,14 @@ import { QUERY_ACCOUNT_BY_ID, QUERY_ACCOUNT_BY_ID_EVM } from './query'
 export const Account: FC = () => {
   const { ref, inView } = useInView()
   const { accountId: rawAccountId } = useParams<AccountIdParam>()
-  const { selectedChain } = useDomains()
+  const { section } = useChains()
   const novaExplorerBanner = useEvmExplorerBanner('address/' + rawAccountId)
   const inFocus = useWindowFocus()
-  const accountId = selectedChain.isDomain ? rawAccountId : formatAddress(rawAccountId)
+  const accountId = section === Routes.nova ? rawAccountId : formatAddress(rawAccountId)
 
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
-  const AccountQuery = selectedChain.isDomain ? QUERY_ACCOUNT_BY_ID_EVM : QUERY_ACCOUNT_BY_ID
+  const AccountQuery = section === Routes.nova ? QUERY_ACCOUNT_BY_ID_EVM : QUERY_ACCOUNT_BY_ID
 
   const { setIsVisible } = useSquidQuery<
     AccountByIdQuery | AccountByIdEvmQuery,
@@ -49,7 +49,7 @@ export const Account: FC = () => {
       variables: { accountId: accountId ?? '' },
       skip: !inFocus,
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    section === Routes.nova ? Routes.nova : Routes.consensus,
     'account',
   )
 
@@ -59,14 +59,14 @@ export const Account: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (section === Routes.nova) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [section, evmEntry, consensusEntry])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (section === Routes.nova && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, section])
 
   const account = useMemo(() => data && (data.accountById as SquidAccount), [data])
   const rewards = useMemo(() => (data ? (data.rewardEvents as RewardEvent[]) : []), [data])

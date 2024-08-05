@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { activate } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { LastBlockQuery } from 'gql/oldSquidTypes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { LAST_BLOCK } from './query'
@@ -43,7 +43,7 @@ export const OutOfSyncBanner: FC = () => {
 }
 
 export const useOutOfSyncBanner = () => {
-  const { selectedChain } = useDomains()
+  const { network, isEvm } = useChains()
   const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
@@ -51,25 +51,25 @@ export const useOutOfSyncBanner = () => {
   })
 
   const getChainLastBlock = useCallback(async () => {
-    const api = await activate({ networkId: 'autonomys-' + selectedChain?.urls.page })
+    const api = await activate({ networkId: network })
 
     const block = await api.rpc.chain.getBlock()
 
     setLastChainBlock(block.block.header.number.toNumber())
-  }, [selectedChain])
+  }, [network])
 
   const lastBlock = useMemo(() => data && parseInt(data.lastBlock[0].height), [data])
 
   const outOfSyncBanner = useMemo(
     () =>
-      !selectedChain.isDomain &&
+      !isEvm &&
       data &&
       lastBlock &&
       lastChainBlock !== null &&
       lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastChainBlock ? (
         <OutOfSyncBanner />
       ) : null,
-    [data, lastBlock, lastChainBlock, selectedChain.isDomain],
+    [data, lastBlock, lastChainBlock, isEvm],
   )
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { StatItem } from 'components/common/StatItem'
+import { TOKEN } from 'constants/general'
 import { Account } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
 import { FC } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { AccountBalancePieChart } from './AccountBalancePieChart'
@@ -11,7 +11,6 @@ type Props = {
 }
 
 export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) => {
-  const { selectedChain } = useDomains()
   const accountTotal = bigNumberToNumber(account ? account.total : 0)
   const accountFree = bigNumberToNumber(account ? account.free : 0)
   const accountReserved = bigNumberToNumber(account ? account.reserved : 0)
@@ -31,7 +30,7 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
           {numberWithCommas(accountTotal)}
         </div>
         <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
-          {selectedChain.token.symbol}
+          {TOKEN.symbol}
         </div>
       </div>
       <div className='col-span-2 flex size-full items-center justify-center lg:items-end lg:justify-end'>
@@ -43,14 +42,14 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
             <div className='mr-2 h-[30px] w-1 bg-purpleElectric' />
             <StatItem
               title='Free'
-              value={`${numberWithCommas(accountFree)} ${selectedChain.token.symbol} (${freePercent.toFixed(2)}%)`}
+              value={`${numberWithCommas(accountFree)} ${TOKEN.symbol} (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
             <div className='mr-2 h-[30px] w-1 bg-blueShade2' />
             <StatItem
               title='Reserved'
-              value={`${numberWithCommas(accountReserved)} ${selectedChain.token.symbol} (${reservedPercent.toFixed(2)}%)`}
+              value={`${numberWithCommas(accountReserved)} ${TOKEN.symbol} (${reservedPercent.toFixed(2)}%)`}
             />
           </div>
         </div>

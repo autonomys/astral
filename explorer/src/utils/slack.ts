@@ -1,4 +1,4 @@
-import { defaultChain } from '@/constants'
+import { TOKEN } from 'constants/general'
 
 interface SlackBlock {
   type: string
@@ -91,7 +91,7 @@ export const walletBalanceLowSlackMessage = async (balance: string, wallet: stri
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `The wallet balance has ${balance} ${defaultChain.token.symbol}, please refill the wallet. \`${wallet}\``,
+        text: `The wallet balance has ${balance} ${TOKEN.symbol}, please refill the wallet. \`${wallet}\``,
       },
     },
   ]

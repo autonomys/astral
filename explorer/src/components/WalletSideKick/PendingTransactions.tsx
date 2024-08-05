@@ -1,17 +1,16 @@
 'use client'
 
-import { Transaction } from '@/types/transaction'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { Tooltip } from 'components/common/Tooltip'
-import type { Chain } from 'constants/chains'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE } from 'constants/routes'
 import { TransactionStatus } from 'constants/transaction'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { PendingTransactionQuery, PendingTransactionQueryVariables } from 'gql/oldSquidTypes'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -19,21 +18,19 @@ import { useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useTransactionsStates } from 'states/transactions'
+import { Transaction } from 'types/transaction'
 import { shortString } from 'utils/string'
 import { QUERY_PENDING_TX } from './query'
 
 interface PendingTransactionsProps {
   subspaceAccount: string
-  selectedChain: Chain
 }
 
 dayjs.extend(relativeTime)
 
-export const PendingTransactions: FC<PendingTransactionsProps> = ({
-  subspaceAccount,
-  selectedChain,
-}) => {
+export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
+  const { network } = useChains()
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -71,15 +68,10 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({
     () =>
       actingAccount
         ? pendingTransactions
-            .filter(
-              (tx) =>
-                tx.chain &&
-                actingAccount.address === tx.from &&
-                selectedChain.urls.page == tx.chain.urls.page,
-            )
+            .filter((tx) => tx.chain && actingAccount.address === tx.from && network == tx.chain)
             .sort((a, b) => b.submittedAtBlockNumber - a.submittedAtBlockNumber)
         : [],
-    [actingAccount, pendingTransactions, selectedChain.urls.page],
+    [actingAccount, pendingTransactions, network],
   )
 
   const timeNowPlus2min = new Date(new Date().getTime() + 2 * 60000).getTime() // 2 minutes from now
@@ -160,7 +152,10 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({
                     </span>
                   </div>
                   <div className='m-2 p-2'>
-                    <StatusIcon status={tx.status !== TransactionStatus.Pending} />
+                    <StatusIcon
+                      status={tx.status === TransactionStatus.Success}
+                      isPending={tx.status === TransactionStatus.Pending}
+                    />
                   </div>
                   <div className='m-2 p-2'>
                     <TrashIcon className='size-5' stroke='red' onClick={() => handleRemove(tx)} />
