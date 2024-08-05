@@ -6,27 +6,35 @@ export const downloadFullData = async (
   query: DocumentNode,
   path: string,
   variables?: object,
+  delimiterKey: [string, string] = ['first', 'after'],
+  context: object = {},
 ) => {
   const entries: unknown[] = []
 
   let hasNextPage = true
   while (hasNextPage) {
     const _variables = {
-      first: MAX_DOWNLOADER_BATCH_SIZE,
-      after: entries.length ? entries.length.toString() : undefined,
+      [delimiterKey[0]]: MAX_DOWNLOADER_BATCH_SIZE,
+      [delimiterKey[1]]: entries.length ? entries.length.toString() : undefined,
     }
     const { data } = await apolloClient.query({
       query,
       variables: variables ? { ..._variables, ...variables } : _variables,
+      context,
     })
-    console.log('data', data)
+    if (data[path].edges && data[path].edges.length > 0) {
+      const newEntries = extractNestedData(data, path + '.edges')
 
-    const newEntries = extractNestedData(data, path + '.edges')
-    console.log('linesCount', newEntries.length)
+      entries.push(...newEntries)
 
-    entries.push(...newEntries)
+      hasNextPage = entries.length < data[path].totalCount
+    } else if (data[path + '_aggregate']) {
+      const totalCount = data[path + '_aggregate'].aggregate.count
+      const newEntries = data[path]
+      entries.push(...newEntries)
 
-    hasNextPage = entries.length < data[path].totalCount
+      hasNextPage = entries.length < totalCount
+    }
   }
 
   return entries
