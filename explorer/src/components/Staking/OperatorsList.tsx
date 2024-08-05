@@ -103,7 +103,7 @@ export const OperatorsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'domain.sort_id',
+        accessorKey: 'domain_id',
         header: 'Domain',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
@@ -414,10 +414,16 @@ export const OperatorsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_OPERATOR_LIST, 'operatorsConnection', {
-        first: 10,
-        orderBy,
-      }),
+      downloadFullData(
+        apolloClient,
+        QUERY_OPERATOR_LIST,
+        'operator',
+        {
+          orderBy,
+        },
+        ['limit', 'offset'],
+        { clientName: 'staking' },
+      ),
     [apolloClient, orderBy],
   )
 
@@ -500,8 +506,7 @@ export const OperatorsList: FC = () => {
               pagination={pagination}
               pageCount={pageCount}
               onPaginationChange={setPagination}
-              filename='operators-operators-list'
-              // pageSizeOptions={[10]}
+              filename='staking-operators-list'
               fullDataDownloader={fullDataDownloader}
             />
           ) : (

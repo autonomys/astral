@@ -1,4 +1,3 @@
-import { Pagination } from '@/constants/general'
 import {
   ColumnDef,
   OnChangeFn,
@@ -8,6 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { Pagination } from 'constants/general'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useMemo } from 'react'
 import { DesktopTable } from './DesktopTable'

@@ -1,3 +1,4 @@
+import { sort } from '@/utils/sort'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
@@ -57,8 +58,9 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     if (!operator || operator.current_total_stake == 0) return []
     const cols = [
       {
-        accessorKey: 'account',
+        accessorKey: 'account_id',
         header: 'Account Id',
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
             <AccountIcon address={row.original.account_id} size={26} />
@@ -79,8 +81,9 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         ),
       },
       {
-        accessorKey: 'stakes',
+        accessorKey: 'shares',
         header: 'Stakes',
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           return (
             <div>
@@ -104,6 +107,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       {
         accessorKey: 'shares',
         header: 'Shares',
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div>
             {numberWithCommas(
@@ -123,6 +127,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       {
         accessorKey: 'owner',
         header: 'is Owner',
+        enableSorting: false,
         cell: ({ row }: Cell<Row>) =>
           operator.account_id === row.original.account_id ? 'Yes' : 'No',
       },
@@ -134,6 +139,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       cols.push({
         accessorKey: 'myStake',
         header: 'My Stake',
+        enableSorting: false,
         cell: ({ row }: Cell<Row>) => {
           const deposit = deposits.find(
             (d) => d.account === row.original.account_id && d.operatorId.toString() === operatorId,
