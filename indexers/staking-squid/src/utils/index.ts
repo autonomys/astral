@@ -17,3 +17,10 @@ export const getBlockNumber = (block: CtxBlock): number => block.header.height;
 
 export const getTimestamp = (block: CtxBlock): Date =>
   new Date(block.header.timestamp || 0);
+
+export const domainUID = (domainId: number): string => `${domainId}`;
+
+export const operatorUID = (operatorId: number): string => `${operatorId}`;
+
+export const nominatorUID = (operatorId: number, account: string): string =>
+  `${operatorId}-${account}`;

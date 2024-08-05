@@ -16,7 +16,7 @@ import {
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -50,13 +50,23 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   })
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
 
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
   const orderBy = useMemo(
     () => sort(sorting, ExtrinsicOrderByInput.BlockHeightDesc) as ExtrinsicOrderByInput,
     [sorting],
+  )
+
+  const where = useMemo(
+    () => ({
+      ...filters,
+      signer: {
+        id_eq: accountId,
+      },
+    }),
+    [accountId, filters],
   )
 
   const variables = useMemo(() => {
@@ -67,14 +77,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           ? (pagination.pageIndex * pagination.pageSize).toString()
           : undefined,
       orderBy,
-      where: {
-        ...filters,
-        signer: {
-          id_eq: accountId,
-        },
-      },
+      where,
     }
-  }, [accountId, filters, orderBy, pagination.pageIndex, pagination.pageSize])
+  }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
   const { setIsVisible } = useSquidQuery<
     ExtrinsicsByAccountIdQuery,
@@ -85,8 +90,9 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'accountExtrinsic',
   )
 
@@ -96,19 +102,22 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [isEvm, evmEntry, consensusEntry])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'extrinsicsConnection', { orderBy }),
-    [apolloClient, orderBy],
+      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'extrinsicsConnection', {
+        orderBy,
+        where,
+      }),
+    [apolloClient, orderBy, where],
   )
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
@@ -137,11 +146,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
           <Link
             key={`${row.original.id}-extrinsic-block-${row.original.indexInBlock}`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             <div>{`${row.original.block.height}-${row.original.indexInBlock}`}</div>
           </Link>
@@ -193,7 +198,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         ),
       },
     ],
-    [selectedDomain, selectedChain],
+    [network, section],
   )
 
   const noData = useMemo(() => {

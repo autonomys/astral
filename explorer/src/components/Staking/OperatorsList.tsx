@@ -6,15 +6,15 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, Chains, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorOrderByInput,
   OperatorsConnectionQuery,
   OperatorsConnectionQueryVariables,
 } from 'gql/oldSquidTypes'
+import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
-import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
@@ -24,7 +24,6 @@ import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useConsensusStates } from 'states/consensus'
-import { useDomainsStates } from 'states/domains'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import { Operators } from 'types/consensus'
@@ -56,8 +55,13 @@ export const OperatorsList: FC = () => {
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators, nominatorCount, deposits, withdrawals } = useConsensusStates()
-  const { domains } = useDomainsStates()
+  const {
+    operators: rpcOperators,
+    domainRegistry,
+    nominatorCount,
+    deposits,
+    withdrawals,
+  } = useConsensusStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
@@ -88,7 +92,7 @@ export const OperatorsList: FC = () => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const apolloClient = useApolloClient()
 
   const columns = useMemo(() => {
@@ -104,11 +108,7 @@ export const OperatorsList: FC = () => {
         >) => (
           <Link
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.operators.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.operators.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>
           </Link>
@@ -123,7 +123,7 @@ export const OperatorsList: FC = () => {
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
         >) => {
-          const domain = domains.find(
+          const domain = domainRegistry.find(
             (d) =>
               (row.original.currentDomainId || row.original.currentDomainId === 0) &&
               d.domainId === row.original.currentDomainId.toString(),
@@ -131,7 +131,8 @@ export const OperatorsList: FC = () => {
           return (
             <div>
               {domain
-                ? domain.domainName.charAt(0).toUpperCase() + domain.domainName.slice(1)
+                ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
+                  domain.domainConfig.domainName.slice(1)
                 : '#' + row.original.currentDomainId}
             </div>
           )
@@ -165,7 +166,7 @@ export const OperatorsList: FC = () => {
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
         >) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
+          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -186,9 +187,7 @@ export const OperatorsList: FC = () => {
           row,
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
-        ),
+        >) => <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${TOKEN.symbol}`}</div>,
       },
       {
         accessorKey: 'deposits',
@@ -225,20 +224,20 @@ export const OperatorsList: FC = () => {
             pendingStorageFee
           let tooltip = ''
           if (pendingAmount > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${TOKEN.symbol}`
           if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
           if (depositShares > BIGINT_ZERO)
             tooltip += `Staked: ${bigNumberToNumber(
               (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
-            )} ${selectedChain.token.symbol}`
+            )} ${TOKEN.symbol}`
           return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+                {bigNumberToNumber(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           ) : (
-            <div>0 {selectedChain.token.symbol}</div>
+            <div>0 {TOKEN.symbol}</div>
           )
         },
       },
@@ -281,18 +280,18 @@ export const OperatorsList: FC = () => {
           const total = (totalPending * sharesValue) / SHARES_CALCULATION_MULTIPLIER + totalUnlocked
           let tooltip = ''
           if (totalPending > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${selectedChain.token.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${TOKEN.symbol}`
           if (totalUnlocked > BIGINT_ZERO && totalPending > BIGINT_ZERO) tooltip += ' - '
           if (totalUnlocked > BIGINT_ZERO)
-            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${selectedChain.token.symbol}`
+            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${TOKEN.symbol}`
           return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+                {bigNumberToNumber(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           ) : (
-            <div>0 {selectedChain.token.symbol}</div>
+            <div>0 {TOKEN.symbol}</div>
           )
         },
       },
@@ -329,13 +328,7 @@ export const OperatorsList: FC = () => {
           row,
         }: Cell<
           OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
-          <div>
-            {selectedChain.urls.page === Chains.gemini3g
-              ? row.original.status
-              : capitalizeFirstLetter(operatorStatus(row.original.status))}
-          </div>
-        ),
+        >) => <div>{capitalizeFirstLetter(operatorStatus(row.original.status))}</div>,
       },
     ]
     if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
@@ -367,16 +360,16 @@ export const OperatorsList: FC = () => {
             : BIGINT_ZERO
           let tooltip = ''
           if (pendingAmount > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${selectedChain.token.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${TOKEN.symbol}`
           if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
           if (depositShares > BIGINT_ZERO)
             tooltip += `Staked: ${bigNumberToNumber(
               (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
-            )} ${selectedChain.token.symbol}`
+            )} ${TOKEN.symbol}`
           return (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+                {bigNumberToNumber(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           )
@@ -438,10 +431,9 @@ export const OperatorsList: FC = () => {
     useRpcData,
     deposits,
     subspaceAccount,
-    selectedChain.urls.page,
-    selectedChain.token.symbol,
-    selectedDomain,
-    domains,
+    network,
+    section,
+    domainRegistry,
     rpcOperators,
     withdrawals,
     nominatorCount,
@@ -515,7 +507,7 @@ export const OperatorsList: FC = () => {
   }, [])
 
   const operatorsConnection = useMemo(() => {
-    if (useRpcData && subspaceAccount) {
+    if (useRpcData) {
       const myRpcNominatorIds = deposits
         .filter((d) => d.account === subspaceAccount)
         .map((n) => n.operatorId.toString())

@@ -1,3 +1,5 @@
+export type Block = { block: { header: { number: number } } }
+
 export interface Domain {
   confirmationDepthK: string
   domainRuntimeUpgradeDelay: string
@@ -39,7 +41,8 @@ export type DomainRegistry = {
     bundleSlotProbability: number[]
     targetBundlesPerBlock: number
     operatorAllowList: {
-      operators: string[]
+      anyone?: null
+      operators?: string[]
     }
   }
 }
@@ -56,13 +59,9 @@ export type DomainStakingSummary = {
   }
 }
 
-export type ConfirmedDomainBlock = {
+export type ConfirmedDomainExecutionReceipt = {
   id: number
-  blockNumber: number
-  blockHash: string
-  parentBlockReceiptHash: string
-  stateRoot: string
-  extrinsicsRoot: string
+  domainBlockNumber: number
 }
 
 export type NominatorCount = {

@@ -17,7 +17,7 @@ import {
   EventsConnectionQuery,
   EventsConnectionQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -34,7 +34,7 @@ dayjs.extend(relativeTime)
 
 export const EventList: FC = () => {
   const { ref, inView } = useInView()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -61,8 +61,9 @@ export const EventList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'events',
   )
 
@@ -72,14 +73,14 @@ export const EventList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
   const events = useMemo(
@@ -106,11 +107,7 @@ export const EventList: FC = () => {
           <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
             <Link
               className='w-full hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.events.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                row.original.id,
-              )}
+              href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
               data-testid={`event-link-${row.index}`}
             >
               {row.original.id}
@@ -131,11 +128,7 @@ export const EventList: FC = () => {
           <Link
             key={`${row.index}-event-block`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.events.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
           >
             {row.original.block?.height}
           </Link>
@@ -171,7 +164,7 @@ export const EventList: FC = () => {
         cell: ({ row }: Cell<Event>) => dayjs(row.original.block?.timestamp).fromNow(true),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const pageCount = useMemo(

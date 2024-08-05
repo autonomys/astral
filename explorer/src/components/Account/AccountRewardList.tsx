@@ -1,18 +1,17 @@
 'use client'
 
 /* eslint-disable camelcase */
-import { countTablePages } from '@/utils/table'
 import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES } from 'constants/routes'
+import { PAGE_SIZE, TOKEN } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { RewardEventOrderByInput, RewardsListQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -28,6 +27,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
+import { countTablePages } from 'utils/table'
 import type { Account, RewardEvent, RewardsListQuery } from '../gql/graphql'
 import { NotFound } from '../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
@@ -37,7 +37,7 @@ dayjs.extend(relativeTime)
 
 export const AccountRewardList: FC = () => {
   const { ref, inView } = useInView()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -72,7 +72,10 @@ export const AccountRewardList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
+    isEvm ? Routes.nova : Routes.consensus,
+    'accountReward',
   )
 
   const {
@@ -81,14 +84,14 @@ export const AccountRewardList: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const rewardEventsConnection = useMemo(() => data && data.rewardEventsConnection, [data])
   const rewards = useMemo(
@@ -117,11 +120,7 @@ export const AccountRewardList: FC = () => {
             <Link
               key={`${row.original.id}-account-index`}
               className='hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.blocks.id.page(
-                selectedChain.urls.page,
-                selectedDomain,
-                row.original.block?.height,
-              )}
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.block?.height)}
             >
               <div>{row.original.block?.height}</div>
             </Link>
@@ -172,13 +171,12 @@ export const AccountRewardList: FC = () => {
         enableSorting: true,
         cell: ({ row }: Cell<RewardEvent>) => (
           <div key={`${row.original.id}-account-balance`}>
-            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0}{' '}
-            {selectedChain.token.symbol}
+            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0} {TOKEN.symbol}
           </div>
         ),
       },
     ],
-    [selectedChain, selectedDomain, isLargeLaptop],
+    [network, section, isLargeLaptop],
   )
 
   const pageCount = useMemo(
@@ -191,8 +189,9 @@ export const AccountRewardList: FC = () => {
     () =>
       downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'rewardEventsConnection', {
         sortBy,
+        accountId: accountId ?? '',
       }),
-    [apolloClient, sortBy],
+    [accountId, apolloClient, sortBy],
   )
 
   useEffect(() => {
@@ -208,9 +207,12 @@ export const AccountRewardList: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
+
   return (
     <div className='flex w-full flex-col align-middle'>
-      <AccountDetailsCard account={account} accountAddress={convertedAddress ?? '0x'} />
+      {convertedAddress && (
+        <AccountDetailsCard account={account} accountAddress={convertedAddress} />
+      )}
 
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Rewards (${totalLabel})`}</div>

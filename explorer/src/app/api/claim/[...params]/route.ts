@@ -8,7 +8,7 @@ import {
   signatureVerify,
   stringToU8a,
 } from '@autonomys/auto-utils'
-import { chains } from 'constants/chains'
+import { indexers } from 'constants/indexers'
 import { CLAIM_TYPES } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from 'utils/auth/verifyToken'
@@ -48,10 +48,10 @@ export const POST = async (req: NextRequest) => {
     if (claimType !== CLAIM_TYPES.OperatorDisbursement)
       return NextResponse.json({ error: 'Invalid claim type' }, { status: 400 })
 
-    const chainMatch = chains.find((c) => c.urls.page === chain)
+    const chainMatch = indexers.find((c) => c.network === chain)
     if (!chainMatch) return NextResponse.json({ error: 'Invalid chain' }, { status: 400 })
 
-    const previousClaim = await findClaim(session.id, chainMatch.urls.page, claimType)
+    const previousClaim = await findClaim(session.id, chainMatch.network, claimType)
     if (previousClaim) return NextResponse.json({ error: 'Already claimed' }, { status: 400 })
 
     const claim = await req.json()
@@ -62,14 +62,14 @@ export const POST = async (req: NextRequest) => {
     const isValid = signatureVerify(stringToU8a(message), signature, publicKey).isValid
     if (!isValid) return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
 
-    const claimStats = await findClaimStats(chainMatch.urls.page, claimType)
+    const claimStats = await findClaimStats(chainMatch.network, claimType)
 
     const {
       api,
       accounts: [wallet],
     } = await activateWallet({
       uri: process.env.WALLET_CLAIM_OPERATOR_DISBURSEMENT_URI,
-      networkId: 'autonomys-' + chainMatch.urls.page,
+      networkId: chainMatch.network,
     } as ActivateWalletParams)
 
     // Get wallet free balance
@@ -101,11 +101,11 @@ export const POST = async (req: NextRequest) => {
       blockHash: '',
     }
 
-    await saveClaim(session, chainMatch.urls.page, claimType, claim, txReceipt)
+    await saveClaim(session, chainMatch.network, claimType, claim, txReceipt)
 
     if (!claimStats) {
       const slackMessage = await sendSlackStatsMessage(1)
-      if (slackMessage) await saveClaimStats(session, chainMatch.urls.page, claimType, slackMessage)
+      if (slackMessage) await saveClaimStats(session, chainMatch.network, claimType, slackMessage)
     } else {
       await sendSlackStatsMessage(
         claimStats[0].data.totalClaims + 1,

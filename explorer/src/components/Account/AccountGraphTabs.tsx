@@ -1,5 +1,5 @@
 import { TabTitle } from 'components/common/Tabs'
-import useDomains from 'hooks/useDomains'
+import { TOKEN } from 'constants/general'
 import React, { FC, ReactElement, useState } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 
@@ -11,7 +11,6 @@ type Props = {
 
 export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => {
   const [selectedTab, setSelectedTab] = useState(0)
-  const { selectedChain } = useDomains()
 
   const tabStyle = isDesktop
     ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset dark:border-none'
@@ -32,7 +31,7 @@ export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false
               {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
             </div>
             <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
-              {selectedChain.token.symbol}
+              {TOKEN.symbol}
             </div>
           </div>
 

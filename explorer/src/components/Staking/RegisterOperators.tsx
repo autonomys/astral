@@ -7,10 +7,10 @@ import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/
 import { sendGAEvent } from '@next/third-parties/google'
 import { WalletIcon } from 'components/icons'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
+import { TOKEN } from 'constants/general'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
 import { useConsensusData } from 'hooks/useConsensusData'
-import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useTxHelper } from 'hooks/useTxHelper'
@@ -18,8 +18,6 @@ import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useConsensusStates } from 'states/consensus'
-import { useDomainsStates } from 'states/domains'
-import type { OperatorAllowListOpen, OperatorAllowListRestricted } from 'types/domain'
 import { floatToStringWithDecimals } from 'utils/number'
 import { shortString } from 'utils/string'
 import * as Yup from 'yup'
@@ -42,20 +40,23 @@ enum OwnershipProofMethod {
 }
 
 export const RegisterOperators = () => {
-  const { selectedChain } = useDomains()
   const [isOpen, setIsOpen] = useState(false)
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { tokenDecimals, tokenSymbol } = useConsensusStates()
-  const { domains, minOperatorStake } = useDomainsStates()
+  const { tokenDecimals, tokenSymbol, domain, domainRegistry } = useConsensusStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
   const { handleTxError, sendAndSaveTx } = useTxHelper()
 
+  const minOperatorStake = useMemo(() => {
+    if (domain) return parseFloat(domain.minOperatorStake)
+    return 0
+  }, [domain])
+
   useEffect(() => {
-    if (api && (!domains || domains.length === 0)) loadDomainsData()
-  }, [api, domains, loadDomainsData])
+    if (api && (!domainRegistry || domainRegistry.length === 0)) loadDomainsData()
+  }, [api, domainRegistry, loadDomainsData])
 
   useEffect(() => {
     if (!tokenSymbol || tokenDecimals === 0) loadConsensusData()
@@ -78,22 +79,23 @@ export const RegisterOperators = () => {
 
   const filteredDomainsList = useMemo(
     () =>
-      domains.filter((domain) => {
-        if ((domain.operatorAllowList as OperatorAllowListOpen).anyone === null) return true
-        else if (subspaceAccount)
-          return (domain.operatorAllowList as OperatorAllowListRestricted).operators.includes(
-            subspaceAccount,
-          )
+      domainRegistry.filter((domain) => {
+        if (domain.domainConfig.operatorAllowList.anyone === null) return true
+        else if (subspaceAccount && domain.domainConfig.operatorAllowList.operators)
+          return domain.domainConfig.operatorAllowList.operators.includes(subspaceAccount)
         return false
       }),
-    [domains, subspaceAccount],
+    [domainRegistry, subspaceAccount],
   )
 
   const currentDomainLabel = useCallback(
     (values: FormValues) => {
       const currentDomain = filteredDomainsList[values.domainId]
       if (!currentDomain) return 'Domain'
-      return currentDomain.domainName.charAt(0).toUpperCase() + currentDomain.domainName.slice(1)
+      return (
+        currentDomain.domainConfig.domainName.charAt(0).toUpperCase() +
+        currentDomain.domainConfig.domainName.slice(1)
+      )
     },
     [filteredDomainsList],
   )
@@ -401,8 +403,10 @@ export const RegisterOperators = () => {
                                                   selected ? 'font-medium' : 'font-normal'
                                                 }`}
                                               >
-                                                {domain.domainName.charAt(0).toUpperCase() +
-                                                  domain.domainName.slice(1)}
+                                                {domain.domainConfig.domainName
+                                                  .charAt(0)
+                                                  .toUpperCase() +
+                                                  domain.domainConfig.domainName.slice(1)}
                                               </span>
                                               {selected ? (
                                                 <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-greenBright'>
@@ -606,7 +610,7 @@ export const RegisterOperators = () => {
 
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Amount to Stake ({selectedChain.token.symbol})
+                              Amount to Stake ({TOKEN.symbol})
                             </span>
                             <Field
                               name='amountToStake'
@@ -658,7 +662,7 @@ export const RegisterOperators = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Minimum Nominator Stake ({selectedChain.token.symbol})
+                              Minimum Nominator Stake ({TOKEN.symbol})
                             </span>
                             <Field
                               name='minimumNominatorStake'

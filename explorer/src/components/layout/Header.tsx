@@ -3,7 +3,7 @@
 import { LogoIcon } from '@/components/icons'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -17,32 +17,32 @@ export const Header: FC = () => {
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   const menuList = useMemo(
     () => [
       {
         title: 'Accounts',
-        link: `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.accounts.list}`,
+        link: `/${network}/${section}/${INTERNAL_ROUTES.accounts.list}`,
       },
       {
         title: 'Blocks',
-        link: `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.blocks.list}`,
+        link: `/${network}/${section}/${INTERNAL_ROUTES.blocks.list}`,
       },
       {
         title: 'Extrinsics',
-        link: `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.extrinsics.list}`,
+        link: `/${network}/${section}/${INTERNAL_ROUTES.extrinsics.list}`,
       },
       {
         title: 'Events',
-        link: `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.events.list}`,
+        link: `/${network}/${section}/${INTERNAL_ROUTES.events.list}`,
       },
       {
         title: 'Logs',
-        link: `/${selectedChain.urls.page}/${selectedDomain}/${INTERNAL_ROUTES.logs.list}`,
+        link: `/${network}/${section}/${INTERNAL_ROUTES.logs.list}`,
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   return (
@@ -50,7 +50,7 @@ export const Header: FC = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${selectedDomain}`}
+            href={`/${network}/${section}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>
@@ -104,7 +104,7 @@ export const Header: FC = () => {
       ) : (
         <div className='flex flex-row items-center justify-between px-5'>
           <Link
-            href={`/${selectedChain.urls.page}/${selectedDomain}`}
+            href={`/${network}/${section}`}
             className='title-font flex items-center font-medium text-gray-900 dark:text-white'
           >
             <LogoIcon fillColor='currentColor' />

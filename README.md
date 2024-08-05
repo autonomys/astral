@@ -1,8 +1,8 @@
-![build](https://github.com/autonomys//blockexplorer/actions/workflows/build.yaml/badge.svg)
+![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
 
 # Astral
 
-- [Astral Block Explorer](https://explorer.subspace.network/) Astral Block Explorer
+- [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
 - [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid
 - [Health Check](https://uptime.subspace.network/status/network) Subspace Network Status Page
 

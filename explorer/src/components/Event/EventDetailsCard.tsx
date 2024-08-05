@@ -9,7 +9,7 @@ import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 
 dayjs.extend(relativeTime)
 
@@ -18,7 +18,7 @@ type Props = {
 }
 
 export const EventDetailsCard: FC<Props> = ({ event }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   if (!event) return <NotFound />
   return (
@@ -32,11 +32,7 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
             <div className='block rounded-full bg-grayDarker px-5 py-3 text-xs font-semibold leading-normal text-white'>
               <Link
                 className='flex gap-1'
-                href={INTERNAL_ROUTES.blocks.id.page(
-                  selectedChain.urls.page,
-                  selectedDomain,
-                  event.block?.height,
-                )}
+                href={INTERNAL_ROUTES.blocks.id.page(network, section, event.block?.height)}
               >
                 #{event.block?.height}
               </Link>
@@ -55,8 +51,8 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                   {event.extrinsic ? (
                     <Link
                       href={INTERNAL_ROUTES.extrinsics.id.page(
-                        selectedChain.urls.page,
-                        selectedDomain,
+                        network,
+                        section,
                         event.extrinsic?.id,
                       )}
                     >

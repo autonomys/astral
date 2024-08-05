@@ -7,21 +7,17 @@ import { WalletType } from '@/constants'
 import { formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
-import { chains } from 'constants/chains'
-import { domains } from 'constants/domains'
 import {
   ROUTE_EXTRA_FLAGS,
   ROUTE_EXTRA_FLAG_TYPE,
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
 } from 'constants/routes'
 import dayjs from 'dayjs'
-import { JsonRpcProvider } from 'ethers'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { SelectedChainProvider } from 'providers/ChainProvider'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
 import { AccountHeader } from './AccountHeader'
@@ -119,15 +115,10 @@ export const WalletSidekick: FC = () => {
 
 const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { push } = useRouter()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const { api, actingAccount, subspaceAccount } = useWallet()
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
-
-  const consensusChain = useMemo(
-    () => chains.find((chain) => chain.urls.page === selectedChain.urls.page) ?? chains[0],
-    [selectedChain],
-  )
 
   const handleNavigate = useCallback(
     (url: string) => {
@@ -152,14 +143,8 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
       setWalletBalance(
         formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
       )
-    } else {
-      const domain = domains.find((d) => d.urls.page === selectedChain.urls.page)
-      if (!domain) return
-      const provider = new JsonRpcProvider(domain.urls.rpc)
-      const balance = await provider.getBalance(actingAccount.address)
-      setWalletBalance(formatUnitsToNumber(balance.toString()))
     }
-  }, [api, actingAccount, selectedChain.urls])
+  }, [api, actingAccount])
 
   useEffect(() => {
     loadData()
@@ -194,7 +179,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
           <article className='relative flex h-full w-screen max-w-lg flex-col gap-2 overflow-y-scroll pb-10'>
             <div className='flex items-center justify-between p-5 align-middle'>
               <button
-                onClick={() => handleNavigate(`/${selectedChain.urls.page}/${selectedDomain}`)}
+                onClick={() => handleNavigate(`/${network}/${section}`)}
                 className='title-font flex items-center font-medium text-gray-900 dark:text-white'
               >
                 <LogoIcon fillColor='currentColor' />
@@ -208,35 +193,22 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                 </button>
               </div>
             </div>
-            <SelectedChainProvider selectedChain={consensusChain}>
-              <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
-              {subspaceAccount && (
-                <>
-                  <AccountSummary
-                    subspaceAccount={subspaceAccount}
-                    selectedChain={consensusChain}
-                    actingAccountName={actingAccount.name}
-                    walletBalance={walletBalance}
-                    tokenSymbol={tokenSymbol}
-                  />
-                  <PendingTransactions
-                    subspaceAccount={subspaceAccount}
-                    selectedChain={consensusChain}
-                  />
-                  <GetDiscordRoles />
-                  <StakingSummary
-                    subspaceAccount={subspaceAccount}
-                    selectedChain={consensusChain}
-                    tokenSymbol={tokenSymbol}
-                  />
-                  <LastExtrinsics
-                    subspaceAccount={subspaceAccount}
-                    selectedChain={consensusChain}
-                  />
-                  <Leaderboard subspaceAccount={subspaceAccount} />
-                </>
-              )}
-            </SelectedChainProvider>
+            <AccountHeader walletBalance={walletBalance} tokenSymbol={tokenSymbol} />
+            {subspaceAccount && (
+              <>
+                <AccountSummary
+                  subspaceAccount={subspaceAccount}
+                  actingAccountName={actingAccount.name}
+                  walletBalance={walletBalance}
+                  tokenSymbol={tokenSymbol}
+                />
+                <PendingTransactions subspaceAccount={subspaceAccount} />
+                <GetDiscordRoles />
+                <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
+                <LastExtrinsics subspaceAccount={subspaceAccount} />
+                <Leaderboard subspaceAccount={subspaceAccount} />
+              </>
+            )}
             <div className='flex'>
               <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
                 <p className='text-gray text-center text-sm sm:text-left'>

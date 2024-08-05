@@ -2,7 +2,8 @@
 import { QUERY_ACCOUNT_BY_ID } from 'components/Account/query'
 import { AccountByIdQuery } from 'components/gql/graphql'
 import { DocIcon, WalletIcon } from 'components/icons'
-import { chains } from 'constants/chains'
+import { TOKEN } from 'constants/general'
+import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -19,7 +20,7 @@ export async function GET(
 ) {
   if (!chain) notFound()
 
-  const chainMatch = chains.find((c) => c.urls.page === chain)
+  const chainMatch = indexers.find((c) => c.network === chain)
 
   if (!accountId || !chainMatch) notFound()
 
@@ -27,7 +28,7 @@ export async function GET(
     data: { accountById },
   }: {
     data: AccountByIdQuery
-  } = await fetch(chainMatch.urls.squids.old, {
+  } = await fetch(chainMatch.squids.old, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ function Screen({
   accountId,
   accountById,
 }: {
-  chainMatch: (typeof chains)[number]
+  chainMatch: (typeof indexers)[number]
   accountId: string
   accountById: AccountByIdQuery['accountById']
 }) {
@@ -125,7 +126,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total {numberWithCommas(bigNumberToNumber(account.total))} ({chainMatch.token.symbol})
+              Total {numberWithCommas(bigNumberToNumber(account.total))} ({TOKEN.symbol})
             </span>
             <span
               style={{
@@ -133,8 +134,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} (
-              {chainMatch.token.symbol})
+              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} ({TOKEN.symbol})
             </span>
             <span
               style={{
@@ -142,7 +142,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Free {numberWithCommas(bigNumberToNumber(account.free))} ({chainMatch.token.symbol})
+              Free {numberWithCommas(bigNumberToNumber(account.free))} ({TOKEN.symbol})
             </span>
           </div>
         </div>

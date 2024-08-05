@@ -1,10 +1,9 @@
 'use client'
 
-import { activate, ApiPromise } from '@autonomys/auto-utils'
+import { activate, ApiPromise, createConnection, DomainId, networks } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
-import { Chains, chains } from 'constants/chains'
 import { WalletType } from 'constants/wallet'
 import { useSafeLocalStorage } from 'hooks/useSafeLocalStorage'
 import { getSession, signOut } from 'next-auth/react'
@@ -14,8 +13,11 @@ import type { ChainParam } from 'types/app'
 import type { WalletAccountWithType } from 'types/wallet'
 import { formatAddress } from 'utils/formatAddress'
 
+export type DomainsApis = { [key: string]: ApiPromise }
+
 export type WalletContextValue = {
   api: ApiPromise | undefined
+  domainsApis: DomainsApis
   isReady: boolean
   accounts: WalletAccountWithType[] | undefined | null
   error: Error | null
@@ -43,6 +45,7 @@ type Props = {
 export const WalletProvider: FC<Props> = ({ children }) => {
   const { chain } = useParams<ChainParam>()
   const [api, setApi] = useState<ApiPromise>()
+  const [domainsApis, setDomainsApis] = useState<DomainsApis>({})
   const [isReady, setIsReady] = useState(false)
   const [accounts, setAccounts] = useState<WalletAccountWithType[] | null | undefined>(undefined)
   const [extensions] = useState<InjectedExtension[] | undefined>(undefined)
@@ -53,20 +56,42 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   const [preferredAccount, setPreferredAccount] = useSafeLocalStorage('localAccount', null)
   const [preferredExtension, setPreferredExtension] = useSafeLocalStorage('extensionSource', null)
 
-  const prepareApi = useCallback(async (chain: (typeof chains)[0]) => {
+  const prepareApi = useCallback(async () => {
     try {
-      return await activate({ networkId: 'autonomys-' + chain.urls.page })
+      return await activate({ networkId: chain })
     } catch (error) {
-      console.error('Failed to prepare API for chain', chain.title, 'error:', error)
+      console.error('Failed to prepare API for chain', chain, 'error:', error)
     }
-  }, [])
+  }, [chain])
+
+  const prepareDomainsApis = useCallback(async () => {
+    try {
+      const network = networks.find((network) => network.id === chain)
+      if (!network) return
+
+      const novaRpc = network.domains.find((domain) => domain.id === DomainId.NOVA)?.rpcUrls[0]
+      const autoIdRpc = network.domains.find((domain) => domain.id === DomainId.AUTO_ID)?.rpcUrls[0]
+      if (!novaRpc || !autoIdRpc) return
+
+      const domainsRpcs = network.domains.map((domain) =>
+        domain.rpcUrls[0].replace('https://', 'wss://'),
+      )
+
+      const [nova, autoId] = await Promise.all(domainsRpcs.flatMap((rpc) => createConnection(rpc)))
+      return {
+        nova,
+        autoId,
+      }
+    } catch (error) {
+      console.error('Failed to prepare domains API for chain', chain, 'error:', error)
+    }
+  }, [chain])
 
   const setup = useCallback(async () => {
-    const chainKey = Object.values(Chains).find((value) => value === chain)
-    const findChain = chains.find((c) => c.urls.page === chainKey)
-    if (!findChain) return
-    setApi(await prepareApi(findChain))
-  }, [chain, prepareApi])
+    setApi(await prepareApi())
+    const domainsApis = await prepareDomainsApis()
+    if (domainsApis) setDomainsApis(domainsApis)
+  }, [prepareApi, prepareDomainsApis])
 
   const signOutSessionOnAccountChange = useCallback(async (subspaceAccount?: string) => {
     const session = await getSession()
@@ -78,9 +103,9 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     async (account: WalletAccountWithType) => {
       try {
         const type =
-          account.type === WalletType.ethereum
-            ? WalletType.ethereum
-            : WalletType.subspace || WalletType.subspace
+          account.type === WalletType.subspace || (account as { type: string }).type === 'sr25519'
+            ? WalletType.subspace
+            : WalletType.ethereum
         setActingAccount({
           ...account,
           type,
@@ -180,7 +205,6 @@ export const WalletProvider: FC<Props> = ({ children }) => {
   }, [actingAccount])
 
   useEffect(() => {
-    if (!injector) return
     setup()
   }, [injector, setup])
 
@@ -212,6 +236,7 @@ export const WalletProvider: FC<Props> = ({ children }) => {
     <WalletContext.Provider
       value={{
         api,
+        domainsApis,
         accounts,
         actingAccount,
         isReady,
