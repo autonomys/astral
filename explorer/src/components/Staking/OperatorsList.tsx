@@ -34,7 +34,6 @@ import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
-import { DataSourceBanner } from '../common/DataSourceBanner'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
@@ -390,7 +389,7 @@ export const OperatorsList: FC = () => {
           // eslint-disable-next-line camelcase
           { account_id: { _eq: subspaceAccount } },
           // eslint-disable-next-line camelcase
-          { nominators_some: { account_id: { _eq: subspaceAccount } } },
+          { nominators: { account_id: { _eq: subspaceAccount } } },
         ],
       }
     // eslint-disable-next-line camelcase
@@ -494,7 +493,6 @@ export const OperatorsList: FC = () => {
           />
         </div>
       </div>
-      <DataSourceBanner />
       <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
       <MyPendingWithdrawals />
       <div className='mt-2 flex w-full justify-between'>
@@ -513,7 +511,7 @@ export const OperatorsList: FC = () => {
               pageCount={pageCount}
               onPaginationChange={setPagination}
               filename='operators-operators-list'
-              pageSizeOptions={[10]}
+              // pageSizeOptions={[10]}
               fullDataDownloader={fullDataDownloader}
             />
           ) : (

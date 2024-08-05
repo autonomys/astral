@@ -12,8 +12,6 @@ import { useParams, useRouter } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { DataSource } from '../common/DataSource'
-import { DataSourceBanner } from '../common/DataSourceBanner'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
 import { QUERY_OPERATOR_BY_ID } from './staking.query'
@@ -67,10 +65,6 @@ export const Operator: FC = () => {
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>
-      <div className='mr-5 flex items-center'>
-        <DataSource />
-      </div>
-      <DataSourceBanner />
       {operatorDetails ? (
         <>
           <OperatorDetailsCard operator={operatorDetails} isDesktop={isDesktop} />
