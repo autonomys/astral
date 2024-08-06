@@ -43,7 +43,11 @@ import { QUERY_OPERATOR_LIST } from './staking.query'
 
 type Row = OperatorsListQuery['operator'][0] & { nominatorsCount: number }
 
-export const OperatorsList: FC = () => {
+interface OperatorsListProps {
+  domainId?: string
+}
+
+export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const { ref, inView } = useInView()
   const [searchOperator, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
@@ -84,7 +88,7 @@ export const OperatorsList: FC = () => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
-  const { network, section } = useChains()
+  const { network } = useChains()
   const apolloClient = useApolloClient()
 
   const columns = useMemo(() => {
@@ -96,28 +100,36 @@ export const OperatorsList: FC = () => {
         cell: ({ row }: Cell<Row>) => (
           <Link
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.operators.id.page(network, section, row.original.id)}
+            href={INTERNAL_ROUTES.operators.id.page(network, Routes.staking, row.original.id)}
           >
             <div>{row.original.id}</div>
           </Link>
         ),
       },
-      {
+    ]
+    if (!domainId)
+      cols.push({
         accessorKey: 'domain_id',
         header: 'Domain',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           const domain = domainRegistry.find((d) => d.domainId === row.original.domain_id)
           return (
-            <div>
-              {domain
-                ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
-                  domain.domainConfig.domainName.slice(1)
-                : '#' + row.original.domain_id}
-            </div>
+            <Link
+              className='hover:text-purpleAccent'
+              href={INTERNAL_ROUTES.domains.id.page(network, Routes.domains, row.original.id)}
+            >
+              <div>
+                {domain
+                  ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
+                    domain.domainConfig.domainName.slice(1)
+                  : '#' + row.original.domain_id}
+              </div>
+            </Link>
           )
         },
-      },
+      })
+    cols.push(
       {
         accessorKey: 'signing_key',
         header: 'Signing Key',
@@ -267,7 +279,7 @@ export const OperatorsList: FC = () => {
           <div>{capitalizeFirstLetter(operatorStatus(row.original.raw_status))}</div>
         ),
       },
-    ]
+    )
     if (deposits.find((d) => d.account === subspaceAccount))
       cols.push({
         accessorKey: 'myStake',
@@ -351,10 +363,10 @@ export const OperatorsList: FC = () => {
       })
     return cols
   }, [
+    domainId,
     deposits,
     subspaceAccount,
     network,
-    section,
     domainRegistry,
     rpcOperators,
     withdrawals,
@@ -374,17 +386,34 @@ export const OperatorsList: FC = () => {
 
   const where = useMemo(() => {
     if (subspaceAccount && myPositionOnly && !searchOperator)
-      return {
-        _or: [
-          // eslint-disable-next-line camelcase
-          { account_id: { _eq: subspaceAccount } },
-          // eslint-disable-next-line camelcase
-          { nominators: { account_id: { _eq: subspaceAccount } } },
-        ],
-      }
+      return domainId
+        ? {
+            _and: [
+              {
+                // eslint-disable-next-line camelcase
+                domain_id: { _eq: domainId },
+                _or: [
+                  // eslint-disable-next-line camelcase
+                  { account_id: { _eq: subspaceAccount } },
+                  // eslint-disable-next-line camelcase
+                  { nominators: { account_id: { _eq: subspaceAccount } } },
+                ],
+              },
+            ],
+          }
+        : {
+            _or: [
+              // eslint-disable-next-line camelcase
+              { account_id: { _eq: subspaceAccount } },
+              // eslint-disable-next-line camelcase
+              { nominators: { account_id: { _eq: subspaceAccount } } },
+            ],
+          }
+    // eslint-disable-next-line camelcase
+    if (domainId) return { domain_id: { _eq: domainId } }
     // eslint-disable-next-line camelcase
     return searchOperator ? { id: { _eq: searchOperator } } : {}
-  }, [myPositionOnly, searchOperator, subspaceAccount])
+  }, [domainId, myPositionOnly, searchOperator, subspaceAccount])
 
   const variables: OperatorsListQueryVariables = useMemo(
     () => ({
@@ -470,27 +499,32 @@ export const OperatorsList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='flex flex-col gap-2'>
-        <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>Staking</div>
-        </div>
-        <div className='flex items-center'>
-          {subspaceAccount && (
-            <div className='mr-4 flex w-40 items-center'>
-              <MyPositionSwitch />
+      {!domainId && (
+        <>
+          <div className='flex flex-col gap-2'>
+            <div className='mt-5 flex w-full justify-between'>
+              <div className='text-base font-medium text-grayDark dark:text-white'>Staking</div>
             </div>
-          )}
-          <DebouncedInput
-            type='text'
-            className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
-            placeholder='Search by operator id'
-            onChange={handleSearch}
-            value={searchOperator}
-          />
-        </div>
-      </div>
-      <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
-      <MyPendingWithdrawals />
+            <div className='flex items-center'>
+              {subspaceAccount && (
+                <div className='mr-4 flex w-40 items-center'>
+                  <MyPositionSwitch />
+                </div>
+              )}
+              <DebouncedInput
+                type='text'
+                className='block w-full max-w-xl rounded-3xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+                placeholder='Search by operator id'
+                onChange={handleSearch}
+                value={searchOperator}
+              />
+            </div>
+          </div>
+          <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
+          <MyPendingWithdrawals />
+        </>
+      )}
+
       <div className='mt-2 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Operators (${totalLabel})`}</div>
       </div>
