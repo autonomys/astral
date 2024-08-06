@@ -1,24 +1,23 @@
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
-import { shortString } from '@/utils/string'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import type { OperatorByIdQuery } from 'gql/oldSquidTypes'
+import type { OperatorByIdQuery } from 'gql/types/staking'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
+import { bigNumberToNumber } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
-import { capitalizeFirstLetter } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 
 dayjs.extend(relativeTime)
 
 type Props = {
-  operator: OperatorByIdQuery['operatorById']
+  operator: OperatorByIdQuery['operator_by_pk']
   isDesktop?: boolean
 }
 
@@ -39,48 +38,45 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
         <div className='flow-root'>
           <List>
             <StyledListItem title='Operator Owner'>
-              <CopyButton value={operator.operatorOwner || ''} message='Operator owner key copied'>
+              <CopyButton value={operator.account_id || ''} message='Operator owner key copied'>
                 {isDesktop ? (
                   <>
-                    <AccountIcon address={operator.operatorOwner} size={26} />
-                    {operator.operatorOwner && (
+                    <AccountIcon address={operator.account_id} size={26} />
+                    {operator.account_id && (
                       <Link
-                        data-testid={`nominator-link-${operator.operatorOwner}}`}
+                        data-testid={`nominator-link-${operator.account_id}}`}
                         className='hover:text-purpleAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
                           network,
                           Routes.consensus,
-                          operator.operatorOwner,
+                          operator.account_id,
                         )}
                       >
                         <div>
-                          {isLargeLaptop
-                            ? operator.operatorOwner
-                            : shortString(operator.operatorOwner)}
+                          {isLargeLaptop ? operator.account_id : shortString(operator.account_id)}
                         </div>
                       </Link>
                     )}
                   </>
                 ) : (
-                  shortString(operator.operatorOwner || '')
+                  shortString(operator.account_id || '')
                 )}
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Signing Key'>
-              <CopyButton value={operator.signingKey || ''} message='Operator signing key copied'>
-                {isDesktop ? operator.signingKey : shortString(operator.signingKey)}
+              <CopyButton value={operator.signing_key || ''} message='Operator signing key copied'>
+                {isDesktop ? operator.signing_key : shortString(operator.signing_key)}
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Minimum Stake'>
-              {bigNumberToNumber(operator.minimumNominatorStake)} {TOKEN.symbol}
+              {bigNumberToNumber(operator.minimum_nominator_stake)} {TOKEN.symbol}
             </StyledListItem>
-            <StyledListItem title='Nominator Tax'>{operator.nominationTax} %</StyledListItem>
+            <StyledListItem title='Nominator Tax'>{operator.nomination_tax} %</StyledListItem>
             <StyledListItem title='Current Stake'>
-              {bigNumberToNumber(operator.currentTotalStake)} {TOKEN.symbol}
+              {bigNumberToNumber(operator.current_total_stake)} {TOKEN.symbol}
             </StyledListItem>
-            <StyledListItem title='Shares'>{numberWithCommas(operator.totalShares)}</StyledListItem>
             <StyledListItem title='Status'>
-              {capitalizeFirstLetter(operatorStatus(operator.status))}
+              {capitalizeFirstLetter(operatorStatus(operator.raw_status))}
             </StyledListItem>
           </List>
         </div>

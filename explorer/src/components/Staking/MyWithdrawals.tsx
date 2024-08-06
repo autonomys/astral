@@ -1,6 +1,9 @@
+import { INTERNAL_ROUTES } from '@/constants'
 import { bigNumberToNumber, bigNumberToString } from '@/utils/number'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
+import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
+import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import { SortedTable } from '../common/SortedTable'
@@ -14,6 +17,7 @@ interface MyUnlockedWithdrawalsProps {
 
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
+  const { section, network } = useChains()
   const { withdrawals } = useConsensusStates()
   const myUnlockedWithdrawals = useMemo(
     () =>
@@ -77,7 +81,18 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     accessorKey: 'operatorId.sortValue',
                     header: 'Operator Id',
                     enableSorting: true,
-                    cell: ({ row }) => <div>{row.original.operatorId.value}</div>,
+                    cell: ({ row }) => (
+                      <Link
+                        className='hover:text-purpleAccent'
+                        href={INTERNAL_ROUTES.operators.id.page(
+                          network,
+                          section,
+                          row.original.operatorId.value,
+                        )}
+                      >
+                        <div>{row.original.operatorId.value}</div>
+                      </Link>
+                    ),
                   },
                   {
                     accessorKey: 'totalWithdrawalAmount.sortValue',
@@ -123,7 +138,8 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                           row={{
                             original: {
                               id: row.original.operatorId.toString(),
-                              totalShares: BIGINT_ZERO,
+                              // eslint-disable-next-line camelcase
+                              current_total_shares: BIGINT_ZERO,
                             },
                           }}
                           excludeActions={[
@@ -144,7 +160,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
           </div>
         </div>
       ),
-    [action, handleAction, myUnlockedWithdrawals],
+    [myUnlockedWithdrawals, network, section, action, handleAction],
   )
 
   return myUnlockedWithdrawalsList
@@ -152,6 +168,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
 
 export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
+  const { section, network } = useChains()
   const { operators, withdrawals } = useConsensusStates()
   const myPendingWithdrawals = useMemo(
     () =>
@@ -218,7 +235,18 @@ export const MyPendingWithdrawals: FC = () => {
                     accessorKey: 'operatorId.sortValue',
                     header: 'Operator Id',
                     enableSorting: true,
-                    cell: ({ row }) => <div>{row.original.operatorId.value}</div>,
+                    cell: ({ row }) => (
+                      <Link
+                        className='hover:text-purpleAccent'
+                        href={INTERNAL_ROUTES.operators.id.page(
+                          network,
+                          section,
+                          row.original.operatorId.value,
+                        )}
+                      >
+                        <div>{row.original.operatorId.value}</div>
+                      </Link>
+                    ),
                   },
                   {
                     accessorKey: 'shares.sortValue',
@@ -255,7 +283,7 @@ export const MyPendingWithdrawals: FC = () => {
           </div>
         </div>
       ),
-    [myPendingWithdrawals],
+    [myPendingWithdrawals, network, section],
   )
 
   return myPendingWithdrawalsList
