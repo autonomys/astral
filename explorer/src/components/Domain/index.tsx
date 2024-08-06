@@ -56,7 +56,7 @@ export const DomainPage: FC = () => {
 
         <div>
           <div className='m-6 flow-root'>
-            <div className='mb-12 flex w-full items-center justify-center gap-5 overflow-x-auto'>
+            <div className='flex w-full items-center justify-center gap-5 overflow-x-auto'>
               {listOfCards.map(({ title, description, href, icon, darkBgClass }, index) => (
                 <Link key={index} href={href}>
                   <div
