@@ -1,0 +1,96 @@
+import { CopyButton } from 'components/common/CopyButton'
+import { List, StyledListItem } from 'components/common/List'
+import { TOKEN } from 'constants/'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import type { DomainByIdQuery } from 'gql/types/staking'
+import useChains from 'hooks/useChains'
+import useMediaQuery from 'hooks/useMediaQuery'
+import Link from 'next/link'
+import { FC } from 'react'
+import { bigNumberToNumber } from 'utils/number'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { AccountIcon } from '../common/AccountIcon'
+
+dayjs.extend(relativeTime)
+
+type Props = {
+  domain: DomainByIdQuery['domain_by_pk']
+  isDesktop?: boolean
+}
+
+export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
+  const { network } = useChains()
+  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
+
+  if (!domain) return null
+
+  return (
+    <div className='w-full'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+        <div className='mb-10 flex items-center justify-between'>
+          <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
+            Domain #{domain.id} - {capitalizeFirstLetter(domain.name)}
+          </h3>
+        </div>
+        <div className='flow-root'>
+          <List>
+            <StyledListItem title='Domain Name'>
+              <CopyButton value={domain.name || ''} message='Domain name copied'>
+                {capitalizeFirstLetter(domain.name)}
+              </CopyButton>
+            </StyledListItem>
+            <StyledListItem title='Domain Owner'>
+              <CopyButton value={domain.account_id || ''} message='Operator owner key copied'>
+                {isDesktop ? (
+                  <>
+                    <AccountIcon address={domain.account_id} size={26} />
+                    {domain.account_id && (
+                      <Link
+                        data-testid={`nominator-link-${domain.account_id}}`}
+                        className='hover:text-purpleAccent'
+                        href={INTERNAL_ROUTES.accounts.id.page(
+                          network,
+                          Routes.consensus,
+                          domain.account_id,
+                        )}
+                      >
+                        <div>
+                          {isLargeLaptop ? domain.account_id : shortString(domain.account_id)}
+                        </div>
+                      </Link>
+                    )}
+                  </>
+                ) : (
+                  shortString(domain.account_id || '')
+                )}
+              </CopyButton>
+            </StyledListItem>
+            <StyledListItem title='Current total stake'>
+              {bigNumberToNumber(domain.current_total_stake)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total deposits'>
+              {bigNumberToNumber(domain.total_deposits)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total rewards collected'>
+              {bigNumberToNumber(domain.total_rewards_collected)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total consensus storage fee'>
+              {bigNumberToNumber(domain.total_consensus_storage_fee)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total domain execution fee'>
+              {bigNumberToNumber(domain.total_domain_execution_fee)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total burned balance'>
+              {bigNumberToNumber(domain.total_burned_balance)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total tax collected'>
+              {bigNumberToNumber(domain.total_tax_collected)} {TOKEN.symbol}
+            </StyledListItem>
+          </List>
+        </div>
+      </div>
+    </div>
+  )
+}

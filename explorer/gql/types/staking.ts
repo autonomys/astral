@@ -5137,6 +5137,13 @@ export type DomainsListQueryVariables = Exact<{
 
 export type DomainsListQuery = { __typename?: 'query_root', domain_aggregate: { __typename?: 'domain_aggregate', aggregate?: { __typename?: 'domain_aggregate_fields', count: number } | null }, domain: Array<{ __typename?: 'domain', id: string, sort_id: number, name: string, account_id: string, bundle_count: number, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info?: string | null, runtime_id: number, runtime: string, last_domain_block_number: number, last_bundle_at: number, current_total_stake: any, current_storage_fee_deposit: any, created_at?: number | null, completed_epoch: number }> };
 
+export type DomainByIdQueryVariables = Exact<{
+  domainId: Scalars['String']['input'];
+}>;
+
+
+export type DomainByIdQuery = { __typename?: 'query_root', domain_by_pk?: { __typename?: 'domain', id: string, sort_id: number, name: string, account_id: string, bundle_count: number, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info?: string | null, runtime_id: number, runtime: string, last_domain_block_number: number, last_bundle_at: number, current_total_stake: any, current_storage_fee_deposit: any, created_at?: number | null, completed_epoch: number } | null };
+
 export type OperatorsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;

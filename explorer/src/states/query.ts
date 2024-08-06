@@ -89,6 +89,8 @@ interface ExplorerQueryState {
   }
   [Routes.domains]: {
     domains: QueryState<StakingQuery.DomainsListQuery>
+
+    domain: QueryState<StakingQuery.DomainByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
@@ -175,6 +177,8 @@ const initialState: ExplorerQueryState = {
   },
   domains: {
     domains: initialized,
+
+    domain: initialized,
   },
   walletSidekick: {
     claim: initialized,

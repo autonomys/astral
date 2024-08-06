@@ -37,3 +37,31 @@ export const QUERY_DOMAIN_LIST = gql`
     }
   }
 `
+
+export const QUERY_DOMAIN_BY_ID = gql`
+  query DomainById($domainId: String!) {
+    domain_by_pk(id: $domainId) {
+      id
+      sort_id
+      name
+      account_id
+      bundle_count
+      total_volume
+      total_tax_collected
+      total_rewards_collected
+      total_domain_execution_fee
+      total_deposits
+      total_consensus_storage_fee
+      total_burned_balance
+      runtime_info
+      runtime_id
+      runtime
+      last_domain_block_number
+      last_bundle_at
+      current_total_stake
+      current_storage_fee_deposit
+      created_at
+      completed_epoch
+    }
+  }
+`
