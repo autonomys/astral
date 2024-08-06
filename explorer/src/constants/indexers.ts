@@ -20,7 +20,7 @@ export const indexers: Indexer[] = [
     squids: {
       old: 'https://squid.gemini-3h.subspace.network/graphql',
       general: 'https://squid.green.gemini-3h.subspace.network/graphql',
-      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v5/addons/hasura/v1/graphql',
+      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v8/addons/hasura/v1/graphql',
       rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
       account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
       nova: 'https://nova.squid.gemini-3h.subspace.network/graphql',
