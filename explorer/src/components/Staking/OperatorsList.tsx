@@ -28,7 +28,7 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { bigNumberToFormattedString, bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
@@ -150,7 +150,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.minimum_nominator_stake)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.minimum_nominator_stake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -164,7 +164,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.current_total_stake)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.current_total_stake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -207,7 +207,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {TOKEN.symbol}
+                {bigNumberToFormattedString(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           ) : (
@@ -257,7 +257,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {TOKEN.symbol}
+                {bigNumberToFormattedString(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           ) : (
@@ -314,7 +314,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           return (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {TOKEN.symbol}
+                {bigNumberToFormattedString(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           )

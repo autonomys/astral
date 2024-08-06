@@ -20,7 +20,7 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
@@ -92,22 +92,35 @@ export const DomainsList: FC = () => {
             <Tooltip
               text={
                 <span>
-                  Completed epoch: {row.original.completed_epoch} <br />
+                  Completed epoch: {bigNumberToFormattedString(row.original.completed_epoch)} <br />
                   Last block #: {row.original.last_domain_block_number}
                 </span>
               }
             >
-              {row.original.completed_epoch}
+              {bigNumberToFormattedString(row.original.completed_epoch)}
             </Tooltip>
           </div>
         ),
       },
       {
         accessorKey: 'current_total_stake',
-        header: 'Current total stake',
+        header: 'Total stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.current_total_stake)} ${TOKEN.symbol}`}</div>
+          <Tooltip
+            text={
+              <span>
+                Current total stake: {bigNumberToFormattedString(row.original.current_total_stake)}
+                {TOKEN.symbol}
+                <br />
+                Storage fee deposit:{' '}
+                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)}{' '}
+                {TOKEN.symbol}
+              </span>
+            }
+          >
+            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_total_stake) + BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
+          </Tooltip>
         ),
       },
       {
@@ -115,7 +128,7 @@ export const DomainsList: FC = () => {
         header: 'Total deposits',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -123,7 +136,7 @@ export const DomainsList: FC = () => {
         header: 'Rewards collected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.total_rewards_collected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -131,7 +144,7 @@ export const DomainsList: FC = () => {
         header: 'Consensus storage fee',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.total_consensus_storage_fee)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -139,7 +152,7 @@ export const DomainsList: FC = () => {
         header: 'Domain execution fee',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.total_domain_execution_fee)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
@@ -216,10 +229,7 @@ export const DomainsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const operatorsList = useMemo(() => {
-    if (hasValue(domains)) return domains.value.domain
-    return []
-  }, [domains])
+  const operatorsList = useMemo(() => (hasValue(domains) ? domains.value.domain : []), [domains])
 
   const totalCount = useMemo(
     () => (hasValue(domains) && domains.value.domain_aggregate.aggregate?.count) || 0,

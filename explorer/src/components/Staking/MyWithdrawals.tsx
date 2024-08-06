@@ -1,5 +1,5 @@
 import { INTERNAL_ROUTES } from '@/constants'
-import { bigNumberToNumber, bigNumberToString } from '@/utils/number'
+import { bigNumberToFormattedString } from '@/utils/number'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
 import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
@@ -39,11 +39,11 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
               sortValue: w.operatorId,
             },
             totalWithdrawalAmount: {
-              value: `${bigNumberToString(w.totalWithdrawalAmount.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(w.totalWithdrawalAmount.toString())} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount,
             },
             totalStorageFeeRefund: {
-              value: `${bigNumberToString(totalStorageFeeRefund.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(totalStorageFeeRefund.toString())} ${TOKEN.symbol}`,
               sortValue: totalStorageFeeRefund,
             },
             unlockAtConfirmedDomainBlockNumber: {
@@ -55,7 +55,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
               sortValue: w.withdrawals.length,
             },
             total: {
-              value: `${bigNumberToString(
+              value: `${bigNumberToFormattedString(
                 (w.totalWithdrawalAmount + totalStorageFeeRefund).toString(),
               )} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount + totalStorageFeeRefund,
@@ -181,10 +181,10 @@ export const MyPendingWithdrawals: FC = () => {
               ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
                 BigInt(op.currentTotalShares)
               : BIGINT_ZERO
-          const sharesWithdrawAmount = bigNumberToNumber(
+          const sharesWithdrawAmount = bigNumberToFormattedString(
             (w.withdrawalInShares.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
           )
-          const storageFeeWithdrawAmount = bigNumberToNumber(
+          const storageFeeWithdrawAmount = bigNumberToFormattedString(
             (w.withdrawalInShares.storageFeeRefund * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
           )
           const total =
@@ -207,7 +207,7 @@ export const MyPendingWithdrawals: FC = () => {
               sortValue: w.withdrawalInShares.storageFeeRefund,
             },
             total: {
-              value: `${bigNumberToString(total.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(total.toString())} ${TOKEN.symbol}`,
               sortValue: total,
             },
             unlockAtConfirmedDomainBlockNumber: {

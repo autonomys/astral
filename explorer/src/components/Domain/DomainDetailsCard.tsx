@@ -9,7 +9,7 @@ import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
-import { bigNumberToNumber } from 'utils/number'
+import { bigNumberToFormattedString } from 'utils/number'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 
@@ -97,37 +97,40 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
               </Link>
             </StyledListItem>
             <StyledListItem title='Current total stake'>
-              {bigNumberToNumber(domain.current_total_stake)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.current_total_stake)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Current storage fee deposits'>
+              {bigNumberToFormattedString(domain.current_storage_fee_deposit)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Total deposits'>
-              {bigNumberToNumber(domain.total_deposits)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_deposits)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Total rewards collected'>
-              {bigNumberToNumber(domain.total_rewards_collected)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_rewards_collected)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Total consensus storage fee'>
-              {bigNumberToNumber(domain.total_consensus_storage_fee)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_consensus_storage_fee)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Total domain execution fee'>
-              {bigNumberToNumber(domain.total_domain_execution_fee)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_domain_execution_fee)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Total burned balance'>
-              {bigNumberToNumber(domain.total_burned_balance)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_burned_balance)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Total tax collected'>
-              {bigNumberToNumber(domain.total_tax_collected)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_tax_collected)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Operators count'>
-              {domain.operators_aggregate.aggregate?.count ?? '0'}
+              {bigNumberToFormattedString(domain.operators_aggregate.aggregate?.count ?? '0')}
             </StyledListItem>
             <StyledListItem title='Nominators count'>
-              {domain.nominators_aggregate.aggregate?.count ?? '0'}
+              {bigNumberToFormattedString(domain.nominators_aggregate.aggregate?.count ?? '0')}
             </StyledListItem>
             <StyledListItem title='Deposits count'>
-              {domain.deposits_aggregate.aggregate?.count ?? '0'}
+              {bigNumberToFormattedString(domain.deposits_aggregate.aggregate?.count ?? '0')}
             </StyledListItem>
             <StyledListItem title='Withdrawals count'>
-              {domain.withdrawals_aggregate.aggregate?.count ?? '0'}
+              {bigNumberToFormattedString(domain.withdrawals_aggregate.aggregate?.count ?? '0')}
             </StyledListItem>
           </List>
         </div>
