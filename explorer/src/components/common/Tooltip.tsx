@@ -6,7 +6,7 @@
 import { FC, useCallback, useState } from 'react'
 
 interface TooltipProps {
-  text: string
+  text: string | React.ReactNode
   children: React.ReactNode
 }
 

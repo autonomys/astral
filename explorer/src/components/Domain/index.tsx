@@ -5,6 +5,7 @@ import { Routes } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
+import { DomainsList } from './DomainsList'
 
 export const DomainPage: FC = () => {
   const { network } = useChains()
@@ -33,12 +34,13 @@ export const DomainPage: FC = () => {
   return (
     <div className='flex w-full flex-col items-center space-y-4'>
       <div className='w-full max-w-4xl'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
-          <div className='mb-10 flex flex-col items-center justify-center'>
-            <h1 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
+        <div className='w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+          <div className='flex flex-col items-center justify-center'>
+            <h1 className='mt-4 text-center text-4xl font-bold text-gray-900 dark:text-white'>
               Domains
             </h1>
           </div>
+
           <div className='m-6 flow-root text-gray-900 dark:text-white'>
             <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
               <p>
@@ -49,17 +51,10 @@ export const DomainPage: FC = () => {
                 Consensus Layer is done on a per-domain basis.
               </p>
             </div>
-            <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
-              <p>
-                At the moment, we have an EVM (Ethereum Virtual Machine) domain and a custom
-                decentralized identity domain. However, more custom or existing runtime domains
-                could be deployed in the future.
-              </p>
-            </div>
           </div>
         </div>
 
-        <div className='m-4 p-4'>
+        <div>
           <div className='m-6 flow-root'>
             <div className='mb-12 flex w-full items-center justify-center gap-5 overflow-x-auto'>
               {listOfCards.map(({ title, description, href, icon, darkBgClass }, index) => (
@@ -90,6 +85,8 @@ export const DomainPage: FC = () => {
           </div>
         </div>
       </div>
+
+      <DomainsList />
     </div>
   )
 }
