@@ -67,6 +67,35 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
                 )}
               </CopyButton>
             </StyledListItem>
+            <StyledListItem title='Completed epoch'>
+              <CopyButton
+                value={domain.completed_epoch.toString()}
+                message='Completed epoch count copied'
+              >
+                {domain.completed_epoch}
+              </CopyButton>
+            </StyledListItem>
+            <StyledListItem title='Last domain block number '>
+              <CopyButton
+                value={domain.last_domain_block_number.toString()}
+                message='Last domain block number copied'
+              >
+                {domain.last_domain_block_number}
+              </CopyButton>
+            </StyledListItem>
+            <StyledListItem title='Bundle count'>{domain.bundle_count}</StyledListItem>
+            <StyledListItem title='Last bundle'>
+              <Link
+                className='flex gap-2 hover:text-purpleAccent'
+                href={INTERNAL_ROUTES.blocks.id.page(
+                  network,
+                  Routes.consensus,
+                  domain.last_bundle_at,
+                )}
+              >
+                <div>#{domain.last_bundle_at}</div>
+              </Link>
+            </StyledListItem>
             <StyledListItem title='Current total stake'>
               {bigNumberToNumber(domain.current_total_stake)} {TOKEN.symbol}
             </StyledListItem>
@@ -87,6 +116,18 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
             </StyledListItem>
             <StyledListItem title='Total tax collected'>
               {bigNumberToNumber(domain.total_tax_collected)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Operators count'>
+              {domain.operators_aggregate.aggregate?.count ?? '0'}
+            </StyledListItem>
+            <StyledListItem title='Nominators count'>
+              {domain.nominators_aggregate.aggregate?.count ?? '0'}
+            </StyledListItem>
+            <StyledListItem title='Deposits count'>
+              {domain.deposits_aggregate.aggregate?.count ?? '0'}
+            </StyledListItem>
+            <StyledListItem title='Withdrawals count'>
+              {domain.withdrawals_aggregate.aggregate?.count ?? '0'}
             </StyledListItem>
           </List>
         </div>

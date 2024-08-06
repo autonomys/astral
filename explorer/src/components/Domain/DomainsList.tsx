@@ -1,5 +1,6 @@
 'use client'
 
+import { capitalizeFirstLetter } from '@/utils/string'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
@@ -77,7 +78,7 @@ export const DomainsList: FC = () => {
                 </span>
               }
             >
-              <div>{row.original.name}</div>
+              <div>{capitalizeFirstLetter(row.original.name)}</div>
             </Tooltip>
           </div>
         ),
@@ -142,11 +143,11 @@ export const DomainsList: FC = () => {
         ),
       },
       {
-        accessorKey: 'total_burned_balance',
-        header: 'Total burned',
+        accessorKey: 'operators_aggregate',
+        header: 'Operators count',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToNumber(row.original.total_burned_balance)} ${TOKEN.symbol}`}</div>
+          <div>{row.original.operators_aggregate.aggregate?.count ?? 0}</div>
         ),
       },
     ],

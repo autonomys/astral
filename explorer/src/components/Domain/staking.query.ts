@@ -34,6 +34,16 @@ export const QUERY_DOMAIN_LIST = gql`
       current_storage_fee_deposit
       created_at
       completed_epoch
+      operators_aggregate {
+        aggregate {
+          count
+        }
+      }
+      nominators_aggregate {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `
@@ -62,6 +72,26 @@ export const QUERY_DOMAIN_BY_ID = gql`
       current_storage_fee_deposit
       created_at
       completed_epoch
+      operators_aggregate {
+        aggregate {
+          count
+        }
+      }
+      nominators_aggregate {
+        aggregate {
+          count
+        }
+      }
+      deposits_aggregate {
+        aggregate {
+          count
+        }
+      }
+      withdrawals_aggregate {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `
