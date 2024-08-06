@@ -1,11 +1,10 @@
-import type { SubmittableModuleExtrinsics } from '@autonomys/auto-utils'
-import type { Chain, NetworkSource } from 'constants/chains'
-import type { TransactionStatus } from 'constants/transaction'
+import type { NetworkId, SubmittableModuleExtrinsics } from '@autonomys/auto-utils'
+import type { NetworkSource, TransactionStatus } from 'constants/transaction'
 import type { WalletAccountWithType } from 'types/wallet'
 
 export interface Transaction {
   ownerAccount: WalletAccountWithType
-  chain: Chain
+  chain: NetworkId
   status: TransactionStatus
   submittedAtBlockHash: string
   submittedAtBlockNumber: number

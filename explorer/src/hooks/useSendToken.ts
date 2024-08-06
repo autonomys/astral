@@ -1,7 +1,7 @@
 import { transfer } from '@autonomys/auto-consensus'
 import { Hash } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
-import { NetworkSource } from 'constants/chains'
+import { NetworkSource } from 'constants/transaction'
 import { AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT, WalletType } from 'constants/wallet'
 import { FormikState } from 'formik'
 import { useTxHelper } from 'hooks/useTxHelper'

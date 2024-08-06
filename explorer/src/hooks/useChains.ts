@@ -3,7 +3,7 @@
 import { ChainContext, ChainContextValue } from 'providers/ChainProvider'
 import { useContext } from 'react'
 
-export const useDomains = (): ChainContextValue => {
+export const useChains = (): ChainContextValue => {
   const context = useContext(ChainContext)
 
   if (!context) throw new Error('ChainContext must be used within ChainProvider')
@@ -11,4 +11,4 @@ export const useDomains = (): ChainContextValue => {
   return context
 }
 
-export default useDomains
+export default useChains

@@ -6,7 +6,7 @@ import {
   WalletIcon,
 } from '@/components/icons'
 import { Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { FC, useMemo } from 'react'
 import { HomeInfoCard } from './HomeInfoCard'
 
@@ -25,7 +25,7 @@ export const HomeCards: FC<Props> = ({
   blocksCount = '0',
   historySize = '0',
 }) => {
-  const { selectedDomain } = useDomains()
+  const { section } = useChains()
 
   const listOfCards = useMemo(
     () => [
@@ -43,7 +43,7 @@ export const HomeCards: FC<Props> = ({
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleDeep dark:to-purplePastel',
       },
       {
-        title: selectedDomain === Routes.nova ? 'Wallet addresses' : 'Qualified Reward Addresses',
+        title: section === Routes.nova ? 'Wallet addresses' : 'Qualified Reward Addresses',
         icon: <WalletIcon />,
         value: rewardAddresses,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleTint dark:to-purpleTinge',
@@ -69,18 +69,18 @@ export const HomeCards: FC<Props> = ({
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleTint dark:to-purpleTinge',
       },
     ],
-    [blocksCount, historySize, selectedDomain, rewardAddresses, signedExtrinsics, spacePledged],
+    [blocksCount, historySize, section, rewardAddresses, signedExtrinsics, spacePledged],
   )
 
   const visibleCards = useMemo(
     () =>
-      selectedDomain === Routes.nova
+      section === Routes.nova
         ? listOfCards.filter(
             (card) =>
               card.title !== 'Total Space Pledged' && card.title !== 'Blockchain History Size',
           )
         : listOfCards,
-    [selectedDomain, listOfCards],
+    [section, listOfCards],
   )
 
   return (

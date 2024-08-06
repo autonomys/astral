@@ -3,7 +3,7 @@
 import { networks } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { NetworkSource } from 'constants/chains'
+import { NetworkSource } from 'constants/transaction'
 import { FC, Fragment, useMemo } from 'react'
 import { AutonomysSymbol } from '../icons'
 
@@ -123,7 +123,7 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({
 }) => {
   return (
     <div className='flex items-center space-x-2 rounded-xl border border-grayLight p-4'>
-      <img src='/path-to-network-icon.png' alt='Network Icon' className='h-6 w-6' />
+      {/* <img src='/path-to-network-icon.png' alt='Network Icon' className='h-6 w-6' /> */}
       <select
         value={selectedOption}
         onChange={(e) => onChange(e.target.value)}
@@ -133,7 +133,7 @@ export const NetworkSelector: FC<NetworkSelectorProps> = ({
           <option key={index}>{option}</option>
         ))}
       </select>
-      <img src='/path-to-dropdown-icon.png' alt='Dropdown Icon' className='h-4 w-4' />
+      {/* <img src='/path-to-dropdown-icon.png' alt='Dropdown Icon' className='h-4 w-4' /> */}
     </div>
   )
 }

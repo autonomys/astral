@@ -5,12 +5,12 @@ import { FC } from 'react'
 
 // common
 import { ArrowButton } from 'components/common/ArrowButton'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 // layout
 import { NotFoundImage } from './NotFoundImage'
 
 export const NotFound: FC = () => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
 
   return (
     <section className='flex h-full items-center p-16'>
@@ -20,7 +20,7 @@ export const NotFound: FC = () => {
           <h2 className='my-8 text-xl text-grayDark dark:text-white'>
             The page you are looking for could not be found.
           </h2>
-          <Link href={`/${selectedChain.urls.page}/${selectedDomain}`}>
+          <Link href={`/${network}/${section}`}>
             <ArrowButton>Take Me Home</ArrowButton>
           </Link>
         </div>

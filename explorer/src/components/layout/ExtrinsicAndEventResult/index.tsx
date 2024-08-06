@@ -6,7 +6,7 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
@@ -28,7 +28,7 @@ interface Props {
 }
 
 export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -44,16 +44,8 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
         cell: ({ row }: Cell<Result>) => {
           const link =
             row.original.type === 'Extrinsic'
-              ? INTERNAL_ROUTES.extrinsics.id.page(
-                  selectedChain.urls.page,
-                  selectedDomain,
-                  row.original.id,
-                )
-              : INTERNAL_ROUTES.events.id.page(
-                  selectedChain.urls.page,
-                  selectedDomain,
-                  row.original.id,
-                )
+              ? INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)
+              : INTERNAL_ROUTES.events.id.page(network, section, row.original.id)
           return (
             <Link key={`${row.index}-result-id`} className='hover:text-purpleAccent' href={link}>
               <div>{row.original.id}</div>
@@ -69,11 +61,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
           <Link
             key={`${row.index}-result-block`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.blocks.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.blockHeight,
-            )}
+            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
           >
             <div>{row.original.blockHeight}</div>
           </Link>
@@ -106,7 +94,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const totalCount = useMemo(() => (results ? results.length : 0), [results])

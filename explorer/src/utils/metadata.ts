@@ -1,10 +1,14 @@
-import { Chains, chains } from 'constants/chains'
+import { NetworkId } from '@autonomys/auto-utils'
+import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
 
-export const generateMetadataWithLabel = (chain: Chains | undefined, label: string): Metadata => {
+export const generateMetadataWithLabel = (
+  chain: NetworkId | undefined,
+  label: string,
+): Metadata => {
   if (!chain) return metadata
-  const chainTitle = chains.find((c) => c.urls.page === chain)?.title || 'Unknown chain'
+  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
   const title = `${metadata.title} - ${chainTitle} - ${label}`
   return {
     ...metadata,

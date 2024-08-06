@@ -1,6 +1,5 @@
 import { bigNumberToNumber, bigNumberToString } from '@/utils/number'
-import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
-import useDomains from 'hooks/useDomains'
+import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
 import useWallet from 'hooks/useWallet'
 import { FC, useMemo } from 'react'
 import { useConsensusStates } from 'states/consensus'
@@ -15,7 +14,6 @@ interface MyUnlockedWithdrawalsProps {
 
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
-  const { selectedChain } = useDomains()
   const { withdrawals } = useConsensusStates()
   const myUnlockedWithdrawals = useMemo(
     () =>
@@ -37,13 +35,11 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
               sortValue: w.operatorId,
             },
             totalWithdrawalAmount: {
-              value: `${bigNumberToString(w.totalWithdrawalAmount.toString())} ${selectedChain.token.symbol}`,
+              value: `${bigNumberToString(w.totalWithdrawalAmount.toString())} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount,
             },
             totalStorageFeeRefund: {
-              value: `${bigNumberToString(
-                totalStorageFeeRefund.toString(),
-              )} ${selectedChain.token.symbol}`,
+              value: `${bigNumberToString(totalStorageFeeRefund.toString())} ${TOKEN.symbol}`,
               sortValue: totalStorageFeeRefund,
             },
             unlockAtConfirmedDomainBlockNumber: {
@@ -57,12 +53,12 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
             total: {
               value: `${bigNumberToString(
                 (w.totalWithdrawalAmount + totalStorageFeeRefund).toString(),
-              )} ${selectedChain.token.symbol}`,
+              )} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount + totalStorageFeeRefund,
             },
           }
         }),
-    [withdrawals, subspaceAccount, selectedChain.token.symbol],
+    [withdrawals, subspaceAccount],
   )
 
   const myUnlockedWithdrawalsList = useMemo(
@@ -156,7 +152,6 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
 
 export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
-  const { selectedChain } = useDomains()
   const { operators, withdrawals } = useConsensusStates()
   const myPendingWithdrawals = useMemo(
     () =>
@@ -185,17 +180,17 @@ export const MyPendingWithdrawals: FC = () => {
               sortValue: w.operatorId,
             },
             shares: {
-              value: `${sharesWithdrawAmount} ${selectedChain.token.symbol}`,
+              value: `${sharesWithdrawAmount} ${TOKEN.symbol}`,
               tooltip: `Shares: ${w.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${sharesWithdrawAmount}`,
               sortValue: w.withdrawalInShares.shares,
             },
             storageFeeRefund: {
-              value: `${storageFeeWithdrawAmount} ${selectedChain.token.symbol}`,
+              value: `${storageFeeWithdrawAmount} ${TOKEN.symbol}`,
               tooltip: `Storage Fee Refund: ${w.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${storageFeeWithdrawAmount}`,
               sortValue: w.withdrawalInShares.storageFeeRefund,
             },
             total: {
-              value: `${bigNumberToString(total.toString())} ${selectedChain.token.symbol}`,
+              value: `${bigNumberToString(total.toString())} ${TOKEN.symbol}`,
               sortValue: total,
             },
             unlockAtConfirmedDomainBlockNumber: {
@@ -204,7 +199,7 @@ export const MyPendingWithdrawals: FC = () => {
             },
           }
         }),
-    [withdrawals, subspaceAccount, operators, selectedChain.token.symbol],
+    [withdrawals, subspaceAccount, operators],
   )
 
   const myPendingWithdrawalsList = useMemo(

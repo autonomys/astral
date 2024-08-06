@@ -9,7 +9,7 @@ import {
   Routes,
 } from 'constants/routes'
 import { AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -95,7 +95,7 @@ export const useLeaderboard = (subspaceAccount: string) => {
 
 export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const { topFarmers, topOperators, topNominators, hasTopPositions, error, loading, setIsVisible } =
     useLeaderboard(subspaceAccount)
 
@@ -130,7 +130,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
                   key='topFarmers-link'
                   data-testid='topFarmers-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                  href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
                 >
                   <StyledListItem title='Top Farmer'>
                     {numberPositionSuffix(topFarmers)} place
@@ -142,7 +142,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
                   key='topOperators-link'
                   data-testid='topOperators-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
+                  href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
                 >
                   <StyledListItem title='Top Operator'>
                     {numberPositionSuffix(topOperators)} place
@@ -154,7 +154,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
                   key='topNominators-link'
                   data-testid='topNominators-link'
                   className='hover:text-purpleAccent'
-                  href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
+                  href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
                 >
                   <StyledListItem title='Top Nominator'>
                     {numberPositionSuffix(topNominators)} place
@@ -167,7 +167,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
               <Link
                 data-testid='totalNominatedCount-link'
                 className='hover:text-purpleAccent'
-                href={`/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
+                href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
               >
                 <span className='text-sm font-medium text-grayDarker dark:text-white'>
                   Your wallet is not in any of the top 100 leaderboard positions!

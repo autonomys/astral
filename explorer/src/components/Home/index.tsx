@@ -11,7 +11,7 @@ import type {
   HomeQueryQuery,
   HomeQueryQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { FC, useEffect, useMemo } from 'react'
@@ -27,13 +27,10 @@ export const Home: FC = () => {
   const { ref, inView } = useInView()
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = isDesktop ? 10 : 3
-  const { selectedChain } = useDomains()
+  const { isEvm } = useChains()
   const novaExplorerBanner = useEvmExplorerBanner()
 
-  const HomeQuery = useMemo(
-    () => (selectedChain?.isDomain ? QUERY_HOME_DOMAIN : QUERY_HOME),
-    [selectedChain],
-  )
+  const HomeQuery = useMemo(() => (isEvm ? QUERY_HOME_DOMAIN : QUERY_HOME), [isEvm])
 
   const { setIsVisible } = useSquidQuery<
     HomeQueryQuery | HomeQueryDomainQuery,
@@ -54,14 +51,14 @@ export const Home: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const noData = useMemo(() => {
     if (loading) return <Spinner isSmall />

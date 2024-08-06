@@ -1,16 +1,17 @@
+import { useCustomExtrinsic } from '@/hooks/useCustomExtrinsic'
+import { useSendToken } from '@/hooks/useSendToken'
+import { useSignOrSendMessage } from '@/hooks/useSignOrSendMessage'
 import { Hash, networks, SignerResult } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
 import { Tooltip } from 'components/common/Tooltip'
-import { NetworkSource } from 'constants/chains'
+import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
+import { NetworkSource } from 'constants/transaction'
 import { WalletAction, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik } from 'formik'
-import { useCustomExtrinsic } from 'hooks/useCustomExtrinsic'
-import useDomains from 'hooks/useDomains'
-import { useSendToken } from 'hooks/useSendToken'
-import { useSignOrSendMessage } from 'hooks/useSignOrSendMessage'
+import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
@@ -124,7 +125,7 @@ const NetworkSelector: FC<{
 }
 
 export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose }) => {
-  const { selectedChain } = useDomains()
+  const { network: currentNetwork } = useChains()
   const { api, actingAccount, accounts, subspaceAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [signature, setSignature] = useState<SignerResult | undefined>(undefined)
@@ -187,7 +188,10 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     }
   }, [action, hash, signature])
 
-  const network = useMemo(() => networks[0], [])
+  const network = useMemo(
+    () => networks.find((n) => n.id === currentNetwork) ?? networks[0],
+    [currentNetwork],
+  )
 
   const ActionBody = useMemo(() => {
     switch (WalletAction[action]) {
@@ -432,7 +436,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       {`Amount to ${
                         WalletAction[action] === WalletAction.SendToken ? 'send' : 'withdraw'
                       }`}{' '}
-                      ({selectedChain.token.symbol})
+                      ({TOKEN.symbol})
                     </span>
                     <FieldArray
                       name='dischargeNorms'
@@ -660,7 +664,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     data-testid='wallet-link'
                     className='pr-2 hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.accounts.id.page(
-                      selectedChain.urls.page,
+                      currentNetwork,
                       'consensus',
                       subspaceAccount,
                     )}
@@ -808,8 +812,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     messageFormValidationSchema,
     subspaceAccount,
     actingAccount,
-    selectedChain.urls.page,
-    selectedChain.token.symbol,
+    currentNetwork,
     initialCustomExtrinsicValues,
     customExtrinsicFormValidationSchema,
     handleCopy,
