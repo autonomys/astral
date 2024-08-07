@@ -56,6 +56,11 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     ctx.store.find(Nominator),
   ]);
 
+  console.log("Loaded domains:", domains.length);
+  console.log("Loaded accounts:", accounts.length);
+  console.log("Loaded operators:", operators.length);
+  console.log("Loaded nominators:", nominators.length);
+
   return {
     ...initCache,
     domains: new Map(domains.map((d) => [d.id, d])),
