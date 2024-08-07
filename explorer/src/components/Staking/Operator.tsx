@@ -4,21 +4,17 @@ import { useConsensusData } from '@/hooks/useConsensusData'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/oldSquidTypes'
+import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/types/staking'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { useConsensusStates } from 'states/consensus'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { useViewStates } from 'states/view'
-import { DataSource } from '../common/DataSource'
-import { DataSourceBanner } from '../common/DataSourceBanner'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
-import { QUERY_OPERATOR_BY_ID } from './query'
+import { QUERY_OPERATOR_BY_ID } from './staking.query'
 
 export const Operator: FC = () => {
   const { ref, inView } = useInView()
@@ -26,8 +22,6 @@ export const Operator: FC = () => {
   const { push } = useRouter()
   const inFocus = useWindowFocus()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const { useRpcData } = useViewStates()
-  const { operators: rpcOperators } = useConsensusStates()
   const { loadData: loadConsensusData, loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
@@ -36,6 +30,7 @@ export const Operator: FC = () => {
     {
       variables,
       skip: !inFocus,
+      context: { clientName: 'staking' },
     },
     Routes.staking,
     'operator',
@@ -45,18 +40,10 @@ export const Operator: FC = () => {
     staking: { operator },
   } = useQueryStates()
 
-  const operatorDetails = useMemo(() => {
-    if (useRpcData) {
-      const operator = rpcOperators.find((operator) => operator.id === operatorId)
-      if (!operator) return null
-      return {
-        ...operator,
-        nominators: [],
-        totalShares: operator.currentTotalShares,
-      }
-    }
-    return hasValue(operator) && operator.value.operatorById
-  }, [operator, operatorId, rpcOperators, useRpcData])
+  const operatorDetails = useMemo(
+    () => hasValue(operator) && operator.value.operator_by_pk,
+    [operator],
+  )
 
   const noData = useMemo(() => {
     if (isLoading(operator)) return <Spinner isSmall />
@@ -78,10 +65,6 @@ export const Operator: FC = () => {
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>
-      <div className='mr-5 flex items-center'>
-        <DataSource />
-      </div>
-      <DataSourceBanner />
       {operatorDetails ? (
         <>
           <OperatorDetailsCard operator={operatorDetails} isDesktop={isDesktop} />

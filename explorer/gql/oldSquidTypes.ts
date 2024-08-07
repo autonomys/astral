@@ -2737,53 +2737,6 @@ export type LogByIdQueryVariables = Exact<{
 
 export type LogByIdQuery = { __typename?: 'Query', logById?: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'Event', id: string, args?: any | null, name: string, phase: string, indexInBlock: number, timestamp: any, block?: { __typename?: 'Block', height: any, hash: string } | null }> } } | null };
 
-export type StakingHeaderQueryVariables = Exact<{
-  opOrderBy: Array<OperatorOrderByInput> | OperatorOrderByInput;
-  noOrderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
-  opWhere?: InputMaybe<OperatorWhereInput>;
-  noWhere?: InputMaybe<NominatorWhereInput>;
-}>;
-
-
-export type StakingHeaderQuery = { __typename?: 'Query', operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number }, nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number } };
-
-export type OperatorsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<OperatorOrderByInput> | OperatorOrderByInput;
-  where?: InputMaybe<OperatorWhereInput>;
-}>;
-
-
-export type OperatorsConnectionQuery = { __typename?: 'Query', lastBlock: Array<{ __typename?: 'Block', height: any }>, operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorEdge', node: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null, nominators: Array<{ __typename?: 'Nominator', id: string, shares?: any | null }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
-
-export type OperatorByIdQueryVariables = Exact<{
-  operatorId: Scalars['String']['input'];
-}>;
-
-
-export type OperatorByIdQuery = { __typename?: 'Query', operatorById?: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null } | null };
-
-export type OperatorNominatorsByIdQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
-  where?: InputMaybe<NominatorWhereInput>;
-}>;
-
-
-export type OperatorNominatorsByIdQuery = { __typename?: 'Query', nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number, edges: Array<{ __typename?: 'NominatorEdge', node: { __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string } } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
-
-export type NominatorsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
-  where?: InputMaybe<NominatorWhereInput>;
-}>;
-
-
-export type NominatorsConnectionQuery = { __typename?: 'Query', nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number, edges: Array<{ __typename?: 'NominatorEdge', node: { __typename?: 'Nominator', id: string, shares?: any | null, updatedAt?: any | null, account: { __typename?: 'Account', id: string }, operator: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null } } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
-
 export type AccountsTopLeaderboardQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
