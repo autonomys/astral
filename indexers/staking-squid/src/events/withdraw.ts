@@ -33,7 +33,6 @@ export function processWithdrewStakeEvent(
     domainId: domain.id,
     accountId: account.id,
     operatorId: operator.id,
-    shares: sharesBigInt,
   });
   cache.nominators.set(nominator.id, nominator);
 
