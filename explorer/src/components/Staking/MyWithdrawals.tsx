@@ -15,25 +15,50 @@ interface MyUnlockedWithdrawalsProps {
   handleAction: (action: OperatorAction) => void
 }
 
+type MyUnlockedWithdrawal = {
+  operatorId: {
+    value: string
+    sortValue: number | bigint
+  }
+  totalWithdrawalAmount: {
+    value: string
+    sortValue: number | bigint
+  }
+  totalStorageFeeRefund: {
+    value: string
+    sortValue: number | bigint
+  }
+  unlockAtConfirmedDomainBlockNumber: {
+    value: string
+    sortValue: number | bigint
+  }
+  total: {
+    value: string
+    sortValue: number | bigint
+  }
+}
+
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
   const { section, network } = useChains()
   const { withdrawals } = useConsensusStates()
-  const myUnlockedWithdrawals = useMemo(
-    () =>
-      withdrawals
-        .filter(
-          (w) =>
-            w.account === subspaceAccount &&
-            w.totalWithdrawalAmount > BIGINT_ZERO &&
-            w.withdrawals.length > 0,
+
+  const myUnlockedWithdrawals = useMemo(() => {
+    const myUnlockedWithdrawals: MyUnlockedWithdrawal[] = []
+    withdrawals
+      .filter(
+        (w) =>
+          w.account === subspaceAccount &&
+          w.totalWithdrawalAmount > BIGINT_ZERO &&
+          w.withdrawals.length > 0,
+      )
+      .map((w) => {
+        const totalStorageFeeRefund = w.withdrawals.reduce(
+          (acc, w) => acc + w.storageFeeRefund,
+          BIGINT_ZERO,
         )
-        .map((w) => {
-          const totalStorageFeeRefund = w.withdrawals.reduce(
-            (acc, w) => acc + w.storageFeeRefund,
-            BIGINT_ZERO,
-          )
-          return {
+        w.withdrawals.map((ww) => {
+          myUnlockedWithdrawals.push({
             operatorId: {
               value: w.operatorId.toString(),
               sortValue: w.operatorId,
@@ -47,12 +72,8 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
               sortValue: totalStorageFeeRefund,
             },
             unlockAtConfirmedDomainBlockNumber: {
-              value: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString(),
-              sortValue: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
-            },
-            withdrawalsCount: {
-              value: w.withdrawals.length.toString(),
-              sortValue: w.withdrawals.length,
+              value: ww.unlockAtConfirmedDomainBlockNumber.toString(),
+              sortValue: ww.unlockAtConfirmedDomainBlockNumber,
             },
             total: {
               value: `${bigNumberToFormattedString(
@@ -60,10 +81,11 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
               )} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount + totalStorageFeeRefund,
             },
-          }
-        }),
-    [withdrawals, subspaceAccount],
-  )
+          })
+        })
+      })
+    return myUnlockedWithdrawals
+  }, [withdrawals, subspaceAccount])
 
   const myUnlockedWithdrawalsList = useMemo(
     () =>
@@ -115,12 +137,6 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     ),
                   },
                   {
-                    accessorKey: 'withdrawalsCount.sortValue',
-                    header: 'Withdrawals Count',
-                    enableSorting: true,
-                    cell: ({ row }) => <div>{row.original.withdrawalsCount.value}</div>,
-                  },
-                  {
                     accessorKey: 'total.sortValue',
                     header: 'Total Withdrawal Amount',
                     enableSorting: true,
@@ -130,26 +146,24 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     accessorKey: 'actions',
                     header: 'Actions',
                     enableSorting: false,
-                    cell: ({ row }) => {
-                      return (
-                        <ActionsDropdown
-                          action={action}
-                          handleAction={handleAction}
-                          row={{
-                            original: {
-                              id: row.original.operatorId.toString(),
-                              // eslint-disable-next-line camelcase
-                              current_total_shares: BIGINT_ZERO,
-                            },
-                          }}
-                          excludeActions={[
-                            OperatorActionType.Nominating,
-                            OperatorActionType.Withdraw,
-                            OperatorActionType.Deregister,
-                          ]}
-                        />
-                      )
-                    },
+                    cell: ({ row }) => (
+                      <ActionsDropdown
+                        action={action}
+                        handleAction={handleAction}
+                        row={{
+                          original: {
+                            id: row.original.operatorId.toString(),
+                            // eslint-disable-next-line camelcase
+                            current_total_shares: BIGINT_ZERO,
+                          },
+                        }}
+                        excludeActions={[
+                          OperatorActionType.Nominating,
+                          OperatorActionType.Withdraw,
+                          OperatorActionType.Deregister,
+                        ]}
+                      />
+                    ),
                   },
                 ]}
                 showNavigation={false}
@@ -170,6 +184,7 @@ export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
   const { section, network } = useChains()
   const { operators, withdrawals } = useConsensusStates()
+
   const myPendingWithdrawals = useMemo(
     () =>
       withdrawals

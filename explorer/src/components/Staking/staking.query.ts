@@ -20,6 +20,7 @@ export const QUERY_OPERATOR_LIST = gql`
       domain {
         id
         sort_id
+        last_domain_block_number
       }
       current_epoch_rewards
       current_total_stake

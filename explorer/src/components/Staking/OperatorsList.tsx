@@ -33,12 +33,13 @@ import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
-import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
+import { MyPositionSwitch } from './MyPositionSwitch'
 import { MyPendingWithdrawals, MyUnlockedWithdrawals } from './MyWithdrawals'
+import { RegisteredSwitch } from './RegisteredSwitch'
 import { QUERY_OPERATOR_LIST } from './staking.query'
 
 type Row = OperatorsListQuery['operator'][0] & { nominatorsCount: number }
@@ -61,7 +62,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
-  const { myPositionOnly } = useViewStates()
+  const { myPositionOnly, registeredOnly } = useViewStates()
 
   useEffect(() => {
     loadDomainsData()
@@ -117,7 +118,11 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           return (
             <Link
               className='hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.domains.id.page(network, Routes.domains, row.original.id)}
+              href={INTERNAL_ROUTES.domains.id.page(
+                network,
+                Routes.domains,
+                row.original.domain_id,
+              )}
             >
               <div>
                 {domain
@@ -336,7 +341,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             ) || deposit
           const excludeActions = []
           if (!isOperator)
-            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
+            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
+          if (JSON.parse(row.original.raw_status ?? '{}')?.registered !== null)
+            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.Nominating)
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
           if (
@@ -386,34 +393,31 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const where = useMemo(() => {
     if (subspaceAccount && myPositionOnly && !searchOperator)
-      return domainId
-        ? {
-            _and: [
-              {
-                // eslint-disable-next-line camelcase
-                domain_id: { _eq: domainId },
-                _or: [
-                  // eslint-disable-next-line camelcase
-                  { account_id: { _eq: subspaceAccount } },
-                  // eslint-disable-next-line camelcase
-                  { nominators: { account_id: { _eq: subspaceAccount } } },
-                ],
-              },
-            ],
-          }
-        : {
+      return {
+        _and: [
+          {
+            // eslint-disable-next-line camelcase
+            domain_id: domainId ? { _eq: domainId } : {},
+            // eslint-disable-next-line camelcase
+            status: registeredOnly ? { _eq: 'REGISTERED' } : {},
             _or: [
               // eslint-disable-next-line camelcase
               { account_id: { _eq: subspaceAccount } },
               // eslint-disable-next-line camelcase
               { nominators: { account_id: { _eq: subspaceAccount } } },
             ],
-          }
+          },
+        ],
+      }
     // eslint-disable-next-line camelcase
     if (domainId) return { domain_id: { _eq: domainId } }
     // eslint-disable-next-line camelcase
-    return searchOperator ? { id: { _eq: searchOperator } } : {}
-  }, [domainId, myPositionOnly, searchOperator, subspaceAccount])
+    return searchOperator
+      ? { id: { _eq: searchOperator } }
+      : {
+          status: registeredOnly ? { _eq: 'REGISTERED' } : {},
+        }
+  }, [domainId, myPositionOnly, registeredOnly, searchOperator, subspaceAccount])
 
   const variables: OperatorsListQueryVariables = useMemo(
     () => ({
@@ -518,6 +522,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
                 onChange={handleSearch}
                 value={searchOperator}
               />
+              <div className='w-54 ml-2 mr-4 flex items-center'>
+                <RegisteredSwitch />
+              </div>
             </div>
           </div>
           <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
