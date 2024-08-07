@@ -1,4 +1,8 @@
-import { operators as getOperators } from "@autonomys/auto-consensus";
+import {
+  operators as getOperators,
+  parseDeposit,
+  parseWithdrawal,
+} from "@autonomys/auto-consensus";
 import type { ApiPromise } from "@autonomys/auto-utils";
 import {
   DepositStatus,
@@ -14,6 +18,7 @@ import {
   createStatsPerOperator,
   getOrCreateAccount,
   getOrCreateDomain,
+  getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
 import { getBlockNumber } from "../utils";
@@ -55,6 +60,16 @@ export async function processEpochTransitionEvent(
       "domainId"
     >),
   }));
+
+  const deposits = await Promise.all(
+    operatorsAll.map((o) => apiAt.query.domains.deposits.entries(o.operatorId))
+  ).then((d) => d.flat().map((d) => parseDeposit(d)));
+
+  const withdrawals = await Promise.all(
+    operatorsAll.map((o) =>
+      apiAt.query.domains.withdrawals.entries(o.operatorId)
+    )
+  ).then((w) => w.flat().map((w) => parseWithdrawal(w)));
 
   const allOperators = operatorsAll.filter(
     (o) => o.operatorDetails.currentDomainId === BigInt(domainId)
@@ -219,6 +234,85 @@ export async function processEpochTransitionEvent(
       operator
     );
     cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
+  }
+
+  const operatorsIds = allOperators.map((o) => o.operatorId.toString());
+
+  // Process all rpc chain deposits (ala nominators)
+  const allDeposits = deposits.filter((o) =>
+    operatorsIds.includes(o.operatorId.toString())
+  );
+
+  for (const deposit of allDeposits) {
+    const operator = getOrCreateOperator(cache, block, deposit.operatorId);
+    const nominator = getOrCreateNominator(
+      cache,
+      block,
+      extrinsic,
+      deposit.operatorId,
+      {
+        accountId: deposit.account,
+        domainId: operator.domainId,
+        operatorId: operator.id,
+      }
+    );
+    nominator.knownShares = deposit.known.shares ?? BigInt(0);
+    nominator.knownStorageFeeDeposit =
+      deposit.known.storageFeeDeposit ?? BigInt(0);
+    nominator.pendingAmount = deposit.pending?.amount ?? BigInt(0);
+    nominator.pendingStorageFeeDeposit =
+      deposit.pending?.storageFeeDeposit ?? BigInt(0);
+    nominator.pendingEffectiveDomainEpoch =
+      deposit.pending?.effectiveDomainEpoch ?? 0;
+    nominator.updatedAt = currentBlockNumber;
+
+    cache.nominators.set(nominator.id, nominator);
+  }
+
+  // Process all rpc chain withdrawals
+  const allWithdrawals = withdrawals.filter((o) =>
+    operatorsIds.includes(o.operatorId.toString())
+  );
+
+  for (const withdrawal of allWithdrawals) {
+    const operator = getOrCreateOperator(cache, block, withdrawal.operatorId);
+    const nominator = getOrCreateNominator(
+      cache,
+      block,
+      extrinsic,
+      withdrawal.operatorId,
+      {
+        accountId: withdrawal.account,
+        domainId: operator.domainId,
+        operatorId: operator.id,
+      }
+    );
+    nominator.totalWithdrawalAmounts =
+      withdrawal.totalWithdrawalAmount ?? BigInt(0);
+    nominator.totalStorageFeeRefund =
+      withdrawal.withdrawals.reduce(
+        (acc, w) => acc + BigInt(w.storageFeeRefund),
+        BigInt(0)
+      ) ?? BigInt(0);
+    nominator.unlockAtConfirmedDomainBlockNumber =
+      withdrawal.withdrawals.map((w) => w.unlockAtConfirmedDomainBlockNumber) ??
+      [];
+    if (withdrawal.withdrawalInShares) {
+      nominator.pendingShares =
+        withdrawal.withdrawalInShares.shares ?? BigInt(0);
+      nominator.pendingStorageFeeRefund =
+        withdrawal.withdrawalInShares.storageFeeRefund ?? BigInt(0);
+      nominator.unlockAtConfirmedDomainBlockNumber =
+        nominator.unlockAtConfirmedDomainBlockNumber.length > 0
+          ? [
+              withdrawal.withdrawalInShares.domainEpoch[1],
+              ...nominator.unlockAtConfirmedDomainBlockNumber,
+            ]
+          : [withdrawal.withdrawalInShares.domainEpoch[1]];
+    }
+    nominator.updatedAt = currentBlockNumber;
+
+    cache.nominators.set(nominator.id, nominator);
   }
 
   return cache;

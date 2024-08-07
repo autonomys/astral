@@ -13,7 +13,16 @@ export const createNominator = (
 
   return new Nominator({
     id: nominatorUID(operatorId, address),
-    shares: BigInt(0),
+    knownShares: BigInt(0),
+    knownStorageFeeDeposit: BigInt(0),
+    pendingAmount: BigInt(0),
+    pendingStorageFeeDeposit: BigInt(0),
+    pendingEffectiveDomainEpoch: 0,
+    totalWithdrawalAmounts: BigInt(0),
+    totalStorageFeeRefund: BigInt(0),
+    unlockAtConfirmedDomainBlockNumber: [],
+    pendingShares: BigInt(0),
+    pendingStorageFeeRefund: BigInt(0),
     totalDeposits: BigInt(0),
     status: NominatorStatus.PENDING,
     ...props,

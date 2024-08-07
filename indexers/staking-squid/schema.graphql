@@ -123,7 +123,19 @@ type Nominator @entity {
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
-  shares: BigInt!
+  # deposit
+  knownShares: BigInt!
+  knownStorageFeeDeposit: BigInt!
+  pendingAmount: BigInt!
+  pendingStorageFeeDeposit: BigInt!
+  pendingEffectiveDomainEpoch: Int!
+  # withdrawal
+  totalWithdrawalAmounts: BigInt!
+  totalStorageFeeRefund: BigInt!
+  unlockAtConfirmedDomainBlockNumber: [Int!]!
+  pendingShares: BigInt!
+  pendingStorageFeeRefund: BigInt!
+
   totalDeposits: BigInt!
   status: NominatorStatus! @index
   createdAt: Int @index
