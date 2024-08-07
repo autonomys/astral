@@ -5,7 +5,6 @@ import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { Tooltip } from 'components/common/Tooltip'
-import type { Chain } from 'constants/chains'
 import {
   INTERNAL_ROUTES,
   ROUTE_EXTRA_FLAG_TYPE,
@@ -15,6 +14,7 @@ import {
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/oldSquidTypes'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -26,13 +26,13 @@ import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
 interface LastExtrinsicsProps {
   subspaceAccount: string
-  selectedChain: Chain
 }
 
 dayjs.extend(relativeTime)
 
-export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selectedChain }) => {
+export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
+  const { network } = useChains()
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -102,7 +102,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                       data-testid='extrinsic-link'
                       className='hover:text-purpleAccent'
                       href={INTERNAL_ROUTES.extrinsics.id.page(
-                        selectedChain.urls.page,
+                        network,
                         Routes.consensus,
                         extrinsic.node.id,
                       )}
@@ -118,7 +118,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                     data-testid='extrinsic-link'
                     className='hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.extrinsics.id.page(
-                      selectedChain.urls.page,
+                      network,
                       Routes.consensus,
                       extrinsic.node.id,
                     )}
@@ -134,7 +134,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount, selec
                     data-testid='extrinsic-link'
                     className='px-2 hover:text-purpleAccent'
                     href={INTERNAL_ROUTES.blocks.id.page(
-                      selectedChain.urls.page,
+                      network,
                       Routes.consensus,
                       extrinsic.node.block.height,
                     )}

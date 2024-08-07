@@ -1,10 +1,11 @@
+import { TOKEN } from '@/constants'
 import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { ResponsiveLine } from '@nivo/line'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import { LatestRewardsWeekQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
@@ -25,7 +26,7 @@ type Props = {
 export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { ref, inView } = useInView()
   const { isDark } = useTheme()
-  const { selectedChain } = useDomains()
+  const { isEvm } = useChains()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
   const inFocus = useWindowFocus()
 
@@ -43,9 +44,9 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   } = useQueryStates()
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const parsedData = useMemo(
     () =>
@@ -93,7 +94,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
           {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
         </div>
         <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
-          {selectedChain.token.symbol}
+          {TOKEN.symbol}
         </div>
       </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>

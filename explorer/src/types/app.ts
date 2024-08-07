@@ -1,4 +1,4 @@
-import type { Chains } from 'constants/chains'
+import { NetworkId } from '@autonomys/auto-utils'
 import type { ReactNode } from 'react'
 
 export type ChildrenPageProps = {
@@ -9,7 +9,7 @@ export type PageProps<T> = {
   params: T
 }
 
-export type ChainParam = { chain?: Chains }
+export type ChainParam = { chain?: NetworkId }
 
 export type AccountIdParam = { accountId?: string }
 export type BlockIdParam = { blockId?: string }

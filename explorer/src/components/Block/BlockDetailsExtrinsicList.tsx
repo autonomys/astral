@@ -9,7 +9,7 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic, ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -32,7 +32,7 @@ type Props = {
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -49,8 +49,9 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     {
       variables: { blockId: Number(blockId), first },
       skip: !inFocus,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'blockDetailsExtrinsic',
   )
 
@@ -60,14 +61,14 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -87,11 +88,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
           <Link
             key={`${row.index}-block-extrinsic-id`}
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.extrinsics.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             {`${row.original.block.height}-${row.index}`}
           </Link>
@@ -139,7 +136,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         ),
       },
     ],
-    [selectedChain.urls.page, selectedDomain],
+    [network, section],
   )
 
   const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])

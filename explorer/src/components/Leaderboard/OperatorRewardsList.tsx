@@ -6,14 +6,14 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE } from 'constants/general'
+import { PAGE_SIZE, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorRewardsOrderByInput,
   type OperatorsConnectionRewardsQuery,
   type OperatorsConnectionRewardsQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -39,7 +39,7 @@ export const OperatorRewardsList = () => {
     pageIndex: 0,
   })
 
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const apolloClient = useApolloClient()
 
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
@@ -73,11 +73,7 @@ export const OperatorRewardsList = () => {
             <div className='row flex items-center gap-3'>
               <Link
                 data-testid={`account-link-${row.index}`}
-                href={INTERNAL_ROUTES.operators.id.page(
-                  selectedChain.urls.page,
-                  'consensus',
-                  row.original.id,
-                )}
+                href={INTERNAL_ROUTES.operators.id.page(network, 'consensus', row.original.id)}
                 className='hover:text-purpleAccent'
               >
                 <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
@@ -97,13 +93,13 @@ export const OperatorRewardsList = () => {
         >) => (
           <div>
             {row.original.amount
-              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${selectedChain.token.symbol}`
+              ? `${numberWithCommas(bigNumberToNumber(row.original.amount))} ${TOKEN.symbol}`
               : 0}
           </div>
         ),
       },
     ]
-  }, [selectedChain, pagination, isLargeLaptop])
+  }, [pagination.pageIndex, pagination.pageSize, network, isLargeLaptop])
 
   const orderBy = useMemo(
     () => sort(sorting, OperatorRewardsOrderByInput.AmountDesc) as OperatorRewardsOrderByInput,

@@ -5,7 +5,7 @@ import { Modal } from 'components/common/Modal'
 import { CheckMarkIcon } from 'components/icons/CheckMarkIcon'
 import { EXTERNAL_ROUTES } from 'constants/routes' // , ROUTE_API, ROUTE_EXTRA_FLAG_TYPE
 // import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
-// import useDomains from 'hooks/useDomains'
+// import useChains from 'hooks/useChains'
 // import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 // import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -90,7 +90,7 @@ const ExplainerLinkAndModal: FC = () => {
 export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
   const { ref } = useInView() // , inView
   const { data: session } = useSession()
-  // const { selectedChain } = useDomains()
+  // const { network } = useChains()
   const { actingAccount, injector } = useWallet()
   // const [claimIsPending, setClaimIsPending] = useState(false)
   // const [claimIsFinalized, setClaimIsFinalized] = useState(false)
@@ -162,7 +162,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   //     data: message,
   //   })
   //   if (!signature) throw new Error('No signature')
-  //   const claim = await fetch(ROUTE_API.claim.operatorDisbursement(selectedChain.urls.page), {
+  //   const claim = await fetch(ROUTE_API.claim.operatorDisbursement(network), {
   //     method: 'POST',
   //     headers: { 'Content-Type': 'application/json' },
   //     body: JSON.stringify({
@@ -175,7 +175,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
   //     setClaimIsPending(true)
   //     setClaimHash(claim.hash)
   //   } else if (claim.error) setClaimError(claim.error)
-  // }, [actingAccount, injector, selectedChain.urls.page, subspaceAccount])
+  // }, [actingAccount, injector, network, subspaceAccount])
 
   // useEffect(() => {
   //   if (hasValue(claim) && claim.value.extrinsics && claim.value.extrinsics.length > 0)
@@ -202,7 +202,7 @@ export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) =>
                   </p>
                   <p>
                     {' '}
-                    claim <b>100 {selectedChain.token.symbol}</b> to cover the operator stake.
+                    claim <b>100 {TOKEN.symbol}</b> to cover the operator stake.
                   </p>
                 </>
               }

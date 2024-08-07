@@ -9,7 +9,7 @@ import {
   ExtrinsicsByIdQuery,
   ExtrinsicsByIdQueryVariables,
 } from 'gql/graphql'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -26,7 +26,7 @@ export const Extrinsic: FC = () => {
   const { ref, inView } = useInView()
   const { extrinsicId } = useParams<ExtrinsicIdParam>()
   const inFocus = useWindowFocus()
-  const { selectedChain } = useDomains()
+  const { isEvm } = useChains()
   const isDesktop = useMediaQuery('(min-width: 1440px)')
   const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
 
@@ -35,8 +35,9 @@ export const Extrinsic: FC = () => {
     {
       variables: { extrinsicId: extrinsicId ?? '' },
       skip: !inFocus,
+      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    selectedChain?.isDomain ? Routes.nova : Routes.consensus,
+    isEvm ? Routes.nova : Routes.consensus,
     'extrinsic',
   )
 
@@ -46,14 +47,14 @@ export const Extrinsic: FC = () => {
   } = useQueryStates()
 
   const loading = useMemo(() => {
-    if (selectedChain?.isDomain) return isLoading(evmEntry)
+    if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, selectedChain])
+  }, [evmEntry, consensusEntry, isEvm])
 
   const data = useMemo(() => {
-    if (selectedChain?.isDomain && hasValue(evmEntry)) return evmEntry.value
+    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, selectedChain])
+  }, [consensusEntry, evmEntry, isEvm])
 
   const extrinsic = useMemo(() => data && (data.extrinsicById as ExtrinsicResult), [data])
   const novaExplorerBanner = useEvmExplorerBanner(extrinsic ? 'tx/' + extrinsic.hash : 'tx/')

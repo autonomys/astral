@@ -52,7 +52,7 @@ export const TableNavigation = <T extends object>({
         {hideDownloadButton === undefined && (
           <div className='flex w-full justify-between sm:hidden'>
             <div className='w-full'>
-              {data && <ExportButton data={data} filename='account-list' />}
+              {data && <ExportButton data={data} filename={filename ?? 'page-data'} />}
             </div>
             <div className='w-full'>
               {fullDataDownloader && (
@@ -65,7 +65,7 @@ export const TableNavigation = <T extends object>({
       <div className='hidden sm:flex sm:w-full sm:flex-col sm:items-center sm:justify-between sm:gap-4 lg:flex-row '>
         {hideDownloadButton === undefined && (
           <div className='hidden justify-between  gap-2   sm:flex sm:flex-1'>
-            {data && <ExportButton data={data} filename='account-list' />}
+            {data && <ExportButton data={data} filename={filename ?? 'page-data'} />}
             <div className='flex w-full'>
               {fullDataDownloader && (
                 <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />

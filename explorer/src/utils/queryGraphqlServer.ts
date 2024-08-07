@@ -1,19 +1,19 @@
-import { chains } from 'constants/'
+import { indexers } from 'constants/indexers'
 import { cookies } from 'next/headers'
 
 export const queryGraphqlServer = async (query: string, variables: object) => {
   try {
     // Get the selected chain from the cookies
     const { get } = cookies()
-    const selectedChain = get('selectedChain')
-    if (!selectedChain) throw new Error('No selected chain')
+    const selectedNetwork = get('selected-network')
+    if (!selectedNetwork) throw new Error('No selected network')
 
     // Find the selected chain api
-    const api = chains.find((chain) => chain.urls.page === selectedChain.value)
+    const api = indexers.find((indexer) => indexer.network === selectedNetwork.value)
     if (!api) throw new Error('No selected chain api')
 
     // Fetch the data from the api
-    const request = await fetch(api.urls.squids.old, {
+    const request = await fetch(api.squids.old, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
