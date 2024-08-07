@@ -5159,7 +5159,7 @@ export type OperatorByIdQueryVariables = Exact<{
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'query_root', operator_by_pk?: { __typename?: 'operator', id: string, account_id: string, domain_id: string, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, minimum_nominator_stake: any, nomination_tax: number, signing_key: string, status: string, raw_status?: string | null, updated_at?: number | null, domain?: { __typename?: 'domain', id: string, sort_id: number } | null } | null };
+export type OperatorByIdQuery = { __typename?: 'query_root', operator_by_pk?: { __typename?: 'operator', id: string, account_id: string, domain_id: string, bundle_count: number, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, total_rewards_collected: any, total_consensus_storage_fee: any, total_domain_execution_fee: any, total_burned_balance: any, total_tax_collected: any, nomination_tax: number, signing_key: string, status: string, raw_status?: string | null, last_bundle_at: number, updated_at?: number | null, domain?: { __typename?: 'domain', id: string, sort_id: number } | null, nominators_aggregate: { __typename?: 'nominator_aggregate', aggregate?: { __typename?: 'nominator_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'deposit_aggregate', aggregate?: { __typename?: 'deposit_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'withdrawal_aggregate', aggregate?: { __typename?: 'withdrawal_aggregate_fields', count: number } | null } } | null };
 
 export type OperatorNominatorsByIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];

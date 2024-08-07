@@ -54,15 +54,38 @@ export const QUERY_OPERATOR_BY_ID = gql`
         id
         sort_id
       }
+      bundle_count
       current_epoch_rewards
       current_total_stake
       current_total_shares
+      current_storage_fee_deposit
       minimum_nominator_stake
+      total_rewards_collected
+      total_consensus_storage_fee
+      total_domain_execution_fee
+      total_burned_balance
+      total_tax_collected
       nomination_tax
       signing_key
       status
       raw_status
+      last_bundle_at
       updated_at
+      nominators_aggregate {
+        aggregate {
+          count
+        }
+      }
+      deposits_aggregate {
+        aggregate {
+          count
+        }
+      }
+      withdrawals_aggregate {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `
