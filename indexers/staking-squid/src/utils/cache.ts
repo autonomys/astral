@@ -3,6 +3,7 @@ import { Entity } from "@subsquid/typeorm-store/src/store";
 import {
   Account,
   Bundle,
+  BundleAuthor,
   Deposit,
   Domain,
   Nominator,
@@ -26,6 +27,7 @@ export type TemporaryCache = {
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
+  bundleAuthors: Map<string, BundleAuthor>;
   operatorRewardedEvents: Map<string, OperatorRewardEvent>;
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
@@ -44,6 +46,7 @@ export const initCache: Cache = {
   deposits: new Map(),
   withdrawals: new Map(),
   bundles: new Map(),
+  bundleAuthors: new Map(),
   operatorRewardedEvents: new Map(),
   stats: new Map(),
   statsPerDomain: new Map(),
@@ -101,6 +104,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.deposits.clear();
   cache.withdrawals.clear();
   cache.bundles.clear();
+  cache.bundleAuthors.clear();
   cache.operatorRewardedEvents.clear();
   cache.stats.clear();
   cache.statsPerDomain.clear();

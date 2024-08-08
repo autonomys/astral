@@ -90,10 +90,10 @@ type Operator @entity {
 
 type Bundle @entity {
   id: ID! @index
-  accountId: String! @index
   domainId: String! @index
-  operatorId: String! @index
   domainBlockNumber: Int! @index
+  domainBlockHash: String!
+  domainBlockExtrinsicRoot: String!
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
   totalTransfersIn: BigInt!
@@ -108,6 +108,13 @@ type Bundle @entity {
   consensusStorageFee: BigInt!
   domainExecutionFee: BigInt!
   burnedBalance: BigInt!
+}
+
+type BundleAuthor @entity {
+  id: ID! @index
+  bundleId: String! @index
+  accountId: String! @index
+  operatorId: String! @index
 }
 
 enum NominatorStatus {

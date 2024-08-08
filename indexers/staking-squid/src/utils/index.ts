@@ -39,3 +39,8 @@ export const operatorUID = (operatorId: number): string => `${operatorId}`;
 
 export const nominatorUID = (operatorId: number, account: string): string =>
   `${operatorId}-${account}`;
+
+export const bundleUID = (
+  domainId: number | string,
+  domainBlockHash: string
+): string => `${domainId}-${domainBlockHash}`;
