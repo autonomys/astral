@@ -1,5 +1,5 @@
 {
-  "resource_version": 16,
+  "resource_version": 64,
   "metadata": {
     "version": 3,
     "sources": [
@@ -38,21 +38,6 @@
                     "insertion_order": null,
                     "remote_table": {
                       "name": "deposit",
-                      "schema": "public"
-                    }
-                  }
-                }
-              },
-              {
-                "name": "domain",
-                "using": {
-                  "manual_configuration": {
-                    "column_mapping": {
-                      "id": "account_id"
-                    },
-                    "insertion_order": null,
-                    "remote_table": {
-                      "name": "domain",
                       "schema": "public"
                     }
                   }
@@ -542,12 +527,21 @@
                 "role": "user",
                 "permission": {
                   "columns": [
+                    "unlock_at_confirmed_domain_block_number",
                     "id",
                     "status",
                     "created_at",
+                    "pending_effective_domain_epoch",
                     "updated_at",
-                    "shares",
+                    "known_shares",
+                    "known_storage_fee_deposit",
+                    "pending_amount",
+                    "pending_shares",
+                    "pending_storage_fee_deposit",
+                    "pending_storage_fee_refund",
                     "total_deposits",
+                    "total_storage_fee_refund",
+                    "total_withdrawal_amounts",
                     "account_id",
                     "domain_id",
                     "operator_id"
@@ -769,7 +763,8 @@
                     "operator_id",
                     "timestamp"
                   ],
-                  "filter": {}
+                  "filter": {},
+                  "allow_aggregations": true
                 },
                 "comment": ""
               }
