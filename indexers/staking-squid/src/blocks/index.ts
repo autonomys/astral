@@ -12,9 +12,9 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
     cache = await processBlock(cache, api, block);
 
     ctx.log.child("completed block").info(getBlockNumber(block).toString());
-
-    await save(ctx, cache);
   }
+
+  await save(ctx, cache);
 }
 
 async function processBlock(cache: Cache, api: ApiPromise, block: CtxBlock) {
