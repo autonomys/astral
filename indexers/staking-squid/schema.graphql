@@ -63,7 +63,13 @@ type Operator @entity {
   nominationTax: Int!
   # public profile
   name: String! @index
+  description: String
+  icon: String
+  banner: String
   website: String
+  websiteVerified: Boolean!
+  email: String
+  emailVerified: Boolean!
   discord: String
   github: String
   twitter: String

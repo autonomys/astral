@@ -63,9 +63,9 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
 
   console.log(
     "Loaded in cache:",
-    domains.length + " domains",
-    accounts.length + " accounts",
-    operators.length + " operators",
+    domains.length + " domains, ",
+    accounts.length + " accounts, ",
+    operators.length + " operators, ",
     nominators.length + " nominators"
   );
 
