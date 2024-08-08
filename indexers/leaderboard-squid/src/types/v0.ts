@@ -469,6 +469,32 @@ export type DomainId = number
 
 export type H256 = Bytes
 
+export interface CollectedFees {
+    storage: bigint
+    compute: bigint
+    tips: bigint
+}
+
+export const CollectedFees: sts.Type<CollectedFees> = sts.struct(() => {
+    return  {
+        storage: sts.bigint(),
+        compute: sts.bigint(),
+        tips: sts.bigint(),
+    }
+})
+
+export interface BlockTransactionByteFee {
+    current: bigint
+    next: bigint
+}
+
+export const BlockTransactionByteFee: sts.Type<BlockTransactionByteFee> = sts.struct(() => {
+    return  {
+        current: sts.bigint(),
+        next: sts.bigint(),
+    }
+})
+
 export type Randomness = Bytes
 
 export const Randomness = sts.bytes()

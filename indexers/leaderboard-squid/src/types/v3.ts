@@ -1,5 +1,10 @@
 import {sts, Result, Option, Bytes, BitSequence} from './support'
 
+export interface RewardPoint {
+    block: number
+    subsidy: bigint
+}
+
 export type DomainId = number
 
 export const DomainId = sts.number()
@@ -87,3 +92,10 @@ export const Percent = sts.number()
 export type Slot = bigint
 
 export const Slot = sts.bigint()
+
+export const RewardPoint: sts.Type<RewardPoint> = sts.struct(() => {
+    return  {
+        block: sts.number(),
+        subsidy: sts.bigint(),
+    }
+})

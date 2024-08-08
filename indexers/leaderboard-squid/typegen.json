@@ -13,6 +13,18 @@
       "calls": true,
       "storage": true,
       "constants": true
+    },
+    "Rewards": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "TransactionFees": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
     }
   }
 }
