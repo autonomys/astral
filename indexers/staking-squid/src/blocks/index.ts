@@ -2,12 +2,12 @@ import type { ApiPromise } from "@autonomys/auto-utils";
 import { Store } from "@subsquid/typeorm-store";
 import { processExtrinsics } from "../extrinsics";
 import type { Ctx, CtxBlock } from "../processor";
-import { getBlockNumber } from "../utils";
+import { logBlock } from "../utils";
 import { Cache, load, save } from "../utils/cache";
 
 export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   let cache: Cache = await load(ctx);
-  console.log("Processing " + ctx.blocks.length + " blocks");
+  logBlock(ctx.blocks);
   for (let block of ctx.blocks) {
     cache = await processBlock(cache, api, block);
   }

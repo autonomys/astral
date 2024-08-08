@@ -61,10 +61,13 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     ctx.store.find(Nominator),
   ]);
 
-  console.log("Loaded domains:", domains.length);
-  console.log("Loaded accounts:", accounts.length);
-  console.log("Loaded operators:", operators.length);
-  console.log("Loaded nominators:", nominators.length);
+  console.log(
+    "Loaded in cache:",
+    domains.length + " domains",
+    accounts.length + " accounts",
+    operators.length + " operators",
+    nominators.length + " nominators"
+  );
 
   return {
     ...initCache,
@@ -84,17 +87,34 @@ const saveEntry = async <E extends Entity>(
     const entity = cache[name] as unknown as Map<string, E>;
     if (entity.size === 0) return;
 
-    console.log(`Saving ${entity.size} ${name} entries to the database.`);
-
     await ctx.store.save(Array.from(entity.values()));
   } catch (e) {
     console.error(`Failed to save ${name} with error:`, e);
   }
 };
 
+const logEntry = <K>(name: string, entry: Map<string, K>) =>
+  entry.size > 0 ? entry.size + " " + name + ", " : "";
+
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   // If the cache is not modified, skip saving
   if (!cache.isModified) return;
+
+  let log = logEntry("domains", cache.domains);
+  log += logEntry("accounts", cache.accounts);
+  log += logEntry("operators", cache.operators);
+  log += logEntry("nominators", cache.nominators);
+
+  log += logEntry("deposits", cache.deposits);
+  log += logEntry("withdrawals", cache.withdrawals);
+  log += logEntry("bundles", cache.bundles);
+  log += logEntry("bundleAuthors", cache.bundleAuthors);
+  log += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
+  log += logEntry("stats", cache.stats);
+  log += logEntry("statsPerDomain", cache.statsPerDomain);
+  log += logEntry("statsPerOperator", cache.statsPerOperator);
+
+  console.log("Saving in database:", log);
 
   await Promise.all(
     Object.keys(cache).map((k) =>

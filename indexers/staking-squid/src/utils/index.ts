@@ -1,13 +1,12 @@
+import { DEFAULT_SS58_FORMAT } from "@autonomys/auto-utils";
 import { codec } from "@subsquid/ss58";
 import type { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from "@subsquid/util-internal-hex";
 import type { CtxBlock, ProcessorContext } from "../processor";
 
-const CODEC = 2254;
-
 export const hexToAccount = (hex: string): string => {
   try {
-    return codec(CODEC).encode(decodeHex(hex));
+    return codec(DEFAULT_SS58_FORMAT).encode(decodeHex(hex));
   } catch (error) {
     console.error("Failed to convert hex to account:", error);
     return "";
@@ -44,3 +43,10 @@ export const bundleUID = (
   domainId: number | string,
   domainBlockHash: string
 ): string => `${domainId}-${domainBlockHash}`;
+
+export const logBlock = (blocks: CtxBlock[]): void =>
+  console.log(
+    "Processing " + blocks.length + " blocks",
+    "From " + getBlockNumber(blocks[0]),
+    "to " + getBlockNumber(blocks[blocks.length - 1])
+  );
