@@ -292,13 +292,18 @@ export async function processEpochTransitionEvent(
     nominator.totalWithdrawalAmounts =
       withdrawal.totalWithdrawalAmount ?? BigInt(0);
     nominator.totalStorageFeeRefund =
-      withdrawal.withdrawals.reduce(
-        (acc, w) => acc + BigInt(w.storageFeeRefund),
-        BigInt(0)
-      ) ?? BigInt(0);
+      withdrawal.withdrawals && Array.isArray(withdrawal.withdrawals)
+        ? withdrawal.withdrawals.reduce(
+            (acc, w) => acc + BigInt(w.storageFeeRefund),
+            BigInt(0)
+          )
+        : BigInt(0);
     nominator.unlockAtConfirmedDomainBlockNumber =
-      withdrawal.withdrawals.map((w) => w.unlockAtConfirmedDomainBlockNumber) ??
-      [];
+      withdrawal.withdrawals && Array.isArray(withdrawal.withdrawals)
+        ? withdrawal.withdrawals.map(
+            (w) => w.unlockAtConfirmedDomainBlockNumber
+          )
+        : [];
     if (withdrawal.withdrawalInShares) {
       nominator.pendingShares =
         withdrawal.withdrawalInShares.shares ?? BigInt(0);
