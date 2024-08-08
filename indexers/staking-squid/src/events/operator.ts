@@ -73,6 +73,8 @@ export function processOperatorNominatedEvent(
 
   cache.deposits.set(deposit.id, deposit);
 
+  cache.isModified = true;
+
   return cache;
 }
 
@@ -98,6 +100,8 @@ export function processOperatorSlashedEvent(
       n.updatedAt = operator.updatedAt;
       cache.nominators.set(n.id, n);
     });
+
+  cache.isModified = true;
 
   return cache;
 }
@@ -127,6 +131,8 @@ export function processOperatorTaxCollectedEvent(
   domain.totalTaxCollected += taxAmount;
   domain.updatedAt = blockNumber;
   cache.domains.set(domain.id, domain);
+
+  cache.isModified = true;
 
   return cache;
 }
@@ -158,6 +164,8 @@ export function processOperatorRewardedEvent(
     operatorRewardedEvent.id,
     operatorRewardedEvent
   );
+
+  cache.isModified = true;
 
   return cache;
 }

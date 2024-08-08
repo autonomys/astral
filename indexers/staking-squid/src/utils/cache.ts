@@ -32,9 +32,11 @@ export type TemporaryCache = {
   statsPerOperator: Map<string, StatsPerOperator>;
 };
 
-export type Cache = PermanentCache & TemporaryCache;
+export type Cache = PermanentCache & TemporaryCache & { isModified: boolean };
 
 export const initCache: Cache = {
+  isModified: false,
+
   domains: new Map(),
   accounts: new Map(),
   operators: new Map(),
@@ -88,6 +90,9 @@ const saveEntry = async <E extends Entity>(
 };
 
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
+  // If the cache is not modified, skip saving
+  if (!cache.isModified) return;
+
   await Promise.all(
     Object.keys(cache).map((k) => saveEntry(ctx, cache, k as keyof Cache))
   );

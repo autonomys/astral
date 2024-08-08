@@ -322,5 +322,7 @@ export async function processEpochTransitionEvent(
     cache.nominators.set(nominator.id, nominator);
   }
 
+  cache.isModified = true;
+
   return cache;
 }

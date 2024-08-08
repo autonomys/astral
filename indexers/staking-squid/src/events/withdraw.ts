@@ -45,5 +45,7 @@ export function processWithdrewStakeEvent(
   });
   cache.withdrawals.set(withdrawal.id, withdrawal);
 
+  cache.isModified = true;
+
   return cache;
 }

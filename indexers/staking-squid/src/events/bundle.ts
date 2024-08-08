@@ -120,5 +120,7 @@ export function processBundleStoredEvent(
 
   cache.operators.set(operator.id, operator);
 
+  cache.isModified = true;
+
   return cache;
 }
