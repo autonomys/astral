@@ -254,7 +254,8 @@ export async function processEpochTransitionEvent(
         accountId: deposit.account,
         domainId: operator.domainId,
         operatorId: operator.id,
-      }
+      },
+      deposit.account
     );
     nominator.knownShares = deposit.known.shares ?? BigInt(0);
     nominator.knownStorageFeeDeposit =
@@ -285,7 +286,8 @@ export async function processEpochTransitionEvent(
         accountId: withdrawal.account,
         domainId: operator.domainId,
         operatorId: operator.id,
-      }
+      },
+      withdrawal.account
     );
     nominator.totalWithdrawalAmounts =
       withdrawal.totalWithdrawalAmount ?? BigInt(0);

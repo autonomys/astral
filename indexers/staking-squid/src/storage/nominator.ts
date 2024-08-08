@@ -7,9 +7,12 @@ export const createNominator = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operatorId: number,
-  props: Partial<Nominator>
+  props: Partial<Nominator>,
+  address?: string
 ): Nominator => {
-  const address = getCallSigner(extrinsic.call);
+  if (!address) {
+    address = getCallSigner(extrinsic.call);
+  }
 
   return new Nominator({
     id: nominatorUID(operatorId, address),
@@ -36,9 +39,12 @@ export const getOrCreateNominator = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   operatorId: number | string,
-  props: Partial<Nominator> = {}
+  props: Partial<Nominator> = {},
+  address?: string
 ): Nominator => {
-  const address = getCallSigner(extrinsic.call);
+  if (!address) {
+    address = getCallSigner(extrinsic.call);
+  }
   const nominator = cache.nominators.get(
     typeof operatorId === "string"
       ? operatorId
