@@ -10,6 +10,10 @@ export const getCallSigner = (
   call: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]["call"]
 ): string => hexToAccount((call as any).origin.value.value);
 
+export const getExtrinsicSigner = (
+  extrinsic: ProcessorContext<Store>["blocks"][0]["extrinsics"][0]
+): string => hexToAccount((extrinsic as any).signature?.address.value);
+
 export const appendOrArray = <T>(arr: T[] | undefined, item: T): T[] =>
   !arr ? [item] : [...arr, item];
 

@@ -26,8 +26,8 @@ export function processOperatorRewardedEvent(
   const operatorTotalRewardsCollected =
     getOrCreateOperatorTotalRewardsCollected(cache, block, operatorId);
 
-  operatorTotalRewardsCollected.totalRewardsCollected += reward;
-  operatorTotalRewardsCollected.lastCollectedAt = getTimestamp(block);
+  operatorTotalRewardsCollected.value += reward;
+  operatorTotalRewardsCollected.lastContributionAt = getTimestamp(block);
   operatorTotalRewardsCollected.updatedAt = getBlockNumber(block);
 
   cache.operatorTotalRewardsCollected.set(
@@ -54,8 +54,8 @@ export function processOperatorTaxCollectedEvent(
     operatorId
   );
 
-  operatorTotalTaxCollected.totalTaxCollected += tax;
-  operatorTotalTaxCollected.lastCollectedAt = getTimestamp(block);
+  operatorTotalTaxCollected.value += tax;
+  operatorTotalTaxCollected.lastContributionAt = getTimestamp(block);
   operatorTotalTaxCollected.updatedAt = getBlockNumber(block);
 
   cache.operatorTotalTaxCollected.set(
@@ -83,8 +83,8 @@ export function processBundleStoredEvent(
     operatorId
   );
 
-  operatorBundleTotalCount.totalBundleCount++;
-  operatorBundleTotalCount.lastBundledAt = getTimestamp(block);
+  operatorBundleTotalCount.value++;
+  operatorBundleTotalCount.lastContributionAt = getTimestamp(block);
   operatorBundleTotalCount.updatedAt = getBlockNumber(block);
 
   cache.operatorBundleTotalCount.set(
@@ -110,8 +110,8 @@ export function processOperatorRegisteredEvent(
     operatorId
   );
 
-  operatorDepositsTotalCount.totalDepositCount++;
-  operatorDepositsTotalCount.lastDepositedAt = getTimestamp(block);
+  operatorDepositsTotalCount.value++;
+  operatorDepositsTotalCount.lastContributionAt = getTimestamp(block);
   operatorDepositsTotalCount.updatedAt = getBlockNumber(block);
 
   cache.operatorDepositsTotalCount.set(
@@ -139,8 +139,8 @@ export function processOperatorNominatedEvent(
     operatorId
   );
 
-  operatorDepositsTotalCount.totalDepositCount++;
-  operatorDepositsTotalCount.lastDepositedAt = getTimestamp(block);
+  operatorDepositsTotalCount.value++;
+  operatorDepositsTotalCount.lastContributionAt = getTimestamp(block);
   operatorDepositsTotalCount.updatedAt = getBlockNumber(block);
 
   cache.operatorDepositsTotalCount.set(
@@ -154,8 +154,8 @@ export function processOperatorNominatedEvent(
     operatorId
   );
 
-  operatorDepositsTotalValue.totalDepositValue += amount;
-  operatorDepositsTotalValue.lastDepositedAt = getTimestamp(block);
+  operatorDepositsTotalValue.value += amount;
+  operatorDepositsTotalValue.lastContributionAt = getTimestamp(block);
   operatorDepositsTotalValue.updatedAt = getBlockNumber(block);
 
   cache.operatorDepositsTotalValue.set(
@@ -169,8 +169,8 @@ export function processOperatorNominatedEvent(
     accountId
   );
 
-  nominatorDepositsTotalCount.totalDepositCount++;
-  nominatorDepositsTotalCount.lastDepositedAt = getTimestamp(block);
+  nominatorDepositsTotalCount.value++;
+  nominatorDepositsTotalCount.lastContributionAt = getTimestamp(block);
   nominatorDepositsTotalCount.updatedAt = getBlockNumber(block);
 
   cache.nominatorDepositsTotalCount.set(
@@ -184,8 +184,8 @@ export function processOperatorNominatedEvent(
     accountId
   );
 
-  nominatorDepositsTotalValue.totalDepositValue += amount;
-  nominatorDepositsTotalValue.lastDepositedAt = getTimestamp(block);
+  nominatorDepositsTotalValue.value += amount;
+  nominatorDepositsTotalValue.lastContributionAt = getTimestamp(block);
   nominatorDepositsTotalValue.updatedAt = getBlockNumber(block);
 
   cache.nominatorDepositsTotalValue.set(
@@ -209,8 +209,8 @@ export function processWithdrewStakeEvent(
   const operatorWithdrawalsTotalCount =
     getOrCreateOperatorWithdrawalsTotalCount(cache, block, operatorId);
 
-  operatorWithdrawalsTotalCount.totalWithdrawalCount++;
-  operatorWithdrawalsTotalCount.lastWithdrawnAt = getTimestamp(block);
+  operatorWithdrawalsTotalCount.value++;
+  operatorWithdrawalsTotalCount.lastContributionAt = getTimestamp(block);
   operatorWithdrawalsTotalCount.updatedAt = getBlockNumber(block);
 
   cache.operatorWithdrawalsTotalCount.set(
@@ -221,8 +221,8 @@ export function processWithdrewStakeEvent(
   const nominatorWithdrawalsTotalCount =
     getOrCreateNominatorWithdrawalsTotalCount(cache, block, accountId);
 
-  nominatorWithdrawalsTotalCount.totalWithdrawalCount++;
-  nominatorWithdrawalsTotalCount.lastWithdrawnAt = getTimestamp(block);
+  nominatorWithdrawalsTotalCount.value++;
+  nominatorWithdrawalsTotalCount.lastContributionAt = getTimestamp(block);
   nominatorWithdrawalsTotalCount.updatedAt = getBlockNumber(block);
 
   cache.nominatorWithdrawalsTotalCount.set(

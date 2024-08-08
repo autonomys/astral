@@ -1,299 +1,275 @@
 import {
-  FarmerBlockTotalCount,
-  FarmerBlockTotalValue,
-  FarmerVoteAndBlockTotalCount,
-  FarmerVoteAndBlockTotalValue,
-  FarmerVoteTotalCount,
-  FarmerVoteTotalValue,
-  NominatorDepositsTotalCount,
-  NominatorDepositsTotalValue,
-  NominatorWithdrawalsTotalCount,
-  OperatorBundleTotalCount,
-  OperatorDepositsTotalCount,
-  OperatorDepositsTotalValue,
-  OperatorTotalRewardsCollected,
-  OperatorTotalTaxCollected,
-  OperatorWithdrawalsTotalCount,
+  AccountExtrinsicFailedTotalCount,
+  AccountExtrinsicSuccessTotalCount,
+  AccountExtrinsicTotalCount,
+  AccountTransactionFeePaidTotalValue,
 } from "../model";
 import { Cache } from "./cache";
 
-const sortId = (key: number) => key + 1;
-const id = (key: number) => sortId(key).toString();
-
 export const sort = (cache: Cache): Cache => {
-  const sortedFarmerVoteTotalCount: FarmerVoteTotalCount[] = Array.from(
-    cache.farmerVoteTotalCount.values()
-  )
-    .sort((a, b) => b.totalVoteCount - a.totalVoteCount)
-    .map(
-      (n, key) =>
-        new FarmerVoteTotalCount({
-          ...n,
-          id: id(key),
-          sortId: sortId(key),
-        })
-    );
-
-  const sortedFarmerVoteTotalValue: FarmerVoteTotalValue[] = Array.from(
-    cache.farmerVoteTotalValue.values()
-  )
-    .sort((a, b) =>
-      a.totalVoteValue < b.totalVoteValue
-        ? -1
-        : a.totalVoteValue > b.totalVoteValue
-        ? 1
-        : 0
-    )
-    .map(
-      (n, key) =>
-        new FarmerVoteTotalValue({
-          ...n,
-          id: id(key),
-          sortId: sortId(key),
-        })
-    );
-
-  const sortedFarmerBlockTotalCount: FarmerBlockTotalCount[] = Array.from(
-    cache.farmerBlockTotalCount.values()
-  )
-    .sort((a, b) => b.totalBlockCount - a.totalBlockCount)
-    .map(
-      (n, key) =>
-        new FarmerBlockTotalCount({
-          ...n,
-          id: id(key),
-          sortId: sortId(key),
-        })
-    );
-
-  const sortedFarmerBlockTotalValue: FarmerBlockTotalValue[] = Array.from(
-    cache.farmerBlockTotalValue.values()
-  )
-    .sort((a, b) =>
-      a.totalBlockValue < b.totalBlockValue
-        ? -1
-        : a.totalBlockValue > b.totalBlockValue
-        ? 1
-        : 0
-    )
-    .map(
-      (n, key) =>
-        new FarmerBlockTotalValue({
-          ...n,
-          id: id(key),
-          sortId: sortId(key),
-        })
-    );
-
-  const sortedFarmerVoteAndBlockTotalCount: FarmerVoteAndBlockTotalCount[] =
-    Array.from(cache.farmerVoteAndBlockTotalCount.values())
-      .sort((a, b) => b.totalVoteAndBlockCount - a.totalVoteAndBlockCount)
+  // Sorting functions for new models
+  const sortedAccountExtrinsicTotalCount: AccountExtrinsicTotalCount[] =
+    Array.from(cache.accountExtrinsicTotalCount.values())
+      .sort((a, b) => b.value - a.value)
       .map(
-        (n, key) =>
-          new FarmerVoteAndBlockTotalCount({
+        (n, sortId) =>
+          new AccountExtrinsicTotalCount({
             ...n,
-            id: id(key),
-            sortId: sortId(key),
+            id: sortId.toString(),
+            sortId,
           })
       );
 
-  const sortedFarmerVoteAndBlockTotalValue: FarmerVoteAndBlockTotalValue[] =
-    Array.from(cache.farmerVoteAndBlockTotalValue.values())
-      .sort((a, b) =>
-        a.totalVoteAndBlockValue < b.totalVoteAndBlockValue
-          ? -1
-          : a.totalVoteAndBlockValue > b.totalVoteAndBlockValue
-          ? 1
-          : 0
-      )
+  const sortedAccountExtrinsicSuccessTotalCount: AccountExtrinsicSuccessTotalCount[] =
+    Array.from(cache.accountExtrinsicSuccessTotalCount.values())
+      .sort((a, b) => b.value - a.value)
       .map(
-        (n, key) =>
-          new FarmerVoteAndBlockTotalValue({
+        (n, sortId) =>
+          new AccountExtrinsicSuccessTotalCount({
             ...n,
-            id: id(key),
-            sortId: sortId(key),
+            id: sortId.toString(),
+            sortId,
           })
       );
 
-  const sortedOperatorTotalRewardsCollected: OperatorTotalRewardsCollected[] =
-    Array.from(cache.operatorTotalRewardsCollected.values())
-      .sort((a, b) =>
-        a.totalRewardsCollected < b.totalRewardsCollected
-          ? -1
-          : a.totalRewardsCollected > b.totalRewardsCollected
-          ? 1
-          : 0
-      )
+  const sortedAccountExtrinsicFailedTotalCount: AccountExtrinsicFailedTotalCount[] =
+    Array.from(cache.accountExtrinsicFailedTotalCount.values())
+      .sort((a, b) => b.value - a.value)
       .map(
-        (n, key) =>
-          new OperatorTotalRewardsCollected({
+        (n, sortId) =>
+          new AccountExtrinsicFailedTotalCount({
             ...n,
-            id: id(key),
-            sortId: sortId(key),
+            id: sortId.toString(),
+            sortId,
           })
       );
 
-  const sortedOperatorTotalTaxCollected: OperatorTotalTaxCollected[] =
-    Array.from(cache.operatorTotalTaxCollected.values())
-      .sort((a, b) =>
-        a.totalTaxCollected < b.totalTaxCollected
-          ? -1
-          : a.totalTaxCollected > b.totalTaxCollected
-          ? 1
-          : 0
-      )
+  const sortedAccountTransactionFeePaidTotalValue: AccountTransactionFeePaidTotalValue[] =
+    Array.from(cache.accountTransactionFeePaidTotalValue.values())
+      .sort((a, b) => (a.value < b.value ? -1 : a.value > b.value ? 1 : 0))
       .map(
-        (n, key) =>
-          new OperatorTotalTaxCollected({
+        (n, sortId) =>
+          new AccountTransactionFeePaidTotalValue({
             ...n,
-            id: id(key),
-            sortId: sortId(key),
+            id: sortId.toString(),
+            sortId,
           })
       );
 
-  const sortedOperatorBundleTotalCount: OperatorBundleTotalCount[] = Array.from(
-    cache.operatorBundleTotalCount.values()
-  )
-    .sort((a, b) => b.totalBundleCount - a.totalBundleCount)
-    .map(
-      (n, key) =>
-        new OperatorBundleTotalCount({
-          ...n,
-          id: id(key),
-          sortId: sortId(key),
-        })
-    );
-
-  const sortedOperatorDepositsTotalCount: OperatorDepositsTotalCount[] =
-    Array.from(cache.operatorDepositsTotalCount.values())
-      .sort((a, b) => b.totalDepositCount - a.totalDepositCount)
-      .map(
-        (n, key) =>
-          new OperatorDepositsTotalCount({
-            ...n,
-            id: id(key),
-            sortId: sortId(key),
-          })
-      );
-
-  const sortedOperatorDepositsTotalValue: OperatorDepositsTotalValue[] =
-    Array.from(cache.operatorDepositsTotalValue.values())
-      .sort((a, b) =>
-        a.totalDepositValue < b.totalDepositValue
-          ? -1
-          : a.totalDepositValue > b.totalDepositValue
-          ? 1
-          : 0
-      )
-      .map(
-        (n, key) =>
-          new OperatorDepositsTotalValue({
-            ...n,
-            id: id(key),
-            sortId: sortId(key),
-          })
-      );
-
-  const sortedOperatorWithdrawalsTotalCount: OperatorWithdrawalsTotalCount[] =
-    Array.from(cache.operatorWithdrawalsTotalCount.values())
-      .sort((a, b) => b.totalWithdrawalCount - a.totalWithdrawalCount)
-      .map(
-        (n, key) =>
-          new OperatorWithdrawalsTotalCount({
-            ...n,
-            id: id(key),
-            sortId: sortId(key),
-          })
-      );
-
-  const sortedNominatorDepositsTotalCount: NominatorDepositsTotalCount[] =
-    Array.from(cache.nominatorDepositsTotalCount.values())
-      .sort((a, b) => b.totalDepositCount - a.totalDepositCount)
-      .map(
-        (n, key) =>
-          new NominatorDepositsTotalCount({
-            ...n,
-            id: id(key),
-            sortId: sortId(key),
-          })
-      );
-
-  const sortedNominatorDepositsTotalValue: NominatorDepositsTotalValue[] =
-    Array.from(cache.nominatorDepositsTotalValue.values())
-      .sort((a, b) =>
-        a.totalDepositValue < b.totalDepositValue
-          ? -1
-          : a.totalDepositValue > b.totalDepositValue
-          ? 1
-          : 0
-      )
-      .map(
-        (n, key) =>
-          new NominatorDepositsTotalValue({
-            ...n,
-            id: id(key),
-            sortId: sortId(key),
-          })
-      );
-
-  const sortedNominatorWithdrawalsTotalCount: NominatorWithdrawalsTotalCount[] =
-    Array.from(cache.nominatorWithdrawalsTotalCount.values())
-      .sort((a, b) => b.totalWithdrawalCount - a.totalWithdrawalCount)
-      .map(
-        (n, key) =>
-          new NominatorWithdrawalsTotalCount({
-            ...n,
-            id: id(key),
-            sortId: sortId(key),
-          })
-      );
-
+  // Add new sorted entries to the cache map
   return {
     ...cache,
     farmerVoteTotalCount: new Map(
-      sortedFarmerVoteTotalCount.map((n) => [n.id, n])
+      Array.from(cache.farmerVoteTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     farmerVoteTotalValue: new Map(
-      sortedFarmerVoteTotalValue.map((n) => [n.id, n])
+      Array.from(cache.farmerVoteTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     farmerBlockTotalCount: new Map(
-      sortedFarmerBlockTotalCount.map((n) => [n.id, n])
+      Array.from(cache.farmerBlockTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     farmerBlockTotalValue: new Map(
-      sortedFarmerBlockTotalValue.map((n) => [n.id, n])
+      Array.from(cache.farmerBlockTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     farmerVoteAndBlockTotalCount: new Map(
-      sortedFarmerVoteAndBlockTotalCount.map((n) => [n.id, n])
+      Array.from(cache.farmerVoteAndBlockTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     farmerVoteAndBlockTotalValue: new Map(
-      sortedFarmerVoteAndBlockTotalValue.map((n) => [n.id, n])
+      Array.from(cache.farmerVoteAndBlockTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     operatorTotalRewardsCollected: new Map(
-      sortedOperatorTotalRewardsCollected.map((n) => [n.id, n])
+      Array.from(cache.operatorTotalRewardsCollected.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     operatorTotalTaxCollected: new Map(
-      sortedOperatorTotalTaxCollected.map((n) => [n.id, n])
+      Array.from(cache.operatorTotalTaxCollected.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     operatorBundleTotalCount: new Map(
-      sortedOperatorBundleTotalCount.map((n) => [n.id, n])
+      Array.from(cache.operatorBundleTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     operatorDepositsTotalCount: new Map(
-      sortedOperatorDepositsTotalCount.map((n) => [n.id, n])
+      Array.from(cache.operatorDepositsTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     operatorDepositsTotalValue: new Map(
-      sortedOperatorDepositsTotalValue.map((n) => [n.id, n])
+      Array.from(cache.operatorDepositsTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     operatorWithdrawalsTotalCount: new Map(
-      sortedOperatorWithdrawalsTotalCount.map((n) => [n.id, n])
+      Array.from(cache.operatorWithdrawalsTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     nominatorDepositsTotalCount: new Map(
-      sortedNominatorDepositsTotalCount.map((n) => [n.id, n])
+      Array.from(cache.nominatorDepositsTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     nominatorDepositsTotalValue: new Map(
-      sortedNominatorDepositsTotalValue.map((n) => [n.id, n])
+      Array.from(cache.nominatorDepositsTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
     ),
     nominatorWithdrawalsTotalCount: new Map(
-      sortedNominatorWithdrawalsTotalCount.map((n) => [n.id, n])
+      Array.from(cache.nominatorWithdrawalsTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
+    ),
+    accountTransferSenderTotalCount: new Map(
+      Array.from(cache.accountTransferSenderTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
+    ),
+    accountTransferSenderTotalValue: new Map(
+      Array.from(cache.accountTransferSenderTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
+    ),
+    accountTransferReceiverTotalCount: new Map(
+      Array.from(cache.accountTransferReceiverTotalCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
+    ),
+    accountTransferReceiverTotalValue: new Map(
+      Array.from(cache.accountTransferReceiverTotalValue.values())
+        .sort((a, b) => (a.value < b.value ? -1 : 1))
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
+    ),
+    accountRemarkCount: new Map(
+      Array.from(cache.accountRemarkCount.values())
+        .sort((a, b) => b.value - a.value)
+        .map((n, sortId) => ({
+          ...n,
+          id: sortId.toString(),
+          sortId,
+        }))
+        .map((n) => [n.id, n])
+    ),
+    accountExtrinsicTotalCount: new Map(
+      sortedAccountExtrinsicTotalCount.map((n) => [n.id, n])
+    ),
+    accountExtrinsicSuccessTotalCount: new Map(
+      sortedAccountExtrinsicSuccessTotalCount.map((n) => [n.id, n])
+    ),
+    accountExtrinsicFailedTotalCount: new Map(
+      sortedAccountExtrinsicFailedTotalCount.map((n) => [n.id, n])
+    ),
+    accountTransactionFeePaidTotalValue: new Map(
+      sortedAccountTransactionFeePaidTotalValue.map((n) => [n.id, n])
     ),
   };
 };

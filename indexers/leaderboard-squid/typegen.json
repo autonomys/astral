@@ -2,6 +2,12 @@
   "outDir": "src/types",
   "specVersions": "gemini3h.jsonl",
   "pallets": {
+    "Balances": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
     "Subspace": {
       "events": true,
       "calls": true,
@@ -21,6 +27,18 @@
       "constants": true
     },
     "TransactionFees": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "TransactionPayment": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "System": {
       "events": true,
       "calls": true,
       "storage": true,

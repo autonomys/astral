@@ -89,6 +89,110 @@ export const DomainEpoch = sts.tuple(() => [DomainId, sts.number()])
 
 export const Percent = sts.number()
 
+export type AccountId32 = Bytes
+
+export interface IdAmount {
+    id: HoldIdentifier
+    amount: bigint
+}
+
+export type HoldIdentifier = HoldIdentifier_Domains | HoldIdentifier_Messenger
+
+export interface HoldIdentifier_Domains {
+    __kind: 'Domains'
+    value: DomainsHoldIdentifier
+}
+
+export interface HoldIdentifier_Messenger {
+    __kind: 'Messenger'
+    value: MessengerHoldIdentifier
+}
+
+export type MessengerHoldIdentifier = MessengerHoldIdentifier_Channel
+
+export interface MessengerHoldIdentifier_Channel {
+    __kind: 'Channel'
+    value: [ChainId, bigint]
+}
+
+export type ChainId = ChainId_Consensus | ChainId_Domain
+
+export interface ChainId_Consensus {
+    __kind: 'Consensus'
+}
+
+export interface ChainId_Domain {
+    __kind: 'Domain'
+    value: DomainId
+}
+
+export type DomainsHoldIdentifier = DomainsHoldIdentifier_DomainInstantiation | DomainsHoldIdentifier_Staking | DomainsHoldIdentifier_StorageFund
+
+export interface DomainsHoldIdentifier_DomainInstantiation {
+    __kind: 'DomainInstantiation'
+    value: DomainId
+}
+
+export interface DomainsHoldIdentifier_Staking {
+    __kind: 'Staking'
+    value: StakingHoldIdentifier
+}
+
+export interface DomainsHoldIdentifier_StorageFund {
+    __kind: 'StorageFund'
+    value: bigint
+}
+
+export type StakingHoldIdentifier = StakingHoldIdentifier_Staked
+
+export interface StakingHoldIdentifier_Staked {
+    __kind: 'Staked'
+    value: bigint
+}
+
+export const IdAmount: sts.Type<IdAmount> = sts.struct(() => {
+    return  {
+        id: HoldIdentifier,
+        amount: sts.bigint(),
+    }
+})
+
+export const HoldIdentifier: sts.Type<HoldIdentifier> = sts.closedEnum(() => {
+    return  {
+        Domains: DomainsHoldIdentifier,
+        Messenger: MessengerHoldIdentifier,
+    }
+})
+
+export const MessengerHoldIdentifier: sts.Type<MessengerHoldIdentifier> = sts.closedEnum(() => {
+    return  {
+        Channel: sts.tuple(() => [ChainId, sts.bigint()]),
+    }
+})
+
+export const ChainId: sts.Type<ChainId> = sts.closedEnum(() => {
+    return  {
+        Consensus: sts.unit(),
+        Domain: DomainId,
+    }
+})
+
+export const DomainsHoldIdentifier: sts.Type<DomainsHoldIdentifier> = sts.closedEnum(() => {
+    return  {
+        DomainInstantiation: DomainId,
+        Staking: StakingHoldIdentifier,
+        StorageFund: sts.bigint(),
+    }
+})
+
+export const StakingHoldIdentifier: sts.Type<StakingHoldIdentifier> = sts.closedEnum(() => {
+    return  {
+        Staked: sts.bigint(),
+    }
+})
+
+export const AccountId32 = sts.bytes()
+
 export type Slot = bigint
 
 export const Slot = sts.bigint()

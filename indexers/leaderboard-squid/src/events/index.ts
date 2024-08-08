@@ -2,10 +2,16 @@ import type { ApiPromise } from "@autonomys/auto-utils";
 import type { CtxBlock, CtxEvent } from "../processor";
 import { events } from "../types";
 import { Cache } from "../utils/cache";
+import { processRemarkEvent, processTransferEvent } from "./account";
+import {
+  processExtrinsicFailedEvent,
+  processExtrinsicSuccessEvent,
+} from "./extrinsic"; // Import the new processing functions
 import {
   processFarmerBlockRewardEvent,
   processFarmerVoteRewardEvent,
 } from "./farmer";
+import { processTransactionFeePaidEvent } from "./fee";
 import {
   processBundleStoredEvent,
   processOperatorNominatedEvent,
@@ -34,6 +40,17 @@ async function processEvent(
   event: CtxEvent
 ) {
   switch (event.name) {
+    // account events
+    case events.balances.transfer.name:
+      return processTransferEvent(cache, block, event);
+    case events.system.remarked.name:
+      return processRemarkEvent(cache, block, event);
+    case events.system.extrinsicSuccess.name:
+      return processExtrinsicSuccessEvent(cache, block, event);
+    case events.system.extrinsicFailed.name:
+      return processExtrinsicFailedEvent(cache, block, event);
+    case events.transactionPayment.transactionFeePaid.name:
+      return processTransactionFeePaidEvent(cache, block, event);
     // farmer events
     case events.rewards.voteReward.name:
       return processFarmerVoteRewardEvent(cache, block, event);

@@ -24,8 +24,8 @@ export function processFarmerVoteRewardEvent(
     accountId
   );
 
-  farmerVoteTotalCount.totalVoteCount++;
-  farmerVoteTotalCount.lastVotedAt = getTimestamp(block);
+  farmerVoteTotalCount.value++;
+  farmerVoteTotalCount.lastContributionAt = getTimestamp(block);
   farmerVoteTotalCount.updatedAt = getBlockNumber(block);
 
   cache.farmerVoteTotalCount.set(farmerVoteTotalCount.id, farmerVoteTotalCount);
@@ -36,8 +36,8 @@ export function processFarmerVoteRewardEvent(
     accountId
   );
 
-  farmerVoteTotalValue.totalVoteValue += reward;
-  farmerVoteTotalValue.lastVotedAt = getTimestamp(block);
+  farmerVoteTotalValue.value += reward;
+  farmerVoteTotalValue.lastContributionAt = getTimestamp(block);
   farmerVoteTotalValue.updatedAt = getBlockNumber(block);
 
   cache.farmerVoteTotalValue.set(farmerVoteTotalValue.id, farmerVoteTotalValue);
@@ -48,8 +48,8 @@ export function processFarmerVoteRewardEvent(
     accountId
   );
 
-  farmerVoteAndBlockTotalCount.totalVoteAndBlockCount++;
-  farmerVoteAndBlockTotalCount.lastVotedAndBlockAt = getTimestamp(block);
+  farmerVoteAndBlockTotalCount.value++;
+  farmerVoteAndBlockTotalCount.lastContributionAt = getTimestamp(block);
   farmerVoteAndBlockTotalCount.updatedAt = getBlockNumber(block);
 
   cache.farmerVoteAndBlockTotalCount.set(
@@ -63,8 +63,8 @@ export function processFarmerVoteRewardEvent(
     accountId
   );
 
-  farmerVoteAndBlockTotalValue.totalVoteAndBlockValue += reward;
-  farmerVoteAndBlockTotalValue.lastVotedAndBlockAt = getTimestamp(block);
+  farmerVoteAndBlockTotalValue.value += reward;
+  farmerVoteAndBlockTotalValue.lastContributionAt = getTimestamp(block);
   farmerVoteAndBlockTotalValue.updatedAt = getBlockNumber(block);
 
   cache.farmerVoteAndBlockTotalValue.set(
@@ -91,8 +91,8 @@ export function processFarmerBlockRewardEvent(
     accountId
   );
 
-  farmerBlockTotalCount.totalBlockCount++;
-  farmerBlockTotalCount.lastBlockedAt = getTimestamp(block);
+  farmerBlockTotalCount.value++;
+  farmerBlockTotalCount.lastContributionAt = getTimestamp(block);
   farmerBlockTotalCount.updatedAt = getBlockNumber(block);
 
   cache.farmerBlockTotalCount.set(
@@ -106,8 +106,8 @@ export function processFarmerBlockRewardEvent(
     accountId
   );
 
-  farmerBlockTotalValue.totalBlockValue += reward;
-  farmerBlockTotalValue.lastBlockedAt = getTimestamp(block);
+  farmerBlockTotalValue.value += reward;
+  farmerBlockTotalValue.lastContributionAt = getTimestamp(block);
   farmerBlockTotalValue.updatedAt = getBlockNumber(block);
 
   cache.farmerBlockTotalValue.set(
@@ -121,8 +121,8 @@ export function processFarmerBlockRewardEvent(
     accountId
   );
 
-  farmerVoteAndBlockTotalCount.totalVoteAndBlockCount++;
-  farmerVoteAndBlockTotalCount.lastVotedAndBlockAt = getTimestamp(block);
+  farmerVoteAndBlockTotalCount.value++;
+  farmerVoteAndBlockTotalCount.lastContributionAt = getTimestamp(block);
   farmerVoteAndBlockTotalCount.updatedAt = getBlockNumber(block);
 
   cache.farmerVoteAndBlockTotalCount.set(
@@ -136,8 +136,8 @@ export function processFarmerBlockRewardEvent(
     accountId
   );
 
-  farmerVoteAndBlockTotalValue.totalVoteAndBlockValue += reward;
-  farmerVoteAndBlockTotalValue.lastVotedAndBlockAt = getTimestamp(block);
+  farmerVoteAndBlockTotalValue.value += reward;
+  farmerVoteAndBlockTotalValue.lastContributionAt = getTimestamp(block);
   farmerVoteAndBlockTotalValue.updatedAt = getBlockNumber(block);
 
   cache.farmerVoteAndBlockTotalValue.set(

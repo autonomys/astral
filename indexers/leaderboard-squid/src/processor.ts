@@ -25,8 +25,19 @@ export const processor = new SubstrateBatchProcessor()
   .setBlockRange({
     from: 0,
   })
+  .addCall({
+    events: true,
+    stack: true,
+    extrinsic: true,
+  })
   .addEvent({
     name: [
+      // accounts
+      events.balances.transfer.name,
+      events.system.remarked.name,
+      events.system.extrinsicSuccess.name,
+      events.system.extrinsicFailed.name,
+      events.transactionPayment.transactionFeePaid.name,
       // farmers
       events.rewards.voteReward.name,
       events.rewards.blockReward.name,
@@ -41,6 +52,7 @@ export const processor = new SubstrateBatchProcessor()
       events.domains.storageFeeDeposited.name,
     ],
     call: true,
+    stack: true,
     extrinsic: true,
   })
   .setFields({
@@ -54,7 +66,9 @@ export const processor = new SubstrateBatchProcessor()
       version: true,
       fee: true,
       success: true,
+      args: true,
       hash: true,
+      signature: true,
     },
     call: {
       address: true,
@@ -65,6 +79,8 @@ export const processor = new SubstrateBatchProcessor()
     event: {
       name: true,
       args: true,
+      extrinsicIndex: true,
+      callAddress: true,
     },
   });
 
