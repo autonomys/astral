@@ -10,8 +10,6 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   console.log("Processing " + ctx.blocks.length + " blocks");
   for (let block of ctx.blocks) {
     cache = await processBlock(cache, api, block);
-
-    ctx.log.child("completed block").info(getBlockNumber(block).toString());
   }
 
   await save(ctx, cache);
