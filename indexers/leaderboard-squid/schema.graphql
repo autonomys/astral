@@ -1,0 +1,169 @@
+# farmer
+type FarmerVoteAndBlockTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  totalVoteCount: Int!
+  totalBlockCount: Int!
+  totalVoteAndBlockCount: Int!
+  lastVotedAt: DateTime!
+  lastBlockedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type FarmerVoteAndBlockTotalValue @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  totalVoteValue: Int!
+  totalBlockValue: Int!
+  totalVoteAndBlockValue: Int!
+  lastVotedAt: DateTime!
+  lastBlockedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# operator
+type OperatorTotalRewardsCollected @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalRewardsCollected: Int!
+  lastCollectedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorTotalTaxCollected @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalTaxCollected: Int!
+  lastCollectedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorBundleTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalBundleCount: Int!
+  lastBundledAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorActiveEpochTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalActiveEpochCount: Int!
+  lastActiveEpochAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorNominatorsTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalNominatorCount: Int!
+  lastNominatedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorDepositsTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalDepositCount: Int!
+  lastDepositedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorDepositsTotalValue @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalDepositValue: Int!
+  lastDepositedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorWithdrawalsTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalWithdrawalCount: Int!
+  lastWithdrawnAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OperatorWithdrawalsTotalValue @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalWithdrawalValue: Int!
+  lastWithdrawnAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+# nominator/account
+type NominatorDepositsTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  totalDepositCount: Int!
+  lastDepositedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type NominatorDepositsTotalValue @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  totalDepositValue: Int!
+  lastDepositedAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type NominatorWithdrawalsTotalCount @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalWithdrawalCount: Int!
+  lastWithdrawnAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type NominatorWithdrawalsTotalValue @entity {
+  id: ID! @index
+  sortId: Int! @index
+  accountId: String! @index
+  operatorId: String! @index
+  totalWithdrawalValue: Int!
+  lastWithdrawnAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
