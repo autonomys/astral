@@ -44,9 +44,12 @@ export const bundleUID = (
   domainBlockHash: string
 ): string => `${domainId}-${domainBlockHash}`;
 
-export const logBlock = (blocks: CtxBlock[]): void =>
-  console.log(
-    "Processing " + blocks.length + " blocks",
-    "From " + getBlockNumber(blocks[0]),
-    "to " + getBlockNumber(blocks[blocks.length - 1])
+export const logBlock = (blocks: CtxBlock[]): void => {
+  const from = getBlockNumber(blocks[0]);
+  const to = getBlockNumber(blocks[blocks.length - 1]);
+  return console.log(
+    "\x1b[33mProcessing " + blocks.length + " blocks\x1b[0m",
+    "From " + from,
+    "to " + to + " (" + (to - from) + " blocks)"
   );
+};

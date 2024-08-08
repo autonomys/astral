@@ -62,7 +62,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
   ]);
 
   console.log(
-    "Loaded in cache:",
+    "\x1b[32mLoaded in cache:\x1b[0m",
     domains.length + " domains, ",
     accounts.length + " accounts, ",
     operators.length + " operators, ",
@@ -100,21 +100,22 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   // If the cache is not modified, skip saving
   if (!cache.isModified) return;
 
-  let log = logEntry("domains", cache.domains);
-  log += logEntry("accounts", cache.accounts);
-  log += logEntry("operators", cache.operators);
-  log += logEntry("nominators", cache.nominators);
+  let logPerm = logEntry("domains", cache.domains);
+  logPerm += logEntry("accounts", cache.accounts);
+  logPerm += logEntry("operators", cache.operators);
+  logPerm += logEntry("nominators", cache.nominators);
 
-  log += logEntry("deposits", cache.deposits);
-  log += logEntry("withdrawals", cache.withdrawals);
-  log += logEntry("bundles", cache.bundles);
-  log += logEntry("bundleAuthors", cache.bundleAuthors);
-  log += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
-  log += logEntry("stats", cache.stats);
-  log += logEntry("statsPerDomain", cache.statsPerDomain);
-  log += logEntry("statsPerOperator", cache.statsPerOperator);
+  let logTemp = logEntry("deposits", cache.deposits);
+  logTemp += logEntry("withdrawals", cache.withdrawals);
+  logTemp += logEntry("bundles", cache.bundles);
+  logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
+  logTemp += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
+  logTemp += logEntry("stats", cache.stats);
+  logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
+  logTemp += logEntry("statsPerOperator", cache.statsPerOperator);
 
-  console.log("Saving in database:", log);
+  console.log("\x1b[34mSaving in database:\x1b[0m", logPerm);
+  console.log(" and ", logTemp, "\n");
 
   await Promise.all(
     Object.keys(cache).map((k) =>
