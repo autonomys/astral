@@ -1,0 +1,18 @@
+{
+  "outDir": "src/types",
+  "specVersions": "gemini3h.jsonl",
+  "pallets": {
+    "Subspace": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    },
+    "Domains": {
+      "events": true,
+      "calls": true,
+      "storage": true,
+      "constants": true
+    }
+  }
+}
