@@ -56,14 +56,24 @@ type Operator @entity {
   id: ID! @index
   sortId: Int! @index
   accountId: String! @index
+  # creation args
   domainId: String! @index
   signingKey: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
+  # public profile
+  name: String! @index
+  website: String
+  discord: String
+  github: String
+  twitter: String
+  # chain state
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
+  rawStatus: String
+  # increments
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
@@ -79,10 +89,10 @@ type Operator @entity {
   totalConsensusStorageFee: BigInt!
   totalDomainExecutionFee: BigInt!
   totalBurnedBalance: BigInt!
-  rawStatus: String
-  status: OperatorStatus! @index
   activeEpochCount: Int!
   bundleCount: Int!
+  # status and timestamps
+  status: OperatorStatus! @index
   lastBundleAt: Int!
   createdAt: Int @index
   updatedAt: Int @index
@@ -195,7 +205,7 @@ type OperatorUnlockedFunds @entity {
   amount: BigInt!
 }
 
-type OperatorRewardEvent @entity {
+type RewardEvent @entity {
   id: ID! @index
   domainId: String! @index
   operatorId: String! @index

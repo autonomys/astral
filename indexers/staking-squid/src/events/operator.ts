@@ -2,7 +2,7 @@ import { NominatorStatus, OperatorStatus } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
-  createOperatorRewardEvent,
+  createRewardEvent,
   getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateNominator,
@@ -155,7 +155,7 @@ export function processOperatorRewardedEvent(
   domain.totalRewardsCollected += amount;
   cache.domains.set(domain.id, domain);
 
-  const operatorRewardedEvent = createOperatorRewardEvent(block, extrinsic, {
+  const operatorRewardedEvent = createRewardEvent(block, extrinsic, {
     operatorId: operator.id,
     domainId: operator.domainId,
     amount,

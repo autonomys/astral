@@ -8,7 +8,7 @@ import {
   Domain,
   Nominator,
   Operator,
-  OperatorRewardEvent,
+  RewardEvent,
   Stats,
   StatsPerDomain,
   StatsPerOperator,
@@ -28,7 +28,7 @@ export type TemporaryCache = {
   withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
   bundleAuthors: Map<string, BundleAuthor>;
-  operatorRewardedEvents: Map<string, OperatorRewardEvent>;
+  operatorRewardedEvents: Map<string, RewardEvent>;
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
@@ -97,7 +97,9 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   if (!cache.isModified) return;
 
   await Promise.all(
-    Object.keys(cache).map((k) => saveEntry(ctx, cache, k as keyof Cache))
+    Object.keys(cache).map((k) =>
+      k !== "isModified" ? saveEntry(ctx, cache, k as keyof Cache) : null
+    )
   );
 
   // Clear the cache for entries not needed for reference
