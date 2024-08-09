@@ -12,7 +12,7 @@ import {
   getOrCreateOperatorTotalTaxCollected,
   getOrCreateOperatorWithdrawalsTotalCount,
 } from "../storage/operator";
-import { getBlockNumber, getTimestamp } from "../utils";
+import { getBlockNumber, getTimestamp, hexToAccount } from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processOperatorRewardedEvent(
@@ -132,7 +132,7 @@ export function processOperatorNominatedEvent(
   event: CtxEvent
 ) {
   const operatorId = String(event.args.operatorId) ?? "0";
-  const accountId = String(event.args.nominatorId);
+  const accountId = hexToAccount(event.args.nominatorId);
   const amount = BigInt(event.args.amount ?? 0);
 
   const operatorDepositsTotalCount = getOrCreateOperatorDepositsTotalCount(
@@ -206,7 +206,7 @@ export function processWithdrewStakeEvent(
   event: CtxEvent
 ) {
   const operatorId = String(event.args.operatorId) ?? "0";
-  const accountId = String(event.args.nominatorId);
+  const accountId = hexToAccount(event.args.nominatorId);
 
   const operatorWithdrawalsTotalCount =
     getOrCreateOperatorWithdrawalsTotalCount(cache, block, operatorId);

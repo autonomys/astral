@@ -7,7 +7,7 @@ import {
   getOrCreateFarmerVoteTotalCount,
   getOrCreateFarmerVoteTotalValue,
 } from "../storage/farmer";
-import { getBlockNumber, getTimestamp } from "../utils";
+import { getBlockNumber, getTimestamp, hexToAccount } from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processFarmerVoteRewardEvent(
@@ -15,7 +15,7 @@ export function processFarmerVoteRewardEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const accountId = String(event.args.voter);
+  const accountId = hexToAccount(event.args.voter);
   const reward = BigInt(event.args.reward);
 
   const farmerVoteTotalCount = getOrCreateFarmerVoteTotalCount(
@@ -82,7 +82,7 @@ export function processFarmerBlockRewardEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const accountId = String(event.args.blockAuthor);
+  const accountId = hexToAccount(event.args.blockAuthor);
   const reward = BigInt(event.args.reward);
 
   const farmerBlockTotalCount = getOrCreateFarmerBlockTotalCount(

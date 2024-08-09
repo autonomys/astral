@@ -6,7 +6,12 @@ import {
   getOrCreateAccountTransferSenderTotalCount,
   getOrCreateAccountTransferSenderTotalValue,
 } from "../storage/account";
-import { getBlockNumber, getTimestamp } from "../utils";
+import {
+  getBlockNumber,
+  getExtrinsicSigner,
+  getTimestamp,
+  hexToAccount,
+} from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processTransferEvent(
@@ -14,11 +19,12 @@ export function processTransferEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const accountId = String(event.args.from);
+  const from = hexToAccount(event.args.from);
+  const to = hexToAccount(event.args.to);
   const amount = BigInt(event.args.amount);
 
   const accountTransferSenderTotalCount =
-    getOrCreateAccountTransferSenderTotalCount(cache, block, accountId);
+    getOrCreateAccountTransferSenderTotalCount(cache, block, from);
 
   accountTransferSenderTotalCount.value++;
   accountTransferSenderTotalCount.lastContributionAt = getTimestamp(block);
@@ -30,7 +36,7 @@ export function processTransferEvent(
   );
 
   const accountTransferSenderTotalValue =
-    getOrCreateAccountTransferSenderTotalValue(cache, block, accountId);
+    getOrCreateAccountTransferSenderTotalValue(cache, block, from);
 
   accountTransferSenderTotalValue.value += amount;
   accountTransferSenderTotalValue.lastContributionAt = getTimestamp(block);
@@ -42,7 +48,7 @@ export function processTransferEvent(
   );
 
   const accountTransferReceiverTotalCount =
-    getOrCreateAccountTransferReceiverTotalCount(cache, block, accountId);
+    getOrCreateAccountTransferReceiverTotalCount(cache, block, to);
 
   accountTransferReceiverTotalCount.value++;
   accountTransferReceiverTotalCount.lastContributionAt = getTimestamp(block);
@@ -54,7 +60,7 @@ export function processTransferEvent(
   );
 
   const accountTransferReceiverTotalValue =
-    getOrCreateAccountTransferReceiverTotalValue(cache, block, accountId);
+    getOrCreateAccountTransferReceiverTotalValue(cache, block, to);
 
   accountTransferReceiverTotalValue.value += amount;
   accountTransferReceiverTotalValue.lastContributionAt = getTimestamp(block);
@@ -75,7 +81,14 @@ export function processRemarkEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const accountId = String(event.args.blockAuthor);
+  const extrinsicIndex = event.extrinsicIndex ?? 0;
+  const extrinsic = block.extrinsics[extrinsicIndex];
+
+  // exit if extrinsic has no signature
+  if (!extrinsic.signature) return cache;
+
+  const accountId = getExtrinsicSigner(extrinsic);
+  console.log("accountId", accountId);
 
   const accountRemarkCount = getOrCreateAccountRemarkCount(
     cache,
