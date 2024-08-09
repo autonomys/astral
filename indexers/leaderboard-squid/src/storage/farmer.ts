@@ -17,8 +17,7 @@ export const createFarmerVoteTotalCount = (
 ): FarmerVoteTotalCount =>
   new FarmerVoteTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -47,8 +46,7 @@ export const createFarmerVoteTotalValue = (
 ): FarmerVoteTotalValue =>
   new FarmerVoteTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -77,8 +75,7 @@ export const createFarmerBlockTotalCount = (
 ): FarmerBlockTotalCount =>
   new FarmerBlockTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -107,8 +104,7 @@ export const createFarmerBlockTotalValue = (
 ): FarmerBlockTotalValue =>
   new FarmerBlockTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -137,8 +133,7 @@ export const createFarmerVoteAndBlockTotalCount = (
 ): FarmerVoteAndBlockTotalCount =>
   new FarmerVoteAndBlockTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -168,8 +163,7 @@ export const createFarmerVoteAndBlockTotalValue = (
 ): FarmerVoteAndBlockTotalValue =>
   new FarmerVoteAndBlockTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),

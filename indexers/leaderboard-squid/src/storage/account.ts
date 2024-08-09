@@ -20,8 +20,7 @@ export const createAccountTransferSenderTotalCount = (
 ): AccountTransferSenderTotalCount =>
   new AccountTransferSenderTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -51,8 +50,7 @@ export const createAccountTransferSenderTotalValue = (
 ): AccountTransferSenderTotalValue =>
   new AccountTransferSenderTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -82,8 +80,7 @@ export const createAccountTransferReceiverTotalCount = (
 ): AccountTransferReceiverTotalCount =>
   new AccountTransferReceiverTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -113,8 +110,7 @@ export const createAccountTransferReceiverTotalValue = (
 ): AccountTransferReceiverTotalValue =>
   new AccountTransferReceiverTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -144,8 +140,7 @@ export const createAccountRemarkCount = (
 ): AccountRemarkCount =>
   new AccountRemarkCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -174,8 +169,7 @@ export const createAccountExtrinsicTotalCount = (
 ): AccountExtrinsicTotalCount =>
   new AccountExtrinsicTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -205,8 +199,7 @@ export const createAccountExtrinsicSuccessTotalCount = (
 ): AccountExtrinsicSuccessTotalCount =>
   new AccountExtrinsicSuccessTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -236,8 +229,7 @@ export const createAccountExtrinsicFailedTotalCount = (
 ): AccountExtrinsicFailedTotalCount =>
   new AccountExtrinsicFailedTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -267,8 +259,7 @@ export const createAccountTransactionFeePaidTotalValue = (
 ): AccountTransactionFeePaidTotalValue =>
   new AccountTransactionFeePaidTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),

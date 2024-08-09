@@ -1,6 +1,6 @@
 manifestVersion: subsquid.io/v0.1
 name: leaderboard-squid
-version: 4
+version: 5
 description: Autonomys - Astral - Leaderboard Indexer
 build:
 deploy:

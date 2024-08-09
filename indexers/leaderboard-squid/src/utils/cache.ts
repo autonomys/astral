@@ -225,77 +225,67 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
 
   return {
     ...initCache,
-    farmerVoteTotalCount: new Map(
-      farmerVoteTotalCount.map((d) => [d.accountId, d])
-    ),
-    farmerVoteTotalValue: new Map(
-      farmerVoteTotalValue.map((a) => [a.accountId, a])
-    ),
-    farmerBlockTotalCount: new Map(
-      farmerBlockTotalCount.map((o) => [o.accountId, o])
-    ),
-    farmerBlockTotalValue: new Map(
-      farmerBlockTotalValue.map((n) => [n.accountId, n])
-    ),
+    farmerVoteTotalCount: new Map(farmerVoteTotalCount.map((d) => [d.id, d])),
+    farmerVoteTotalValue: new Map(farmerVoteTotalValue.map((a) => [a.id, a])),
+    farmerBlockTotalCount: new Map(farmerBlockTotalCount.map((o) => [o.id, o])),
+    farmerBlockTotalValue: new Map(farmerBlockTotalValue.map((n) => [n.id, n])),
     farmerVoteAndBlockTotalCount: new Map(
-      farmerVoteAndBlockTotalCount.map((o) => [o.accountId, o])
+      farmerVoteAndBlockTotalCount.map((o) => [o.id, o])
     ),
     farmerVoteAndBlockTotalValue: new Map(
-      farmerVoteAndBlockTotalValue.map((n) => [n.accountId, n])
+      farmerVoteAndBlockTotalValue.map((n) => [n.id, n])
     ),
     operatorTotalRewardsCollected: new Map(
-      operatorTotalRewardsCollected.map((o) => [o.operatorId, o])
+      operatorTotalRewardsCollected.map((o) => [o.id, o])
     ),
     operatorTotalTaxCollected: new Map(
-      operatorTotalTaxCollected.map((n) => [n.operatorId, n])
+      operatorTotalTaxCollected.map((n) => [n.id, n])
     ),
     operatorBundleTotalCount: new Map(
-      operatorBundleTotalCount.map((n) => [n.operatorId, n])
+      operatorBundleTotalCount.map((n) => [n.id, n])
     ),
     operatorDepositsTotalCount: new Map(
-      operatorDepositsTotalCount.map((n) => [n.operatorId, n])
+      operatorDepositsTotalCount.map((n) => [n.id, n])
     ),
     operatorDepositsTotalValue: new Map(
-      operatorDepositsTotalValue.map((n) => [n.operatorId, n])
+      operatorDepositsTotalValue.map((n) => [n.id, n])
     ),
     operatorWithdrawalsTotalCount: new Map(
-      operatorWithdrawalsTotalCount.map((n) => [n.operatorId, n])
+      operatorWithdrawalsTotalCount.map((n) => [n.id, n])
     ),
     nominatorDepositsTotalCount: new Map(
-      nominatorDepositsTotalCount.map((n) => [n.accountId, n])
+      nominatorDepositsTotalCount.map((n) => [n.id, n])
     ),
     nominatorDepositsTotalValue: new Map(
-      nominatorDepositsTotalValue.map((n) => [n.accountId, n])
+      nominatorDepositsTotalValue.map((n) => [n.id, n])
     ),
     nominatorWithdrawalsTotalCount: new Map(
-      nominatorWithdrawalsTotalCount.map((n) => [n.accountId, n])
+      nominatorWithdrawalsTotalCount.map((n) => [n.id, n])
     ),
     accountTransferSenderTotalCount: new Map(
-      accountTransferSenderTotalCount.map((n) => [n.accountId, n])
+      accountTransferSenderTotalCount.map((n) => [n.id, n])
     ),
     accountTransferSenderTotalValue: new Map(
-      accountTransferSenderTotalValue.map((n) => [n.accountId, n])
+      accountTransferSenderTotalValue.map((n) => [n.id, n])
     ),
     accountTransferReceiverTotalCount: new Map(
-      accountTransferReceiverTotalCount.map((n) => [n.accountId, n])
+      accountTransferReceiverTotalCount.map((n) => [n.id, n])
     ),
     accountTransferReceiverTotalValue: new Map(
-      accountTransferReceiverTotalValue.map((n) => [n.accountId, n])
+      accountTransferReceiverTotalValue.map((n) => [n.id, n])
     ),
-    accountRemarkCount: new Map(
-      accountRemarkCount.map((n) => [n.accountId, n])
-    ),
+    accountRemarkCount: new Map(accountRemarkCount.map((n) => [n.id, n])),
     accountExtrinsicTotalCount: new Map(
-      accountExtrinsicTotalCount.map((n) => [n.accountId, n])
+      accountExtrinsicTotalCount.map((n) => [n.id, n])
     ),
     accountExtrinsicSuccessTotalCount: new Map(
-      accountExtrinsicSuccessTotalCount.map((n) => [n.accountId, n])
+      accountExtrinsicSuccessTotalCount.map((n) => [n.id, n])
     ),
     accountExtrinsicFailedTotalCount: new Map(
-      accountExtrinsicFailedTotalCount.map((n) => [n.accountId, n])
+      accountExtrinsicFailedTotalCount.map((n) => [n.id, n])
     ),
     accountTransactionFeePaidTotalValue: new Map(
-      accountTransactionFeePaidTotalValue.map((n) => [n.accountId, n])
+      accountTransactionFeePaidTotalValue.map((n) => [n.id, n])
     ),
   };
 };

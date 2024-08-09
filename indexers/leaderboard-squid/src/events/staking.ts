@@ -75,13 +75,11 @@ export function processBundleStoredEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const domainId = String(event.args.operatorId) ?? "0";
   const operatorId = String(event.args.bundleAuthor) ?? "0";
 
   const operatorBundleTotalCount = getOrCreateOperatorBundleTotalCount(
     cache,
     block,
-    domainId,
     operatorId
   );
 

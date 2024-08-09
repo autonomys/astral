@@ -17,8 +17,7 @@ export const createOperatorTotalRewardsCollected = (
 ): OperatorTotalRewardsCollected =>
   new OperatorTotalRewardsCollected({
     id: operatorId,
-    sortId: 0,
-    operatorId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -48,8 +47,7 @@ export const createOperatorTotalTaxCollected = (
 ): OperatorTotalTaxCollected =>
   new OperatorTotalTaxCollected({
     id: operatorId,
-    sortId: 0,
-    operatorId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -74,15 +72,12 @@ export const getOrCreateOperatorTotalTaxCollected = (
 
 export const createOperatorBundleTotalCount = (
   block: CtxBlock,
-  domainId: string,
   operatorId: string,
   props: Partial<OperatorBundleTotalCount>
 ): OperatorBundleTotalCount =>
   new OperatorBundleTotalCount({
     id: operatorId,
-    sortId: 0,
-    domainId,
-    operatorId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -93,7 +88,6 @@ export const createOperatorBundleTotalCount = (
 export const getOrCreateOperatorBundleTotalCount = (
   cache: Cache,
   block: CtxBlock,
-  domainId: string,
   operatorId: string,
   props: Partial<OperatorBundleTotalCount> = {}
 ): OperatorBundleTotalCount => {
@@ -101,7 +95,7 @@ export const getOrCreateOperatorBundleTotalCount = (
     cache.operatorBundleTotalCount.get(operatorId);
 
   if (!operatorBundleTotalCount)
-    return createOperatorBundleTotalCount(block, domainId, operatorId, props);
+    return createOperatorBundleTotalCount(block, operatorId, props);
 
   return operatorBundleTotalCount;
 };
@@ -113,8 +107,7 @@ export const createOperatorDepositsTotalCount = (
 ): OperatorDepositsTotalCount =>
   new OperatorDepositsTotalCount({
     id: operatorId,
-    sortId: 0,
-    operatorId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -144,8 +137,7 @@ export const createOperatorDepositsTotalValue = (
 ): OperatorDepositsTotalValue =>
   new OperatorDepositsTotalValue({
     id: operatorId,
-    sortId: 0,
-    operatorId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -175,8 +167,7 @@ export const createOperatorWithdrawalsTotalCount = (
 ): OperatorWithdrawalsTotalCount =>
   new OperatorWithdrawalsTotalCount({
     id: operatorId,
-    sortId: 0,
-    operatorId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),

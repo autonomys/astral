@@ -1,8 +1,7 @@
 # account
 type AccountTransferSenderTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -11,8 +10,7 @@ type AccountTransferSenderTotalCount @entity {
 
 type AccountTransferSenderTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -21,8 +19,7 @@ type AccountTransferSenderTotalValue @entity {
 
 type AccountTransferReceiverTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -31,8 +28,7 @@ type AccountTransferReceiverTotalCount @entity {
 
 type AccountTransferReceiverTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -41,8 +37,7 @@ type AccountTransferReceiverTotalValue @entity {
 
 type AccountRemarkCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -51,8 +46,7 @@ type AccountRemarkCount @entity {
 
 type AccountExtrinsicTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -61,8 +55,7 @@ type AccountExtrinsicTotalCount @entity {
 
 type AccountExtrinsicSuccessTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -71,8 +64,7 @@ type AccountExtrinsicSuccessTotalCount @entity {
 
 type AccountExtrinsicFailedTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -81,8 +73,7 @@ type AccountExtrinsicFailedTotalCount @entity {
 
 type AccountTransactionFeePaidTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -92,8 +83,7 @@ type AccountTransactionFeePaidTotalValue @entity {
 # farmer
 type FarmerVoteTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -102,8 +92,7 @@ type FarmerVoteTotalCount @entity {
 
 type FarmerVoteTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -112,8 +101,7 @@ type FarmerVoteTotalValue @entity {
 
 type FarmerBlockTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -122,8 +110,7 @@ type FarmerBlockTotalCount @entity {
 
 type FarmerBlockTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -132,8 +119,7 @@ type FarmerBlockTotalValue @entity {
 
 type FarmerVoteAndBlockTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -142,8 +128,7 @@ type FarmerVoteAndBlockTotalCount @entity {
 
 type FarmerVoteAndBlockTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -153,8 +138,7 @@ type FarmerVoteAndBlockTotalValue @entity {
 # operator
 type OperatorTotalRewardsCollected @entity {
   id: ID! @index
-  sortId: Int! @index
-  operatorId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -163,8 +147,7 @@ type OperatorTotalRewardsCollected @entity {
 
 type OperatorTotalTaxCollected @entity {
   id: ID! @index
-  sortId: Int! @index
-  operatorId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -173,9 +156,7 @@ type OperatorTotalTaxCollected @entity {
 
 type OperatorBundleTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  domainId: String! @index
-  operatorId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -184,8 +165,7 @@ type OperatorBundleTotalCount @entity {
 
 type OperatorDepositsTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  operatorId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -194,8 +174,7 @@ type OperatorDepositsTotalCount @entity {
 
 type OperatorDepositsTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  operatorId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -204,8 +183,7 @@ type OperatorDepositsTotalValue @entity {
 
 type OperatorWithdrawalsTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  operatorId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -215,8 +193,7 @@ type OperatorWithdrawalsTotalCount @entity {
 # nominator/account
 type NominatorDepositsTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -225,8 +202,7 @@ type NominatorDepositsTotalCount @entity {
 
 type NominatorDepositsTotalValue @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: BigInt!
   lastContributionAt: DateTime!
   createdAt: Int!
@@ -235,8 +211,7 @@ type NominatorDepositsTotalValue @entity {
 
 type NominatorWithdrawalsTotalCount @entity {
   id: ID! @index
-  sortId: Int! @index
-  accountId: String! @index
+  rank: Int! @index
   value: Int!
   lastContributionAt: DateTime!
   createdAt: Int!

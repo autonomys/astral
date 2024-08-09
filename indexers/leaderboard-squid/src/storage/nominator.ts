@@ -14,8 +14,7 @@ export const createNominatorDepositsTotalCount = (
 ): NominatorDepositsTotalCount =>
   new NominatorDepositsTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -45,8 +44,7 @@ export const createNominatorDepositsTotalValue = (
 ): NominatorDepositsTotalValue =>
   new NominatorDepositsTotalValue({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: BigInt(0),
     ...props,
     lastContributionAt: getTimestamp(block),
@@ -76,8 +74,7 @@ export const createNominatorWithdrawalsTotalCount = (
 ): NominatorWithdrawalsTotalCount =>
   new NominatorWithdrawalsTotalCount({
     id: accountId,
-    sortId: 0,
-    accountId,
+    rank: 0,
     value: 0,
     ...props,
     lastContributionAt: getTimestamp(block),
