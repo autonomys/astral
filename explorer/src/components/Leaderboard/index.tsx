@@ -1,9 +1,10 @@
 'use client'
 
-import { INTERNAL_ROUTES, Routes } from '@/constants'
 import useChains from '@/hooks/useChains'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
+import { TOKEN } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import React, { FC } from 'react'
@@ -59,6 +60,7 @@ export const AccountLeaderboard: FC = () => {
             query={Query.QUERY_ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE}
             table='account_transfer_sender_total_value'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Transfer Receiver Count'>
@@ -76,6 +78,7 @@ export const AccountLeaderboard: FC = () => {
             query={Query.QUERY_ACCOUNT_TRANSFER_RECEIVER_TOTAL_VALUE}
             table='account_transfer_receiver_total_value'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Remark Count'>
@@ -120,6 +123,7 @@ export const AccountLeaderboard: FC = () => {
             query={Query.QUERY_ACCOUNT_TRANSACTION_FEE_PAID_TOTAL_VALUE}
             table='account_transaction_fee_paid_total_value'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
       </PageTabs>
@@ -151,6 +155,7 @@ export const FarmerLeaderboard: FC = () => {
             table='farmer_vote_and_block_total_value'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Vote Count'>
@@ -170,6 +175,7 @@ export const FarmerLeaderboard: FC = () => {
             table='farmer_vote_total_value'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Block Count'>
@@ -189,6 +195,7 @@ export const FarmerLeaderboard: FC = () => {
             table='farmer_block_total_value'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
       </PageTabs>
@@ -252,6 +259,7 @@ export const OperatorLeaderboard: FC = () => {
             table='operator_deposits_total_value'
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
+            valueSuffix={TOKEN.symbol}
             showAccountIcon={false}
           />
         </Tab>
@@ -295,6 +303,7 @@ export const NominatorLeaderboard: FC = () => {
             table='nominator_deposits_total_value'
             idLabel='Nominator'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Withdrawals Count'>

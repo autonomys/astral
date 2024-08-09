@@ -40,6 +40,7 @@ type LeaderboardListProps = {
   idLink: (id: string) => string
   idLabel?: string
   valueType?: 'number' | 'bigNumber'
+  valueSuffix?: string
   showAccountIcon?: boolean
 }
 type Row = AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count'][0]
@@ -51,6 +52,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   idLink,
   idLabel = 'Account',
   valueType = 'bigNumber',
+  valueSuffix = '',
   showAccountIcon = true,
 }) => {
   const { ref, inView } = useInView()
@@ -102,6 +104,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
             {row.original.value
               ? `${numberWithCommas(valueType === 'bigNumber' ? bigNumberToNumber(row.original.value) : row.original.value)}`
               : 0}
+            {valueSuffix && ` ${valueSuffix}`}
           </div>
         ),
       },
