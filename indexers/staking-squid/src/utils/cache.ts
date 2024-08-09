@@ -1,6 +1,8 @@
-import type { Store } from "@subsquid/typeorm-store";
+import { Store } from "@subsquid/typeorm-store";
+import { Entity } from "@subsquid/typeorm-store/src/store";
 import {
   Account,
+  Bundle,
   Deposit,
   Domain,
   Nominator,
@@ -13,20 +15,24 @@ import {
 } from "../model";
 import type { Ctx } from "../processor";
 
-export type Cache = {
+export type PermanentCache = {
   domains: Map<string, Domain>;
   accounts: Map<string, Account>;
   operators: Map<string, Operator>;
   nominators: Map<string, Nominator>;
+};
+
+export type TemporaryCache = {
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
-
+  bundles: Map<string, Bundle>;
   operatorRewardedEvents: Map<string, OperatorRewardEvent>;
-
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
 };
+
+export type Cache = PermanentCache & TemporaryCache;
 
 export const initCache: Cache = {
   domains: new Map(),
@@ -35,21 +41,25 @@ export const initCache: Cache = {
   nominators: new Map(),
   deposits: new Map(),
   withdrawals: new Map(),
-
+  bundles: new Map(),
   operatorRewardedEvents: new Map(),
-
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const domains = await ctx.store.find(Domain);
-  const accounts = await ctx.store.find(Account);
-  const operators = await ctx.store.find(Operator);
-  const nominators = await ctx.store.find(Nominator);
-  const deposits = await ctx.store.find(Deposit);
-  const withdrawals = await ctx.store.find(Withdrawal);
+  const [domains, accounts, operators, nominators] = await Promise.all([
+    ctx.store.find(Domain),
+    ctx.store.find(Account),
+    ctx.store.find(Operator),
+    ctx.store.find(Nominator),
+  ]);
+
+  console.log("Loaded domains:", domains.length);
+  console.log("Loaded accounts:", accounts.length);
+  console.log("Loaded operators:", operators.length);
+  console.log("Loaded nominators:", nominators.length);
 
   return {
     ...initCache,
@@ -57,22 +67,37 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     accounts: new Map(accounts.map((a) => [a.id, a])),
     operators: new Map(operators.map((o) => [o.id, o])),
     nominators: new Map(nominators.map((n) => [n.id, n])),
-    deposits: new Map(deposits.map((d) => [d.id, d])),
-    withdrawals: new Map(withdrawals.map((w) => [w.id, w])),
   };
 };
 
+const saveEntry = async <E extends Entity>(
+  ctx: Ctx<Store>,
+  cache: Cache,
+  name: keyof Cache
+) => {
+  try {
+    const entity = cache[name] as unknown as Map<string, E>;
+    if (entity.size === 0) return;
+
+    console.log(`Saving ${entity.size} ${name} entries to the database.`);
+
+    await ctx.store.save(Array.from(entity.values()));
+  } catch (e) {
+    console.error(`Failed to save ${name} with error:`, e);
+  }
+};
+
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
-  await ctx.store.save(Array.from(cache.domains.values()));
-  await ctx.store.save(Array.from(cache.accounts.values()));
-  await ctx.store.save(Array.from(cache.operators.values()));
-  await ctx.store.save(Array.from(cache.nominators.values()));
-  await ctx.store.save(Array.from(cache.deposits.values()));
-  await ctx.store.save(Array.from(cache.withdrawals.values()));
+  await Promise.all(
+    Object.keys(cache).map((k) => saveEntry(ctx, cache, k as keyof Cache))
+  );
 
-  await ctx.store.save(Array.from(cache.operatorRewardedEvents.values()));
-
-  await ctx.store.save(Array.from(cache.stats.values()));
-  await ctx.store.save(Array.from(cache.statsPerDomain.values()));
-  await ctx.store.save(Array.from(cache.statsPerOperator.values()));
+  // Clear the cache for entries not needed for reference
+  cache.deposits.clear();
+  cache.withdrawals.clear();
+  cache.bundles.clear();
+  cache.operatorRewardedEvents.clear();
+  cache.stats.clear();
+  cache.statsPerDomain.clear();
+  cache.statsPerOperator.clear();
 };
