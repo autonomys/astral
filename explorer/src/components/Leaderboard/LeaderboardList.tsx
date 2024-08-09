@@ -38,6 +38,7 @@ type LeaderboardListProps = {
   query: DocumentNode
   table: string
   idLink: (id: string) => string
+  idLabel?: string
   valueType?: 'number' | 'bigNumber'
   showAccountIcon?: boolean
 }
@@ -48,6 +49,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   query,
   table,
   idLink,
+  idLabel = 'Account',
   valueType = 'bigNumber',
   showAccountIcon = true,
 }) => {
@@ -74,7 +76,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       },
       {
         accessorKey: 'id',
-        header: 'Account',
+        header: idLabel,
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           return (

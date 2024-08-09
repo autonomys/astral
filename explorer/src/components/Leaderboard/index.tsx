@@ -139,6 +139,7 @@ export const FarmerLeaderboard: FC = () => {
             title='Vote & Block Count'
             query={Query.QUERY_FARMER_VOTE_AND_BLOCK_TOTAL_COUNT}
             table='farmer_vote_and_block_total_count'
+            idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
           />
@@ -148,6 +149,7 @@ export const FarmerLeaderboard: FC = () => {
             title='Vote & Block Value'
             query={Query.QUERY_FARMER_VOTE_AND_BLOCK_TOTAL_VALUE}
             table='farmer_vote_and_block_total_value'
+            idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
           />
         </Tab>
@@ -156,6 +158,7 @@ export const FarmerLeaderboard: FC = () => {
             title='Vote Count'
             query={Query.QUERY_FARMER_VOTE_TOTAL_COUNT}
             table='farmer_vote_total_count'
+            idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
           />
@@ -165,6 +168,7 @@ export const FarmerLeaderboard: FC = () => {
             title='Vote Value'
             query={Query.QUERY_FARMER_VOTE_TOTAL_VALUE}
             table='farmer_vote_total_value'
+            idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
           />
         </Tab>
@@ -173,6 +177,7 @@ export const FarmerLeaderboard: FC = () => {
             title='Block Count'
             query={Query.QUERY_FARMER_BLOCK_TOTAL_COUNT}
             table='farmer_block_total_count'
+            idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
           />
@@ -182,6 +187,7 @@ export const FarmerLeaderboard: FC = () => {
             title='Block Value'
             query={Query.QUERY_FARMER_BLOCK_TOTAL_VALUE}
             table='farmer_block_total_value'
+            idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
           />
         </Tab>
@@ -202,6 +208,7 @@ export const OperatorLeaderboard: FC = () => {
             title='Rewards Collected'
             query={Query.QUERY_OPERATOR_TOTAL_REWARDS_COLLECTED}
             table='operator_total_rewards_collected'
+            idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
           />
@@ -211,6 +218,7 @@ export const OperatorLeaderboard: FC = () => {
             title='Tax Collected'
             query={Query.QUERY_OPERATOR_TOTAL_TAX_COLLECTED}
             table='operator_total_tax_collected'
+            idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
           />
@@ -220,6 +228,7 @@ export const OperatorLeaderboard: FC = () => {
             title='Bundle Count'
             query={Query.QUERY_OPERATOR_BUNDLE_TOTAL_COUNT}
             table='operator_bundle_total_count'
+            idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
             valueType='number'
@@ -230,6 +239,7 @@ export const OperatorLeaderboard: FC = () => {
             title='Deposits Count'
             query={Query.QUERY_OPERATOR_DEPOSITS_TOTAL_COUNT}
             table='operator_deposits_total_count'
+            idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
             valueType='number'
@@ -240,6 +250,7 @@ export const OperatorLeaderboard: FC = () => {
             title='Deposits Value'
             query={Query.QUERY_OPERATOR_DEPOSITS_TOTAL_VALUE}
             table='operator_deposits_total_value'
+            idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
           />
@@ -249,6 +260,7 @@ export const OperatorLeaderboard: FC = () => {
             title='Withdrawals Count'
             query={Query.QUERY_OPERATOR_WITHDRAWALS_TOTAL_COUNT}
             table='operator_withdrawals_total_count'
+            idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
             valueType='number'
@@ -271,6 +283,7 @@ export const NominatorLeaderboard: FC = () => {
             title='Deposits Count'
             query={Query.QUERY_NOMINATOR_DEPOSITS_TOTAL_COUNT}
             table='nominator_deposits_total_count'
+            idLabel='Nominator'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
           />
@@ -280,6 +293,7 @@ export const NominatorLeaderboard: FC = () => {
             title='Deposits Value'
             query={Query.QUERY_NOMINATOR_DEPOSITS_TOTAL_VALUE}
             table='nominator_deposits_total_value'
+            idLabel='Nominator'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
           />
         </Tab>
@@ -288,6 +302,7 @@ export const NominatorLeaderboard: FC = () => {
             title='Withdrawals Count'
             query={Query.QUERY_NOMINATOR_WITHDRAWALS_TOTAL_COUNT}
             table='nominator_withdrawals_total_count'
+            idLabel='Nominator'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
           />
