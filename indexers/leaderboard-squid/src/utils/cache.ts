@@ -27,6 +27,7 @@ import {
   OperatorWithdrawalsTotalCount,
 } from "../model";
 import type { Ctx } from "../processor";
+import { log } from "./index";
 
 export type CacheEntries = {
   farmerVoteTotalCount: Map<string, FarmerVoteTotalCount>;
@@ -192,44 +193,34 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     ctx.store.find(AccountTransactionFeePaidTotalValue),
   ]);
 
-  console.log(
-    farmerVoteTotalCount.length + " farmerVoteTotalCount, ",
-    farmerVoteTotalValue.length + " farmerVoteTotalValue, ",
-    farmerBlockTotalCount.length + " farmerBlockTotalCount, ",
-    farmerBlockTotalValue.length + " farmerBlockTotalValue, ",
-    farmerVoteAndBlockTotalCount.length + " farmerVoteAndBlockTotalCount, ",
-    farmerVoteAndBlockTotalValue.length + " farmerVoteAndBlockTotalValue"
-  );
-  console.log(
-    operatorTotalRewardsCollected.length + " operatorTotalRewardsCollected, ",
-    operatorTotalTaxCollected.length + " operatorTotalTaxCollected, ",
-    operatorBundleTotalCount.length + " operatorBundleTotalCount, ",
-    operatorDepositsTotalCount.length + " operatorDepositsTotalCount, ",
-    operatorDepositsTotalValue.length + " operatorDepositsTotalValue, ",
-    operatorWithdrawalsTotalCount.length + " operatorWithdrawalsTotalCount"
-  );
-  console.log(
-    nominatorDepositsTotalCount.length + " nominatorDepositsTotalCount, ",
-    nominatorDepositsTotalValue.length + " nominatorDepositsTotalValue, ",
-    nominatorWithdrawalsTotalCount.length + " nominatorWithdrawalsTotalCount"
-  );
-  console.log(
-    accountTransferSenderTotalCount.length +
-      " accountTransferSenderTotalCount, ",
-    accountTransferSenderTotalValue.length +
-      " accountTransferSenderTotalValue, ",
-    accountTransferReceiverTotalCount.length +
-      " accountTransferReceiverTotalCount, ",
-    accountTransferReceiverTotalValue.length +
-      " accountTransferReceiverTotalValue, ",
-    accountRemarkCount.length + " accountRemarkCount, ",
-    accountExtrinsicTotalCount.length + " accountExtrinsicTotalCount, ",
-    accountExtrinsicSuccessTotalCount.length +
-      " accountExtrinsicSuccessTotalCount, ",
-    accountExtrinsicFailedTotalCount.length +
-      " accountExtrinsicFailedTotalCount, ",
-    accountTransactionFeePaidTotalValue.length +
-      " accountTransactionFeePaidTotalValue"
+  log(
+    "\x1b[32mLoading from database:\x1b[0m",
+    (
+      farmerVoteTotalCount.length +
+      farmerVoteTotalValue.length +
+      farmerBlockTotalCount.length +
+      farmerBlockTotalValue.length +
+      farmerVoteAndBlockTotalCount.length +
+      farmerVoteAndBlockTotalValue.length +
+      operatorTotalRewardsCollected.length +
+      operatorTotalTaxCollected.length +
+      operatorBundleTotalCount.length +
+      operatorDepositsTotalCount.length +
+      operatorDepositsTotalValue.length +
+      operatorWithdrawalsTotalCount.length +
+      nominatorDepositsTotalCount.length +
+      nominatorDepositsTotalValue.length +
+      nominatorWithdrawalsTotalCount.length +
+      accountTransferSenderTotalCount.length +
+      accountTransferSenderTotalValue.length +
+      accountTransferReceiverTotalCount.length +
+      accountTransferReceiverTotalValue.length +
+      accountRemarkCount.length +
+      accountExtrinsicTotalCount.length +
+      accountExtrinsicSuccessTotalCount.length +
+      accountExtrinsicFailedTotalCount.length +
+      accountTransactionFeePaidTotalValue.length
+    ).toString() + " entries"
   );
 
   return {
@@ -325,23 +316,26 @@ const saveEntry = async <E extends Entity>(
 };
 
 const logEntry = <K>(name: string, entry: Map<string, K>) =>
-  entry.size > 0 ? entry.size + " " + name + ", " : "";
+  entry.size > 0 ? entry.size : 0;
 
 const logEntries = (cache: Cache, keys: string[]) => {
-  return keys
-    .map((key) =>
-      logEntry(key, cache[key as keyof CacheEntries] as Map<string, unknown>)
-    )
-    .join("");
+  return keys.reduce(
+    (acc, key) =>
+      logEntry(key, cache[key as keyof CacheEntries] as Map<string, unknown>) +
+      acc,
+    0
+  );
 };
 
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   // If the cache is not modified, skip saving
   if (!cache.isModified) return;
 
-  const log = logEntries(cache, keys);
-
-  console.log("\x1b[34mSaving in database:\x1b[0m", log, "\n");
+  log(
+    "\x1b[34mSaving in database:\x1b[0m",
+    logEntries(cache, keys).toString(),
+    "entries\n"
+  );
 
   await Promise.all(
     Object.keys(cache).map((k) =>

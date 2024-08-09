@@ -21,7 +21,9 @@ export function processOperatorRewardedEvent(
   event: CtxEvent
 ) {
   const operatorId = String(event.args.operatorId) ?? "0";
-  const reward = BigInt(event.args.reward) ?? BigInt(0);
+
+  const reward = BigInt(event.args.reward);
+  if (reward === BigInt(0)) return cache;
 
   const operatorTotalRewardsCollected =
     getOrCreateOperatorTotalRewardsCollected(cache, block, operatorId);
@@ -46,7 +48,7 @@ export function processOperatorTaxCollectedEvent(
   event: CtxEvent
 ) {
   const operatorId = String(event.args.operatorId) ?? "0";
-  const tax = BigInt(event.args.tax) ?? BigInt(0);
+  const tax = BigInt(event.args.tax ?? 0);
 
   const operatorTotalTaxCollected = getOrCreateOperatorTotalTaxCollected(
     cache,
@@ -131,7 +133,7 @@ export function processOperatorNominatedEvent(
 ) {
   const operatorId = String(event.args.operatorId) ?? "0";
   const accountId = String(event.args.nominatorId);
-  const amount = BigInt(event.args.amount) ?? BigInt(0);
+  const amount = BigInt(event.args.amount ?? 0);
 
   const operatorDepositsTotalCount = getOrCreateOperatorDepositsTotalCount(
     cache,

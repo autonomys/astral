@@ -29,11 +29,19 @@ export const operatorUID = (operatorId: number): string => `${operatorId}`;
 export const nominatorUID = (operatorId: number, account: string): string =>
   `${operatorId}-${account}`;
 
+export const log = (msg: string, ...extra: string[]): void => {
+  const _msg = Array.isArray(extra) ? msg + " " + extra.join(" ") : msg;
+  console.log(
+    process.env.ENABLE_COLOR_LOG ? _msg : _msg.replace(/\x1b\[\d+m/g, "")
+  );
+};
+
 export const logBlock = (blocks: CtxBlock[]): void => {
   const from = getBlockNumber(blocks[0]);
   const to = getBlockNumber(blocks[blocks.length - 1]);
-  return console.log(
-    "\x1b[33mProcessing " + blocks.length + " blocks\x1b[0m",
+  return log(
+    "\x1b[33mProcessing:\x1b[0m",
+    blocks.length + " blocks",
     "From " + from,
     "to " + to + " (" + (to - from) + " blocks)"
   );

@@ -25,11 +25,6 @@ export const processor = new SubstrateBatchProcessor()
   .setBlockRange({
     from: 0,
   })
-  .addCall({
-    events: true,
-    stack: true,
-    extrinsic: true,
-  })
   .addEvent({
     name: [
       // accounts
