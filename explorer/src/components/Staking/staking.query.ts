@@ -37,7 +37,7 @@ export const QUERY_OPERATOR_LIST = gql`
       }
       nominators(limit: 256) {
         id
-        shares
+        known_shares
       }
     }
   }
@@ -80,7 +80,7 @@ export const QUERY_OPERATOR_NOMINATORS_BY_ID = gql`
     }
     nominator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
-      shares
+      known_shares
       account_id
       domain_id
     }
@@ -101,7 +101,7 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
     }
     nominator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
-      shares
+      known_shares
       account_id
       domain_id
       operator {

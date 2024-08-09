@@ -92,7 +92,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
                     Number(
                       (BigInt(operator.current_total_stake) /
                         BigInt(operator.current_total_shares)) *
-                        BigInt(row.original.shares),
+                        BigInt(row.original.known_shares),
                     ) /
                       10 ** 18,
                   ),
@@ -113,7 +113,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
               limitNumberDecimals(
                 Number(
                   Number(
-                    (BigInt(row.original.shares) * BigInt(1000000000)) /
+                    (BigInt(row.original.known_shares) * BigInt(1000000000)) /
                       BigInt(operator.current_total_shares),
                   ) / 1000000000,
                 ) * 100,

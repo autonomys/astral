@@ -1,4 +1,4 @@
-import { FarmerLeaderboard } from 'components/Leaderboard'
+import { AccountLeaderboard } from 'components/Leaderboard'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
@@ -22,5 +22,5 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
 }
 
 export default async function Page() {
-  return <FarmerLeaderboard />
+  return <AccountLeaderboard />
 }
