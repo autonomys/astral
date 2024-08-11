@@ -7,9 +7,11 @@ export function processDomainInstantiatedEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
-  const domainId = Number(event.args.domainId || 0);
+  const { domainId, completedEpochIndex } = event.args;
+  const completedEpoch = Number(completedEpochIndex ?? 0);
+
   const domain = getOrCreateDomain(cache, block, domainId, {
-    completedEpoch: Number(event.args.completedEpochIndex || 0),
+    completedEpoch,
   });
 
   cache.domains.set(domain.id, domain);
