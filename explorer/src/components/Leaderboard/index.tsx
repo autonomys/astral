@@ -218,6 +218,7 @@ export const OperatorLeaderboard: FC = () => {
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Tax Collected'>
@@ -228,6 +229,7 @@ export const OperatorLeaderboard: FC = () => {
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
+            valueSuffix={TOKEN.symbol}
           />
         </Tab>
         <Tab title='Bundle Count'>
