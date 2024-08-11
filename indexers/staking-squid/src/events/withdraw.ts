@@ -15,17 +15,15 @@ export function processWithdrewStakeEvent(
   extrinsic: CtxExtrinsic,
   event: CtxEvent
 ) {
+  const { operatorId } = event.args;
+  const { shares = 0 } = extrinsic.call?.args ?? {};
   const address = getCallSigner(extrinsic.call);
-  const operatorId = Number(event.args.operatorId);
-
-  const shares = extrinsic.call
-    ? BigInt(extrinsic.call.args.shares)
-    : BigInt(0);
+  const sharesBigInt = BigInt(shares);
 
   const account = getOrCreateAccount(cache, block, address);
   cache.accounts.set(account.id, account);
 
-  const operator = getOrCreateOperator(cache, block, operatorId, {});
+  const operator = getOrCreateOperator(cache, block, Number(operatorId), {});
   cache.operators.set(operator.id, operator);
 
   const domain = getOrCreateDomain(cache, block, operator.domainId);
@@ -35,7 +33,7 @@ export function processWithdrewStakeEvent(
     domainId: domain.id,
     accountId: account.id,
     operatorId: operator.id,
-    shares,
+    shares: sharesBigInt,
   });
   cache.nominators.set(nominator.id, nominator);
 
@@ -44,7 +42,7 @@ export function processWithdrewStakeEvent(
     accountId: account.id,
     operatorId: operator.id,
     nominatorId: nominator.id,
-    shares,
+    shares: sharesBigInt,
   });
   cache.withdrawals.set(withdrawal.id, withdrawal);
 
