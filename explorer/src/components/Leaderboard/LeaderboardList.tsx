@@ -1,6 +1,5 @@
 'use client'
 
-/* eslint-disable camelcase */
 import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
@@ -13,7 +12,7 @@ import {
   AccountTransferSenderTotalCountQuery,
   AccountTransferSenderTotalCountQueryVariables,
 } from 'gql/types/leaderboard'
-import { Order_By } from 'gql/types/staking'
+import { Order_By as OrderBy } from 'gql/types/staking'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -63,7 +62,6 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-
   const apolloClient = useApolloClient()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { network } = useChains()
@@ -72,9 +70,12 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const columns = useMemo(() => {
     return [
       {
+        accessorKey: 'rank',
         header: 'Rank',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.rank}</div>,
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`rank-${row.original.id}`}>{row.original.rank}</div>
+        ),
       },
       {
         accessorKey: 'id',
@@ -82,7 +83,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           return (
-            <div className='row flex items-center gap-3'>
+            <div key={`id-${row.original.id}`} className='row flex items-center gap-3'>
               {showAccountIcon && <AccountIcon address={row.original.id} size={26} />}
               <Link
                 data-testid={`account-link-${row.index}`}
@@ -100,7 +101,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         header: 'Value',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>
+          <div key={`value-${row.original.id}`}>
             {row.original.value
               ? `${numberWithCommas(valueType === 'bigNumber' ? bigNumberToNumber(row.original.value) : row.original.value)}`
               : 0}
@@ -113,7 +114,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         header: 'Last contribution',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{dayjs(row.original.last_contribution_at).fromNow(true) + ' ago'}</div>
+          <div key={`last_contribution_at-${row.original.id}`}>
+            {dayjs(row.original.last_contribution_at).fromNow(true) + ' ago'}
+          </div>
         ),
       },
       {
@@ -122,6 +125,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
+            key={`created_at-${row.original.id}`}
             data-testid={`created-at-${row.index}`}
             href={INTERNAL_ROUTES.blocks.id.page(
               network,
@@ -140,6 +144,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
+            key={`updated_at-${row.original.id}`}
             data-testid={`updated-at-${row.index}`}
             href={INTERNAL_ROUTES.blocks.id.page(
               network,
@@ -153,13 +158,16 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         ),
       },
     ]
-  }, [showAccountIcon, idLink, isLargeLaptop, valueType, network])
+  }, [idLabel, showAccountIcon, idLink, isLargeLaptop, valueType, valueSuffix, network])
 
   const orderBy = useMemo(
-    () => ({
-      rank: Order_By.Asc,
-    }),
-    [],
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { rank: OrderBy.Asc },
+    [sorting],
   )
 
   const variables = useMemo(
@@ -167,6 +175,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : 0,
       orderBy,
+      // eslint-disable-next-line camelcase
       where: myPositionOnly ? { id: { _eq: subspaceAccount } } : {},
     }),
     [pagination.pageSize, pagination.pageIndex, orderBy, myPositionOnly, subspaceAccount],
