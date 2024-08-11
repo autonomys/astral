@@ -243,7 +243,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         </div>
         <div className='my-6 rounded'>
           <div ref={ref}>
-            {data ? (
+            {listData ? (
               <SortedTable
                 data={data}
                 columns={columns}
