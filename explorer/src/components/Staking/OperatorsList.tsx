@@ -315,13 +315,9 @@ export const OperatorsList: FC = () => {
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => {
           const isOperator = row.original.account_id === subspaceAccount
-          const deposit = deposits.find(
-            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+          const nominator = row.original.nominators.find(
+            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
-          const nominator =
-            row.original.nominators.find(
-              (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
-            ) || deposit
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
@@ -344,7 +340,7 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BIGINT_ZERO}
+              nominatorMaxShares={nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO}
             />
           )
         },

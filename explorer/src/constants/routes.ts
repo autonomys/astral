@@ -141,6 +141,7 @@ export const INTERNAL_ROUTES = {
     empty: (chain: string, domain: string): string => `/${chain}/${domain}/search/no-result-found`,
   },
   leaderboard: {
+    accounts: 'accounts',
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',

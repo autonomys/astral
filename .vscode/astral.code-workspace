@@ -29,6 +29,10 @@
       "path": "../indexers/staking-squid"
     },
     {
+      "name": "indexer - Leaderboard Squid",
+      "path": "../indexers/leaderboard-squid"
+    },
+    {
       "name": "indexer - Rewards Squid",
       "path": "../indexers/rewards-squid"
     }
