@@ -60,6 +60,7 @@ export const AccountLeaderboard: FC = () => {
             query={Query.QUERY_ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE}
             table='account_transfer_sender_total_value'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total sent'
             valueSuffix={TOKEN.symbol}
           />
         </Tab>
@@ -78,6 +79,7 @@ export const AccountLeaderboard: FC = () => {
             query={Query.QUERY_ACCOUNT_TRANSFER_RECEIVER_TOTAL_VALUE}
             table='account_transfer_receiver_total_value'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total received'
             valueSuffix={TOKEN.symbol}
           />
         </Tab>
@@ -123,6 +125,7 @@ export const AccountLeaderboard: FC = () => {
             query={Query.QUERY_ACCOUNT_TRANSACTION_FEE_PAID_TOTAL_VALUE}
             table='account_transaction_fee_paid_total_value'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total fee paid'
             valueSuffix={TOKEN.symbol}
           />
         </Tab>
@@ -155,6 +158,7 @@ export const FarmerLeaderboard: FC = () => {
             table='farmer_vote_and_block_total_value'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total reward'
             valueSuffix={TOKEN.symbol}
           />
         </Tab>
@@ -175,6 +179,7 @@ export const FarmerLeaderboard: FC = () => {
             table='farmer_vote_total_value'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total reward'
             valueSuffix={TOKEN.symbol}
           />
         </Tab>
@@ -195,6 +200,7 @@ export const FarmerLeaderboard: FC = () => {
             table='farmer_block_total_value'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total reward'
             valueSuffix={TOKEN.symbol}
           />
         </Tab>

@@ -22,12 +22,12 @@ export const LeaderboardHeader: FC = () => {
   const menuList = useMemo(
     () => [
       {
-        title: 'Top Accounts',
-        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.accounts}`,
-      },
-      {
         title: 'Top Farmers',
         link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`,
+      },
+      {
+        title: 'Top Accounts',
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.accounts}`,
       },
       {
         title: 'Top Operators',

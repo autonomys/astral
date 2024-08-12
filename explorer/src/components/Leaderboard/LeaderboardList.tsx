@@ -39,6 +39,7 @@ type LeaderboardListProps = {
   idLink: (id: string) => string
   idLabel?: string
   valueType?: 'number' | 'bigNumber'
+  valueLabel?: string
   valueSuffix?: string
   showAccountIcon?: boolean
 }
@@ -51,6 +52,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   idLink,
   idLabel = 'Account',
   valueType = 'bigNumber',
+  valueLabel = table.endsWith('count') ? 'Count' : 'Value',
   valueSuffix = '',
   showAccountIcon = true,
 }) => {
@@ -98,7 +100,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       },
       {
         accessorKey: 'value',
-        header: 'Value',
+        header: valueLabel,
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`value-${row.original.id}`}>
