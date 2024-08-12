@@ -6417,3 +6417,11 @@ export type DomainsLastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type DomainsLastBlockQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, last_domain_block_number: number, completed_epoch: number }> };
+
+export type StakingSummaryQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type StakingSummaryQuery = { __typename?: 'query_root', operator: Array<{ __typename?: 'operator', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any }>, operator_aggregate: { __typename?: 'operator_aggregate', aggregate?: { __typename?: 'operator_aggregate_fields', count: number } | null }, nominator: Array<{ __typename?: 'nominator', id: string, known_shares: any, known_storage_fee_deposit: any, account?: { __typename?: 'account', id: string } | null, operator?: { __typename?: 'operator', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any } | null }>, nominator_aggregate: { __typename?: 'nominator_aggregate', aggregate?: { __typename?: 'nominator_aggregate_fields', count: number } | null } };

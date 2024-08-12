@@ -94,7 +94,7 @@ interface ExplorerQueryState {
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
-    stakingSummary: QueryState<OldGqlT.StakingSummaryQuery>
+    stakingSummary: QueryState<StakingQuery.StakingSummaryQuery>
     lastExtrinsics: QueryState<OldGqlT.ExtrinsicsSummaryQuery>
     leaderboard: QueryState<OldGqlT.AccountsTopLeaderboardQuery>
   }

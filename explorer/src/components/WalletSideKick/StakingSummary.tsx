@@ -1,8 +1,9 @@
+import { BIGINT_ZERO } from '@/constants'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
-import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
+import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/types/staking'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -12,7 +13,7 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { bigNumberToNumber } from 'utils/number'
-import { QUERY_STAKING_SUMMARY } from './query'
+import { QUERY_STAKING_SUMMARY } from './staking.query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -39,6 +40,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
       variables,
       skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
       pollInterval: 6000,
+      context: { clientName: 'staking' },
     },
     ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
     'stakingSummary',
@@ -48,53 +50,59 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     walletSidekick: { stakingSummary },
   } = useQueryStates()
 
-  const operators = useMemo(
-    () => hasValue(stakingSummary) && stakingSummary.value.operators,
+  const totalOperatorCount = useMemo(
+    () =>
+      (hasValue(stakingSummary) && stakingSummary.value.operator_aggregate.aggregate?.count) || 0,
     [stakingSummary],
   )
-  const totalOperatorCount = useMemo(() => (operators ? operators.totalCount : 0), [operators])
   const totalOperatorStake = useMemo(
     () =>
-      operators && operators.edges
-        ? operators.edges
-            .reduce((acc, operator) => acc + BigInt(operator.node.currentTotalStake), BigInt(0))
-            .toString()
-        : '0',
-    [operators],
-  )
-
-  const nominators = useMemo(
-    () => hasValue(stakingSummary) && stakingSummary.value.nominators,
-    [stakingSummary],
-  )
-  const nominatorsConnection = useMemo(
-    () => nominators && nominators.edges.map((nominator) => nominator.node),
-    [nominators],
-  )
-  const totalNominatedCount = useMemo(
-    () => (nominators ? nominators.totalCount - totalOperatorCount : 0),
-    [nominators, totalOperatorCount],
-  )
-  const totalNominatedStake = useMemo(
-    () =>
-      nominatorsConnection
-        ? nominatorsConnection
-            .filter((nominator) => nominator.operator.operatorOwner !== subspaceAccount)
+      hasValue(stakingSummary)
+        ? stakingSummary.value.nominator
+            .filter((n) => n.operator?.account_id === subspaceAccount)
             .reduce(
               (acc, nominator) =>
-                acc +
-                (BigInt(nominator.operator.currentTotalStake) /
-                  BigInt(nominator.operator.totalShares)) *
-                  BigInt(nominator.shares),
-              BigInt(0),
+                BigInt(nominator.known_shares) > BIGINT_ZERO
+                  ? acc +
+                    BigInt(nominator.known_storage_fee_deposit) +
+                    (BigInt(nominator.operator?.current_total_stake) /
+                      BigInt(nominator.operator?.current_total_shares)) *
+                      BigInt(nominator.known_shares)
+                  : acc,
+              BIGINT_ZERO,
             )
-            .toString()
-        : '0',
-    [nominatorsConnection, subspaceAccount],
+        : BIGINT_ZERO,
+    [stakingSummary, subspaceAccount],
   )
 
-  const totalStake = useMemo(
-    () => (BigInt(totalOperatorStake) + BigInt(totalNominatedStake)).toString(),
+  const totalNominatedCount = useMemo(
+    () =>
+      (hasValue(stakingSummary) && stakingSummary.value.nominator_aggregate.aggregate?.count) || 0,
+    [stakingSummary],
+  )
+
+  const totalNominatedStake = useMemo(
+    () =>
+      hasValue(stakingSummary)
+        ? stakingSummary.value.nominator
+            .filter((n) => n.operator?.account_id !== subspaceAccount)
+            .reduce(
+              (acc, nominator) =>
+                BigInt(nominator.known_shares) > BIGINT_ZERO
+                  ? acc +
+                    BigInt(nominator.known_storage_fee_deposit) +
+                    (BigInt(nominator.operator?.current_total_stake) /
+                      BigInt(nominator.operator?.current_total_shares)) *
+                      BigInt(nominator.known_shares)
+                  : acc,
+              BIGINT_ZERO,
+            )
+        : BIGINT_ZERO,
+    [stakingSummary, subspaceAccount],
+  )
+
+  const totalStaked = useMemo(
+    () => totalOperatorStake + totalNominatedStake,
     [totalOperatorStake, totalNominatedStake],
   )
 
@@ -124,12 +132,12 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
               </span>
             </div>
           )}
-          {totalStake !== '0' ? (
+          {totalStaked > BIGINT_ZERO ? (
             <List>
               <StyledListItem title='Your total staked'>
-                {bigNumberToNumber(totalStake)} {tokenSymbol}
+                {bigNumberToNumber(totalStaked)} {tokenSymbol}
               </StyledListItem>
-              {totalOperatorStake !== '0' && (
+              {totalOperatorStake > BIGINT_ZERO && (
                 <Link
                   key={'totalOperatorStake'}
                   data-testid='totalOperatorStake-link'
@@ -141,7 +149,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                   </StyledListItem>
                 </Link>
               )}
-              {totalNominatedStake !== '0' && (
+              {totalNominatedStake > BIGINT_ZERO && (
                 <Link
                   key={'totalNominatedStake'}
                   data-testid='totalNominatedStake-link'
