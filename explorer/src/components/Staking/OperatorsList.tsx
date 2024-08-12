@@ -328,21 +328,20 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         cell: ({ row }: Cell<Row>) => {
           const isOperator = row.original.account_id === subspaceAccount
           const nominator = row.original.nominators.find(
-            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
+            (nominator) => nominator.account_id === subspaceAccount,
           )
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
           if (JSON.parse(row.original.raw_status ?? '{}')?.registered !== null)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.Nominating)
+          else excludeActions.push(OperatorActionType.UnlockNominator)
           if (!nominator)
-            excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
-          if (
-            !nominator &&
-            row.original.raw_status &&
-            JSON.parse(row.original.raw_status ?? '{}')?.deregistered
-          )
+            excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
+          if (row.original.raw_status && JSON.parse(row.original.raw_status ?? '{}')?.deregistered)
             excludeActions.push(OperatorActionType.Nominating)
+          if (!nominator || nominator.unlock_at_confirmed_domain_block_number.length === 0)
+            excludeActions.push(OperatorActionType.UnlockFunds)
           if (
             row.original.raw_status &&
             JSON.parse(row.original.raw_status ?? '{}')?.slashed === null

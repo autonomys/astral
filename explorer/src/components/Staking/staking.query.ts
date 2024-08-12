@@ -38,7 +38,9 @@ export const QUERY_OPERATOR_LIST = gql`
       }
       nominators(limit: 256) {
         id
+        account_id
         known_shares
+        unlock_at_confirmed_domain_block_number
       }
     }
   }
