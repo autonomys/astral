@@ -1,10 +1,16 @@
 import React, { FC, useCallback, useMemo } from 'react'
 import { useViewStates } from 'states/view'
 
-export const MyPositionSwitch: FC = () => {
+type MyPositionSwitchProps = {
+  labels?: [string, string]
+}
+
+export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
+  labels = ['Staked only', 'All operators'],
+}) => {
   const { myPositionOnly, setMyPositionOnly } = useViewStates()
 
-  const label = useMemo(() => (myPositionOnly ? 'Staked only' : 'All operators'), [myPositionOnly])
+  const label = useMemo(() => (myPositionOnly ? labels[0] : labels[1]), [labels, myPositionOnly])
   const onChange = useCallback(
     () => setMyPositionOnly(!myPositionOnly),
     [myPositionOnly, setMyPositionOnly],
