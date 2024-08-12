@@ -22,7 +22,7 @@ export const Operator: FC = () => {
   const { push } = useRouter()
   const inFocus = useWindowFocus()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const { loadData: loadConsensusData, loadDataByOperatorId } = useConsensusData()
+  const { loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
   const { setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
@@ -54,10 +54,6 @@ export const Operator: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
-
-  useEffect(() => {
-    loadConsensusData()
-  }, [loadConsensusData])
 
   useEffect(() => {
     if (operatorId) loadDataByOperatorId(operatorId)

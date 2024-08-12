@@ -37,14 +37,9 @@ export const DomainsList: FC = () => {
     pageIndex: 0,
   })
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { loadData: loadDomainsData } = useDomainsData()
-  const { loadData: loadConsensusData } = useConsensusData()
+  useDomainsData()
+  useConsensusData()
   const inFocus = useWindowFocus()
-
-  useEffect(() => {
-    loadDomainsData()
-    loadConsensusData()
-  }, [loadConsensusData, loadDomainsData])
 
   const { network, section } = useChains()
   const apolloClient = useApolloClient()

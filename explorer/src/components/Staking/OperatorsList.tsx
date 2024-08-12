@@ -59,15 +59,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const { operators: rpcOperators, domainRegistry, deposits, withdrawals } = useConsensusStates()
-  const { loadData: loadDomainsData } = useDomainsData()
-  const { loadData: loadConsensusData } = useConsensusData()
+  useConsensusData()
+  useDomainsData()
   const inFocus = useWindowFocus()
   const { myPositionOnly, registeredOnly } = useViewStates()
-
-  useEffect(() => {
-    loadDomainsData()
-    loadConsensusData()
-  }, [loadConsensusData, loadDomainsData])
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
