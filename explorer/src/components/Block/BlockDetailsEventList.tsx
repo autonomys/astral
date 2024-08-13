@@ -53,7 +53,10 @@ export const BlockDetailsEventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { setIsVisible } = useSquidQuery<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<
+    EventsByBlockIdQuery,
+    EventsByBlockIdQueryVariables
+  >(
     QUERY_BLOCK_EVENTS,
     {
       variables,
@@ -69,7 +72,7 @@ export const BlockDetailsEventList: FC = () => {
     consensus: { blockDetailsEvent: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -150,10 +153,10 @@ export const BlockDetailsEventList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -161,7 +164,7 @@ export const BlockDetailsEventList: FC = () => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {events ? (
+      {!loading && events ? (
         <SortedTable
           data={events}
           columns={columns}

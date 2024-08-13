@@ -53,7 +53,10 @@ export const AccountList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { setIsVisible } = useSquidQuery<AccountsConnectionQuery, AccountsConnectionQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<
+    AccountsConnectionQuery,
+    AccountsConnectionQueryVariables
+  >(
     QUERY_ACCOUNT_CONNECTION_LIST,
     {
       variables,
@@ -70,7 +73,7 @@ export const AccountList: FC = () => {
     nova: { accounts: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -92,7 +95,6 @@ export const AccountList: FC = () => {
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const theme = useMemo(() => (isEvm ? 'ethereum' : 'beachball'), [isEvm])
-
   const columns = useMemo(
     () => [
       {
@@ -101,7 +103,7 @@ export const AccountList: FC = () => {
         enableSorting: false,
         cell: ({ row }: Cell<Account>) => (
           <div key={`${row.index}-account-index`}>
-            {row.index + 1 > 1 ? totalCount + row.index + 1 : row.index + 1}
+            {pagination.pageIndex * pagination.pageSize + row.index + 1}
           </div>
         ),
       },
@@ -151,7 +153,7 @@ export const AccountList: FC = () => {
         ),
       },
     ],
-    [isLargeLaptop, network, section, theme, totalCount],
+    [isLargeLaptop, network, pagination.pageIndex, pagination.pageSize, section, theme],
   )
 
   const pageCount = useMemo(
@@ -166,10 +168,10 @@ export const AccountList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (dataLoading || loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, loading, dataLoading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -188,7 +190,7 @@ export const AccountList: FC = () => {
         <div className='w-full'>
           <div className='my-6 rounded'>
             <div ref={ref}>
-              {accounts ? (
+              {!loading && accounts ? (
                 <SortedTable
                   data={accounts}
                   columns={columns}
