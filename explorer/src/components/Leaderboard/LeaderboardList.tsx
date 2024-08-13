@@ -160,7 +160,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         ),
       },
     ]
-  }, [idLabel, showAccountIcon, idLink, isLargeLaptop, valueType, valueSuffix, network])
+  }, [idLabel, valueLabel, showAccountIcon, idLink, isLargeLaptop, valueType, valueSuffix, network])
 
   const orderBy = useMemo(
     () =>

@@ -66,7 +66,7 @@ export const AccountRewardList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, sortBy, accountId],
   )
 
-  const { setIsVisible } = useSquidQuery<RewardsListQuery, RewardsListQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<RewardsListQuery, RewardsListQueryVariables>(
     QUERY_REWARDS_LIST,
     {
       variables,
@@ -83,7 +83,7 @@ export const AccountRewardList: FC = () => {
     consensus: { accountReward: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -199,10 +199,10 @@ export const AccountRewardList: FC = () => {
   }, [accountId])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading && dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, loading, dataLoading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -221,7 +221,7 @@ export const AccountRewardList: FC = () => {
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded' ref={ref}>
-            {rewards ? (
+            {!loading && rewards ? (
               <SortedTable
                 data={rewards}
                 columns={columns}
