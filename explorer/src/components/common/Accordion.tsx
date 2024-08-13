@@ -7,7 +7,7 @@ type Props = {
   title: React.ReactNode
   children: React.ReactNode
   value?: string
-  icon?: React.ReactNode
+  icon?: React.ReactNode | React.ReactNode[]
 }
 
 export const Accordion: FC<Props> = ({ title, children, value = '', icon }) => {
@@ -27,7 +27,11 @@ export const Accordion: FC<Props> = ({ title, children, value = '', icon }) => {
           <div className='flex items-center'>
             {value}
             {icon ? (
-              <span className='ml-2'>{icon}</span>
+              Array.isArray(icon) ? (
+                <div className='flex items-center'>{icon.map((i) => i)}</div>
+              ) : (
+                <span className='ml-2'>{icon}</span>
+              )
             ) : (
               <ChevronDownIcon
                 className={isActive ? 'ml-2 size-6 shrink-0 rotate-180' : 'ml-2 size-6 shrink-0'}
