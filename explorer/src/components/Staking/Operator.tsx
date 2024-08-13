@@ -25,7 +25,7 @@ export const Operator: FC = () => {
   const { loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
-  const { setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
     QUERY_OPERATOR_BY_ID,
     {
       variables,
@@ -46,10 +46,10 @@ export const Operator: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(operator)) return <Spinner isSmall />
+    if (isLoading(operator) || loading) return <Spinner isSmall />
     if (!hasValue(operator)) return <NotFound />
     return null
-  }, [operator])
+  }, [loading, operator])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -61,7 +61,7 @@ export const Operator: FC = () => {
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>
-      {operatorDetails ? (
+      {!loading && operatorDetails ? (
         <>
           <OperatorDetailsCard operator={operatorDetails} isDesktop={isDesktop} />
           <div className='mt-5 flex w-full flex-col align-middle'>

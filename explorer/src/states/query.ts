@@ -1,5 +1,4 @@
 import { ROUTE_EXTRA_FLAG_TYPE, Routes } from 'constants/routes'
-import * as GqlT from 'gql/graphql'
 import * as OldGqlT from 'gql/oldSquidTypes'
 import * as StakingQuery from 'gql/types/staking'
 import { create } from 'zustand'
@@ -29,7 +28,7 @@ export type QueryState<T> = Init | Loading<T> | LastValue<T> | Error<T>
 
 const initialized: Init = { initialized: true }
 
-interface ExplorerQueryState {
+export interface ExplorerQueryState {
   [Routes.consensus]: {
     home: QueryState<OldGqlT.HomeQueryQuery>
 
@@ -76,11 +75,6 @@ interface ExplorerQueryState {
     blockDetailsExtrinsic: QueryState<OldGqlT.ExtrinsicsByBlockIdQuery>
     blockDetailsEvent: QueryState<OldGqlT.EventsByBlockIdQuery>
   }
-  [Routes.leaderboard]: {
-    farmers: QueryState<GqlT.AccountsConnectionRewardsQuery>
-    nominators: QueryState<GqlT.AccountsNominatorsConnectionRewardsQuery>
-    operators: QueryState<GqlT.OperatorsConnectionRewardsQuery>
-  }
   [Routes.staking]: {
     operators: QueryState<StakingQuery.OperatorsListQuery>
 
@@ -105,7 +99,6 @@ export type ExplorerSection = keyof ExplorerQueryState
 export type Components =
   | keyof ExplorerQueryState[Routes.consensus]
   | keyof ExplorerQueryState[Routes.nova]
-  | keyof ExplorerQueryState[Routes.leaderboard]
   | keyof ExplorerQueryState[Routes.staking]
   | keyof ExplorerQueryState[Routes.domains]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
@@ -163,11 +156,6 @@ const initialState: ExplorerQueryState = {
 
     blockDetailsExtrinsic: initialized,
     blockDetailsEvent: initialized,
-  },
-  leaderboard: {
-    farmers: initialized,
-    nominators: initialized,
-    operators: initialized,
   },
   staking: {
     operators: initialized,

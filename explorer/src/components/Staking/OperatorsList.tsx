@@ -33,11 +33,11 @@ import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
+import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { MyPositionSwitch } from './MyPositionSwitch'
 import { MyPendingWithdrawals, MyUnlockedWithdrawals } from './MyWithdrawals'
 import { RegisteredSwitch } from './RegisteredSwitch'
 import { QUERY_OPERATOR_LIST } from './staking.query'
@@ -419,7 +419,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
     QUERY_OPERATOR_LIST,
     {
       variables,
@@ -478,10 +478,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(operators)) return <Spinner isSmall />
+    if (loading || isLoading(operators)) return <Spinner isSmall />
     if (!hasValue(operators)) return <NotFound />
     return null
-  }, [operators])
+  }, [loading, operators])
 
   useEffect(() => {
     if (operatorId) handleSearch(operatorId)
@@ -527,7 +527,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       </div>
       <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
-          {operatorsList ? (
+          {!loading && operatorsList ? (
             <SortedTable
               data={operatorsList}
               columns={columns}

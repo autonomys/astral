@@ -32,7 +32,7 @@ export const Block: FC = () => {
   const inFocus = useWindowFocus()
 
   const query = useMemo(() => (isEvm ? QUERY_BLOCK_BY_ID_DOMAIN : QUERY_BLOCK_BY_ID), [isEvm])
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     BlockByIdDomainQuery | BlockByIdQuery,
     BlockByIdDomainQueryVariables | BlockByIdQueryVariables
   >(
@@ -51,7 +51,7 @@ export const Block: FC = () => {
     nova: { block: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -64,10 +64,10 @@ export const Block: FC = () => {
   const block = useMemo(() => data && (data.blocks[0] as BlockResult), [data])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -77,7 +77,7 @@ export const Block: FC = () => {
     <div className='w-full'>
       {novaExplorerBanner}
       <div ref={ref}>
-        {block ? (
+        {!loading && block ? (
           <>
             <BlockDetailsCard block={block} isDesktop={isDesktop} />
             <BlockDetailsTabs

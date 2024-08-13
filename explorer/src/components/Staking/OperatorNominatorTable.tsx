@@ -25,6 +25,7 @@ import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
+import { Spinner } from '../common/Spinner'
 import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './staking.query'
 
 type Props = {
@@ -188,7 +189,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy, operatorId],
   )
 
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     OperatorNominatorsByIdQuery,
     OperatorNominatorsByIdQueryVariables
   >(
@@ -235,17 +236,21 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
       <div className='mt-5 flex w-full justify-between'>
         <div className='text-base font-medium text-grayDark dark:text-white'>{`Nominators (${totalLabel})`}</div>
       </div>
-      <SortedTable
-        data={nominators}
-        columns={columns}
-        showNavigation={!useRpcData}
-        sorting={sorting}
-        onSortingChange={setSorting}
-        pagination={pagination}
-        pageCount={pageCount}
-        onPaginationChange={setPagination}
-        filename='operator-nominators-list'
-      />
+      {!loading ? (
+        <SortedTable
+          data={nominators}
+          columns={columns}
+          showNavigation={!useRpcData}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='operator-nominators-list'
+        />
+      ) : (
+        <Spinner isSmall />
+      )}
     </div>
   )
 }

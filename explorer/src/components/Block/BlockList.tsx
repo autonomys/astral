@@ -62,7 +62,7 @@ export const BlockList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy],
   )
 
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     BlocksConnectionQuery | BlocksConnectionDomainQuery,
     BlocksConnectionQueryVariables | BlocksConnectionDomainQueryVariables
   >(
@@ -82,7 +82,7 @@ export const BlockList: FC = () => {
     nova: { blocks: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -109,7 +109,7 @@ export const BlockList: FC = () => {
     () => [
       {
         accessorKey: 'height',
-        header: 'Id',
+        header: 'Block number',
         enableSorting: false,
         cell: ({ row }: Cell<Block>) => (
           <Link
@@ -189,10 +189,10 @@ export const BlockList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (dataLoading || loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -211,7 +211,7 @@ export const BlockList: FC = () => {
         <div className='w-full'>
           <div className='my-6 rounded'>
             <div ref={ref}>
-              {blocks ? (
+              {!loading && blocks ? (
                 <SortedTable
                   data={blocks}
                   columns={columns}

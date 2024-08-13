@@ -1,0 +1,219 @@
+# account
+type AccountTransferSenderTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountTransferSenderTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountTransferReceiverTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountTransferReceiverTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountRemarkCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountExtrinsicTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountExtrinsicSuccessTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountExtrinsicFailedTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type AccountTransactionFeePaidTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+# farmer
+type FarmerVoteTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type FarmerVoteTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type FarmerBlockTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type FarmerBlockTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type FarmerVoteAndBlockTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type FarmerVoteAndBlockTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+# operator
+type OperatorTotalRewardsCollected @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type OperatorTotalTaxCollected @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type OperatorBundleTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type OperatorDepositsTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type OperatorDepositsTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type OperatorWithdrawalsTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+# nominator/account
+type NominatorDepositsTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type NominatorDepositsTotalValue @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: BigInt!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+type NominatorWithdrawalsTotalCount @entity {
+  id: ID! @index
+  rank: Int! @index
+  value: Int!
+  lastContributionAt: DateTime!
+  createdAt: Int!
+  updatedAt: Int!
+}

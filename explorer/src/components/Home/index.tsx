@@ -32,7 +32,7 @@ export const Home: FC = () => {
 
   const HomeQuery = useMemo(() => (isEvm ? QUERY_HOME_DOMAIN : QUERY_HOME), [isEvm])
 
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     HomeQueryQuery | HomeQueryDomainQuery,
     HomeQueryQueryVariables | HomeQueryDomainQueryVariables
   >(
@@ -50,7 +50,7 @@ export const Home: FC = () => {
     nova: { home: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -61,10 +61,10 @@ export const Home: FC = () => {
   }, [consensusEntry, evmEntry, isEvm])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -75,7 +75,7 @@ export const Home: FC = () => {
       {novaExplorerBanner}
       <SearchBar />
       <div ref={ref}>
-        {data ? (
+        {!loading && data ? (
           <>
             <HomeChainInfo data={data} />
             <div className='flex w-full flex-col items-center gap-5 xl:flex-row'>
