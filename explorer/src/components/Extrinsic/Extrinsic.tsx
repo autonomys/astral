@@ -30,7 +30,10 @@ export const Extrinsic: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
   const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
 
-  const { setIsVisible } = useSquidQuery<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<
+    ExtrinsicsByIdQuery,
+    ExtrinsicsByIdQueryVariables
+  >(
     QUERY_EXTRINSIC_BY_ID,
     {
       variables: { extrinsicId: extrinsicId ?? '' },
@@ -46,7 +49,7 @@ export const Extrinsic: FC = () => {
     nova: { extrinsic: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -60,10 +63,10 @@ export const Extrinsic: FC = () => {
   const novaExplorerBanner = useEvmExplorerBanner(extrinsic ? 'tx/' + extrinsic.hash : 'tx/')
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -73,7 +76,7 @@ export const Extrinsic: FC = () => {
     <div className='w-full'>
       {novaExplorerBanner}
       <div ref={ref}>
-        {extrinsic ? (
+        {!loading && extrinsic ? (
           <>
             <ExtrinsicDetailsCard extrinsic={extrinsic} isDesktop={isLargeDesktop} />
             <ExtrinsicDetailsTab events={extrinsic.events} isDesktop={isDesktop} />

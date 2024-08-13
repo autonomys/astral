@@ -55,7 +55,7 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     ExtrinsicsConnectionQuery,
     ExtrinsicsConnectionQueryVariables
   >(
@@ -74,7 +74,7 @@ export const ExtrinsicList: FC = () => {
     nova: { extrinsics: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -171,10 +171,10 @@ export const ExtrinsicList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     try {
@@ -212,7 +212,7 @@ export const ExtrinsicList: FC = () => {
         <div className='w-full'>
           <div className='my-6 rounded'>
             <div ref={ref}>
-              {extrinsics ? (
+              {!loading && extrinsics ? (
                 <SortedTable
                   data={extrinsics}
                   columns={columns}

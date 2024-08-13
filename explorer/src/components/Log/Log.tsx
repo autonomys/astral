@@ -21,7 +21,7 @@ export const Log: FC = () => {
   const { isEvm } = useChains()
   const { logId } = useParams<LogIdParam>()
   const inFocus = useWindowFocus()
-  const { setIsVisible } = useSquidQuery<LogByIdQuery, LogByIdQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<LogByIdQuery, LogByIdQueryVariables>(
     QUERY_LOG_BY_ID,
     {
       variables: { logId: logId ?? '' },
@@ -37,7 +37,7 @@ export const Log: FC = () => {
     nova: { log: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -50,10 +50,10 @@ export const Log: FC = () => {
   const log = useMemo(() => data && (data.logById as SquidLog), [data])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -62,7 +62,7 @@ export const Log: FC = () => {
   return (
     <div className='w-full'>
       <div ref={ref}>
-        {log ? (
+        {!loading && log ? (
           <>
             <LogDetailsCard log={log} />
             <LogDetailsTab events={log.block.events} />

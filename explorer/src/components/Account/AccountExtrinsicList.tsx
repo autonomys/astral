@@ -81,7 +81,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     ExtrinsicsByAccountIdQuery,
     ExtrinsicsByAccountIdQueryVariables
   >(
@@ -101,7 +101,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     consensus: { accountExtrinsic: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [isEvm, evmEntry, consensusEntry])
@@ -202,10 +202,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading && dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, loading, dataLoading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -220,7 +220,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         </div>
       </div>
       <div className='my-6 rounded' ref={ref}>
-        {extrinsics ? (
+        {!loading && extrinsics ? (
           <SortedTable
             data={extrinsics}
             columns={columns}
