@@ -392,7 +392,7 @@ export const OperatorsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
     QUERY_OPERATOR_LIST,
     {
       variables,
@@ -451,10 +451,10 @@ export const OperatorsList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(operators)) return <Spinner isSmall />
+    if (loading || isLoading(operators)) return <Spinner isSmall />
     if (!hasValue(operators)) return <NotFound />
     return null
-  }, [operators])
+  }, [loading, operators])
 
   useEffect(() => {
     if (operatorId) handleSearch(operatorId)
@@ -492,7 +492,7 @@ export const OperatorsList: FC = () => {
       </div>
       <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
-          {operatorsList ? (
+          {!loading && operatorsList ? (
             <SortedTable
               data={operatorsList}
               columns={columns}

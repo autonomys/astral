@@ -143,7 +143,7 @@ export const BlockDetailsEventList: FC = () => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {events ? (
+      {!loading && events ? (
         <SortedTable
           data={events}
           columns={columns}

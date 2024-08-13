@@ -136,7 +136,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>
-      {extrinsics ? (
+      {!loading && extrinsics ? (
         <SortedTable
           data={extrinsics}
           columns={columns}

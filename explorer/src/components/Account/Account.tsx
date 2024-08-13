@@ -40,7 +40,7 @@ export const Account: FC = () => {
 
   const AccountQuery = section === Routes.nova ? QUERY_ACCOUNT_BY_ID_EVM : QUERY_ACCOUNT_BY_ID
 
-  const { setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useSquidQuery<
     AccountByIdQuery | AccountByIdEvmQuery,
     AccountByIdQueryVariables | AccountByIdEvmQueryVariables
   >(
@@ -58,7 +58,7 @@ export const Account: FC = () => {
     nova: { account: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (section === Routes.nova) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [section, evmEntry, consensusEntry])
@@ -76,10 +76,10 @@ export const Account: FC = () => {
   }, [accountId])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, loading, dataLoading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -89,7 +89,7 @@ export const Account: FC = () => {
     <div className='flex w-full flex-col space-y-4'>
       {novaExplorerBanner}
       <div ref={ref}>
-        {accountId ? (
+        {!loading && accountId ? (
           <>
             <AccountDetailsCard
               account={account}
