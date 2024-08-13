@@ -16,5 +16,7 @@ export function processDomainInstantiatedEvent(
 
   cache.domains.set(domain.id, domain);
 
+  cache.isModified = true;
+
   return cache;
 }

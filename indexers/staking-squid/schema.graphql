@@ -56,14 +56,30 @@ type Operator @entity {
   id: ID! @index
   sortId: Int! @index
   accountId: String! @index
+  # creation args
   domainId: String! @index
   signingKey: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
+  # public profile
+  name: String! @index
+  description: String
+  icon: String
+  banner: String
+  website: String
+  websiteVerified: Boolean!
+  email: String
+  emailVerified: Boolean!
+  discord: String
+  github: String
+  twitter: String
+  # chain state
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
+  rawStatus: String
+  # increments
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
@@ -79,10 +95,10 @@ type Operator @entity {
   totalConsensusStorageFee: BigInt!
   totalDomainExecutionFee: BigInt!
   totalBurnedBalance: BigInt!
-  rawStatus: String
-  status: OperatorStatus! @index
   activeEpochCount: Int!
   bundleCount: Int!
+  # status and timestamps
+  status: OperatorStatus! @index
   lastBundleAt: Int!
   createdAt: Int @index
   updatedAt: Int @index
@@ -90,10 +106,10 @@ type Operator @entity {
 
 type Bundle @entity {
   id: ID! @index
-  accountId: String! @index
   domainId: String! @index
-  operatorId: String! @index
   domainBlockNumber: Int! @index
+  domainBlockHash: String!
+  domainBlockExtrinsicRoot: String!
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
   totalTransfersIn: BigInt!
@@ -110,6 +126,13 @@ type Bundle @entity {
   burnedBalance: BigInt!
 }
 
+type BundleAuthor @entity {
+  id: ID! @index
+  bundleId: String! @index
+  accountId: String! @index
+  operatorId: String! @index
+}
+
 enum NominatorStatus {
   PENDING
   STAKING
@@ -123,7 +146,16 @@ type Nominator @entity {
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
-  shares: BigInt!
+  knownShares: BigInt!
+  knownStorageFeeDeposit: BigInt!
+  pendingAmount: BigInt!
+  pendingStorageFeeDeposit: BigInt!
+  pendingEffectiveDomainEpoch: Int!
+  totalWithdrawalAmounts: BigInt!
+  totalStorageFeeRefund: BigInt!
+  unlockAtConfirmedDomainBlockNumber: [Int!]!
+  pendingShares: BigInt!
+  pendingStorageFeeRefund: BigInt!
   totalDeposits: BigInt!
   status: NominatorStatus! @index
   createdAt: Int @index
@@ -179,7 +211,7 @@ type OperatorUnlockedFunds @entity {
   amount: BigInt!
 }
 
-type OperatorRewardEvent @entity {
+type RewardEvent @entity {
   id: ID! @index
   domainId: String! @index
   operatorId: String! @index

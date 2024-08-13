@@ -2,7 +2,7 @@ import { NominatorStatus, OperatorStatus } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
-  createOperatorRewardEvent,
+  createRewardEvent,
   getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateNominator,
@@ -73,6 +73,8 @@ export function processOperatorNominatedEvent(
 
   cache.deposits.set(deposit.id, deposit);
 
+  cache.isModified = true;
+
   return cache;
 }
 
@@ -98,6 +100,8 @@ export function processOperatorSlashedEvent(
       n.updatedAt = operator.updatedAt;
       cache.nominators.set(n.id, n);
     });
+
+  cache.isModified = true;
 
   return cache;
 }
@@ -128,6 +132,8 @@ export function processOperatorTaxCollectedEvent(
   domain.updatedAt = blockNumber;
   cache.domains.set(domain.id, domain);
 
+  cache.isModified = true;
+
   return cache;
 }
 
@@ -149,7 +155,7 @@ export function processOperatorRewardedEvent(
   domain.totalRewardsCollected += amount;
   cache.domains.set(domain.id, domain);
 
-  const operatorRewardedEvent = createOperatorRewardEvent(block, extrinsic, {
+  const operatorRewardedEvent = createRewardEvent(block, extrinsic, {
     operatorId: operator.id,
     domainId: operator.domainId,
     amount,
@@ -158,6 +164,8 @@ export function processOperatorRewardedEvent(
     operatorRewardedEvent.id,
     operatorRewardedEvent
   );
+
+  cache.isModified = true;
 
   return cache;
 }

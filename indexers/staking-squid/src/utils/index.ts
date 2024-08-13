@@ -1,13 +1,12 @@
+import { DEFAULT_SS58_FORMAT } from "@autonomys/auto-utils";
 import { codec } from "@subsquid/ss58";
 import type { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from "@subsquid/util-internal-hex";
 import type { CtxBlock, ProcessorContext } from "../processor";
 
-const CODEC = 2254;
-
 export const hexToAccount = (hex: string): string => {
   try {
-    return codec(CODEC).encode(decodeHex(hex));
+    return codec(DEFAULT_SS58_FORMAT).encode(decodeHex(hex));
   } catch (error) {
     console.error("Failed to convert hex to account:", error);
     return "";
@@ -39,3 +38,19 @@ export const operatorUID = (operatorId: number): string => `${operatorId}`;
 
 export const nominatorUID = (operatorId: number, account: string): string =>
   `${operatorId}-${account}`;
+
+export const bundleUID = (
+  domainId: number | string,
+  domainBlockHeight: number | string,
+  domainBlockBundleIndex: number | string
+): string => `${domainId}-${domainBlockHeight}-${domainBlockBundleIndex}`;
+
+export const logBlock = (blocks: CtxBlock[]): void => {
+  const from = getBlockNumber(blocks[0]);
+  const to = getBlockNumber(blocks[blocks.length - 1]);
+  return console.log(
+    "\x1b[33mProcessing " + blocks.length + " blocks\x1b[0m",
+    "From " + from,
+    "to " + to + " (" + (to - from) + " blocks)"
+  );
+};

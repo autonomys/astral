@@ -1,18 +1,19 @@
 import { randomUUID } from "crypto";
-import { Bundle } from "../model";
+import { Bundle, BundleAuthor } from "../model";
+import { bundleUID } from "../utils";
 
 export const createBundle = (
-  accountId: string,
   domainId: string,
-  operatorId: string,
+  domainBlockHash: string,
+  domainBlockBundleIndex: number | string,
   props?: Partial<Bundle>
 ): Bundle =>
   new Bundle({
-    id: randomUUID(),
-    accountId,
+    id: bundleUID(domainId, domainBlockHash, domainBlockBundleIndex),
     domainId,
-    operatorId,
     domainBlockNumber: 0,
+    domainBlockHash: "",
+    domainBlockExtrinsicRoot: "",
     consensusBlockNumber: 0,
     consensusBlockHash: "",
     totalTransfersIn: BigInt(0),
@@ -27,5 +28,19 @@ export const createBundle = (
     consensusStorageFee: BigInt(0),
     domainExecutionFee: BigInt(0),
     burnedBalance: BigInt(0),
+    ...props,
+  });
+
+export const createBundleAuthor = (
+  bundleId: string,
+  accountId: string,
+  operatorId: string,
+  props?: Partial<BundleAuthor>
+): BundleAuthor =>
+  new BundleAuthor({
+    id: randomUUID(),
+    bundleId,
+    accountId,
+    operatorId,
     ...props,
   });

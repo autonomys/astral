@@ -5,10 +5,8 @@ import { processBlocks } from "./blocks";
 import { processor } from "./processor";
 
 processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
-  console.log("Starting processor");
-
   const api = await createConnection(
-    assertNotNull(process.env.RPC_CONSENSUS_HTTP, "No RPC endpoint supplied")
+    assertNotNull(process.env.RPC_CONSENSUS_HTTP, "No RPC_CONSENSUS_HTTP env")
   );
 
   await processBlocks(ctx, api);

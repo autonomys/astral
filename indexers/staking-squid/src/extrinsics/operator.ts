@@ -72,6 +72,8 @@ export function processRegisterOperator(
   account.totalDeposits += amountBigInt;
   cache.accounts.set(account.id, account);
 
+  cache.isModified = true;
+
   return cache;
 }
 
@@ -94,6 +96,8 @@ export function processDeregisterOperator(
   operator.status = OperatorStatus.DEREGISTERED;
 
   cache.operators.set(operator.id, operator);
+
+  cache.isModified = true;
 
   return cache;
 }
