@@ -315,13 +315,9 @@ export const OperatorsList: FC = () => {
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => {
           const isOperator = row.original.account_id === subspaceAccount
-          const deposit = deposits.find(
-            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+          const nominator = row.original.nominators.find(
+            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
-          const nominator =
-            row.original.nominators.find(
-              (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
-            ) || deposit
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
@@ -344,7 +340,7 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BIGINT_ZERO}
+              nominatorMaxShares={nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO}
             />
           )
         },
@@ -396,7 +392,7 @@ export const OperatorsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
     QUERY_OPERATOR_LIST,
     {
       variables,
@@ -455,10 +451,10 @@ export const OperatorsList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(operators)) return <Spinner isSmall />
+    if (loading || isLoading(operators)) return <Spinner isSmall />
     if (!hasValue(operators)) return <NotFound />
     return null
-  }, [operators])
+  }, [loading, operators])
 
   useEffect(() => {
     if (operatorId) handleSearch(operatorId)
@@ -496,7 +492,7 @@ export const OperatorsList: FC = () => {
       </div>
       <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
-          {operatorsList ? (
+          {!loading && operatorsList ? (
             <SortedTable
               data={operatorsList}
               columns={columns}

@@ -6,6 +6,7 @@ export interface Indexer {
   squids: {
     old: string
     general?: string
+    leaderboard?: string
     staking?: string
     account?: string
     rewards?: string
@@ -20,7 +21,9 @@ export const indexers: Indexer[] = [
     squids: {
       old: 'https://squid.gemini-3h.subspace.network/graphql',
       general: 'https://squid.green.gemini-3h.subspace.network/graphql',
-      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v5/addons/hasura/v1/graphql',
+      leaderboard:
+        'https://autonomys-labs.squids.live/leaderboard-squid/v/v6/addons/hasura/v1/graphql',
+      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v11/addons/hasura/v1/graphql',
       rewards: 'https://rewards.squid.green.gemini-3h.subspace.network/graphql',
       account: 'https://account.squid.green.gemini-3h.subspace.network/graphql',
       nova: 'https://nova.squid.gemini-3h.subspace.network/graphql',

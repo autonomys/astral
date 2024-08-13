@@ -50,7 +50,10 @@ export const LogList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { setIsVisible } = useSquidQuery<LogsConnectionQuery, LogsConnectionQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<
+    LogsConnectionQuery,
+    LogsConnectionQueryVariables
+  >(
     QUERY_LOG_CONNECTION_LIST,
     {
       variables,
@@ -67,7 +70,7 @@ export const LogList: FC = () => {
     nova: { logs: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [isEvm, evmEntry, consensusEntry])
@@ -153,10 +156,10 @@ export const LogList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -181,7 +184,7 @@ export const LogList: FC = () => {
         <div className='w-full'>
           <div className='my-6 rounded'>
             <div ref={ref}>
-              {logs ? (
+              {!loading && logs ? (
                 <SortedTable
                   data={logs}
                   columns={columns}

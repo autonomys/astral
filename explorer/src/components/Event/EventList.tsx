@@ -55,7 +55,10 @@ export const EventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { setIsVisible } = useSquidQuery<EventsConnectionQuery, EventsConnectionQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<
+    EventsConnectionQuery,
+    EventsConnectionQueryVariables
+  >(
     QUERY_EVENT_CONNECTION_LIST,
     {
       variables,
@@ -72,7 +75,7 @@ export const EventList: FC = () => {
     nova: { events: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -173,10 +176,10 @@ export const EventList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -204,7 +207,7 @@ export const EventList: FC = () => {
         <div className='w-full'>
           <div className='my-6 rounded'>
             <div ref={ref}>
-              {events ? (
+              {!loading && events ? (
                 <SortedTable
                   data={events}
                   columns={columns}

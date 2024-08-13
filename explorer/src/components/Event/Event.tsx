@@ -20,7 +20,7 @@ export const Event: FC = () => {
   const { eventId } = useParams<EventIdParam>()
   const { isEvm } = useChains()
   const inFocus = useWindowFocus()
-  const { setIsVisible } = useSquidQuery<EventByIdQuery, EventByIdQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<EventByIdQuery, EventByIdQueryVariables>(
     QUERY_EVENT_BY_ID,
     {
       variables: { eventId: eventId ?? '' },
@@ -36,7 +36,7 @@ export const Event: FC = () => {
     nova: { event: evmEntry },
   } = useQueryStates()
 
-  const loading = useMemo(() => {
+  const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
   }, [evmEntry, consensusEntry, isEvm])
@@ -49,10 +49,10 @@ export const Event: FC = () => {
   const event = useMemo(() => data && data.eventById, [data])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading || dataLoading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading])
+  }, [data, dataLoading, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -60,7 +60,7 @@ export const Event: FC = () => {
 
   return (
     <div className='w-full'>
-      <div ref={ref}>{event ? <EventDetailsCard event={event} /> : noData}</div>
+      <div ref={ref}>{!loading && event ? <EventDetailsCard event={event} /> : noData}</div>
     </div>
   )
 }
