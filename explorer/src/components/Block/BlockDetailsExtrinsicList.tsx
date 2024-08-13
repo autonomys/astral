@@ -5,7 +5,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Extrinsic, ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
@@ -16,7 +16,6 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
@@ -41,34 +40,14 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const inFocus = useWindowFocus()
 
   const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
-  const { loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useSquidQuery<
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
-  >(
-    QUERY_BLOCK_EXTRINSICS,
-    {
-      variables: { blockId: Number(blockId), first },
-      skip: !inFocus,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
-    },
-    isEvm ? Routes.nova : Routes.consensus,
-    'blockDetailsExtrinsic',
-  )
-
-  const {
-    consensus: { blockDetailsExtrinsic: consensusEntry },
-    consensus: { blockDetailsExtrinsic: evmEntry },
-  } = useQueryStates()
-
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
-  const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  >(QUERY_BLOCK_EXTRINSICS, {
+    variables: { blockId: Number(blockId), first },
+    skip: !inFocus,
+    context: { clientName: isEvm ? 'nova' : 'consensus' },
+  })
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -146,10 +125,10 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, loading])
 
   useEffect(() => {
     setIsVisible(inView)

@@ -5,7 +5,7 @@ import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { Event, EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
@@ -16,7 +16,6 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
@@ -53,34 +52,14 @@ export const BlockDetailsEventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useSquidQuery<
     EventsByBlockIdQuery,
     EventsByBlockIdQueryVariables
-  >(
-    QUERY_BLOCK_EVENTS,
-    {
-      variables,
-      skip: !inFocus,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
-    },
-    isEvm ? Routes.nova : Routes.consensus,
-    'blockDetailsEvent',
-  )
-
-  const {
-    consensus: { blockDetailsEvent: consensusEntry },
-    consensus: { blockDetailsEvent: evmEntry },
-  } = useQueryStates()
-
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
-  const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  >(QUERY_BLOCK_EVENTS, {
+    variables,
+    skip: !inFocus,
+    context: { clientName: isEvm ? 'nova' : 'consensus' },
+  })
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
   const events = useMemo(
@@ -153,10 +132,10 @@ export const BlockDetailsEventList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, loading])
 
   useEffect(() => {
     setIsVisible(inView)
