@@ -3,11 +3,12 @@ import { Entity } from "@subsquid/typeorm-store/src/store";
 import {
   Account,
   Bundle,
+  BundleAuthor,
   Deposit,
   Domain,
   Nominator,
   Operator,
-  OperatorRewardEvent,
+  RewardEvent,
   Stats,
   StatsPerDomain,
   StatsPerOperator,
@@ -26,15 +27,24 @@ export type TemporaryCache = {
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
-  operatorRewardedEvents: Map<string, OperatorRewardEvent>;
+  bundleAuthors: Map<string, BundleAuthor>;
+  operatorRewardedEvents: Map<string, RewardEvent>;
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
 };
 
-export type Cache = PermanentCache & TemporaryCache;
+type CacheManager = {
+  isModified: boolean;
+  internalKeyStore: Map<string, string>;
+};
+
+export type Cache = PermanentCache & TemporaryCache & CacheManager;
 
 export const initCache: Cache = {
+  isModified: false,
+  internalKeyStore: new Map(),
+
   domains: new Map(),
   accounts: new Map(),
   operators: new Map(),
@@ -42,6 +52,7 @@ export const initCache: Cache = {
   deposits: new Map(),
   withdrawals: new Map(),
   bundles: new Map(),
+  bundleAuthors: new Map(),
   operatorRewardedEvents: new Map(),
   stats: new Map(),
   statsPerDomain: new Map(),
@@ -56,10 +67,13 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     ctx.store.find(Nominator),
   ]);
 
-  console.log("Loaded domains:", domains.length);
-  console.log("Loaded accounts:", accounts.length);
-  console.log("Loaded operators:", operators.length);
-  console.log("Loaded nominators:", nominators.length);
+  console.log(
+    "\x1b[32mLoaded in cache:\x1b[0m",
+    domains.length + " domains, ",
+    accounts.length + " accounts, ",
+    operators.length + " operators, ",
+    nominators.length + " nominators"
+  );
 
   return {
     ...initCache,
@@ -79,23 +93,48 @@ const saveEntry = async <E extends Entity>(
     const entity = cache[name] as unknown as Map<string, E>;
     if (entity.size === 0) return;
 
-    console.log(`Saving ${entity.size} ${name} entries to the database.`);
-
     await ctx.store.save(Array.from(entity.values()));
   } catch (e) {
     console.error(`Failed to save ${name} with error:`, e);
   }
 };
 
+const logEntry = <K>(name: string, entry: Map<string, K>) =>
+  entry.size > 0 ? entry.size + " " + name + ", " : "";
+
 export const save = async (ctx: Ctx<Store>, cache: Cache) => {
+  // If the cache is not modified, skip saving
+  if (!cache.isModified) return;
+
+  let logPerm = logEntry("domains", cache.domains);
+  logPerm += logEntry("accounts", cache.accounts);
+  logPerm += logEntry("operators", cache.operators);
+  logPerm += logEntry("nominators", cache.nominators);
+
+  let logTemp = logEntry("deposits", cache.deposits);
+  logTemp += logEntry("withdrawals", cache.withdrawals);
+  logTemp += logEntry("bundles", cache.bundles);
+  logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
+  logTemp += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
+  logTemp += logEntry("stats", cache.stats);
+  logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
+  logTemp += logEntry("statsPerOperator", cache.statsPerOperator);
+
+  console.log("\x1b[34mSaving in database:\x1b[0m", logPerm);
+  console.log(" and ", logTemp, "\n");
+
   await Promise.all(
-    Object.keys(cache).map((k) => saveEntry(ctx, cache, k as keyof Cache))
+    Object.keys(cache).map((k) =>
+      k !== "isModified" ? saveEntry(ctx, cache, k as keyof Cache) : null
+    )
   );
 
   // Clear the cache for entries not needed for reference
+  cache.internalKeyStore.clear();
   cache.deposits.clear();
   cache.withdrawals.clear();
   cache.bundles.clear();
+  cache.bundleAuthors.clear();
   cache.operatorRewardedEvents.clear();
   cache.stats.clear();
   cache.statsPerDomain.clear();

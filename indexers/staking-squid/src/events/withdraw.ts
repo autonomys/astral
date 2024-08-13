@@ -33,7 +33,6 @@ export function processWithdrewStakeEvent(
     domainId: domain.id,
     accountId: account.id,
     operatorId: operator.id,
-    shares: sharesBigInt,
   });
   cache.nominators.set(nominator.id, nominator);
 
@@ -45,6 +44,8 @@ export function processWithdrewStakeEvent(
     shares: sharesBigInt,
   });
   cache.withdrawals.set(withdrawal.id, withdrawal);
+
+  cache.isModified = true;
 
   return cache;
 }
