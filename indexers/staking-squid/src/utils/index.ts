@@ -41,8 +41,9 @@ export const nominatorUID = (operatorId: number, account: string): string =>
 
 export const bundleUID = (
   domainId: number | string,
-  domainBlockHash: string
-): string => `${domainId}-${domainBlockHash}`;
+  domainBlockHeight: number | string,
+  domainBlockBundleIndex: number | string
+): string => `${domainId}-${domainBlockHeight}-${domainBlockBundleIndex}`;
 
 export const logBlock = (blocks: CtxBlock[]): void => {
   const from = getBlockNumber(blocks[0]);

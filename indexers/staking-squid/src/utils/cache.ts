@@ -34,10 +34,16 @@ export type TemporaryCache = {
   statsPerOperator: Map<string, StatsPerOperator>;
 };
 
-export type Cache = PermanentCache & TemporaryCache & { isModified: boolean };
+type CacheManager = {
+  isModified: boolean;
+  internalKeyStore: Map<string, string>;
+};
+
+export type Cache = PermanentCache & TemporaryCache & CacheManager;
 
 export const initCache: Cache = {
   isModified: false,
+  internalKeyStore: new Map(),
 
   domains: new Map(),
   accounts: new Map(),
@@ -124,6 +130,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   );
 
   // Clear the cache for entries not needed for reference
+  cache.internalKeyStore.clear();
   cache.deposits.clear();
   cache.withdrawals.clear();
   cache.bundles.clear();

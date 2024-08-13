@@ -66,10 +66,24 @@ export function processBundleStoredEvent(
     blockFees,
   } = receipt;
 
-  let bundle = cache.bundles.get(bundleUID(domainId, domainBlockHash));
+  const keyIdLastBlockBundleIndex =
+    "lastBlockBundleIndex:" + domainId + "-" + domainBlockHash;
+  const lastBlockBundleIndex = cache.internalKeyStore.get(
+    keyIdLastBlockBundleIndex
+  );
+  const blockBundleIndex = lastBlockBundleIndex
+    ? parseInt(lastBlockBundleIndex) + 1
+    : 0;
+  cache.internalKeyStore.set(
+    keyIdLastBlockBundleIndex,
+    blockBundleIndex.toString()
+  );
+  let bundle = cache.bundles.get(
+    bundleUID(domainId, domainBlockHash, blockBundleIndex)
+  );
 
   if (!bundle) {
-    bundle = createBundle(domain.id, domainBlockHash, {
+    bundle = createBundle(domain.id, domainBlockHash, blockBundleIndex, {
       domainBlockNumber: Number(domainBlockNumber),
       domainBlockHash,
       domainBlockExtrinsicRoot,

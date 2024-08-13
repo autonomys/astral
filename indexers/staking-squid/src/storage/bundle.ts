@@ -1,15 +1,15 @@
 import { randomUUID } from "crypto";
 import { Bundle, BundleAuthor } from "../model";
 import { bundleUID } from "../utils";
-import { Cache } from "../utils/cache";
 
 export const createBundle = (
   domainId: string,
   domainBlockHash: string,
+  domainBlockBundleIndex: number | string,
   props?: Partial<Bundle>
 ): Bundle =>
   new Bundle({
-    id: bundleUID(domainId, domainBlockHash),
+    id: bundleUID(domainId, domainBlockHash, domainBlockBundleIndex),
     domainId,
     domainBlockNumber: 0,
     domainBlockHash: "",
