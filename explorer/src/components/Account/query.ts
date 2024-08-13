@@ -75,7 +75,11 @@ export const QUERY_ACCOUNT_BY_ID = gql`
         }
       }
     }
-    rewardEvents(limit: 10, orderBy: block_height_DESC, where: { account: { id_eq: $accountId } }) {
+    rewardEvents(
+      limit: 10
+      orderBy: block_height_DESC
+      where: { account: { id_eq: $accountId }, amount_gt: 0 }
+    ) {
       amount
       id
       indexInBlock
@@ -112,7 +116,11 @@ export const QUERY_ACCOUNT_BY_ID_EVM = gql`
         }
       }
     }
-    rewardEvents(limit: 10, orderBy: block_height_DESC, where: { account: { id_eq: $accountId } }) {
+    rewardEvents(
+      limit: 10
+      orderBy: block_height_DESC
+      where: { account: { id_eq: $accountId }, amount_gt: 0 }
+    ) {
       amount
       id
       indexInBlock
@@ -158,7 +166,7 @@ export const QUERY_LAST_WEEK_REWARDS = gql`
     rewardEvents(
       limit: 500
       orderBy: block_height_DESC
-      where: { timestamp_gt: $gte, account: { id_eq: $accountId } }
+      where: { timestamp_gt: $gte, account: { id_eq: $accountId }, amount_gt: 0 }
     ) {
       amount
       id
@@ -185,7 +193,7 @@ export const QUERY_REWARDS_LIST = gql`
       orderBy: $sortBy
       first: $first
       after: $after
-      where: { account: { id_eq: $accountId } }
+      where: { account: { id_eq: $accountId }, amount_gt: 0 }
     ) {
       totalCount
       edges {
@@ -257,7 +265,7 @@ export const QUERY_ACCOUNT_EXTRINSICS = gql`
 
 export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
   query AllRewardForAccountById($accountId: String!) {
-    accountRewards(where: { account: { id_eq: $accountId } }, limit: 1) {
+    accountRewards(where: { account: { id_eq: $accountId }, amount_gt: 0 }, limit: 1) {
       amount
       block
       id
