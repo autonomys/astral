@@ -1,8 +1,11 @@
+import { INTERNAL_ROUTES, Routes } from '@/constants'
 import { isAddress } from '@autonomys/auto-utils'
 import { Modal } from 'components/common/Modal'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
+import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
+import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useAddressBookStates } from 'states/addressBook'
 import { usePreferencesStates } from 'states/preferences'
@@ -21,6 +24,7 @@ type AccountSetting = {
 }
 
 export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, preference, onClose }) => {
+  const { network } = useChains()
   const { actingAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const { addresses, addAddress, removeAddress } = useAddressBookStates()
@@ -131,10 +135,30 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                   >
                     <div className='flex items-center gap-4'>
                       <div className='text-sm font-medium text-grayDarker dark:text-white'>
-                        {address.label}
+                        <Link
+                          data-testid={`account-link-${address.address}`}
+                          href={INTERNAL_ROUTES.accounts.id.page(
+                            network,
+                            Routes.consensus,
+                            address.address,
+                          )}
+                          className='hover:text-purpleAccent'
+                        >
+                          {address.label}
+                        </Link>
                       </div>
                       <div className='text-sm text-grayDarker dark:text-white'>
-                        {shortString(address.address)}
+                        <Link
+                          data-testid={`account-link-${address.address}`}
+                          href={INTERNAL_ROUTES.accounts.id.page(
+                            network,
+                            Routes.consensus,
+                            address.address,
+                          )}
+                          className='hover:text-purpleAccent'
+                        >
+                          {shortString(address.address)}
+                        </Link>
                       </div>
                     </div>
                     <div className='flex items-center gap-4'>
