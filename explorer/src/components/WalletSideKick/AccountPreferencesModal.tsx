@@ -304,6 +304,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
     addAddressBookFormValidationSchema,
     initialAccountSettingsValues,
     changeAccountSettubgsFormValidationSchema,
+    network,
     handleDeleteClick,
     handleAddInAddressBook,
     ErrorPlaceholder,
