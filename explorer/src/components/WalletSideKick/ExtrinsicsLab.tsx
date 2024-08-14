@@ -1,24 +1,9 @@
-import { SubmittableModuleExtrinsics } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Field, FieldArray, FormikErrors, FormikTouched } from 'formik'
 import { FC, Fragment, useCallback, useMemo, useState } from 'react'
+import type { CustomExtrinsicFormValues, ExtrinsicsList, ExtrinsicsMethod } from 'types/transaction'
 import { camelToNormal } from 'utils/string'
-
-export type ExtrinsicModule = SubmittableModuleExtrinsics<'promise'>
-export type ExtrinsicsList = { [key: string]: ExtrinsicModule }
-export type ExtrinsicsMethodFields = { name: string; type: string; typeName: string }
-export type ExtrinsicsMethodArgs = ExtrinsicsMethodFields & { docs: string[] }
-
-export type ExtrinsicsMethod = {
-  name: string
-  docs: string[]
-  fields: ExtrinsicsMethodFields[]
-  args: ExtrinsicsMethodArgs[]
-}
-export interface CustomExtrinsicFormValues {
-  [key: string]: string
-}
 
 type ExtrinsicsCategorySelectorProps = {
   extrinsicsList: ExtrinsicsList | undefined

@@ -3,6 +3,7 @@
 import { EXTERNAL_ROUTES } from '@/constants'
 import Image from 'next/image'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { Card } from '../common/Card'
 
 interface ReleaseAsset {
   name: string
@@ -175,7 +176,7 @@ export const DownloadPage: FC = () => {
   return (
     <div className='flex w-full flex-col items-center space-y-4'>
       <div className='w-full max-w-4xl'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+        <Card>
           <div className='mb-10 flex flex-col items-center justify-center'>
             <h1 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
               Put your unused disk space to work and contribute to the Network
@@ -191,16 +192,14 @@ export const DownloadPage: FC = () => {
               className='mx-auto'
             />
           </div>
-        </div>
-
+        </Card>
         <div className='m-4 p-4'>
           <h3 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
             By contributing storage and compute to the network, you play a crucial role in securing
             it, while also earning rewards.
           </h3>
         </div>
-
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+        <Card>
           <div className='flow-root  text-gray-900 dark:text-white'>
             <div className='mx-auto mb-4 w-3/4'>{renderDownloadSection}</div>
             <div className='mt-8'>{renderDownloadSection && downloadButton}</div>
@@ -229,7 +228,7 @@ export const DownloadPage: FC = () => {
               </p>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   )

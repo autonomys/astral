@@ -1,21 +1,17 @@
-import { remark, transfer } from '@autonomys/auto-consensus'
-import { Hash, SignerResult } from '@autonomys/auto-utils'
+import { useCustomExtrinsic } from '@/hooks/useCustomExtrinsic'
+import { useSendToken } from '@/hooks/useSendToken'
+import { useSignOrSendMessage } from '@/hooks/useSignOrSendMessage'
+import { Hash, networks, SignerResult } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
-import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
 import { Tooltip } from 'components/common/Tooltip'
 import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import {
-  AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT,
-  ExtrinsicsSupportedModule,
-  WalletAction,
-  WalletType,
-} from 'constants/wallet'
-import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
+import { NetworkSource } from 'constants/transaction'
+import { WalletAction, WalletType } from 'constants/wallet'
+import { Field, FieldArray, Form, Formik } from 'formik'
 import useChains from 'hooks/useChains'
-import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { QRCodeSVG } from 'qrcode.react'
@@ -24,15 +20,10 @@ import toast from 'react-hot-toast'
 import { useAddressBookStates } from 'states/addressBook'
 import { usePreferencesStates } from 'states/preferences'
 import { formatAddress } from 'utils//formatAddress'
-import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import { camelToNormal, shortString } from 'utils/string'
-import * as Yup from 'yup'
 import {
-  CustomExtrinsicFormValues,
-  ExtrinsicModule,
   ExtrinsicsCategorySelector,
   ExtrinsicsInputs,
-  ExtrinsicsList,
   ExtrinsicsMethodSelector,
 } from './ExtrinsicsLab'
 
@@ -42,144 +33,125 @@ type ActionsModalProps = {
   onClose: () => void
 }
 
-interface OptionalTxFormValues {
-  nonce?: number
-}
+const NetworkSelector: FC<{
+  isOpen: boolean
+  setOpen: (value: boolean) => void
+  setNetwork: (value: NetworkSource) => void
+  setDomainId: (value: string) => void
+}> = ({ isOpen, setOpen, setNetwork, setDomainId }) => {
+  const network = useMemo(() => networks[0], [])
 
-interface SendTokenFormValues extends OptionalTxFormValues {
-  receiver: string
-  amount: number
-}
-interface MessageFormValues extends OptionalTxFormValues {
-  message: string
+  if (!network) return null
+
+  return (
+    <Listbox value={network['domains']}>
+      <Listbox.Button
+        className={
+          'absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+        }
+        style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+        onClick={() => setOpen(!isOpen)}
+      >
+        Network
+      </Listbox.Button>
+      <Transition
+        as={Fragment}
+        leave='transition ease-in duration-100'
+        leaveFrom='opacity-100'
+        leaveTo='opacity-0'
+      >
+        <Listbox.Options className='absolute right-0 z-50 mt-1 max-h-40 w-auto overflow-auto rounded-md bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Option
+            key={`domain-book-saved-${network.id}-label-${network.name}`}
+            className={({ active }) =>
+              `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
+                active && 'bg-gray-100 dark:bg-blueDarkAccent'
+              }`
+            }
+            value={network.id}
+            onClick={() => {
+              setNetwork(NetworkSource.CONSENSUS)
+              setDomainId('')
+            }}
+          >
+            {({ selected }) => {
+              return (
+                <div className='px-2'>
+                  <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                    {network.name}{' '}
+                    <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                      Consensus
+                    </span>
+                  </span>
+                </div>
+              )
+            }}
+          </Listbox.Option>
+          {network['domains'] &&
+            network['domains'].map((domain, index) => (
+              <Listbox.Option
+                key={`network-source-${index}`}
+                className={({ active }) =>
+                  `relative z-50 cursor-default select-none py-2 pr-4 text-gray-900 dark:text-white ${
+                    active && 'bg-gray-100 dark:bg-blueDarkAccent'
+                  }`
+                }
+                value={domain.id}
+                onClick={() => {
+                  setNetwork(NetworkSource.DOMAIN)
+                  setDomainId(domain.id)
+                }}
+              >
+                {({ selected }) => {
+                  return (
+                    <div className='px-2'>
+                      <span
+                        className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
+                      >
+                        {domain.name}{' '}
+                        <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                          Domain
+                        </span>
+                      </span>
+                    </div>
+                  )
+                }}
+              </Listbox.Option>
+            ))}
+        </Listbox.Options>
+      </Transition>
+    </Listbox>
+  )
 }
 
 export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose }) => {
-  const { network } = useChains()
-  const { api, actingAccount, accounts, injector, subspaceAccount } = useWallet()
+  const { network: currentNetwork } = useChains()
+  const { api, actingAccount, accounts, subspaceAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
-  const [tokenDecimals, setTokenDecimals] = useState<number>(0)
-  const [tokenSymbol, setTokenSymbol] = useState<string>('')
-  const [walletBalance, setWalletBalance] = useState<number>(0)
   const [signature, setSignature] = useState<SignerResult | undefined>(undefined)
   const [hash, setHash] = useState<Hash | undefined>(undefined)
-  const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
   const [addressBookIsOpen, setAddressBookIsOpen] = useState<boolean>(false)
-  const { sendAndSaveTx, handleTxError } = useTxHelper()
+  const [networkSourceBookIsOpen, setNetworkSourceBookIsOpen] = useState<boolean>(false)
+  const [networkDestinationBookIsOpen, setNetworkDestinationBookIsOpen] = useState<boolean>(false)
   const { addresses } = useAddressBookStates()
   const { enableDevMode } = usePreferencesStates()
-
-  const resetCategory = useCallback((extra?: () => void) => {
-    setSelectedCategory(null)
-    setSelectedMethod(null)
-    extra && extra()
-  }, [])
-  const resetMethod = useCallback((extra?: () => void) => {
-    setSelectedMethod(null)
-    extra && extra()
-  }, [])
-
-  const initialSendTokenValues: SendTokenFormValues = useMemo(
-    () => ({
-      receiver: '',
-      amount: 0,
-      nonce: -1,
-    }),
-    [],
-  )
-  const initialMessageValues: MessageFormValues = useMemo(
-    () => ({
-      message: '',
-      nonce: -1,
-    }),
-    [],
-  )
-  const initialCustomExtrinsicValues: CustomExtrinsicFormValues & OptionalTxFormValues = useMemo(
-    () =>
-      selectedCategory &&
-      selectedMethod &&
-      extrinsicsList[selectedCategory][selectedMethod] &&
-      extrinsicsList[selectedCategory][selectedMethod].args
-        ? Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
-            (acc, key) => ({ ...acc, [key]: '' }),
-            { nonce: -1 },
-          )
-        : {},
-    [selectedCategory, selectedMethod, extrinsicsList],
-  )
-
-  const maxAmount = useMemo(
-    () =>
-      walletBalance > AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT
-        ? parseFloat((walletBalance - AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT).toFixed(5))
-        : 0,
-    [walletBalance],
-  )
-
-  const customExtrinsicFormValidationSchema = useMemo(
-    () =>
-      selectedCategory &&
-      selectedMethod &&
-      extrinsicsList[selectedCategory][selectedMethod] &&
-      extrinsicsList[selectedCategory][selectedMethod].args &&
-      Yup.object().shape({
-        ...Object.keys(extrinsicsList[selectedCategory][selectedMethod].args).reduce(
-          (acc, key) => ({ ...acc, [key]: Yup.string().required('This field is required') }),
-          {},
-        ),
-        nonce: Yup.number().min(-1, 'Nonce must be greater or -1'),
-      }),
-    [selectedCategory, selectedMethod, extrinsicsList],
-  )
-
-  const sendTokenFormValidationSchema = useMemo(
-    () =>
-      Yup.object().shape({
-        amount: Yup.number()
-          .min(0, `Amount  need to be greater than 0 ${tokenSymbol}`)
-          .max(maxAmount, `Amount need to be less than ${maxAmount} ${tokenSymbol}`)
-          .required('Amount to stake is required'),
-        nonce: Yup.number().min(-1, 'Nonce must be greater or -1'),
-      }),
-    [maxAmount, tokenSymbol],
-  )
-  const messageFormValidationSchema = useMemo(
-    () =>
-      Yup.object().shape({
-        message: Yup.string().required('Message is required'),
-      }),
-    [],
-  )
-
-  const loadData = useCallback(async () => {
-    if (!api) return
-    const data = await Promise.all([
-      api.rpc.system.properties(),
-      ...Object.values(ExtrinsicsSupportedModule).map((module) => api.tx[module]),
-    ])
-    const properties = data[0]
-    const modules = (data.slice(1) as ExtrinsicModule[]).reduce(
-      (acc, module, idx) => ({
-        ...acc,
-        [Object.values(ExtrinsicsSupportedModule)[idx]]: module,
-      }),
-      {} as ExtrinsicsList,
-    )
-    setTokenDecimals((properties.tokenDecimals.toPrimitive() as number[])[0])
-    setTokenSymbol((properties.tokenSymbol.toJSON() as string[])[0])
-    setExtrinsicsList(modules)
-  }, [api])
-
-  const loadWalletBalance = useCallback(async () => {
-    if (!actingAccount || !api || actingAccount.type === WalletType.ethereum) return
-
-    const balance = await api.query.system.account(actingAccount.address)
-    setWalletBalance(
-      formatUnitsToNumber((balance.toJSON() as { data: { free: string } }).data.free),
-    )
-  }, [api, actingAccount])
+  const { initialSendTokenValues, maxAmount, sendTokenFormValidationSchema, handleSendToken } =
+    useSendToken()
+  const { initialMessageValues, messageFormValidationSchema, handleSignMessage, handleSendRemark } =
+    useSignOrSendMessage()
+  const {
+    extrinsicsList,
+    selectedCategory,
+    selectedMethod,
+    initialCustomExtrinsicValues,
+    customExtrinsicFormValidationSchema,
+    loadData,
+    handleCustomExtrinsic,
+    setSelectedCategory,
+    setSelectedMethod,
+    resetMethod,
+    resetCategory,
+  } = useCustomExtrinsic()
 
   const handleClose = useCallback(() => {
     setFormError(null)
@@ -188,146 +160,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     resetCategory()
     onClose()
   }, [onClose, resetCategory])
-
-  const handleSendToken = useCallback(
-    async (
-      values: SendTokenFormValues,
-      resetForm: (nextState?: Partial<FormikState<SendTokenFormValues>> | undefined) => void,
-    ) => {
-      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
-      try {
-        const to = values.receiver
-        const amount = floatToStringWithDecimals(values.amount, tokenDecimals)
-
-        const tx = await transfer(api, to, amount)
-        const hash = await sendAndSaveTx({
-          call: 'balances.transferKeepAlive',
-          tx,
-          signer: injector.signer,
-          to,
-          amount,
-          nonce: values.nonce,
-          error: setFormError,
-        })
-        if (hash) {
-          setHash(hash)
-          toast.success('The transaction was sent successfully', { position: 'bottom-center' })
-          sendGAEvent({
-            event: 'walletSideKick_action_sendToken',
-            value: `extrinsic:${hash.toString()}`,
-          })
-          resetForm()
-        }
-      } catch (error) {
-        handleTxError(
-          'There was an error while sending the transaction',
-          'balances.transferKeepAlive',
-          setFormError,
-        )
-      }
-    },
-    [injector, api, tokenDecimals, sendAndSaveTx, handleTxError],
-  )
-
-  const handleSignMessage = useCallback(
-    async (
-      values: MessageFormValues,
-      resetForm: (nextState?: Partial<FormikState<MessageFormValues>> | undefined) => void,
-    ) => {
-      if (!actingAccount || !injector)
-        return setFormError('We are not able to connect to the blockchain')
-      try {
-        const signature =
-          injector.signer.signRaw &&
-          (await injector.signer.signRaw({
-            address: actingAccount.address,
-            type: 'bytes',
-            data: values.message,
-          }))
-        setSignature(signature)
-        toast.success('The message was signed', { position: 'bottom-center' })
-        sendGAEvent({
-          event: 'walletSideKick_action_signMessage',
-          value: `msg:${values.message}`,
-        })
-        resetForm()
-      } catch (error) {
-        handleTxError('There was an error while signing the message', 'signMessage', setFormError)
-      }
-    },
-    [actingAccount, handleTxError, injector],
-  )
-
-  const handleSendRemark = useCallback(
-    async (
-      values: MessageFormValues,
-      resetForm: (nextState?: Partial<FormikState<MessageFormValues>> | undefined) => void,
-    ) => {
-      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
-      try {
-        const tx = await remark(api, values.message)
-        const hash = await sendAndSaveTx({
-          call: 'system.remark',
-          tx,
-          signer: injector.signer,
-          nonce: values.nonce,
-          error: setFormError,
-        })
-        if (hash) {
-          setHash(hash)
-          toast.success('The remark was sent', { position: 'bottom-center' })
-          sendGAEvent({
-            event: 'walletSideKick_action_sendRemark',
-            value: `msg:${values.message}`,
-          })
-          resetForm()
-        }
-      } catch (error) {
-        handleTxError('There was an error while sending the remark', 'system.remark', setFormError)
-      }
-    },
-    [api, handleTxError, injector, sendAndSaveTx],
-  )
-
-  const handleCustomExtrinsic = useCallback(
-    async (
-      values: CustomExtrinsicFormValues,
-      resetForm: (nextState?: Partial<FormikState<CustomExtrinsicFormValues>> | undefined) => void,
-    ) => {
-      if (!injector || !api) return setFormError('We are not able to connect to the blockchain')
-      if (!selectedCategory) return setFormError('You need to select a category')
-      if (!selectedMethod) return setFormError('You need to select a method')
-      try {
-        const tx = await api.tx[selectedCategory][selectedMethod](
-          ...Object.keys(values).map((key) => values[key]),
-        )
-        const hash = await sendAndSaveTx({
-          call: `${selectedCategory}.${selectedMethod}`,
-          tx,
-          signer: injector.signer,
-          nonce: typeof values.nonce === 'string' ? parseInt(values.nonce) : values.nonce,
-          error: setFormError,
-        })
-        if (hash) {
-          setHash(hash)
-          toast.success('The extrinsic was sent', { position: 'bottom-center' })
-          sendGAEvent({
-            event: 'walletSideKick_action_customExtrinsic',
-            value: `category:${selectedCategory}:method:${selectedMethod}:extrinsic:${hash.toString()}`,
-          })
-          resetCategory()
-          resetForm()
-        }
-      } catch (error) {
-        handleTxError(
-          'There was an error while sending the extrinsic',
-          `${selectedCategory}.${selectedMethod}`,
-          setFormError,
-        )
-      }
-    },
-    [injector, api, selectedCategory, selectedMethod, sendAndSaveTx, resetCategory, handleTxError],
-  )
 
   const handleCopy = useCallback((value: string) => {
     navigator.clipboard.writeText(value)
@@ -355,6 +187,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         return signature && signature.signature
     }
   }, [action, hash, signature])
+
+  const network = useMemo(
+    () => networks.find((n) => n.id === currentNetwork) ?? networks[0],
+    [currentNetwork],
+  )
 
   const ActionBody = useMemo(() => {
     switch (WalletAction[action]) {
@@ -385,13 +222,104 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               <Formik
                 initialValues={initialSendTokenValues}
                 validationSchema={sendTokenFormValidationSchema}
-                onSubmit={(values, { resetForm }) => handleSendToken(values, resetForm)}
+                onSubmit={(values, { resetForm }) =>
+                  handleSendToken(values, resetForm, setHash, setFormError)
+                }
               >
-                {({ errors, touched, handleSubmit, setFieldValue }) => (
+                {({ values, errors, touched, handleSubmit, setFieldValue }) => (
                   <Form className='w-full' onSubmit={handleSubmit} data-testid='testSendTokenForm'>
+                    <span className='text-base font-medium text-grayDarker dark:text-white'>
+                      Send from
+                    </span>
+                    <FieldArray
+                      name='dischargeNorms'
+                      render={() => (
+                        <div className='relative'>
+                          <Field
+                            name='sourceNetwork'
+                            type='text'
+                            readOnly
+                            placeholder='Source network'
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                              errors.sourceNetwork &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            }`}
+                            value={
+                              values.sourceNetwork === NetworkSource.CONSENSUS
+                                ? network.name
+                                : network['domains'].find(
+                                    (domain) => domain.id === values.sourceDomainId,
+                                  )?.name || ' DomainId: ' + values.sourceDomainId
+                            }
+                          />
+                          <NetworkSelector
+                            isOpen={networkSourceBookIsOpen}
+                            setOpen={setNetworkSourceBookIsOpen}
+                            setNetwork={(e) => setFieldValue('sourceNetwork', e)}
+                            setDomainId={(e) => setFieldValue('sourceDomainId', e)}
+                          />
+                        </div>
+                      )}
+                    />
+                    <FieldArray
+                      name='dischargeNorms'
+                      render={() => (
+                        <div className='relative'>
+                          <Field
+                            name='sender'
+                            type='text'
+                            readOnly
+                            placeholder='Send from'
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                              errors.sender &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            }`}
+                          />
+                        </div>
+                      )}
+                    />
+                    {errors.sender && touched.sender ? (
+                      <div className='text-md mt-2 h-8 text-red-500' data-testid='errorMessage'>
+                        {errors.sender}
+                      </div>
+                    ) : (
+                      <div className='text-md mt-2 h-8' data-testid='placeHolder' />
+                    )}
                     <span className='text-base font-medium text-grayDarker dark:text-white'>
                       Send to
                     </span>
+
+                    <FieldArray
+                      name='dischargeNorms'
+                      render={() => (
+                        <div className='relative'>
+                          <Field
+                            name='destinationNetwork'
+                            type='text'
+                            readOnly
+                            placeholder='Destination network'
+                            className={`mt-4 block w-[400px] rounded-xl bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white ${
+                              errors.destinationNetwork &&
+                              'block w-full rounded-full bg-white px-4 py-[10px] text-sm text-gray-900 shadow-lg'
+                            }`}
+                            value={
+                              values.destinationNetwork === NetworkSource.CONSENSUS
+                                ? network.name
+                                : network['domains'].find(
+                                    (domain) => domain.id === values.destinationDomainId,
+                                  )?.name || ' DomainId: ' + values.destinationDomainId
+                            }
+                          />
+                          <NetworkSelector
+                            isOpen={networkDestinationBookIsOpen}
+                            setOpen={setNetworkDestinationBookIsOpen}
+                            setNetwork={(e) => setFieldValue('destinationNetwork', e)}
+                            setDomainId={(e) => setFieldValue('destinationDomainId', e)}
+                          />
+                        </div>
+                      )}
+                    />
+
                     <FieldArray
                       name='dischargeNorms'
                       render={() => (
@@ -634,8 +562,8 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 validationSchema={messageFormValidationSchema}
                 onSubmit={(values, { resetForm }) =>
                   WalletAction[action] === WalletAction.SendRemark
-                    ? handleSendRemark(values, resetForm)
-                    : handleSignMessage(values, resetForm)
+                    ? handleSendRemark(values, resetForm, setHash, setFormError)
+                    : handleSignMessage(values, resetForm, setSignature, setFormError)
                 }
               >
                 {({ errors, touched, handleSubmit }) => (
@@ -735,7 +663,11 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                   <Link
                     data-testid='wallet-link'
                     className='pr-2 hover:text-purpleAccent'
-                    href={INTERNAL_ROUTES.accounts.id.page(network, 'consensus', subspaceAccount)}
+                    href={INTERNAL_ROUTES.accounts.id.page(
+                      currentNetwork,
+                      'consensus',
+                      subspaceAccount,
+                    )}
                   >
                     <span className='ml-2 w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white md:w-full'>
                       {actingAccount.name}
@@ -782,7 +714,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
               <Formik
                 initialValues={initialCustomExtrinsicValues}
                 validationSchema={customExtrinsicFormValidationSchema}
-                onSubmit={(values, { resetForm }) => handleCustomExtrinsic(values, resetForm)}
+                onSubmit={(values, { resetForm }) =>
+                  handleCustomExtrinsic(values, resetForm, setHash, setFormError)
+                }
               >
                 {({ errors, touched, handleSubmit, setFieldValue, resetForm }) => (
                   <Form
@@ -878,7 +812,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     messageFormValidationSchema,
     subspaceAccount,
     actingAccount,
-    network,
+    currentNetwork,
     initialCustomExtrinsicValues,
     customExtrinsicFormValidationSchema,
     handleCopy,
@@ -886,6 +820,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     maxAmount,
     enableDevMode,
     ErrorPlaceholder,
+    network,
+    networkSourceBookIsOpen,
+    networkDestinationBookIsOpen,
     accounts,
     addresses,
     addressBookIsOpen,
@@ -893,7 +830,9 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     handleSignMessage,
     handleCustomExtrinsic,
     extrinsicsList,
+    setSelectedCategory,
     selectedCategory,
+    setSelectedMethod,
     selectedMethod,
     resetCategory,
     resetMethod,
@@ -902,10 +841,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   useEffect(() => {
     loadData()
   }, [api, loadData])
-
-  useEffect(() => {
-    loadWalletBalance()
-  }, [api, actingAccount, loadWalletBalance])
 
   return (
     <Modal title={action} onClose={handleClose} isOpen={isOpen}>
