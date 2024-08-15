@@ -6,7 +6,7 @@ type MyPositionSwitchProps = {
 }
 
 export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
-  labels = ['Staked only', 'All operators'],
+  labels = ['My nominations', 'All operators'],
 }) => {
   const { myPositionOnly, setMyPositionOnly } = useViewStates()
 
@@ -20,14 +20,18 @@ export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
     <div className='w-full'>
       <button
         onClick={onChange}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') onChange()
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onChange()
+          }
         }}
         className={`${
           myPositionOnly ? 'bg-purpleAccent' : 'bg-transparent'
         } border-color-grayDarker dark:border-color-white relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-2`}
         role='switch'
         aria-checked={myPositionOnly}
+        tabIndex={0}
       >
         <span
           className={`${
