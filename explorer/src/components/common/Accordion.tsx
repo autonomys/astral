@@ -7,11 +7,18 @@ type Props = {
   title: React.ReactNode
   children: React.ReactNode
   value?: string
+  defaultOpen?: boolean
   icon?: React.ReactNode | React.ReactNode[]
 }
 
-export const Accordion: FC<Props> = ({ title, children, value = '', icon }) => {
-  const [isActive, setIsActive] = useState(true)
+export const Accordion: FC<Props> = ({
+  title,
+  children,
+  value = '',
+  icon,
+  defaultOpen = false,
+}) => {
+  const [isActive, setIsActive] = useState(defaultOpen)
   return (
     <div className='w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
