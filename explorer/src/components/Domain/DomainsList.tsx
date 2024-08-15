@@ -1,6 +1,6 @@
 'use client'
 
-import { capitalizeFirstLetter } from '@/utils/string'
+import { capitalizeFirstLetter, shortString } from '@/utils/string'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
@@ -14,29 +14,30 @@ import { useDomainsData } from 'hooks/useDomainsData'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import type { Cell } from 'types/table'
+import { useTableStates } from 'states/tables'
+import type { Cell, DomainsFilters, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
+import { AccountIcon } from '../common/AccountIcon'
+import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { QUERY_DOMAIN_LIST } from './staking.query'
 
 type Row = DomainsListQuery['domain'][0]
+const TABLE = 'domains'
 
 export const DomainsList: FC = () => {
   const { ref, inView } = useInView()
-  const [searchDomain, setSearch] = useState<string>('')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const { operatorId } = useParams<{ operatorId?: string }>()
   useDomainsData()
   useConsensusData()
   const inFocus = useWindowFocus()
@@ -44,22 +45,58 @@ export const DomainsList: FC = () => {
   const { network, section } = useChains()
   const apolloClient = useApolloClient()
 
-  const columns = useMemo(
-    () => [
-      {
+  const {
+    domains: {
+      columns: availableColumns,
+      selectedColumns,
+      filtersOptions,
+      filters: operatorFilters,
+      showTableSettings,
+    },
+    setColumns,
+    setFilters,
+    showSettings,
+    hideSettings,
+  } = useTableStates()
+  const filters = useMemo(() => operatorFilters as DomainsFilters, [operatorFilters])
+
+  const columns = useMemo(() => {
+    const cols = []
+    if (selectedColumns.includes('id'))
+      cols.push({
         accessorKey: 'sort_id',
         header: 'Id',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.operators.id.page(network, section, row.original.id)}
+            href={INTERNAL_ROUTES.domains.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>
           </Link>
         ),
-      },
-      {
+      })
+    if (selectedColumns.includes('account_id'))
+      cols.push({
+        accessorKey: 'account_id',
+        header: 'Owner',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <Link
+            className='flex items-center gap-2 hover:text-purpleAccent'
+            href={INTERNAL_ROUTES.accounts.id.page(
+              network,
+              Routes.consensus,
+              row.original.account_id,
+            )}
+          >
+            <AccountIcon address={row.original.account_id} size={26} />
+            <div>{shortString(row.original.account_id)}</div>
+          </Link>
+        ),
+      })
+    if (selectedColumns.includes('name'))
+      cols.push({
         accessorKey: 'name',
         header: 'Domain Name',
         enableSorting: true,
@@ -77,8 +114,30 @@ export const DomainsList: FC = () => {
             </Tooltip>
           </div>
         ),
-      },
-      {
+      })
+    if (selectedColumns.includes('runtime_id'))
+      cols.push({
+        accessorKey: 'runtime_id',
+        header: 'Runtime Id',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.runtime_id}</div>,
+      })
+    if (selectedColumns.includes('runtime'))
+      cols.push({
+        accessorKey: 'runtime',
+        header: 'Runtime',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.runtime}</div>,
+      })
+    if (selectedColumns.includes('runtime_info'))
+      cols.push({
+        accessorKey: 'runtime_info',
+        header: 'Runtime Info',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.runtime_info}</div>,
+      })
+    if (selectedColumns.includes('completed_epoch'))
+      cols.push({
         accessorKey: 'completed_epoch',
         header: 'Completed epoch',
         enableSorting: true,
@@ -87,17 +146,165 @@ export const DomainsList: FC = () => {
             <Tooltip
               text={
                 <span>
-                  Completed epoch: {bigNumberToFormattedString(row.original.completed_epoch)} <br />
+                  Completed epoch: {row.original.completed_epoch} <br />
                   Last block #: {row.original.last_domain_block_number}
                 </span>
               }
             >
-              {bigNumberToFormattedString(row.original.completed_epoch)}
+              {row.original.completed_epoch}
             </Tooltip>
           </div>
         ),
-      },
-      {
+      })
+    if (selectedColumns.includes('last_domain_block_number'))
+      cols.push({
+        accessorKey: 'last_domain_block_number',
+        header: 'Last Domain Block Number',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>
+            <Tooltip
+              text={
+                <span>
+                  Last block #: {row.original.last_domain_block_number} <br />
+                  Completed epoch: {row.original.completed_epoch}
+                </span>
+              }
+            >
+              {row.original.last_domain_block_number}
+            </Tooltip>
+          </div>
+        ),
+      })
+    if (selectedColumns.includes('total_deposits'))
+      cols.push({
+        accessorKey: 'total_deposits',
+        header: 'Total deposits',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_tax_collected'))
+      cols.push({
+        accessorKey: 'total_tax_collected',
+        header: 'Total Tax Collected',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_rewards_collected'))
+      cols.push({
+        accessorKey: 'total_rewards_collected',
+        header: 'Rewards collected',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_transfers_in'))
+      cols.push({
+        accessorKey: 'total_transfers_in',
+        header: 'Total Transfers In',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('transfers_in_count'))
+      cols.push({
+        accessorKey: 'transfers_in_count',
+        header: 'Transfers In Count',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.transfers_in_count}</div>,
+      })
+    if (selectedColumns.includes('total_transfers_out'))
+      cols.push({
+        accessorKey: 'total_transfers_out',
+        header: 'Total Transfers Out',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('transfers_out_count'))
+      cols.push({
+        accessorKey: 'transfers_out_count',
+        header: 'Transfers Out Count',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.transfers_out_count}</div>,
+      })
+    if (selectedColumns.includes('total_rejected_transfers_claimed'))
+      cols.push({
+        accessorKey: 'total_rejected_transfers_claimed',
+        header: 'Total Rejected Transfers Claimed',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('rejected_transfers_claimed_count'))
+      cols.push({
+        accessorKey: 'rejected_transfers_claimed_count',
+        header: 'Rejected Transfers Claimed Count',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.rejected_transfers_claimed_count}</div>,
+      })
+    if (selectedColumns.includes('total_transfers_rejected'))
+      cols.push({
+        accessorKey: 'total_transfers_rejected',
+        header: 'Total Transfers Rejected',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('transfers_rejected_count'))
+      cols.push({
+        accessorKey: 'transfers_rejected_count',
+        header: 'Transfers Rejected Count',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.transfers_rejected_count}</div>,
+      })
+    if (selectedColumns.includes('total_volume'))
+      cols.push({
+        accessorKey: 'total_volume',
+        header: 'Total Volume',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_consensus_storage_fee'))
+      cols.push({
+        accessorKey: 'total_consensus_storage_fee',
+        header: 'Consensus storage fee',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_domain_execution_fee'))
+      cols.push({
+        accessorKey: 'total_domain_execution_fee',
+        header: 'Domain execution fee',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_burned_balance'))
+      cols.push({
+        accessorKey: 'total_burned_balance',
+        header: 'Total Burned Balance',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('current_total_stake'))
+      cols.push({
         accessorKey: 'current_total_stake',
         header: 'Total stake',
         enableSorting: true,
@@ -117,50 +324,98 @@ export const DomainsList: FC = () => {
             <div>{`${bigNumberToFormattedString(BigInt(row.original.current_total_stake) + BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
           </Tooltip>
         ),
-      },
-      {
-        accessorKey: 'total_deposits',
-        header: 'Total deposits',
+      })
+    if (selectedColumns.includes('current_storage_fee_deposit'))
+      cols.push({
+        accessorKey: 'current_total_stake',
+        header: 'Total stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+          <Tooltip
+            text={
+              <span>
+                Storage fee deposit:{' '}
+                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)}{' '}
+                {TOKEN.symbol}
+                <br />
+                Current total stake: {bigNumberToFormattedString(row.original.current_total_stake)}
+                {TOKEN.symbol}
+              </span>
+            }
+          >
+            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
+          </Tooltip>
         ),
-      },
-      {
-        accessorKey: 'total_rewards_collected',
-        header: 'Rewards collected',
+      })
+    if (selectedColumns.includes('bundle_count'))
+      cols.push({
+        accessorKey: 'bundle_count',
+        header: 'Bundle Count',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.bundle_count}</div>,
+      })
+    if (selectedColumns.includes('last_bundle_at'))
+      cols.push({
+        accessorKey: 'last_bundle_at',
+        header: 'Last Bundle',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${TOKEN.symbol}`}</div>
+          <Link
+            key={`created_at-${row.original.id}`}
+            data-testid={`created-at-${row.index}`}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              network,
+              Routes.consensus,
+              parseInt(row.original.last_bundle_at?.toString() ?? '0'),
+            )}
+            className='hover:text-purpleAccent'
+          >
+            <div>{row.original.last_bundle_at}</div>
+          </Link>
         ),
-      },
-      {
-        accessorKey: 'total_consensus_storage_fee',
-        header: 'Consensus storage fee',
+      })
+    if (selectedColumns.includes('created_at'))
+      cols.push({
+        accessorKey: 'created_at',
+        header: 'Created',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${TOKEN.symbol}`}</div>
+          <Link
+            key={`created_at-${row.original.id}`}
+            data-testid={`created-at-${row.index}`}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              network,
+              Routes.consensus,
+              parseInt(row.original.created_at?.toString() ?? '0'),
+            )}
+            className='hover:text-purpleAccent'
+          >
+            <div>{row.original.created_at}</div>
+          </Link>
         ),
-      },
-      {
-        accessorKey: 'total_domain_execution_fee',
-        header: 'Domain execution fee',
+      })
+    if (selectedColumns.includes('updated_at'))
+      cols.push({
+        accessorKey: 'updated_at',
+        header: 'Updated',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${TOKEN.symbol}`}</div>
+          <Link
+            key={`created_at-${row.original.id}`}
+            data-testid={`created-at-${row.index}`}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              network,
+              Routes.consensus,
+              parseInt(row.original.created_at?.toString() ?? '0'),
+            )}
+            className='hover:text-purpleAccent'
+          >
+            <div>{row.original.updated_at}</div>
+          </Link>
         ),
-      },
-      {
-        accessorKey: 'operators_aggregate',
-        header: 'Operators count',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{row.original.operators_aggregate.aggregate?.count ?? 0}</div>
-        ),
-      },
-    ],
-    [network, section],
-  )
+      })
+    return cols
+  }, [selectedColumns, network, section])
 
   const orderBy = useMemo(
     () =>
@@ -173,9 +428,88 @@ export const DomainsList: FC = () => {
   )
 
   const where = useMemo(() => {
-    // eslint-disable-next-line camelcase
-    return searchDomain ? { id: { _eq: searchDomain } } : {}
-  }, [searchDomain])
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const conditions: Record<string, any> = {}
+
+    // Add search conditions
+    availableColumns
+      .filter((column) => column.searchable)
+      .forEach((column) => {
+        const searchKey = `search-${column.name}` as keyof DomainsFilters
+        const searchValue = filters[searchKey]
+        if (searchValue) {
+          conditions[column.name] = { _ilike: `%${searchValue}%` }
+        }
+      })
+
+    // Total Stake
+    if (filters.totalStakeMin || filters.totalStakeMax) {
+      conditions['current_total_stake'] = {}
+      if (filters.totalStakeMin) {
+        conditions.current_total_stake._gte = BigInt(
+          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+      if (filters.totalStakeMax) {
+        conditions.current_total_stake._lte = BigInt(
+          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+    }
+
+    // Total Deposits
+    if (filters.totalDepositsMin || filters.totalDepositsMax) {
+      conditions['total_deposits'] = {}
+      if (filters.totalDepositsMin) {
+        conditions.total_deposits._gte = BigInt(
+          Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+      if (filters.totalDepositsMax) {
+        conditions.total_deposits._lte = BigInt(
+          Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+    }
+
+    // Total Rewards Collected
+    if (filters.totalRewardsCollectedMin || filters.totalRewardsCollectedMax) {
+      conditions['total_rewards_collected'] = {}
+      if (filters.totalRewardsCollectedMin) {
+        conditions.total_rewards_collected._gte = BigInt(
+          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+      if (filters.totalRewardsCollectedMax) {
+        conditions.total_rewards_collected._lte = BigInt(
+          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+    }
+
+    // Deposit Count
+    if (filters.depositsCountMin || filters.depositsCountMax) {
+      conditions['deposits_aggregate'] = { count: { predicate: {} } }
+      if (filters.depositsCountMin)
+        conditions.deposits_aggregate.count.predicate._gte = filters.depositsCountMin
+      if (filters.depositsCountMax)
+        conditions.deposits_aggregate.count.predicate._lte = filters.depositsCountMax
+    }
+
+    // Completed Epoch
+    if (filters.completedEpoch) {
+      conditions['completed_epoch'] = {}
+      conditions.completed_epoch._gte = filters.completedEpoch
+    }
+
+    // Bundle Count
+    if (filters.bundleCount) {
+      conditions['bundle_count'] = {}
+      conditions.bundle_count._gte = filters.bundleCount
+    }
+
+    return conditions
+  }, [filters, availableColumns])
 
   const variables: DomainsListQueryVariables = useMemo(
     () => ({
@@ -187,7 +521,7 @@ export const DomainsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { setIsVisible } = useSquidQuery<DomainsListQuery, DomainsListQueryVariables>(
+  const { loading, setIsVisible } = useSquidQuery<DomainsListQuery, DomainsListQueryVariables>(
     QUERY_DOMAIN_LIST,
     {
       variables,
@@ -196,7 +530,7 @@ export const DomainsList: FC = () => {
       context: { clientName: 'staking' },
     },
     Routes.domains,
-    'domains',
+    TABLE,
   )
 
   const {
@@ -208,7 +542,7 @@ export const DomainsList: FC = () => {
       downloadFullData(
         apolloClient,
         QUERY_DOMAIN_LIST,
-        'domain',
+        TABLE,
         {
           orderBy,
         },
@@ -218,13 +552,7 @@ export const DomainsList: FC = () => {
     [apolloClient, orderBy],
   )
 
-  const handleSearch = useCallback((value: string | number) => {
-    setSearch(value.toString())
-    setPagination({ ...pagination, pageIndex: 0 })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const operatorsList = useMemo(() => (hasValue(domains) ? domains.value.domain : []), [domains])
+  const domainsList = useMemo(() => (hasValue(domains) ? domains.value.domain : []), [domains])
 
   const totalCount = useMemo(
     () => (hasValue(domains) && domains.value.domain_aggregate.aggregate?.count) || 0,
@@ -242,21 +570,56 @@ export const DomainsList: FC = () => {
     return null
   }, [domains])
 
-  useEffect(() => {
-    if (operatorId) handleSearch(operatorId)
-  }, [operatorId, handleSearch])
+  const handleFilterChange = useCallback(
+    (filterName: string, value: string | boolean) => {
+      setFilters(TABLE, {
+        ...filters,
+        [filterName]: value,
+      })
+    },
+    [filters, setFilters],
+  )
+
+  const handleClickOnColumnToEditTable = useCallback(
+    (column: string, checked: boolean) =>
+      checked
+        ? setColumns(TABLE, [...selectedColumns, column])
+        : setColumns(
+            TABLE,
+            selectedColumns.filter((c) => c !== column),
+          ),
+    [selectedColumns, setColumns],
+  )
+
+  const _showSettings = useCallback(
+    (setting: TableSettingsTabs) => showSettings(TABLE, setting),
+    [showSettings],
+  )
+  const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
 
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
   return (
-    <div>
-      <div className='text-base font-medium text-grayDark dark:text-white'>{`Domains (${totalLabel})`}</div>
-      <div className='my-6 rounded' ref={ref}>
-        {operatorsList ? (
+    <div className='flex w-full flex-col align-middle'>
+      <div className='my-4' ref={ref}>
+        <TableSettings
+          tableName='Domains'
+          totalLabel={totalLabel}
+          availableColumns={availableColumns}
+          selectedColumns={selectedColumns}
+          filters={filters}
+          showTableSettings={showTableSettings}
+          showSettings={_showSettings}
+          hideSettings={_hideSettings}
+          handleColumnChange={handleClickOnColumnToEditTable}
+          handleFilterChange={handleFilterChange}
+          filterOptions={filtersOptions}
+        />
+        {!loading && domainsList ? (
           <SortedTable
-            data={operatorsList}
+            data={domainsList}
             columns={columns}
             showNavigation={true}
             sorting={sorting}
@@ -264,7 +627,7 @@ export const DomainsList: FC = () => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
-            filename='staking-operators-list'
+            filename='staking-domains-list'
             fullDataDownloader={fullDataDownloader}
           />
         ) : (
