@@ -57,6 +57,22 @@ export const QUERY_DOMAIN_LIST = gql`
   }
 `
 
+export const QUERY_DOMAIN_STATUS = gql`
+  query DomainsStatus(
+    $limit: Int!
+    $offset: Int
+    $orderBy: [domain_order_by!]!
+    $where: domain_bool_exp
+  ) {
+    domain(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+      id
+      name
+      last_domain_block_number
+      completed_epoch
+    }
+  }
+`
+
 export const QUERY_DOMAIN_BY_ID = gql`
   query DomainById($domainId: String!) {
     domain_by_pk(id: $domainId) {

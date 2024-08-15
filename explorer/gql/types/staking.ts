@@ -6369,6 +6369,16 @@ export type DomainsListQueryVariables = Exact<{
 
 export type DomainsListQuery = { __typename?: 'query_root', domain_aggregate: { __typename?: 'domain_aggregate', aggregate?: { __typename?: 'domain_aggregate_fields', count: number } | null }, domain: Array<{ __typename?: 'domain', id: string, sort_id: number, name: string, account_id: string, bundle_count: number, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info?: string | null, runtime_id: number, runtime: string, last_domain_block_number: number, last_bundle_at: number, current_total_stake: any, current_storage_fee_deposit: any, created_at?: number | null, completed_epoch: number, total_transfers_in: any, transfers_in_count: number, total_transfers_out: any, transfers_out_count: number, total_rejected_transfers_claimed: any, rejected_transfers_claimed_count: number, total_transfers_rejected: any, transfers_rejected_count: number, updated_at?: number | null, operators_aggregate: { __typename?: 'operator_aggregate', aggregate?: { __typename?: 'operator_aggregate_fields', count: number } | null }, nominators_aggregate: { __typename?: 'nominator_aggregate', aggregate?: { __typename?: 'nominator_aggregate_fields', count: number } | null } }> };
 
+export type DomainsStatusQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Domain_Order_By> | Domain_Order_By;
+  where?: InputMaybe<Domain_Bool_Exp>;
+}>;
+
+
+export type DomainsStatusQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, name: string, last_domain_block_number: number, completed_epoch: number }> };
+
 export type DomainByIdQueryVariables = Exact<{
   domainId: Scalars['String']['input'];
 }>;
