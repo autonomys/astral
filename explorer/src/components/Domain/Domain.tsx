@@ -22,6 +22,7 @@ export const Domain: FC = () => {
   const inFocus = useWindowFocus()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
+  // eslint
   const variables = useMemo(() => ({ domainId: domainId ?? '' }), [domainId])
   const { setIsVisible } = useSquidQuery<DomainByIdQuery, DomainByIdQueryVariables>(
     QUERY_DOMAIN_BY_ID,
