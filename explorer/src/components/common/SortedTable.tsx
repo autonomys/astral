@@ -69,7 +69,9 @@ export const SortedTable = <T extends object>({
 
   return (
     <div className='flex w-full flex-col'>
-      {isDesktop ? <DesktopTable table={table} /> : <ListCard table={table} />}
+      <div className='overflow-x-auto'>
+        {isDesktop ? <DesktopTable table={table} /> : <ListCard table={table} />}
+      </div>
       {showNavigation && (
         <TableNavigation
           table={table}
