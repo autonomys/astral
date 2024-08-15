@@ -16,7 +16,17 @@ export const QUERY_USER_NOMINATIONS_PENDING_ACTIONS = gql`
       id
       account_id
       domain_id
+      domain {
+        id
+        name
+      }
       operator_id
+      operator {
+        id
+        account_id
+        status
+        current_total_shares
+      }
       known_shares
       known_storage_fee_deposit
       pending_amount
@@ -33,6 +43,7 @@ export const QUERY_USER_NOMINATIONS_PENDING_ACTIONS = gql`
       updated_at
       deposits {
         id
+        block_number
         amount
         storage_fee_deposit
         timestamp
@@ -41,6 +52,7 @@ export const QUERY_USER_NOMINATIONS_PENDING_ACTIONS = gql`
       }
       withdrawals {
         id
+        block_number
         shares
         timestamp
         extrinsic_hash
