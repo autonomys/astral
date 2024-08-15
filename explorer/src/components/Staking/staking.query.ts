@@ -1,5 +1,55 @@
 import { gql } from '@apollo/client'
 
+export const QUERY_USER_NOMINATIONS_PENDING_ACTIONS = gql`
+  query UserNominationsPendingActions(
+    $limit: Int!
+    $offset: Int
+    $orderBy: [nominator_order_by!]!
+    $where: nominator_bool_exp
+  ) {
+    nominator_aggregate(order_by: $orderBy, where: $where) {
+      aggregate {
+        count
+      }
+    }
+    nominator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+      id
+      account_id
+      domain_id
+      operator_id
+      known_shares
+      known_storage_fee_deposit
+      pending_amount
+      pending_storage_fee_deposit
+      pending_effective_domain_epoch
+      total_withdrawal_amounts
+      total_storage_fee_refund
+      unlock_at_confirmed_domain_block_number
+      pending_shares
+      pending_storage_fee_refund
+      total_deposits
+      status
+      created_at
+      updated_at
+      deposits {
+        id
+        amount
+        storage_fee_deposit
+        timestamp
+        extrinsic_hash
+        status
+      }
+      withdrawals {
+        id
+        shares
+        timestamp
+        extrinsic_hash
+        status
+      }
+    }
+  }
+`
+
 export const QUERY_OPERATOR_LIST = gql`
   query OperatorsList(
     $limit: Int!
