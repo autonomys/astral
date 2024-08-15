@@ -5,7 +5,6 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import { LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
@@ -25,7 +24,6 @@ type Props = {
 export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { ref, inView } = useInView()
   const { isDark } = useTheme()
-  const { isEvm } = useChains()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
   const inFocus = useWindowFocus()
 
@@ -39,13 +37,11 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
 
   const {
     consensus: { accountRewardGraph: consensusEntry },
-    consensus: { accountRewardGraph: evmEntry },
   } = useQueryStates()
 
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const parsedData = useMemo(
     () =>

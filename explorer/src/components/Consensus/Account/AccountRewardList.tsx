@@ -42,7 +42,7 @@ dayjs.extend(relativeTime)
 
 export const AccountRewardList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -77,26 +77,18 @@ export const AccountRewardList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'accountReward',
   )
 
   const {
     consensus: { accountReward: consensusEntry },
-    consensus: { accountReward: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const rewardEventsConnection = useMemo(() => data && data.rewardEventsConnection, [data])
   const rewards = useMemo(
@@ -204,10 +196,10 @@ export const AccountRewardList: FC = () => {
   }, [accountId])
 
   const noData = useMemo(() => {
-    if (loading && dataLoading) return <Spinner isSmall />
+    if (loading && isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading, dataLoading])
+  }, [data, loading, consensusEntry])
 
   useEffect(() => {
     setIsVisible(inView)

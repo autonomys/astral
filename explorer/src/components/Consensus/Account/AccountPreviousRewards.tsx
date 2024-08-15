@@ -7,7 +7,6 @@ import {
   AllRewardForAccountByIdQuery,
   AllRewardForAccountByIdQueryVariables,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -62,13 +61,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const [previousRewards, setRewards] = useState(defaultRewards)
 
   const { accountId } = useParams<AccountIdParam>()
-  const { isEvm } = useChains()
   const inFocus = useWindowFocus()
-
-  const convertedAddress = useMemo(
-    () => (isEvm ? accountId : formatAddress(accountId)),
-    [accountId, isEvm],
-  )
 
   const { setIsVisible } = useSquidQuery<
     AllRewardForAccountByIdQuery,
@@ -76,23 +69,20 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   >(
     QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID,
     {
-      variables: { accountId: convertedAddress ?? '' },
+      variables: { accountId: formatAddress(accountId) ?? '' },
       skip: !inFocus,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'accountPreviousReward',
   )
 
   const {
     consensus: { accountPreviousReward: consensusEntry },
-    consensus: { accountPreviousReward: evmEntry },
   } = useQueryStates()
 
   const rewardsData = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const rewards = useMemo(
     () =>
@@ -158,15 +148,15 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
     })
 
     const userRewards = rewards.filter(
-      (reward) => reward.address.subspaceFormat === convertedAddress,
+      (reward) => reward.address.subspaceFormat === formatAddress(accountId),
     )
     const userRewardsGeminiIIIf = rewardsGeminiIIIf.filter(
-      (reward) => reward.address.subspaceFormat === convertedAddress,
+      (reward) => reward.address.subspaceFormat === formatAddress(accountId),
     )
 
     if (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0)
       setRewards({ ...userRewards[0].rewards, ...userRewardsGeminiIIIf[0].rewards })
-  }, [convertedAddress])
+  }, [accountId])
 
   const rewardsPhase = [
     {

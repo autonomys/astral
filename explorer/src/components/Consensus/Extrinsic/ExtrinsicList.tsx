@@ -3,7 +3,6 @@
 import { sendGAEvent } from '@next/third-parties/google'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -35,14 +34,13 @@ dayjs.extend(relativeTime)
 
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
-  const novaExplorerBanner = useEvmExplorerBanner('txs')
 
   const variables = useMemo(
     () => ({
@@ -63,26 +61,18 @@ export const ExtrinsicList: FC = () => {
     {
       variables,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'extrinsics',
   )
 
   const {
     consensus: { extrinsics: consensusEntry },
-    nova: { extrinsics: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
   const extrinsics = useMemo(
@@ -171,10 +161,10 @@ export const ExtrinsicList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, consensusEntry, loading])
 
   useEffect(() => {
     try {
@@ -190,7 +180,6 @@ export const ExtrinsicList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[2]} />
       </div>

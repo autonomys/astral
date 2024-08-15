@@ -31,7 +31,7 @@ type Props = {
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -46,7 +46,6 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   >(QUERY_BLOCK_EXTRINSICS, {
     variables: { blockId: Number(blockId), first },
     skip: !inFocus,
-    context: { clientName: isEvm ? 'nova' : 'consensus' },
   })
 
   const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])

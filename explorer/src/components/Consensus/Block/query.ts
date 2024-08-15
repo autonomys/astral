@@ -38,39 +38,6 @@ export const QUERY_BLOCK_LIST_CONNECTION = gql`
   }
 `
 
-export const QUERY_BLOCK_LIST_CONNECTION_DOMAIN = gql`
-  query BlocksConnectionDomain($first: Int!, $after: String, $orderBy: [BlockOrderByInput!]!) {
-    blocksConnection(orderBy: $orderBy, first: $first, after: $after) {
-      edges {
-        cursor
-        node {
-          extrinsicsRoot
-          hash
-          height
-          id
-          parentHash
-          specId
-          stateRoot
-          timestamp
-          events(limit: 10) {
-            id
-          }
-          extrinsics(limit: 10) {
-            id
-          }
-        }
-      }
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
-      }
-    }
-  }
-`
-
 export const QUERY_BLOCK_BY_ID = gql`
   query BlockById($blockId: BigInt!) {
     blocks(limit: 10, where: { height_eq: $blockId }) {
@@ -93,31 +60,6 @@ export const QUERY_BLOCK_BY_ID = gql`
         id
       }
       author {
-        id
-      }
-    }
-  }
-`
-
-export const QUERY_BLOCK_BY_ID_DOMAIN = gql`
-  query BlockByIdDomain($blockId: BigInt!) {
-    blocks(limit: 10, where: { height_eq: $blockId }) {
-      id
-      height
-      hash
-      stateRoot
-      timestamp
-      extrinsicsRoot
-      specId
-      parentHash
-      extrinsicsCount
-      eventsCount
-      logs(limit: 10, orderBy: block_height_DESC) {
-        block {
-          height
-          timestamp
-        }
-        kind
         id
       }
     }

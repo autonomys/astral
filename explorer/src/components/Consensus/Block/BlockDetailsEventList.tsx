@@ -28,7 +28,7 @@ dayjs.extend(relativeTime)
 export const BlockDetailsEventList: FC = () => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -58,7 +58,6 @@ export const BlockDetailsEventList: FC = () => {
   >(QUERY_BLOCK_EVENTS, {
     variables,
     skip: !inFocus,
-    context: { clientName: isEvm ? 'nova' : 'consensus' },
   })
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])

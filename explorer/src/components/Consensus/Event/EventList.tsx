@@ -3,7 +3,6 @@
 import { countTablePages } from '@/utils/table'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -34,7 +33,7 @@ dayjs.extend(relativeTime)
 
 export const EventList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -42,7 +41,6 @@ export const EventList: FC = () => {
   })
   const inFocus = useWindowFocus()
   const [filters, setFilters] = useState<EventWhereInput>({})
-  const novaExplorerBanner = useEvmExplorerBanner()
 
   const variables = useMemo(
     () => ({
@@ -64,26 +62,18 @@ export const EventList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'events',
   )
 
   const {
     consensus: { events: consensusEntry },
-    nova: { events: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
   const events = useMemo(
@@ -176,10 +166,10 @@ export const EventList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -187,7 +177,6 @@ export const EventList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[4]} />
       </div>

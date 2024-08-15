@@ -19,7 +19,6 @@ export type ChainContextValue = {
   indexerSet: Indexer
   network: NetworkId
   section: Routes
-  isEvm: boolean
   setIndexerSet: (children: Indexer) => void
   setSection: (section: Routes) => void
 }
@@ -78,7 +77,6 @@ export const ChainProvider: FC<Props> = ({ children }) => {
         indexerSet,
         network,
         section,
-        isEvm: section === Routes.nova,
         setIndexerSet,
         setSection,
       }}

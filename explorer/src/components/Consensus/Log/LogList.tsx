@@ -2,7 +2,6 @@
 
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
@@ -29,14 +28,13 @@ import { QUERY_LOG_CONNECTION_LIST } from './query'
 
 export const LogList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
   const [filters, setFilters] = useState<LogWhereInput>({})
-  const novaExplorerBanner = useEvmExplorerBanner()
   const inFocus = useWindowFocus()
 
   const variables = useMemo(
@@ -59,26 +57,18 @@ export const LogList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'logs',
   )
 
   const {
     consensus: { logs: consensusEntry },
-    nova: { logs: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [isEvm, evmEntry, consensusEntry])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const logsConnection = useMemo(() => data && data.logsConnection, [data])
   const logs = useMemo(
@@ -156,10 +146,10 @@ export const LogList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -167,7 +157,6 @@ export const LogList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {novaExplorerBanner}
       {logTypes && (
         <div className='mt-5 flex w-full justify-between'>
           <LogListFilter

@@ -50,7 +50,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   })
   const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
 
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
@@ -90,26 +90,18 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'accountExtrinsic',
   )
 
   const {
     consensus: { accountExtrinsic: consensusEntry },
-    consensus: { accountExtrinsic: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [isEvm, evmEntry, consensusEntry])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const fullDataDownloader = useCallback(
     () =>
@@ -202,10 +194,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading && dataLoading) return <Spinner isSmall />
+    if (loading && isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading, dataLoading])
+  }, [data, loading, consensusEntry])
 
   useEffect(() => {
     setIsVisible(inView)

@@ -1,7 +1,6 @@
 'use client'
 
 import { Routes } from '@/constants'
-import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
@@ -21,7 +20,6 @@ export const Home: FC = () => {
   const { ref, inView } = useInView()
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
-  const novaExplorerBanner = useEvmExplorerBanner()
 
   const { loading, setIsVisible } = useSquidQuery<HomeQueryQuery, HomeQueryQueryVariables>(
     QUERY_HOME,
@@ -53,7 +51,6 @@ export const Home: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {novaExplorerBanner}
       <SearchBar />
       <div ref={ref}>
         {!loading && data ? (

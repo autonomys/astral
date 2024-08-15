@@ -1,7 +1,6 @@
 'use client'
 
 import { CopyButton } from 'components/common/CopyButton'
-import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -13,8 +12,6 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   Block,
   BlockOrderByInput,
-  BlocksConnectionDomainQuery,
-  BlocksConnectionDomainQueryVariables,
   BlocksConnectionQuery,
   BlocksConnectionQueryVariables,
 } from 'gql/graphql'
@@ -30,24 +27,19 @@ import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { BlockAuthor } from './BlockAuthor'
-import { QUERY_BLOCK_LIST_CONNECTION, QUERY_BLOCK_LIST_CONNECTION_DOMAIN } from './query'
+import { QUERY_BLOCK_LIST_CONNECTION } from './query'
 
 dayjs.extend(relativeTime)
 
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, isEvm } = useChains()
-  const novaExplorerBanner = useEvmExplorerBanner('blocks')
+  const { network, section } = useChains()
 
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
   const inFocus = useWindowFocus()
-  const BlockListQuery = useMemo(
-    () => (isEvm ? QUERY_BLOCK_LIST_CONNECTION_DOMAIN : QUERY_BLOCK_LIST_CONNECTION),
-    [isEvm],
-  )
 
   const orderBy = useMemo(() => BlockOrderByInput.HeightDesc, [])
   const variables = useMemo(
@@ -63,34 +55,26 @@ export const BlockList: FC = () => {
   )
 
   const { loading, setIsVisible } = useSquidQuery<
-    BlocksConnectionQuery | BlocksConnectionDomainQuery,
-    BlocksConnectionQueryVariables | BlocksConnectionDomainQueryVariables
+    BlocksConnectionQuery,
+    BlocksConnectionQueryVariables
   >(
-    BlockListQuery,
+    QUERY_BLOCK_LIST_CONNECTION,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'blocks',
   )
 
   const {
     consensus: { blocks: consensusEntry },
-    nova: { blocks: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const blocksConnection = useMemo(() => data && data.blocksConnection, [data])
   const blocks = useMemo(
@@ -189,10 +173,10 @@ export const BlockList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (dataLoading || loading) return <Spinner isSmall />
+    if (isLoading(consensusEntry) || loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -200,7 +184,6 @@ export const BlockList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[1]} />
       </div>

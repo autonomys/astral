@@ -2,7 +2,6 @@
 
 import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
-import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -32,13 +31,12 @@ import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, isEvm } = useChains()
+  const { network, section } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const novaExplorerBanner = useEvmExplorerBanner('accounts')
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const inFocus = useWindowFocus()
 
@@ -62,26 +60,18 @@ export const AccountList: FC = () => {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'accounts',
   )
 
   const {
     consensus: { accounts: consensusEntry },
-    nova: { accounts: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const accountsConnection = useMemo(() => data && data.accountsConnection, [data])
   const accounts = useMemo(
@@ -94,7 +84,6 @@ export const AccountList: FC = () => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
-  const theme = useMemo(() => (isEvm ? 'ethereum' : 'beachball'), [isEvm])
   const columns = useMemo(
     () => [
       {
@@ -113,7 +102,7 @@ export const AccountList: FC = () => {
         enableSorting: false,
         cell: ({ row }: Cell<Account>) => (
           <div key={`${row.index}-account-id`} className='row flex items-center gap-3'>
-            <AccountIcon address={row.original.id} size={26} theme={theme} />
+            <AccountIcon address={row.original.id} size={26} theme='beachball' />
             <Link
               data-testid={`account-link-${row.index}`}
               href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.id)}
@@ -153,7 +142,7 @@ export const AccountList: FC = () => {
         ),
       },
     ],
-    [isLargeLaptop, network, pagination.pageIndex, pagination.pageSize, section, theme],
+    [isLargeLaptop, network, pagination.pageIndex, pagination.pageSize, section],
   )
 
   const pageCount = useMemo(
@@ -168,10 +157,10 @@ export const AccountList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (dataLoading || loading) return <Spinner isSmall />
+    if (isLoading(consensusEntry) || loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading, dataLoading])
+  }, [data, loading, consensusEntry])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -179,7 +168,6 @@ export const AccountList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {novaExplorerBanner}
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[3]} />
       </div>

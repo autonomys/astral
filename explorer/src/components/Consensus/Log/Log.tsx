@@ -4,7 +4,6 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { LogByIdQuery, LogByIdQueryVariables, Log as SquidLog } from 'gql/graphql'
-import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -18,7 +17,6 @@ import { QUERY_LOG_BY_ID } from './query'
 
 export const Log: FC = () => {
   const { ref, inView } = useInView()
-  const { isEvm } = useChains()
   const { logId } = useParams<LogIdParam>()
   const inFocus = useWindowFocus()
   const { loading, setIsVisible } = useSquidQuery<LogByIdQuery, LogByIdQueryVariables>(
@@ -26,34 +24,26 @@ export const Log: FC = () => {
     {
       variables: { logId: logId ?? '' },
       skip: !inFocus,
-      context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
-    isEvm ? Routes.nova : Routes.consensus,
+    Routes.consensus,
     'log',
   )
 
   const {
     consensus: { log: consensusEntry },
-    nova: { log: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const log = useMemo(() => data && (data.logById as SquidLog), [data])
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
