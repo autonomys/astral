@@ -12,7 +12,7 @@ import { FC, useMemo, useState } from 'react'
 import { HeaderChainDropdown } from './HeaderChainDropdown'
 import { MobileHeader } from './MobileHeader'
 
-export const Header: FC = () => {
+export const ConsensusHeader: FC = () => {
   const { isDark, toggleTheme } = useTheme()
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
