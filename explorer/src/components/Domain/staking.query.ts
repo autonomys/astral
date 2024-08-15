@@ -34,6 +34,15 @@ export const QUERY_DOMAIN_LIST = gql`
       current_storage_fee_deposit
       created_at
       completed_epoch
+      total_transfers_in
+      transfers_in_count
+      total_transfers_out
+      transfers_out_count
+      total_rejected_transfers_claimed
+      rejected_transfers_claimed_count
+      total_transfers_rejected
+      transfers_rejected_count
+      updated_at
       operators_aggregate {
         aggregate {
           count
@@ -72,6 +81,15 @@ export const QUERY_DOMAIN_BY_ID = gql`
       current_storage_fee_deposit
       created_at
       completed_epoch
+      total_transfers_in
+      transfers_in_count
+      total_transfers_out
+      transfers_out_count
+      total_rejected_transfers_claimed
+      rejected_transfers_claimed_count
+      total_transfers_rejected
+      transfers_rejected_count
+      updated_at
       operators_aggregate {
         aggregate {
           count

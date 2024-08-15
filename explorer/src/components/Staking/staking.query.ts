@@ -30,8 +30,30 @@ export const QUERY_OPERATOR_LIST = gql`
       signing_key
       status
       raw_status
-      updated_at
+      total_deposits
+      total_tax_collected
+      total_rewards_collected
+      total_transfers_in
+      transfers_in_count
+      total_transfers_out
+      transfers_out_count
+      total_rejected_transfers_claimed
+      rejected_transfers_claimed_count
+      total_transfers_rejected
+      transfers_rejected_count
+      total_volume
+      total_consensus_storage_fee
+      total_domain_execution_fee
+      total_burned_balance
+      active_epoch_count
+      bundle_count
+      last_bundle_at
       nominators_aggregate {
+        aggregate {
+          count
+        }
+      }
+      deposits_aggregate {
         aggregate {
           count
         }
@@ -42,6 +64,8 @@ export const QUERY_OPERATOR_LIST = gql`
         known_shares
         unlock_at_confirmed_domain_block_number
       }
+      created_at
+      updated_at
     }
   }
 `
