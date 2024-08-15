@@ -1,23 +1,27 @@
+import { PaginationState, SortingState } from '@tanstack/react-table'
 import { INITIAL_TABLES } from 'constants/tables'
-import { Pagination, Sorting, Table, TableSettingsTabs } from 'types/table'
+import { Filters, Table, TableSettingsTabs } from 'types/table'
 import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface TableStates {
+  domains: Table
   operators: Table
 }
 
 interface TableStatesAndFn extends TableStates {
   setColumns: (table: keyof TableStates, selectedColumns: string[]) => void
-  setSorting: (table: keyof TableStates, sorting: Sorting) => void
-  setPagination: (table: keyof TableStates, pagination: Pagination) => void
+  setSorting: (table: keyof TableStates, sorting: SortingState) => void
+  setPagination: (table: keyof TableStates, pagination: PaginationState) => void
+  setFilters: (table: keyof TableStates, filters: Filters) => void
   showSettings: (table: keyof TableStates, tab: TableSettingsTabs) => void
   hideSettings: (table: keyof TableStates) => void
   clear: () => void
 }
 
 const initialState: TableStates = {
+  domains: INITIAL_TABLES.domains,
   operators: INITIAL_TABLES.operators,
 }
 
@@ -44,6 +48,13 @@ export const useTableStates = create<TableStatesAndFn>()(
           [table]: {
             ...state[table],
             pagination,
+          },
+        })),
+      setFilters: (table, filters) =>
+        set((state) => ({
+          [table]: {
+            ...state[table],
+            filters,
           },
         })),
       showSettings: (table, tab) =>
