@@ -131,6 +131,7 @@ export const INTERNAL_ROUTES = {
     },
     list: 'list',
     register: 'register',
+    nominations: 'nominations',
   },
   domains: {
     id: {
