@@ -5,38 +5,26 @@ import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
-import type {
-  HomeQueryDomainQuery,
-  HomeQueryDomainQueryVariables,
-  HomeQueryQuery,
-  HomeQueryQueryVariables,
-} from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import type { HomeQueryQuery, HomeQueryQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { NotFound } from '../layout/NotFound'
+import { NotFound } from '../../layout/NotFound'
 import { HomeBlockList } from './HomeBlockList'
 import { HomeChainInfo } from './HomeChainInfo'
 import { HomeExtrinsicList } from './HomeExtrinsicList'
-import { QUERY_HOME, QUERY_HOME_DOMAIN } from './query'
+import { QUERY_HOME } from './query'
 
 export const Home: FC = () => {
   const { ref, inView } = useInView()
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const PAGE_SIZE = isDesktop ? 10 : 3
-  const { isEvm } = useChains()
+  const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
   const novaExplorerBanner = useEvmExplorerBanner()
 
-  const HomeQuery = useMemo(() => (isEvm ? QUERY_HOME_DOMAIN : QUERY_HOME), [isEvm])
-
-  const { loading, setIsVisible } = useSquidQuery<
-    HomeQueryQuery | HomeQueryDomainQuery,
-    HomeQueryQueryVariables | HomeQueryDomainQueryVariables
-  >(
-    HomeQuery,
+  const { loading, setIsVisible } = useSquidQuery<HomeQueryQuery, HomeQueryQueryVariables>(
+    QUERY_HOME,
     {
       variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
       pollInterval: 6000,
@@ -47,24 +35,17 @@ export const Home: FC = () => {
 
   const {
     consensus: { home: consensusEntry },
-    nova: { home: evmEntry },
   } = useQueryStates()
 
-  const dataLoading = useMemo(() => {
-    if (isEvm) return isLoading(evmEntry)
-    return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
-
   const data = useMemo(() => {
-    if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry, evmEntry, isEvm])
+  }, [consensusEntry])
 
   const noData = useMemo(() => {
-    if (loading || dataLoading) return <Spinner isSmall />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, dataLoading, loading])
+  }, [data, consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)

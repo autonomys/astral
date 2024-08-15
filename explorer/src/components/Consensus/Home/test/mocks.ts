@@ -1,4 +1,4 @@
-import { QUERY_HOME } from 'components/Home/query'
+import { QUERY_HOME } from 'components/Consensus/Home/query'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
 
 export const SUCCESS_MOCK_DESKTOP = {

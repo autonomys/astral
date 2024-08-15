@@ -7,12 +7,11 @@ import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Extrinsic } from 'gql/graphql'
+import { Extrinsic, HomeQueryDomainQuery, HomeQueryQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
-import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
 
 dayjs.extend(relativeTime)
 

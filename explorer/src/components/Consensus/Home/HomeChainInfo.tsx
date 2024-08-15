@@ -1,6 +1,6 @@
-import { formatSpacePledged, numberWithCommas } from '@/utils/number'
+import type { HomeQueryDomainQuery, HomeQueryQuery } from 'gql/graphql'
 import { FC } from 'react'
-import type { HomeQueryDomainQuery, HomeQueryQuery } from '../gql/graphql'
+import { formatSpacePledged, numberWithCommas } from 'utils/number'
 import { HomeCards } from './HomeCards'
 
 interface HomeChainInfo {
