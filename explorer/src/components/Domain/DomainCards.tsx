@@ -1,5 +1,6 @@
 import { BlockIcon, DocIcon } from '@/components/icons'
 import { useSquidQuery } from '@/hooks/useSquidQuery'
+import { numberWithCommas } from '@/utils/number'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
@@ -98,7 +99,7 @@ export const DomainCards: FC = () => {
                     </div>
                     <div className='mt-4'>
                       <div className='flex justify-between text-sm text-grayDarker dark:text-white'>
-                        <span>Epoch: {currentEpoch}</span>
+                        <span>Epoch: {numberWithCommas(currentEpoch)}</span>
                       </div>
                       <div className='mt-2 h-2 w-full rounded-full bg-grayLight dark:bg-grayDarker'>
                         <div
