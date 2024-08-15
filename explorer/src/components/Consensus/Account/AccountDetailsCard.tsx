@@ -7,7 +7,7 @@ import useChains from 'hooks/useChains'
 import { FC } from 'react'
 import { accountIdToHex } from 'utils//formatAddress'
 import { shortString } from 'utils/string'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIcon } from '../../common/AccountIcon'
 
 type Props = {
   account: Account | undefined

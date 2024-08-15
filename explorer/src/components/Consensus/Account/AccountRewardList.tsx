@@ -10,7 +10,13 @@ import { PAGE_SIZE, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { RewardEventOrderByInput, RewardsListQueryVariables } from 'gql/graphql'
+import {
+  Account,
+  RewardEvent,
+  RewardEventOrderByInput,
+  RewardsListQuery,
+  RewardsListQueryVariables,
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -28,8 +34,7 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import type { Account, RewardEvent, RewardsListQuery } from '../gql/graphql'
-import { NotFound } from '../layout/NotFound'
+import { NotFound } from '../../layout/NotFound'
 import { AccountDetailsCard } from './AccountDetailsCard'
 import { QUERY_REWARDS_LIST } from './query'
 

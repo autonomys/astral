@@ -20,7 +20,7 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { countTablePages } from 'utils/table'
-import { NotFound } from '../layout/NotFound'
+import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EVENTS } from './query'
 
 dayjs.extend(relativeTime)

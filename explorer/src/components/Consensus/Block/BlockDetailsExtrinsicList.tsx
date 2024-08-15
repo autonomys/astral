@@ -19,7 +19,7 @@ import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { NotFound } from '../layout/NotFound'
+import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
 
 dayjs.extend(relativeTime)

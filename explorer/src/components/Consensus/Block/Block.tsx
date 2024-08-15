@@ -5,7 +5,9 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import {
+  BlockByIdDomainQuery,
   BlockByIdDomainQueryVariables,
+  BlockByIdQuery,
   BlockByIdQueryVariables,
   Block as BlockResult,
 } from 'gql/graphql'
@@ -18,7 +20,6 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { BlockIdParam } from 'types/app'
-import { BlockByIdDomainQuery, BlockByIdQuery } from '../gql/graphql'
 import { BlockDetailsCard } from './BlockDetailsCard'
 import { BlockDetailsTabs } from './BlockDetailsTabs'
 import { QUERY_BLOCK_BY_ID, QUERY_BLOCK_BY_ID_DOMAIN } from './query'

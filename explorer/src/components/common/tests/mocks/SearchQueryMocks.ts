@@ -1,4 +1,4 @@
-import { QUERY_BLOCK_BY_ID } from 'components/Block/query'
+import { QUERY_BLOCK_BY_ID } from 'components/Consensus/Block/query'
 
 export const BLOCK_BY_ID_SEARCH = {
   request: {

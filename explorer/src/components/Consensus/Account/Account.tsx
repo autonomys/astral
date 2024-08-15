@@ -5,7 +5,14 @@ import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import { AccountByIdEvmQueryVariables, AccountByIdQueryVariables } from 'gql/graphql'
+import {
+  AccountByIdEvmQuery,
+  AccountByIdEvmQueryVariables,
+  AccountByIdQuery,
+  AccountByIdQueryVariables,
+  RewardEvent,
+  Account as SquidAccount,
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -16,12 +23,6 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { AccountIdParam } from 'types/app'
 import { formatAddress } from 'utils/formatAddress'
-import {
-  AccountByIdEvmQuery,
-  AccountByIdQuery,
-  RewardEvent,
-  Account as SquidAccount,
-} from '../gql/graphql'
 import { AccountDetailsCard } from './AccountDetailsCard'
 import { AccountExtrinsicList } from './AccountExtrinsicList'
 import { AccountGraphs } from './AccountGraphs'

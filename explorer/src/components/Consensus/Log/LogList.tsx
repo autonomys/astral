@@ -1,21 +1,17 @@
 'use client'
 
-import { countTablePages } from '@/utils/table'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { useEvmExplorerBanner } from 'components/common/EvmExplorerBanner'
-import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import {
-  Event,
-  EventWhereInput,
-  EventsConnectionQuery,
-  EventsConnectionQueryVariables,
+import type {
+  Log,
+  LogWhereInput,
+  LogsConnectionQuery,
+  LogsConnectionQueryVariables,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -26,13 +22,12 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
-import { NotFound } from '../layout/NotFound'
-import { EventListFilter } from './EventListFilter'
-import { QUERY_EVENT_CONNECTION_LIST } from './query'
+import { countTablePages } from 'utils/table'
+import { NotFound } from '../../layout/NotFound'
+import { LogListFilter } from './LogListFilter'
+import { QUERY_LOG_CONNECTION_LIST } from './query'
 
-dayjs.extend(relativeTime)
-
-export const EventList: FC = () => {
+export const LogList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section, isEvm } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
@@ -40,9 +35,9 @@ export const EventList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const inFocus = useWindowFocus()
-  const [filters, setFilters] = useState<EventWhereInput>({})
+  const [filters, setFilters] = useState<LogWhereInput>({})
   const novaExplorerBanner = useEvmExplorerBanner()
+  const inFocus = useWindowFocus()
 
   const variables = useMemo(
     () => ({
@@ -56,10 +51,10 @@ export const EventList: FC = () => {
   )
 
   const { loading, setIsVisible } = useSquidQuery<
-    EventsConnectionQuery,
-    EventsConnectionQueryVariables
+    LogsConnectionQuery,
+    LogsConnectionQueryVariables
   >(
-    QUERY_EVENT_CONNECTION_LIST,
+    QUERY_LOG_CONNECTION_LIST,
     {
       variables,
       skip: !inFocus,
@@ -67,104 +62,89 @@ export const EventList: FC = () => {
       context: { clientName: isEvm ? 'nova' : 'consensus' },
     },
     isEvm ? Routes.nova : Routes.consensus,
-    'events',
+    'logs',
   )
 
   const {
-    consensus: { events: consensusEntry },
-    nova: { events: evmEntry },
+    consensus: { logs: consensusEntry },
+    nova: { logs: evmEntry },
   } = useQueryStates()
 
   const dataLoading = useMemo(() => {
     if (isEvm) return isLoading(evmEntry)
     return isLoading(consensusEntry)
-  }, [evmEntry, consensusEntry, isEvm])
+  }, [isEvm, evmEntry, consensusEntry])
 
   const data = useMemo(() => {
     if (isEvm && hasValue(evmEntry)) return evmEntry.value
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry, evmEntry, isEvm])
 
-  const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
-  const events = useMemo(
-    () => eventsConnection && eventsConnection.edges.map((event) => event.node as Event),
-    [eventsConnection],
+  const logsConnection = useMemo(() => data && data.logsConnection, [data])
+  const logs = useMemo(
+    () => logsConnection && logsConnection.edges.map((log) => log.node as Log),
+    [logsConnection],
   )
   const totalCount = useMemo(
-    () => (eventsConnection ? eventsConnection.totalCount : 0),
-    [eventsConnection],
+    () => (logsConnection ? logsConnection.totalCount : 0),
+    [logsConnection],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-  const modules = useMemo(
-    () => data && data.eventModuleNames.map((module) => module.name.split('.')[0]),
-    [data],
+  const totalLabel = useMemo(
+    () => (totalCount ? numberWithCommas(Number(totalCount)) : 0),
+    [totalCount],
   )
+  const logTypes = useMemo(() => data && data.logTypesQuery.result, [data])
 
   const columns = useMemo(
     () => [
       {
         accessorKey: 'id',
-        header: 'Event Id',
+        header: 'Log Index',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
-          <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
+        cell: ({ row }: Cell<Log>) => (
+          <div className='flex w-full' key={`${row.index}-log-index`}>
             <Link
               className='w-full hover:text-purpleAccent'
-              href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
-              data-testid={`event-link-${row.index}`}
+              data-testid={`log-link-${row.index}`}
+              href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
             >
-              {row.original.id}
+              <div>{row.original.id}</div>
             </Link>
-            <CopyButton
-              data-testid={`testCopyButton-${row.index}`}
-              value={row.original.id}
-              message='Id copied'
-            />
+            <CopyButton value={row.original.id} message='Id copied' />
           </div>
         ),
       },
       {
-        accessorKey: 'block.height',
+        accessorKey: 'block',
         header: 'Block',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
-          <Link
-            key={`${row.index}-event-block`}
-            className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
-          >
-            {row.original.block?.height}
-          </Link>
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-block-height`}>{row.original.block.height}</div>
         ),
       },
       {
-        accessorKey: 'action',
-        header: 'Action',
-        enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
-          <div key={`${row.index}-event-action`}>
-            {row.original.name
-              .split('.')[1]
-              .split(/(?=[A-Z])/)
-              .join(' ')}
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'type',
+        accessorKey: 'kind',
         header: 'Type',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
-          <div key={`${row.index}-event-phase`}>
-            {row.original.phase.split(/(?=[A-Z])/).join(' ')}
-          </div>
+        cell: ({ row }: Cell<Log>) => <div key={`${row.index}-kind`}>{row.original.kind}</div>,
+      },
+      {
+        accessorKey: 'engine',
+        header: 'Engine',
+        enableSorting: false,
+        cell: ({ row }: Cell<Log>) => (
+          <div key={`${row.index}-engine`}>{row.original.value?.engine}</div>
         ),
       },
       {
-        accessorKey: 'timestamp',
-        header: 'Time',
+        accessorKey: 'data',
+        header: 'Data',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => dayjs(row.original.block?.timestamp).fromNow(true),
+        cell: ({ row }: Cell<Log>) => (
+          <div
+            key={`${row.index}-block-height`}
+          >{`${row.original.value?.data.slice(0, 20)}...`}</div>
+        ),
       },
     ],
     [network, section],
@@ -188,17 +168,14 @@ export const EventList: FC = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       {novaExplorerBanner}
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar fixSearchType={searchTypes[4]} />
-      </div>
-      {modules && (
+      {logTypes && (
         <div className='mt-5 flex w-full justify-between'>
-          <EventListFilter
+          <LogListFilter
             title={
-              <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
+              <div className=' font-medium text-grayDark dark:text-white'>Logs {totalLabel}</div>
             }
             filters={filters}
-            modules={modules}
+            logTypes={logTypes}
             setFilters={setFilters}
           />
         </div>
@@ -207,9 +184,9 @@ export const EventList: FC = () => {
         <div className='w-full'>
           <div className='my-6 rounded'>
             <div ref={ref}>
-              {!loading && events ? (
+              {!loading && logs ? (
                 <SortedTable
-                  data={events}
+                  data={logs}
                   columns={columns}
                   showNavigation={true}
                   sorting={sorting}
@@ -217,7 +194,7 @@ export const EventList: FC = () => {
                   pagination={pagination}
                   pageCount={pageCount}
                   onPaginationChange={setPagination}
-                  filename='events-list'
+                  filename='logs-list'
                 />
               ) : (
                 noData
