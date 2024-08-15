@@ -40,7 +40,6 @@ import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { NominationsTable } from './NominationsTable'
 import { QUERY_OPERATOR_LIST } from './staking.query'
 
 type Row = OperatorsListQuery['operator'][0] & { nominatorsCount: number }
@@ -780,7 +779,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         <DomainProgress />
         <DomainBlockTimeProgress />
       </div>
-      <NominationsTable />
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName='Operators'
