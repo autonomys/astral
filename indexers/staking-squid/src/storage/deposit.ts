@@ -12,15 +12,19 @@ export const createDeposit = (
 ): Deposit =>
   new Deposit({
     id: depositUID(operatorId, accountId, depositIndex),
+    accountId: accountId,
+    domainId: "",
+    operatorId: operatorId.toString(),
+    nominatorId: "",
     amount: BigInt(0),
     storageFeeDeposit: BigInt(0),
     status: DepositStatus.PENDING,
+    timestamp: getTimestamp(block),
+    extrinsicHash: extrinsic.hash.toString(),
     epochDepositedAt: 0,
     domainBlockNumberDepositedAt: 0,
-    stakedAt: 0,
-    ...props,
-    timestamp: getTimestamp(block),
-    extrinsicHash: extrinsic.hash,
     createdAt: getBlockNumber(block),
+    stakedAt: 0,
     updatedAt: getBlockNumber(block),
+    ...props,
   });

@@ -1,5 +1,10 @@
 import { randomUUID } from "crypto";
-import { Operator, OperatorStatus, RewardEvent } from "../model";
+import {
+  Operator,
+  OperatorPendingAction,
+  OperatorStatus,
+  RewardEvent,
+} from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getTimestamp, operatorUID } from "../utils";
 import { Cache } from "../utils/cache";
@@ -12,6 +17,8 @@ export const createOperator = (
   new Operator({
     id: typeof operatorId === "string" ? operatorId : operatorUID(operatorId),
     sortId: typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
+    accountId: "",
+    domainId: "",
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,
@@ -30,6 +37,8 @@ export const createOperator = (
     currentStorageFeeDeposit: BigInt(0),
     currentEpochRewards: BigInt(0),
     currentTotalShares: BigInt(0),
+    currentSharePrice: BigInt(0),
+    rawStatus: JSON.stringify({}),
     totalDeposits: BigInt(0),
     totalTaxCollected: BigInt(0),
     totalRewardsCollected: BigInt(0),
@@ -45,10 +54,10 @@ export const createOperator = (
     totalConsensusStorageFee: BigInt(0),
     totalDomainExecutionFee: BigInt(0),
     totalBurnedBalance: BigInt(0),
-    rawStatus: JSON.stringify({}),
-    status: OperatorStatus.PENDING,
     activeEpochCount: 0,
     bundleCount: 0,
+    status: OperatorStatus.PENDING,
+    pendingAction: OperatorPendingAction.NO_ACTION_REQUIRED,
     lastBundleAt: 0,
     ...props,
     createdAt: getBlockNumber(block),

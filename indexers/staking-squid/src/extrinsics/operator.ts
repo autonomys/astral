@@ -1,4 +1,9 @@
-import { NominatorStatus, OperatorStatus } from "../model";
+import {
+  NominatorPendingAction,
+  NominatorStatus,
+  OperatorPendingAction,
+  OperatorStatus,
+} from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
@@ -48,6 +53,7 @@ export function processRegisterOperator(
     minimumNominatorStake: BigInt(minimumNominatorStake ?? 0),
     nominationTax: nominationTax ?? 0,
     totalDeposits: amountBigInt,
+    pendingAction: OperatorPendingAction.PENDING_REGISTRATION,
   });
   cache.operators.set(operator.id, operator);
 
@@ -55,6 +61,7 @@ export function processRegisterOperator(
     domainId: domain.id,
     accountId: account.id,
     operatorId: operator.id,
+    pendingAction: NominatorPendingAction.PENDING_EPOCH_CHANGE,
   });
   cache.nominators.set(nominator.id, nominator);
 
@@ -126,7 +133,7 @@ export function processDeregisterOperator(
   Array.from(cache.nominators.values())
     .filter(
       (n) =>
-        (n.status === NominatorStatus.STAKING ||
+        (n.status === NominatorStatus.STAKED ||
           n.status === NominatorStatus.PENDING) &&
         n.operatorId === operator.id
     )
@@ -150,7 +157,7 @@ export function processDeregisterOperator(
       );
       cache.withdrawals.set(w.id, w);
 
-      n.status = NominatorStatus.DEREGISTERED;
+      n.status = NominatorStatus.PENDING;
       n.totalWithdrawalsCount++;
       n.updatedAt = currentBlockNumber;
       cache.nominators.set(n.id, n);

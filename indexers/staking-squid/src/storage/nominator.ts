@@ -1,4 +1,4 @@
-import { Nominator, NominatorStatus } from "../model";
+import { Nominator, NominatorPendingAction, NominatorStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getCallSigner, nominatorUID } from "../utils";
 import { Cache } from "../utils/cache";
@@ -16,6 +16,9 @@ export const createNominator = (
 
   return new Nominator({
     id: nominatorUID(operatorId, address),
+    accountId: address,
+    domainId: "",
+    operatorId: operatorId.toString(),
     knownShares: BigInt(0),
     knownStorageFeeDeposit: BigInt(0),
     pendingAmount: BigInt(0),
@@ -27,9 +30,10 @@ export const createNominator = (
     pendingShares: BigInt(0),
     pendingStorageFeeRefund: BigInt(0),
     totalDeposits: BigInt(0),
-    status: NominatorStatus.PENDING,
     totalDepositsCount: 0,
     totalWithdrawalsCount: 0,
+    status: NominatorStatus.PENDING,
+    pendingAction: NominatorPendingAction.NO_ACTION_REQUIRED,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
@@ -60,7 +64,8 @@ export const getOrCreateNominator = (
       typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
       {
         ...props,
-      }
+      },
+      address
     );
 
   return nominator;

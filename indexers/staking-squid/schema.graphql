@@ -228,6 +228,9 @@ type Withdrawal @entity {
   operatorId: String! @index
   nominatorId: String! @index
   shares: BigInt!
+  estimatedAmount: BigInt!
+  unlockedAmount: BigInt!
+  unlockedStorageFee: BigInt!
   status: WithdrawalStatus! @index
   timestamp: DateTime! @index
   withdrawExtrinsicHash: String! @index
