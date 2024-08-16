@@ -46,22 +46,30 @@ export function processOperatorNominatedEvent(
     }
   );
 
-  const deposit = createDeposit(block, extrinsic, {
-    domainId: domain.id,
-    accountId: account.id,
-    operatorId: operator.id,
-    nominatorId: nominator.id,
-    amount,
-    storageFeeDeposit,
-    epochDepositedAt: domain.completedEpoch ?? 0,
-    domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
-  });
+  const deposit = createDeposit(
+    block,
+    extrinsic,
+    operator.id,
+    account.id,
+    nominator.totalDepositsCount,
+    {
+      domainId: domain.id,
+      accountId: account.id,
+      operatorId: operator.id,
+      nominatorId: nominator.id,
+      amount,
+      storageFeeDeposit,
+      epochDepositedAt: domain.completedEpoch ?? 0,
+      domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
+    }
+  );
 
   operator.totalDeposits += amount;
   operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
   nominator.totalDeposits += amount;
+  nominator.totalDepositsCount++;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);
 

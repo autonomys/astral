@@ -28,6 +28,8 @@ export const createNominator = (
     pendingStorageFeeRefund: BigInt(0),
     totalDeposits: BigInt(0),
     status: NominatorStatus.PENDING,
+    totalDepositsCount: 0,
+    totalWithdrawalsCount: 0,
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),

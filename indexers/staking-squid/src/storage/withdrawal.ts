@@ -1,15 +1,17 @@
-import { randomUUID } from "crypto";
 import { Withdrawal, WithdrawalStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
-import { getBlockNumber, getTimestamp } from "../utils";
+import { getBlockNumber, getTimestamp, withdrawalUID } from "../utils";
 
 export const createWithdrawal = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  operatorId: number | string,
+  accountId: string,
+  withdrawalIndex: number | string,
   props: Partial<Withdrawal>
 ): Withdrawal =>
   new Withdrawal({
-    id: randomUUID(),
+    id: withdrawalUID(operatorId, accountId, withdrawalIndex),
     accountId: "",
     domainId: "",
     operatorId: "",

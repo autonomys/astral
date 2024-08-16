@@ -168,6 +168,8 @@ type Nominator @entity {
   pendingShares: BigInt!
   pendingStorageFeeRefund: BigInt!
   totalDeposits: BigInt!
+  totalDepositsCount: Int!
+  totalWithdrawalsCount: Int!
   status: NominatorStatus! @index
   createdAt: Int! @index
   updatedAt: Int! @index

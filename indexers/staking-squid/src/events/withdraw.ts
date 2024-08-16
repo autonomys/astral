@@ -6,7 +6,7 @@ import {
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { getCallSigner } from "../utils";
+import { getBlockNumber, getCallSigner } from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processWithdrewStakeEvent(
@@ -18,6 +18,7 @@ export function processWithdrewStakeEvent(
   const { operatorId } = event.args;
   const { shares = 0 } = extrinsic.call?.args ?? {};
   const address = getCallSigner(extrinsic.call);
+  const blockNumber = getBlockNumber(block);
   const sharesBigInt = BigInt(shares);
 
   const account = getOrCreateAccount(cache, block, address);
@@ -36,14 +37,25 @@ export function processWithdrewStakeEvent(
   });
   cache.nominators.set(nominator.id, nominator);
 
-  const withdrawal = createWithdrawal(block, extrinsic, {
-    domainId: domain.id,
-    accountId: account.id,
-    operatorId: operator.id,
-    nominatorId: nominator.id,
-    shares: sharesBigInt,
-  });
+  const withdrawal = createWithdrawal(
+    block,
+    extrinsic,
+    operator.id,
+    account.id,
+    nominator.totalWithdrawalsCount,
+    {
+      domainId: domain.id,
+      accountId: account.id,
+      operatorId: operator.id,
+      nominatorId: nominator.id,
+      shares: sharesBigInt,
+    }
+  );
   cache.withdrawals.set(withdrawal.id, withdrawal);
+
+  nominator.totalWithdrawalsCount++;
+  nominator.updatedAt = blockNumber;
+  cache.nominators.set(nominator.id, nominator);
 
   cache.isModified = true;
 

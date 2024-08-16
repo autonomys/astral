@@ -50,6 +50,18 @@ export const blockUID = (
   blockNumber: number | string
 ): string => `${domainId}-${blockNumber}`;
 
+export const depositUID = (
+  operatorId: number | string,
+  accountId: string,
+  depositIndex: number | string
+): string => `${operatorId}-${accountId}-${depositIndex}`;
+
+export const withdrawalUID = (
+  operatorId: number | string,
+  accountId: string,
+  withdrawalIndex: number | string
+): string => `${operatorId}-${accountId}-${withdrawalIndex}`;
+
 export const logBlock = (blocks: CtxBlock[]): void => {
   const from = getBlockNumber(blocks[0]);
   const to = getBlockNumber(blocks[blocks.length - 1]);
