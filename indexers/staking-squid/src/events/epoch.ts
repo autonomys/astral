@@ -151,6 +151,8 @@ export async function processEpochTransitionEvent(
           )
           .forEach((w) => {
             w.status = WithdrawalStatus.READY;
+            w.readyAt = currentBlockNumber;
+            w.updatedAt = currentBlockNumber;
             cache.withdrawals.set(w.id, w);
           });
       }
@@ -212,6 +214,8 @@ export async function processEpochTransitionEvent(
     )
     .forEach((d) => {
       d.status = DepositStatus.DEPOSITED;
+      d.stakedAt = currentBlockNumber;
+      d.updatedAt = currentBlockNumber;
       cache.deposits.set(d.id, d);
     });
 
