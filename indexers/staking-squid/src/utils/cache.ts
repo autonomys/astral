@@ -22,11 +22,11 @@ export type PermanentCache = {
   accounts: Map<string, Account>;
   operators: Map<string, Operator>;
   nominators: Map<string, Nominator>;
+  deposits: Map<string, Deposit>;
+  withdrawals: Map<string, Withdrawal>;
 };
 
 export type TemporaryCache = {
-  deposits: Map<string, Deposit>;
-  withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
   bundleAuthors: Map<string, BundleAuthor>;
   domainBlocks: Map<string, DomainBlock>;
@@ -58,11 +58,11 @@ export const initPermanentCache: PermanentCache = {
   accounts: new Map(),
   operators: new Map(),
   nominators: new Map(),
+  deposits: new Map(),
+  withdrawals: new Map(),
 };
 
 export const initTemporaryCache: TemporaryCache = {
-  deposits: new Map(),
-  withdrawals: new Map(),
   bundles: new Map(),
   bundleAuthors: new Map(),
   domainBlocks: new Map(),
@@ -84,19 +84,24 @@ export const initCache: Cache = {
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [domains, accounts, operators, nominators] = await Promise.all([
-    ctx.store.find(Domain),
-    ctx.store.find(Account),
-    ctx.store.find(Operator),
-    ctx.store.find(Nominator),
-  ]);
+  const [domains, accounts, operators, nominators, deposits, withdrawals] =
+    await Promise.all([
+      ctx.store.find(Domain),
+      ctx.store.find(Account),
+      ctx.store.find(Operator),
+      ctx.store.find(Nominator),
+      ctx.store.find(Deposit),
+      ctx.store.find(Withdrawal),
+    ]);
 
   console.log(
     "\x1b[32mLoaded in cache:\x1b[0m",
     domains.length + " domains, ",
     accounts.length + " accounts, ",
     operators.length + " operators, ",
-    nominators.length + " nominators"
+    nominators.length + " nominators, ",
+    deposits.length + " deposits, ",
+    withdrawals.length + " withdrawals"
   );
 
   return {
@@ -105,6 +110,8 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     accounts: new Map(accounts.map((a) => [a.id, a])),
     operators: new Map(operators.map((o) => [o.id, o])),
     nominators: new Map(nominators.map((n) => [n.id, n])),
+    deposits: new Map(deposits.map((d) => [d.id, d])),
+    withdrawals: new Map(withdrawals.map((w) => [w.id, w])),
   };
 };
 
@@ -134,10 +141,10 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logPerm += logEntry("accounts", cache.accounts);
   logPerm += logEntry("operators", cache.operators);
   logPerm += logEntry("nominators", cache.nominators);
+  logPerm += logEntry("deposits", cache.deposits);
+  logPerm += logEntry("withdrawals", cache.withdrawals);
 
-  let logTemp = logEntry("deposits", cache.deposits);
-  logTemp += logEntry("withdrawals", cache.withdrawals);
-  logTemp += logEntry("bundles", cache.bundles);
+  let logTemp = logEntry("bundles", cache.bundles);
   logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
   logTemp += logEntry("domainBlocks", cache.domainBlocks);
   logTemp += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
@@ -158,8 +165,6 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
 
   // Clear the cache for entries not needed for reference
   cache.internalKeyStore.clear();
-  cache.deposits.clear();
-  cache.withdrawals.clear();
   cache.bundles.clear();
   cache.bundleAuthors.clear();
   cache.operatorRewardedEvents.clear();
