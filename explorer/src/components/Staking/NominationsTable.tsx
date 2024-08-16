@@ -1,6 +1,7 @@
 'use client'
 
 import useChains from '@/hooks/useChains'
+import { useViewStates } from '@/states/view'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { Accordion } from 'components/common/Accordion'
@@ -10,20 +11,21 @@ import { BIGINT_ZERO, INTERNAL_ROUTES, Routes, TOKEN } from 'constants/'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {
+  NominationsListQuery,
+  NominationsListQueryVariables,
   Order_By as OrderBy,
-  UserNominationsPendingActionsQuery,
-  UserNominationsPendingActionsQueryVariables,
 } from 'gql/types/staking'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { bigNumberToFormattedString } from 'utils/number'
+import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter } from 'utils/string'
+import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_USER_NOMINATIONS_PENDING_ACTIONS } from './staking.query'
+import { QUERY_NOMINATIONS_LIST } from './staking.query'
 
 dayjs.extend(relativeTime)
 
@@ -36,6 +38,7 @@ export const NominationsTable: FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const { network } = useChains()
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
+  const { myPositionOnly } = useViewStates()
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -62,21 +65,21 @@ export const NominationsTable: FC = () => {
     [sorting],
   )
 
-  const variables: UserNominationsPendingActionsQueryVariables = useMemo(
+  const variables: NominationsListQueryVariables = useMemo(
     () => ({
       limit: 100,
       offset: undefined,
       orderBy,
       // eslint-disable-next-line camelcase
-      where: { account_id: { _eq: subspaceAccount } },
+      where: myPositionOnly && subspaceAccount ? { account_id: { _eq: subspaceAccount } } : {},
     }),
-    [orderBy, subspaceAccount],
+    [myPositionOnly, orderBy, subspaceAccount],
   )
 
   const { loading, data, setIsVisible } = useSquidQuery<
-    UserNominationsPendingActionsQuery,
-    UserNominationsPendingActionsQueryVariables
-  >(QUERY_USER_NOMINATIONS_PENDING_ACTIONS, {
+    NominationsListQuery,
+    NominationsListQueryVariables
+  >(QUERY_NOMINATIONS_LIST, {
     variables,
     skip: !inView,
     pollInterval: 6000,
@@ -88,6 +91,8 @@ export const NominationsTable: FC = () => {
   }, [inView, setIsVisible])
 
   const nominatorsList = useMemo(() => data?.nominator || [], [data])
+  const totalCount = useMemo(() => (data && data.nominator_aggregate.aggregate?.count) || 0, [data])
+  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const depositColumns = [
     columnHelper.accessor('amount', {
@@ -96,11 +101,11 @@ export const NominationsTable: FC = () => {
     }),
     columnHelper.accessor('storage_fee_deposit', {
       cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
-      header: 'Storage Fee Deposit',
+      header: 'Storage Fee',
     }),
     columnHelper.accessor('timestamp', {
       cell: (info) => dayjs(info.getValue()).fromNow(),
-      header: 'Timestamp',
+      header: 'Time',
     }),
     columnHelper.accessor('block_number', {
       cell: (info) => (
@@ -113,7 +118,7 @@ export const NominationsTable: FC = () => {
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Block Number',
+      header: 'Block',
     }),
     columnHelper.accessor('status', {
       cell: (info) => info.getValue(),
@@ -127,8 +132,8 @@ export const NominationsTable: FC = () => {
       header: 'Shares',
     }),
     columnHelper.accessor('timestamp', {
-      cell: (info) => new Date(info.getValue()).toLocaleString(),
-      header: 'Timestamp',
+      cell: (info) => dayjs(info.getValue()).fromNow(),
+      header: 'Time',
     }),
     columnHelper.accessor('block_number', {
       cell: (info) => (
@@ -141,7 +146,7 @@ export const NominationsTable: FC = () => {
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Block Number',
+      header: 'Block',
     }),
     columnHelper.accessor('status', {
       cell: (info) => info.getValue(),
@@ -151,25 +156,42 @@ export const NominationsTable: FC = () => {
 
   return (
     <div className='flex w-full flex-col gap-5 px-4 align-middle'>
+      <div className='flex items-center justify-between'>
+        <h2 id='accordion-open-heading-1'>
+          <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
+            <span className='flex items-center'>Nominations ({totalLabel})</span>
+          </div>
+        </h2>
+        {subspaceAccount && (
+          <div className='flex items-center'>
+            <MyPositionSwitch />
+          </div>
+        )}
+      </div>
       <div className='my-2' ref={ref}>
         {!loading ? (
           <div className='w-full space-y-4'>
             {nominatorsList.map((nominator, index) => (
               <div
                 key={index}
-                className='w-full rounded-[20px] bg-transparent p-4 shadow-lg dark:border dark:border-white dark:bg-transparent'
+                className='w-full rounded-[20px] bg-grayLight p-4 shadow-lg dark:border dark:border-white dark:bg-transparent'
               >
-                <div className='mb-4 flex items-center justify-between text-lg font-semibold text-white'>
-                  <div>
+                <div className='mb-4 flex flex-col items-start justify-between text-lg font-semibold dark:text-white sm:flex-row sm:items-center'>
+                  <div className='mb-2 sm:mb-0'>
                     <span className='mr-2'>Operator # {nominator.operator_id}</span>
                     {nominator.domain && (
-                      <span className='ml-2 text-sm text-gray-400'>
+                      <span className='ml-2 text-sm text-purpleLighterAccent dark:text-grayDark'>
                         on {capitalizeFirstLetter(nominator.domain.name)}
                       </span>
                     )}
                   </div>
-                  <div className='text-sm font-normal'>Operator Status: {nominator.status}</div>
-                  <div>
+                  <div className='text-sm font-normal'>
+                    Operator Status:{' '}
+                    <span className='text-grayDark dark:text-purpleLight'>
+                      {nominator.operator?.status || 'N/A'}
+                    </span>
+                  </div>
+                  <div className='mt-2 sm:mt-0'>
                     {(() => {
                       const excludeActions = [
                         OperatorActionType.Deregister,
@@ -225,34 +247,40 @@ export const NominationsTable: FC = () => {
                     })()}
                   </div>
                 </div>
-                <div className='flex justify-between'>
-                  <div className='w-1/2 pr-4'>
-                    <h4 className='text-md mb-2 font-medium text-purpleLight'>Deposits</h4>
+                <div className='flex flex-col justify-between sm:flex-row'>
+                  <div className='w-full sm:w-1/2 sm:pr-4'>
+                    <h4 className='text-md mb-2 font-medium text-grayDark dark:text-purpleLight'>
+                      Deposits
+                    </h4>
                     <SortedTable
                       data={nominator.deposits}
                       columns={depositColumns}
                       showNavigation={false}
                       pageCount={1}
+                      emptyMessage='No deposits to show'
                     />
                   </div>
-                  <div className='w-1/2 pl-4'>
-                    <h4 className='text-md mb-2 font-medium text-purpleLight'>Withdrawals</h4>
+                  <div className='w-full sm:mt-0 sm:w-1/2 sm:pl-4'>
+                    <h4 className='text-md mb-2 font-medium text-grayDark dark:text-purpleLight'>
+                      Withdrawals
+                    </h4>
                     <SortedTable
                       data={nominator.withdrawals}
                       columns={withdrawalColumns}
                       showNavigation={false}
                       pageCount={1}
+                      emptyMessage='No withdrawals to show'
                     />
                   </div>
                 </div>
                 <hr className='my-2' />
                 <Accordion title='Additional Info' defaultOpen={false}>
-                  <div className='text-sm text-white'>
+                  <div className='text-sm text-grayDarker dark:text-white'>
                     <div className='mb-4'>
                       <strong>Status:</strong> {nominator.status}
                     </div>
-                    <div className='flex'>
-                      <div className='w-1/2 pr-2'>
+                    <div className='flex flex-col sm:flex-row'>
+                      <div className='w-full sm:w-1/2 sm:pr-2'>
                         <h5 className='mb-2 font-medium'>Deposits</h5>
                         <div>
                           <strong>Total Deposits:</strong>{' '}
@@ -273,7 +301,7 @@ export const NominationsTable: FC = () => {
                           {TOKEN.symbol}
                         </div>
                       </div>
-                      <div className='w-1/2 pl-2'>
+                      <div className='mt-4 w-full sm:mt-0 sm:w-1/2 sm:pl-2'>
                         <h5 className='mb-2 font-medium'>Withdrawals</h5>
                         <div>
                           <strong>Known Shares:</strong>{' '}

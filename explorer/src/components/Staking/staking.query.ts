@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_USER_NOMINATIONS_PENDING_ACTIONS = gql`
-  query UserNominationsPendingActions(
+export const QUERY_NOMINATIONS_LIST = gql`
+  query NominationsList(
     $limit: Int!
     $offset: Int
     $orderBy: [nominator_order_by!]!
