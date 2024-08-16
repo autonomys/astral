@@ -41,14 +41,14 @@ type CacheManager = {
 
 export type Cache = PermanentCache & TemporaryCache & CacheManager;
 
-export const initCache: Cache = {
-  isModified: false,
-  internalKeyStore: new Map(),
-
+export const initPermanentCache: PermanentCache = {
   domains: new Map(),
   accounts: new Map(),
   operators: new Map(),
   nominators: new Map(),
+};
+
+export const initTemporaryCache: TemporaryCache = {
   deposits: new Map(),
   withdrawals: new Map(),
   bundles: new Map(),
@@ -57,6 +57,17 @@ export const initCache: Cache = {
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
+};
+
+export const initCacheManager: CacheManager = {
+  isModified: false,
+  internalKeyStore: new Map(),
+};
+
+export const initCache: Cache = {
+  ...initPermanentCache,
+  ...initTemporaryCache,
+  ...initCacheManager,
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
@@ -125,7 +136,9 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
 
   await Promise.all(
     Object.keys(cache).map((k) =>
-      k !== "isModified" ? saveEntry(ctx, cache, k as keyof Cache) : null
+      !Object.keys(initCacheManager).includes(k)
+        ? saveEntry(ctx, cache, k as keyof Cache)
+        : null
     )
   );
 
