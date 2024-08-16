@@ -23,7 +23,7 @@ import {
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { getBlockNumber } from "../utils";
+import { getBlockNumber, SHARES_CALCULATION_MULTIPLIER } from "../utils";
 import { Cache } from "../utils/cache";
 
 export async function processEpochTransitionEvent(
@@ -116,6 +116,17 @@ export async function processEpochTransitionEvent(
     op.rawStatus = rawStatus;
     op.updatedAt = currentBlockNumber;
 
+    if (op.currentTotalShares > BigInt(0)) {
+      op.currentSharePrice =
+        (op.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+        op.currentTotalShares;
+    } else {
+      op.currentSharePrice = BigInt(0);
+    }
+
+    op.accumulatedEpochShares += op.currentTotalShares;
+    op.accumulatedEpochStorageFeeDeposit += op.currentStorageFeeDeposit;
+
     cache.operators.set(op.id, op);
 
     try {
@@ -182,6 +193,9 @@ export async function processEpochTransitionEvent(
 
   domain.completedEpoch = completedEpoch;
   domain.updatedAt = currentBlockNumber;
+
+  domain.accumulatedEpochStake += domain.currentTotalStake;
+  domain.accumulatedEpochStorageFeeDeposit += domain.currentStorageFeeDeposit;
 
   cache.domains.set(domain.id, domain);
 
@@ -281,6 +295,11 @@ export async function processEpochTransitionEvent(
       deposit.pending?.storageFeeDeposit ?? BigInt(0);
     nominator.pendingEffectiveDomainEpoch =
       deposit.pending?.effectiveDomainEpoch ?? 0;
+
+    nominator.accumulatedEpochShares += nominator.knownShares;
+    nominator.accumulatedEpochStorageFeeDeposit +=
+      nominator.knownStorageFeeDeposit;
+    nominator.activeEpochCount++;
     nominator.updatedAt = currentBlockNumber;
 
     cache.nominators.set(nominator.id, nominator);

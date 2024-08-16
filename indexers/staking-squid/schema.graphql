@@ -30,6 +30,8 @@ type Domain @entity {
   totalBurnedBalance: BigInt!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
+  accumulatedEpochStake: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
   bundleCount: Int!
   lastBundleAt: Int!
   createdAt: Int! @index
@@ -99,6 +101,8 @@ type Operator @entity {
   totalConsensusStorageFee: BigInt!
   totalDomainExecutionFee: BigInt!
   totalBurnedBalance: BigInt!
+  accumulatedEpochShares: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
   activeEpochCount: Int!
   bundleCount: Int!
   status: OperatorStatus! @index
@@ -157,6 +161,7 @@ enum NominatorStatus {
   PENDING
   STAKED
   SLASHED
+  WITHDRAW
 }
 
 enum NominatorPendingAction {
@@ -184,6 +189,9 @@ type Nominator @entity {
   totalDeposits: BigInt!
   totalDepositsCount: Int!
   totalWithdrawalsCount: Int!
+  accumulatedEpochShares: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
+  activeEpochCount: Int!
   status: NominatorStatus! @index
   pendingAction: NominatorPendingAction! @index
   createdAt: Int! @index

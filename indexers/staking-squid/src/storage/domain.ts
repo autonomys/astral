@@ -35,6 +35,8 @@ export const createDomain = (
     totalBurnedBalance: BigInt(0),
     currentTotalStake: BigInt(0),
     currentStorageFeeDeposit: BigInt(0),
+    accumulatedEpochStake: BigInt(0),
+    accumulatedEpochStorageFeeDeposit: BigInt(0),
     bundleCount: 0,
     lastBundleAt: 0,
     ...props,

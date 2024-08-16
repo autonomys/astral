@@ -6,7 +6,11 @@ import {
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { getBlockNumber, getCallSigner } from "../utils";
+import {
+  getBlockNumber,
+  getCallSigner,
+  SHARES_CALCULATION_MULTIPLIER,
+} from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processWithdrewStakeEvent(
@@ -49,6 +53,11 @@ export function processWithdrewStakeEvent(
       operatorId: operator.id,
       nominatorId: nominator.id,
       shares: sharesBigInt,
+      estimatedAmount:
+        (operator.currentSharePrice * sharesBigInt) /
+        SHARES_CALCULATION_MULTIPLIER,
+      epochWithdrawalRequestedAt: domain.completedEpoch ?? 0,
+      domainBlockNumberWithdrawalRequestedAt: domain.lastDomainBlockNumber ?? 0,
     }
   );
   cache.withdrawals.set(withdrawal.id, withdrawal);

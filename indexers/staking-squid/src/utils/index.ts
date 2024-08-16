@@ -4,6 +4,8 @@ import type { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from "@subsquid/util-internal-hex";
 import type { CtxBlock, ProcessorContext } from "../processor";
 
+export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000);
+
 export const hexToAccount = (hex: string): string => {
   try {
     return codec(DEFAULT_SS58_FORMAT).encode(decodeHex(hex));

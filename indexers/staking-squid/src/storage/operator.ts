@@ -54,6 +54,8 @@ export const createOperator = (
     totalConsensusStorageFee: BigInt(0),
     totalDomainExecutionFee: BigInt(0),
     totalBurnedBalance: BigInt(0),
+    accumulatedEpochShares: BigInt(0),
+    accumulatedEpochStorageFeeDeposit: BigInt(0),
     activeEpochCount: 0,
     bundleCount: 0,
     status: OperatorStatus.PENDING,
