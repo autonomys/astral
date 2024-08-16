@@ -75,6 +75,7 @@ type Operator @entity {
   currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
   rawStatus: String!
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
@@ -248,7 +249,8 @@ type Stats @entity {
   id: ID! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalFees: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -267,7 +269,8 @@ type StatsPerDomain @entity {
   domainId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalFees: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -286,10 +289,14 @@ type StatsPerOperator @entity {
   operatorId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalFees: BigInt!
+  totalShares: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
   nominatorsCount: Int!
   depositsCount: Int!
   withdrawalsCount: Int!

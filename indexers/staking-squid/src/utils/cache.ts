@@ -38,7 +38,13 @@ export type TemporaryCache = {
 
 export type LastBlockBundleIndexKey =
   `lastBlockBundleIndex:${string}-${string}`;
-type InternalKeyStore = LastBlockBundleIndexKey;
+export type AllTimeHighStakedKey = `allTimeHighStaked:${string}`;
+export type AllTimeHighSharePriceKey =
+  `allTimeHighSharePrice:${string}:${string}`;
+type InternalKeyStore =
+  | LastBlockBundleIndexKey
+  | AllTimeHighStakedKey
+  | AllTimeHighSharePriceKey;
 
 type CacheManager = {
   isModified: boolean;
