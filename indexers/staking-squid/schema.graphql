@@ -99,9 +99,23 @@ type Operator @entity {
   updatedAt: Int! @index
 }
 
+type DomainBlock @entity {
+  id: ID! @index
+  domainId: String! @index
+  blockNumber: Int! @index
+  blockHash: String! @index
+  extrinsicRoot: String!
+  consensusBlockNumber: Int! @index
+  consensusBlockHash: String! @index
+  timestamp: DateTime! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
 type Bundle @entity {
   id: ID! @index
   domainId: String! @index
+  domainBlockId: String! @index
   domainBlockNumber: Int! @index
   domainBlockHash: String!
   domainBlockExtrinsicRoot: String!
@@ -123,9 +137,11 @@ type Bundle @entity {
 
 type BundleAuthor @entity {
   id: ID! @index
-  bundleId: String! @index
+  domainId: String! @index
   accountId: String! @index
   operatorId: String! @index
+  bundleId: String! @index
+  domainBlockId: String! @index
 }
 
 enum NominatorStatus {
