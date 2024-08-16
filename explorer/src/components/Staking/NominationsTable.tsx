@@ -164,7 +164,7 @@ export const NominationsTable: FC = () => {
         </h2>
         {subspaceAccount && (
           <div className='flex items-center'>
-            <MyPositionSwitch />
+            <MyPositionSwitch labels={['My nominations', 'All nominations']} />
           </div>
         )}
       </div>
@@ -180,7 +180,7 @@ export const NominationsTable: FC = () => {
                   <div className='mb-2 sm:mb-0'>
                     <span className='mr-2'>Operator # {nominator.operator_id}</span>
                     {nominator.domain && (
-                      <span className='ml-2 text-sm text-purpleLighterAccent dark:text-grayDark'>
+                      <span className='ml-2 text-sm text-purpleLighterAccent dark:text-purpleMedium'>
                         on {capitalizeFirstLetter(nominator.domain.name)}
                       </span>
                     )}
