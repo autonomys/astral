@@ -30,6 +30,8 @@ export const createNominator = (
     pendingShares: BigInt(0),
     pendingStorageFeeRefund: BigInt(0),
     totalDeposits: BigInt(0),
+    totalEstimatedWithdrawals: BigInt(0),
+    totalWithdrawals: BigInt(0),
     totalDepositsCount: 0,
     totalWithdrawalsCount: 0,
     accumulatedEpochShares: BigInt(0),

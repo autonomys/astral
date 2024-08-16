@@ -40,6 +40,8 @@ export const createOperator = (
     currentSharePrice: BigInt(0),
     rawStatus: JSON.stringify({}),
     totalDeposits: BigInt(0),
+    totalEstimatedWithdrawals: BigInt(0),
+    totalWithdrawals: BigInt(0),
     totalTaxCollected: BigInt(0),
     totalRewardsCollected: BigInt(0),
     totalTransfersIn: BigInt(0),

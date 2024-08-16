@@ -15,7 +15,11 @@ import {
   getOrCreateOperator,
 } from "../storage";
 import { events } from "../types";
-import { getBlockNumber, getCallSigner } from "../utils";
+import {
+  getBlockNumber,
+  getCallSigner,
+  SHARES_CALCULATION_MULTIPLIER,
+} from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processRegisterOperator(
@@ -113,13 +117,16 @@ export function processDeregisterOperator(
 ) {
   const { call, events: extrinsicEvents } = extrinsic;
   const operatorId = Number(call?.args.operatorId ?? 0);
-  const currentBlockNumber = getBlockNumber(block);
+  const blockNumber = getBlockNumber(block);
 
   const operator = getOrCreateOperator(cache, block, operatorId);
   cache.operators.set(operator.id, operator);
 
   const domain = getOrCreateDomain(cache, block, operator.domainId);
   cache.domains.set(domain.id, domain);
+
+  const account = getOrCreateAccount(cache, block, operator.accountId);
+  cache.accounts.set(account.id, account);
 
   const operatorDeregisteredEvent = extrinsicEvents.find(
     (e) => e.name === events.domains.operatorDeregistered.name
@@ -138,6 +145,9 @@ export function processDeregisterOperator(
         n.operatorId === operator.id
     )
     .forEach((n) => {
+      const estimatedAmount =
+        (operator.currentSharePrice * n.knownShares) /
+        SHARES_CALCULATION_MULTIPLIER;
       const w = createWithdrawal(
         block,
         extrinsic,
@@ -153,14 +163,27 @@ export function processDeregisterOperator(
           epochWithdrawalRequestedAt: domain.completedEpoch ?? 0,
           domainBlockNumberWithdrawalRequestedAt:
             domain.lastDomainBlockNumber ?? 0,
+          estimatedAmount,
         }
       );
       cache.withdrawals.set(w.id, w);
 
       n.status = NominatorStatus.PENDING;
       n.totalWithdrawalsCount++;
-      n.updatedAt = currentBlockNumber;
+      n.updatedAt = blockNumber;
       cache.nominators.set(n.id, n);
+
+      operator.totalEstimatedWithdrawals += estimatedAmount;
+      operator.updatedAt = blockNumber;
+      cache.operators.set(operator.id, operator);
+
+      account.totalEstimatedWithdrawals += estimatedAmount;
+      account.updatedAt = blockNumber;
+      cache.accounts.set(account.id, account);
+
+      domain.totalEstimatedWithdrawals += estimatedAmount;
+      domain.updatedAt = blockNumber;
+      cache.domains.set(domain.id, domain);
     });
 
   cache.operators.set(operator.id, operator);

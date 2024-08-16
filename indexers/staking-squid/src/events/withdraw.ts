@@ -41,6 +41,8 @@ export function processWithdrewStakeEvent(
   });
   cache.nominators.set(nominator.id, nominator);
 
+  const estimatedAmount =
+    (operator.currentSharePrice * sharesBigInt) / SHARES_CALCULATION_MULTIPLIER;
   const withdrawal = createWithdrawal(
     block,
     extrinsic,
@@ -53,9 +55,7 @@ export function processWithdrewStakeEvent(
       operatorId: operator.id,
       nominatorId: nominator.id,
       shares: sharesBigInt,
-      estimatedAmount:
-        (operator.currentSharePrice * sharesBigInt) /
-        SHARES_CALCULATION_MULTIPLIER,
+      estimatedAmount,
       epochWithdrawalRequestedAt: domain.completedEpoch ?? 0,
       domainBlockNumberWithdrawalRequestedAt: domain.lastDomainBlockNumber ?? 0,
     }
@@ -63,8 +63,21 @@ export function processWithdrewStakeEvent(
   cache.withdrawals.set(withdrawal.id, withdrawal);
 
   nominator.totalWithdrawalsCount++;
+  nominator.totalEstimatedWithdrawals += estimatedAmount;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);
+
+  operator.totalEstimatedWithdrawals += estimatedAmount;
+  operator.updatedAt = blockNumber;
+  cache.operators.set(operator.id, operator);
+
+  account.totalEstimatedWithdrawals += estimatedAmount;
+  account.updatedAt = blockNumber;
+  cache.accounts.set(account.id, account);
+
+  domain.totalEstimatedWithdrawals += estimatedAmount;
+  domain.updatedAt = blockNumber;
+  cache.domains.set(domain.id, domain);
 
   cache.isModified = true;
 

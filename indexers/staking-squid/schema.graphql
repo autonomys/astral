@@ -14,6 +14,8 @@ type Domain @entity {
   completedEpoch: Int! @index
   lastDomainBlockNumber: Int! @index
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
   totalTransfersIn: BigInt!
@@ -41,6 +43,8 @@ type Domain @entity {
 type Account @entity {
   id: ID! @index
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -87,6 +91,8 @@ type Operator @entity {
   currentSharePrice: BigInt!
   rawStatus: String!
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
   totalTransfersIn: BigInt!
@@ -187,6 +193,8 @@ type Nominator @entity {
   pendingShares: BigInt!
   pendingStorageFeeRefund: BigInt!
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalDepositsCount: Int!
   totalWithdrawalsCount: Int!
   accumulatedEpochShares: BigInt!

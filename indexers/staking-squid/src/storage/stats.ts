@@ -69,7 +69,7 @@ export const createStatsPerOperator = (
     totalTaxCollected: operator.totalTaxCollected,
     totalRewardsCollected: operator.totalRewardsCollected,
     totalDeposits: operator.totalDeposits,
-    totalWithdrawals: BigInt(0),
+    totalWithdrawals: operator.totalWithdrawals,
     currentSharePrice: operator.currentSharePrice,
     allTimeHighStaked,
     allTimeHighSharePrice,
@@ -125,7 +125,7 @@ export const createStatsPerDomain = (
     totalTaxCollected: domain.totalTaxCollected,
     totalRewardsCollected: domain.totalRewardsCollected,
     totalDeposits: domain.totalDeposits,
-    totalWithdrawals: BigInt(0),
+    totalWithdrawals: domain.totalWithdrawals,
     allTimeHighStaked,
     operatorsCount: operators.length,
     activeOperatorsCount,
@@ -164,6 +164,10 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     (total, operator) => total + operator.totalRewardsCollected,
     BigInt(0)
   );
+  const totalWithdrawals = operators.reduce(
+    (total, operator) => total + operator.totalWithdrawals,
+    BigInt(0)
+  );
 
   const allTimeHighStakedKey: AllTimeHighStakedKey = "allTimeHighStaked:global";
   let allTimeHighStaked = BigInt(
@@ -185,7 +189,7 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     totalTaxCollected,
     totalRewardsCollected,
     totalDeposits,
-    totalWithdrawals: BigInt(0),
+    totalWithdrawals,
     allTimeHighStaked,
     domainsCount: cache.domains.size,
     operatorsCount: operators.length,

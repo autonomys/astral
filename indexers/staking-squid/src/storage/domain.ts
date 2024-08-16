@@ -19,6 +19,8 @@ export const createDomain = (
     completedEpoch: 0,
     lastDomainBlockNumber: 0,
     totalDeposits: BigInt(0),
+    totalEstimatedWithdrawals: BigInt(0),
+    totalWithdrawals: BigInt(0),
     totalTaxCollected: BigInt(0),
     totalRewardsCollected: BigInt(0),
     totalTransfersIn: BigInt(0),

@@ -1,12 +1,14 @@
 import {
   NominatorPendingAction,
   NominatorStatus,
+  OperatorPendingAction,
   WithdrawalStatus,
 } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   getOrCreateAccount,
   getOrCreateDomain,
+  getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
 import { getBlockNumber, getCallSigner } from "../utils";
@@ -27,6 +29,7 @@ export function processOperatorUnlockedEvent(
   const domain = getOrCreateDomain(cache, block, operator.domainId);
   const account = getOrCreateAccount(cache, block, address);
 
+  operator.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED;
   operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
@@ -78,6 +81,7 @@ export function processFundsUnlockedEvent(
   const operator = getOrCreateOperator(cache, block, operatorId);
   const domain = getOrCreateDomain(cache, block, operator.domainId);
   const account = getOrCreateAccount(cache, block, address);
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId);
 
   Array.from(cache.withdrawals.values())
     .filter(
@@ -88,10 +92,16 @@ export function processFundsUnlockedEvent(
     )
     .forEach((w) => {
       w.status = WithdrawalStatus.WITHDRAW;
+      w.unlockedAmount = amountBigInt;
       w.unlockedAt = blockNumber;
       w.updatedAt = blockNumber;
       cache.withdrawals.set(w.id, w);
     });
+
+  domain.totalWithdrawals += amountBigInt;
+  account.totalWithdrawals += amountBigInt;
+  operator.totalWithdrawals += amountBigInt;
+  nominator.totalWithdrawals += amountBigInt;
 
   cache.isModified = true;
 
@@ -115,7 +125,7 @@ export function processNominatedStakedUnlockedEvent(
   const operator = getOrCreateOperator(cache, block, operatorId);
   const domain = getOrCreateDomain(cache, block, operator.domainId);
   const account = getOrCreateAccount(cache, block, address);
-
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId);
   const userOpenWithdrawals = Array.from(cache.withdrawals.values()).filter(
     (w) =>
       w.status === WithdrawalStatus.PENDING_LOCK &&
@@ -145,6 +155,11 @@ export function processNominatedStakedUnlockedEvent(
       cache.withdrawals.set(w.id, w);
     });
   }
+
+  domain.totalWithdrawals += unlockedAmountBigInt;
+  account.totalWithdrawals += unlockedAmountBigInt;
+  operator.totalWithdrawals += unlockedAmountBigInt;
+  nominator.totalWithdrawals += unlockedAmountBigInt;
 
   cache.isModified = true;
 
