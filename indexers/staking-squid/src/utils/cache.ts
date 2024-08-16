@@ -6,6 +6,7 @@ import {
   BundleAuthor,
   Deposit,
   Domain,
+  DomainBlock,
   Nominator,
   Operator,
   RewardEvent,
@@ -28,15 +29,20 @@ export type TemporaryCache = {
   withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
   bundleAuthors: Map<string, BundleAuthor>;
+  domainBlocks: Map<string, DomainBlock>;
   operatorRewardedEvents: Map<string, RewardEvent>;
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
 };
 
+export type LastBlockBundleIndexKey =
+  `lastBlockBundleIndex:${string}-${string}`;
+type InternalKeyStore = LastBlockBundleIndexKey;
+
 type CacheManager = {
   isModified: boolean;
-  internalKeyStore: Map<string, string>;
+  internalKeyStore: Map<InternalKeyStore, string>;
 };
 
 export type Cache = PermanentCache & TemporaryCache & CacheManager;
@@ -53,6 +59,7 @@ export const initTemporaryCache: TemporaryCache = {
   withdrawals: new Map(),
   bundles: new Map(),
   bundleAuthors: new Map(),
+  domainBlocks: new Map(),
   operatorRewardedEvents: new Map(),
   stats: new Map(),
   statsPerDomain: new Map(),
@@ -126,6 +133,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logTemp += logEntry("withdrawals", cache.withdrawals);
   logTemp += logEntry("bundles", cache.bundles);
   logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
+  logTemp += logEntry("domainBlocks", cache.domainBlocks);
   logTemp += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
   logTemp += logEntry("stats", cache.stats);
   logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
@@ -149,6 +157,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.bundles.clear();
   cache.bundleAuthors.clear();
   cache.operatorRewardedEvents.clear();
+  cache.domainBlocks.clear();
   cache.stats.clear();
   cache.statsPerDomain.clear();
   cache.statsPerOperator.clear();
