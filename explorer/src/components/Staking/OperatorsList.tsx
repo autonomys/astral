@@ -775,9 +775,13 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='flex justify-between'>
-        <DomainProgress />
-        <DomainBlockTimeProgress />
+      <div className='flex flex-col sm:flex-row sm:justify-between'>
+        <div className='mb-4 sm:mb-0'>
+          <DomainProgress />
+        </div>
+        <div>
+          <DomainBlockTimeProgress />
+        </div>
       </div>
       <div className='my-4' ref={ref}>
         <TableSettings

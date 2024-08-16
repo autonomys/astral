@@ -61,26 +61,31 @@ export const DomainProgress: FC = () => {
   }, [data, loading])
 
   return (
-    <div className='flex w-full flex-col items-center justify-center gap-5 px-4' ref={ref}>
+    <div
+      className='flex w-full flex-col items-center justify-center gap-2 px-2 sm:gap-5 sm:px-4'
+      ref={ref}
+    >
       {data
         ? cards.map(({ title, currentEpoch, lastBlock, progress }, index) => (
             <div
               key={index}
-              className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'
+              className='w-full rounded-[10px] bg-grayLight p-3 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:rounded-[20px] sm:p-5'
             >
               <div className='flex items-center justify-between'>
-                <span className='text-lg font-semibold text-grayDark dark:text-white'>
+                <span className='text-base font-semibold text-grayDark dark:text-white sm:text-lg'>
                   {capitalizeFirstLetter(title)}
                 </span>
-                <span className='text-sm text-grayDark dark:text-white'>{progress}%</span>
+                <span className='text-xs text-grayDark dark:text-white sm:text-sm'>
+                  {progress}%
+                </span>
               </div>
-              <div className='mt-2 h-2 w-full rounded-full bg-grayLight dark:bg-purpleDeep'>
+              <div className='mt-1 h-1.5 w-full rounded-full bg-grayLight dark:bg-purpleDeep sm:mt-2 sm:h-2'>
                 <div
-                  className='h-2 rounded-full bg-gradient-to-r from-purpleLighterAccent to-purpleTint dark:from-purpleAccent dark:to-purplePastel'
+                  className='h-full rounded-full bg-gradient-to-r from-purpleLighterAccent to-purpleTint dark:from-purpleAccent dark:to-purplePastel'
                   style={{ width: `${progress}%` }}
                 ></div>
               </div>
-              <div className='flex justify-between text-sm text-grayDarker dark:text-whiteOpaque'>
+              <div className='flex justify-between text-xs text-grayDarker dark:text-whiteOpaque sm:text-sm'>
                 <span>Epoch: {numberWithCommas(currentEpoch)}</span>
                 <span>Last Block: {numberWithCommas(lastBlock)}</span>
               </div>

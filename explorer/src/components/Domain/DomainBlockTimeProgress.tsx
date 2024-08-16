@@ -33,10 +33,7 @@ export const DomainBlockTimeProgress: FC = () => {
         stats: [
           { title: 'Last 1 Hour', intervalSeconds: 2 },
           { title: 'Last 1 Day', intervalSeconds: 2 },
-          {
-            title: 'Last 7 Days',
-            intervalSeconds: 2,
-          },
+          { title: 'Last 7 Days', intervalSeconds: 2 },
         ],
       }
     })
@@ -49,20 +46,20 @@ export const DomainBlockTimeProgress: FC = () => {
   }, [data, loading])
 
   return (
-    <div className='flex w-full justify-center gap-5 px-4'>
+    <div className='flex w-full flex-col justify-center gap-4 px-4 sm:flex-row sm:gap-6 sm:px-6'>
       {domainData.length > 0
         ? domainData.map(({ domain, stats }, domainIndex) => (
             <div
               key={domainIndex}
-              className='w-1/2 rounded-[20px] bg-grayLight p-4 px-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'
+              className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:w-1/2'
             >
-              <h2 className='mb-4 text-xl font-bold text-grayDark dark:text-white'>
+              <h2 className='mb-4 text-lg font-bold text-grayDark dark:text-white sm:text-xl'>
                 {capitalizeFirstLetter(domain)}
               </h2>
               {stats.map(({ title, intervalSeconds }, statIndex) => (
-                <div key={statIndex} className='mb-3'>
+                <div key={statIndex} className='mb-3 sm:mb-4'>
                   <div className='flex items-center justify-between'>
-                    <span className='text-lg font-semibold text-grayDark dark:text-white'>
+                    <span className='text-base font-semibold text-grayDark dark:text-white sm:text-lg'>
                       {title}
                     </span>
                     <span className='text-sm text-grayDark dark:text-white'>

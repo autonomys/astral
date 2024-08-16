@@ -4,9 +4,10 @@ import type { SortingOptions } from '@tanstack/table-core/build/lib/features/Sor
 
 interface TableProps<T extends object> {
   table: Table<T>
+  emptyMessage?: string
 }
 
-export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
+export const DesktopTable = <T extends object>({ table, emptyMessage }: TableProps<T>) => (
   <table className="w-full min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
     <thead className='border-b border-gray-200 text-sm text-purpleShade2 dark:text-white/75'>
       {table.getHeaderGroups().map((headerGroup) => (
@@ -66,9 +67,13 @@ export const DesktopTable = <T extends object>({ table }: TableProps<T>) => (
           </tr>
         ))
       ) : (
-        <div className='flex w-full p-6 hover:bg-gray-100 dark:hover:bg-transparent/10'>
-          <div className='text-sm text-purpleShade2 dark:text-white/75'>No entries to show</div>
-        </div>
+        <tr>
+          <td colSpan={table.getAllColumns().length} className='p-6 text-center'>
+            <div className='text-sm text-purpleShade2 dark:text-white/75'>
+              {emptyMessage || 'No entries to show'}
+            </div>
+          </td>
+        </tr>
       )}
     </tbody>
   </table>

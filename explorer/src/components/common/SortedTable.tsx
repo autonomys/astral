@@ -28,6 +28,7 @@ interface ReactTableProps<T extends object> {
   hideDownloadButton?: boolean
   hidePageSizeOptions?: boolean
   fullDataDownloader?: () => Promise<unknown[]>
+  emptyMessage?: string
 }
 
 export const SortedTable = <T extends object>({
@@ -44,6 +45,7 @@ export const SortedTable = <T extends object>({
   hideDownloadButton,
   hidePageSizeOptions,
   fullDataDownloader,
+  emptyMessage,
 }: ReactTableProps<T>) => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const memoizedData = useMemo(() => data, [data])
@@ -70,7 +72,11 @@ export const SortedTable = <T extends object>({
   return (
     <div className='flex w-full flex-col'>
       <div className='overflow-x-auto'>
-        {isDesktop ? <DesktopTable table={table} /> : <ListCard table={table} />}
+        {isDesktop ? (
+          <DesktopTable table={table} emptyMessage={emptyMessage} />
+        ) : (
+          <ListCard table={table} emptyMessage={emptyMessage} />
+        )}
       </div>
       {showNavigation && (
         <TableNavigation
