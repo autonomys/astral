@@ -11,6 +11,13 @@ import {
   processOperatorSlashedEvent,
   processOperatorTaxCollectedEvent,
 } from "./operator";
+import {
+  processFundsUnlockedEvent,
+  processNominatedStakedUnlockedEvent,
+  processNominatorUnlockedEvent,
+  processOperatorUnlockedEvent,
+  processStorageFeeUnlockedEvent,
+} from "./unlock";
 import { processWithdrewStakeEvent } from "./withdraw";
 
 export async function processEvents(
@@ -52,22 +59,38 @@ async function processEvent(
     case events.domains.operatorNominated.name:
       return processOperatorNominatedEvent(cache, block, extrinsic, event);
 
-    // bundle
-    case events.domains.bundleStored.name:
-      return processBundleStoredEvent(cache, block, extrinsic, event);
-
     // deposit and stake
     case events.domains.withdrewStake.name:
       return processWithdrewStakeEvent(cache, block, extrinsic, event);
 
+    // bundle
+    case events.domains.bundleStored.name:
+      return processBundleStoredEvent(cache, block, extrinsic, event);
+
+    // unlock
+    case events.domains.operatorUnlocked.name:
+      return processOperatorUnlockedEvent(cache, block, extrinsic, event);
+    case events.domains.fundsUnlocked.name:
+      return processFundsUnlockedEvent(cache, block, extrinsic, event);
+    case events.domains.nominatedStakedUnlocked.name:
+      return processNominatedStakedUnlockedEvent(
+        cache,
+        block,
+        extrinsic,
+        event
+      );
+    case events.domains.nominatorUnlocked.name:
+      return processNominatorUnlockedEvent(cache, block, extrinsic, event);
+    case events.domains.storageFeeUnlocked.name:
+      return processStorageFeeUnlockedEvent(cache, block, extrinsic, event);
+
     // rewards and slashing
     case events.domains.operatorRewarded.name:
       return processOperatorRewardedEvent(cache, block, extrinsic, event);
-
     case events.domains.operatorSlashed.name:
       return processOperatorSlashedEvent(cache, block, extrinsic, event);
 
-    // tax on fees
+    // tax
     case events.domains.operatorTaxCollected.name:
       return processOperatorTaxCollectedEvent(cache, block, extrinsic, event);
 
