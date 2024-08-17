@@ -43,6 +43,10 @@ export const QUERY_DOMAIN_LIST = gql`
       total_transfers_rejected
       transfers_rejected_count
       updated_at
+      total_estimated_withdrawals
+      total_withdrawals
+      accumulated_epoch_stake
+      accumulated_epoch_storage_fee_deposit
       operators_aggregate {
         aggregate {
           count
@@ -106,6 +110,10 @@ export const QUERY_DOMAIN_BY_ID = gql`
       total_transfers_rejected
       transfers_rejected_count
       updated_at
+      total_estimated_withdrawals
+      total_withdrawals
+      accumulated_epoch_stake
+      accumulated_epoch_storage_fee_deposit
       operators_aggregate {
         aggregate {
           count
