@@ -71,13 +71,13 @@ export const SortedTable = <T extends object>({
 
   return (
     <div className='flex w-full flex-col'>
-      <div className='overflow-x-auto'>
+      <>
         {isDesktop ? (
           <DesktopTable table={table} emptyMessage={emptyMessage} />
         ) : (
           <ListCard table={table} emptyMessage={emptyMessage} />
         )}
-      </div>
+      </>
       {showNavigation && (
         <TableNavigation
           table={table}
