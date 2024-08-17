@@ -27,7 +27,12 @@ import { useTableStates } from 'states/tables'
 import { useViewStates } from 'states/view'
 import type { Cell, OperatorsFilters, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { bigNumberToFormattedString, bigNumberToNumber, numberWithCommas } from 'utils/number'
+import {
+  bigNumberToFormattedString,
+  bigNumberToNumber,
+  numberFormattedString,
+  numberWithCommas,
+} from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { allCapsToNormal, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
@@ -205,6 +210,15 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           <div>{bigNumberToFormattedString(row.original.current_total_shares)}</div>
         ),
       })
+    if (selectedColumns.includes('current_share_price'))
+      cols.push({
+        accessorKey: 'current_share_price',
+        header: 'Current Share Price',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{bigNumberToFormattedString(row.original.current_share_price)}</div>
+        ),
+      })
     if (selectedColumns.includes('total_deposits'))
       cols.push({
         accessorKey: 'total_deposits',
@@ -212,6 +226,24 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_estimated_withdrawals'))
+      cols.push({
+        accessorKey: 'total_estimated_withdrawals',
+        header: 'Total Estimated Withdrawals',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_withdrawals'))
+      cols.push({
+        accessorKey: 'total_withdrawals',
+        header: 'Total Withdrawals',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${TOKEN.symbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_tax_collected'))
@@ -247,7 +279,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer In (Count)',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.transfers_in_count)}</div>
+          <div>{numberFormattedString(row.original.transfers_in_count)}</div>
         ),
       })
     if (selectedColumns.includes('total_transfers_out'))
@@ -265,7 +297,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer Out (Count)',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.transfers_out_count)}</div>
+          <div>{numberFormattedString(row.original.transfers_out_count)}</div>
         ),
       })
     if (selectedColumns.includes('total_rejected_transfers_claimed'))
@@ -283,7 +315,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer Rejected Claimed (Count)',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.rejected_transfers_claimed_count)}</div>
+          <div>{numberFormattedString(row.original.rejected_transfers_claimed_count)}</div>
         ),
       })
     if (selectedColumns.includes('total_transfers_rejected'))
@@ -301,10 +333,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer Rejected (Count)',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.transfers_rejected_count)}</div>
+          <div>{numberFormattedString(row.original.transfers_rejected_count)}</div>
         ),
       })
-
     if (selectedColumns.includes('total_volume'))
       cols.push({
         accessorKey: 'total_volume',
@@ -341,13 +372,33 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${TOKEN.symbol}`}</div>
         ),
       })
+    if (selectedColumns.includes('accumulated_epoch_shares'))
+      cols.push({
+        accessorKey: 'accumulated_epoch_shares',
+        header: 'Accumulated Epoch Shares',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{bigNumberToFormattedString(row.original.accumulated_epoch_shares)}</div>
+        ),
+      })
+    if (selectedColumns.includes('accumulated_epoch_storage_fee_deposit'))
+      cols.push({
+        accessorKey: 'accumulated_epoch_storage_fee_deposit',
+        header: 'Accumulated Epoch Storage Fee Deposit',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>
+            {bigNumberToFormattedString(row.original.accumulated_epoch_storage_fee_deposit)}
+          </div>
+        ),
+      })
     if (selectedColumns.includes('active_epoch_count'))
       cols.push({
         accessorKey: 'active_epoch_count',
         header: 'Active Epoch (Count)',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.active_epoch_count)}</div>
+          <div>{numberFormattedString(row.original.active_epoch_count)}</div>
         ),
       })
     if (selectedColumns.includes('bundle_count'))
@@ -355,9 +406,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         accessorKey: 'bundle_count',
         header: 'Bundle (Count)',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.bundle_count)}</div>
-        ),
+        cell: ({ row }: Cell<Row>) => <div>{numberFormattedString(row.original.bundle_count)}</div>,
       })
     if (selectedColumns.includes('status') || selectedColumns.includes('raw_status'))
       cols.push({
@@ -369,7 +418,13 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           return <div>{allCapsToNormal(status)}</div>
         },
       })
-
+    if (selectedColumns.includes('pending_action'))
+      cols.push({
+        accessorKey: 'pending_action',
+        header: 'Pending Action',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{allCapsToNormal(row.original.pending_action)}</div>,
+      })
     if (selectedColumns.includes('last_bundle_at'))
       cols.push({
         accessorKey: 'last_bundle_at',
