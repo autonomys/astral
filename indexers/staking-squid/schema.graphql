@@ -300,7 +300,10 @@ type Stats @entity {
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
   domainsCount: Int!
   operatorsCount: Int!
   activeOperatorsCount: Int!
@@ -320,7 +323,10 @@ type StatsPerDomain @entity {
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
   operatorsCount: Int!
   activeOperatorsCount: Int!
   slashedOperatorsCount: Int!
@@ -341,9 +347,48 @@ type StatsPerOperator @entity {
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  totalShares: BigInt!
   currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
   allTimeHighSharePrice: BigInt!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
+
+type StatsPerNominator @entity {
+  id: ID! @index
+  domainId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalShares: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
+  allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
+
+type StatsPerAccount @entity {
+  id: ID! @index
+  accountId: String! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalShares: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
+  allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
+  operatorsCount: Int!
   nominatorsCount: Int!
   depositsCount: Int!
   withdrawalsCount: Int!

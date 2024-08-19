@@ -1,10 +1,13 @@
 import { randomUUID } from "crypto";
 import {
   Domain,
+  Nominator,
   Operator,
   OperatorStatus,
   Stats,
+  StatsPerAccount,
   StatsPerDomain,
+  StatsPerNominator,
   StatsPerOperator,
 } from "../model";
 import type { CtxBlock } from "../processor";
@@ -199,6 +202,132 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     depositsCount: cache.deposits.size,
     withdrawalsCount: cache.withdrawals.size,
     blockNumber: getBlockNumber(block),
+    timestamp: getTimestamp(block),
+  });
+};
+
+export const createStatsPerNominator = (
+  cache: Cache,
+  block: CtxBlock,
+  domain: Domain,
+  operator: Operator,
+  nominator: Nominator
+): StatsPerNominator => {
+  const deposits = Array.from(cache.deposits.values()).filter(
+    (o) => o.nominatorId === nominator.id
+  );
+  const withdrawals = Array.from(cache.withdrawals.values()).filter(
+    (o) => o.nominatorId === nominator.id
+  );
+
+  const allTimeHighStakedKey: AllTimeHighStakedKey = `allTimeHighStaked:${domain.id}:${operator.id}:${nominator.id}`;
+  const allTimeHighSharePriceKey: AllTimeHighSharePriceKey = `allTimeHighSharePrice:${domain.id}:${operator.id}:${nominator.id}`;
+
+  let allTimeHighStaked = BigInt(
+    cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+  let allTimeHighSharePrice = BigInt(
+    cache.internalKeyStore.get(allTimeHighSharePriceKey) || "0"
+  );
+
+  if (nominator.currentTotalStake > allTimeHighStaked) {
+    allTimeHighStaked = nominator.currentTotalStake;
+    cache.internalKeyStore.set(
+      allTimeHighStakedKey,
+      allTimeHighStaked.toString()
+    );
+    cache.isModified = true;
+  }
+
+  if (nominator.currentSharePrice > allTimeHighSharePrice) {
+    allTimeHighSharePrice = nominator.currentSharePrice;
+    cache.internalKeyStore.set(
+      allTimeHighSharePriceKey,
+      allTimeHighSharePrice.toString()
+    );
+    cache.isModified = true;
+  }
+
+  return new StatsPerNominator({
+    id: randomUUID(),
+    domainId: domain.id,
+    operatorId: operator.id,
+    nominatorId: nominator.id,
+    blockNumber: getBlockNumber(block),
+    totalStaked: nominator.currentTotalStake,
+    totalShares: nominator.currentTotalShares,
+    totalDeposits: nominator.totalDeposits,
+    totalWithdrawals: nominator.totalWithdrawals,
+    currentSharePrice: nominator.currentSharePrice,
+    allTimeHighStaked,
+    allTimeHighSharePrice,
+    depositsCount: deposits.length,
+    withdrawalsCount: withdrawals.length,
+    timestamp: getTimestamp(block),
+  });
+};
+
+export const createStatsPerAccount = (
+  cache: Cache,
+  block: CtxBlock,
+  account: Account
+): StatsPerAccount => {
+  const operators = Array.from(cache.operators.values()).filter(
+    (o) => o.accountId === account.id
+  );
+  const nominators = Array.from(cache.nominators.values()).filter(
+    (o) => o.accountId === account.id
+  );
+  const deposits = Array.from(cache.deposits.values()).filter(
+    (o) => o.accountId === account.id
+  );
+  const withdrawals = Array.from(cache.withdrawals.values()).filter(
+    (o) => o.accountId === account.id
+  );
+
+  const allTimeHighStakedKey: AllTimeHighStakedKey = `allTimeHighStaked:account:${account.id}`;
+  const allTimeHighSharePriceKey: AllTimeHighSharePriceKey = `allTimeHighSharePrice:account:${account.id}`;
+
+  let allTimeHighStaked = BigInt(
+    cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+  let allTimeHighSharePrice = BigInt(
+    cache.internalKeyStore.get(allTimeHighSharePriceKey) || "0"
+  );
+
+  if (account.currentTotalStake > allTimeHighStaked) {
+    allTimeHighStaked = account.currentTotalStake;
+    cache.internalKeyStore.set(
+      allTimeHighStakedKey,
+      allTimeHighStaked.toString()
+    );
+    cache.isModified = true;
+  }
+
+  if (account.currentSharePrice > allTimeHighSharePrice) {
+    allTimeHighSharePrice = account.currentSharePrice;
+    cache.internalKeyStore.set(
+      allTimeHighSharePriceKey,
+      allTimeHighSharePrice.toString()
+    );
+    cache.isModified = true;
+  }
+
+  return new StatsPerAccount({
+    id: randomUUID(),
+    accountId: account.id,
+    blockNumber: getBlockNumber(block),
+    totalStaked: account.currentTotalStake,
+    totalShares: account.currentTotalShares,
+    totalDeposits: account.totalDeposits,
+    totalWithdrawals: account.totalWithdrawals,
+    currentSharePrice: account.currentSharePrice,
+    allTimeHighStaked,
+    allTimeHighSharePrice,
+    operatorsCount: operators.length,
+    nominatorsCount: nominators.length,
+    depositsCount: deposits.length,
+    withdrawalsCount: withdrawals.length,
     timestamp: getTimestamp(block),
   });
 };
