@@ -116,13 +116,11 @@ export async function processEpochTransitionEvent(
     op.rawStatus = rawStatus;
     op.updatedAt = currentBlockNumber;
 
-    if (op.currentTotalShares > BigInt(0)) {
-      op.currentSharePrice =
-        (op.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
-        op.currentTotalShares;
-    } else {
-      op.currentSharePrice = BigInt(0);
-    }
+    op.currentSharePrice =
+      op.currentTotalShares > BigInt(0)
+        ? (op.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+          op.currentTotalShares
+        : BigInt(0);
 
     op.accumulatedEpochRewards += op.currentEpochRewards;
     op.accumulatedEpochStake += op.currentTotalStake;
@@ -300,8 +298,7 @@ export async function processEpochTransitionEvent(
       deposit.pending?.effectiveDomainEpoch ?? 0;
 
     nominator.currentTotalStake =
-      (nominator.knownShares * operator.currentSharePrice) /
-      SHARES_CALCULATION_MULTIPLIER;
+      nominator.knownShares * operator.currentSharePrice;
     nominator.currentStorageFeeDeposit =
       nominator.knownStorageFeeDeposit + nominator.pendingStorageFeeDeposit;
     nominator.currentTotalShares = nominator.knownShares;
@@ -321,8 +318,10 @@ export async function processEpochTransitionEvent(
     account.currentStorageFeeDeposit += nominator.currentStorageFeeDeposit;
     account.currentTotalShares += nominator.currentTotalShares;
     account.currentSharePrice =
-      (account.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
-      account.currentTotalShares;
+      account.currentTotalStake > BigInt(0)
+        ? (account.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+          account.currentTotalShares
+        : BigInt(0);
 
     account.accumulatedEpochStake += nominator.currentTotalStake;
     account.accumulatedEpochStorageFeeDeposit +=
