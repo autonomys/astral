@@ -16,7 +16,9 @@ import {
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createStats,
+  createStatsPerAccount,
   createStatsPerDomain,
+  createStatsPerNominator,
   createStatsPerOperator,
   getOrCreateAccount,
   getOrCreateDomain,
@@ -264,6 +266,25 @@ export async function processEpochTransitionEvent(
       operator
     );
     cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
+
+    const nominators = Array.from(cache.nominators.values()).filter(
+      (n) => n.operatorId === operator.id
+    );
+
+    for (const nominator of nominators) {
+      const statsPerNominator = createStatsPerNominator(
+        cache,
+        block,
+        domain,
+        operator,
+        nominator
+      );
+      cache.statsPerNominator.set(statsPerNominator.id, statsPerNominator);
+
+      const account = getOrCreateAccount(cache, block, nominator.accountId);
+      const statsPerAccount = createStatsPerAccount(cache, block, account);
+      cache.statsPerAccount.set(statsPerAccount.id, statsPerAccount);
+    }
   }
 
   const operatorsIds = allOperators.map((o) => o.operatorId.toString());

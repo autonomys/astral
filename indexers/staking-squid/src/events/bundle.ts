@@ -92,6 +92,7 @@ export function processBundleStoredEvent(
       domainBlockHash,
       {
         extrinsicRoot: domainBlockExtrinsicRoot,
+        epoch: domain.completedEpoch,
         consensusBlockNumber: Number(consensusBlockNumber),
         consensusBlockHash,
       }
@@ -110,6 +111,7 @@ export function processBundleStoredEvent(
         domainBlockNumber: Number(domainBlockNumber),
         domainBlockHash,
         domainBlockExtrinsicRoot,
+        epoch: domain.completedEpoch,
         consensusBlockNumber: Number(consensusBlockNumber),
         consensusBlockHash,
         totalTransfersIn,
@@ -133,7 +135,8 @@ export function processBundleStoredEvent(
       account.id,
       operator.id,
       bundle.id,
-      domainBlock.id
+      domainBlock.id,
+      domain.completedEpoch
     );
     cache.bundleAuthors.set(bundleAuthor.id, bundleAuthor);
 
@@ -157,7 +160,6 @@ export function processBundleStoredEvent(
     cache.domains.set(domain.id, domain);
   }
 
-  // To-Do: Only add the weight of the operator for these values
   operator.totalTransfersIn += totalTransfersIn;
   operator.transfersInCount += transfersInCount;
   operator.totalTransfersOut += totalTransfersOut;
