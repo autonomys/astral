@@ -15,6 +15,7 @@ export const createDomainBlock = (
     blockNumber,
     blockHash,
     extrinsicRoot: "",
+    epoch: 0,
     consensusBlockNumber: 0,
     consensusBlockHash: "",
     createdAt: getBlockNumber(block),

@@ -16,6 +16,7 @@ export const createBundle = (
     domainBlockNumber: 0,
     domainBlockHash: "",
     domainBlockExtrinsicRoot: "",
+    epoch: 0,
     consensusBlockNumber: 0,
     consensusBlockHash: "",
     totalTransfersIn: BigInt(0),
@@ -39,6 +40,7 @@ export const createBundleAuthor = (
   operatorId: string,
   bundleId: string,
   domainBlockId: string,
+  epoch: number,
   props?: Partial<BundleAuthor>
 ): BundleAuthor =>
   new BundleAuthor({
@@ -48,5 +50,6 @@ export const createBundleAuthor = (
     operatorId,
     bundleId,
     domainBlockId,
+    epoch,
     ...props,
   });

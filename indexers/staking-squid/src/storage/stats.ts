@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import {
+  Account,
   Domain,
   Nominator,
   Operator,
@@ -107,9 +108,14 @@ export const createStatsPerDomain = (
     (operator) => operator.status === OperatorStatus.SLASHED
   ).length;
 
-  const allTimeHighStakedKey: AllTimeHighStakedKey = `allTimeHighStaked:${domain.id}`;
+  const allTimeHighStakedKey: AllTimeHighStakedKey = `allTimeHighStaked:${domain.id}:general`;
+  const allTimeHighSharePriceKey: AllTimeHighSharePriceKey = `allTimeHighSharePrice:${domain.id}:general`;
+
   let allTimeHighStaked = BigInt(
     cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+  let allTimeHighSharePrice = BigInt(
+    cache.internalKeyStore.get(allTimeHighSharePriceKey) || "0"
   );
 
   if (domain.currentTotalStake > allTimeHighStaked) {
@@ -117,6 +123,15 @@ export const createStatsPerDomain = (
     cache.internalKeyStore.set(
       allTimeHighStakedKey,
       allTimeHighStaked.toString()
+    );
+    cache.isModified = true;
+  }
+
+  if (domain.currentSharePrice > allTimeHighSharePrice) {
+    allTimeHighSharePrice = domain.currentSharePrice;
+    cache.internalKeyStore.set(
+      allTimeHighSharePriceKey,
+      allTimeHighSharePrice.toString()
     );
     cache.isModified = true;
   }
@@ -129,7 +144,10 @@ export const createStatsPerDomain = (
     totalRewardsCollected: domain.totalRewardsCollected,
     totalDeposits: domain.totalDeposits,
     totalWithdrawals: domain.totalWithdrawals,
+    totalShares: domain.currentTotalShares,
+    currentSharePrice: domain.currentSharePrice,
     allTimeHighStaked,
+    allTimeHighSharePrice,
     operatorsCount: operators.length,
     activeOperatorsCount,
     slashedOperatorsCount,
@@ -171,10 +189,25 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     (total, operator) => total + operator.totalWithdrawals,
     BigInt(0)
   );
+  const totalShares = operators.reduce(
+    (total, operator) => total + operator.currentTotalShares,
+    BigInt(0)
+  );
+  const currentSharePrice = operators.reduce(
+    (total, operator) => total + operator.currentSharePrice,
+    BigInt(0)
+  );
 
-  const allTimeHighStakedKey: AllTimeHighStakedKey = "allTimeHighStaked:global";
+  const allTimeHighStakedKey: AllTimeHighStakedKey =
+    "allTimeHighStaked:all-domains:general";
+  const allTimeHighSharePriceKey: AllTimeHighSharePriceKey =
+    "allTimeHighSharePrice:all-domains:general";
+
   let allTimeHighStaked = BigInt(
     cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+  let allTimeHighSharePrice = BigInt(
+    cache.internalKeyStore.get(allTimeHighSharePriceKey) || "0"
   );
 
   if (totalStaked > allTimeHighStaked) {
@@ -186,6 +219,15 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     cache.isModified = true;
   }
 
+  if (currentSharePrice > allTimeHighSharePrice) {
+    allTimeHighSharePrice = currentSharePrice;
+    cache.internalKeyStore.set(
+      allTimeHighSharePriceKey,
+      allTimeHighSharePrice.toString()
+    );
+    cache.isModified = true;
+  }
+
   return new Stats({
     id: randomUUID(),
     totalStaked,
@@ -193,7 +235,10 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     totalRewardsCollected,
     totalDeposits,
     totalWithdrawals,
+    totalShares,
+    currentSharePrice,
     allTimeHighStaked,
+    allTimeHighSharePrice,
     domainsCount: cache.domains.size,
     operatorsCount: operators.length,
     activeOperatorsCount,

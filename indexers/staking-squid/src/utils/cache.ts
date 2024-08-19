@@ -11,7 +11,9 @@ import {
   Operator,
   RewardEvent,
   Stats,
+  StatsPerAccount,
   StatsPerDomain,
+  StatsPerNominator,
   StatsPerOperator,
   Withdrawal,
 } from "../model";
@@ -34,6 +36,8 @@ export type TemporaryCache = {
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
+  statsPerAccount: Map<string, StatsPerAccount>;
+  statsPerNominator: Map<string, StatsPerNominator>;
 };
 
 export type LastBlockBundleIndexKey =
@@ -70,6 +74,8 @@ export const initTemporaryCache: TemporaryCache = {
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
+  statsPerAccount: new Map(),
+  statsPerNominator: new Map(),
 };
 
 export const initCacheManager: CacheManager = {
@@ -151,6 +157,8 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logTemp += logEntry("stats", cache.stats);
   logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
   logTemp += logEntry("statsPerOperator", cache.statsPerOperator);
+  logTemp += logEntry("statsPerAccount", cache.statsPerAccount);
+  logTemp += logEntry("statsPerNominator", cache.statsPerNominator);
 
   console.log("\x1b[34mSaving in database:\x1b[0m", logPerm);
   console.log(" and ", logTemp, "\n");
@@ -172,4 +180,8 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.stats.clear();
   cache.statsPerDomain.clear();
   cache.statsPerOperator.clear();
+  cache.statsPerAccount.clear();
+  cache.statsPerNominator.clear();
+
+  cache.isModified = false;
 };
