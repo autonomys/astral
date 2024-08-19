@@ -32,8 +32,12 @@ type Domain @entity {
   totalBurnedBalance: BigInt!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
+  currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
   accumulatedEpochStake: BigInt!
   accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochRewards: BigInt!
+  accumulatedEpochShares: BigInt!
   bundleCount: Int!
   lastBundleAt: Int!
   createdAt: Int! @index
@@ -46,6 +50,13 @@ type Account @entity {
   totalEstimatedWithdrawals: BigInt!
   totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
+  currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
+  currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
+  accumulatedEpochStake: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochShares: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -107,8 +118,10 @@ type Operator @entity {
   totalConsensusStorageFee: BigInt!
   totalDomainExecutionFee: BigInt!
   totalBurnedBalance: BigInt!
-  accumulatedEpochShares: BigInt!
+  accumulatedEpochStake: BigInt!
   accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochRewards: BigInt!
+  accumulatedEpochShares: BigInt!
   activeEpochCount: Int!
   bundleCount: Int!
   status: OperatorStatus! @index
@@ -197,8 +210,13 @@ type Nominator @entity {
   totalWithdrawals: BigInt!
   totalDepositsCount: Int!
   totalWithdrawalsCount: Int!
-  accumulatedEpochShares: BigInt!
+  currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
+  currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
+  accumulatedEpochStake: BigInt!
   accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochShares: BigInt!
   activeEpochCount: Int!
   status: NominatorStatus! @index
   pendingAction: NominatorPendingAction! @index
@@ -209,6 +227,8 @@ type Nominator @entity {
 enum DepositStatus {
   PENDING
   DEPOSITED
+  WITHDRAWN
+  SLASHED
 }
 
 type Deposit @entity {
@@ -219,6 +239,8 @@ type Deposit @entity {
   nominatorId: String! @index
   amount: BigInt!
   storageFeeDeposit: BigInt!
+  totalAmount: BigInt!
+  totalWithdrawn: BigInt!
   status: DepositStatus! @index
   timestamp: DateTime! @index
   extrinsicHash: String! @index
@@ -247,6 +269,7 @@ type Withdrawal @entity {
   estimatedAmount: BigInt!
   unlockedAmount: BigInt!
   unlockedStorageFee: BigInt!
+  totalAmount: BigInt!
   status: WithdrawalStatus! @index
   timestamp: DateTime! @index
   withdrawExtrinsicHash: String! @index
