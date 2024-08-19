@@ -64,6 +64,7 @@ export function processOperatorNominatedEvent(
       nominatorId: nominator.id,
       amount,
       storageFeeDeposit,
+      totalAmount: amount + storageFeeDeposit,
       epochDepositedAt: domain.completedEpoch ?? 0,
       domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
     }

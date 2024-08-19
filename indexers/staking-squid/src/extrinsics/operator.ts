@@ -82,6 +82,7 @@ export function processRegisterOperator(
       nominatorId: nominator.id,
       amount: amountBigInt,
       storageFeeDeposit,
+      totalAmount: amountBigInt + storageFeeDeposit,
       epochDepositedAt: domain.completedEpoch ?? 0,
       domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
     }
