@@ -26,5 +26,7 @@ export const createDeposit = (
     createdAt: getBlockNumber(block),
     stakedAt: 0,
     updatedAt: getBlockNumber(block),
+    totalAmount: BigInt(0),
+    totalWithdrawn: BigInt(0),
     ...props,
   });
