@@ -1,5 +1,5 @@
 {
-  "resource_version": 64,
+  "resource_version": 51,
   "metadata": {
     "version": 3,
     "sources": [
@@ -13,21 +13,6 @@
               "schema": "public"
             },
             "array_relationships": [
-              {
-                "name": "bundles",
-                "using": {
-                  "manual_configuration": {
-                    "column_mapping": {
-                      "id": "account_id"
-                    },
-                    "insertion_order": null,
-                    "remote_table": {
-                      "name": "bundle",
-                      "schema": "public"
-                    }
-                  }
-                }
-              },
               {
                 "name": "deposits",
                 "using": {
@@ -97,8 +82,17 @@
                     "id",
                     "created_at",
                     "updated_at",
+                    "accumulated_epoch_shares",
+                    "accumulated_epoch_stake",
+                    "accumulated_epoch_storage_fee_deposit",
+                    "current_share_price",
+                    "current_storage_fee_deposit",
+                    "current_total_shares",
+                    "current_total_stake",
                     "total_deposits",
-                    "total_tax_collected"
+                    "total_estimated_withdrawals",
+                    "total_tax_collected",
+                    "total_withdrawals"
                   ],
                   "filter": {},
                   "allow_aggregations": true
@@ -110,6 +104,76 @@
           {
             "table": {
               "name": "bundle",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "domain",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "domain_block",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_block_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain_block",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "burned_balance",
+                    "consensus_block_hash",
+                    "consensus_block_number",
+                    "consensus_storage_fee",
+                    "domain_block_extrinsic_root",
+                    "domain_block_hash",
+                    "domain_block_id",
+                    "domain_block_number",
+                    "domain_execution_fee",
+                    "domain_id",
+                    "epoch",
+                    "id",
+                    "rejected_transfers_claimed_count",
+                    "total_rejected_transfers_claimed",
+                    "total_transfers_in",
+                    "total_transfers_out",
+                    "total_transfers_rejected",
+                    "total_volume",
+                    "transfers_in_count",
+                    "transfers_out_count",
+                    "transfers_rejected_count"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "bundle_author",
               "schema": "public"
             },
             "object_relationships": [
@@ -144,6 +208,21 @@
                 }
               },
               {
+                "name": "domain_block",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_block_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain_block",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
                 "name": "operator",
                 "using": {
                   "manual_configuration": {
@@ -164,24 +243,12 @@
                 "role": "user",
                 "permission": {
                   "columns": [
-                    "id",
-                    "consensus_block_number",
-                    "domain_block_number",
-                    "rejected_transfers_claimed_count",
-                    "transfers_in_count",
-                    "transfers_out_count",
-                    "transfers_rejected_count",
-                    "burned_balance",
-                    "consensus_storage_fee",
-                    "domain_execution_fee",
-                    "total_rejected_transfers_claimed",
-                    "total_transfers_in",
-                    "total_transfers_out",
-                    "total_transfers_rejected",
-                    "total_volume",
                     "account_id",
-                    "consensus_block_hash",
+                    "bundle_id",
+                    "domain_block_id",
                     "domain_id",
+                    "epoch",
+                    "id",
                     "operator_id"
                   ],
                   "filter": {}
@@ -264,9 +331,15 @@
                   "columns": [
                     "id",
                     "status",
-                    "block_number",
+                    "created_at",
+                    "domain_block_number_deposited_at",
+                    "epoch_deposited_at",
+                    "staked_at",
+                    "updated_at",
                     "amount",
                     "storage_fee_deposit",
+                    "total_amount",
+                    "total_withdrawn",
                     "account_id",
                     "domain_id",
                     "extrinsic_hash",
@@ -305,7 +378,7 @@
             ],
             "array_relationships": [
               {
-                "name": "bundles",
+                "name": "blocks",
                 "using": {
                   "manual_configuration": {
                     "column_mapping": {
@@ -313,7 +386,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "bundle",
+                      "name": "domain_block",
                       "schema": "public"
                     }
                   }
@@ -373,7 +446,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "operator_reward_event",
+                      "name": "reward_event",
                       "schema": "public"
                     }
                   }
@@ -414,12 +487,19 @@
                     "transfers_out_count",
                     "transfers_rejected_count",
                     "updated_at",
+                    "accumulated_epoch_rewards",
+                    "accumulated_epoch_shares",
+                    "accumulated_epoch_stake",
+                    "accumulated_epoch_storage_fee_deposit",
+                    "current_share_price",
                     "current_storage_fee_deposit",
+                    "current_total_shares",
                     "current_total_stake",
                     "total_burned_balance",
                     "total_consensus_storage_fee",
                     "total_deposits",
                     "total_domain_execution_fee",
+                    "total_estimated_withdrawals",
                     "total_rejected_transfers_claimed",
                     "total_rewards_collected",
                     "total_tax_collected",
@@ -427,12 +507,58 @@
                     "total_transfers_out",
                     "total_transfers_rejected",
                     "total_volume",
+                    "total_withdrawals",
                     "account_id",
                     "name",
                     "runtime_info"
                   ],
                   "filter": {},
                   "allow_aggregations": true
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "domain_block",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "domain",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "block_hash",
+                    "block_number",
+                    "consensus_block_hash",
+                    "consensus_block_number",
+                    "created_at",
+                    "domain_id",
+                    "epoch",
+                    "extrinsic_root",
+                    "id",
+                    "timestamp",
+                    "updated_at"
+                  ],
+                  "filter": {}
                 },
                 "comment": ""
               }
@@ -529,10 +655,21 @@
                   "columns": [
                     "unlock_at_confirmed_domain_block_number",
                     "id",
+                    "pending_action",
                     "status",
+                    "active_epoch_count",
                     "created_at",
                     "pending_effective_domain_epoch",
+                    "total_deposits_count",
+                    "total_withdrawals_count",
                     "updated_at",
+                    "accumulated_epoch_shares",
+                    "accumulated_epoch_stake",
+                    "accumulated_epoch_storage_fee_deposit",
+                    "current_share_price",
+                    "current_storage_fee_deposit",
+                    "current_total_shares",
+                    "current_total_stake",
                     "known_shares",
                     "known_storage_fee_deposit",
                     "pending_amount",
@@ -540,8 +677,10 @@
                     "pending_storage_fee_deposit",
                     "pending_storage_fee_refund",
                     "total_deposits",
+                    "total_estimated_withdrawals",
                     "total_storage_fee_refund",
                     "total_withdrawal_amounts",
+                    "total_withdrawals",
                     "account_id",
                     "domain_id",
                     "operator_id"
@@ -592,21 +731,6 @@
             ],
             "array_relationships": [
               {
-                "name": "bundles",
-                "using": {
-                  "manual_configuration": {
-                    "column_mapping": {
-                      "id": "operator_id"
-                    },
-                    "insertion_order": null,
-                    "remote_table": {
-                      "name": "bundle",
-                      "schema": "public"
-                    }
-                  }
-                }
-              },
-              {
                 "name": "deposits",
                 "using": {
                   "manual_configuration": {
@@ -645,7 +769,7 @@
                     },
                     "insertion_order": null,
                     "remote_table": {
-                      "name": "operator_reward_event",
+                      "name": "reward_event",
                       "schema": "public"
                     }
                   }
@@ -672,7 +796,10 @@
                 "role": "user",
                 "permission": {
                   "columns": [
+                    "email_verified",
+                    "website_verified",
                     "id",
+                    "pending_action",
                     "status",
                     "active_epoch_count",
                     "bundle_count",
@@ -685,7 +812,12 @@
                     "transfers_out_count",
                     "transfers_rejected_count",
                     "updated_at",
+                    "accumulated_epoch_rewards",
+                    "accumulated_epoch_shares",
+                    "accumulated_epoch_stake",
+                    "accumulated_epoch_storage_fee_deposit",
                     "current_epoch_rewards",
+                    "current_share_price",
                     "current_storage_fee_deposit",
                     "current_total_shares",
                     "current_total_stake",
@@ -694,6 +826,7 @@
                     "total_consensus_storage_fee",
                     "total_deposits",
                     "total_domain_execution_fee",
+                    "total_estimated_withdrawals",
                     "total_rejected_transfers_claimed",
                     "total_rewards_collected",
                     "total_tax_collected",
@@ -701,10 +834,20 @@
                     "total_transfers_out",
                     "total_transfers_rejected",
                     "total_volume",
+                    "total_withdrawals",
                     "account_id",
+                    "banner",
+                    "description",
+                    "discord",
                     "domain_id",
+                    "email",
+                    "github",
+                    "icon",
+                    "name",
                     "raw_status",
-                    "signing_key"
+                    "signing_key",
+                    "twitter",
+                    "website"
                   ],
                   "filter": {},
                   "allow_aggregations": true
@@ -715,7 +858,7 @@
           },
           {
             "table": {
-              "name": "operator_reward_event",
+              "name": "reward_event",
               "schema": "public"
             },
             "object_relationships": [
@@ -763,8 +906,7 @@
                     "operator_id",
                     "timestamp"
                   ],
-                  "filter": {},
-                  "allow_aggregations": true
+                  "filter": {}
                 },
                 "comment": ""
               }
@@ -789,11 +931,64 @@
                     "operators_count",
                     "slashed_operators_count",
                     "withdrawals_count",
+                    "all_time_high_share_price",
                     "all_time_high_staked",
+                    "current_share_price",
                     "total_deposits",
-                    "total_fees",
+                    "total_rewards_collected",
+                    "total_shares",
+                    "total_staked",
+                    "total_tax_collected",
+                    "total_withdrawals",
+                    "timestamp"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "stats_per_account",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "account",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "account_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "account",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "block_number",
+                    "deposits_count",
+                    "nominators_count",
+                    "operators_count",
+                    "withdrawals_count",
+                    "all_time_high_share_price",
+                    "all_time_high_staked",
+                    "current_share_price",
+                    "total_deposits",
+                    "total_shares",
                     "total_staked",
                     "total_withdrawals",
+                    "account_id",
                     "timestamp"
                   ],
                   "filter": {}
@@ -837,12 +1032,95 @@
                     "operators_count",
                     "slashed_operators_count",
                     "withdrawals_count",
+                    "all_time_high_share_price",
                     "all_time_high_staked",
+                    "current_share_price",
                     "total_deposits",
-                    "total_fees",
+                    "total_rewards_collected",
+                    "total_shares",
+                    "total_staked",
+                    "total_tax_collected",
+                    "total_withdrawals",
+                    "domain_id",
+                    "timestamp"
+                  ],
+                  "filter": {}
+                },
+                "comment": ""
+              }
+            ]
+          },
+          {
+            "table": {
+              "name": "stats_per_nominator",
+              "schema": "public"
+            },
+            "object_relationships": [
+              {
+                "name": "domain",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "domain_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "domain",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "nominator",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "nominator_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "nominator",
+                      "schema": "public"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "operator",
+                "using": {
+                  "manual_configuration": {
+                    "column_mapping": {
+                      "operator_id": "id"
+                    },
+                    "insertion_order": null,
+                    "remote_table": {
+                      "name": "operator",
+                      "schema": "public"
+                    }
+                  }
+                }
+              }
+            ],
+            "select_permissions": [
+              {
+                "role": "user",
+                "permission": {
+                  "columns": [
+                    "id",
+                    "block_number",
+                    "deposits_count",
+                    "withdrawals_count",
+                    "all_time_high_share_price",
+                    "all_time_high_staked",
+                    "current_share_price",
+                    "total_deposits",
+                    "total_shares",
                     "total_staked",
                     "total_withdrawals",
                     "domain_id",
+                    "nominator_id",
+                    "operator_id",
                     "timestamp"
                   ],
                   "filter": {}
@@ -898,10 +1176,14 @@
                     "deposits_count",
                     "nominators_count",
                     "withdrawals_count",
+                    "all_time_high_share_price",
                     "all_time_high_staked",
+                    "current_share_price",
                     "total_deposits",
-                    "total_fees",
+                    "total_rewards_collected",
+                    "total_shares",
                     "total_staked",
+                    "total_tax_collected",
                     "total_withdrawals",
                     "domain_id",
                     "operator_id",
@@ -987,13 +1269,23 @@
                   "columns": [
                     "id",
                     "status",
-                    "block_number",
+                    "created_at",
+                    "domain_block_number_withdrawal_requested_at",
+                    "epoch_withdrawal_requested_at",
+                    "ready_at",
+                    "unlocked_at",
+                    "updated_at",
+                    "estimated_amount",
                     "shares",
+                    "total_amount",
+                    "unlocked_amount",
+                    "unlocked_storage_fee",
                     "account_id",
                     "domain_id",
-                    "extrinsic_hash",
                     "nominator_id",
                     "operator_id",
+                    "unlock_extrinsic_hash",
+                    "withdraw_extrinsic_hash",
                     "timestamp"
                   ],
                   "filter": {},
