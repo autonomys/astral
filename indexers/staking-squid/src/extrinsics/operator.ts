@@ -56,7 +56,6 @@ export function processRegisterOperator(
     signingKey: signingKey ?? "",
     minimumNominatorStake: BigInt(minimumNominatorStake ?? 0),
     nominationTax: nominationTax ?? 0,
-    totalDeposits: amountBigInt,
     pendingAction: OperatorPendingAction.PENDING_REGISTRATION,
   });
   cache.operators.set(operator.id, operator);
@@ -97,11 +96,11 @@ export function processRegisterOperator(
   account.updatedAt = blockNumber;
   cache.accounts.set(account.id, account);
 
-  operator.totalDeposits += amount;
+  operator.totalDeposits += amountBigInt;
   operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
-  nominator.totalDeposits += amount;
+  nominator.totalDeposits += amountBigInt;
   nominator.totalDepositsCount++;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);
