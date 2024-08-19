@@ -137,6 +137,7 @@ type DomainBlock @entity {
   blockNumber: Int! @index
   blockHash: String! @index
   extrinsicRoot: String!
+  epoch: Int! @index
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
   timestamp: DateTime! @index
@@ -151,6 +152,7 @@ type Bundle @entity {
   domainBlockNumber: Int! @index
   domainBlockHash: String!
   domainBlockExtrinsicRoot: String!
+  epoch: Int! @index
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
   totalTransfersIn: BigInt!
@@ -174,6 +176,7 @@ type BundleAuthor @entity {
   operatorId: String! @index
   bundleId: String! @index
   domainBlockId: String! @index
+  epoch: Int! @index
 }
 
 enum NominatorStatus {
@@ -227,6 +230,7 @@ type Nominator @entity {
 enum DepositStatus {
   PENDING
   DEPOSITED
+  PARTIALLY_WITHDRAWN
   WITHDRAWN
   SLASHED
 }
@@ -342,7 +346,6 @@ type StatsPerOperator @entity {
   operatorId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalShares: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
@@ -364,7 +367,6 @@ type StatsPerNominator @entity {
   nominatorId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   totalShares: BigInt!
@@ -381,7 +383,6 @@ type StatsPerAccount @entity {
   accountId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalShares: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   totalShares: BigInt!
