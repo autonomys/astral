@@ -19,7 +19,6 @@ export type ChainContextValue = {
   indexerSet: Indexer
   network: NetworkId
   section: Routes
-  isEvm: boolean
   setIndexerSet: (children: Indexer) => void
   setSection: (section: Routes) => void
 }
@@ -45,7 +44,6 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, chil
       if (clientName === 'leaderboard' && indexerSet.squids.leaderboard)
         return indexerSet.squids.leaderboard
       if (clientName === 'staking' && indexerSet.squids.staking) return indexerSet.squids.staking
-      if (clientName === 'nova' && indexerSet.squids.nova) return indexerSet.squids.nova
 
       return indexerSet.squids.old
     },
@@ -79,7 +77,6 @@ export const ChainProvider: FC<Props> = ({ children }) => {
         indexerSet,
         network,
         section,
-        isEvm: section === Routes.nova,
         setIndexerSet,
         setSection,
       }}
