@@ -44,8 +44,12 @@ export function processRegisterOperator(
   );
 
   const operatorId = Number(operatorRegisteredEvent.args.operatorId ?? 0);
-  const amountBigInt = BigInt(amount ?? 0);
   const storageFeeDeposit = BigInt(storageFeeDepositedEvent?.args.amount ?? 0);
+  const amountBigInt =
+    BigInt(amount) > BigInt(storageFeeDeposit)
+      ? BigInt(amount) - BigInt(storageFeeDeposit)
+      : BigInt(0);
+  const totalAmount = BigInt(amount);
 
   const domain = getOrCreateDomain(cache, block, domainIdNum);
   const account = getOrCreateAccount(cache, block, address);
@@ -81,26 +85,26 @@ export function processRegisterOperator(
       nominatorId: nominator.id,
       amount: amountBigInt,
       storageFeeDeposit,
-      totalAmount: amountBigInt + storageFeeDeposit,
+      totalAmount,
       epochDepositedAt: domain.completedEpoch ?? 0,
       domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
     }
   );
   cache.deposits.set(deposit.id, deposit);
 
-  domain.totalDeposits += amountBigInt;
+  domain.totalDeposits += totalAmount;
   domain.updatedAt = blockNumber;
   cache.domains.set(domain.id, domain);
 
-  account.totalDeposits += amountBigInt;
+  account.totalDeposits += totalAmount;
   account.updatedAt = blockNumber;
   cache.accounts.set(account.id, account);
 
-  operator.totalDeposits += amountBigInt;
+  operator.totalDeposits += totalAmount;
   operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
-  nominator.totalDeposits += amountBigInt;
+  nominator.totalDeposits += totalAmount;
   nominator.totalDepositsCount++;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);

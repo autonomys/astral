@@ -31,9 +31,13 @@ export function processOperatorNominatedEvent(
   const storageFeeDepositedEvent = extrinsic.events.find(
     (e) => e.name === events.domains.storageFeeDeposited.name
   );
+  const operatorNominatedEvent = extrinsic.events.find(
+    (e) => e.name === events.domains.operatorNominated.name
+  );
 
-  const amount = BigInt(extrinsic.call?.args.amount ?? 0);
+  const amount = BigInt(operatorNominatedEvent?.args.amount ?? 0);
   const storageFeeDeposit = BigInt(storageFeeDepositedEvent?.args.amount ?? 0);
+  const totalAmount = BigInt(amount + storageFeeDeposit);
 
   const account = getOrCreateAccount(cache, block, address);
   const operator = getOrCreateOperator(cache, block, operatorIdNum, {});
@@ -64,29 +68,29 @@ export function processOperatorNominatedEvent(
       nominatorId: nominator.id,
       amount,
       storageFeeDeposit,
-      totalAmount: amount + storageFeeDeposit,
+      totalAmount,
       epochDepositedAt: domain.completedEpoch ?? 0,
       domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
     }
   );
 
-  operator.totalDeposits += amount;
+  operator.totalDeposits += totalAmount;
   operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
   if (nominator.totalDepositsCount === 0) {
     nominator.pendingAction = NominatorPendingAction.PENDING_EPOCH_CHANGE;
   }
-  nominator.totalDeposits += amount;
+  nominator.totalDeposits += totalAmount;
   nominator.totalDepositsCount++;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);
 
-  domain.totalDeposits += amount;
+  domain.totalDeposits += totalAmount;
   domain.updatedAt = blockNumber;
   cache.domains.set(domain.id, domain);
 
-  account.totalDeposits += amount;
+  account.totalDeposits += totalAmount;
   account.updatedAt = blockNumber;
   cache.accounts.set(account.id, account);
 
