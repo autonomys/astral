@@ -1,6 +1,11 @@
 table:
   name: stats
   schema: public
+configuration:
+  column_config: {}
+  custom_column_names: {}
+  custom_name: staking_stats
+  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:

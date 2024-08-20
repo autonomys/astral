@@ -1,6 +1,11 @@
 table:
   name: domain_block
   schema: public
+configuration:
+  column_config: {}
+  custom_column_names: {}
+  custom_name: staking_domain_block
+  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:

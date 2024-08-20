@@ -1,6 +1,11 @@
 table:
   name: operator_total_tax_collected
   schema: public
+configuration:
+  column_config: {}
+  custom_column_names: {}
+  custom_name: leaderboard_operator_total_tax_collected
+  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:

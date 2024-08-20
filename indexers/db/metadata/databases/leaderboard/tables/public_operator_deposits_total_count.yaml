@@ -1,6 +1,11 @@
 table:
   name: operator_deposits_total_count
   schema: public
+configuration:
+  column_config: {}
+  custom_column_names: {}
+  custom_name: leaderboard_operator_deposits_total_count
+  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:

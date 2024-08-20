@@ -1,6 +1,11 @@
 table:
   name: farmer_vote_and_block_total_value
   schema: public
+configuration:
+  column_config: {}
+  custom_column_names: {}
+  custom_name: leaderboard_farmer_vote_and_block_total_value
+  custom_root_fields: {}
 select_permissions:
   - role: user
     permission:
