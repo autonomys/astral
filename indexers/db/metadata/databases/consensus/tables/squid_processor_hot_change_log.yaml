@@ -1,0 +1,3 @@
+table:
+  name: hot_change_log
+  schema: squid_processor

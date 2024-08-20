@@ -1,0 +1,3 @@
+table:
+  name: hot_block
+  schema: squid_processor

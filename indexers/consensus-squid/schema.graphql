@@ -11,7 +11,7 @@ type Account @entity {
 type Block @entity {
   id: ID! @index
   height: BigInt! @index
-  timestamp: DateTime! @index
+  timestamp: Int! @index
   hash: String! @index
   parentHash: String!
   specId: String!
