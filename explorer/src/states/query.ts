@@ -52,29 +52,6 @@ export interface ExplorerQueryState {
     blockDetailsExtrinsic: QueryState<OldGqlT.ExtrinsicsByBlockIdQuery>
     blockDetailsEvent: QueryState<OldGqlT.EventsByBlockIdQuery>
   }
-  [Routes.nova]: {
-    home: QueryState<OldGqlT.HomeQueryDomainQuery>
-
-    accounts: QueryState<OldGqlT.AccountsConnectionQuery>
-    blocks: QueryState<OldGqlT.BlocksConnectionDomainQuery>
-    extrinsics: QueryState<OldGqlT.ExtrinsicsConnectionQuery>
-    events: QueryState<OldGqlT.EventsConnectionQuery>
-    logs: QueryState<OldGqlT.LogsConnectionQuery>
-
-    account: QueryState<OldGqlT.AccountByIdEvmQuery>
-    block: QueryState<OldGqlT.BlockByIdDomainQuery>
-    extrinsic: QueryState<OldGqlT.ExtrinsicsByIdQuery>
-    event: QueryState<OldGqlT.EventByIdQuery>
-    log: QueryState<OldGqlT.LogByIdQuery>
-
-    accountExtrinsic: QueryState<OldGqlT.ExtrinsicsByAccountIdQuery>
-    accountPreviousReward: QueryState<OldGqlT.AllRewardForAccountByIdQuery>
-    accountRewardGraph: QueryState<OldGqlT.LatestRewardsWeekQuery>
-    accountReward: QueryState<OldGqlT.RewardsListQuery>
-
-    blockDetailsExtrinsic: QueryState<OldGqlT.ExtrinsicsByBlockIdQuery>
-    blockDetailsEvent: QueryState<OldGqlT.EventsByBlockIdQuery>
-  }
   [Routes.staking]: {
     operators: QueryState<StakingQuery.OperatorsListQuery>
 
@@ -93,7 +70,6 @@ export type ExplorerSection = keyof ExplorerQueryState
 
 export type Components =
   | keyof ExplorerQueryState[Routes.consensus]
-  | keyof ExplorerQueryState[Routes.nova]
   | keyof ExplorerQueryState[Routes.staking]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
 
@@ -106,29 +82,6 @@ interface ExplorerQueryStateAndHelper extends ExplorerQueryState {
 
 const initialState: ExplorerQueryState = {
   consensus: {
-    home: initialized,
-
-    accounts: initialized,
-    blocks: initialized,
-    extrinsics: initialized,
-    events: initialized,
-    logs: initialized,
-
-    account: initialized,
-    block: initialized,
-    extrinsic: initialized,
-    event: initialized,
-    log: initialized,
-
-    accountExtrinsic: initialized,
-    accountPreviousReward: initialized,
-    accountRewardGraph: initialized,
-    accountReward: initialized,
-
-    blockDetailsExtrinsic: initialized,
-    blockDetailsEvent: initialized,
-  },
-  nova: {
     home: initialized,
 
     accounts: initialized,

@@ -1,4 +1,4 @@
-import { AccountList } from 'components/Account/AccountList'
+import { AccountList } from 'components/Consensus/Account/AccountList'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
