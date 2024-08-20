@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_ACCOUNT_BY_ID } from 'components/Account/query'
+import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
 import { AccountByIdQuery } from 'components/gql/graphql'
 import { DocIcon, WalletIcon } from 'components/icons'
 import { TOKEN } from 'constants/general'

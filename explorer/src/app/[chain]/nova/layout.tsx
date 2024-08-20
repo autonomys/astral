@@ -1,7 +1,7 @@
-import { Header } from 'components/layout/Header'
+import { DomainHeader } from 'components/layout/DomainHeader'
 import { MainLayout } from 'components/layout/Layout'
 import type { ChildrenPageProps } from 'types/app'
 
 export default async function Layout({ children }: ChildrenPageProps) {
-  return <MainLayout subHeader={<Header />}>{children}</MainLayout>
+  return <MainLayout subHeader={<DomainHeader />}>{children}</MainLayout>
 }

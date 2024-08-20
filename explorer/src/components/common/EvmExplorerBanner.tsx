@@ -1,5 +1,4 @@
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import React, { FC, useMemo } from 'react'
 
@@ -28,15 +27,4 @@ export const EvmExplorerBanner: FC<{ path?: string }> = ({ path }) => {
       </div>
     </div>
   )
-}
-
-export const useEvmExplorerBanner = (path?: string) => {
-  const { isEvm } = useChains()
-
-  const novaExplorerBanner = useMemo(
-    () => (isEvm ? <EvmExplorerBanner path={path} /> : null),
-    [path, isEvm],
-  )
-
-  return novaExplorerBanner
 }
