@@ -1,5 +1,6 @@
 'use client'
 
+import { Routes } from '@/constants'
 import {
   ApolloClient,
   ApolloLink,
@@ -9,16 +10,17 @@ import {
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
-import { Chain, chains } from 'constants/chains'
+import { NetworkId } from '@autonomys/auto-utils'
+import { Indexer, defaultIndexer } from 'constants/indexers'
 import Cookies from 'js-cookie'
 import { FC, ReactNode, createContext, useCallback, useState } from 'react'
 
 export type ChainContextValue = {
-  selectedChain: Chain
-  setSelectedChain: (children: Chain) => void
-  selectedDomain: string
-  setSelectedDomain: (children: string) => void
-  chains: Chain[]
+  indexerSet: Indexer
+  network: NetworkId
+  section: Routes
+  setIndexerSet: (children: Indexer) => void
+  setSection: (section: Routes) => void
 }
 
 export const ChainContext = createContext<ChainContextValue>(
@@ -31,22 +33,19 @@ type Props = {
 }
 
 interface SelectedChainProps extends Props {
-  selectedChain: Chain
+  indexerSet: Indexer
 }
 
-export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, children }) => {
+export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
   const httpLink = createHttpLink({
     uri: ({ getContext }: Operation) => {
       const { clientName } = getContext()
 
-      if (clientName === 'general' && selectedChain.urls.squids.general)
-        return selectedChain.urls.squids.general
-      if (clientName === 'account' && selectedChain.urls.squids.account)
-        return selectedChain.urls.squids.account
-      if (clientName === 'rewards' && selectedChain.urls.squids.rewards)
-        return selectedChain.urls.squids.rewards
+      if (clientName === 'leaderboard' && indexerSet.squids.leaderboard)
+        return indexerSet.squids.leaderboard
+      if (clientName === 'staking' && indexerSet.squids.staking) return indexerSet.squids.staking
 
-      return selectedChain.urls.squids.old
+      return indexerSet.squids.old
     },
   })
 
@@ -59,28 +58,30 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ selectedChain, c
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
-  const [selectedChain, setSelectedChain] = useState<Chain>(chains[0])
-  const [selectedDomain, setSelectedDomain] = useState('consensus')
+  const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
+  const [network, setNetwork] = useState<NetworkId>(defaultIndexer.network)
+  const [section, setSection] = useState<Routes>(Routes.consensus)
 
-  const handleSelectChain = useCallback(
-    (chain: Chain) => {
-      if (chain) Cookies.set('selectedChain', chain.urls.page, { expires: 1 })
-      setSelectedChain(chain)
+  const setIndexerSet = useCallback(
+    (indexer: Indexer) => {
+      Cookies.set('selected-network', indexer.network, { expires: 1 })
+      _setIndexerSet(indexer)
+      setNetwork(indexer.network)
     },
-    [setSelectedChain],
+    [_setIndexerSet],
   )
 
   return (
     <ChainContext.Provider
       value={{
-        selectedChain,
-        setSelectedChain: handleSelectChain,
-        selectedDomain,
-        setSelectedDomain,
-        chains,
+        indexerSet,
+        network,
+        section,
+        setIndexerSet,
+        setSection,
       }}
     >
-      <SelectedChainProvider selectedChain={selectedChain}>{children}</SelectedChainProvider>
+      <SelectedChainProvider indexerSet={indexerSet}>{children}</SelectedChainProvider>
     </ChainContext.Provider>
   )
 }

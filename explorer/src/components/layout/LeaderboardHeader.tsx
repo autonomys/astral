@@ -3,7 +3,7 @@
 import { LogoIcon } from '@/components/icons'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -17,24 +17,28 @@ export const LeaderboardHeader: FC = () => {
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
 
   const menuList = useMemo(
     () => [
       {
-        title: 'Farmers Leaderboard',
-        link: `/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`,
+        title: 'Top Farmers',
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`,
       },
       {
-        title: 'Operators Leaderboard',
-        link: `/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`,
+        title: 'Top Accounts',
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.accounts}`,
       },
       {
-        title: 'Nominators Leaderboard',
-        link: `/${selectedChain.urls.page}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`,
+        title: 'Top Operators',
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`,
+      },
+      {
+        title: 'Top Nominators',
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`,
       },
     ],
-    [selectedChain.urls.page],
+    [network],
   )
 
   return (
@@ -42,7 +46,7 @@ export const LeaderboardHeader: FC = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.leaderboard}`}
+            href={`/${network}/${Routes.leaderboard}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>
@@ -52,8 +56,7 @@ export const LeaderboardHeader: FC = () => {
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link)
-              const isInitialPath =
-                pathname === `/${selectedChain.urls.page}/leaderboard` && index === 0
+              const isInitialPath = pathname === `/${network}/leaderboard` && index === 0
 
               return (
                 <Link

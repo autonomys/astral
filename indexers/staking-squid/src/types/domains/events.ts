@@ -2,6 +2,7 @@ import {sts, Block, Bytes, Option, Result, EventType, RuntimeCtx} from '../suppo
 import * as v0 from '../v0'
 import * as v1 from '../v1'
 import * as v5 from '../v5'
+import * as v6 from '../v6'
 
 export const bundleStored =  {
     name: 'Domains.BundleStored',
@@ -75,6 +76,14 @@ export const operatorNominated =  {
         sts.struct({
             operatorId: sts.bigint(),
             nominatorId: v0.AccountId32,
+        })
+    ),
+    v6: new EventType(
+        'Domains.OperatorNominated',
+        sts.struct({
+            operatorId: sts.bigint(),
+            nominatorId: v6.AccountId32,
+            amount: sts.bigint(),
         })
     ),
 }
@@ -245,6 +254,72 @@ export const storageFeeDeposited =  {
             operatorId: sts.bigint(),
             nominatorId: v1.AccountId32,
             amount: sts.bigint(),
+        })
+    ),
+}
+
+export const nominatedStakedUnlocked =  {
+    name: 'Domains.NominatedStakedUnlocked',
+    v6: new EventType(
+        'Domains.NominatedStakedUnlocked',
+        sts.struct({
+            operatorId: sts.bigint(),
+            nominatorId: v6.AccountId32,
+            unlockedAmount: sts.bigint(),
+        })
+    ),
+}
+
+export const storageFeeUnlocked =  {
+    name: 'Domains.StorageFeeUnlocked',
+    v6: new EventType(
+        'Domains.StorageFeeUnlocked',
+        sts.struct({
+            operatorId: sts.bigint(),
+            nominatorId: v6.AccountId32,
+            storageFee: sts.bigint(),
+        })
+    ),
+}
+
+export const nominatorUnlocked =  {
+    name: 'Domains.NominatorUnlocked',
+    v6: new EventType(
+        'Domains.NominatorUnlocked',
+        sts.struct({
+            operatorId: sts.bigint(),
+            nominatorId: v6.AccountId32,
+        })
+    ),
+}
+
+export const domainFrozen =  {
+    name: 'Domains.DomainFrozen',
+    v6: new EventType(
+        'Domains.DomainFrozen',
+        sts.struct({
+            domainId: v6.DomainId,
+        })
+    ),
+}
+
+export const domainUnfrozen =  {
+    name: 'Domains.DomainUnfrozen',
+    v6: new EventType(
+        'Domains.DomainUnfrozen',
+        sts.struct({
+            domainId: v6.DomainId,
+        })
+    ),
+}
+
+export const prunedExecutionReceipt =  {
+    name: 'Domains.PrunedExecutionReceipt',
+    v6: new EventType(
+        'Domains.PrunedExecutionReceipt',
+        sts.struct({
+            domainId: v6.DomainId,
+            newHeadReceiptNumber: sts.option(() => sts.number()),
         })
     ),
 }

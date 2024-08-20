@@ -1,7 +1,7 @@
 import { TransactionStatus } from '@/constants'
 import type { ISubmittableResult, Signer, SubmittableExtrinsic } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
 import { useCallback } from 'react'
 import toast from 'react-hot-toast'
@@ -20,7 +20,7 @@ export interface SendAndSaveTx {
 }
 
 export const useTxHelper = () => {
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const { addPendingTransactions, getNextNonceForAccount } = useTransactionsStates()
 
@@ -66,7 +66,7 @@ export const useTxHelper = () => {
 
         addPendingTransactions({
           ownerAccount: actingAccount,
-          chain: selectedChain,
+          chain: network,
           status: TransactionStatus.Pending,
           submittedAtBlockHash: block.block.header.hash.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
@@ -94,7 +94,7 @@ export const useTxHelper = () => {
       subspaceAccount,
       getNextNonceForAccount,
       addPendingTransactions,
-      selectedChain,
+      network,
       handleTxSuccess,
     ],
   )

@@ -1,0 +1,77 @@
+name: Deploy Docker Compose for Micro Squids on main
+
+on:
+  push:
+    branches:
+      - production
+    paths:
+      - "indexers/squid-blockexplorer/**"
+env:
+  DOCKER_HOST: ssh://${{ secrets.SSH_USER }}@${{ secrets.SQUID_HOST }}
+  DEPLOY_PATH: /home/ubuntu/squids/astral
+  BRANCH_NAME: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set Hasura secret
+        id: set_secret
+        run: echo "hasura_secret=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}" >> $GITHUB_OUTPUT
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+
+      - name: Add SSH host key fingerprint
+        run: |
+          ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy with Docker Compose
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
+          ssh ${SSH_USER}@${{ secrets.SQUID_HOST }} "
+
+            if [ ! -d ${DEPLOY_PATH} ]; then
+              git clone https://github.com/autonomys/astral.git ${DEPLOY_PATH}
+            else
+              cd ${DEPLOY_PATH}
+              git pull
+            fi
+            git checkout ${BRANCH_NAME}
+
+            # Securely update the .env file
+            if [ ! -f .env ]; then
+              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' > .env
+            else
+              sed -i '/^HASURA_GRAPHQL_ADMIN_SECRET=/d' .env
+              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' >> .env
+            fi
+
+            docker-compose -f docker-compose-all-squids.yml pull
+            docker-compose -f docker-compose-all-squids.yml up -d
+          "
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow,job
+          author_name: Deployment failed
+          mention: here
+          if_mention: failure,cancelled
+          job_name: Deploy Docker Compose for Micro Squids on staging
+          channel: alerts
+          icon_emoji: ":github:"

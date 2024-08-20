@@ -1,5 +1,5 @@
-import { AccountList } from 'components/Account/AccountList'
-import { chains } from 'constants/chains'
+import { AccountList } from 'components/Consensus/Account/AccountList'
+import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
 import { headers } from 'next/headers'
@@ -10,7 +10,7 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
   const domain = headersList.get('x-forwarded-host') || ''
   const protocol = headersList.get('x-forwarded-proto') || ''
 
-  const chainTitle = chains.find((c) => c.urls.page === chain)?.title || 'Unknown chain'
+  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
   const title = `${metadata.title} - ${chainTitle} - Accounts`
   return {
     ...metadata,

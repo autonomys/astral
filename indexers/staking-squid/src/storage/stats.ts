@@ -9,7 +9,11 @@ import {
 } from "../model";
 import type { CtxBlock } from "../processor";
 import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
+import {
+  AllTimeHighSharePriceKey,
+  AllTimeHighStakedKey,
+  Cache,
+} from "../utils/cache";
 
 export const createStatsPerOperator = (
   cache: Cache,
@@ -26,19 +30,52 @@ export const createStatsPerOperator = (
   const withdrawals = Array.from(cache.withdrawals.values()).filter(
     (o) => o.domainId === domain.id
   );
+
+  const allTimeHighStakedKey: AllTimeHighStakedKey = `allTimeHighStaked:${domain.id}:${operator.id}`;
+  const allTimeHighSharePriceKey: AllTimeHighSharePriceKey = `allTimeHighSharePrice:${domain.id}:${operator.id}`;
+
+  let allTimeHighStaked = BigInt(
+    cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+  let allTimeHighSharePrice = BigInt(
+    cache.internalKeyStore.get(allTimeHighSharePriceKey) || "0"
+  );
+
+  if (operator.currentTotalStake > allTimeHighStaked) {
+    allTimeHighStaked = operator.currentTotalStake;
+    cache.internalKeyStore.set(
+      allTimeHighStakedKey,
+      allTimeHighStaked.toString()
+    );
+    cache.isModified = true;
+  }
+
+  if (operator.currentSharePrice > allTimeHighSharePrice) {
+    allTimeHighSharePrice = operator.currentSharePrice;
+    cache.internalKeyStore.set(
+      allTimeHighSharePriceKey,
+      allTimeHighSharePrice.toString()
+    );
+    cache.isModified = true;
+  }
+
   return new StatsPerOperator({
     id: randomUUID(),
     domainId: domain.id,
     operatorId: operator.id,
+    blockNumber: getBlockNumber(block),
     totalStaked: operator.currentTotalStake,
-    totalFees: BigInt(0),
+    totalShares: operator.currentTotalShares,
+    totalTaxCollected: operator.totalTaxCollected,
+    totalRewardsCollected: operator.totalRewardsCollected,
     totalDeposits: operator.totalDeposits,
-    totalWithdrawals: BigInt(0),
-    allTimeHighStaked: BigInt(0),
+    totalWithdrawals: operator.totalWithdrawals,
+    currentSharePrice: operator.currentSharePrice,
+    allTimeHighStaked,
+    allTimeHighSharePrice,
     nominatorsCount: nominators.length,
     depositsCount: deposits.length,
     withdrawalsCount: withdrawals.length,
-    blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
   });
 };
@@ -67,14 +104,29 @@ export const createStatsPerDomain = (
     (operator) => operator.status === OperatorStatus.SLASHED
   ).length;
 
+  const allTimeHighStakedKey: AllTimeHighStakedKey = `allTimeHighStaked:${domain.id}`;
+  let allTimeHighStaked = BigInt(
+    cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+
+  if (domain.currentTotalStake > allTimeHighStaked) {
+    allTimeHighStaked = domain.currentTotalStake;
+    cache.internalKeyStore.set(
+      allTimeHighStakedKey,
+      allTimeHighStaked.toString()
+    );
+    cache.isModified = true;
+  }
+
   return new StatsPerDomain({
     id: randomUUID(),
     domainId: domain.id,
     totalStaked: domain.currentTotalStake,
-    totalFees: BigInt(0),
+    totalTaxCollected: domain.totalTaxCollected,
+    totalRewardsCollected: domain.totalRewardsCollected,
     totalDeposits: domain.totalDeposits,
-    totalWithdrawals: BigInt(0),
-    allTimeHighStaked: BigInt(0),
+    totalWithdrawals: domain.totalWithdrawals,
+    allTimeHighStaked,
     operatorsCount: operators.length,
     activeOperatorsCount,
     slashedOperatorsCount,
@@ -104,14 +156,41 @@ export const createStats = (cache: Cache, block: CtxBlock): Stats => {
     (total, operator) => total + operator.totalDeposits,
     BigInt(0)
   );
+  const totalTaxCollected = operators.reduce(
+    (total, operator) => total + operator.totalTaxCollected,
+    BigInt(0)
+  );
+  const totalRewardsCollected = operators.reduce(
+    (total, operator) => total + operator.totalRewardsCollected,
+    BigInt(0)
+  );
+  const totalWithdrawals = operators.reduce(
+    (total, operator) => total + operator.totalWithdrawals,
+    BigInt(0)
+  );
+
+  const allTimeHighStakedKey: AllTimeHighStakedKey = "allTimeHighStaked:global";
+  let allTimeHighStaked = BigInt(
+    cache.internalKeyStore.get(allTimeHighStakedKey) || "0"
+  );
+
+  if (totalStaked > allTimeHighStaked) {
+    allTimeHighStaked = totalStaked;
+    cache.internalKeyStore.set(
+      allTimeHighStakedKey,
+      allTimeHighStaked.toString()
+    );
+    cache.isModified = true;
+  }
 
   return new Stats({
     id: randomUUID(),
     totalStaked,
-    totalFees: BigInt(0),
+    totalTaxCollected,
+    totalRewardsCollected,
     totalDeposits,
-    totalWithdrawals: BigInt(0),
-    allTimeHighStaked: BigInt(0),
+    totalWithdrawals,
+    allTimeHighStaked,
     domainsCount: cache.domains.size,
     operatorsCount: operators.length,
     activeOperatorsCount,

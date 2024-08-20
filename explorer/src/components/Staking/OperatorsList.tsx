@@ -6,15 +6,15 @@ import { SortingState } from '@tanstack/react-table'
 import { DebouncedInput } from 'components/common/DebouncedInput'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, Chains, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
-  OperatorOrderByInput,
-  OperatorsConnectionQuery,
-  OperatorsConnectionQueryVariables,
-} from 'gql/oldSquidTypes'
+  OperatorsListQuery,
+  OperatorsListQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/types/staking'
+import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
-import useDomains from 'hooks/useDomains'
 import { useDomainsData } from 'hooks/useDomainsData'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
@@ -24,44 +24,40 @@ import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useConsensusStates } from 'states/consensus'
-import { useDomainsStates } from 'states/domains'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
-import { Operators } from 'types/consensus'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
-import { sort } from 'utils/sort'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
-import { DataSource } from '../common/DataSource'
-import { DataSourceBanner } from '../common/DataSourceBanner'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { MyPendingWithdrawals, MyUnlockedWithdrawals } from './MyWithdrawals'
-import { QUERY_OPERATOR_CONNECTION_LIST } from './query'
+import { QUERY_OPERATOR_LIST } from './staking.query'
+
+type Row = OperatorsListQuery['operator'][0] & { nominatorsCount: number }
 
 export const OperatorsList: FC = () => {
   const { ref, inView } = useInView()
   const [searchOperator, setSearch] = useState<string>('')
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
-  const { operators: rpcOperators, nominatorCount, deposits, withdrawals } = useConsensusStates()
-  const { domains } = useDomainsStates()
+  const { operators: rpcOperators, domainRegistry, deposits, withdrawals } = useConsensusStates()
   const { loadData: loadDomainsData } = useDomainsData()
   const { loadData: loadConsensusData } = useConsensusData()
   const inFocus = useWindowFocus()
-  const { useRpcData, myPositionOnly } = useViewStates()
+  const { myPositionOnly } = useViewStates()
 
   useEffect(() => {
     loadDomainsData()
@@ -88,117 +84,82 @@ export const OperatorsList: FC = () => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
-  const { selectedChain, selectedDomain } = useDomains()
+  const { network, section } = useChains()
   const apolloClient = useApolloClient()
 
   const columns = useMemo(() => {
     const cols = [
       {
-        accessorKey: 'id',
+        accessorKey: 'sort_id',
         header: 'Id',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
           <Link
             className='hover:text-purpleAccent'
-            href={INTERNAL_ROUTES.operators.id.page(
-              selectedChain.urls.page,
-              selectedDomain,
-              row.original.id,
-            )}
+            href={INTERNAL_ROUTES.operators.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>
           </Link>
         ),
       },
       {
-        accessorKey: 'currentDomainId',
+        accessorKey: 'domain_id',
         header: 'Domain',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => {
-          const domain = domains.find(
-            (d) =>
-              (row.original.currentDomainId || row.original.currentDomainId === 0) &&
-              d.domainId === row.original.currentDomainId.toString(),
-          )
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => {
+          const domain = domainRegistry.find((d) => d.domainId === row.original.domain_id)
           return (
             <div>
               {domain
-                ? domain.domainName.charAt(0).toUpperCase() + domain.domainName.slice(1)
-                : '#' + row.original.currentDomainId}
+                ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
+                  domain.domainConfig.domainName.slice(1)
+                : '#' + row.original.domain_id}
             </div>
           )
         },
       },
       {
-        accessorKey: 'signingKey',
+        accessorKey: 'signing_key',
         header: 'Signing Key',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
-            {row.original.operatorOwner === subspaceAccount && (
+            {row.original.account_id === subspaceAccount && (
               <Tooltip text='You are the operator'>
-                <AccountIcon address={row.original.operatorOwner} size={26} />
+                <AccountIcon address={row.original.account_id} size={26} />
               </Tooltip>
             )}
-            <div>{shortString(row.original.signingKey)}</div>
+            <div>{shortString(row.original.signing_key)}</div>
           </div>
         ),
       },
       {
-        accessorKey: 'minimumNominatorStake',
+        accessorKey: 'minimum_nominator_stake',
         header: 'Min. Stake',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
-          <div>{`${bigNumberToNumber(row.original.minimumNominatorStake)} ${selectedChain.token.symbol}`}</div>
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToNumber(row.original.minimum_nominator_stake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
-        accessorKey: 'nominationTax',
+        accessorKey: 'nomination_tax',
         header: 'Nominator Tax',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => <div>{`${row.original.nominationTax}%`}</div>,
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{`${row.original.nomination_tax}%`}</div>,
       },
       {
-        accessorKey: 'currentTotalStake',
+        accessorKey: 'current_total_stake',
         header: 'Total Stake',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
-          <div>{`${bigNumberToNumber(row.original.currentTotalStake)} ${selectedChain.token.symbol}`}</div>
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToNumber(row.original.current_total_stake)} ${TOKEN.symbol}`}</div>
         ),
       },
       {
         accessorKey: 'deposits',
         header: 'Deposits',
         enableSorting: false,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => {
+        cell: ({ row }: Cell<Row>) => {
           const opDeposits = deposits.filter((d) => d.operatorId.toString() === row.original.id)
           const depositShares = opDeposits.reduce(
             (acc, deposit) => acc + deposit.shares,
@@ -225,20 +186,20 @@ export const OperatorsList: FC = () => {
             pendingStorageFee
           let tooltip = ''
           if (pendingAmount > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${selectedChain.token.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount + pendingStorageFee)} ${TOKEN.symbol}`
           if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
           if (depositShares > BIGINT_ZERO)
             tooltip += `Staked: ${bigNumberToNumber(
               (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
-            )} ${selectedChain.token.symbol}`
+            )} ${TOKEN.symbol}`
           return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+                {bigNumberToNumber(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           ) : (
-            <div>0 {selectedChain.token.symbol}</div>
+            <div>0 {TOKEN.symbol}</div>
           )
         },
       },
@@ -246,11 +207,7 @@ export const OperatorsList: FC = () => {
         accessorKey: 'withdrawals',
         header: 'Withdrawals',
         enableSorting: false,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => {
+        cell: ({ row }: Cell<Row>) => {
           const opWithdrawals = withdrawals.filter(
             (d) => d.operatorId.toString() === row.original.id,
           )
@@ -281,73 +238,42 @@ export const OperatorsList: FC = () => {
           const total = (totalPending * sharesValue) / SHARES_CALCULATION_MULTIPLIER + totalUnlocked
           let tooltip = ''
           if (totalPending > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${selectedChain.token.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(totalPending)} ${TOKEN.symbol}`
           if (totalUnlocked > BIGINT_ZERO && totalPending > BIGINT_ZERO) tooltip += ' - '
           if (totalUnlocked > BIGINT_ZERO)
-            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${selectedChain.token.symbol}`
+            tooltip += `Unlocked: ${bigNumberToNumber(totalUnlocked)} ${TOKEN.symbol}`
           return total > BIGINT_ZERO ? (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+                {bigNumberToNumber(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           ) : (
-            <div>0 {selectedChain.token.symbol}</div>
+            <div>0 {TOKEN.symbol}</div>
           )
         },
       },
       {
-        accessorKey: 'nominators',
+        accessorKey: 'nominators_aggregate',
         header: 'Nominators',
-        enableSorting: false,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => {
-          if (useRpcData) {
-            const count = nominatorCount.find((o) => o.id.toString() === row.original.id)
-            return <div>{count ? count.count : 0}</div>
-          }
-          return (
-            <div>
-              {(row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'])
-                .nominators
-                ? (
-                    row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
-                  ).nominators.length
-                : 0}
-            </div>
-          )
-        },
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{row.original.nominatorsCount}</div>,
       },
       {
         accessorKey: 'status',
         header: 'Status',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => (
-          <div>
-            {selectedChain.urls.page === Chains.gemini3g
-              ? row.original.status
-              : capitalizeFirstLetter(operatorStatus(row.original.status))}
-          </div>
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{capitalizeFirstLetter(operatorStatus(row.original.raw_status))}</div>
         ),
       },
     ]
-    if (useRpcData && deposits.find((d) => d.account === subspaceAccount))
+    if (deposits.find((d) => d.account === subspaceAccount))
       cols.push({
         accessorKey: 'myStake',
         header: 'My Stake',
-        enableSorting: !useRpcData,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => {
+        enableSorting: false,
+        cell: ({ row }: Cell<Row>) => {
           const deposit = deposits.find(
             (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
           )
@@ -367,16 +293,16 @@ export const OperatorsList: FC = () => {
             : BIGINT_ZERO
           let tooltip = ''
           if (pendingAmount > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${selectedChain.token.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${TOKEN.symbol}`
           if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
           if (depositShares > BIGINT_ZERO)
             tooltip += `Staked: ${bigNumberToNumber(
               (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
-            )} ${selectedChain.token.symbol}`
+            )} ${TOKEN.symbol}`
           return (
             <div>
               <Tooltip text={tooltip}>
-                {bigNumberToNumber(total)} {selectedChain.token.symbol}
+                {bigNumberToNumber(total)} {TOKEN.symbol}
               </Tooltip>
             </div>
           )
@@ -387,39 +313,25 @@ export const OperatorsList: FC = () => {
         accessorKey: 'actions',
         header: 'Actions',
         enableSorting: false,
-        cell: ({
-          row,
-        }: Cell<
-          OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node'] | Operators
-        >) => {
-          const isOperator = row.original.operatorOwner === subspaceAccount
-          const deposit = deposits.find(
-            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+        cell: ({ row }: Cell<Row>) => {
+          const isOperator = row.original.account_id === subspaceAccount
+          const nominator = row.original.nominators.find(
+            (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
           )
-          const nominator =
-            (!useRpcData &&
-              (
-                row.original as OperatorsConnectionQuery['operatorsConnection']['edges'][0]['node']
-              ).nominators.find(
-                (nominator) => nominator.id === `${row.original.id}-${subspaceAccount}`,
-              )) ||
-            deposit
           const excludeActions = []
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockFunds)
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockNominator)
           if (
-            !useRpcData &&
             !nominator &&
-            row.original.status &&
-            JSON.parse(row.original.status ?? '{}')?.deregistered
+            row.original.raw_status &&
+            JSON.parse(row.original.raw_status ?? '{}')?.deregistered
           )
             excludeActions.push(OperatorActionType.Nominating)
           if (
-            !useRpcData &&
-            row.original.status &&
-            JSON.parse(row.original.status ?? '{}')?.slashed === null
+            row.original.raw_status &&
+            JSON.parse(row.original.raw_status ?? '{}')?.slashed === null
           )
             return <></>
           return (
@@ -428,68 +340,65 @@ export const OperatorsList: FC = () => {
               handleAction={handleAction}
               row={row as ActionsDropdownRow}
               excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.shares) : BIGINT_ZERO}
+              nominatorMaxShares={nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO}
             />
           )
         },
       })
     return cols
   }, [
-    useRpcData,
     deposits,
     subspaceAccount,
-    selectedChain.urls.page,
-    selectedChain.token.symbol,
-    selectedDomain,
-    domains,
+    network,
+    section,
+    domainRegistry,
     rpcOperators,
     withdrawals,
-    nominatorCount,
     action,
     handleAction,
   ])
 
   const orderBy = useMemo(
-    () => sort(sorting, OperatorOrderByInput.IdAsc) as OperatorOrderByInput,
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { id: OrderBy.Asc },
     [sorting],
   )
 
   const where = useMemo(() => {
     if (subspaceAccount && myPositionOnly && !searchOperator)
       return {
-        OR: [
+        _or: [
           // eslint-disable-next-line camelcase
-          { operatorOwner_eq: subspaceAccount },
+          { account_id: { _eq: subspaceAccount } },
           // eslint-disable-next-line camelcase
-          { nominators_some: { account: { id_eq: subspaceAccount } } },
+          { nominators: { account_id: { _eq: subspaceAccount } } },
         ],
       }
     // eslint-disable-next-line camelcase
-    return searchOperator ? { id_eq: searchOperator } : {}
+    return searchOperator ? { id: { _eq: searchOperator } } : {}
   }, [myPositionOnly, searchOperator, subspaceAccount])
 
-  const variables = useMemo(
+  const variables: OperatorsListQueryVariables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       where,
     }),
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { setIsVisible } = useSquidQuery<
-    OperatorsConnectionQuery,
-    OperatorsConnectionQueryVariables
-  >(
-    QUERY_OPERATOR_CONNECTION_LIST,
+  const { loading, setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
+    QUERY_OPERATOR_LIST,
     {
       variables,
       skip: !inFocus,
       pollInterval: 6000,
+      context: { clientName: 'staking' },
     },
     Routes.staking,
     'operators',
@@ -501,10 +410,16 @@ export const OperatorsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_OPERATOR_CONNECTION_LIST, 'operatorsConnection', {
-        first: 10,
-        orderBy,
-      }),
+      downloadFullData(
+        apolloClient,
+        QUERY_OPERATOR_LIST,
+        'operator',
+        {
+          orderBy,
+        },
+        ['limit', 'offset'],
+        { clientName: 'staking' },
+      ),
     [apolloClient, orderBy],
   )
 
@@ -514,30 +429,19 @@ export const OperatorsList: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const operatorsConnection = useMemo(() => {
-    if (useRpcData) {
-      const myRpcNominatorIds = deposits
-        .filter((d) => d.account === subspaceAccount)
-        .map((n) => n.operatorId.toString())
-      return rpcOperators
-        .filter((o) =>
-          myPositionOnly
-            ? o.operatorOwner === subspaceAccount || myRpcNominatorIds.includes(o.id)
-            : true,
-        )
-        .map((operator) => ({
-          ...operator,
-          nominators: [],
-          totalShares: operator.currentTotalShares,
-        }))
-    }
+  const operatorsList = useMemo(() => {
     if (hasValue(operators))
-      return operators.value.operatorsConnection.edges.map((operator) => operator.node)
+      return operators.value.operator.map((o) => {
+        return {
+          ...o,
+          nominatorsCount: o.nominators_aggregate.aggregate?.count || 0,
+        }
+      })
     return []
-  }, [deposits, myPositionOnly, operators, rpcOperators, subspaceAccount, useRpcData])
+  }, [operators])
 
   const totalCount = useMemo(
-    () => (hasValue(operators) ? operators.value.operatorsConnection.totalCount : 0),
+    () => (hasValue(operators) && operators.value.operator_aggregate.aggregate?.count) || 0,
     [operators],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
@@ -547,10 +451,10 @@ export const OperatorsList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(operators)) return <Spinner isSmall />
+    if (loading || isLoading(operators)) return <Spinner isSmall />
     if (!hasValue(operators)) return <NotFound />
     return null
-  }, [operators])
+  }, [loading, operators])
 
   useEffect(() => {
     if (operatorId) handleSearch(operatorId)
@@ -567,9 +471,6 @@ export const OperatorsList: FC = () => {
           <div className='text-base font-medium text-grayDark dark:text-white'>Staking</div>
         </div>
         <div className='flex items-center'>
-          <div className='mr-5 flex items-center'>
-            <DataSource />
-          </div>
           {subspaceAccount && (
             <div className='mr-4 flex w-40 items-center'>
               <MyPositionSwitch />
@@ -584,7 +485,6 @@ export const OperatorsList: FC = () => {
           />
         </div>
       </div>
-      <DataSourceBanner />
       <MyUnlockedWithdrawals action={action} handleAction={handleAction} />
       <MyPendingWithdrawals />
       <div className='mt-2 flex w-full justify-between'>
@@ -592,18 +492,17 @@ export const OperatorsList: FC = () => {
       </div>
       <div className='mt-2 flex w-full flex-col sm:mt-0'>
         <div className='my-6 rounded' ref={ref}>
-          {operatorsConnection ? (
+          {!loading && operatorsList ? (
             <SortedTable
-              data={operatorsConnection}
+              data={operatorsList}
               columns={columns}
-              showNavigation={!useRpcData}
+              showNavigation={true}
               sorting={sorting}
               onSortingChange={setSorting}
               pagination={pagination}
               pageCount={pageCount}
               onPaginationChange={setPagination}
-              filename='operators-operators-list'
-              pageSizeOptions={[10]}
+              filename='staking-operators-list'
               fullDataDownloader={fullDataDownloader}
             />
           ) : (

@@ -3,7 +3,7 @@
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useDomains from 'hooks/useDomains'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -17,20 +17,20 @@ export const StakingHeader = () => {
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { selectedChain } = useDomains()
+  const { network } = useChains()
 
   const menuList = useMemo(
     () => [
       {
         title: 'Operators',
-        link: `/${selectedChain.urls.page}/${Routes.staking}`,
+        link: `/${network}/${Routes.staking}`,
       },
       {
         title: 'Register Operator',
-        link: `/${selectedChain.urls.page}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
+        link: `/${network}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
     ],
-    [selectedChain.urls.page],
+    [network],
   )
 
   return (
@@ -38,7 +38,7 @@ export const StakingHeader = () => {
       {isDesktop ? (
         <div className='container mx-auto flex flex-col flex-wrap items-center justify-between py-5 md:flex-row md:px-[25px] 2xl:px-0'>
           <Link
-            href={`/${selectedChain.urls.page}/${Routes.staking}`}
+            href={`/${network}/${Routes.staking}`}
             className='title-font mb-4 flex items-center font-medium text-gray-900 md:mb-0'
           >
             <span className='text-xl text-grayDark dark:text-white'>
@@ -48,8 +48,7 @@ export const StakingHeader = () => {
           <nav className='flex flex-wrap items-center justify-center gap-10 text-sm'>
             {menuList.map((item, index) => {
               const isCurrentPath = pathname.includes(item.link) && index !== 0
-              const isInitialPath =
-                pathname === `/${selectedChain.urls.page}/operators` && index === 0
+              const isInitialPath = pathname === `/${network}/operators` && index === 0
 
               return (
                 <Link

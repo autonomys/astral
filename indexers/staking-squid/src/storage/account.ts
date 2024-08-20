@@ -6,16 +6,20 @@ import { Cache } from "../utils/cache";
 export const createAccount = (
   block: CtxBlock,
   address: string,
-  props: Partial<Account>
-): Account =>
-  new Account({
+  props: Partial<Account> = {}
+): Account => {
+  const blockNumber = getBlockNumber(block);
+  return new Account({
     id: address,
-    totalDeposits: BigInt(0),
-    totalTaxCollected: BigInt(0),
+    totalDeposits: props.totalDeposits ?? BigInt(0),
+    totalEstimatedWithdrawals: props.totalEstimatedWithdrawals ?? BigInt(0),
+    totalWithdrawals: props.totalWithdrawals ?? BigInt(0),
+    totalTaxCollected: props.totalTaxCollected ?? BigInt(0),
     ...props,
-    createdAt: getBlockNumber(block),
-    updatedAt: getBlockNumber(block),
+    createdAt: blockNumber,
+    updatedAt: blockNumber,
   });
+};
 
 export const getOrCreateAccount = (
   cache: Cache,

@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_HOME } from 'components/Home/query'
+import { QUERY_HOME } from 'components/Consensus/Home/query'
 import { HomeQueryQuery } from 'components/gql/graphql'
 import {
   AutonomysSymbol,
@@ -10,7 +10,7 @@ import {
   WalletIcon,
 } from 'components/icons'
 import { ACCOUNT_MIN_VAL } from 'constants/account'
-import { chains } from 'constants/chains'
+import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -24,7 +24,7 @@ import { formatSpacePledged, numberWithCommas } from 'utils/number'
 export async function GET(req: NextRequest, { params: { chain } }: ChainPageProps) {
   if (!chain) notFound()
 
-  const chainMatch = chains.find((c) => c.urls.page === chain)
+  const chainMatch = indexers.find((c) => c.network === chain)
 
   if (!chainMatch) notFound()
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
     data,
   }: {
     data: HomeQueryQuery
-  } = await fetch(chainMatch.urls.squids.old, {
+  } = await fetch(chainMatch.squids.old, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function Screen({
   chainMatch,
   data,
 }: {
-  chainMatch: (typeof chains)[number]
+  chainMatch: (typeof indexers)[number]
   data: HomeQueryQuery
 }) {
   dayjs.extend(relativeTime)
