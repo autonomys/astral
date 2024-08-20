@@ -2,7 +2,6 @@ import { randomUUID } from "crypto";
 import { Deposit, DepositStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
 
 export const createDeposit = (
   block: CtxBlock,
@@ -14,8 +13,12 @@ export const createDeposit = (
     amount: BigInt(0),
     storageFeeDeposit: BigInt(0),
     status: DepositStatus.PENDING,
+    epochDepositedAt: 0,
+    domainBlockNumberDepositedAt: 0,
+    stakedAt: 0,
     ...props,
-    blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
     extrinsicHash: extrinsic.hash,
+    createdAt: getBlockNumber(block),
+    updatedAt: getBlockNumber(block),
   });

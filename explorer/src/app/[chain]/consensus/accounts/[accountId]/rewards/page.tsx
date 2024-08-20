@@ -1,5 +1,5 @@
 import { shortString } from '@/utils/string'
-import { AccountRewardList } from 'components/Account/AccountRewardList'
+import { AccountRewardList } from 'components/Consensus/Account/AccountRewardList'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'

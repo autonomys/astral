@@ -1,4 +1,4 @@
-import { Event } from 'components/Event/Event'
+import { Event } from 'components/Consensus/Event/Event'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'

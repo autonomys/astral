@@ -43,7 +43,7 @@ export const OutOfSyncBanner: FC = () => {
 }
 
 export const useOutOfSyncBanner = () => {
-  const { network, isEvm } = useChains()
+  const { network } = useChains()
   const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
@@ -62,14 +62,13 @@ export const useOutOfSyncBanner = () => {
 
   const outOfSyncBanner = useMemo(
     () =>
-      !isEvm &&
       data &&
       lastBlock &&
       lastChainBlock !== null &&
       lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastChainBlock ? (
         <OutOfSyncBanner />
       ) : null,
-    [data, lastBlock, lastChainBlock, isEvm],
+    [data, lastBlock, lastChainBlock],
   )
 
   useEffect(() => {

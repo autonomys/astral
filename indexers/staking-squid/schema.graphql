@@ -10,7 +10,7 @@ type Domain @entity {
   name: String! @index
   runtimeId: Int! @index
   runtime: DomainRuntime! @index
-  runtimeInfo: String
+  runtimeInfo: String!
   completedEpoch: Int! @index
   lastDomainBlockNumber: Int! @index
   totalDeposits: BigInt!
@@ -32,16 +32,16 @@ type Domain @entity {
   currentStorageFeeDeposit: BigInt!
   bundleCount: Int!
   lastBundleAt: Int!
-  createdAt: Int @index
-  updatedAt: Int @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 type Account @entity {
   id: ID! @index
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
-  createdAt: Int @index
-  updatedAt: Int @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 enum OperatorStatus {
@@ -56,30 +56,26 @@ type Operator @entity {
   id: ID! @index
   sortId: Int! @index
   accountId: String! @index
-  # creation args
   domainId: String! @index
   signingKey: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
-  # public profile
   name: String! @index
-  description: String
-  icon: String
-  banner: String
-  website: String
+  description: String!
+  icon: String!
+  banner: String!
+  website: String!
   websiteVerified: Boolean!
-  email: String
+  email: String!
   emailVerified: Boolean!
-  discord: String
-  github: String
-  twitter: String
-  # chain state
+  discord: String!
+  github: String!
+  twitter: String!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
-  rawStatus: String
-  # increments
+  rawStatus: String!
   totalDeposits: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
@@ -97,16 +93,29 @@ type Operator @entity {
   totalBurnedBalance: BigInt!
   activeEpochCount: Int!
   bundleCount: Int!
-  # status and timestamps
   status: OperatorStatus! @index
   lastBundleAt: Int!
-  createdAt: Int @index
-  updatedAt: Int @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type DomainBlock @entity {
+  id: ID! @index
+  domainId: String! @index
+  blockNumber: Int! @index
+  blockHash: String! @index
+  extrinsicRoot: String!
+  consensusBlockNumber: Int! @index
+  consensusBlockHash: String! @index
+  timestamp: DateTime! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 type Bundle @entity {
   id: ID! @index
   domainId: String! @index
+  domainBlockId: String! @index
   domainBlockNumber: Int! @index
   domainBlockHash: String!
   domainBlockExtrinsicRoot: String!
@@ -128,9 +137,11 @@ type Bundle @entity {
 
 type BundleAuthor @entity {
   id: ID! @index
-  bundleId: String! @index
+  domainId: String! @index
   accountId: String! @index
   operatorId: String! @index
+  bundleId: String! @index
+  domainBlockId: String! @index
 }
 
 enum NominatorStatus {
@@ -158,8 +169,8 @@ type Nominator @entity {
   pendingStorageFeeRefund: BigInt!
   totalDeposits: BigInt!
   status: NominatorStatus! @index
-  createdAt: Int @index
-  updatedAt: Int @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 enum DepositStatus {
@@ -169,16 +180,20 @@ enum DepositStatus {
 
 type Deposit @entity {
   id: ID! @index
-  blockNumber: Int! @index
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
   nominatorId: String! @index
   amount: BigInt!
   storageFeeDeposit: BigInt!
+  status: DepositStatus! @index
   timestamp: DateTime! @index
   extrinsicHash: String! @index
-  status: DepositStatus! @index
+  epochDepositedAt: Int! @index
+  domainBlockNumberDepositedAt: Int! @index
+  createdAt: Int! @index
+  stakedAt: Int! @index
+  updatedAt: Int! @index
 }
 
 enum WithdrawalStatus {
@@ -189,15 +204,21 @@ enum WithdrawalStatus {
 
 type Withdrawal @entity {
   id: ID! @index
-  blockNumber: Int! @index
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
   nominatorId: String! @index
   shares: BigInt!
-  timestamp: DateTime! @index
-  extrinsicHash: String! @index
   status: WithdrawalStatus! @index
+  timestamp: DateTime! @index
+  withdrawExtrinsicHash: String! @index
+  unlockExtrinsicHash: String! @index
+  epochWithdrawalRequestedAt: Int! @index
+  domainBlockNumberWithdrawalRequestedAt: Int! @index
+  createdAt: Int! @index
+  readyAt: Int! @index
+  unlockedAt: Int! @index
+  updatedAt: Int! @index
 }
 
 type OperatorUnlockedFunds @entity {

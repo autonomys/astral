@@ -45,6 +45,11 @@ export const bundleUID = (
   domainBlockBundleIndex: number | string
 ): string => `${domainId}-${domainBlockHeight}-${domainBlockBundleIndex}`;
 
+export const blockUID = (
+  domainId: number | string,
+  blockNumber: number | string
+): string => `${domainId}-${blockNumber}`;
+
 export const logBlock = (blocks: CtxBlock[]): void => {
   const from = getBlockNumber(blocks[0]);
   const to = getBlockNumber(blocks[blocks.length - 1]);

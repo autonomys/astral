@@ -6,9 +6,10 @@ import {
   getOrCreateDomain,
   getOrCreateOperator,
 } from "../storage";
+import { createDomainBlock } from "../storage/domainBlock";
 import { ExecutionReceipt, SealedBundleHeader } from "../types/v1";
-import { bundleUID, getBlockNumber } from "../utils";
-import { Cache } from "../utils/cache";
+import { blockUID, bundleUID, getBlockNumber } from "../utils";
+import { Cache, LastBlockBundleIndexKey } from "../utils/cache";
 
 export function processBundleStoredEvent(
   cache: Cache,
@@ -66,8 +67,7 @@ export function processBundleStoredEvent(
     blockFees,
   } = receipt;
 
-  const keyIdLastBlockBundleIndex =
-    "lastBlockBundleIndex:" + domainId + "-" + domainBlockHash;
+  const keyIdLastBlockBundleIndex: LastBlockBundleIndexKey = `lastBlockBundleIndex:${domainId}-${domainBlockHash}`;
   const lastBlockBundleIndex = cache.internalKeyStore.get(
     keyIdLastBlockBundleIndex
   );
@@ -81,30 +81,60 @@ export function processBundleStoredEvent(
   let bundle = cache.bundles.get(
     bundleUID(domainId, domainBlockHash, blockBundleIndex)
   );
+  let domainBlock = cache.domainBlocks.get(
+    blockUID(domainId, domainBlockNumber)
+  );
+  if (!domainBlock) {
+    domainBlock = createDomainBlock(
+      block,
+      domainId,
+      domainBlockNumber,
+      domainBlockHash,
+      {
+        extrinsicRoot: domainBlockExtrinsicRoot,
+        consensusBlockNumber: Number(consensusBlockNumber),
+        consensusBlockHash,
+      }
+    );
+    cache.domainBlocks.set(domainBlock.id, domainBlock);
+  }
 
   if (!bundle) {
-    bundle = createBundle(domain.id, domainBlockHash, blockBundleIndex, {
-      domainBlockNumber: Number(domainBlockNumber),
+    bundle = createBundle(
+      domain.id,
+      domainBlock.id,
       domainBlockHash,
-      domainBlockExtrinsicRoot,
-      consensusBlockNumber: Number(consensusBlockNumber),
-      consensusBlockHash,
-      totalTransfersIn,
-      transfersInCount,
-      totalTransfersOut,
-      transfersOutCount,
-      totalRejectedTransfersClaimed,
-      rejectedTransfersClaimedCount,
-      totalTransfersRejected,
-      transfersRejectedCount,
-      totalVolume,
-      consensusStorageFee: BigInt(blockFees.consensusStorageFee),
-      domainExecutionFee: BigInt(blockFees.domainExecutionFee),
-      burnedBalance: BigInt(blockFees.burnedBalance),
-    });
+      blockBundleIndex,
+      {
+        domainBlockId: domainBlock.id,
+        domainBlockNumber: Number(domainBlockNumber),
+        domainBlockHash,
+        domainBlockExtrinsicRoot,
+        consensusBlockNumber: Number(consensusBlockNumber),
+        consensusBlockHash,
+        totalTransfersIn,
+        transfersInCount,
+        totalTransfersOut,
+        transfersOutCount,
+        totalRejectedTransfersClaimed,
+        rejectedTransfersClaimedCount,
+        totalTransfersRejected,
+        transfersRejectedCount,
+        totalVolume,
+        consensusStorageFee: BigInt(blockFees.consensusStorageFee),
+        domainExecutionFee: BigInt(blockFees.domainExecutionFee),
+        burnedBalance: BigInt(blockFees.burnedBalance),
+      }
+    );
     cache.bundles.set(bundle.id, bundle);
 
-    const bundleAuthor = createBundleAuthor(bundle.id, account.id, operator.id);
+    const bundleAuthor = createBundleAuthor(
+      domain.id,
+      account.id,
+      operator.id,
+      bundle.id,
+      domainBlock.id
+    );
     cache.bundleAuthors.set(bundleAuthor.id, bundleAuthor);
 
     domain.lastDomainBlockNumber = Number(domainBlockNumber);
