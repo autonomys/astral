@@ -2,7 +2,6 @@ import { randomUUID } from "crypto";
 import { Withdrawal, WithdrawalStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
 
 export const createWithdrawal = (
   block: CtxBlock,
@@ -11,10 +10,20 @@ export const createWithdrawal = (
 ): Withdrawal =>
   new Withdrawal({
     id: randomUUID(),
+    accountId: "",
+    domainId: "",
+    operatorId: "",
+    nominatorId: "",
     shares: BigInt(0),
     status: WithdrawalStatus.PENDING,
+    epochWithdrawalRequestedAt: 0,
+    domainBlockNumberWithdrawalRequestedAt: 0,
+    unlockExtrinsicHash: "",
+    readyAt: 0,
+    unlockedAt: 0,
     ...props,
-    blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
-    extrinsicHash: extrinsic.hash,
+    withdrawExtrinsicHash: extrinsic.hash,
+    createdAt: getBlockNumber(block),
+    updatedAt: getBlockNumber(block),
   });

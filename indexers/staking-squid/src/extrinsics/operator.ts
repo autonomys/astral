@@ -1,15 +1,16 @@
-import { OperatorStatus } from "../model";
+import { NominatorStatus, OperatorStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
   createNominator,
   createOperator,
+  createWithdrawal,
   getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateOperator,
 } from "../storage";
 import { events } from "../types";
-import { getCallSigner } from "../utils";
+import { getBlockNumber, getCallSigner } from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processRegisterOperator(
@@ -63,6 +64,8 @@ export function processRegisterOperator(
     nominatorId: nominator.id,
     amount: amountBigInt,
     storageFeeDeposit,
+    epochDepositedAt: domain.completedEpoch ?? 0,
+    domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
   });
   cache.deposits.set(deposit.id, deposit);
 
@@ -84,8 +87,14 @@ export function processDeregisterOperator(
 ) {
   const { call, events: extrinsicEvents } = extrinsic;
   const operatorId = Number(call?.args.operatorId ?? 0);
+  const currentBlockNumber = getBlockNumber(block);
 
   const operator = getOrCreateOperator(cache, block, operatorId);
+  cache.operators.set(operator.id, operator);
+
+  const domain = getOrCreateDomain(cache, block, operator.domainId);
+  cache.domains.set(domain.id, domain);
+
   const operatorDeregisteredEvent = extrinsicEvents.find(
     (e) => e.name === events.domains.operatorDeregistered.name
   );
@@ -94,6 +103,31 @@ export function processDeregisterOperator(
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
   operator.status = OperatorStatus.DEREGISTERED;
+
+  Array.from(cache.nominators.values())
+    .filter(
+      (n) =>
+        (n.status === NominatorStatus.STAKING ||
+          n.status === NominatorStatus.PENDING) &&
+        n.operatorId === operator.id
+    )
+    .forEach((n) => {
+      n.status = NominatorStatus.DEREGISTERED;
+      n.updatedAt = currentBlockNumber;
+      cache.nominators.set(n.id, n);
+
+      const w = createWithdrawal(block, extrinsic, {
+        domainId: n.domainId,
+        accountId: n.accountId,
+        operatorId: n.operatorId,
+        nominatorId: n.id,
+        shares: n.knownShares,
+        epochWithdrawalRequestedAt: domain.completedEpoch ?? 0,
+        domainBlockNumberWithdrawalRequestedAt:
+          domain.lastDomainBlockNumber ?? 0,
+      });
+      cache.withdrawals.set(w.id, w);
+    });
 
   cache.operators.set(operator.id, operator);
 
