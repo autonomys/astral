@@ -30,11 +30,6 @@ export async function processExtrinsic(
     case calls.domains.deregisterOperator.name:
       return processDeregisterOperator(cache, block, extrinsic);
 
-    case calls.domains.nominateOperator.name:
-    case calls.domains.withdrawStake.name:
-    case calls.domains.unlockOperator.name:
-    case calls.domains.unlockFunds.name:
-    case calls.domains.unlockNominator.name:
     default:
       return await processEvents(cache, api, block, extrinsic);
   }
