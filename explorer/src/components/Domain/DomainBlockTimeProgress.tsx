@@ -31,9 +31,10 @@ export const DomainBlockTimeProgress: FC = () => {
       return {
         domain: domain.name,
         stats: [
-          { title: 'Last 1 Hour', intervalSeconds: 2 },
-          { title: 'Last 1 Day', intervalSeconds: 2 },
-          { title: 'Last 7 Days', intervalSeconds: 2 },
+          { title: 'Last 1 Epoch', intervalSeconds: 2 },
+          { title: 'Last 6 Epochs', intervalSeconds: 2 },
+          { title: 'Last 144 Epochs', intervalSeconds: 2 },
+          { title: 'Last 1008 Epochs', intervalSeconds: 2 },
         ],
       }
     })

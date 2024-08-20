@@ -107,7 +107,7 @@ export const NominationsTable: FC = () => {
       cell: (info) => dayjs(info.getValue()).fromNow(),
       header: 'Time',
     }),
-    columnHelper.accessor('block_number', {
+    columnHelper.accessor('created_at', {
       cell: (info) => (
         <Link
           key={`created_at-${info.getValue()}`}
@@ -118,7 +118,7 @@ export const NominationsTable: FC = () => {
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Block',
+      header: 'Created At',
     }),
     columnHelper.accessor('status', {
       cell: (info) => info.getValue(),
@@ -131,11 +131,22 @@ export const NominationsTable: FC = () => {
       cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
       header: 'Shares',
     }),
+
+    columnHelper.accessor('estimated_amount', {
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      header: 'Estimated Amount',
+    }),
+    columnHelper.accessor('unlocked_amount', {
+      cell: (info) => (
+        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.unlocked_storage_fee)} ${TOKEN.symbol}`}</div>
+      ),
+      header: 'Unlocked Total Amount',
+    }),
     columnHelper.accessor('timestamp', {
       cell: (info) => dayjs(info.getValue()).fromNow(),
       header: 'Time',
     }),
-    columnHelper.accessor('block_number', {
+    columnHelper.accessor('created_at', {
       cell: (info) => (
         <Link
           key={`created_at-${info.getValue()}`}
@@ -146,7 +157,7 @@ export const NominationsTable: FC = () => {
           <div>{info.getValue()}</div>
         </Link>
       ),
-      header: 'Block',
+      header: 'Created At',
     }),
     columnHelper.accessor('status', {
       cell: (info) => info.getValue(),
@@ -279,6 +290,9 @@ export const NominationsTable: FC = () => {
                     <div className='mb-4'>
                       <strong>Status:</strong> {nominator.status}
                     </div>
+                    <div className='mb-4'>
+                      <strong>Pending Action:</strong> {nominator.pending_action}
+                    </div>
                     <div className='flex flex-col sm:flex-row'>
                       <div className='w-full sm:w-1/2 sm:pr-2'>
                         <h5 className='mb-2 font-medium'>Deposits</h5>
@@ -315,6 +329,15 @@ export const NominationsTable: FC = () => {
                         <div>
                           <strong>Total Storage Fee Refund:</strong>{' '}
                           {bigNumberToFormattedString(nominator.total_storage_fee_refund)}{' '}
+                          {TOKEN.symbol}
+                        </div>
+                        <div>
+                          <strong>Estimated Withdrawal:</strong>{' '}
+                          {bigNumberToFormattedString(nominator.pending_shares)} {TOKEN.symbol}
+                        </div>
+                        <div>
+                          <strong>Pending Storage Fee Refund:</strong>{' '}
+                          {bigNumberToFormattedString(nominator.pending_storage_fee_refund)}{' '}
                           {TOKEN.symbol}
                         </div>
                       </div>

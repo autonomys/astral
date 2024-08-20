@@ -20,7 +20,7 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import type { Cell, DomainsFilters, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
+import { bigNumberToFormattedString, numberFormattedString, numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
@@ -146,7 +146,7 @@ export const DomainsList: FC = () => {
             <Tooltip
               text={
                 <span>
-                  Completed epoch: {row.original.completed_epoch} <br />
+                  Completed epoch: {numberFormattedString(row.original.completed_epoch)} <br />
                   Last block #: {row.original.last_domain_block_number}
                 </span>
               }
@@ -167,7 +167,7 @@ export const DomainsList: FC = () => {
               text={
                 <span>
                   Last block #: {row.original.last_domain_block_number} <br />
-                  Completed epoch: {row.original.completed_epoch}
+                  Completed epoch: {numberFormattedString(row.original.completed_epoch)}
                 </span>
               }
             >
@@ -183,6 +183,24 @@ export const DomainsList: FC = () => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_estimated_withdrawals'))
+      cols.push({
+        accessorKey: 'total_estimated_withdrawals',
+        header: 'Total Estimated Withdrawals',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${TOKEN.symbol}`}</div>
+        ),
+      })
+    if (selectedColumns.includes('total_withdrawals'))
+      cols.push({
+        accessorKey: 'total_withdrawals',
+        header: 'Total Withdrawals',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${TOKEN.symbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_tax_collected'))
@@ -217,7 +235,9 @@ export const DomainsList: FC = () => {
         accessorKey: 'transfers_in_count',
         header: 'Transfers In Count',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.transfers_in_count}</div>,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.transfers_in_count)}</div>
+        ),
       })
     if (selectedColumns.includes('total_transfers_out'))
       cols.push({
@@ -233,7 +253,9 @@ export const DomainsList: FC = () => {
         accessorKey: 'transfers_out_count',
         header: 'Transfers Out Count',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.transfers_out_count}</div>,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.transfers_out_count)}</div>
+        ),
       })
     if (selectedColumns.includes('total_rejected_transfers_claimed'))
       cols.push({
@@ -249,7 +271,9 @@ export const DomainsList: FC = () => {
         accessorKey: 'rejected_transfers_claimed_count',
         header: 'Rejected Transfers Claimed Count',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.rejected_transfers_claimed_count}</div>,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.rejected_transfers_claimed_count)}</div>
+        ),
       })
     if (selectedColumns.includes('total_transfers_rejected'))
       cols.push({
@@ -265,7 +289,9 @@ export const DomainsList: FC = () => {
         accessorKey: 'transfers_rejected_count',
         header: 'Transfers Rejected Count',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.transfers_rejected_count}</div>,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.transfers_rejected_count)}</div>
+        ),
       })
     if (selectedColumns.includes('total_volume'))
       cols.push({
@@ -327,8 +353,8 @@ export const DomainsList: FC = () => {
       })
     if (selectedColumns.includes('current_storage_fee_deposit'))
       cols.push({
-        accessorKey: 'current_total_stake',
-        header: 'Total stake',
+        accessorKey: 'current_storage_fee_deposit',
+        header: 'Storage Fee Deposit',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Tooltip
@@ -347,12 +373,32 @@ export const DomainsList: FC = () => {
           </Tooltip>
         ),
       })
+    if (selectedColumns.includes('accumulated_epoch_stake'))
+      cols.push({
+        accessorKey: 'accumulated_epoch_stake',
+        header: 'Accumulated Epoch Stake',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.accumulated_epoch_stake)}</div>
+        ),
+      })
+    if (selectedColumns.includes('accumulated_epoch_storage_fee_deposit'))
+      cols.push({
+        accessorKey: 'accumulated_epoch_storage_fee_deposit',
+        header: 'Accumulated Epoch Storage Fee Deposit',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>
+            {bigNumberToFormattedString(row.original.accumulated_epoch_storage_fee_deposit)}
+          </div>
+        ),
+      })
     if (selectedColumns.includes('bundle_count'))
       cols.push({
         accessorKey: 'bundle_count',
         header: 'Bundle Count',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.bundle_count}</div>,
+        cell: ({ row }: Cell<Row>) => <div>{numberFormattedString(row.original.bundle_count)}</div>,
       })
     if (selectedColumns.includes('last_bundle_at'))
       cols.push({
@@ -498,14 +544,12 @@ export const DomainsList: FC = () => {
 
     // Completed Epoch
     if (filters.completedEpoch) {
-      conditions['completed_epoch'] = {}
-      conditions.completed_epoch._gte = filters.completedEpoch
+      conditions['completed_epoch'] = { _gte: filters.completedEpoch }
     }
 
     // Bundle Count
     if (filters.bundleCount) {
-      conditions['bundle_count'] = {}
-      conditions.bundle_count._gte = filters.bundleCount
+      conditions['bundle_count'] = { _gte: filters.bundleCount }
     }
 
     return conditions

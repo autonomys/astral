@@ -43,6 +43,10 @@ export const QUERY_DOMAIN_LIST = gql`
       total_transfers_rejected
       transfers_rejected_count
       updated_at
+      total_estimated_withdrawals
+      total_withdrawals
+      accumulated_epoch_stake
+      accumulated_epoch_storage_fee_deposit
       operators_aggregate {
         aggregate {
           count
@@ -106,6 +110,10 @@ export const QUERY_DOMAIN_BY_ID = gql`
       total_transfers_rejected
       transfers_rejected_count
       updated_at
+      total_estimated_withdrawals
+      total_withdrawals
+      accumulated_epoch_stake
+      accumulated_epoch_storage_fee_deposit
       operators_aggregate {
         aggregate {
           count
@@ -126,6 +134,28 @@ export const QUERY_DOMAIN_BY_ID = gql`
           count
         }
       }
+    }
+  }
+`
+
+export const QUERY_DOMAIN_BLOCKS = gql`
+  query DomainBlocks(
+    $limit: Int!
+    $offset: Int
+    $orderBy: [domain_block_order_by!]!
+    $where: domain_block_bool_exp
+  ) {
+    domain_block(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+      id
+      domain_id
+      block_number
+      block_hash
+      extrinsic_root
+      consensus_block_number
+      consensus_block_hash
+      timestamp
+      created_at
+      updated_at
     }
   }
 `

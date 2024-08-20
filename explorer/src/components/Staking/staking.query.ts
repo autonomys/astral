@@ -39,24 +39,34 @@ export const QUERY_NOMINATIONS_LIST = gql`
       pending_storage_fee_refund
       total_deposits
       status
+      pending_action
       created_at
       updated_at
       deposits {
         id
-        block_number
         amount
         storage_fee_deposit
         timestamp
         extrinsic_hash
         status
+        created_at
+        staked_at
+        updated_at
       }
       withdrawals {
         id
-        block_number
         shares
+        estimated_amount
+        unlocked_amount
+        unlocked_storage_fee
         timestamp
-        extrinsic_hash
+        withdraw_extrinsic_hash
+        unlock_extrinsic_hash
         status
+        created_at
+        ready_at
+        unlocked_at
+        updated_at
       }
     }
   }
@@ -87,12 +97,17 @@ export const QUERY_OPERATOR_LIST = gql`
       current_epoch_rewards
       current_total_stake
       current_total_shares
+      current_share_price
+      current_storage_fee_deposit
       minimum_nominator_stake
       nomination_tax
       signing_key
       status
       raw_status
+      pending_action
       total_deposits
+      total_estimated_withdrawals
+      total_withdrawals
       total_tax_collected
       total_rewards_collected
       total_transfers_in
@@ -107,6 +122,8 @@ export const QUERY_OPERATOR_LIST = gql`
       total_consensus_storage_fee
       total_domain_execution_fee
       total_burned_balance
+      accumulated_epoch_shares
+      accumulated_epoch_storage_fee_deposit
       active_epoch_count
       bundle_count
       last_bundle_at
@@ -146,6 +163,7 @@ export const QUERY_OPERATOR_BY_ID = gql`
       current_epoch_rewards
       current_total_stake
       current_total_shares
+      current_share_price
       current_storage_fee_deposit
       minimum_nominator_stake
       total_rewards_collected
@@ -157,6 +175,7 @@ export const QUERY_OPERATOR_BY_ID = gql`
       signing_key
       status
       raw_status
+      pending_action
       last_bundle_at
       updated_at
       nominators_aggregate {
@@ -223,11 +242,13 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
         current_epoch_rewards
         current_total_stake
         current_total_shares
+        current_share_price
         minimum_nominator_stake
         nomination_tax
         signing_key
         status
         raw_status
+        pending_action
         updated_at
       }
       updated_at
