@@ -16,11 +16,6 @@ const config: CodegenConfig = {
       documents: ['./src/**/staking.query.ts'],
       plugins: ['typescript', 'typescript-operations'],
     },
-    './gql/rewardTypes.ts': {
-      schema: defaultIndexer.squids.rewards,
-      documents: ['./src/**/rewardsQuery.ts'],
-      plugins: ['typescript', 'typescript-operations'],
-    },
     './gql/oldSquidTypes.ts': {
       schema: defaultIndexer.squids.old,
       documents: ['./src/**/query.ts'],

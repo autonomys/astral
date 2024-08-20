@@ -1,4 +1,4 @@
-import { ExtrinsicTable } from 'components/Extrinsic/ExtrinsicTable'
+import { ExtrinsicTable } from 'components/Consensus/Extrinsic/ExtrinsicTable'
 import { SearchBar } from 'components/common/SearchBar'
 import { ExtrinsicAndEventResultTable } from 'components/layout/ExtrinsicAndEventResult'
 import { useSearch } from 'hooks/useSearch'
