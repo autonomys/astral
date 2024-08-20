@@ -2,6 +2,7 @@ import {sts, Block, Bytes, Option, Result, CallType, RuntimeCtx} from '../suppor
 import * as v0 from '../v0'
 import * as v1 from '../v1'
 import * as v5 from '../v5'
+import * as v6 from '../v6'
 
 export const submitBundle =  {
     name: 'Domains.submit_bundle',
@@ -27,6 +28,12 @@ export const submitBundle =  {
         'Domains.submit_bundle',
         sts.struct({
             opaqueBundle: v5.Bundle,
+        })
+    ),
+    v6: new CallType(
+        'Domains.submit_bundle',
+        sts.struct({
+            opaqueBundle: v6.Bundle,
         })
     ),
 }
@@ -55,6 +62,12 @@ export const submitFraudProof =  {
         'Domains.submit_fraud_proof',
         sts.struct({
             fraudProof: v5.FraudProof,
+        })
+    ),
+    v6: new CallType(
+        'Domains.submit_fraud_proof',
+        sts.struct({
+            fraudProof: v6.FraudProof,
         })
     ),
 }
@@ -273,6 +286,87 @@ export const setPermissionedActionAllowedBy =  {
         'Domains.set_permissioned_action_allowed_by',
         sts.struct({
             permissionedActionAllowedBy: v5.PermissionedActionAllowedBy,
+        })
+    ),
+}
+
+export const sendDomainSudoCall =  {
+    name: 'Domains.send_domain_sudo_call',
+    /**
+     * Submit a domain sudo call.
+     */
+    v6: new CallType(
+        'Domains.send_domain_sudo_call',
+        sts.struct({
+            domainId: v6.DomainId,
+            call: sts.bytes(),
+        })
+    ),
+}
+
+export const freezeDomain =  {
+    name: 'Domains.freeze_domain',
+    /**
+     * Freezes a given domain.
+     * A frozen domain does not accept new bundles but accepts fraud proofs.
+     */
+    v6: new CallType(
+        'Domains.freeze_domain',
+        sts.struct({
+            domainId: v6.DomainId,
+        })
+    ),
+}
+
+export const unfreezeDomain =  {
+    name: 'Domains.unfreeze_domain',
+    /**
+     * Unfreezes a frozen domain.
+     */
+    v6: new CallType(
+        'Domains.unfreeze_domain',
+        sts.struct({
+            domainId: v6.DomainId,
+        })
+    ),
+}
+
+export const pruneDomainExecutionReceipt =  {
+    name: 'Domains.prune_domain_execution_receipt',
+    /**
+     * Prunes a given execution receipt for given frozen domain.
+     * This call assumes the execution receipt to be bad and implicitly trusts Sudo
+     * to do necessary validation of the ER before dispatching this call.
+     */
+    v6: new CallType(
+        'Domains.prune_domain_execution_receipt',
+        sts.struct({
+            domainId: v6.DomainId,
+            badReceiptHash: v6.H256,
+        })
+    ),
+}
+
+export const transferTreasuryFunds =  {
+    name: 'Domains.transfer_treasury_funds',
+    /**
+     * Transfer funds from treasury to given account
+     */
+    v6: new CallType(
+        'Domains.transfer_treasury_funds',
+        sts.struct({
+            accountId: v6.AccountId32,
+            balance: sts.bigint(),
+        })
+    ),
+}
+
+export const submitReceipt =  {
+    name: 'Domains.submit_receipt',
+    v6: new CallType(
+        'Domains.submit_receipt',
+        sts.struct({
+            singletonReceipt: v6.SealedSingletonReceipt,
         })
     ),
 }

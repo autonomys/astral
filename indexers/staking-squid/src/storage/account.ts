@@ -12,6 +12,8 @@ export const createAccount = (
   return new Account({
     id: address,
     totalDeposits: props.totalDeposits ?? BigInt(0),
+    totalEstimatedWithdrawals: props.totalEstimatedWithdrawals ?? BigInt(0),
+    totalWithdrawals: props.totalWithdrawals ?? BigInt(0),
     totalTaxCollected: props.totalTaxCollected ?? BigInt(0),
     ...props,
     createdAt: blockNumber,

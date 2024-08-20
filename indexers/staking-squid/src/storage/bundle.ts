@@ -4,6 +4,7 @@ import { bundleUID } from "../utils";
 
 export const createBundle = (
   domainId: string,
+  domainBlockId: string,
   domainBlockHash: string,
   domainBlockBundleIndex: number | string,
   props?: Partial<Bundle>
@@ -11,6 +12,7 @@ export const createBundle = (
   new Bundle({
     id: bundleUID(domainId, domainBlockHash, domainBlockBundleIndex),
     domainId,
+    domainBlockId,
     domainBlockNumber: 0,
     domainBlockHash: "",
     domainBlockExtrinsicRoot: "",
@@ -32,15 +34,19 @@ export const createBundle = (
   });
 
 export const createBundleAuthor = (
-  bundleId: string,
+  domainId: string,
   accountId: string,
   operatorId: string,
+  bundleId: string,
+  domainBlockId: string,
   props?: Partial<BundleAuthor>
 ): BundleAuthor =>
   new BundleAuthor({
     id: randomUUID(),
-    bundleId,
+    domainId,
     accountId,
     operatorId,
+    bundleId,
+    domainBlockId,
     ...props,
   });

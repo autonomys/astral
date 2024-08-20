@@ -3,6 +3,7 @@ import * as v0 from '../v0'
 import * as v1 from '../v1'
 import * as v3 from '../v3'
 import * as v5 from '../v5'
+import * as v6 from '../v6'
 
 export const successfulBundles =  {
     /**
@@ -89,6 +90,7 @@ export interface NextEvmChainIdV0  {
 export const runtimeRegistry =  {
     v0: new StorageType('Domains.RuntimeRegistry', 'Optional', [sts.number()], v0.RuntimeObject) as RuntimeRegistryV0,
     v5: new StorageType('Domains.RuntimeRegistry', 'Optional', [sts.number()], v5.RuntimeObject) as RuntimeRegistryV5,
+    v6: new StorageType('Domains.RuntimeRegistry', 'Optional', [sts.number()], v6.RuntimeObject) as RuntimeRegistryV6,
 }
 
 export interface RuntimeRegistryV0  {
@@ -117,6 +119,20 @@ export interface RuntimeRegistryV5  {
     getPairs(block: Block, key: number): Promise<[k: number, v: (v5.RuntimeObject | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: number, v: (v5.RuntimeObject | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: number): AsyncIterable<[k: number, v: (v5.RuntimeObject | undefined)][]>
+}
+
+export interface RuntimeRegistryV6  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: number): Promise<(v6.RuntimeObject | undefined)>
+    getMany(block: Block, keys: number[]): Promise<(v6.RuntimeObject | undefined)[]>
+    getKeys(block: Block): Promise<number[]>
+    getKeys(block: Block, key: number): Promise<number[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, block: Block, key: number): AsyncIterable<number[]>
+    getPairs(block: Block): Promise<[k: number, v: (v6.RuntimeObject | undefined)][]>
+    getPairs(block: Block, key: number): Promise<[k: number, v: (v6.RuntimeObject | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: number, v: (v6.RuntimeObject | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: number): AsyncIterable<[k: number, v: (v6.RuntimeObject | undefined)][]>
 }
 
 export const scheduledRuntimeUpgrades =  {
@@ -652,6 +668,10 @@ export const blockTreeNodes =  {
      *  Mapping of block tree node hash to the node, each node represent a domain block
      */
     v5: new StorageType('Domains.BlockTreeNodes', 'Optional', [v5.H256], v5.BlockTreeNode) as BlockTreeNodesV5,
+    /**
+     *  Mapping of block tree node hash to the node, each node represent a domain block
+     */
+    v6: new StorageType('Domains.BlockTreeNodes', 'Optional', [v6.H256], v6.BlockTreeNode) as BlockTreeNodesV6,
 }
 
 /**
@@ -703,6 +723,23 @@ export interface BlockTreeNodesV5  {
     getPairs(block: Block, key: v5.H256): Promise<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
     getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
     getPairsPaged(pageSize: number, block: Block, key: v5.H256): AsyncIterable<[k: v5.H256, v: (v5.BlockTreeNode | undefined)][]>
+}
+
+/**
+ *  Mapping of block tree node hash to the node, each node represent a domain block
+ */
+export interface BlockTreeNodesV6  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: v6.H256): Promise<(v6.BlockTreeNode | undefined)>
+    getMany(block: Block, keys: v6.H256[]): Promise<(v6.BlockTreeNode | undefined)[]>
+    getKeys(block: Block): Promise<v6.H256[]>
+    getKeys(block: Block, key: v6.H256): Promise<v6.H256[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v6.H256[]>
+    getKeysPaged(pageSize: number, block: Block, key: v6.H256): AsyncIterable<v6.H256[]>
+    getPairs(block: Block): Promise<[k: v6.H256, v: (v6.BlockTreeNode | undefined)][]>
+    getPairs(block: Block, key: v6.H256): Promise<[k: v6.H256, v: (v6.BlockTreeNode | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v6.H256, v: (v6.BlockTreeNode | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v6.H256): AsyncIterable<[k: v6.H256, v: (v6.BlockTreeNode | undefined)][]>
 }
 
 export const headReceiptNumber =  {
@@ -1223,4 +1260,103 @@ export interface DomainRuntimeUpgradesV5  {
     is(block: RuntimeCtx): boolean
     getDefault(block: Block): number[]
     get(block: Block): Promise<(number[] | undefined)>
+}
+
+export const newAddedHeadReceipt =  {
+    /**
+     *  The hash of the new head receipt added in the current consensus block
+     * 
+     *  Temporary storage only exist during block execution
+     */
+    v6: new StorageType('Domains.NewAddedHeadReceipt', 'Optional', [v6.DomainId], v6.H256) as NewAddedHeadReceiptV6,
+}
+
+/**
+ *  The hash of the new head receipt added in the current consensus block
+ * 
+ *  Temporary storage only exist during block execution
+ */
+export interface NewAddedHeadReceiptV6  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: v6.DomainId): Promise<(v6.H256 | undefined)>
+    getMany(block: Block, keys: v6.DomainId[]): Promise<(v6.H256 | undefined)[]>
+    getKeys(block: Block): Promise<v6.DomainId[]>
+    getKeys(block: Block, key: v6.DomainId): Promise<v6.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v6.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v6.DomainId): AsyncIterable<v6.DomainId[]>
+    getPairs(block: Block): Promise<[k: v6.DomainId, v: (v6.H256 | undefined)][]>
+    getPairs(block: Block, key: v6.DomainId): Promise<[k: v6.DomainId, v: (v6.H256 | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v6.DomainId, v: (v6.H256 | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v6.DomainId): AsyncIterable<[k: v6.DomainId, v: (v6.H256 | undefined)][]>
+}
+
+export const latestConfirmedDomainExecutionReceipt =  {
+    /**
+     *  Storage to hold all the domain's latest confirmed block.
+     */
+    v6: new StorageType('Domains.LatestConfirmedDomainExecutionReceipt', 'Optional', [v6.DomainId], v6.ExecutionReceipt) as LatestConfirmedDomainExecutionReceiptV6,
+}
+
+/**
+ *  Storage to hold all the domain's latest confirmed block.
+ */
+export interface LatestConfirmedDomainExecutionReceiptV6  {
+    is(block: RuntimeCtx): boolean
+    get(block: Block, key: v6.DomainId): Promise<(v6.ExecutionReceipt | undefined)>
+    getMany(block: Block, keys: v6.DomainId[]): Promise<(v6.ExecutionReceipt | undefined)[]>
+    getKeys(block: Block): Promise<v6.DomainId[]>
+    getKeys(block: Block, key: v6.DomainId): Promise<v6.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v6.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v6.DomainId): AsyncIterable<v6.DomainId[]>
+    getPairs(block: Block): Promise<[k: v6.DomainId, v: (v6.ExecutionReceipt | undefined)][]>
+    getPairs(block: Block, key: v6.DomainId): Promise<[k: v6.DomainId, v: (v6.ExecutionReceipt | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v6.DomainId, v: (v6.ExecutionReceipt | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v6.DomainId): AsyncIterable<[k: v6.DomainId, v: (v6.ExecutionReceipt | undefined)][]>
+}
+
+export const domainSudoCalls =  {
+    /**
+     *  Temporary storage to hold the sudo calls meant for the Domains.
+     *  Storage is cleared when there are any successful bundles in the next block.
+     *  Only one sudo call is allowed per domain per consensus block.
+     */
+    v6: new StorageType('Domains.DomainSudoCalls', 'Default', [v6.DomainId], v6.DomainSudoCall) as DomainSudoCallsV6,
+}
+
+/**
+ *  Temporary storage to hold the sudo calls meant for the Domains.
+ *  Storage is cleared when there are any successful bundles in the next block.
+ *  Only one sudo call is allowed per domain per consensus block.
+ */
+export interface DomainSudoCallsV6  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v6.DomainSudoCall
+    get(block: Block, key: v6.DomainId): Promise<(v6.DomainSudoCall | undefined)>
+    getMany(block: Block, keys: v6.DomainId[]): Promise<(v6.DomainSudoCall | undefined)[]>
+    getKeys(block: Block): Promise<v6.DomainId[]>
+    getKeys(block: Block, key: v6.DomainId): Promise<v6.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block): AsyncIterable<v6.DomainId[]>
+    getKeysPaged(pageSize: number, block: Block, key: v6.DomainId): AsyncIterable<v6.DomainId[]>
+    getPairs(block: Block): Promise<[k: v6.DomainId, v: (v6.DomainSudoCall | undefined)][]>
+    getPairs(block: Block, key: v6.DomainId): Promise<[k: v6.DomainId, v: (v6.DomainSudoCall | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block): AsyncIterable<[k: v6.DomainId, v: (v6.DomainSudoCall | undefined)][]>
+    getPairsPaged(pageSize: number, block: Block, key: v6.DomainId): AsyncIterable<[k: v6.DomainId, v: (v6.DomainSudoCall | undefined)][]>
+}
+
+export const frozenDomains =  {
+    /**
+     *  Storage that hold a list of all frozen domains.
+     *  A frozen domain does not accept the bundles but does accept a fraud proof.
+     */
+    v6: new StorageType('Domains.FrozenDomains', 'Default', [], sts.array(() => v6.DomainId)) as FrozenDomainsV6,
+}
+
+/**
+ *  Storage that hold a list of all frozen domains.
+ *  A frozen domain does not accept the bundles but does accept a fraud proof.
+ */
+export interface FrozenDomainsV6  {
+    is(block: RuntimeCtx): boolean
+    getDefault(block: Block): v6.DomainId[]
+    get(block: Block): Promise<(v6.DomainId[] | undefined)>
 }

@@ -1,4 +1,4 @@
-import { Home } from 'components/Home'
+import { Home } from 'components/Consensus/Home'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'

@@ -6,7 +6,11 @@ import {
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { getCallSigner } from "../utils";
+import {
+  getBlockNumber,
+  getCallSigner,
+  SHARES_CALCULATION_MULTIPLIER,
+} from "../utils";
 import { Cache } from "../utils/cache";
 
 export function processWithdrewStakeEvent(
@@ -18,6 +22,7 @@ export function processWithdrewStakeEvent(
   const { operatorId } = event.args;
   const { shares = 0 } = extrinsic.call?.args ?? {};
   const address = getCallSigner(extrinsic.call);
+  const blockNumber = getBlockNumber(block);
   const sharesBigInt = BigInt(shares);
 
   const account = getOrCreateAccount(cache, block, address);
@@ -36,14 +41,43 @@ export function processWithdrewStakeEvent(
   });
   cache.nominators.set(nominator.id, nominator);
 
-  const withdrawal = createWithdrawal(block, extrinsic, {
-    domainId: domain.id,
-    accountId: account.id,
-    operatorId: operator.id,
-    nominatorId: nominator.id,
-    shares: sharesBigInt,
-  });
+  const estimatedAmount =
+    (operator.currentSharePrice * sharesBigInt) / SHARES_CALCULATION_MULTIPLIER;
+  const withdrawal = createWithdrawal(
+    block,
+    extrinsic,
+    operator.id,
+    account.id,
+    nominator.totalWithdrawalsCount,
+    {
+      domainId: domain.id,
+      accountId: account.id,
+      operatorId: operator.id,
+      nominatorId: nominator.id,
+      shares: sharesBigInt,
+      estimatedAmount,
+      epochWithdrawalRequestedAt: domain.completedEpoch ?? 0,
+      domainBlockNumberWithdrawalRequestedAt: domain.lastDomainBlockNumber ?? 0,
+    }
+  );
   cache.withdrawals.set(withdrawal.id, withdrawal);
+
+  nominator.totalWithdrawalsCount++;
+  nominator.totalEstimatedWithdrawals += estimatedAmount;
+  nominator.updatedAt = blockNumber;
+  cache.nominators.set(nominator.id, nominator);
+
+  operator.totalEstimatedWithdrawals += estimatedAmount;
+  operator.updatedAt = blockNumber;
+  cache.operators.set(operator.id, operator);
+
+  account.totalEstimatedWithdrawals += estimatedAmount;
+  account.updatedAt = blockNumber;
+  cache.accounts.set(account.id, account);
+
+  domain.totalEstimatedWithdrawals += estimatedAmount;
+  domain.updatedAt = blockNumber;
+  cache.domains.set(domain.id, domain);
 
   cache.isModified = true;
 

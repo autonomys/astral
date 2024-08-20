@@ -7,7 +7,9 @@ import type { ApiPromise } from "@autonomys/auto-utils";
 import {
   DepositStatus,
   DomainRuntime,
+  NominatorPendingAction,
   NominatorStatus,
+  OperatorPendingAction,
   OperatorStatus,
   WithdrawalStatus,
 } from "../model";
@@ -21,7 +23,7 @@ import {
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { getBlockNumber } from "../utils";
+import { getBlockNumber, SHARES_CALCULATION_MULTIPLIER } from "../utils";
 import { Cache } from "../utils/cache";
 
 export async function processEpochTransitionEvent(
@@ -114,6 +116,17 @@ export async function processEpochTransitionEvent(
     op.rawStatus = rawStatus;
     op.updatedAt = currentBlockNumber;
 
+    if (op.currentTotalShares > BigInt(0)) {
+      op.currentSharePrice =
+        (op.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+        op.currentTotalShares;
+    } else {
+      op.currentSharePrice = BigInt(0);
+    }
+
+    op.accumulatedEpochShares += op.currentTotalShares;
+    op.accumulatedEpochStorageFeeDeposit += op.currentStorageFeeDeposit;
+
     cache.operators.set(op.id, op);
 
     try {
@@ -130,16 +143,21 @@ export async function processEpochTransitionEvent(
         _status.deregistered.unlockAtConfirmedDomainBlockNumber <=
           domain.lastDomainBlockNumber
       ) {
-        op.status = OperatorStatus.READY_TO_UNLOCK;
+        op.status = OperatorStatus.DEREGISTERED;
+        op.pendingAction = OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR;
         cache.operators.set(op.id, op);
 
         Array.from(cache.nominators.values())
           .filter(
             (n) =>
-              n.status === NominatorStatus.STAKING && n.operatorId === op.id
+              (n.status === NominatorStatus.PENDING ||
+                n.status === NominatorStatus.STAKED) &&
+              n.operatorId === op.id
           )
           .forEach((n) => {
-            n.status = NominatorStatus.READY_TO_UNLOCK;
+            n.status = NominatorStatus.PENDING;
+            n.pendingAction =
+              NominatorPendingAction.PENDING_DEREGISTRATION_LOCK;
             n.updatedAt = currentBlockNumber;
             cache.nominators.set(n.id, n);
           });
@@ -147,10 +165,12 @@ export async function processEpochTransitionEvent(
         Array.from(cache.withdrawals.values())
           .filter(
             (w) =>
-              w.status === WithdrawalStatus.PENDING && w.domainId === domain.id
+              w.status === WithdrawalStatus.PENDING_LOCK &&
+              w.domainId === domain.id
           )
           .forEach((w) => {
-            w.status = WithdrawalStatus.READY;
+            w.status = WithdrawalStatus.PENDING_OPERATOR;
+            w.updatedAt = currentBlockNumber;
             cache.withdrawals.set(w.id, w);
           });
       }
@@ -174,6 +194,9 @@ export async function processEpochTransitionEvent(
   domain.completedEpoch = completedEpoch;
   domain.updatedAt = currentBlockNumber;
 
+  domain.accumulatedEpochStake += domain.currentTotalStake;
+  domain.accumulatedEpochStorageFeeDeposit += domain.currentStorageFeeDeposit;
+
   cache.domains.set(domain.id, domain);
 
   Array.from(cache.operators.values())
@@ -192,6 +215,7 @@ export async function processEpochTransitionEvent(
     )
     .forEach((o) => {
       o.status = OperatorStatus.REGISTERED;
+      o.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED;
       o.updatedAt = currentBlockNumber;
       cache.operators.set(o.id, o);
     });
@@ -201,7 +225,8 @@ export async function processEpochTransitionEvent(
       (n) => n.status === NominatorStatus.PENDING && n.domainId === domain.id
     )
     .forEach((n) => {
-      n.status = NominatorStatus.STAKING;
+      n.status = NominatorStatus.STAKED;
+      n.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
       n.updatedAt = currentBlockNumber;
       cache.nominators.set(n.id, n);
     });
@@ -212,6 +237,8 @@ export async function processEpochTransitionEvent(
     )
     .forEach((d) => {
       d.status = DepositStatus.DEPOSITED;
+      d.stakedAt = currentBlockNumber;
+      d.updatedAt = currentBlockNumber;
       cache.deposits.set(d.id, d);
     });
 
@@ -223,7 +250,10 @@ export async function processEpochTransitionEvent(
   cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
 
   const operators = Array.from(cache.operators.values()).filter(
-    (o) => o.domainId === domain.id && o.status === OperatorStatus.REGISTERED
+    (o) =>
+      o.domainId === domain.id &&
+      (o.status === OperatorStatus.REGISTERED ||
+        o.status === OperatorStatus.DEREGISTERED)
   );
 
   for (const operator of operators) {
@@ -265,6 +295,11 @@ export async function processEpochTransitionEvent(
       deposit.pending?.storageFeeDeposit ?? BigInt(0);
     nominator.pendingEffectiveDomainEpoch =
       deposit.pending?.effectiveDomainEpoch ?? 0;
+
+    nominator.accumulatedEpochShares += nominator.knownShares;
+    nominator.accumulatedEpochStorageFeeDeposit +=
+      nominator.knownStorageFeeDeposit;
+    nominator.activeEpochCount++;
     nominator.updatedAt = currentBlockNumber;
 
     cache.nominators.set(nominator.id, nominator);
