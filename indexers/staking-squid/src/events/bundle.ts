@@ -4,11 +4,12 @@ import {
   createBundleAuthor,
   getOrCreateAccount,
   getOrCreateDomain,
+  getOrCreateDomainEpoch,
   getOrCreateOperator,
 } from "../storage";
 import { createDomainBlock } from "../storage/domainBlock";
 import { ExecutionReceipt, SealedBundleHeader } from "../types/v1";
-import { blockUID, bundleUID, getBlockNumber } from "../utils";
+import { blockUID, bundleUID, getBlockNumber, getTimestamp } from "../utils";
 import { Cache, LastBlockBundleIndexKey } from "../utils/cache";
 
 export function processBundleStoredEvent(
@@ -78,6 +79,21 @@ export function processBundleStoredEvent(
     keyIdLastBlockBundleIndex,
     blockBundleIndex.toString()
   );
+
+  const domainEpoch = getOrCreateDomainEpoch(cache, block, domainId, {
+    epoch: domain.completedEpoch,
+    blockNumberStart: Number(domainBlockNumber),
+    timestampStart: getTimestamp(block),
+    consensusBlockNumberStart: getBlockNumber(block),
+    consensusBlockHashStart: block.header.hash,
+  });
+  domainEpoch.blockNumberEnd = Number(domainBlockNumber);
+  domainEpoch.timestampEnd = getTimestamp(block);
+  domainEpoch.consensusBlockNumberEnd = getBlockNumber(block);
+  domainEpoch.consensusBlockHashEnd = block.header.hash;
+  domainEpoch.updatedAt = getBlockNumber(block);
+  cache.domainEpochs.set(domainEpoch.id, domainEpoch);
+
   let bundle = cache.bundles.get(
     bundleUID(domainId, domainBlockHash, blockBundleIndex)
   );
@@ -91,6 +107,7 @@ export function processBundleStoredEvent(
       domainBlockNumber,
       domainBlockHash,
       {
+        domainEpochId: domainEpoch.id,
         extrinsicRoot: domainBlockExtrinsicRoot,
         epoch: domain.completedEpoch,
         consensusBlockNumber: Number(consensusBlockNumber),
@@ -108,6 +125,7 @@ export function processBundleStoredEvent(
       blockBundleIndex,
       {
         domainBlockId: domainBlock.id,
+        domainEpochId: domainEpoch.id,
         domainBlockNumber: Number(domainBlockNumber),
         domainBlockHash,
         domainBlockExtrinsicRoot,
@@ -136,7 +154,10 @@ export function processBundleStoredEvent(
       operator.id,
       bundle.id,
       domainBlock.id,
-      domain.completedEpoch
+      domain.completedEpoch,
+      {
+        domainEpochId: domainEpoch.id,
+      }
     );
     cache.bundleAuthors.set(bundleAuthor.id, bundleAuthor);
 

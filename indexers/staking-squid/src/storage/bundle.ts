@@ -51,6 +51,7 @@ export const createBundleAuthor = (
     operatorId,
     bundleId,
     domainBlockId,
+    domainEpochId: "",
     epoch,
     ...props,
   });

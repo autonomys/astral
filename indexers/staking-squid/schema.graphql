@@ -194,6 +194,7 @@ type BundleAuthor @entity {
   operatorId: String! @index
   bundleId: String! @index
   domainBlockId: String! @index
+  domainEpochId: String! @index
   epoch: Int! @index
 }
 

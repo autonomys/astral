@@ -1,29 +1,42 @@
 import { DomainEpoch } from "../model";
 import { CtxBlock } from "../processor";
-import { blockUID, getBlockNumber, getTimestamp } from "../utils";
+import { epochUID, getBlockNumber, getTimestamp } from "../utils";
+import { Cache } from "../utils/cache";
 
 export const createDomainEpoch = (
   block: CtxBlock,
   domainId: string,
   epoch: number,
-  blockNumberStart: number,
-  consensusBlockNumberStart: number,
-  consensusBlockHashStart: string,
   props?: Partial<DomainEpoch>
 ): DomainEpoch =>
   new DomainEpoch({
-    id: blockUID(domainId, epoch),
+    id: epochUID(domainId, epoch),
     domainId,
     epoch,
-    blockNumberStart,
+    blockNumberStart: 0,
     blockNumberEnd: 0,
     timestampStart: getTimestamp(block),
     timestampEnd: getTimestamp(block),
-    consensusBlockNumberStart,
+    consensusBlockNumberStart: 0,
     consensusBlockNumberEnd: 0,
-    consensusBlockHashStart,
+    consensusBlockHashStart: "",
     consensusBlockHashEnd: "",
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
     ...props,
   });
+
+export const getOrCreateDomainEpoch = (
+  cache: Cache,
+  block: CtxBlock,
+  domainId: string,
+  props: Partial<DomainEpoch> = {}
+): DomainEpoch => {
+  const epoch = cache.domains.get(domainId)?.completedEpoch ?? 0;
+
+  const domainEpoch = cache.domainEpochs.get(epochUID(domainId, epoch));
+
+  if (!domainEpoch) return createDomainEpoch(block, domainId, epoch, props);
+
+  return domainEpoch;
+};
