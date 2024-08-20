@@ -1,0 +1,3 @@
+table:
+  name: account_extrinsic_failed_total_count
+  schema: public

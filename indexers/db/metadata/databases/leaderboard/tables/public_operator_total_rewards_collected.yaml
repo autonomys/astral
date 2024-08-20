@@ -1,0 +1,3 @@
+table:
+  name: operator_total_rewards_collected
+  schema: public

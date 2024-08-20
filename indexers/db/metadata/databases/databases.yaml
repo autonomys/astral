@@ -1,0 +1,27 @@
+- name: consensus
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_CONSENSUS_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include consensus/tables/tables.yaml"
+- name: leaderboard
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_LEADERBOARD_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include leaderboard/tables/tables.yaml"
+- name: staking
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_STAKING_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include staking/tables/tables.yaml"

@@ -1,0 +1,8 @@
+table:
+  name: status
+  schema: squid_processor
+configuration:
+  column_config: {}
+  custom_column_names: {}
+  custom_name: staking_status
+  custom_root_fields: {}

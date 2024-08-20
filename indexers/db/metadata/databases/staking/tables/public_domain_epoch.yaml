@@ -1,0 +1,3 @@
+table:
+  name: domain_epoch
+  schema: public

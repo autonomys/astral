@@ -1,0 +1,3 @@
+table:
+  name: farmer_vote_total_value
+  schema: public
