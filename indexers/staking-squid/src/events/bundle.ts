@@ -91,7 +91,13 @@ export function processBundleStoredEvent(
   domainEpoch.timestampEnd = getTimestamp(block);
   domainEpoch.consensusBlockNumberEnd = getBlockNumber(block);
   domainEpoch.consensusBlockHashEnd = block.header.hash;
+  domainEpoch.blockCount =
+    domainEpoch.blockNumberEnd - domainEpoch.blockNumberStart + 1;
+  domainEpoch.epochDuration = BigInt(
+    domainEpoch.timestampEnd.getTime() - domainEpoch.timestampStart.getTime()
+  );
   domainEpoch.updatedAt = getBlockNumber(block);
+
   cache.domainEpochs.set(domainEpoch.id, domainEpoch);
 
   let bundle = cache.bundles.get(
@@ -178,6 +184,30 @@ export function processBundleStoredEvent(
     domain.lastBundleAt = getBlockNumber(block);
     domain.updatedAt = getBlockNumber(block);
 
+    const currentEpochDuration = domainEpoch.epochDuration;
+    const lastEpochDuration = calculateLastNEpochsDuration(cache, domainId, 1);
+    const last6EpochsDuration = calculateLastNEpochsDuration(
+      cache,
+      domainId,
+      6
+    );
+    const last144EpochDuration = calculateLastNEpochsDuration(
+      cache,
+      domainId,
+      144
+    );
+    const last1kEpochDuration = calculateLastNEpochsDuration(
+      cache,
+      domainId,
+      1000
+    );
+
+    domain.currentEpochDuration = currentEpochDuration;
+    domain.lastEpochDuration = lastEpochDuration;
+    domain.last6EpochsDuration = last6EpochsDuration;
+    domain.last144EpochDuration = last144EpochDuration;
+    domain.last1kEpochDuration = last1kEpochDuration;
+
     cache.domains.set(domain.id, domain);
   }
 
@@ -202,4 +232,20 @@ export function processBundleStoredEvent(
   cache.isModified = true;
 
   return cache;
+}
+
+// Helper function to calculate the duration of the last N epochs
+function calculateLastNEpochsDuration(
+  cache: Cache,
+  domainId: string,
+  n: number
+): bigint {
+  const domainEpochs = Array.from(cache.domainEpochs.values()).filter(
+    (epoch) => epoch.domainId === domainId
+  );
+  const lastNEpochs = domainEpochs.slice(-n - 1, -1);
+  return lastNEpochs.reduce(
+    (acc, epoch) => acc + BigInt(epoch.epochDuration),
+    BigInt(0)
+  );
 }

@@ -39,6 +39,11 @@ type Domain @entity {
   accumulatedEpochRewards: BigInt!
   accumulatedEpochShares: BigInt!
   bundleCount: Int!
+  currentEpochDuration: BigInt!
+  lastEpochDuration: BigInt!
+  last6EpochsDuration: BigInt!
+  last144EpochDuration: BigInt!
+  last1kEpochDuration: BigInt!
   lastBundleAt: Int!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -152,8 +157,10 @@ type DomainEpoch @entity {
   domainId: String! @index
   blockNumberStart: Int! @index
   blockNumberEnd: Int! @index
+  blockCount: Int!
   timestampStart: DateTime! @index
   timestampEnd: DateTime! @index
+  epochDuration: BigInt!
   consensusBlockNumberStart: Int! @index
   consensusBlockNumberEnd: Int! @index
   consensusBlockHashStart: String! @index
