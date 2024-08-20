@@ -294,7 +294,7 @@ export async function processEpochTransitionEvent(
     operatorsIds.includes(o.operatorId.toString())
   );
 
-  for (const [index, deposit] of allDeposits.entries()) {
+  for (const deposit of allDeposits) {
     const operator = getOrCreateOperator(cache, block, deposit.operatorId);
     const account = getOrCreateAccount(cache, block, deposit.account);
     const nominator = getOrCreateNominator(
