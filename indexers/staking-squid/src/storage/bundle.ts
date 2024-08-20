@@ -13,6 +13,7 @@ export const createBundle = (
     id: bundleUID(domainId, domainBlockHash, domainBlockBundleIndex),
     domainId,
     domainBlockId,
+    domainEpochId: "",
     domainBlockNumber: 0,
     domainBlockHash: "",
     domainBlockExtrinsicRoot: "",

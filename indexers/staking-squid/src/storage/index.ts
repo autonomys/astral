@@ -2,6 +2,8 @@ export * from "./account";
 export * from "./bundle";
 export * from "./deposit";
 export * from "./domain";
+export * from "./domainBlock";
+export * from "./domainEpoch";
 export * from "./nominator";
 export * from "./operator";
 export * from "./stats";

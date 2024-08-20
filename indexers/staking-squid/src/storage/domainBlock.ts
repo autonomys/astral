@@ -12,6 +12,7 @@ export const createDomainBlock = (
   new DomainBlock({
     id: blockUID(domainId, blockNumber),
     domainId,
+    domainEpochId: "",
     blockNumber,
     blockHash,
     extrinsicRoot: "",

@@ -134,6 +134,7 @@ type Operator @entity {
 type DomainBlock @entity {
   id: ID! @index
   domainId: String! @index
+  domainEpochId: String! @index
   blockNumber: Int! @index
   blockHash: String! @index
   extrinsicRoot: String!
@@ -145,10 +146,27 @@ type DomainBlock @entity {
   updatedAt: Int! @index
 }
 
+type DomainEpoch @entity {
+  id: ID! @index
+  epoch: Int! @index
+  domainId: String! @index
+  blockNumberStart: Int! @index
+  blockNumberEnd: Int! @index
+  timestampStart: DateTime! @index
+  timestampEnd: DateTime! @index
+  consensusBlockNumberStart: Int! @index
+  consensusBlockNumberEnd: Int! @index
+  consensusBlockHashStart: String! @index
+  consensusBlockHashEnd: String! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
 type Bundle @entity {
   id: ID! @index
   domainId: String! @index
   domainBlockId: String! @index
+  domainEpochId: String! @index
   domainBlockNumber: Int! @index
   domainBlockHash: String!
   domainBlockExtrinsicRoot: String!
