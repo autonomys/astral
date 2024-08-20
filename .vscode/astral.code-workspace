@@ -17,24 +17,16 @@
       "path": "../indexers"
     },
     {
-      "name": "indexer - General Squid",
-      "path": "../indexers/general-squid"
-    },
-    {
-      "name": "indexer - Account Squid",
-      "path": "../indexers/account-squid"
-    },
-    {
-      "name": "indexer - Staking Squid",
-      "path": "../indexers/staking-squid"
+      "name": "indexer - Consensus Squid",
+      "path": "../indexers/consensus-squid"
     },
     {
       "name": "indexer - Leaderboard Squid",
       "path": "../indexers/leaderboard-squid"
     },
     {
-      "name": "indexer - Rewards Squid",
-      "path": "../indexers/rewards-squid"
+      "name": "indexer - Staking Squid",
+      "path": "../indexers/staking-squid"
     }
   ],
   "settings": {
