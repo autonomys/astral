@@ -25,7 +25,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
         <div className='mt-5 flex w-full justify-between'>
           <div className='text-base font-medium text-grayDark dark:text-white'>Leaderboard</div>
           {subspaceAccount && (
-            <div className='mr-4 flex w-40 items-center'>
+            <div className='mr-4 flex w-48 items-center'>
               <MyPositionSwitch labels={['My position', 'Everyone']} />
             </div>
           )}

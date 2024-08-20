@@ -847,7 +847,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           filters={filters}
           addExtraIcons={
             subspaceAccount && (
-              <div className='mr-4 flex w-40 items-center'>
+              <div className='mr-4 flex w-44 items-center'>
                 <MyPositionSwitch />
               </div>
             )

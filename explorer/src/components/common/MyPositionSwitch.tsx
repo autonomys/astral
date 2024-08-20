@@ -28,15 +28,15 @@ export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
         }}
         className={`${
           myPositionOnly ? 'bg-purpleAccent' : 'bg-transparent'
-        } border-color-grayDarker dark:border-color-white relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-2`}
+        } relative inline-flex h-8 w-16 cursor-pointer items-center rounded-full border-2 border-grayDarker dark:border-white`}
         role='switch'
         aria-checked={myPositionOnly}
         tabIndex={0}
       >
         <span
           className={`${
-            myPositionOnly ? 'translate-x-6' : 'translate-x-1'
-          } inline-block h-4 w-4 transform rounded-full bg-white transition-transform dark:bg-purpleSoft`}
+            myPositionOnly ? 'translate-x-10' : 'translate-x-1'
+          } inline-block h-4 w-4 transform rounded-full bg-grayDark transition-transform dark:bg-purpleSoft`}
         />
         <span className='sr-only'>{label}</span>
       </button>

@@ -45,24 +45,24 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             <div className='hidden sm:flex'>
               {addExtraIcons && addExtraIcons}
               <MagnifyingGlassIcon
-                className='m-4 size-10 rounded-full border-2 border-white p-1'
-                stroke='#FFFFFF'
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
+                stroke='currentColor'
                 key='search'
                 onClick={() =>
                   showTableSettings !== 'search' ? showSettings('search') : hideSettings()
                 }
               />
               <PencilIcon
-                className='m-4 size-10 rounded-full border-2 border-white p-1'
-                stroke='#FFFFFF'
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
                 key='pencil'
                 onClick={() =>
                   showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
                 }
               />
               <FunnelIcon
-                className='m-4 size-10 rounded-full border-2 border-white p-1'
-                stroke='#FFFFFF'
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
                 key='funnel'
                 onClick={() =>
                   showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
@@ -71,8 +71,8 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             </div>
             <div className='sm:hidden'>
               <Bars3Icon
-                className='m-4 size-10 rounded-full border-2 border-white p-1'
-                stroke='#FFFFFF'
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
                 onClick={() => {
                   showTableSettings !== null && hideSettings()
                   setMobileMenuOpen(!mobileMenuOpen)

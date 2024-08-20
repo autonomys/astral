@@ -174,7 +174,7 @@ export const NominationsTable: FC = () => {
           </div>
         </h2>
         {subspaceAccount && (
-          <div className='flex items-center'>
+          <div className='flex w-48 items-center'>
             <MyPositionSwitch labels={['My nominations', 'All nominations']} />
           </div>
         )}
