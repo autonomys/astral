@@ -1,3 +1,21 @@
 table:
   name: domain_block
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_number
+        - consensus_block_number
+        - created_at
+        - epoch
+        - updated_at
+        - block_hash
+        - consensus_block_hash
+        - domain_epoch_id
+        - domain_id
+        - extrinsic_root
+        - timestamp
+      filter: {}
+    comment: ""

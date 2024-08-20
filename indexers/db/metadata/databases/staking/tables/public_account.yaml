@@ -1,3 +1,23 @@
 table:
   name: account
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - updated_at
+        - accumulated_epoch_shares
+        - accumulated_epoch_stake
+        - accumulated_epoch_storage_fee_deposit
+        - current_share_price
+        - current_storage_fee_deposit
+        - current_total_shares
+        - current_total_stake
+        - total_deposits
+        - total_estimated_withdrawals
+        - total_tax_collected
+        - total_withdrawals
+      filter: {}
+    comment: ""
