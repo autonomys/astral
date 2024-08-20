@@ -1,0 +1,3 @@
+CREATE DATABASE consensus;
+CREATE DATABASE leaderboard;
+CREATE DATABASE staking;

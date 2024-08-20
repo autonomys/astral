@@ -1,0 +1,9 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "hasura-cli": "2.36.2"
+  }
+}
