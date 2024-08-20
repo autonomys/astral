@@ -4,6 +4,8 @@ import type { Store } from "@subsquid/typeorm-store";
 import { decodeHex } from "@subsquid/util-internal-hex";
 import type { CtxBlock, ProcessorContext } from "../processor";
 
+export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000);
+
 export const hexToAccount = (hex: string): string => {
   try {
     return codec(DEFAULT_SS58_FORMAT).encode(decodeHex(hex));
@@ -49,6 +51,18 @@ export const blockUID = (
   domainId: number | string,
   blockNumber: number | string
 ): string => `${domainId}-${blockNumber}`;
+
+export const depositUID = (
+  operatorId: number | string,
+  accountId: string,
+  depositIndex: number | string
+): string => `${operatorId}-${accountId}-${depositIndex}`;
+
+export const withdrawalUID = (
+  operatorId: number | string,
+  accountId: string,
+  withdrawalIndex: number | string
+): string => `${operatorId}-${accountId}-${withdrawalIndex}`;
 
 export const logBlock = (blocks: CtxBlock[]): void => {
   const from = getBlockNumber(blocks[0]);

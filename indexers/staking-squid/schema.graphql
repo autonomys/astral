@@ -14,6 +14,8 @@ type Domain @entity {
   completedEpoch: Int! @index
   lastDomainBlockNumber: Int! @index
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
   totalTransfersIn: BigInt!
@@ -30,6 +32,8 @@ type Domain @entity {
   totalBurnedBalance: BigInt!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
+  accumulatedEpochStake: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
   bundleCount: Int!
   lastBundleAt: Int!
   createdAt: Int! @index
@@ -39,6 +43,8 @@ type Domain @entity {
 type Account @entity {
   id: ID! @index
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -48,8 +54,15 @@ enum OperatorStatus {
   PENDING
   REGISTERED
   DEREGISTERED
-  READY_TO_UNLOCK
   SLASHED
+}
+
+enum OperatorPendingAction {
+  NO_ACTION_REQUIRED
+  PENDING_REGISTRATION
+  WAITING_TO_UNLOCK_NOMINATOR
+  READY_FOR_UNLOCK_NOMINATOR
+  READY_FOR_UNLOCK_FUNDS
 }
 
 type Operator @entity {
@@ -75,8 +88,11 @@ type Operator @entity {
   currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
   currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
   rawStatus: String!
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
   totalTransfersIn: BigInt!
@@ -91,9 +107,12 @@ type Operator @entity {
   totalConsensusStorageFee: BigInt!
   totalDomainExecutionFee: BigInt!
   totalBurnedBalance: BigInt!
+  accumulatedEpochShares: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
   activeEpochCount: Int!
   bundleCount: Int!
   status: OperatorStatus! @index
+  pendingAction: OperatorPendingAction! @index
   lastBundleAt: Int!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -146,10 +165,16 @@ type BundleAuthor @entity {
 
 enum NominatorStatus {
   PENDING
-  STAKING
-  DEREGISTERED
-  READY_TO_UNLOCK
+  STAKED
   SLASHED
+  WITHDRAW
+}
+
+enum NominatorPendingAction {
+  NO_ACTION_REQUIRED
+  PENDING_EPOCH_CHANGE
+  PENDING_DEREGISTRATION_LOCK
+  READY_TO_UNLOCK_ALL_FUNDS
 }
 
 type Nominator @entity {
@@ -168,7 +193,15 @@ type Nominator @entity {
   pendingShares: BigInt!
   pendingStorageFeeRefund: BigInt!
   totalDeposits: BigInt!
+  totalEstimatedWithdrawals: BigInt!
+  totalWithdrawals: BigInt!
+  totalDepositsCount: Int!
+  totalWithdrawalsCount: Int!
+  accumulatedEpochShares: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
+  activeEpochCount: Int!
   status: NominatorStatus! @index
+  pendingAction: NominatorPendingAction! @index
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -197,9 +230,11 @@ type Deposit @entity {
 }
 
 enum WithdrawalStatus {
-  PENDING
+  PENDING_LOCK
+  PENDING_OPERATOR
   READY
   WITHDRAW
+  SLASHED
 }
 
 type Withdrawal @entity {
@@ -209,6 +244,9 @@ type Withdrawal @entity {
   operatorId: String! @index
   nominatorId: String! @index
   shares: BigInt!
+  estimatedAmount: BigInt!
+  unlockedAmount: BigInt!
+  unlockedStorageFee: BigInt!
   status: WithdrawalStatus! @index
   timestamp: DateTime! @index
   withdrawExtrinsicHash: String! @index
@@ -219,17 +257,6 @@ type Withdrawal @entity {
   readyAt: Int! @index
   unlockedAt: Int! @index
   updatedAt: Int! @index
-}
-
-type OperatorUnlockedFunds @entity {
-  id: ID! @index
-  blockNumber: Int! @index
-  operator: Operator!
-  nominator: Nominator!
-  nominatorAccount: String!
-  timestamp: DateTime! @index
-  extrinsicHash: String! @index
-  amount: BigInt!
 }
 
 type RewardEvent @entity {
@@ -246,7 +273,8 @@ type Stats @entity {
   id: ID! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalFees: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -265,7 +293,8 @@ type StatsPerDomain @entity {
   domainId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalFees: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
   allTimeHighStaked: BigInt!
@@ -284,10 +313,14 @@ type StatsPerOperator @entity {
   operatorId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalFees: BigInt!
+  totalShares: BigInt!
+  totalTaxCollected: BigInt!
+  totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
   nominatorsCount: Int!
   depositsCount: Int!
   withdrawalsCount: Int!
