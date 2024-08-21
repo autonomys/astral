@@ -82,3 +82,10 @@ export type OperatorsFilters = {
   bundleCountMin: string
   bundleCountMax: string
 }
+
+export type LeaderboardFilters = {
+  rankMin: string
+  rankMax: string
+  valueMin: string
+  valueMax: string
+}

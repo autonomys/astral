@@ -150,6 +150,14 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'created_at', label: 'Created At', isSelected: false },
     { name: 'updated_at', label: 'Updated At', isSelected: false },
   ],
+  leaderboard: [
+    { name: 'id', label: 'Id', isSelected: true, searchable: true },
+    { name: 'rank', label: 'Rank', isSelected: true, searchable: true },
+    { name: 'value', label: 'Value', isSelected: true, searchable: true },
+    { name: 'last_contribution_at', label: 'Last Contribution At', isSelected: true },
+    { name: 'created_at', label: 'Created At', isSelected: true },
+    { name: 'updated_at', label: 'Updated At', isSelected: true },
+  ],
 }
 
 export const FILTERS_OPTIONS: FiltersOptions = {
@@ -176,6 +184,10 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     },
     { type: 'range', label: 'Active Epoch Count', key: 'activeEpochCount' },
     { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
+  ],
+  leaderboard: [
+    { type: 'range', label: 'Rank', key: 'rank' },
+    { type: 'range', label: 'Value', key: 'value' },
   ],
 }
 
@@ -248,6 +260,27 @@ export const INITIAL_TABLES: InitialTables = {
     sorting: [
       {
         id: 'id',
+        desc: false,
+      },
+    ],
+  },
+  leaderboard: {
+    ...INITIAL_TABLE_PROPERTIES,
+    name: 'leaderboard',
+    columns: AVAILABLE_COLUMNS.leaderboard,
+    selectedColumns: AVAILABLE_COLUMNS.leaderboard
+      .filter((column) => column.isSelected)
+      .map((column) => column.name),
+    filtersOptions: FILTERS_OPTIONS.leaderboard,
+    filters: {
+      rankMin: '',
+      rankMax: '',
+      valueMin: '',
+      valueMax: '',
+    },
+    sorting: [
+      {
+        id: 'rank',
         desc: false,
       },
     ],

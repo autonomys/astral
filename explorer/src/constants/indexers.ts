@@ -18,7 +18,7 @@ export const indexers: Indexer[] = [
       old: 'https://squid.gemini-3h.subspace.network/graphql',
       leaderboard:
         'https://autonomys-labs.squids.live/leaderboard-squid/v/v6/addons/hasura/v1/graphql',
-      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v23/addons/hasura/v1/graphql',
+      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v22/addons/hasura/v1/graphql',
     },
   },
   {
