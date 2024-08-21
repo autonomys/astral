@@ -124,9 +124,17 @@ export function processFundsUnlockedEvent(
     });
 
   domain.totalWithdrawals += amountBigInt;
+  cache.domains.set(domain.id, domain);
+
   account.totalWithdrawals += amountBigInt;
+  cache.accounts.set(account.id, account);
+
   operator.totalWithdrawals += amountBigInt;
+  cache.operators.set(operator.id, operator);
+
   nominator.totalWithdrawals += amountBigInt;
+  nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
+  cache.nominators.set(nominator.id, nominator);
 
   cache.isModified = true;
 
@@ -206,9 +214,17 @@ export function processNominatedStakedUnlockedEvent(
     });
 
   domain.totalWithdrawals += unlockedAmountBigInt;
+  cache.domains.set(domain.id, domain);
+
   account.totalWithdrawals += unlockedAmountBigInt;
+  cache.accounts.set(account.id, account);
+
   operator.totalWithdrawals += unlockedAmountBigInt;
+  cache.operators.set(operator.id, operator);
+
   nominator.totalWithdrawals += unlockedAmountBigInt;
+  nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
+  cache.nominators.set(nominator.id, nominator);
 
   cache.isModified = true;
 

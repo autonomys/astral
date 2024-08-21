@@ -1,3 +1,4 @@
+import { NominatorPendingAction } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createWithdrawal,
@@ -64,6 +65,7 @@ export function processWithdrewStakeEvent(
 
   nominator.totalWithdrawalsCount++;
   nominator.totalEstimatedWithdrawals += estimatedAmount;
+  nominator.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);
 

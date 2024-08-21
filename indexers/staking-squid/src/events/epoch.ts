@@ -158,8 +158,7 @@ export async function processEpochTransitionEvent(
           )
           .forEach((n) => {
             n.status = NominatorStatus.PENDING;
-            n.pendingAction =
-              NominatorPendingAction.PENDING_DEREGISTRATION_LOCK;
+            n.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
             n.updatedAt = currentBlockNumber;
             cache.nominators.set(n.id, n);
           });
