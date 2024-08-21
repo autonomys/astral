@@ -32,10 +32,9 @@ export const getOrCreateDomainEpoch = (
   cache: Cache,
   block: CtxBlock,
   domainId: string,
+  epoch: number,
   props: Partial<DomainEpoch> = {}
 ): DomainEpoch => {
-  const epoch = cache.domains.get(domainId)?.completedEpoch ?? 0;
-
   const domainEpoch = cache.domainEpochs.get(epochUID(domainId, epoch));
 
   if (!domainEpoch) return createDomainEpoch(block, domainId, epoch, props);

@@ -8,6 +8,15 @@ type Account @entity {
   updatedAt: Int! @index
 }
 
+type Account @entity {
+  id: ID! @index
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  timestamp: Int! @index
+  createdAt: Int! @index
+}
+
 type Block @entity {
   id: ID! @index
   height: BigInt! @index

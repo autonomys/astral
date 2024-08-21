@@ -80,13 +80,18 @@ export function processBundleStoredEvent(
     blockBundleIndex.toString()
   );
 
-  const domainEpoch = getOrCreateDomainEpoch(cache, block, domainId, {
-    epoch: domain.completedEpoch,
-    blockNumberStart: Number(domainBlockNumber),
-    timestampStart: getTimestamp(block),
-    consensusBlockNumberStart: getBlockNumber(block),
-    consensusBlockHashStart: block.header.hash,
-  });
+  const domainEpoch = getOrCreateDomainEpoch(
+    cache,
+    block,
+    domainId,
+    domain.completedEpoch,
+    {
+      blockNumberStart: Number(domainBlockNumber),
+      timestampStart: getTimestamp(block),
+      consensusBlockNumberStart: getBlockNumber(block),
+      consensusBlockHashStart: block.header.hash,
+    }
+  );
   domainEpoch.blockNumberEnd = Number(domainBlockNumber);
   domainEpoch.timestampEnd = getTimestamp(block);
   domainEpoch.consensusBlockNumberEnd = getBlockNumber(block);
