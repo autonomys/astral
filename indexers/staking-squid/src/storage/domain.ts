@@ -1,18 +1,18 @@
-import { Domain, DomainRuntime } from "../model";
-import type { CtxBlock } from "../processor";
-import { domainUID, getBlockNumber } from "../utils";
-import { Cache } from "../utils/cache";
+import { Domain, DomainRuntime } from '../model'
+import type { CtxBlock } from '../processor'
+import { domainUID, getBlockNumber } from '../utils'
+import { Cache } from '../utils/cache'
 
 export const createDomain = (
   block: CtxBlock,
   domainId: number | string,
-  props: Partial<Domain>
+  props: Partial<Domain>,
 ): Domain =>
   new Domain({
-    id: typeof domainId === "string" ? domainId : domainUID(domainId),
-    sortId: typeof domainId === "string" ? parseInt(domainId) : domainId,
-    accountId: "0x",
-    name: "",
+    id: typeof domainId === 'string' ? domainId : domainUID(domainId),
+    sortId: typeof domainId === 'string' ? parseInt(domainId) : domainId,
+    accountId: '0x',
+    name: '',
     runtimeId: 0,
     runtime: DomainRuntime.EVM,
     runtimeInfo: JSON.stringify({}),
@@ -53,19 +53,17 @@ export const createDomain = (
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateDomain = (
   cache: Cache,
   block: CtxBlock,
   domainId: number | string,
-  props: Partial<Domain> = {}
+  props: Partial<Domain> = {},
 ): Domain => {
-  const domain = cache.domains.get(
-    typeof domainId === "string" ? domainId : domainUID(domainId)
-  );
+  const domain = cache.domains.get(typeof domainId === 'string' ? domainId : domainUID(domainId))
 
-  if (!domain) return createDomain(block, domainId, props);
+  if (!domain) return createDomain(block, domainId, props)
 
-  return domain;
-};
+  return domain
+}

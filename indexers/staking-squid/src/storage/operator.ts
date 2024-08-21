@@ -1,38 +1,33 @@
-import { randomUUID } from "crypto";
-import {
-  Operator,
-  OperatorPendingAction,
-  OperatorStatus,
-  RewardEvent,
-} from "../model";
-import type { CtxBlock, CtxExtrinsic } from "../processor";
-import { getBlockNumber, getTimestamp, operatorUID } from "../utils";
-import { Cache } from "../utils/cache";
+import { randomUUID } from 'crypto'
+import { Operator, OperatorPendingAction, OperatorStatus, RewardEvent } from '../model'
+import type { CtxBlock, CtxExtrinsic } from '../processor'
+import { getBlockNumber, getTimestamp, operatorUID } from '../utils'
+import { Cache } from '../utils/cache'
 
 export const createOperator = (
   block: CtxBlock,
   operatorId: number | string,
-  props: Partial<Operator>
+  props: Partial<Operator>,
 ): Operator =>
   new Operator({
-    id: typeof operatorId === "string" ? operatorId : operatorUID(operatorId),
-    sortId: typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
-    accountId: "",
-    domainId: "",
-    signingKey: "0x",
+    id: typeof operatorId === 'string' ? operatorId : operatorUID(operatorId),
+    sortId: typeof operatorId === 'string' ? parseInt(operatorId) : operatorId,
+    accountId: '',
+    domainId: '',
+    signingKey: '0x',
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,
-    name: "",
-    description: "",
-    icon: "",
-    banner: "",
-    website: "",
+    name: '',
+    description: '',
+    icon: '',
+    banner: '',
+    website: '',
     websiteVerified: false,
-    email: "",
+    email: '',
     emailVerified: false,
-    discord: "",
-    github: "",
-    twitter: "",
+    discord: '',
+    github: '',
+    twitter: '',
     currentTotalStake: BigInt(0),
     currentStorageFeeDeposit: BigInt(0),
     currentEpochRewards: BigInt(0),
@@ -68,27 +63,27 @@ export const createOperator = (
     ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperator = (
   cache: Cache,
   block: CtxBlock,
   operatorId: number | string,
-  props: Partial<Operator> = {}
+  props: Partial<Operator> = {},
 ): Operator => {
   const operator = cache.operators.get(
-    typeof operatorId === "string" ? operatorId : operatorUID(operatorId)
-  );
+    typeof operatorId === 'string' ? operatorId : operatorUID(operatorId),
+  )
 
-  if (!operator) return createOperator(block, operatorId, props);
+  if (!operator) return createOperator(block, operatorId, props)
 
-  return operator;
-};
+  return operator
+}
 
 export const createRewardEvent = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  props: Partial<RewardEvent>
+  props: Partial<RewardEvent>,
 ): RewardEvent =>
   new RewardEvent({
     id: randomUUID(),
@@ -96,4 +91,4 @@ export const createRewardEvent = (
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
     extrinsicHash: extrinsic.hash.toString(),
-  });
+  })

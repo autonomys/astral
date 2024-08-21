@@ -4,248 +4,243 @@ import {
   NominatorStatus,
   OperatorPendingAction,
   WithdrawalStatus,
-} from "../model";
-import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
+} from '../model'
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from '../processor'
 import {
   getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateNominator,
   getOrCreateOperator,
-} from "../storage";
-import { getBlockNumber, getCallSigner } from "../utils";
-import { Cache } from "../utils/cache";
+} from '../storage'
+import { getBlockNumber, getCallSigner } from '../utils'
+import { Cache } from '../utils/cache'
 
 export function processOperatorUnlockedEvent(
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  event: CtxEvent
+  event: CtxEvent,
 ) {
-  const { operatorId } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
+  const { operatorId } = event.args
+  const operatorIdNum = Number(operatorId)
+  const address = getCallSigner(extrinsic.call)
+  const blockNumber = getBlockNumber(block)
 
-  const operator = getOrCreateOperator(cache, block, operatorId);
-  const domain = getOrCreateDomain(cache, block, operator.domainId);
-  const account = getOrCreateAccount(cache, block, address);
+  const operator = getOrCreateOperator(cache, block, operatorId)
+  const domain = getOrCreateDomain(cache, block, operator.domainId)
+  const account = getOrCreateAccount(cache, block, address)
 
-  operator.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED;
-  operator.updatedAt = blockNumber;
-  cache.operators.set(operator.id, operator);
+  operator.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED
+  operator.updatedAt = blockNumber
+  cache.operators.set(operator.id, operator)
 
   Array.from(cache.nominators.values())
     .filter(
       (n) =>
-        (n.status === NominatorStatus.PENDING ||
-          n.status === NominatorStatus.STAKED) &&
-        n.operatorId === operator.id
+        (n.status === NominatorStatus.PENDING || n.status === NominatorStatus.STAKED) &&
+        n.operatorId === operator.id,
     )
     .forEach((n) => {
-      n.status = NominatorStatus.PENDING;
-      n.pendingAction = NominatorPendingAction.READY_TO_UNLOCK_ALL_FUNDS;
-      n.updatedAt = blockNumber;
-      cache.nominators.set(n.id, n);
-    });
+      n.status = NominatorStatus.PENDING
+      n.pendingAction = NominatorPendingAction.READY_TO_UNLOCK_ALL_FUNDS
+      n.updatedAt = blockNumber
+      cache.nominators.set(n.id, n)
+    })
 
   Array.from(cache.withdrawals.values())
-    .filter(
-      (w) =>
-        w.status === WithdrawalStatus.PENDING_OPERATOR &&
-        w.domainId === domain.id
-    )
+    .filter((w) => w.status === WithdrawalStatus.PENDING_OPERATOR && w.domainId === domain.id)
     .forEach((w) => {
-      w.status = WithdrawalStatus.READY;
-      w.readyAt = blockNumber;
-      w.updatedAt = blockNumber;
-      cache.withdrawals.set(w.id, w);
-    });
+      w.status = WithdrawalStatus.READY
+      w.readyAt = blockNumber
+      w.updatedAt = blockNumber
+      cache.withdrawals.set(w.id, w)
+    })
 
-  cache.isModified = true;
+  cache.isModified = true
 
-  return cache;
+  return cache
 }
 
 export function processFundsUnlockedEvent(
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  event: CtxEvent
+  event: CtxEvent,
 ) {
-  const { operatorId, nominatorId, amount } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-  const amountBigInt = BigInt(amount);
+  const { operatorId, nominatorId, amount } = event.args
+  const operatorIdNum = Number(operatorId)
+  const nominatorIdNum = Number(nominatorId)
+  const address = getCallSigner(extrinsic.call)
+  const blockNumber = getBlockNumber(block)
+  const amountBigInt = BigInt(amount)
 
-  const operator = getOrCreateOperator(cache, block, operatorId);
-  const domain = getOrCreateDomain(cache, block, operator.domainId);
-  const account = getOrCreateAccount(cache, block, address);
-  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId)
+  const domain = getOrCreateDomain(cache, block, operator.domainId)
+  const account = getOrCreateAccount(cache, block, address)
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId)
 
   Array.from(cache.withdrawals.values())
     .filter(
       (w) =>
         w.status === WithdrawalStatus.PENDING_LOCK &&
         w.operatorId === operator.id &&
-        w.accountId === account.id
+        w.accountId === account.id,
     )
     .forEach((w) => {
-      w.status = WithdrawalStatus.WITHDRAW;
-      w.unlockedAmount = amountBigInt;
-      w.unlockedAt = blockNumber;
-      w.updatedAt = blockNumber;
-      cache.withdrawals.set(w.id, w);
-    });
+      w.status = WithdrawalStatus.WITHDRAW
+      w.unlockedAmount = amountBigInt
+      w.unlockedAt = blockNumber
+      w.updatedAt = blockNumber
+      cache.withdrawals.set(w.id, w)
+    })
 
-  let amountToWithdraw = amountBigInt;
+  let amountToWithdraw = amountBigInt
   Array.from(cache.deposits.values())
     .filter(
       (d) =>
         d.status === DepositStatus.DEPOSITED &&
         d.operatorId === operator.id &&
-        d.accountId === account.id
+        d.accountId === account.id,
     )
     .forEach((d) => {
       if (amountToWithdraw > 0) {
         if (amountToWithdraw > d.totalAmount) {
-          amountToWithdraw -= d.totalAmount;
-          d.totalWithdrawn = d.totalAmount;
-          d.status = DepositStatus.WITHDRAWN;
+          amountToWithdraw -= d.totalAmount
+          d.totalWithdrawn = d.totalAmount
+          d.status = DepositStatus.WITHDRAWN
         } else {
-          d.totalWithdrawn = amountToWithdraw;
-          d.status = DepositStatus.PARTIALLY_WITHDRAWN;
-          amountToWithdraw = BigInt(0);
+          d.totalWithdrawn = amountToWithdraw
+          d.status = DepositStatus.PARTIALLY_WITHDRAWN
+          amountToWithdraw = BigInt(0)
         }
-        d.updatedAt = blockNumber;
-        cache.deposits.set(d.id, d);
+        d.updatedAt = blockNumber
+        cache.deposits.set(d.id, d)
       }
-    });
+    })
 
-  domain.totalWithdrawals += amountBigInt;
-  account.totalWithdrawals += amountBigInt;
-  operator.totalWithdrawals += amountBigInt;
-  nominator.totalWithdrawals += amountBigInt;
+  domain.totalWithdrawals += amountBigInt
+  account.totalWithdrawals += amountBigInt
+  operator.totalWithdrawals += amountBigInt
+  nominator.totalWithdrawals += amountBigInt
 
-  cache.isModified = true;
+  cache.isModified = true
 
-  return cache;
+  return cache
 }
 
 export function processNominatedStakedUnlockedEvent(
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  event: CtxEvent
+  event: CtxEvent,
 ) {
-  const { operatorId, nominatorId, unlockedAmount } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-  const unlockedAmountBigInt = BigInt(unlockedAmount);
-  let unlockedAmountBigIntLeft = unlockedAmountBigInt;
+  const { operatorId, nominatorId, unlockedAmount } = event.args
+  const operatorIdNum = Number(operatorId)
+  const nominatorIdNum = Number(nominatorId)
+  const address = getCallSigner(extrinsic.call)
+  const blockNumber = getBlockNumber(block)
+  const unlockedAmountBigInt = BigInt(unlockedAmount)
+  let unlockedAmountBigIntLeft = unlockedAmountBigInt
 
-  const operator = getOrCreateOperator(cache, block, operatorId);
-  const domain = getOrCreateDomain(cache, block, operator.domainId);
-  const account = getOrCreateAccount(cache, block, address);
-  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId);
+  const operator = getOrCreateOperator(cache, block, operatorId)
+  const domain = getOrCreateDomain(cache, block, operator.domainId)
+  const account = getOrCreateAccount(cache, block, address)
+  const nominator = getOrCreateNominator(cache, block, extrinsic, operatorId)
   const userOpenWithdrawals = Array.from(cache.withdrawals.values()).filter(
     (w) =>
       w.status === WithdrawalStatus.PENDING_LOCK &&
       w.operatorId === operator.id &&
-      w.accountId === account.id
-  );
+      w.accountId === account.id,
+  )
 
   if (userOpenWithdrawals.length === 1) {
-    const w = userOpenWithdrawals[0];
-    w.status = WithdrawalStatus.WITHDRAW;
-    w.unlockedAmount = unlockedAmountBigInt;
-    w.unlockedAt = blockNumber;
-    w.updatedAt = blockNumber;
-    cache.withdrawals.set(w.id, w);
+    const w = userOpenWithdrawals[0]
+    w.status = WithdrawalStatus.WITHDRAW
+    w.unlockedAmount = unlockedAmountBigInt
+    w.unlockedAt = blockNumber
+    w.updatedAt = blockNumber
+    cache.withdrawals.set(w.id, w)
   } else {
     userOpenWithdrawals.forEach((w) => {
-      w.status = WithdrawalStatus.WITHDRAW;
+      w.status = WithdrawalStatus.WITHDRAW
       if (unlockedAmountBigIntLeft > w.estimatedAmount) {
-        w.unlockedAmount = w.estimatedAmount;
-        unlockedAmountBigIntLeft -= w.estimatedAmount;
+        w.unlockedAmount = w.estimatedAmount
+        unlockedAmountBigIntLeft -= w.estimatedAmount
       } else {
-        w.unlockedAmount = unlockedAmountBigIntLeft;
-        unlockedAmountBigIntLeft = BigInt(0);
+        w.unlockedAmount = unlockedAmountBigIntLeft
+        unlockedAmountBigIntLeft = BigInt(0)
       }
-      w.unlockedAt = blockNumber;
-      w.updatedAt = blockNumber;
-      cache.withdrawals.set(w.id, w);
-    });
+      w.unlockedAt = blockNumber
+      w.updatedAt = blockNumber
+      cache.withdrawals.set(w.id, w)
+    })
   }
 
-  let amountToWithdraw = unlockedAmountBigInt;
+  let amountToWithdraw = unlockedAmountBigInt
   Array.from(cache.deposits.values())
     .filter(
       (d) =>
         d.status === DepositStatus.DEPOSITED &&
         d.operatorId === operator.id &&
-        d.accountId === account.id
+        d.accountId === account.id,
     )
     .forEach((d) => {
       if (amountToWithdraw > 0) {
         if (amountToWithdraw > d.totalAmount) {
-          amountToWithdraw -= d.totalAmount;
-          d.totalWithdrawn = d.totalAmount;
-          d.status = DepositStatus.WITHDRAWN;
+          amountToWithdraw -= d.totalAmount
+          d.totalWithdrawn = d.totalAmount
+          d.status = DepositStatus.WITHDRAWN
         } else {
-          d.totalWithdrawn = amountToWithdraw;
-          d.status = DepositStatus.PARTIALLY_WITHDRAWN;
-          amountToWithdraw = BigInt(0);
+          d.totalWithdrawn = amountToWithdraw
+          d.status = DepositStatus.PARTIALLY_WITHDRAWN
+          amountToWithdraw = BigInt(0)
         }
-        d.updatedAt = blockNumber;
-        cache.deposits.set(d.id, d);
+        d.updatedAt = blockNumber
+        cache.deposits.set(d.id, d)
       }
-    });
+    })
 
-  domain.totalWithdrawals += unlockedAmountBigInt;
-  account.totalWithdrawals += unlockedAmountBigInt;
-  operator.totalWithdrawals += unlockedAmountBigInt;
-  nominator.totalWithdrawals += unlockedAmountBigInt;
+  domain.totalWithdrawals += unlockedAmountBigInt
+  account.totalWithdrawals += unlockedAmountBigInt
+  operator.totalWithdrawals += unlockedAmountBigInt
+  nominator.totalWithdrawals += unlockedAmountBigInt
 
-  cache.isModified = true;
+  cache.isModified = true
 
-  return cache;
+  return cache
 }
 
 export function processNominatorUnlockedEvent(
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  event: CtxEvent
+  event: CtxEvent,
 ) {
-  const { operatorId, nominatorId } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
+  const { operatorId, nominatorId } = event.args
+  const operatorIdNum = Number(operatorId)
+  const nominatorIdNum = Number(nominatorId)
+  const address = getCallSigner(extrinsic.call)
+  const blockNumber = getBlockNumber(block)
 
-  cache.isModified = true;
+  cache.isModified = true
 
-  return cache;
+  return cache
 }
 
 export function processStorageFeeUnlockedEvent(
   cache: Cache,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  event: CtxEvent
+  event: CtxEvent,
 ) {
-  const { operatorId, nominatorId, storageFee } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-  const storageFeeBigInt = BigInt(storageFee);
+  const { operatorId, nominatorId, storageFee } = event.args
+  const operatorIdNum = Number(operatorId)
+  const nominatorIdNum = Number(nominatorId)
+  const address = getCallSigner(extrinsic.call)
+  const blockNumber = getBlockNumber(block)
+  const storageFeeBigInt = BigInt(storageFee)
 
-  cache.isModified = true;
+  cache.isModified = true
 
-  return cache;
+  return cache
 }

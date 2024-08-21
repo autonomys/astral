@@ -8,15 +8,15 @@ import {
   AccountTransferReceiverTotalValue,
   AccountTransferSenderTotalCount,
   AccountTransferSenderTotalValue,
-} from "../model";
-import type { CtxBlock } from "../processor";
-import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
+} from '../model'
+import type { CtxBlock } from '../processor'
+import { getBlockNumber, getTimestamp } from '../utils'
+import { Cache } from '../utils/cache'
 
 export const createAccountTransferSenderTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferSenderTotalCount>
+  props: Partial<AccountTransferSenderTotalCount>,
 ): AccountTransferSenderTotalCount =>
   new AccountTransferSenderTotalCount({
     id: accountId,
@@ -26,27 +26,26 @@ export const createAccountTransferSenderTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountTransferSenderTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferSenderTotalCount> = {}
+  props: Partial<AccountTransferSenderTotalCount> = {},
 ): AccountTransferSenderTotalCount => {
-  const accountTransferSenderTotalCount =
-    cache.accountTransferSenderTotalCount.get(accountId);
+  const accountTransferSenderTotalCount = cache.accountTransferSenderTotalCount.get(accountId)
 
   if (!accountTransferSenderTotalCount)
-    return createAccountTransferSenderTotalCount(block, accountId, props);
+    return createAccountTransferSenderTotalCount(block, accountId, props)
 
-  return accountTransferSenderTotalCount;
-};
+  return accountTransferSenderTotalCount
+}
 
 export const createAccountTransferSenderTotalValue = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferSenderTotalValue>
+  props: Partial<AccountTransferSenderTotalValue>,
 ): AccountTransferSenderTotalValue =>
   new AccountTransferSenderTotalValue({
     id: accountId,
@@ -56,27 +55,26 @@ export const createAccountTransferSenderTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountTransferSenderTotalValue = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferSenderTotalValue> = {}
+  props: Partial<AccountTransferSenderTotalValue> = {},
 ): AccountTransferSenderTotalValue => {
-  const accountTransferSenderTotalValue =
-    cache.accountTransferSenderTotalValue.get(accountId);
+  const accountTransferSenderTotalValue = cache.accountTransferSenderTotalValue.get(accountId)
 
   if (!accountTransferSenderTotalValue)
-    return createAccountTransferSenderTotalValue(block, accountId, props);
+    return createAccountTransferSenderTotalValue(block, accountId, props)
 
-  return accountTransferSenderTotalValue;
-};
+  return accountTransferSenderTotalValue
+}
 
 export const createAccountTransferReceiverTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferReceiverTotalCount>
+  props: Partial<AccountTransferReceiverTotalCount>,
 ): AccountTransferReceiverTotalCount =>
   new AccountTransferReceiverTotalCount({
     id: accountId,
@@ -86,27 +84,26 @@ export const createAccountTransferReceiverTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountTransferReceiverTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferReceiverTotalCount> = {}
+  props: Partial<AccountTransferReceiverTotalCount> = {},
 ): AccountTransferReceiverTotalCount => {
-  const accountTransferReceiverTotalCount =
-    cache.accountTransferReceiverTotalCount.get(accountId);
+  const accountTransferReceiverTotalCount = cache.accountTransferReceiverTotalCount.get(accountId)
 
   if (!accountTransferReceiverTotalCount)
-    return createAccountTransferReceiverTotalCount(block, accountId, props);
+    return createAccountTransferReceiverTotalCount(block, accountId, props)
 
-  return accountTransferReceiverTotalCount;
-};
+  return accountTransferReceiverTotalCount
+}
 
 export const createAccountTransferReceiverTotalValue = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferReceiverTotalValue>
+  props: Partial<AccountTransferReceiverTotalValue>,
 ): AccountTransferReceiverTotalValue =>
   new AccountTransferReceiverTotalValue({
     id: accountId,
@@ -116,27 +113,26 @@ export const createAccountTransferReceiverTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountTransferReceiverTotalValue = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransferReceiverTotalValue> = {}
+  props: Partial<AccountTransferReceiverTotalValue> = {},
 ): AccountTransferReceiverTotalValue => {
-  const accountTransferReceiverTotalValue =
-    cache.accountTransferReceiverTotalValue.get(accountId);
+  const accountTransferReceiverTotalValue = cache.accountTransferReceiverTotalValue.get(accountId)
 
   if (!accountTransferReceiverTotalValue)
-    return createAccountTransferReceiverTotalValue(block, accountId, props);
+    return createAccountTransferReceiverTotalValue(block, accountId, props)
 
-  return accountTransferReceiverTotalValue;
-};
+  return accountTransferReceiverTotalValue
+}
 
 export const createAccountRemarkCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountRemarkCount>
+  props: Partial<AccountRemarkCount>,
 ): AccountRemarkCount =>
   new AccountRemarkCount({
     id: accountId,
@@ -146,26 +142,25 @@ export const createAccountRemarkCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountRemarkCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountRemarkCount> = {}
+  props: Partial<AccountRemarkCount> = {},
 ): AccountRemarkCount => {
-  const accountRemarkCount = cache.accountRemarkCount.get(accountId);
+  const accountRemarkCount = cache.accountRemarkCount.get(accountId)
 
-  if (!accountRemarkCount)
-    return createAccountRemarkCount(block, accountId, props);
+  if (!accountRemarkCount) return createAccountRemarkCount(block, accountId, props)
 
-  return accountRemarkCount;
-};
+  return accountRemarkCount
+}
 
 export const createAccountExtrinsicTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountExtrinsicTotalCount>
+  props: Partial<AccountExtrinsicTotalCount>,
 ): AccountExtrinsicTotalCount =>
   new AccountExtrinsicTotalCount({
     id: accountId,
@@ -175,27 +170,25 @@ export const createAccountExtrinsicTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountExtrinsicTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountExtrinsicTotalCount> = {}
+  props: Partial<AccountExtrinsicTotalCount> = {},
 ): AccountExtrinsicTotalCount => {
-  const accountExtrinsicTotalCount =
-    cache.accountExtrinsicTotalCount.get(accountId);
+  const accountExtrinsicTotalCount = cache.accountExtrinsicTotalCount.get(accountId)
 
-  if (!accountExtrinsicTotalCount)
-    return createAccountExtrinsicTotalCount(block, accountId, props);
+  if (!accountExtrinsicTotalCount) return createAccountExtrinsicTotalCount(block, accountId, props)
 
-  return accountExtrinsicTotalCount;
-};
+  return accountExtrinsicTotalCount
+}
 
 export const createAccountExtrinsicSuccessTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountExtrinsicSuccessTotalCount>
+  props: Partial<AccountExtrinsicSuccessTotalCount>,
 ): AccountExtrinsicSuccessTotalCount =>
   new AccountExtrinsicSuccessTotalCount({
     id: accountId,
@@ -205,27 +198,26 @@ export const createAccountExtrinsicSuccessTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountExtrinsicSuccessTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountExtrinsicSuccessTotalCount> = {}
+  props: Partial<AccountExtrinsicSuccessTotalCount> = {},
 ): AccountExtrinsicSuccessTotalCount => {
-  const accountExtrinsicSuccessTotalCount =
-    cache.accountExtrinsicSuccessTotalCount.get(accountId);
+  const accountExtrinsicSuccessTotalCount = cache.accountExtrinsicSuccessTotalCount.get(accountId)
 
   if (!accountExtrinsicSuccessTotalCount)
-    return createAccountExtrinsicSuccessTotalCount(block, accountId, props);
+    return createAccountExtrinsicSuccessTotalCount(block, accountId, props)
 
-  return accountExtrinsicSuccessTotalCount;
-};
+  return accountExtrinsicSuccessTotalCount
+}
 
 export const createAccountExtrinsicFailedTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountExtrinsicFailedTotalCount>
+  props: Partial<AccountExtrinsicFailedTotalCount>,
 ): AccountExtrinsicFailedTotalCount =>
   new AccountExtrinsicFailedTotalCount({
     id: accountId,
@@ -235,27 +227,26 @@ export const createAccountExtrinsicFailedTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountExtrinsicFailedTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountExtrinsicFailedTotalCount> = {}
+  props: Partial<AccountExtrinsicFailedTotalCount> = {},
 ): AccountExtrinsicFailedTotalCount => {
-  const accountExtrinsicFailedTotalCount =
-    cache.accountExtrinsicFailedTotalCount.get(accountId);
+  const accountExtrinsicFailedTotalCount = cache.accountExtrinsicFailedTotalCount.get(accountId)
 
   if (!accountExtrinsicFailedTotalCount)
-    return createAccountExtrinsicFailedTotalCount(block, accountId, props);
+    return createAccountExtrinsicFailedTotalCount(block, accountId, props)
 
-  return accountExtrinsicFailedTotalCount;
-};
+  return accountExtrinsicFailedTotalCount
+}
 
 export const createAccountTransactionFeePaidTotalValue = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransactionFeePaidTotalValue>
+  props: Partial<AccountTransactionFeePaidTotalValue>,
 ): AccountTransactionFeePaidTotalValue =>
   new AccountTransactionFeePaidTotalValue({
     id: accountId,
@@ -265,19 +256,19 @@ export const createAccountTransactionFeePaidTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateAccountTransactionFeePaidTotalValue = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<AccountTransactionFeePaidTotalValue> = {}
+  props: Partial<AccountTransactionFeePaidTotalValue> = {},
 ): AccountTransactionFeePaidTotalValue => {
   const accountTransactionFeePaidTotalValue =
-    cache.accountTransactionFeePaidTotalValue.get(accountId);
+    cache.accountTransactionFeePaidTotalValue.get(accountId)
 
   if (!accountTransactionFeePaidTotalValue)
-    return createAccountTransactionFeePaidTotalValue(block, accountId, props);
+    return createAccountTransactionFeePaidTotalValue(block, accountId, props)
 
-  return accountTransactionFeePaidTotalValue;
-};
+  return accountTransactionFeePaidTotalValue
+}

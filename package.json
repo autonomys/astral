@@ -24,12 +24,21 @@
     "down": "docker compose down",
     "db": "lerna run start --scope=db",
     "db:metadata": "lerna run metadata --scope=db",
-    "sqd:typegen": "lerna run typegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "sqd:codegen": "lerna run codegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "sqd:migration": "lerna run migration --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "sqd:build": "lerna run build --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "sqd:process": "lerna run process --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "sqd": "sqd:typegen && sqd:codegen && sqd:migration && sqd:build && sqd:process"
+    "explorer:dev": "lerna run dev --scope=explorer",
+    "explorer:codegen": "lerna run codegen --scope=explorer",
+    "explorer:build": "lerna run build --scope=explorer",
+    "explorer:test": "lerna run test --scope=explorer",
+    "explorer:lint": "lerna run lint --scope=explorer",
+    "explorer:lint:fix": "lerna run lint:fix --scope=explorer",
+    "explorer:format": "lerna run format --scope=explorer",
+    "explorer:all": "lerna run all --scope=explorer",
+    "indexers:typegen": "lerna run typegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:codegen": "lerna run codegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:migration": "lerna run migration --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:build": "lerna run build --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:process": "lerna run process --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:format": "lerna run format --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:all": "indexers:typegen && indexers:codegen && indexers:migration && indexers:build && indexers:process && indexers:process"
   },
   "devDependencies": {
     "lerna": "^8.1.8"

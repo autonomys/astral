@@ -1,6 +1,6 @@
-import { Deposit, DepositStatus } from "../model";
-import type { CtxBlock, CtxExtrinsic } from "../processor";
-import { depositUID, getBlockNumber, getTimestamp } from "../utils";
+import { Deposit, DepositStatus } from '../model'
+import type { CtxBlock, CtxExtrinsic } from '../processor'
+import { depositUID, getBlockNumber, getTimestamp } from '../utils'
 
 export const createDeposit = (
   block: CtxBlock,
@@ -8,14 +8,14 @@ export const createDeposit = (
   operatorId: number | string,
   accountId: string,
   depositIndex: number | string,
-  props: Partial<Deposit>
+  props: Partial<Deposit>,
 ): Deposit =>
   new Deposit({
     id: depositUID(operatorId, accountId, depositIndex),
     accountId: accountId,
-    domainId: "",
+    domainId: '',
     operatorId: operatorId.toString(),
-    nominatorId: "",
+    nominatorId: '',
     amount: BigInt(0),
     storageFeeDeposit: BigInt(0),
     status: DepositStatus.PENDING,
@@ -29,4 +29,4 @@ export const createDeposit = (
     totalAmount: BigInt(0),
     totalWithdrawn: BigInt(0),
     ...props,
-  });
+  })

@@ -1,25 +1,25 @@
-import { randomUUID } from "crypto";
-import { Bundle, BundleAuthor } from "../model";
-import { bundleUID } from "../utils";
+import { randomUUID } from 'crypto'
+import { Bundle, BundleAuthor } from '../model'
+import { bundleUID } from '../utils'
 
 export const createBundle = (
   domainId: string,
   domainBlockId: string,
   domainBlockHash: string,
   domainBlockBundleIndex: number | string,
-  props?: Partial<Bundle>
+  props?: Partial<Bundle>,
 ): Bundle =>
   new Bundle({
     id: bundleUID(domainId, domainBlockHash, domainBlockBundleIndex),
     domainId,
     domainBlockId,
-    domainEpochId: "",
+    domainEpochId: '',
     domainBlockNumber: 0,
-    domainBlockHash: "",
-    domainBlockExtrinsicRoot: "",
+    domainBlockHash: '',
+    domainBlockExtrinsicRoot: '',
     epoch: 0,
     consensusBlockNumber: 0,
-    consensusBlockHash: "",
+    consensusBlockHash: '',
     totalTransfersIn: BigInt(0),
     transfersInCount: 0,
     totalTransfersOut: BigInt(0),
@@ -33,7 +33,7 @@ export const createBundle = (
     domainExecutionFee: BigInt(0),
     burnedBalance: BigInt(0),
     ...props,
-  });
+  })
 
 export const createBundleAuthor = (
   domainId: string,
@@ -42,7 +42,7 @@ export const createBundleAuthor = (
   bundleId: string,
   domainBlockId: string,
   epoch: number,
-  props?: Partial<BundleAuthor>
+  props?: Partial<BundleAuthor>,
 ): BundleAuthor =>
   new BundleAuthor({
     id: randomUUID(),
@@ -51,7 +51,7 @@ export const createBundleAuthor = (
     operatorId,
     bundleId,
     domainBlockId,
-    domainEpochId: "",
+    domainEpochId: '',
     epoch,
     ...props,
-  });
+  })

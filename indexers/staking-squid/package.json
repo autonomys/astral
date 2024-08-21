@@ -22,7 +22,8 @@
     "migration": "sqd migration:generate",
     "build": "rm -rf lib && tsc",
     "process": "sqd process",
-    "deploy": "sqd deploy --org autonomys-labs ."
+    "deploy": "sqd deploy --org autonomys-labs .",
+    "format": "prettier --write 'src/**/*.{js,ts,css,md,json}' --config ./.prettierrc"
   },
   "dependencies": {
     "@autonomys/auto-consensus": "^0.2.0",

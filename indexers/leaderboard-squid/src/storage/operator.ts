@@ -5,15 +5,15 @@ import {
   OperatorTotalRewardsCollected,
   OperatorTotalTaxCollected,
   OperatorWithdrawalsTotalCount,
-} from "../model";
-import type { CtxBlock } from "../processor";
-import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
+} from '../model'
+import type { CtxBlock } from '../processor'
+import { getBlockNumber, getTimestamp } from '../utils'
+import { Cache } from '../utils/cache'
 
 export const createOperatorTotalRewardsCollected = (
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorTotalRewardsCollected>
+  props: Partial<OperatorTotalRewardsCollected>,
 ): OperatorTotalRewardsCollected =>
   new OperatorTotalRewardsCollected({
     id: operatorId,
@@ -23,27 +23,26 @@ export const createOperatorTotalRewardsCollected = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperatorTotalRewardsCollected = (
   cache: Cache,
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorTotalRewardsCollected> = {}
+  props: Partial<OperatorTotalRewardsCollected> = {},
 ): OperatorTotalRewardsCollected => {
-  const operatorTotalRewardsCollected =
-    cache.operatorTotalRewardsCollected.get(operatorId);
+  const operatorTotalRewardsCollected = cache.operatorTotalRewardsCollected.get(operatorId)
 
   if (!operatorTotalRewardsCollected)
-    return createOperatorTotalRewardsCollected(block, operatorId, props);
+    return createOperatorTotalRewardsCollected(block, operatorId, props)
 
-  return operatorTotalRewardsCollected;
-};
+  return operatorTotalRewardsCollected
+}
 
 export const createOperatorTotalTaxCollected = (
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorTotalTaxCollected>
+  props: Partial<OperatorTotalTaxCollected>,
 ): OperatorTotalTaxCollected =>
   new OperatorTotalTaxCollected({
     id: operatorId,
@@ -53,27 +52,25 @@ export const createOperatorTotalTaxCollected = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperatorTotalTaxCollected = (
   cache: Cache,
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorTotalTaxCollected> = {}
+  props: Partial<OperatorTotalTaxCollected> = {},
 ): OperatorTotalTaxCollected => {
-  const operatorTotalTaxCollected =
-    cache.operatorTotalTaxCollected.get(operatorId);
+  const operatorTotalTaxCollected = cache.operatorTotalTaxCollected.get(operatorId)
 
-  if (!operatorTotalTaxCollected)
-    return createOperatorTotalTaxCollected(block, operatorId, props);
+  if (!operatorTotalTaxCollected) return createOperatorTotalTaxCollected(block, operatorId, props)
 
-  return operatorTotalTaxCollected;
-};
+  return operatorTotalTaxCollected
+}
 
 export const createOperatorBundleTotalCount = (
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorBundleTotalCount>
+  props: Partial<OperatorBundleTotalCount>,
 ): OperatorBundleTotalCount =>
   new OperatorBundleTotalCount({
     id: operatorId,
@@ -83,27 +80,25 @@ export const createOperatorBundleTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperatorBundleTotalCount = (
   cache: Cache,
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorBundleTotalCount> = {}
+  props: Partial<OperatorBundleTotalCount> = {},
 ): OperatorBundleTotalCount => {
-  const operatorBundleTotalCount =
-    cache.operatorBundleTotalCount.get(operatorId);
+  const operatorBundleTotalCount = cache.operatorBundleTotalCount.get(operatorId)
 
-  if (!operatorBundleTotalCount)
-    return createOperatorBundleTotalCount(block, operatorId, props);
+  if (!operatorBundleTotalCount) return createOperatorBundleTotalCount(block, operatorId, props)
 
-  return operatorBundleTotalCount;
-};
+  return operatorBundleTotalCount
+}
 
 export const createOperatorDepositsTotalCount = (
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorDepositsTotalCount>
+  props: Partial<OperatorDepositsTotalCount>,
 ): OperatorDepositsTotalCount =>
   new OperatorDepositsTotalCount({
     id: operatorId,
@@ -113,27 +108,25 @@ export const createOperatorDepositsTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperatorDepositsTotalCount = (
   cache: Cache,
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorDepositsTotalCount> = {}
+  props: Partial<OperatorDepositsTotalCount> = {},
 ): OperatorDepositsTotalCount => {
-  const operatorDepositsTotalCount =
-    cache.operatorDepositsTotalCount.get(operatorId);
+  const operatorDepositsTotalCount = cache.operatorDepositsTotalCount.get(operatorId)
 
-  if (!operatorDepositsTotalCount)
-    return createOperatorDepositsTotalCount(block, operatorId, props);
+  if (!operatorDepositsTotalCount) return createOperatorDepositsTotalCount(block, operatorId, props)
 
-  return operatorDepositsTotalCount;
-};
+  return operatorDepositsTotalCount
+}
 
 export const createOperatorDepositsTotalValue = (
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorDepositsTotalValue>
+  props: Partial<OperatorDepositsTotalValue>,
 ): OperatorDepositsTotalValue =>
   new OperatorDepositsTotalValue({
     id: operatorId,
@@ -143,27 +136,25 @@ export const createOperatorDepositsTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperatorDepositsTotalValue = (
   cache: Cache,
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorDepositsTotalValue> = {}
+  props: Partial<OperatorDepositsTotalValue> = {},
 ): OperatorDepositsTotalValue => {
-  const operatorDepositsTotalValue =
-    cache.operatorDepositsTotalValue.get(operatorId);
+  const operatorDepositsTotalValue = cache.operatorDepositsTotalValue.get(operatorId)
 
-  if (!operatorDepositsTotalValue)
-    return createOperatorDepositsTotalValue(block, operatorId, props);
+  if (!operatorDepositsTotalValue) return createOperatorDepositsTotalValue(block, operatorId, props)
 
-  return operatorDepositsTotalValue;
-};
+  return operatorDepositsTotalValue
+}
 
 export const createOperatorWithdrawalsTotalCount = (
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorWithdrawalsTotalCount>
+  props: Partial<OperatorWithdrawalsTotalCount>,
 ): OperatorWithdrawalsTotalCount =>
   new OperatorWithdrawalsTotalCount({
     id: operatorId,
@@ -173,19 +164,18 @@ export const createOperatorWithdrawalsTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateOperatorWithdrawalsTotalCount = (
   cache: Cache,
   block: CtxBlock,
   operatorId: string,
-  props: Partial<OperatorWithdrawalsTotalCount> = {}
+  props: Partial<OperatorWithdrawalsTotalCount> = {},
 ): OperatorWithdrawalsTotalCount => {
-  const operatorWithdrawalsTotalCount =
-    cache.operatorWithdrawalsTotalCount.get(operatorId);
+  const operatorWithdrawalsTotalCount = cache.operatorWithdrawalsTotalCount.get(operatorId)
 
   if (!operatorWithdrawalsTotalCount)
-    return createOperatorWithdrawalsTotalCount(block, operatorId, props);
+    return createOperatorWithdrawalsTotalCount(block, operatorId, props)
 
-  return operatorWithdrawalsTotalCount;
-};
+  return operatorWithdrawalsTotalCount
+}

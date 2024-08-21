@@ -5,15 +5,15 @@ import {
   FarmerVoteAndBlockTotalValue,
   FarmerVoteTotalCount,
   FarmerVoteTotalValue,
-} from "../model";
-import type { CtxBlock } from "../processor";
-import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
+} from '../model'
+import type { CtxBlock } from '../processor'
+import { getBlockNumber, getTimestamp } from '../utils'
+import { Cache } from '../utils/cache'
 
 export const createFarmerVoteTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteTotalCount>
+  props: Partial<FarmerVoteTotalCount>,
 ): FarmerVoteTotalCount =>
   new FarmerVoteTotalCount({
     id: accountId,
@@ -23,26 +23,25 @@ export const createFarmerVoteTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateFarmerVoteTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteTotalCount> = {}
+  props: Partial<FarmerVoteTotalCount> = {},
 ): FarmerVoteTotalCount => {
-  const farmerVoteTotalCount = cache.farmerVoteTotalCount.get(accountId);
+  const farmerVoteTotalCount = cache.farmerVoteTotalCount.get(accountId)
 
-  if (!farmerVoteTotalCount)
-    return createFarmerVoteTotalCount(block, accountId, props);
+  if (!farmerVoteTotalCount) return createFarmerVoteTotalCount(block, accountId, props)
 
-  return farmerVoteTotalCount;
-};
+  return farmerVoteTotalCount
+}
 
 export const createFarmerVoteTotalValue = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteTotalValue>
+  props: Partial<FarmerVoteTotalValue>,
 ): FarmerVoteTotalValue =>
   new FarmerVoteTotalValue({
     id: accountId,
@@ -52,26 +51,25 @@ export const createFarmerVoteTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateFarmerVoteTotalValue = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteTotalValue> = {}
+  props: Partial<FarmerVoteTotalValue> = {},
 ): FarmerVoteTotalValue => {
-  const farmerVoteTotalValue = cache.farmerVoteTotalValue.get(accountId);
+  const farmerVoteTotalValue = cache.farmerVoteTotalValue.get(accountId)
 
-  if (!farmerVoteTotalValue)
-    return createFarmerVoteTotalValue(block, accountId, props);
+  if (!farmerVoteTotalValue) return createFarmerVoteTotalValue(block, accountId, props)
 
-  return farmerVoteTotalValue;
-};
+  return farmerVoteTotalValue
+}
 
 export const createFarmerBlockTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerBlockTotalCount>
+  props: Partial<FarmerBlockTotalCount>,
 ): FarmerBlockTotalCount =>
   new FarmerBlockTotalCount({
     id: accountId,
@@ -81,26 +79,25 @@ export const createFarmerBlockTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateFarmerBlockTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerBlockTotalCount> = {}
+  props: Partial<FarmerBlockTotalCount> = {},
 ): FarmerBlockTotalCount => {
-  const farmerBlockTotalCount = cache.farmerBlockTotalCount.get(accountId);
+  const farmerBlockTotalCount = cache.farmerBlockTotalCount.get(accountId)
 
-  if (!farmerBlockTotalCount)
-    return createFarmerBlockTotalCount(block, accountId, props);
+  if (!farmerBlockTotalCount) return createFarmerBlockTotalCount(block, accountId, props)
 
-  return farmerBlockTotalCount;
-};
+  return farmerBlockTotalCount
+}
 
 export const createFarmerBlockTotalValue = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerBlockTotalValue>
+  props: Partial<FarmerBlockTotalValue>,
 ): FarmerBlockTotalValue =>
   new FarmerBlockTotalValue({
     id: accountId,
@@ -110,26 +107,25 @@ export const createFarmerBlockTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateFarmerBlockTotalValue = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerBlockTotalValue> = {}
+  props: Partial<FarmerBlockTotalValue> = {},
 ): FarmerBlockTotalValue => {
-  const farmerBlockTotalValue = cache.farmerBlockTotalValue.get(accountId);
+  const farmerBlockTotalValue = cache.farmerBlockTotalValue.get(accountId)
 
-  if (!farmerBlockTotalValue)
-    return createFarmerBlockTotalValue(block, accountId, props);
+  if (!farmerBlockTotalValue) return createFarmerBlockTotalValue(block, accountId, props)
 
-  return farmerBlockTotalValue;
-};
+  return farmerBlockTotalValue
+}
 
 export const createFarmerVoteAndBlockTotalCount = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteAndBlockTotalCount>
+  props: Partial<FarmerVoteAndBlockTotalCount>,
 ): FarmerVoteAndBlockTotalCount =>
   new FarmerVoteAndBlockTotalCount({
     id: accountId,
@@ -139,27 +135,26 @@ export const createFarmerVoteAndBlockTotalCount = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateFarmerVoteAndBlockTotalCount = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteAndBlockTotalCount> = {}
+  props: Partial<FarmerVoteAndBlockTotalCount> = {},
 ): FarmerVoteAndBlockTotalCount => {
-  const farmerVoteAndBlockTotalCount =
-    cache.farmerVoteAndBlockTotalCount.get(accountId);
+  const farmerVoteAndBlockTotalCount = cache.farmerVoteAndBlockTotalCount.get(accountId)
 
   if (!farmerVoteAndBlockTotalCount)
-    return createFarmerVoteAndBlockTotalCount(block, accountId, props);
+    return createFarmerVoteAndBlockTotalCount(block, accountId, props)
 
-  return farmerVoteAndBlockTotalCount;
-};
+  return farmerVoteAndBlockTotalCount
+}
 
 export const createFarmerVoteAndBlockTotalValue = (
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteAndBlockTotalValue>
+  props: Partial<FarmerVoteAndBlockTotalValue>,
 ): FarmerVoteAndBlockTotalValue =>
   new FarmerVoteAndBlockTotalValue({
     id: accountId,
@@ -169,19 +164,18 @@ export const createFarmerVoteAndBlockTotalValue = (
     lastContributionAt: getTimestamp(block),
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
-  });
+  })
 
 export const getOrCreateFarmerVoteAndBlockTotalValue = (
   cache: Cache,
   block: CtxBlock,
   accountId: string,
-  props: Partial<FarmerVoteAndBlockTotalValue> = {}
+  props: Partial<FarmerVoteAndBlockTotalValue> = {},
 ): FarmerVoteAndBlockTotalValue => {
-  const farmerVoteAndBlockTotalValue =
-    cache.farmerVoteAndBlockTotalValue.get(accountId);
+  const farmerVoteAndBlockTotalValue = cache.farmerVoteAndBlockTotalValue.get(accountId)
 
   if (!farmerVoteAndBlockTotalValue)
-    return createFarmerVoteAndBlockTotalValue(block, accountId, props);
+    return createFarmerVoteAndBlockTotalValue(block, accountId, props)
 
-  return farmerVoteAndBlockTotalValue;
-};
+  return farmerVoteAndBlockTotalValue
+}
