@@ -54,8 +54,10 @@ export type DomainsFilters = {
   totalRewardsCollectedMax: string
   depositsCountMin: string
   depositsCountMax: string
-  completedEpoch: string
-  bundleCount: string
+  completedEpochMin: string
+  completedEpochMax: string
+  bundleCountMin: string
+  bundleCountMax: string
 }
 
 export type OperatorsFilters = {
@@ -73,8 +75,10 @@ export type OperatorsFilters = {
   depositsCountMax: string
   statusRegistered: string
   statusDeregistered: string
-  statusReadyToUnlock: string
   statusSlashed: string
-  activeEpochCount: string
-  bundleCount: string
+  statusReadyToUnlock: string
+  activeEpochCountMin: string
+  activeEpochCountMax: string
+  bundleCountMin: string
+  bundleCountMax: string
 }

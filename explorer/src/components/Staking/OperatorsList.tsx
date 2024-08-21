@@ -731,13 +731,25 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     }
 
     // Active Epoch Count
-    if (filters.activeEpochCount) {
-      conditions.activeEpochCount = { _gte: filters.activeEpochCount }
+    if (filters.activeEpochCountMin || filters.activeEpochCountMax) {
+      conditions['active_epoch_count'] = {}
+      if (filters.activeEpochCountMin) {
+        conditions.active_epoch_count._gte = parseInt(filters.activeEpochCountMin)
+      }
+      if (filters.activeEpochCountMax) {
+        conditions.active_epoch_count._lte = parseInt(filters.activeEpochCountMax)
+      }
     }
 
     // Bundle Count
-    if (filters.bundleCount) {
-      conditions.bundleCount = { _gte: filters.bundleCount }
+    if (filters.bundleCountMin || filters.bundleCountMax) {
+      conditions['bundle_count'] = {}
+      if (filters.bundleCountMin) {
+        conditions.bundle_count._gte = parseInt(filters.bundleCountMin)
+      }
+      if (filters.bundleCountMax) {
+        conditions.bundle_count._lte = parseInt(filters.bundleCountMax)
+      }
     }
 
     return conditions

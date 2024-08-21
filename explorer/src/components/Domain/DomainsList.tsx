@@ -626,13 +626,17 @@ export const DomainsList: FC = () => {
     }
 
     // Completed Epoch
-    if (filters.completedEpoch) {
-      conditions['completed_epoch'] = { _gte: filters.completedEpoch }
+    if (filters.completedEpochMin || filters.completedEpochMax) {
+      conditions['completed_epoch'] = {}
+      if (filters.completedEpochMin) conditions.completed_epoch._gte = filters.completedEpochMin
+      if (filters.completedEpochMax) conditions.completed_epoch._lte = filters.completedEpochMax
     }
 
     // Bundle Count
-    if (filters.bundleCount) {
-      conditions['bundle_count'] = { _gte: filters.bundleCount }
+    if (filters.bundleCountMin || filters.bundleCountMax) {
+      conditions['bundle_count'] = {}
+      if (filters.bundleCountMin) conditions.bundle_count._gte = filters.bundleCountMin
+      if (filters.bundleCountMax) conditions.bundle_count._lte = filters.bundleCountMax
     }
 
     return conditions

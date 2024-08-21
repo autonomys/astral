@@ -157,8 +157,8 @@ export const FILTERS_OPTIONS: FiltersOptions = {
     { type: 'range', label: 'Total Deposits', key: 'totalDeposits' },
     { type: 'range', label: 'Total Rewards Collected', key: 'totalRewardsCollected' },
     { type: 'range', label: 'Deposit Count', key: 'depositsCount' },
-    { type: 'number', label: 'Completed Epoch', key: 'completedEpoch' },
-    { type: 'number', label: 'Bundle Count', key: 'bundleCount' },
+    { type: 'range', label: 'Completed Epoch', key: 'completedEpoch' },
+    { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
   ],
   operators: [
     { type: 'range', label: 'Total Stake', key: 'totalStake' },
@@ -173,8 +173,8 @@ export const FILTERS_OPTIONS: FiltersOptions = {
       key: 'status',
       options: ['Registered', 'Deregistered', 'Slashed', 'Ready To Unlock'],
     },
-    { type: 'number', label: 'Active Epoch Count', key: 'activeEpochCount' },
-    { type: 'number', label: 'Bundle Count', key: 'bundleCount' },
+    { type: 'range', label: 'Active Epoch Count', key: 'activeEpochCount' },
+    { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
   ],
 }
 
@@ -205,8 +205,10 @@ export const INITIAL_TABLES: InitialTables = {
       totalRewardsCollectedMax: '',
       depositsCountMin: '',
       depositsCountMax: '',
-      completedEpoch: '',
-      bundleCount: '',
+      completedEpochMin: '',
+      completedEpochMax: '',
+      bundleCountMin: '',
+      bundleCountMax: '',
     },
     sorting: [
       {
@@ -237,8 +239,10 @@ export const INITIAL_TABLES: InitialTables = {
       statusRegistered: '',
       statusDeregistered: '',
       statusSlashed: '',
-      activeEpochCount: '',
-      bundleCount: '',
+      activeEpochCountMin: '',
+      activeEpochCountMax: '',
+      bundleCountMin: '',
+      bundleCountMax: '',
     },
     sorting: [
       {
