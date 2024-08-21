@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "hasura console"
+  },
   "devDependencies": {
     "hasura-cli": "2.36.2"
   }
