@@ -1,11 +1,25 @@
-type Account @entity {
+type Module @entity {
   id: ID! @index
-  nonce: BigInt!
-  free: BigInt!
-  reserved: BigInt!
-  total: BigInt @index
+  name: String! @index
+  extrinsicCount: Int!
+  eventCount: Int!
   createdAt: Int! @index
-  updatedAt: Int! @index
+}
+
+type ExtrinsicName @entity {
+  id: ID! @index
+  moduleId: String! @index
+  name: String! @index
+  count: Int!
+  createdAt: Int! @index
+}
+
+type EventName @entity {
+  id: ID! @index
+  moduleId: String! @index
+  name: String! @index
+  count: Int!
+  createdAt: Int! @index
 }
 
 type Metadata @entity {
@@ -18,19 +32,29 @@ type Metadata @entity {
   updatedAt: Int! @index
 }
 
+type Account @entity {
+  id: ID! @index
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
 type Transfer @entity {
   id: ID! @index
   from: String! @index
   to: String! @index
   value: BigInt!
-  timestamp: Int! @index
+  timestamp: BigInt! @index
   createdAt: Int! @index
 }
 
 type Block @entity {
   id: ID! @index
   height: BigInt! @index
-  timestamp: Int! @index
+  timestamp: BigInt! @index
   hash: String! @index
   parentHash: String!
   specId: String!
@@ -41,12 +65,6 @@ type Block @entity {
   extrinsicsCount: Int!
   eventsCount: Int!
   accountId: String! @index
-}
-
-type ExtrinsicModuleName @entity {
-  id: ID! @index
-  name: String! @index
-  createdAt: Int! @index
 }
 
 type Extrinsic @entity {
@@ -65,12 +83,6 @@ type Extrinsic @entity {
   pos: Int!
   timestamp: DateTime! @index
   args: String!
-  createdAt: Int! @index
-}
-
-type EventModuleName @entity {
-  id: ID! @index
-  name: String! @index
   createdAt: Int! @index
 }
 
