@@ -82,6 +82,7 @@ export const QUERY_DOMAIN_STATUS = gql`
       name
       last_domain_block_number
       completed_epoch
+      current_epoch_duration
       last_epoch_duration
       last6_epochs_duration
       last144_epoch_duration

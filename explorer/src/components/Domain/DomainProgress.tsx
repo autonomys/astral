@@ -22,7 +22,7 @@ interface CardData {
   currentEpoch: number
   lastBlock: number
   progress: number
-  estimatedRemainingTime: number
+  estimatedRemainingTime: string
 }
 
 export const DomainProgress: FC = () => {
@@ -87,7 +87,7 @@ export const DomainProgress: FC = () => {
                   <span className='text-base font-semibold text-purpleRoyal dark:text-purplePale sm:text-sm'>
                     Epoch: {numberWithCommas(currentEpoch)}
                   </span>
-                  <span className='text-xs font-bold text-grayDark dark:text-white sm:text-sm'>
+                  <span className='font-sbold text-xs text-grayDark dark:text-white sm:text-sm'>
                     {progress}%
                   </span>
                 </div>
@@ -102,7 +102,7 @@ export const DomainProgress: FC = () => {
                   <span>Last Block: {numberWithCommas(lastBlock)}</span>
                 </div>
                 <div className='flex justify-between text-xs text-grayDarker dark:text-whiteOpaque sm:text-sm'>
-                  <span>Estimated Remaining Time: {numberWithCommas(estimatedRemainingTime)}</span>
+                  <span>Estimated Remaining Time: {estimatedRemainingTime}</span>
                 </div>
               </div>
             ),

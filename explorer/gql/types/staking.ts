@@ -7410,7 +7410,7 @@ export type DomainsStatusQueryVariables = Exact<{
 }>;
 
 
-export type DomainsStatusQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, name: string, last_domain_block_number: number, completed_epoch: number, last_epoch_duration: any, last6_epochs_duration: any, last144_epoch_duration: any, last1k_epoch_duration: any }> };
+export type DomainsStatusQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, name: string, last_domain_block_number: number, completed_epoch: number, current_epoch_duration: any, last_epoch_duration: any, last6_epochs_duration: any, last144_epoch_duration: any, last1k_epoch_duration: any }> };
 
 export type DomainByIdQueryVariables = Exact<{
   domainId: Scalars['String']['input'];
