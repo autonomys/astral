@@ -36,7 +36,9 @@ const CountdownTimer: FC<{ initialTime: bigint }> = ({ initialTime }) => {
     return () => clearInterval(interval)
   }, [])
 
-  return <span>Estimated Remaining Time: {formatSeconds(remainingTime)}</span>
+  return (
+    <span>Estimated Remaining Time: {remainingTime > 0 ? formatSeconds(remainingTime) : '0'}</span>
+  )
 }
 
 export const DomainProgress: FC = () => {
