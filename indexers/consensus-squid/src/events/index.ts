@@ -14,6 +14,7 @@ export async function processEvents(
       name: event.name,
     })
     cache.events.set(_event.id, _event)
+    cache.isModified = true
 
     cache = await processEvent(cache, api, block, extrinsic, event)
   }
@@ -31,7 +32,7 @@ async function processEvent(
     name: event.name,
   })
   cache.eventModuleNames.set(_eventModuleName.id, _eventModuleName)
-
+  cache.isModified = true
   switch (event.name) {
     default:
       return cache

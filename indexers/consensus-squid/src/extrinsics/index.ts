@@ -18,7 +18,7 @@ export async function processExtrinsics(
       indexInBlock: index,
     })
     cache.extrinsics.set(_extrinsic.id, _extrinsic)
-
+    cache.isModified = true
     cache = await processExtrinsic(cache, api, block, extrinsic)
   }
   return cache
@@ -34,6 +34,7 @@ export async function processExtrinsic(
     name: extrinsic.call?.name,
   })
   cache.extrinsicModuleNames.set(_extrinsicModuleName.id, _extrinsicModuleName)
+  cache.isModified = true
 
   switch (extrinsic.call?.name) {
     default:

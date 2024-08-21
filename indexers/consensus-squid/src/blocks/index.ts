@@ -19,6 +19,7 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
       specId: block.header.specVersion.toString() ?? '',
     })
     cache.blocks.set(_block.id, _block)
+    cache.isModified = true
 
     cache = await processBlock(cache, api, block)
   }
