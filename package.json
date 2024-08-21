@@ -17,6 +17,7 @@
   },
   "workspaces": {
     "packages": [
+      "indexers/db",
       "indexers/consensus-squid",
       "indexers/leaderboard-squid",
       "indexers/staking-squid",
