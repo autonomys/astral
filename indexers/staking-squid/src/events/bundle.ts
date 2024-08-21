@@ -139,36 +139,67 @@ export function processBundleStoredEvent(
     )
     cache.bundleAuthors.set(bundleAuthor.id, bundleAuthor)
 
-    domain.lastDomainBlockNumber = Number(domainBlockNumber)
-    domain.totalTransfersIn += totalTransfersIn
-    domain.transfersInCount += transfersInCount
-    domain.totalTransfersOut += totalTransfersOut
-    domain.transfersOutCount += transfersOutCount
-    domain.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed
-    domain.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount
-    domain.totalTransfersRejected += totalTransfersRejected
-    domain.transfersRejectedCount += transfersRejectedCount
-    domain.totalVolume += totalVolume
-    domain.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee)
-    domain.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee)
-    domain.totalBurnedBalance += BigInt(blockFees.burnedBalance)
-    domain.bundleCount++
-    domain.lastBundleAt = getBlockNumber(block)
-    domain.updatedAt = getBlockNumber(block)
-
-    const currentEpochDuration = domainEpoch.epochDuration
-    const lastEpochDuration = calculateLastNEpochsDuration(cache, domainId, 1)
-    const last6EpochsDuration = calculateLastNEpochsDuration(cache, domainId, 6)
-    const last144EpochDuration = calculateLastNEpochsDuration(cache, domainId, 144)
-    const last1kEpochDuration = calculateLastNEpochsDuration(cache, domainId, 1000)
-
-    domain.currentEpochDuration = currentEpochDuration
-    domain.lastEpochDuration = lastEpochDuration
-    domain.last6EpochsDuration = last6EpochsDuration
-    domain.last144EpochDuration = last144EpochDuration
-    domain.last1kEpochDuration = last1kEpochDuration
-
-    cache.domains.set(domain.id, domain)
+    domain.lastDomainBlockNumber = Number(domainBlockNumber);
+    domain.totalTransfersIn += totalTransfersIn;
+    domain.transfersInCount += transfersInCount;
+    domain.totalTransfersOut += totalTransfersOut;
+    domain.transfersOutCount += transfersOutCount;
+    domain.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
+    domain.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
+    domain.totalTransfersRejected += totalTransfersRejected;
+    domain.transfersRejectedCount += transfersRejectedCount;
+    domain.totalVolume += totalVolume;
+    domain.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
+    domain.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
+    domain.totalBurnedBalance += BigInt(blockFees.burnedBalance);
+    domain.bundleCount++;
+    domain.currentEpochDuration = domainEpoch.epochDuration;
+    if (domain.completedEpoch > 0) {
+      const lastEpoch = getOrCreateDomainEpoch(
+        cache,
+        block,
+        domainId,
+        domain.completedEpoch - 1
+      );
+      const lastEpochTimestampEnd = lastEpoch.timestampEnd.getTime();
+      domain.lastEpochDuration = lastEpoch.epochDuration;
+      if (domain.completedEpoch > 6) {
+        domain.last6EpochsDuration = BigInt(
+          lastEpochTimestampEnd -
+            getOrCreateDomainEpoch(
+              cache,
+              block,
+              domainId,
+              domain.completedEpoch - 6
+            ).timestampEnd.getTime()
+        );
+      }
+      if (domain.completedEpoch > 144) {
+        domain.last144EpochDuration = BigInt(
+          lastEpochTimestampEnd -
+            getOrCreateDomainEpoch(
+              cache,
+              block,
+              domainId,
+              domain.completedEpoch - 144
+            ).timestampEnd.getTime()
+        );
+      }
+      if (domain.completedEpoch > 1000) {
+        domain.last1kEpochDuration = BigInt(
+          lastEpochTimestampEnd -
+            getOrCreateDomainEpoch(
+              cache,
+              block,
+              domainId,
+              domain.completedEpoch - 1000
+            ).timestampEnd.getTime()
+        );
+      }
+    }
+    domain.lastBundleAt = getBlockNumber(block);
+    domain.updatedAt = getBlockNumber(block);
+    cache.domains.set(domain.id, domain);
   }
 
   operator.totalTransfersIn += totalTransfersIn
@@ -192,13 +223,4 @@ export function processBundleStoredEvent(
   cache.isModified = true
 
   return cache
-}
-
-// Helper function to calculate the duration of the last N epochs
-function calculateLastNEpochsDuration(cache: Cache, domainId: string, n: number): bigint {
-  const domainEpochs = Array.from(cache.domainEpochs.values()).filter(
-    (epoch) => epoch.domainId === domainId,
-  )
-  const lastNEpochs = domainEpochs.slice(-n - 1, -1)
-  return lastNEpochs.reduce((acc, epoch) => acc + BigInt(epoch.epochDuration), BigInt(0))
 }

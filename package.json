@@ -36,14 +36,14 @@
     "explorer:lint": "lerna run lint --scope=explorer",
     "explorer:lint:fix": "lerna run lint:fix --scope=explorer",
     "explorer:format": "lerna run format --scope=explorer",
-    "explorer:all": "lerna run all --scope=explorer",
+    "explorer": "lerna run all --scope=explorer",
     "indexers:typegen": "lerna run typegen --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:codegen": "lerna run codegen --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:migration": "lerna run migration --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:build": "lerna run build --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:process": "lerna run process --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:format": "lerna run format --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "indexers:all": "indexers:typegen && indexers:codegen && indexers:migration && indexers:build && indexers:process && indexers:process"
+    "indexers": "yarn indexers:typegen && yarn indexers:codegen && yarn indexers:migration && yarn indexers:build && yarn indexers:process"
   },
   "devDependencies": {
     "lerna": "^8.1.8"
