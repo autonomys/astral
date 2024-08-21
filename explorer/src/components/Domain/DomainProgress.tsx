@@ -9,7 +9,7 @@ import {
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
-import { FC, useMemo } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter } from 'utils/string'
@@ -22,7 +22,21 @@ interface CardData {
   currentEpoch: number
   lastBlock: number
   progress: number
-  estimatedRemainingTime: string
+  estimatedRemainingTime: bigint
+}
+
+const CountdownTimer: FC<{ initialTime: bigint }> = ({ initialTime }) => {
+  const [remainingTime, setRemainingTime] = useState<bigint>(initialTime)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRemainingTime((prevTime) => prevTime - BigInt(1))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  return <span>Estimated Remaining Time: {formatSeconds(remainingTime)}</span>
 }
 
 export const DomainProgress: FC = () => {
@@ -55,9 +69,8 @@ export const DomainProgress: FC = () => {
         currentEpoch: domain.completed_epoch,
         lastBlock: domain.last_domain_block_number,
         progress,
-        estimatedRemainingTime: formatSeconds(
+        estimatedRemainingTime:
           (BigInt(domain.last_epoch_duration) / BigInt(100 * 1000)) * BigInt(100 - progress),
-        ),
       }
     })
   }, [data, loading, error, network])
@@ -102,7 +115,7 @@ export const DomainProgress: FC = () => {
                   <span>Last Block: {numberWithCommas(lastBlock)}</span>
                 </div>
                 <div className='flex justify-between text-xs text-grayDarker dark:text-whiteOpaque sm:text-sm'>
-                  <span>Estimated Remaining Time: {estimatedRemainingTime}</span>
+                  <CountdownTimer initialTime={estimatedRemainingTime} />
                 </div>
               </div>
             ),
