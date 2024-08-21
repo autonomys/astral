@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  db:
+    container_name: explorer-db
+    image: postgres:14
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+
+  graphql-engine:
+    container_name: explorer-graphql
+    image: hasura/graphql-engine:v2.40.0
+    depends_on:
+      - "db"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      # HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
+      HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
+    ports:
+      - "8080:8080"
+    command:
+      - graphql-engine
+      - serve

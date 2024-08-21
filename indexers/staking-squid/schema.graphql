@@ -32,9 +32,18 @@ type Domain @entity {
   totalBurnedBalance: BigInt!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
+  currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
   accumulatedEpochStake: BigInt!
   accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochRewards: BigInt!
+  accumulatedEpochShares: BigInt!
   bundleCount: Int!
+  currentEpochDuration: BigInt!
+  lastEpochDuration: BigInt!
+  last6EpochsDuration: BigInt!
+  last144EpochDuration: BigInt!
+  last1kEpochDuration: BigInt!
   lastBundleAt: Int!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -46,6 +55,13 @@ type Account @entity {
   totalEstimatedWithdrawals: BigInt!
   totalWithdrawals: BigInt!
   totalTaxCollected: BigInt!
+  currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
+  currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
+  accumulatedEpochStake: BigInt!
+  accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochShares: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -107,8 +123,10 @@ type Operator @entity {
   totalConsensusStorageFee: BigInt!
   totalDomainExecutionFee: BigInt!
   totalBurnedBalance: BigInt!
-  accumulatedEpochShares: BigInt!
+  accumulatedEpochStake: BigInt!
   accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochRewards: BigInt!
+  accumulatedEpochShares: BigInt!
   activeEpochCount: Int!
   bundleCount: Int!
   status: OperatorStatus! @index
@@ -121,12 +139,32 @@ type Operator @entity {
 type DomainBlock @entity {
   id: ID! @index
   domainId: String! @index
+  domainEpochId: String! @index
   blockNumber: Int! @index
   blockHash: String! @index
   extrinsicRoot: String!
+  epoch: Int! @index
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
   timestamp: DateTime! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type DomainEpoch @entity {
+  id: ID! @index
+  epoch: Int! @index
+  domainId: String! @index
+  blockNumberStart: Int! @index
+  blockNumberEnd: Int! @index
+  blockCount: Int!
+  timestampStart: DateTime! @index
+  timestampEnd: DateTime! @index
+  epochDuration: BigInt!
+  consensusBlockNumberStart: Int! @index
+  consensusBlockNumberEnd: Int! @index
+  consensusBlockHashStart: String! @index
+  consensusBlockHashEnd: String! @index
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -135,9 +173,11 @@ type Bundle @entity {
   id: ID! @index
   domainId: String! @index
   domainBlockId: String! @index
+  domainEpochId: String! @index
   domainBlockNumber: Int! @index
   domainBlockHash: String!
   domainBlockExtrinsicRoot: String!
+  epoch: Int! @index
   consensusBlockNumber: Int! @index
   consensusBlockHash: String! @index
   totalTransfersIn: BigInt!
@@ -161,6 +201,8 @@ type BundleAuthor @entity {
   operatorId: String! @index
   bundleId: String! @index
   domainBlockId: String! @index
+  domainEpochId: String! @index
+  epoch: Int! @index
 }
 
 enum NominatorStatus {
@@ -197,8 +239,13 @@ type Nominator @entity {
   totalWithdrawals: BigInt!
   totalDepositsCount: Int!
   totalWithdrawalsCount: Int!
-  accumulatedEpochShares: BigInt!
+  currentTotalStake: BigInt!
+  currentStorageFeeDeposit: BigInt!
+  currentTotalShares: BigInt!
+  currentSharePrice: BigInt!
+  accumulatedEpochStake: BigInt!
   accumulatedEpochStorageFeeDeposit: BigInt!
+  accumulatedEpochShares: BigInt!
   activeEpochCount: Int!
   status: NominatorStatus! @index
   pendingAction: NominatorPendingAction! @index
@@ -209,6 +256,9 @@ type Nominator @entity {
 enum DepositStatus {
   PENDING
   DEPOSITED
+  PARTIALLY_WITHDRAWN
+  WITHDRAWN
+  SLASHED
 }
 
 type Deposit @entity {
@@ -219,6 +269,8 @@ type Deposit @entity {
   nominatorId: String! @index
   amount: BigInt!
   storageFeeDeposit: BigInt!
+  totalAmount: BigInt!
+  totalWithdrawn: BigInt!
   status: DepositStatus! @index
   timestamp: DateTime! @index
   extrinsicHash: String! @index
@@ -247,6 +299,7 @@ type Withdrawal @entity {
   estimatedAmount: BigInt!
   unlockedAmount: BigInt!
   unlockedStorageFee: BigInt!
+  totalAmount: BigInt!
   status: WithdrawalStatus! @index
   timestamp: DateTime! @index
   withdrawExtrinsicHash: String! @index
@@ -277,7 +330,10 @@ type Stats @entity {
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
   domainsCount: Int!
   operatorsCount: Int!
   activeOperatorsCount: Int!
@@ -297,7 +353,10 @@ type StatsPerDomain @entity {
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
   operatorsCount: Int!
   activeOperatorsCount: Int!
   slashedOperatorsCount: Int!
@@ -313,14 +372,50 @@ type StatsPerOperator @entity {
   operatorId: String! @index
   blockNumber: Int! @index
   totalStaked: BigInt!
-  totalShares: BigInt!
   totalTaxCollected: BigInt!
   totalRewardsCollected: BigInt!
   totalDeposits: BigInt!
   totalWithdrawals: BigInt!
+  totalShares: BigInt!
   currentSharePrice: BigInt!
   allTimeHighStaked: BigInt!
   allTimeHighSharePrice: BigInt!
+  nominatorsCount: Int!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
+
+type StatsPerNominator @entity {
+  id: ID! @index
+  domainId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
+  allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
+  depositsCount: Int!
+  withdrawalsCount: Int!
+  timestamp: DateTime! @index
+}
+
+type StatsPerAccount @entity {
+  id: ID! @index
+  accountId: String! @index
+  blockNumber: Int! @index
+  totalStaked: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawals: BigInt!
+  totalShares: BigInt!
+  currentSharePrice: BigInt!
+  allTimeHighStaked: BigInt!
+  allTimeHighSharePrice: BigInt!
+  operatorsCount: Int!
   nominatorsCount: Int!
   depositsCount: Int!
   withdrawalsCount: Int!

@@ -4,11 +4,12 @@ import {
   createBundleAuthor,
   getOrCreateAccount,
   getOrCreateDomain,
+  getOrCreateDomainEpoch,
   getOrCreateOperator,
 } from "../storage";
 import { createDomainBlock } from "../storage/domainBlock";
 import { ExecutionReceipt, SealedBundleHeader } from "../types/v1";
-import { blockUID, bundleUID, getBlockNumber } from "../utils";
+import { blockUID, bundleUID, getBlockNumber, getTimestamp } from "../utils";
 import { Cache, LastBlockBundleIndexKey } from "../utils/cache";
 
 export function processBundleStoredEvent(
@@ -78,6 +79,28 @@ export function processBundleStoredEvent(
     keyIdLastBlockBundleIndex,
     blockBundleIndex.toString()
   );
+
+  const epoch = domain.completedEpoch;
+  const domainEpoch = getOrCreateDomainEpoch(cache, block, domainId, epoch, {
+    epoch,
+    blockNumberStart: Number(domainBlockNumber),
+    timestampStart: getTimestamp(block),
+    consensusBlockNumberStart: getBlockNumber(block),
+    consensusBlockHashStart: block.header.hash,
+  });
+  domainEpoch.blockNumberEnd = Number(domainBlockNumber);
+  domainEpoch.timestampEnd = getTimestamp(block);
+  domainEpoch.consensusBlockNumberEnd = getBlockNumber(block);
+  domainEpoch.consensusBlockHashEnd = block.header.hash;
+  domainEpoch.blockCount =
+    domainEpoch.blockNumberEnd - domainEpoch.blockNumberStart + 1;
+  domainEpoch.epochDuration = BigInt(
+    domainEpoch.timestampEnd.getTime() - domainEpoch.timestampStart.getTime()
+  );
+  domainEpoch.updatedAt = getBlockNumber(block);
+
+  cache.domainEpochs.set(domainEpoch.id, domainEpoch);
+
   let bundle = cache.bundles.get(
     bundleUID(domainId, domainBlockHash, blockBundleIndex)
   );
@@ -91,7 +114,9 @@ export function processBundleStoredEvent(
       domainBlockNumber,
       domainBlockHash,
       {
+        domainEpochId: domainEpoch.id,
         extrinsicRoot: domainBlockExtrinsicRoot,
+        epoch: domain.completedEpoch,
         consensusBlockNumber: Number(consensusBlockNumber),
         consensusBlockHash,
       }
@@ -107,9 +132,11 @@ export function processBundleStoredEvent(
       blockBundleIndex,
       {
         domainBlockId: domainBlock.id,
+        domainEpochId: domainEpoch.id,
         domainBlockNumber: Number(domainBlockNumber),
         domainBlockHash,
         domainBlockExtrinsicRoot,
+        epoch: domain.completedEpoch,
         consensusBlockNumber: Number(consensusBlockNumber),
         consensusBlockHash,
         totalTransfersIn,
@@ -133,7 +160,11 @@ export function processBundleStoredEvent(
       account.id,
       operator.id,
       bundle.id,
-      domainBlock.id
+      domainBlock.id,
+      domain.completedEpoch,
+      {
+        domainEpochId: domainEpoch.id,
+      }
     );
     cache.bundleAuthors.set(bundleAuthor.id, bundleAuthor);
 
@@ -151,13 +182,55 @@ export function processBundleStoredEvent(
     domain.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
     domain.totalBurnedBalance += BigInt(blockFees.burnedBalance);
     domain.bundleCount++;
+    domain.currentEpochDuration = domainEpoch.epochDuration;
+    if (epoch > 0) {
+      const lastEpoch = getOrCreateDomainEpoch(
+        cache,
+        block,
+        domainId,
+        epoch - 1
+      );
+      const lastEpochTimestampEnd = lastEpoch.timestampEnd.getTime();
+      domain.lastEpochDuration = lastEpoch.epochDuration;
+      if (epoch > 6) {
+        domain.last6EpochsDuration = BigInt(
+          lastEpochTimestampEnd -
+            getOrCreateDomainEpoch(
+              cache,
+              block,
+              domainId,
+              epoch - 6
+            ).timestampEnd.getTime()
+        );
+      }
+      if (epoch > 144) {
+        domain.last144EpochDuration = BigInt(
+          lastEpochTimestampEnd -
+            getOrCreateDomainEpoch(
+              cache,
+              block,
+              domainId,
+              epoch - 144
+            ).timestampEnd.getTime()
+        );
+      }
+      if (epoch > 1000) {
+        domain.last1kEpochDuration = BigInt(
+          lastEpochTimestampEnd -
+            getOrCreateDomainEpoch(
+              cache,
+              block,
+              domainId,
+              epoch - 1000
+            ).timestampEnd.getTime()
+        );
+      }
+    }
     domain.lastBundleAt = getBlockNumber(block);
     domain.updatedAt = getBlockNumber(block);
-
     cache.domains.set(domain.id, domain);
   }
 
-  // To-Do: Only add the weight of the operator for these values
   operator.totalTransfersIn += totalTransfersIn;
   operator.transfersInCount += transfersInCount;
   operator.totalTransfersOut += totalTransfersOut;
