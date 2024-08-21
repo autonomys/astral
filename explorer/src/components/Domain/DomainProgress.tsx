@@ -103,9 +103,6 @@ export const DomainProgress: FC = () => {
                   <span className='text-base font-semibold text-grayDark dark:text-white sm:text-lg'>
                     {capitalizeFirstLetter(title)}
                   </span>
-                  <span className='text-base font-semibold text-purpleRoyal dark:text-purplePale sm:text-sm'>
-                    Epoch: {numberWithCommas(currentEpoch)}
-                  </span>
                   <span className='font-sbold text-xs text-grayDark dark:text-white sm:text-sm'>
                     {progress}%
                   </span>
