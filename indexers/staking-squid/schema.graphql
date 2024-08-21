@@ -89,17 +89,6 @@ type Operator @entity {
   signingKey: String! @index
   minimumNominatorStake: BigInt!
   nominationTax: Int!
-  name: String! @index
-  description: String!
-  icon: String!
-  banner: String!
-  website: String!
-  websiteVerified: Boolean!
-  email: String!
-  emailVerified: Boolean!
-  discord: String!
-  github: String!
-  twitter: String!
   currentTotalStake: BigInt!
   currentStorageFeeDeposit: BigInt!
   currentEpochRewards: BigInt!
@@ -132,6 +121,26 @@ type Operator @entity {
   status: OperatorStatus! @index
   pendingAction: OperatorPendingAction! @index
   lastBundleAt: Int!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorProfile @entity {
+  id: ID! @index
+  operatorId: String! @index
+  name: String! @index
+  description: String!
+  icon: String!
+  banner: String!
+  website: String!
+  websiteVerified: Boolean!
+  email: String!
+  emailVerified: Boolean!
+  discord: String!
+  github: String!
+  twitter: String!
+  proofMessage: String!
+  proofSignature: String!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
