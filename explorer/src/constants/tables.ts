@@ -142,6 +142,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'active_epoch_count', label: 'Active Epoch Count', isSelected: false },
     { name: 'bundle_count', label: 'Bundle Count', isSelected: false },
     { name: 'status', label: 'Status', isSelected: true },
+    { name: 'raw_status', label: 'Raw Status', isSelected: false },
     { name: 'pending_action', label: 'Pending Action', isSelected: false },
     { name: 'last_bundle_at', label: 'Last Bundle At', isSelected: false },
     { name: 'nominators_aggregate', label: 'Nominator Count', isSelected: false },

@@ -30,6 +30,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import {
   bigNumberToFormattedString,
   bigNumberToNumber,
+  formatUnitsToNumber,
   numberFormattedString,
   numberWithCommas,
 } from 'utils/number'
@@ -220,7 +221,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Current Share Price',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.current_share_price)}</div>
+          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${TOKEN.symbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_deposits'))
@@ -412,10 +413,17 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => <div>{numberFormattedString(row.original.bundle_count)}</div>,
       })
-    if (selectedColumns.includes('status') || selectedColumns.includes('raw_status'))
+    if (selectedColumns.includes('status'))
       cols.push({
         accessorKey: 'status',
         header: 'Status',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => <div>{allCapsToNormal(row.original.status)}</div>,
+      })
+    if (selectedColumns.includes('raw_status'))
+      cols.push({
+        accessorKey: 'raw_status',
+        header: 'Raw Status',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => {
           const status = operatorStatus(JSON.parse(row.original.raw_status ?? '{}'))
