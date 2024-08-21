@@ -37,7 +37,9 @@ const CountdownTimer: FC<{ initialTime: bigint }> = ({ initialTime }) => {
   }, [])
 
   return (
-    <span>Estimated Remaining Time: {remainingTime > 0 ? formatSeconds(remainingTime) : '0'}</span>
+    <span>
+      Estimated Remaining Time: {remainingTime > BigInt(0) ? formatSeconds(remainingTime) : '0'}
+    </span>
   )
 }
 
@@ -72,7 +74,9 @@ export const DomainProgress: FC = () => {
         lastBlock: domain.last_domain_block_number,
         progress,
         estimatedRemainingTime:
-          (BigInt(domain.last_epoch_duration) / BigInt(100 * 1000)) * BigInt(100 - progress),
+          progress < 100
+            ? (BigInt(domain.last_epoch_duration) / BigInt(100 * 1000)) * BigInt(100 - progress)
+            : BigInt(0),
       }
     })
   }, [data, loading, error, network])
