@@ -1,0 +1,37 @@
+{
+  "name": "astral",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/autonomys/astral"
+  },
+  "author": {
+    "name": "Autonomys",
+    "url": "https://www.autonomys.xyz"
+  },
+  "bugs": {
+    "url": "https://github.com/autonomys/astral/issues"
+  },
+  "workspaces": [
+    "indexers/*",
+    "explorer"
+  ],
+  "scripts": {
+    "up": "docker compose up",
+    "down": "docker compose down",
+    "db": "lerna run start --scope=db",
+    "db:metadata": "lerna run metadata --scope=db",
+    "sqd:typegen": "lerna run typegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "sqd:codegen": "lerna run codegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "sqd:migration": "lerna run migration --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "sqd:build": "lerna run build --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "sqd:process": "lerna run process --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "sqd": "sqd:typegen && sqd:codegen && sqd:migration && sqd:build && sqd:process"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.8"
+  }
+}

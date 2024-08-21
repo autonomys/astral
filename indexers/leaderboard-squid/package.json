@@ -1,12 +1,9 @@
 {
   "name": "leaderboard-squid",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=16"
-  },
-  "scripts": {
-    "build": "rm -rf lib && tsc",
-    "deploy": "sqd deploy --org autonomys-labs ."
   },
   "repository": {
     "type": "git",
@@ -15,6 +12,17 @@
   "author": {
     "name": "Autonomys",
     "url": "https://www.autonomys.xyz"
+  },
+  "bugs": {
+    "url": "https://github.com/autonomys/astral/issues"
+  },
+  "scripts": {
+    "typegen": "sqd typegen",
+    "codegen": "sqd codegen",
+    "migration": "sqd migration:generate",
+    "build": "rm -rf lib && tsc",
+    "process": "sqd process",
+    "deploy": "sqd deploy --org autonomys-labs ."
   },
   "dependencies": {
     "@autonomys/auto-consensus": "^0.2.0",
