@@ -2741,7 +2741,7 @@ export type CheckRoleQueryVariables = Exact<{
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'Query', isFarmer: Array<{ __typename?: 'RewardEvent', account?: { __typename?: 'Account', id: string } | null }> };
+export type CheckRoleQuery = { __typename?: 'Query', farmer: Array<{ __typename?: 'RewardEvent', account?: { __typename?: 'Account', id: string } | null }>, operator: { __typename?: 'OperatorsConnection', totalCount: number }, nominator: { __typename?: 'NominatorsConnection', totalCount: number } };
 
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
