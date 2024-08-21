@@ -47,6 +47,7 @@ type Transfer @entity {
   from: String! @index
   to: String! @index
   value: BigInt!
+  fee: BigInt!
   timestamp: BigInt! @index
   createdAt: Int! @index
 }
@@ -80,6 +81,7 @@ type Extrinsic @entity {
   fee: BigInt!
   success: Boolean!
   blockId: String! @index
+  blockHeight: BigInt! @index
   pos: Int!
   timestamp: DateTime! @index
   args: String!
@@ -95,6 +97,7 @@ type Event @entity {
   pos: Int!
   args: String!
   blockId: String! @index
+  blockHeight: BigInt! @index
   extrinsicId: String! @index
   callId: String! @index
   createdAt: Int! @index

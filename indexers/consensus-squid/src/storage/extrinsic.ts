@@ -22,6 +22,7 @@ export const createExtrinsic = (
     fee: props.fee ?? BigInt(0),
     success: props.success ?? false,
     blockId: props.blockId ?? '',
+    blockHeight: props.blockHeight ?? BigInt(0),
     pos: props.pos ?? 0,
     timestamp: props.timestamp ?? new Date(),
     args: props.args ?? '',

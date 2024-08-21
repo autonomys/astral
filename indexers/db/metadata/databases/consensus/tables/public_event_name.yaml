@@ -1,0 +1,15 @@
+table:
+  name: event_name
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - count
+        - created_at
+        - module_id
+        - name
+      filter: {}
+      allow_aggregations: true
+    comment: ""

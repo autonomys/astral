@@ -1,5 +1,5 @@
 table:
-  name: extrinsic_module_name
+  name: module
   schema: public
 select_permissions:
   - role: user
@@ -7,6 +7,9 @@ select_permissions:
       columns:
         - id
         - created_at
+        - event_count
+        - extrinsic_count
         - name
       filter: {}
+      allow_aggregations: true
     comment: ""

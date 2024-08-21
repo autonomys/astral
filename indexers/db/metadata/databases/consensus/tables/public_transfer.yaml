@@ -1,12 +1,16 @@
 table:
-  name: event_module_name
+  name: transfer
   schema: public
 select_permissions:
   - role: user
     permission:
       columns:
-        - id
         - created_at
-        - name
+        - fee
+        - from
+        - id
+        - timestamp
+        - to
+        - value
       filter: {}
     comment: ""

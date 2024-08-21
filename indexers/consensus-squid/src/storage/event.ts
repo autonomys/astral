@@ -14,6 +14,7 @@ export const createEvent = (block: CtxBlock, id: string, props: Partial<Event> =
     pos: props.pos ?? 0,
     args: props.args ?? '',
     blockId: props.blockId ?? '',
+    blockHeight: props.blockHeight ?? BigInt(0),
     extrinsicId: props.extrinsicId ?? '',
     callId: props.callId ?? '',
     createdAt: blockNumber,

@@ -1,5 +1,5 @@
 import type { CtxBlock, CtxEvent } from '../processor'
-import { getOrCreateAccount } from '../storage/account'
+import { getOrCreateAccount, getOrCreateTransfer } from '../storage'
 import { hexToAccount } from '../utils'
 import { Cache } from '../utils/cache'
 
@@ -12,6 +12,14 @@ export function processTransferEvent(cache: Cache, block: CtxBlock, event: CtxEv
   const toAccount = getOrCreateAccount(cache, block, to)
   cache.accounts.set(fromAccount.id, fromAccount)
   cache.accounts.set(toAccount.id, toAccount)
+
+  const transfer = getOrCreateTransfer(cache, block, event.id + '-from', {
+    from,
+    to,
+    value: amount,
+  })
+  cache.transfers.set(transfer.id, transfer)
+
   cache.isModified = true
 
   return cache

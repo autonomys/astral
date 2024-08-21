@@ -1,0 +1,17 @@
+table:
+  name: metadata
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - sort_id
+        - updated_at
+        - block_hash
+        - metadata
+        - spec_name
+      filter: {}
+      allow_aggregations: true
+    comment: ""

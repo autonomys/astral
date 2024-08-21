@@ -10,6 +10,7 @@ import {
   ExtrinsicName,
   Log,
   Module,
+  Transfer,
 } from '../model'
 import type { Ctx } from '../processor'
 
@@ -27,6 +28,8 @@ export type TemporaryCache = {
   events: Map<string, Event>
   calls: Map<string, Call>
   logs: Map<string, Log>
+
+  transfers: Map<string, Transfer>
 }
 
 type CacheManager = {
@@ -48,6 +51,7 @@ export const initTemporaryCache: TemporaryCache = {
   events: new Map(),
   calls: new Map(),
   logs: new Map(),
+  transfers: new Map(),
 }
 
 export const initCacheManager: CacheManager = {
@@ -113,6 +117,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logTemp += logEntry('events', cache.events)
   logTemp += logEntry('calls', cache.calls)
   logTemp += logEntry('logs', cache.logs)
+  logTemp += logEntry('transfers', cache.transfers)
 
   console.log('\x1b[34mSaving in database:\x1b[0m', logPerm)
   console.log(' and ', logTemp, '\n')
@@ -129,4 +134,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.events.clear()
   cache.calls.clear()
   cache.logs.clear()
+  cache.transfers.clear()
+
+  cache.isModified = false
 }

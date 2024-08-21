@@ -5,21 +5,22 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - success
-        - id
-        - created_at
-        - index_in_block
-        - pos
-        - fee
-        - nonce
-        - tip
         - account_id
         - args
+        - block_height
         - block_id
+        - created_at
         - error
+        - fee
         - hash
+        - id
+        - index_in_block
         - name
+        - nonce
+        - pos
         - signature
+        - success
         - timestamp
+        - tip
       filter: {}
     comment: ""
