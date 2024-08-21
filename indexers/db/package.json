@@ -15,8 +15,9 @@
     "url": "https://github.com/autonomys/astral/issues"
   },
   "scripts": {
-    "start": "hasura console",
-    "metadata": "hasura metadata apply --skip-update-check"
+    "console": "hasura console",
+    "metadata": "hasura metadata apply --skip-update-check",
+    "start": "yarn metadata && yarn console"
   },
   "devDependencies": {
     "hasura-cli": "2.36.2"

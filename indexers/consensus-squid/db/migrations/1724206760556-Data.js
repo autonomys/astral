@@ -1,11 +1,17 @@
-module.exports = class Data1724205335442 {
-    name = 'Data1724205335442'
+module.exports = class Data1724206760556 {
+    name = 'Data1724206760556'
 
     async up(db) {
         await db.query(`CREATE TABLE "account" ("id" character varying NOT NULL, "nonce" numeric NOT NULL, "free" numeric NOT NULL, "reserved" numeric NOT NULL, "total" numeric, "created_at" integer NOT NULL, "updated_at" integer NOT NULL, CONSTRAINT "PK_54115ee388cdb6d86bb4bf5b2ea" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_3756b99a2c20a91a19196cbc11" ON "account" ("total") `)
         await db.query(`CREATE INDEX "IDX_2740156ea8742b8df1ad9d9774" ON "account" ("created_at") `)
         await db.query(`CREATE INDEX "IDX_8bed31488e09ed64770378600b" ON "account" ("updated_at") `)
+        await db.query(`CREATE TABLE "metadata" ("id" character varying NOT NULL, "sort_id" integer NOT NULL, "block_hash" text NOT NULL, "spec_name" text NOT NULL, "metadata" text NOT NULL, "created_at" integer NOT NULL, "updated_at" integer NOT NULL, CONSTRAINT "PK_56b22355e89941b9792c04ab176" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE INDEX "IDX_7d87619d6ebb96bef0757436e6" ON "metadata" ("sort_id") `)
+        await db.query(`CREATE INDEX "IDX_579fa06e1ce8b2151d784362c1" ON "metadata" ("block_hash") `)
+        await db.query(`CREATE INDEX "IDX_2d02620b857df828b0408eb7c0" ON "metadata" ("spec_name") `)
+        await db.query(`CREATE INDEX "IDX_924200e1ccaf7127fc54163fe4" ON "metadata" ("created_at") `)
+        await db.query(`CREATE INDEX "IDX_7ec3ae9bcc8a2c85b6c60df0e7" ON "metadata" ("updated_at") `)
         await db.query(`CREATE TABLE "transfer" ("id" character varying NOT NULL, "from" text NOT NULL, "to" text NOT NULL, "value" numeric NOT NULL, "timestamp" integer NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_fd9ddbdd49a17afcbe014401295" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_be54ea276e0f665ffc38630fc0" ON "transfer" ("from") `)
         await db.query(`CREATE INDEX "IDX_4cbc37e8c3b47ded161f44c24f" ON "transfer" ("to") `)
@@ -53,6 +59,12 @@ module.exports = class Data1724205335442 {
         await db.query(`DROP INDEX "public"."IDX_3756b99a2c20a91a19196cbc11"`)
         await db.query(`DROP INDEX "public"."IDX_2740156ea8742b8df1ad9d9774"`)
         await db.query(`DROP INDEX "public"."IDX_8bed31488e09ed64770378600b"`)
+        await db.query(`DROP TABLE "metadata"`)
+        await db.query(`DROP INDEX "public"."IDX_7d87619d6ebb96bef0757436e6"`)
+        await db.query(`DROP INDEX "public"."IDX_579fa06e1ce8b2151d784362c1"`)
+        await db.query(`DROP INDEX "public"."IDX_2d02620b857df828b0408eb7c0"`)
+        await db.query(`DROP INDEX "public"."IDX_924200e1ccaf7127fc54163fe4"`)
+        await db.query(`DROP INDEX "public"."IDX_7ec3ae9bcc8a2c85b6c60df0e7"`)
         await db.query(`DROP TABLE "transfer"`)
         await db.query(`DROP INDEX "public"."IDX_be54ea276e0f665ffc38630fc0"`)
         await db.query(`DROP INDEX "public"."IDX_4cbc37e8c3b47ded161f44c24f"`)
