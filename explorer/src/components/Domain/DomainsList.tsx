@@ -460,6 +460,87 @@ export const DomainsList: FC = () => {
           </Link>
         ),
       })
+    if (selectedColumns.includes('current_total_shares'))
+      cols.push({
+        accessorKey: 'current_total_shares',
+        header: 'Current Total Shares',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.current_total_shares)}</div>
+        ),
+      })
+    if (selectedColumns.includes('current_share_price'))
+      cols.push({
+        accessorKey: 'current_share_price',
+        header: 'Current Share Price',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.current_share_price)}</div>
+        ),
+      })
+    if (selectedColumns.includes('accumulated_epoch_rewards'))
+      cols.push({
+        accessorKey: 'accumulated_epoch_rewards',
+        header: 'Accumulated Epoch Rewards',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.accumulated_epoch_rewards)}</div>
+        ),
+      })
+    if (selectedColumns.includes('accumulated_epoch_shares'))
+      cols.push({
+        accessorKey: 'accumulated_epoch_shares',
+        header: 'Accumulated Epoch Shares',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.accumulated_epoch_shares)}</div>
+        ),
+      })
+    if (selectedColumns.includes('current_epoch_duration'))
+      cols.push({
+        accessorKey: 'current_epoch_duration',
+        header: 'Current Epoch Duration',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.current_epoch_duration)}</div>
+        ),
+      })
+    if (selectedColumns.includes('last_epoch_duration'))
+      cols.push({
+        accessorKey: 'last_epoch_duration',
+        header: 'Last Epoch Duration',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.last_epoch_duration)}</div>
+        ),
+      })
+    if (selectedColumns.includes('last6_epochs_duration'))
+      cols.push({
+        accessorKey: 'last6_epochs_duration',
+        header: 'Last 6 Epochs Duration',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.last6_epochs_duration)}</div>
+        ),
+      })
+    if (selectedColumns.includes('last144_epoch_duration'))
+      cols.push({
+        accessorKey: 'last144_epoch_duration',
+        header: 'Last 144 Epoch Duration',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.last144_epoch_duration)}</div>
+        ),
+      })
+    if (selectedColumns.includes('last1k_epoch_duration'))
+      cols.push({
+        accessorKey: 'last1k_epoch_duration',
+        header: 'Last 1K Epoch Duration',
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => (
+          <div>{numberFormattedString(row.original.last1k_epoch_duration)}</div>
+        ),
+      })
     return cols
   }, [selectedColumns, network, section])
 

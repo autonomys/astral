@@ -45,8 +45,17 @@ export const QUERY_DOMAIN_LIST = gql`
       updated_at
       total_estimated_withdrawals
       total_withdrawals
+      current_total_shares
+      current_share_price
       accumulated_epoch_stake
       accumulated_epoch_storage_fee_deposit
+      accumulated_epoch_rewards
+      accumulated_epoch_shares
+      current_epoch_duration
+      last_epoch_duration
+      last6_epochs_duration
+      last144_epoch_duration
+      last1k_epoch_duration
       operators_aggregate {
         aggregate {
           count
