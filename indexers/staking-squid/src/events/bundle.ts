@@ -80,7 +80,7 @@ export function processBundleStoredEvent(
     blockBundleIndex.toString()
   );
 
-  const epoch = cache.domains.get(domainId)?.completedEpoch ?? 0;
+  const epoch = domain.completedEpoch;
   const domainEpoch = getOrCreateDomainEpoch(cache, block, domainId, epoch, {
     epoch,
     blockNumberStart: Number(domainBlockNumber),
