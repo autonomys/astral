@@ -4083,6 +4083,13 @@
     "@subsquid/util-internal-hex" "^1.2.2"
     "@subsquid/util-internal-json" "^1.2.2"
 
+"@subsquid/scale-type-system@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@subsquid/scale-type-system/-/scale-type-system-1.0.2.tgz#bdbe03602b44a7d3a82d2ee7147307cefad502eb"
+  integrity sha512-bZSUGO/Hfnf/+luZ8lWEsGqr9iIiQeaifmXEiOGBpr5Ace6H+pPY3lFmDTPWigoqt7VxrhRO0jvk5RLAyeBJvg==
+  dependencies:
+    "@subsquid/util-internal" "^3.0.0"
+
 "@subsquid/ss58-codec@^1.2.3":
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/@subsquid/ss58-codec/-/ss58-codec-1.2.3.tgz#7a139ea59357cac7290719f08452a15828fbd3f6"
@@ -4156,6 +4163,19 @@
     "@subsquid/util-internal-processor-tools" "^4.1.1"
     "@subsquid/util-internal-range" "^0.3.0"
     "@subsquid/util-internal-validation" "^0.5.0"
+
+"@subsquid/substrate-runtime@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@subsquid/substrate-runtime/-/substrate-runtime-2.0.0.tgz#c887757f27a2a979f6a8a4440372712861aec8a5"
+  integrity sha512-sjw0BmcUPnXasYqv9zuI8wb21Y2hyIPpz24ut9eBTVXUvdBobASw/6iFlQsFoxqzz39xxQfZIZsWXBet5AViAw==
+  dependencies:
+    "@subsquid/scale-codec" "^4.0.1"
+    "@subsquid/scale-type-system" "^1.0.2"
+    "@subsquid/util-internal" "^3.1.0"
+    "@subsquid/util-internal-hex" "^1.2.2"
+    "@subsquid/util-naming" "^1.2.2"
+    "@subsquid/util-xxhash" "^1.2.2"
+    blake2b "^2.1.4"
 
 "@subsquid/substrate-typegen@^8.1.0":
   version "8.1.0"
@@ -5776,7 +5796,7 @@ axe-core@^4.9.1:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.10.0.tgz#d9e56ab0147278272739a000880196cdfe113b59"
   integrity sha512-Mr2ZakwQ7XUAjp7pAwQWRhhK8mQQ6JAaNWSjmjxil0R8BPioMtQsTLOolGYkji1rcL++3dCqZA3zWqpT+9Ew6g==
 
-axios@^1.6.0, axios@^1.7.4:
+axios@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.4.tgz#4c8ded1b43683c8dd362973c393f3ede24052aa2"
   integrity sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==
@@ -6190,13 +6210,6 @@ cfb@~1.2.1:
     adler-32 "~1.3.0"
     crc-32 "~1.2.0"
 
-chalk-template@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/chalk-template/-/chalk-template-1.1.0.tgz#ffc55db6dd745e9394b85327c8ac8466edb7a7b1"
-  integrity sha512-T2VJbcDuZQ0Tb2EWwSotMPJjgpy1/tGee1BTpUNsGZ/qgNjV2t7Mvu+d4600U564nbLesN1x2dPL+xii174Ekg==
-  dependencies:
-    chalk "^5.2.0"
-
 chalk@4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.0.tgz#4e14870a618d9e2edd97dd8345fd9d9dc315646a"
@@ -6229,11 +6242,6 @@ chalk@^4.0.0, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.1, chalk@^4.1.2:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
-
-chalk@^5.2.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/chalk/-/chalk-5.3.0.tgz#67c20a7ebef70e7f3970a01f90fa210cb6860385"
-  integrity sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==
 
 change-case-all@1.0.15:
   version "1.0.15"
@@ -8771,14 +8779,6 @@ hasown@^2.0.0, hasown@^2.0.1, hasown@^2.0.2:
   integrity sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==
   dependencies:
     function-bind "^1.1.2"
-
-hasura-cli@2.36.2:
-  version "2.36.2"
-  resolved "https://registry.yarnpkg.com/hasura-cli/-/hasura-cli-2.36.2.tgz#78bcb2200d2c062c73d046ef357bfa95f895672b"
-  integrity sha512-sB9Mu+wDtBQzUoupK6SkZppNQktoZt3oY1w3/t/KXf4+x/I3CG2lV7IhC9ZBrZoNoI93fiLLE3blhmxokOmOIw==
-  dependencies:
-    axios "^1.6.0"
-    chalk-template "^1.1.0"
 
 header-case@^2.0.4:
   version "2.0.4"

@@ -15,10 +15,14 @@
   "bugs": {
     "url": "https://github.com/autonomys/astral/issues"
   },
-  "workspaces": [
-    "indexers/*",
-    "explorer"
-  ],
+  "workspaces": {
+    "packages": [
+      "indexers/consensus-squid",
+      "indexers/leaderboard-squid",
+      "indexers/staking-squid",
+      "explorer"
+    ]
+  },
   "scripts": {
     "up": "docker compose up",
     "down": "docker compose down",
