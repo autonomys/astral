@@ -48,6 +48,8 @@
       "extrinsics",
       "gemini",
       "graphiql",
+      "hasura",
+      "deregister",
       "leaderboard",
       "siwe",
       "subscan",
