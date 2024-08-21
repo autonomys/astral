@@ -10,6 +10,8 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { capitalizeFirstLetter } from 'utils/string'
+import { formatSeconds } from 'utils/time'
+import { Tooltip } from '../common/Tooltip'
 import { QUERY_DOMAIN_STATUS } from './staking.query'
 
 interface Stat {
@@ -50,7 +52,12 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
             title: 'Current Epoch',
             intervalSeconds:
               currentEpochDuration && blockCount
-                ? BigInt(currentEpochDuration) / BigInt(Math.min(blockCount % 100, 100) * 1000)
+                ? BigInt(currentEpochDuration) /
+                  BigInt(
+                    Math.min(blockCount % 100, 100) * 1000 > 0
+                      ? Math.min(blockCount % 100, 100) * 1000
+                      : 1,
+                  )
                 : null,
           },
           {
@@ -103,7 +110,21 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
           <div key={statIndex} className='mb-3 sm:mb-4'>
             <div className='flex items-center justify-between'>
               <span className='text-base font-semibold text-grayDark dark:text-white sm:text-lg'>
-                {title}
+                <Tooltip
+                  text={
+                    <div className='flex w-full flex-col gap-1'>
+                      <span className='block text-xs'>
+                        1 block = {formatSeconds(intervalSeconds ?? 0)}
+                      </span>
+                      <span className='block text-xs'>
+                        1 epoch = {formatSeconds(BigInt(intervalSeconds ?? 0) * BigInt(100))}
+                      </span>
+                      <span className='block text-xs'>1 epoch = 100 blocks</span>
+                    </div>
+                  }
+                >
+                  {title}
+                </Tooltip>
               </span>
               <span className='text-sm text-grayDark dark:text-white'>
                 {intervalSeconds !== null ? intervalSeconds + 's per block' : 'N/A'}
