@@ -24,6 +24,8 @@ interface DomainData {
 
 type DomainBlockTimeProgressProps = {
   domain: string
+  currentEpochDuration: string | null
+  blockCount: number | null
   lastEpochDuration: string | null
   last6EpochsDuration: string | null
   last144EpochsDuration: string | null
@@ -32,6 +34,8 @@ type DomainBlockTimeProgressProps = {
 
 export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
   domain,
+  currentEpochDuration,
+  blockCount,
   lastEpochDuration,
   last6EpochsDuration,
   last144EpochsDuration,
@@ -42,6 +46,13 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
       {
         domain,
         stats: [
+          {
+            title: 'Current Epoch',
+            intervalSeconds:
+              currentEpochDuration && blockCount
+                ? BigInt(currentEpochDuration) / BigInt(Math.min(blockCount % 100, 100) * 1000)
+                : null,
+          },
           {
             title: 'Last 1 Epoch',
             intervalSeconds: lastEpochDuration
@@ -69,7 +80,15 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
         ],
       },
     ]
-  }, [domain, lastEpochDuration, last6EpochsDuration, last144EpochsDuration, last1kEpochDuration])
+  }, [
+    domain,
+    currentEpochDuration,
+    blockCount,
+    lastEpochDuration,
+    last6EpochsDuration,
+    last144EpochsDuration,
+    last1kEpochDuration,
+  ])
 
   return domainData.length > 0 ? (
     domainData.map(({ domain, stats }, domainIndex) => (
@@ -124,6 +143,8 @@ export const DomainBlockTime: FC = () => {
       <DomainBlockTimeProgress
         key={index}
         domain={domain.name}
+        currentEpochDuration={domain.current_epoch_duration}
+        blockCount={domain.last_domain_block_number}
         lastEpochDuration={domain.last_epoch_duration}
         last6EpochsDuration={domain.last6_epochs_duration}
         last144EpochsDuration={domain.last144_epoch_duration}
