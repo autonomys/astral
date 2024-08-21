@@ -40,7 +40,7 @@ import { AccountIcon } from '../common/AccountIcon'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
-import { DomainBlockTimeProgress } from '../Domain/DomainBlockTimeProgress'
+import { DomainBlockTime } from '../Domain/DomainBlockTime'
 import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
@@ -835,7 +835,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           <DomainProgress />
         </div>
         <div>
-          <DomainBlockTimeProgress />
+          <DomainBlockTime />
         </div>
       </div>
       <div className='my-4' ref={ref}>

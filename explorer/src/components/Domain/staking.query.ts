@@ -73,6 +73,10 @@ export const QUERY_DOMAIN_STATUS = gql`
       name
       last_domain_block_number
       completed_epoch
+      last_epoch_duration
+      last6_epochs_duration
+      last144_epoch_duration
+      last1k_epoch_duration
     }
   }
 `
@@ -134,28 +138,6 @@ export const QUERY_DOMAIN_BY_ID = gql`
           count
         }
       }
-    }
-  }
-`
-
-export const QUERY_DOMAIN_BLOCKS = gql`
-  query DomainBlocks(
-    $limit: Int!
-    $offset: Int
-    $orderBy: [domain_block_order_by!]!
-    $where: domain_block_bool_exp
-  ) {
-    domain_block(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-      id
-      domain_id
-      block_number
-      block_hash
-      extrinsic_root
-      consensus_block_number
-      consensus_block_hash
-      timestamp
-      created_at
-      updated_at
     }
   }
 `

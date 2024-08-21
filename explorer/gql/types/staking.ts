@@ -543,6 +543,9 @@ export type Bundle = {
   domain_block_hash: Scalars['String']['output'];
   domain_block_id: Scalars['String']['output'];
   domain_block_number: Scalars['Int']['output'];
+  /** An object relationship */
+  domain_epoch?: Maybe<Domain_Epoch>;
+  domain_epoch_id: Scalars['String']['output'];
   domain_execution_fee: Scalars['numeric']['output'];
   domain_id: Scalars['String']['output'];
   epoch: Scalars['Int']['output'];
@@ -570,6 +573,9 @@ export type Bundle_Author = {
   /** An object relationship */
   domain_block?: Maybe<Domain_Block>;
   domain_block_id: Scalars['String']['output'];
+  /** An object relationship */
+  domain_epoch?: Maybe<Domain_Epoch>;
+  domain_epoch_id: Scalars['String']['output'];
   domain_id: Scalars['String']['output'];
   epoch: Scalars['Int']['output'];
   id: Scalars['String']['output'];
@@ -589,6 +595,8 @@ export type Bundle_Author_Bool_Exp = {
   domain?: InputMaybe<Domain_Bool_Exp>;
   domain_block?: InputMaybe<Domain_Block_Bool_Exp>;
   domain_block_id?: InputMaybe<String_Comparison_Exp>;
+  domain_epoch?: InputMaybe<Domain_Epoch_Bool_Exp>;
+  domain_epoch_id?: InputMaybe<String_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
   epoch?: InputMaybe<Int_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
@@ -604,6 +612,8 @@ export type Bundle_Author_Order_By = {
   domain?: InputMaybe<Domain_Order_By>;
   domain_block?: InputMaybe<Domain_Block_Order_By>;
   domain_block_id?: InputMaybe<Order_By>;
+  domain_epoch?: InputMaybe<Domain_Epoch_Order_By>;
+  domain_epoch_id?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
@@ -619,6 +629,8 @@ export enum Bundle_Author_Select_Column {
   BundleId = 'bundle_id',
   /** column name */
   DomainBlockId = 'domain_block_id',
+  /** column name */
+  DomainEpochId = 'domain_epoch_id',
   /** column name */
   DomainId = 'domain_id',
   /** column name */
@@ -642,6 +654,7 @@ export type Bundle_Author_Stream_Cursor_Value_Input = {
   account_id?: InputMaybe<Scalars['String']['input']>;
   bundle_id?: InputMaybe<Scalars['String']['input']>;
   domain_block_id?: InputMaybe<Scalars['String']['input']>;
+  domain_epoch_id?: InputMaybe<Scalars['String']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   epoch?: InputMaybe<Scalars['Int']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
@@ -663,6 +676,8 @@ export type Bundle_Bool_Exp = {
   domain_block_hash?: InputMaybe<String_Comparison_Exp>;
   domain_block_id?: InputMaybe<String_Comparison_Exp>;
   domain_block_number?: InputMaybe<Int_Comparison_Exp>;
+  domain_epoch?: InputMaybe<Domain_Epoch_Bool_Exp>;
+  domain_epoch_id?: InputMaybe<String_Comparison_Exp>;
   domain_execution_fee?: InputMaybe<Numeric_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
   epoch?: InputMaybe<Int_Comparison_Exp>;
@@ -690,6 +705,8 @@ export type Bundle_Order_By = {
   domain_block_hash?: InputMaybe<Order_By>;
   domain_block_id?: InputMaybe<Order_By>;
   domain_block_number?: InputMaybe<Order_By>;
+  domain_epoch?: InputMaybe<Domain_Epoch_Order_By>;
+  domain_epoch_id?: InputMaybe<Order_By>;
   domain_execution_fee?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch?: InputMaybe<Order_By>;
@@ -723,6 +740,8 @@ export enum Bundle_Select_Column {
   DomainBlockId = 'domain_block_id',
   /** column name */
   DomainBlockNumber = 'domain_block_number',
+  /** column name */
+  DomainEpochId = 'domain_epoch_id',
   /** column name */
   DomainExecutionFee = 'domain_execution_fee',
   /** column name */
@@ -769,6 +788,7 @@ export type Bundle_Stream_Cursor_Value_Input = {
   domain_block_hash?: InputMaybe<Scalars['String']['input']>;
   domain_block_id?: InputMaybe<Scalars['String']['input']>;
   domain_block_number?: InputMaybe<Scalars['Int']['input']>;
+  domain_epoch_id?: InputMaybe<Scalars['String']['input']>;
   domain_execution_fee?: InputMaybe<Scalars['numeric']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   epoch?: InputMaybe<Scalars['Int']['input']>;
@@ -1315,6 +1335,7 @@ export type Domain = {
   bundle_count: Scalars['Int']['output'];
   completed_epoch: Scalars['Int']['output'];
   created_at: Scalars['Int']['output'];
+  current_epoch_duration: Scalars['numeric']['output'];
   current_share_price: Scalars['numeric']['output'];
   current_storage_fee_deposit: Scalars['numeric']['output'];
   current_total_shares: Scalars['numeric']['output'];
@@ -1323,9 +1344,15 @@ export type Domain = {
   deposits: Array<Deposit>;
   /** An aggregate relationship */
   deposits_aggregate: Deposit_Aggregate;
+  /** An array relationship */
+  epochs: Array<Domain_Epoch>;
   id: Scalars['String']['output'];
+  last1k_epoch_duration: Scalars['numeric']['output'];
+  last6_epochs_duration: Scalars['numeric']['output'];
+  last144_epoch_duration: Scalars['numeric']['output'];
   last_bundle_at: Scalars['Int']['output'];
   last_domain_block_number: Scalars['Int']['output'];
+  last_epoch_duration: Scalars['numeric']['output'];
   name: Scalars['String']['output'];
   /** An array relationship */
   nominators: Array<Nominator>;
@@ -1393,6 +1420,16 @@ export type DomainDeposits_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Deposit_Order_By>>;
   where?: InputMaybe<Deposit_Bool_Exp>;
+};
+
+
+/** columns and relationships of "domain" */
+export type DomainEpochsArgs = {
+  distinct_on?: InputMaybe<Array<Domain_Epoch_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Domain_Epoch_Order_By>>;
+  where?: InputMaybe<Domain_Epoch_Bool_Exp>;
 };
 
 
@@ -1505,12 +1542,17 @@ export type Domain_Avg_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -1543,6 +1585,9 @@ export type Domain_Block = {
   created_at: Scalars['Int']['output'];
   /** An object relationship */
   domain?: Maybe<Domain>;
+  /** An object relationship */
+  domain_epoch?: Maybe<Domain_Epoch>;
+  domain_epoch_id: Scalars['String']['output'];
   domain_id: Scalars['String']['output'];
   epoch: Scalars['Int']['output'];
   extrinsic_root: Scalars['String']['output'];
@@ -1586,6 +1631,8 @@ export type Domain_Block_Bool_Exp = {
   consensus_block_number?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Int_Comparison_Exp>;
   domain?: InputMaybe<Domain_Bool_Exp>;
+  domain_epoch?: InputMaybe<Domain_Epoch_Bool_Exp>;
+  domain_epoch_id?: InputMaybe<String_Comparison_Exp>;
   domain_id?: InputMaybe<String_Comparison_Exp>;
   epoch?: InputMaybe<Int_Comparison_Exp>;
   extrinsic_root?: InputMaybe<String_Comparison_Exp>;
@@ -1601,6 +1648,7 @@ export type Domain_Block_Max_Order_By = {
   consensus_block_hash?: InputMaybe<Order_By>;
   consensus_block_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  domain_epoch_id?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch?: InputMaybe<Order_By>;
   extrinsic_root?: InputMaybe<Order_By>;
@@ -1616,6 +1664,7 @@ export type Domain_Block_Min_Order_By = {
   consensus_block_hash?: InputMaybe<Order_By>;
   consensus_block_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  domain_epoch_id?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch?: InputMaybe<Order_By>;
   extrinsic_root?: InputMaybe<Order_By>;
@@ -1632,6 +1681,8 @@ export type Domain_Block_Order_By = {
   consensus_block_number?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   domain?: InputMaybe<Domain_Order_By>;
+  domain_epoch?: InputMaybe<Domain_Epoch_Order_By>;
+  domain_epoch_id?: InputMaybe<Order_By>;
   domain_id?: InputMaybe<Order_By>;
   epoch?: InputMaybe<Order_By>;
   extrinsic_root?: InputMaybe<Order_By>;
@@ -1652,6 +1703,8 @@ export enum Domain_Block_Select_Column {
   ConsensusBlockNumber = 'consensus_block_number',
   /** column name */
   CreatedAt = 'created_at',
+  /** column name */
+  DomainEpochId = 'domain_epoch_id',
   /** column name */
   DomainId = 'domain_id',
   /** column name */
@@ -1708,6 +1761,7 @@ export type Domain_Block_Stream_Cursor_Value_Input = {
   consensus_block_hash?: InputMaybe<Scalars['String']['input']>;
   consensus_block_number?: InputMaybe<Scalars['Int']['input']>;
   created_at?: InputMaybe<Scalars['Int']['input']>;
+  domain_epoch_id?: InputMaybe<Scalars['String']['input']>;
   domain_id?: InputMaybe<Scalars['String']['input']>;
   epoch?: InputMaybe<Scalars['Int']['input']>;
   extrinsic_root?: InputMaybe<Scalars['String']['input']>;
@@ -1767,15 +1821,21 @@ export type Domain_Bool_Exp = {
   bundle_count?: InputMaybe<Int_Comparison_Exp>;
   completed_epoch?: InputMaybe<Int_Comparison_Exp>;
   created_at?: InputMaybe<Int_Comparison_Exp>;
+  current_epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
   current_share_price?: InputMaybe<Numeric_Comparison_Exp>;
   current_storage_fee_deposit?: InputMaybe<Numeric_Comparison_Exp>;
   current_total_shares?: InputMaybe<Numeric_Comparison_Exp>;
   current_total_stake?: InputMaybe<Numeric_Comparison_Exp>;
   deposits?: InputMaybe<Deposit_Bool_Exp>;
   deposits_aggregate?: InputMaybe<Deposit_Aggregate_Bool_Exp>;
+  epochs?: InputMaybe<Domain_Epoch_Bool_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
+  last1k_epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
+  last6_epochs_duration?: InputMaybe<Numeric_Comparison_Exp>;
+  last144_epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
   last_bundle_at?: InputMaybe<Int_Comparison_Exp>;
   last_domain_block_number?: InputMaybe<Int_Comparison_Exp>;
+  last_epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
   name?: InputMaybe<String_Comparison_Exp>;
   nominators?: InputMaybe<Nominator_Bool_Exp>;
   nominators_aggregate?: InputMaybe<Nominator_Aggregate_Bool_Exp>;
@@ -1808,6 +1868,289 @@ export type Domain_Bool_Exp = {
   withdrawals_aggregate?: InputMaybe<Withdrawal_Aggregate_Bool_Exp>;
 };
 
+/** columns and relationships of "domain_epoch" */
+export type Domain_Epoch = {
+  __typename?: 'domain_epoch';
+  block_count: Scalars['Int']['output'];
+  block_number_end: Scalars['Int']['output'];
+  block_number_start: Scalars['Int']['output'];
+  consensus_block_hash_end: Scalars['String']['output'];
+  consensus_block_hash_start: Scalars['String']['output'];
+  consensus_block_number_end: Scalars['Int']['output'];
+  consensus_block_number_start: Scalars['Int']['output'];
+  created_at: Scalars['Int']['output'];
+  /** An object relationship */
+  domain?: Maybe<Domain>;
+  domain_id: Scalars['String']['output'];
+  epoch: Scalars['Int']['output'];
+  epoch_duration: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+  timestamp_end: Scalars['timestamptz']['output'];
+  timestamp_start: Scalars['timestamptz']['output'];
+  updated_at: Scalars['Int']['output'];
+};
+
+/** order by aggregate values of table "domain_epoch" */
+export type Domain_Epoch_Aggregate_Order_By = {
+  avg?: InputMaybe<Domain_Epoch_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Domain_Epoch_Max_Order_By>;
+  min?: InputMaybe<Domain_Epoch_Min_Order_By>;
+  stddev?: InputMaybe<Domain_Epoch_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Domain_Epoch_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Domain_Epoch_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Domain_Epoch_Sum_Order_By>;
+  var_pop?: InputMaybe<Domain_Epoch_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Domain_Epoch_Var_Samp_Order_By>;
+  variance?: InputMaybe<Domain_Epoch_Variance_Order_By>;
+};
+
+/** order by avg() on columns of table "domain_epoch" */
+export type Domain_Epoch_Avg_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "domain_epoch". All fields are combined with a logical 'AND'. */
+export type Domain_Epoch_Bool_Exp = {
+  _and?: InputMaybe<Array<Domain_Epoch_Bool_Exp>>;
+  _not?: InputMaybe<Domain_Epoch_Bool_Exp>;
+  _or?: InputMaybe<Array<Domain_Epoch_Bool_Exp>>;
+  block_count?: InputMaybe<Int_Comparison_Exp>;
+  block_number_end?: InputMaybe<Int_Comparison_Exp>;
+  block_number_start?: InputMaybe<Int_Comparison_Exp>;
+  consensus_block_hash_end?: InputMaybe<String_Comparison_Exp>;
+  consensus_block_hash_start?: InputMaybe<String_Comparison_Exp>;
+  consensus_block_number_end?: InputMaybe<Int_Comparison_Exp>;
+  consensus_block_number_start?: InputMaybe<Int_Comparison_Exp>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  domain?: InputMaybe<Domain_Bool_Exp>;
+  domain_id?: InputMaybe<String_Comparison_Exp>;
+  epoch?: InputMaybe<Int_Comparison_Exp>;
+  epoch_duration?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  timestamp_end?: InputMaybe<Timestamptz_Comparison_Exp>;
+  timestamp_start?: InputMaybe<Timestamptz_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** order by max() on columns of table "domain_epoch" */
+export type Domain_Epoch_Max_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_hash_end?: InputMaybe<Order_By>;
+  consensus_block_hash_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  timestamp_end?: InputMaybe<Order_By>;
+  timestamp_start?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by min() on columns of table "domain_epoch" */
+export type Domain_Epoch_Min_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_hash_end?: InputMaybe<Order_By>;
+  consensus_block_hash_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  timestamp_end?: InputMaybe<Order_By>;
+  timestamp_start?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "domain_epoch". */
+export type Domain_Epoch_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_hash_end?: InputMaybe<Order_By>;
+  consensus_block_hash_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  domain?: InputMaybe<Domain_Order_By>;
+  domain_id?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  timestamp_end?: InputMaybe<Order_By>;
+  timestamp_start?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "domain_epoch" */
+export enum Domain_Epoch_Select_Column {
+  /** column name */
+  BlockCount = 'block_count',
+  /** column name */
+  BlockNumberEnd = 'block_number_end',
+  /** column name */
+  BlockNumberStart = 'block_number_start',
+  /** column name */
+  ConsensusBlockHashEnd = 'consensus_block_hash_end',
+  /** column name */
+  ConsensusBlockHashStart = 'consensus_block_hash_start',
+  /** column name */
+  ConsensusBlockNumberEnd = 'consensus_block_number_end',
+  /** column name */
+  ConsensusBlockNumberStart = 'consensus_block_number_start',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  DomainId = 'domain_id',
+  /** column name */
+  Epoch = 'epoch',
+  /** column name */
+  EpochDuration = 'epoch_duration',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  TimestampEnd = 'timestamp_end',
+  /** column name */
+  TimestampStart = 'timestamp_start',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** order by stddev() on columns of table "domain_epoch" */
+export type Domain_Epoch_Stddev_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_pop() on columns of table "domain_epoch" */
+export type Domain_Epoch_Stddev_Pop_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by stddev_samp() on columns of table "domain_epoch" */
+export type Domain_Epoch_Stddev_Samp_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "domain_epoch" */
+export type Domain_Epoch_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Domain_Epoch_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Domain_Epoch_Stream_Cursor_Value_Input = {
+  block_count?: InputMaybe<Scalars['Int']['input']>;
+  block_number_end?: InputMaybe<Scalars['Int']['input']>;
+  block_number_start?: InputMaybe<Scalars['Int']['input']>;
+  consensus_block_hash_end?: InputMaybe<Scalars['String']['input']>;
+  consensus_block_hash_start?: InputMaybe<Scalars['String']['input']>;
+  consensus_block_number_end?: InputMaybe<Scalars['Int']['input']>;
+  consensus_block_number_start?: InputMaybe<Scalars['Int']['input']>;
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  domain_id?: InputMaybe<Scalars['String']['input']>;
+  epoch?: InputMaybe<Scalars['Int']['input']>;
+  epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  timestamp_end?: InputMaybe<Scalars['timestamptz']['input']>;
+  timestamp_start?: InputMaybe<Scalars['timestamptz']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** order by sum() on columns of table "domain_epoch" */
+export type Domain_Epoch_Sum_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by var_pop() on columns of table "domain_epoch" */
+export type Domain_Epoch_Var_Pop_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by var_samp() on columns of table "domain_epoch" */
+export type Domain_Epoch_Var_Samp_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** order by variance() on columns of table "domain_epoch" */
+export type Domain_Epoch_Variance_Order_By = {
+  block_count?: InputMaybe<Order_By>;
+  block_number_end?: InputMaybe<Order_By>;
+  block_number_start?: InputMaybe<Order_By>;
+  consensus_block_number_end?: InputMaybe<Order_By>;
+  consensus_block_number_start?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  epoch?: InputMaybe<Order_By>;
+  epoch_duration?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
 /** aggregate max on columns */
 export type Domain_Max_Fields = {
   __typename?: 'domain_max_fields';
@@ -1819,13 +2162,18 @@ export type Domain_Max_Fields = {
   bundle_count?: Maybe<Scalars['Int']['output']>;
   completed_epoch?: Maybe<Scalars['Int']['output']>;
   created_at?: Maybe<Scalars['Int']['output']>;
+  current_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
   id?: Maybe<Scalars['String']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['numeric']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['numeric']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   last_bundle_at?: Maybe<Scalars['Int']['output']>;
   last_domain_block_number?: Maybe<Scalars['Int']['output']>;
+  last_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Int']['output']>;
   runtime?: Maybe<Scalars['String']['output']>;
@@ -1862,13 +2210,18 @@ export type Domain_Min_Fields = {
   bundle_count?: Maybe<Scalars['Int']['output']>;
   completed_epoch?: Maybe<Scalars['Int']['output']>;
   created_at?: Maybe<Scalars['Int']['output']>;
+  current_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
   id?: Maybe<Scalars['String']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['numeric']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['numeric']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   last_bundle_at?: Maybe<Scalars['Int']['output']>;
   last_domain_block_number?: Maybe<Scalars['Int']['output']>;
+  last_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   name?: Maybe<Scalars['String']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Int']['output']>;
   runtime?: Maybe<Scalars['String']['output']>;
@@ -1906,14 +2259,20 @@ export type Domain_Order_By = {
   bundle_count?: InputMaybe<Order_By>;
   completed_epoch?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
+  current_epoch_duration?: InputMaybe<Order_By>;
   current_share_price?: InputMaybe<Order_By>;
   current_storage_fee_deposit?: InputMaybe<Order_By>;
   current_total_shares?: InputMaybe<Order_By>;
   current_total_stake?: InputMaybe<Order_By>;
   deposits_aggregate?: InputMaybe<Deposit_Aggregate_Order_By>;
+  epochs_aggregate?: InputMaybe<Domain_Epoch_Aggregate_Order_By>;
   id?: InputMaybe<Order_By>;
+  last1k_epoch_duration?: InputMaybe<Order_By>;
+  last6_epochs_duration?: InputMaybe<Order_By>;
+  last144_epoch_duration?: InputMaybe<Order_By>;
   last_bundle_at?: InputMaybe<Order_By>;
   last_domain_block_number?: InputMaybe<Order_By>;
+  last_epoch_duration?: InputMaybe<Order_By>;
   name?: InputMaybe<Order_By>;
   nominators_aggregate?: InputMaybe<Nominator_Aggregate_Order_By>;
   operators_aggregate?: InputMaybe<Operator_Aggregate_Order_By>;
@@ -1962,6 +2321,8 @@ export enum Domain_Select_Column {
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
+  CurrentEpochDuration = 'current_epoch_duration',
+  /** column name */
   CurrentSharePrice = 'current_share_price',
   /** column name */
   CurrentStorageFeeDeposit = 'current_storage_fee_deposit',
@@ -1972,9 +2333,17 @@ export enum Domain_Select_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Last1kEpochDuration = 'last1k_epoch_duration',
+  /** column name */
+  Last6EpochsDuration = 'last6_epochs_duration',
+  /** column name */
+  Last144EpochDuration = 'last144_epoch_duration',
+  /** column name */
   LastBundleAt = 'last_bundle_at',
   /** column name */
   LastDomainBlockNumber = 'last_domain_block_number',
+  /** column name */
+  LastEpochDuration = 'last_epoch_duration',
   /** column name */
   Name = 'name',
   /** column name */
@@ -2033,12 +2402,17 @@ export type Domain_Stddev_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -2071,12 +2445,17 @@ export type Domain_Stddev_Pop_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -2109,12 +2488,17 @@ export type Domain_Stddev_Samp_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -2155,13 +2539,18 @@ export type Domain_Stream_Cursor_Value_Input = {
   bundle_count?: InputMaybe<Scalars['Int']['input']>;
   completed_epoch?: InputMaybe<Scalars['Int']['input']>;
   created_at?: InputMaybe<Scalars['Int']['input']>;
+  current_epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
   current_share_price?: InputMaybe<Scalars['numeric']['input']>;
   current_storage_fee_deposit?: InputMaybe<Scalars['numeric']['input']>;
   current_total_shares?: InputMaybe<Scalars['numeric']['input']>;
   current_total_stake?: InputMaybe<Scalars['numeric']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  last1k_epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
+  last6_epochs_duration?: InputMaybe<Scalars['numeric']['input']>;
+  last144_epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
   last_bundle_at?: InputMaybe<Scalars['Int']['input']>;
   last_domain_block_number?: InputMaybe<Scalars['Int']['input']>;
+  last_epoch_duration?: InputMaybe<Scalars['numeric']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   rejected_transfers_claimed_count?: InputMaybe<Scalars['Int']['input']>;
   runtime?: InputMaybe<Scalars['String']['input']>;
@@ -2197,12 +2586,17 @@ export type Domain_Sum_Fields = {
   bundle_count?: Maybe<Scalars['Int']['output']>;
   completed_epoch?: Maybe<Scalars['Int']['output']>;
   created_at?: Maybe<Scalars['Int']['output']>;
+  current_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   current_share_price?: Maybe<Scalars['numeric']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['numeric']['output']>;
   current_total_shares?: Maybe<Scalars['numeric']['output']>;
   current_total_stake?: Maybe<Scalars['numeric']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['numeric']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['numeric']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   last_bundle_at?: Maybe<Scalars['Int']['output']>;
   last_domain_block_number?: Maybe<Scalars['Int']['output']>;
+  last_epoch_duration?: Maybe<Scalars['numeric']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Int']['output']>;
   runtime_id?: Maybe<Scalars['Int']['output']>;
   sort_id?: Maybe<Scalars['Int']['output']>;
@@ -2235,12 +2629,17 @@ export type Domain_Var_Pop_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -2273,12 +2672,17 @@ export type Domain_Var_Samp_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -2311,12 +2715,17 @@ export type Domain_Variance_Fields = {
   bundle_count?: Maybe<Scalars['Float']['output']>;
   completed_epoch?: Maybe<Scalars['Float']['output']>;
   created_at?: Maybe<Scalars['Float']['output']>;
+  current_epoch_duration?: Maybe<Scalars['Float']['output']>;
   current_share_price?: Maybe<Scalars['Float']['output']>;
   current_storage_fee_deposit?: Maybe<Scalars['Float']['output']>;
   current_total_shares?: Maybe<Scalars['Float']['output']>;
   current_total_stake?: Maybe<Scalars['Float']['output']>;
+  last1k_epoch_duration?: Maybe<Scalars['Float']['output']>;
+  last6_epochs_duration?: Maybe<Scalars['Float']['output']>;
+  last144_epoch_duration?: Maybe<Scalars['Float']['output']>;
   last_bundle_at?: Maybe<Scalars['Float']['output']>;
   last_domain_block_number?: Maybe<Scalars['Float']['output']>;
+  last_epoch_duration?: Maybe<Scalars['Float']['output']>;
   rejected_transfers_claimed_count?: Maybe<Scalars['Float']['output']>;
   runtime_id?: Maybe<Scalars['Float']['output']>;
   sort_id?: Maybe<Scalars['Float']['output']>;
@@ -4707,6 +5116,10 @@ export type Query_Root = {
   domain_block_by_pk?: Maybe<Domain_Block>;
   /** fetch data from the table: "domain" using primary key columns */
   domain_by_pk?: Maybe<Domain>;
+  /** fetch data from the table: "domain_epoch" */
+  domain_epoch: Array<Domain_Epoch>;
+  /** fetch data from the table: "domain_epoch" using primary key columns */
+  domain_epoch_by_pk?: Maybe<Domain_Epoch>;
   /** fetch data from the table: "nominator" */
   nominator: Array<Nominator>;
   /** fetch aggregated fields from the table: "nominator" */
@@ -4859,6 +5272,20 @@ export type Query_RootDomain_Block_By_PkArgs = {
 
 
 export type Query_RootDomain_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootDomain_EpochArgs = {
+  distinct_on?: InputMaybe<Array<Domain_Epoch_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Domain_Epoch_Order_By>>;
+  where?: InputMaybe<Domain_Epoch_Bool_Exp>;
+};
+
+
+export type Query_RootDomain_Epoch_By_PkArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -5922,6 +6349,12 @@ export type Subscription_Root = {
   domain_block_stream: Array<Domain_Block>;
   /** fetch data from the table: "domain" using primary key columns */
   domain_by_pk?: Maybe<Domain>;
+  /** fetch data from the table: "domain_epoch" */
+  domain_epoch: Array<Domain_Epoch>;
+  /** fetch data from the table: "domain_epoch" using primary key columns */
+  domain_epoch_by_pk?: Maybe<Domain_Epoch>;
+  /** fetch data from the table in a streaming manner: "domain_epoch" */
+  domain_epoch_stream: Array<Domain_Epoch>;
   /** fetch data from the table in a streaming manner: "domain" */
   domain_stream: Array<Domain>;
   /** fetch data from the table: "nominator" */
@@ -6130,6 +6563,27 @@ export type Subscription_RootDomain_Block_StreamArgs = {
 
 export type Subscription_RootDomain_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootDomain_EpochArgs = {
+  distinct_on?: InputMaybe<Array<Domain_Epoch_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Domain_Epoch_Order_By>>;
+  where?: InputMaybe<Domain_Epoch_Bool_Exp>;
+};
+
+
+export type Subscription_RootDomain_Epoch_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootDomain_Epoch_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Domain_Epoch_Stream_Cursor_Input>>;
+  where?: InputMaybe<Domain_Epoch_Bool_Exp>;
 };
 
 
@@ -6956,7 +7410,7 @@ export type DomainsStatusQueryVariables = Exact<{
 }>;
 
 
-export type DomainsStatusQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, name: string, last_domain_block_number: number, completed_epoch: number }> };
+export type DomainsStatusQuery = { __typename?: 'query_root', domain: Array<{ __typename?: 'domain', id: string, name: string, last_domain_block_number: number, completed_epoch: number, last_epoch_duration: any, last6_epochs_duration: any, last144_epoch_duration: any, last1k_epoch_duration: any }> };
 
 export type DomainByIdQueryVariables = Exact<{
   domainId: Scalars['String']['input'];
@@ -6964,16 +7418,6 @@ export type DomainByIdQueryVariables = Exact<{
 
 
 export type DomainByIdQuery = { __typename?: 'query_root', domain_by_pk?: { __typename?: 'domain', id: string, sort_id: number, name: string, account_id: string, bundle_count: number, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info: string, runtime_id: number, runtime: string, last_domain_block_number: number, last_bundle_at: number, current_total_stake: any, current_storage_fee_deposit: any, created_at: number, completed_epoch: number, total_transfers_in: any, transfers_in_count: number, total_transfers_out: any, transfers_out_count: number, total_rejected_transfers_claimed: any, rejected_transfers_claimed_count: number, total_transfers_rejected: any, transfers_rejected_count: number, updated_at: number, total_estimated_withdrawals: any, total_withdrawals: any, accumulated_epoch_stake: any, accumulated_epoch_storage_fee_deposit: any, operators_aggregate: { __typename?: 'operator_aggregate', aggregate?: { __typename?: 'operator_aggregate_fields', count: number } | null }, nominators_aggregate: { __typename?: 'nominator_aggregate', aggregate?: { __typename?: 'nominator_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'deposit_aggregate', aggregate?: { __typename?: 'deposit_aggregate_fields', count: number } | null }, withdrawals_aggregate: { __typename?: 'withdrawal_aggregate', aggregate?: { __typename?: 'withdrawal_aggregate_fields', count: number } | null } } | null };
-
-export type DomainBlocksQueryVariables = Exact<{
-  limit: Scalars['Int']['input'];
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<Domain_Block_Order_By> | Domain_Block_Order_By;
-  where?: InputMaybe<Domain_Block_Bool_Exp>;
-}>;
-
-
-export type DomainBlocksQuery = { __typename?: 'query_root', domain_block: Array<{ __typename?: 'domain_block', id: string, domain_id: string, block_number: number, block_hash: string, extrinsic_root: string, consensus_block_number: number, consensus_block_hash: string, timestamp: any, created_at: number, updated_at: number }> };
 
 export type NominationsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
