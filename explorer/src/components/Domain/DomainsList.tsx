@@ -20,7 +20,12 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import type { Cell, DomainsFilters, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { bigNumberToFormattedString, numberFormattedString, numberWithCommas } from 'utils/number'
+import {
+  bigNumberToFormattedString,
+  formatUnitsToNumber,
+  numberFormattedString,
+  numberWithCommas,
+} from 'utils/number'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
@@ -477,7 +482,7 @@ export const DomainsList: FC = () => {
         header: 'Current Share Price',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.current_share_price)}</div>
+          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${TOKEN.symbol}`}</div>
         ),
       })
     if (selectedColumns.includes('accumulated_epoch_rewards'))
