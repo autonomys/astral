@@ -7,11 +7,14 @@ import {
   Deposit,
   Domain,
   DomainBlock,
+  DomainEpoch,
   Nominator,
   Operator,
   RewardEvent,
   Stats,
+  StatsPerAccount,
   StatsPerDomain,
+  StatsPerNominator,
   StatsPerOperator,
   Withdrawal,
 } from "../model";
@@ -24,6 +27,7 @@ export type PermanentCache = {
   nominators: Map<string, Nominator>;
   deposits: Map<string, Deposit>;
   withdrawals: Map<string, Withdrawal>;
+  domainEpochs: Map<string, DomainEpoch>;
 };
 
 export type TemporaryCache = {
@@ -34,6 +38,8 @@ export type TemporaryCache = {
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
+  statsPerAccount: Map<string, StatsPerAccount>;
+  statsPerNominator: Map<string, StatsPerNominator>;
 };
 
 export type LastBlockBundleIndexKey =
@@ -60,6 +66,7 @@ export const initPermanentCache: PermanentCache = {
   nominators: new Map(),
   deposits: new Map(),
   withdrawals: new Map(),
+  domainEpochs: new Map(),
 };
 
 export const initTemporaryCache: TemporaryCache = {
@@ -70,6 +77,8 @@ export const initTemporaryCache: TemporaryCache = {
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
+  statsPerAccount: new Map(),
+  statsPerNominator: new Map(),
 };
 
 export const initCacheManager: CacheManager = {
@@ -84,15 +93,23 @@ export const initCache: Cache = {
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [domains, accounts, operators, nominators, deposits, withdrawals] =
-    await Promise.all([
-      ctx.store.find(Domain),
-      ctx.store.find(Account),
-      ctx.store.find(Operator),
-      ctx.store.find(Nominator),
-      ctx.store.find(Deposit),
-      ctx.store.find(Withdrawal),
-    ]);
+  const [
+    domains,
+    accounts,
+    operators,
+    nominators,
+    deposits,
+    withdrawals,
+    domainEpochs,
+  ] = await Promise.all([
+    ctx.store.find(Domain),
+    ctx.store.find(Account),
+    ctx.store.find(Operator),
+    ctx.store.find(Nominator),
+    ctx.store.find(Deposit),
+    ctx.store.find(Withdrawal),
+    ctx.store.find(DomainEpoch),
+  ]);
 
   console.log(
     "\x1b[32mLoaded in cache:\x1b[0m",
@@ -101,7 +118,8 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     operators.length + " operators, ",
     nominators.length + " nominators, ",
     deposits.length + " deposits, ",
-    withdrawals.length + " withdrawals"
+    withdrawals.length + " withdrawals, ",
+    domainEpochs.length + " domainEpochs"
   );
 
   return {
@@ -112,6 +130,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     nominators: new Map(nominators.map((n) => [n.id, n])),
     deposits: new Map(deposits.map((d) => [d.id, d])),
     withdrawals: new Map(withdrawals.map((w) => [w.id, w])),
+    domainEpochs: new Map(domainEpochs.map((de) => [de.id, de])),
   };
 };
 
@@ -143,6 +162,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logPerm += logEntry("nominators", cache.nominators);
   logPerm += logEntry("deposits", cache.deposits);
   logPerm += logEntry("withdrawals", cache.withdrawals);
+  logPerm += logEntry("domainEpochs", cache.domainEpochs);
 
   let logTemp = logEntry("bundles", cache.bundles);
   logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
@@ -151,6 +171,8 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logTemp += logEntry("stats", cache.stats);
   logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
   logTemp += logEntry("statsPerOperator", cache.statsPerOperator);
+  logTemp += logEntry("statsPerAccount", cache.statsPerAccount);
+  logTemp += logEntry("statsPerNominator", cache.statsPerNominator);
 
   console.log("\x1b[34mSaving in database:\x1b[0m", logPerm);
   console.log(" and ", logTemp, "\n");
@@ -172,4 +194,8 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.stats.clear();
   cache.statsPerDomain.clear();
   cache.statsPerOperator.clear();
+  cache.statsPerAccount.clear();
+  cache.statsPerNominator.clear();
+
+  cache.isModified = false;
 };

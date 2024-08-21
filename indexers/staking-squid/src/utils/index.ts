@@ -47,6 +47,11 @@ export const bundleUID = (
   domainBlockBundleIndex: number | string
 ): string => `${domainId}-${domainBlockHeight}-${domainBlockBundleIndex}`;
 
+export const epochUID = (
+  domainId: number | string,
+  epoch: number | string
+): string => `${domainId}-${epoch}`;
+
 export const blockUID = (
   domainId: number | string,
   blockNumber: number | string
