@@ -161,7 +161,7 @@ export const DomainBlockTime: FC = () => {
 
   return (
     <div
-      className='flex w-full flex-col items-center justify-center gap-2 px-2 sm:gap-5 sm:px-4'
+      className='flex w-full flex-col items-center justify-center gap-2 px-2 sm:flex-row sm:gap-5 sm:px-4'
       ref={ref}
     >
       {data ? <>{cards}</> : noData}
