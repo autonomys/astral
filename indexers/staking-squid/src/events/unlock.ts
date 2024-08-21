@@ -230,38 +230,3 @@ export function processNominatedStakedUnlockedEvent(
 
   return cache;
 }
-
-export function processNominatorUnlockedEvent(
-  cache: Cache,
-  block: CtxBlock,
-  extrinsic: CtxExtrinsic,
-  event: CtxEvent
-) {
-  const { operatorId, nominatorId } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-
-  cache.isModified = true;
-
-  return cache;
-}
-
-export function processStorageFeeUnlockedEvent(
-  cache: Cache,
-  block: CtxBlock,
-  extrinsic: CtxExtrinsic,
-  event: CtxEvent
-) {
-  const { operatorId, nominatorId, storageFee } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-  const storageFeeBigInt = BigInt(storageFee);
-
-  cache.isModified = true;
-
-  return cache;
-}

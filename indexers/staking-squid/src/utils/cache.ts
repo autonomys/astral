@@ -10,7 +10,7 @@ import {
   DomainEpoch,
   Nominator,
   Operator,
-  RewardEvent,
+  Reward,
   Stats,
   StatsPerAccount,
   StatsPerDomain,
@@ -34,7 +34,7 @@ export type TemporaryCache = {
   bundles: Map<string, Bundle>;
   bundleAuthors: Map<string, BundleAuthor>;
   domainBlocks: Map<string, DomainBlock>;
-  operatorRewardedEvents: Map<string, RewardEvent>;
+  operatorRewards: Map<string, Reward>;
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
@@ -73,7 +73,7 @@ export const initTemporaryCache: TemporaryCache = {
   bundles: new Map(),
   bundleAuthors: new Map(),
   domainBlocks: new Map(),
-  operatorRewardedEvents: new Map(),
+  operatorRewards: new Map(),
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
@@ -167,7 +167,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   let logTemp = logEntry("bundles", cache.bundles);
   logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
   logTemp += logEntry("domainBlocks", cache.domainBlocks);
-  logTemp += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
+  logTemp += logEntry("operatorRewards", cache.operatorRewards);
   logTemp += logEntry("stats", cache.stats);
   logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
   logTemp += logEntry("statsPerOperator", cache.statsPerOperator);
@@ -189,7 +189,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.internalKeyStore.clear();
   cache.bundles.clear();
   cache.bundleAuthors.clear();
-  cache.operatorRewardedEvents.clear();
+  cache.operatorRewards.clear();
   cache.domainBlocks.clear();
   cache.stats.clear();
   cache.statsPerDomain.clear();

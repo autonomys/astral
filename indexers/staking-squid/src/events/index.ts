@@ -14,9 +14,7 @@ import {
 import {
   processFundsUnlockedEvent,
   processNominatedStakedUnlockedEvent,
-  processNominatorUnlockedEvent,
   processOperatorUnlockedEvent,
-  processStorageFeeUnlockedEvent,
 } from "./unlock";
 import { processWithdrewStakeEvent } from "./withdraw";
 
@@ -79,10 +77,6 @@ async function processEvent(
         extrinsic,
         event
       );
-    case events.domains.nominatorUnlocked.name:
-      return processNominatorUnlockedEvent(cache, block, extrinsic, event);
-    case events.domains.storageFeeUnlocked.name:
-      return processStorageFeeUnlockedEvent(cache, block, extrinsic, event);
 
     // rewards and slashing
     case events.domains.operatorRewarded.name:

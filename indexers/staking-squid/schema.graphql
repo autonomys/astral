@@ -128,6 +128,7 @@ type Operator @entity {
 type OperatorProfile @entity {
   id: ID! @index
   operatorId: String! @index
+  accountId: String! @index
   name: String! @index
   description: String!
   icon: String!
@@ -321,7 +322,7 @@ type Withdrawal @entity {
   updatedAt: Int! @index
 }
 
-type RewardEvent @entity {
+type Reward @entity {
   id: ID! @index
   domainId: String! @index
   operatorId: String! @index
