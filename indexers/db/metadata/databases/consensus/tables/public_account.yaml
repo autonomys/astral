@@ -1,3 +1,16 @@
 table:
   name: account
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - updated_at
+        - free
+        - nonce
+        - reserved
+        - total
+      filter: {}
+    comment: ""

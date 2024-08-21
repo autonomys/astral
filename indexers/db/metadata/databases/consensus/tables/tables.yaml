@@ -6,6 +6,4 @@
 - "!include public_extrinsic.yaml"
 - "!include public_extrinsic_module_name.yaml"
 - "!include public_log.yaml"
-- "!include squid_processor_hot_block.yaml"
-- "!include squid_processor_hot_change_log.yaml"
 - "!include squid_processor_status.yaml"

@@ -1,3 +1,14 @@
 table:
   name: log
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - block_id
+        - kind
+        - value
+      filter: {}
+    comment: ""

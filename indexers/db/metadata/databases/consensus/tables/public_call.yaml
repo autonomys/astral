@@ -1,3 +1,21 @@
 table:
   name: call
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - success
+        - id
+        - created_at
+        - pos
+        - account_id
+        - args
+        - block_id
+        - error
+        - extrinsic_id
+        - name
+        - parent
+        - timestamp
+      filter: {}
+    comment: ""

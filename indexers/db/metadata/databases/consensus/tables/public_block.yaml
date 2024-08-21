@@ -1,3 +1,22 @@
 table:
   name: block
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - events_count
+        - extrinsics_count
+        - timestamp
+        - blockchain_size
+        - height
+        - space_pledged
+        - account_id
+        - extrinsics_root
+        - hash
+        - parent_hash
+        - spec_id
+        - state_root
+      filter: {}
+    comment: ""

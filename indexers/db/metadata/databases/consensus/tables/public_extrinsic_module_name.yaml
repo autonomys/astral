@@ -1,3 +1,12 @@
 table:
   name: extrinsic_module_name
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - name
+      filter: {}
+    comment: ""

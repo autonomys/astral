@@ -1,3 +1,25 @@
 table:
   name: extrinsic
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - success
+        - id
+        - created_at
+        - index_in_block
+        - pos
+        - fee
+        - nonce
+        - tip
+        - account_id
+        - args
+        - block_id
+        - error
+        - hash
+        - name
+        - signature
+        - timestamp
+      filter: {}
+    comment: ""
