@@ -61,7 +61,7 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
               : null,
           },
           {
-            title: 'Last 1008 Epochs',
+            title: 'Last 1K Epochs',
             intervalSeconds: last1kEpochDuration
               ? BigInt(last1kEpochDuration) / BigInt(1008 * 100 * 1000)
               : null,
