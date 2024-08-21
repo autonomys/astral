@@ -7,6 +7,7 @@ import {
 } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import { AvailableColumn, FilterOption } from 'types/table'
+import { Tooltip } from './Tooltip'
 
 interface TableSettingsProps {
   tableName: string
@@ -54,37 +55,45 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
           <div className='flex items-center'>
             <div className='hidden sm:flex'>
               {addExtraIcons && addExtraIcons}
-              <MagnifyingGlassIcon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
-                stroke='currentColor'
-                key='search'
-                onClick={() =>
-                  showTableSettings !== 'search' ? showSettings('search') : hideSettings()
-                }
-              />
-              <PencilIcon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                stroke='currentColor'
-                key='pencil'
-                onClick={() =>
-                  showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
-                }
-              />
-              <FunnelIcon
-                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                stroke='currentColor'
-                key='funnel'
-                onClick={() =>
-                  showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
-                }
-              />
-              {showReset && (
-                <XMarkIcon
+              <Tooltip text='Search' direction='right'>
+                <MagnifyingGlassIcon
+                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
+                  stroke='currentColor'
+                  key='search'
+                  onClick={() =>
+                    showTableSettings !== 'search' ? showSettings('search') : hideSettings()
+                  }
+                />
+              </Tooltip>
+              <Tooltip text='Edit Columns' direction='right'>
+                <PencilIcon
                   className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
                   stroke='currentColor'
-                  key='reset'
-                  onClick={handleReset}
+                  key='pencil'
+                  onClick={() =>
+                    showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
+                  }
                 />
+              </Tooltip>
+              <Tooltip text='Filters Results' direction='right'>
+                <FunnelIcon
+                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='funnel'
+                  onClick={() =>
+                    showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
+                  }
+                />
+              </Tooltip>
+              {showReset && (
+                <Tooltip text='Reset all filters and columns' direction='right'>
+                  <XMarkIcon
+                    className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                    stroke='currentColor'
+                    key='reset'
+                    onClick={handleReset}
+                  />
+                </Tooltip>
               )}
             </div>
             <div className='sm:hidden'>
@@ -315,6 +324,20 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                 Filters
               </div>
             </button>
+            {showReset && (
+              <button
+                className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+                onClick={() => {
+                  handleReset()
+                  setMobileMenuOpen(false)
+                }}
+              >
+                <div className='flex items-center justify-center'>
+                  <XMarkIcon className='mr-2 h-5 w-5' />
+                  Reset
+                </div>
+              </button>
+            )}
           </div>
         </div>
       )}
