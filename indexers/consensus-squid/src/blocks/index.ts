@@ -10,7 +10,6 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   let cache: Cache = await load(ctx)
   logBlock(ctx.blocks)
   for (let block of ctx.blocks) {
-    console.log('block', block)
     const _block = getOrCreateBlock(cache, block, {
       id: block.header.id,
       height: BigInt(block.header.height ?? 0),

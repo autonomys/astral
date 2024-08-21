@@ -36,12 +36,12 @@
     "explorer:lint:fix": "lerna run lint:fix --scope=explorer",
     "explorer:format": "lerna run format --scope=explorer",
     "explorer:all": "lerna run all --scope=explorer",
-    "indexers:typegen": "lerna run typegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "indexers:codegen": "lerna run codegen --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "indexers:migration": "lerna run migration --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:typegen": "lerna run typegen --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:codegen": "lerna run codegen --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:migration": "lerna run migration --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:build": "lerna run build --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "indexers:process": "lerna run process --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
-    "indexers:format": "lerna run format --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:process": "lerna run process --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:format": "lerna run format --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
     "indexers:all": "indexers:typegen && indexers:codegen && indexers:migration && indexers:build && indexers:process && indexers:process"
   },
   "devDependencies": {
