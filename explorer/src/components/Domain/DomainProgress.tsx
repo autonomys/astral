@@ -82,7 +82,7 @@ export const DomainProgress: FC = () => {
   }, [data, loading, error, network])
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading) return <Spinner isXSmall />
     if (!data) return <NotFound />
     return null
   }, [data, loading])
