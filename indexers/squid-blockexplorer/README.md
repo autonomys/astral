@@ -28,7 +28,7 @@ Make sure you provide following environmental variables:
 - `CHAIN_RPC_ENDPOINT` - Public node RPC endpoint
 - `ARCHIVE_ENDPOINT` - GraphQL endpoint to a local or remote archive
 
-> Please, refer to Subsquid [docs](https://docs.subsquid.io/archives/) to learn, more about Squid Archives
+> Please, refer to Subsquid [docs](https://docs.subsquid.io/subsquid-network/overview/) to learn more about Subsquid Network
 
 In order to use GraphiQL explorer, run following in a separate terminal:
 
@@ -50,7 +50,7 @@ For more details on development workflow, please, refer to the Squid template [D
 
 ## Deployment
 
-This repository utilizes GitHub workflow to build Docker images and push them to container registry. For more details check [`gh-container-image.yml`](../.github/workflows/gh-container-image.yml).
+This repository utilizes GitHub workflow to build Docker images and push them to container registry. For more details check [`gh-container-image.yml`](../../.github/workflows/gh-container-image.yml).
 
 Guide on setting up the environment, including sample `docker-compose.yml` and Nginx config can be found [here](https://github.com/autonomys/infra/tree/main/_docs/8_BlockExplorerSquid)
 
