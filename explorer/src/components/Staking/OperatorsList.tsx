@@ -79,6 +79,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     setFilters,
     showSettings,
     hideSettings,
+    resetSettings,
+    showReset,
   } = useTableStates()
   const filters = useMemo(() => operatorFilters as OperatorsFilters, [operatorFilters])
 
@@ -98,6 +100,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     },
     [filters, setFilters],
   )
+
+  const handleReset = useCallback(() => resetSettings(TABLE), [resetSettings])
 
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
@@ -824,6 +828,12 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   )
   const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
 
+  const _showReset = useCallback(
+    () => showReset(TABLE),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [showReset, selectedColumns, operatorFilters],
+  )
+
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -858,6 +868,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           handleColumnChange={handleClickOnColumnToEditTable}
           handleFilterChange={handleFilterChange}
           filterOptions={filtersOptions}
+          handleReset={handleReset}
+          showReset={_showReset()}
         />
         {!loading && operatorsList ? (
           <SortedTable

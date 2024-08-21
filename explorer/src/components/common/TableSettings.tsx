@@ -1,4 +1,10 @@
-import { Bars3Icon, FunnelIcon, MagnifyingGlassIcon, PencilIcon } from '@heroicons/react/24/outline'
+import {
+  Bars3Icon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import { AvailableColumn, FilterOption } from 'types/table'
 
@@ -12,10 +18,12 @@ interface TableSettingsProps {
   filters: Record<string, any>
   showTableSettings: string | null
   addExtraIcons?: React.ReactNode
+  showReset: boolean
   showSettings: (setting: 'columns' | 'filters' | 'search') => void
   hideSettings: () => void
   handleColumnChange: (column: string, checked: boolean) => void
   handleFilterChange: (filterName: string, value: string | boolean) => void
+  handleReset: () => void
 }
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
@@ -27,10 +35,12 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
   filters,
   showTableSettings,
   addExtraIcons,
+  showReset,
   showSettings,
   hideSettings,
   handleColumnChange,
   handleFilterChange,
+  handleReset,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -68,6 +78,14 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                   showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
                 }
               />
+              {showReset && (
+                <XMarkIcon
+                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='reset'
+                  onClick={handleReset}
+                />
+              )}
             </div>
             <div className='sm:hidden'>
               <Bars3Icon

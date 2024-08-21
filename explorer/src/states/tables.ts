@@ -17,6 +17,8 @@ interface TableStatesAndFn extends TableStates {
   setFilters: (table: keyof TableStates, filters: Filters) => void
   showSettings: (table: keyof TableStates, tab: TableSettingsTabs) => void
   hideSettings: (table: keyof TableStates) => void
+  showReset: (table: keyof TableStates) => boolean
+  resetSettings: (table: keyof TableStates) => void
   clear: () => void
 }
 
@@ -27,7 +29,7 @@ const initialState: TableStates = {
 
 export const useTableStates = create<TableStatesAndFn>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
       setColumns: (table, selectedColumns) =>
         set((state) => ({
@@ -70,6 +72,25 @@ export const useTableStates = create<TableStatesAndFn>()(
             ...state[table],
             showTableSettings: null,
           },
+        })),
+      showReset: (table) => {
+        try {
+          const currentTable = get()[table]
+          const initialTable = INITIAL_TABLES[table]
+
+          return (
+            JSON.stringify(currentTable.filters) !== JSON.stringify(initialTable.filters) ||
+            JSON.stringify(currentTable.selectedColumns) !==
+              JSON.stringify(initialTable.selectedColumns)
+          )
+        } catch (error) {
+          console.error('Error showing reset', error)
+          return false
+        }
+      },
+      resetSettings: (table) =>
+        set(() => ({
+          [table]: INITIAL_TABLES[table],
         })),
       clear: () => set(() => ({ ...initialState })),
     }),

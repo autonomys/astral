@@ -57,6 +57,8 @@ export const DomainsList: FC = () => {
     setFilters,
     showSettings,
     hideSettings,
+    resetSettings,
+    showReset,
   } = useTableStates()
   const filters = useMemo(() => operatorFilters as DomainsFilters, [operatorFilters])
 
@@ -705,6 +707,8 @@ export const DomainsList: FC = () => {
     [filters, setFilters],
   )
 
+  const handleReset = useCallback(() => resetSettings(TABLE), [resetSettings])
+
   const handleClickOnColumnToEditTable = useCallback(
     (column: string, checked: boolean) =>
       checked
@@ -721,6 +725,12 @@ export const DomainsList: FC = () => {
     [showSettings],
   )
   const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
+
+  const _showReset = useCallback(
+    () => showReset(TABLE),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [showReset, selectedColumns, operatorFilters],
+  )
 
   useEffect(() => {
     setIsVisible(inView)
@@ -741,6 +751,8 @@ export const DomainsList: FC = () => {
           handleColumnChange={handleClickOnColumnToEditTable}
           handleFilterChange={handleFilterChange}
           filterOptions={filtersOptions}
+          handleReset={handleReset}
+          showReset={_showReset()}
         />
         {!loading && domainsList ? (
           <SortedTable
