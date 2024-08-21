@@ -8,6 +8,16 @@ type Account @entity {
   updatedAt: Int! @index
 }
 
+type Metadata @entity {
+  id: ID! @index
+  sortId: Int! @index
+  blockHash: String! @index
+  specName: String! @index
+  metadata: String!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
 type Transfer @entity {
   id: ID! @index
   from: String! @index
