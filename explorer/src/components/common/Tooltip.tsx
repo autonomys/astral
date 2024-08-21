@@ -8,9 +8,10 @@ import { FC, useCallback, useState } from 'react'
 interface TooltipProps {
   text: string | React.ReactNode
   children: React.ReactNode
+  direction?: 'top' | 'bottom' | 'left' | 'right' // New prop for tooltip direction
 }
 
-export const Tooltip: FC<TooltipProps> = ({ text, children }) => {
+export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top' }) => {
   const [isVisible, setIsVisible] = useState(false)
 
   const toggleVisibility = useCallback(() => setIsVisible(!isVisible), [isVisible])
@@ -18,7 +19,9 @@ export const Tooltip: FC<TooltipProps> = ({ text, children }) => {
   return (
     <div className='group relative flex flex-col items-center'>
       {isVisible && (
-        <div className='absolute top-full z-10 mt-2 w-auto rounded-md bg-purpleAccent p-2 text-sm text-white shadow-lg'>
+        <div
+          className={`absolute ${direction}-full z-10 mt-2 w-auto rounded-md bg-purpleAccent p-2 text-sm text-white shadow-lg`}
+        >
           {text}
         </div>
       )}
