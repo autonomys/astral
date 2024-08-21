@@ -24,28 +24,16 @@ export const getCallSigner = (
   }
 }
 
-export const appendOrArray = <T>(arr: T[] | undefined, item: T): T[] =>
-  arr ? [...arr, item] : [item]
-
 export const getBlockNumber = (block: CtxBlock): number => block.header.height
 
 export const getTimestamp = (block: CtxBlock): Date => new Date(block.header.timestamp ?? 0)
 
-export const domainUID = (domainId: number): string => `${domainId}`
+export const splitModuleAndId = (extrinsicName: string): [string, string] => {
+  const [module, call] = extrinsicName.split('.')
+  return [module, call]
+}
 
-export const operatorUID = (operatorId: number): string => `${operatorId}`
-
-export const nominatorUID = (operatorId: number, account: string): string =>
-  `${operatorId}-${account}`
-
-export const bundleUID = (
-  domainId: number | string,
-  domainBlockHeight: number | string,
-  domainBlockBundleIndex: number | string,
-): string => `${domainId}-${domainBlockHeight}-${domainBlockBundleIndex}`
-
-export const blockUID = (domainId: number | string, blockNumber: number | string): string =>
-  `${domainId}-${blockNumber}`
+export const stringUID = (id: string): string => id.toLowerCase()
 
 export const logBlock = (blocks: CtxBlock[]): void => {
   const from = getBlockNumber(blocks[0])

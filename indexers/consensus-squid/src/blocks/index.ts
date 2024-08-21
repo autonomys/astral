@@ -13,7 +13,7 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
     const _block = getOrCreateBlock(cache, block, {
       id: block.header.id,
       height: BigInt(block.header.height ?? 0),
-      timestamp: Number(block.header.timestamp ?? 0),
+      timestamp: BigInt(block.header.timestamp ?? 0),
       hash: block.header.hash ?? '',
       parentHash: block.header.parentHash ?? '',
       specId: block.header.specVersion.toString() ?? '',

@@ -5,16 +5,18 @@ import {
   Block,
   Call,
   Event,
-  EventModuleName,
+  EventName,
   Extrinsic,
-  ExtrinsicModuleName,
+  ExtrinsicName,
   Log,
+  Module,
 } from '../model'
 import type { Ctx } from '../processor'
 
 export type PermanentCache = {
-  extrinsicModuleNames: Map<string, ExtrinsicModuleName>
-  eventModuleNames: Map<string, EventModuleName>
+  modules: Map<string, Module>
+  eventNames: Map<string, EventName>
+  extrinsicNames: Map<string, ExtrinsicName>
 
   accounts: Map<string, Account>
 }
@@ -34,8 +36,9 @@ type CacheManager = {
 export type Cache = PermanentCache & TemporaryCache & CacheManager
 
 export const initPermanentCache: PermanentCache = {
-  extrinsicModuleNames: new Map(),
-  eventModuleNames: new Map(),
+  modules: new Map(),
+  eventNames: new Map(),
+  extrinsicNames: new Map(),
   accounts: new Map(),
 }
 
@@ -58,23 +61,26 @@ export const initCache: Cache = {
 }
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [extrinsicModuleNames, eventModuleNames, accounts] = await Promise.all([
-    ctx.store.find(ExtrinsicModuleName),
-    ctx.store.find(EventModuleName),
+  const [modules, eventNames, extrinsicNames, accounts] = await Promise.all([
+    ctx.store.find(Module),
+    ctx.store.find(EventName),
+    ctx.store.find(ExtrinsicName),
     ctx.store.find(Account),
   ])
 
   console.log(
     '\x1b[32mLoaded in cache:\x1b[0m',
-    extrinsicModuleNames.length + ' extrinsicModuleNames, ',
-    eventModuleNames.length + ' eventModuleNames, ',
+    modules.length + ' modules, ',
+    eventNames.length + ' eventNames, ',
+    extrinsicNames.length + ' extrinsicNames, ',
     accounts.length + ' accounts',
   )
 
   return {
     ...initCache,
-    extrinsicModuleNames: new Map(extrinsicModuleNames.map((e) => [e.id, e])),
-    eventModuleNames: new Map(eventModuleNames.map((e) => [e.id, e])),
+    modules: new Map(modules.map((m) => [m.id, m])),
+    eventNames: new Map(eventNames.map((e) => [e.id, e])),
+    extrinsicNames: new Map(extrinsicNames.map((e) => [e.id, e])),
     accounts: new Map(accounts.map((a) => [a.id, a])),
   }
 }
@@ -97,8 +103,9 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   // If the cache is not modified, skip saving
   if (!cache.isModified) return
 
-  let logPerm = logEntry('eventModuleNames', cache.eventModuleNames)
-  logPerm += logEntry('extrinsicModuleNames', cache.extrinsicModuleNames)
+  let logPerm = logEntry('modules', cache.modules)
+  logPerm += logEntry('eventNames', cache.eventNames)
+  logPerm += logEntry('extrinsicNames', cache.extrinsicNames)
   logPerm += logEntry('accounts', cache.accounts)
 
   let logTemp = logEntry('blocks', cache.blocks)

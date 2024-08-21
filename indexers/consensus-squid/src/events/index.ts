@@ -1,6 +1,6 @@
 import type { ApiPromise } from '@autonomys/auto-utils'
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from '../processor'
-import { getOrCreateEvent, getOrCreateEventModuleName } from '../storage'
+import { getOrCreateEvent, getOrCreateEventName } from '../storage'
 import { Cache } from '../utils/cache'
 
 export async function processEvents(
@@ -28,11 +28,11 @@ async function processEvent(
   extrinsic: CtxExtrinsic,
   event: CtxEvent,
 ) {
-  const _eventModuleName = getOrCreateEventModuleName(cache, block, event.id, {
-    name: event.name,
-  })
-  cache.eventModuleNames.set(_eventModuleName.id, _eventModuleName)
+  const eventName = getOrCreateEventName(cache, block, event.name)
+  eventName.count++
+  cache.eventNames.set(eventName.id, eventName)
   cache.isModified = true
+
   switch (event.name) {
     default:
       return cache

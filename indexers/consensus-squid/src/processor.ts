@@ -20,13 +20,13 @@ export const processor = new SubstrateBatchProcessor()
     from: 0,
   })
   .addCall({
-    name: ['*'],
     events: true,
+    stack: true,
     extrinsic: true,
   })
   .addEvent({
-    name: ['*'],
     call: true,
+    stack: true,
     extrinsic: true,
   })
   .setFields({

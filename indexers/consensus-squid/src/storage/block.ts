@@ -8,7 +8,7 @@ export const createBlock = (block: CtxBlock, props: Partial<Block> = {}): Block 
   return new Block({
     id: props.id ?? '',
     height: props.height ?? BigInt(0),
-    timestamp: props.timestamp ?? 0,
+    timestamp: props.timestamp ?? BigInt(0),
     hash: props.hash ?? '',
     parentHash: props.parentHash ?? '',
     specId: props.specId ?? '',

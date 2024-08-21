@@ -1,7 +1,7 @@
 import type { ApiPromise } from '@autonomys/auto-utils'
 import { processEvents } from '../events'
 import type { CtxBlock, CtxExtrinsic } from '../processor'
-import { getOrCreateExtrinsic, getOrCreateExtrinsicModuleName } from '../storage'
+import { getOrCreateExtrinsic, getOrCreateExtrinsicName } from '../storage'
 import { Cache } from '../utils/cache'
 
 export async function processExtrinsics(
@@ -11,14 +11,13 @@ export async function processExtrinsics(
   extrinsics: CtxExtrinsic[],
 ) {
   for (let [index, extrinsic] of extrinsics.entries()) {
-    console.log('extrinsic', extrinsic)
-
     const _extrinsic = getOrCreateExtrinsic(cache, block, extrinsic.id, {
       hash: extrinsic.hash,
       indexInBlock: index,
     })
     cache.extrinsics.set(_extrinsic.id, _extrinsic)
     cache.isModified = true
+
     cache = await processExtrinsic(cache, api, block, extrinsic)
   }
   return cache
@@ -30,11 +29,12 @@ export async function processExtrinsic(
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
 ) {
-  const _extrinsicModuleName = getOrCreateExtrinsicModuleName(cache, block, extrinsic.id, {
-    name: extrinsic.call?.name,
-  })
-  cache.extrinsicModuleNames.set(_extrinsicModuleName.id, _extrinsicModuleName)
-  cache.isModified = true
+  if (extrinsic.call) {
+    const extrinsicName = getOrCreateExtrinsicName(cache, block, extrinsic.call.name)
+    extrinsicName.count++
+    cache.extrinsicNames.set(extrinsicName.id, extrinsicName)
+    cache.isModified = true
+  }
 
   switch (extrinsic.call?.name) {
     default:
