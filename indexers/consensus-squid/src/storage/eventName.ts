@@ -27,10 +27,6 @@ export const getOrCreateEventName = (
   id: string,
   props: Partial<EventName> = {},
 ): EventName => {
-  const module = getOrCreateModule(cache, block, id)
-  cache.modules.set(module.id, module)
-  cache.isModified = true
-
   const eventModuleName = cache.eventNames.get(stringUID(id))
 
   if (!eventModuleName) return createEventName(block, id, props)

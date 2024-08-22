@@ -27,10 +27,6 @@ export const getOrCreateExtrinsicName = (
   id: string,
   props: Partial<ExtrinsicName> = {},
 ): ExtrinsicName => {
-  const module = getOrCreateModule(cache, block, id)
-  cache.modules.set(module.id, module)
-  cache.isModified = true
-
   const extrinsicModuleName = cache.extrinsicNames.get(stringUID(id))
 
   if (!extrinsicModuleName) return createExtrinsicName(block, id)
