@@ -7,7 +7,7 @@ import {
   getOrCreateExtrinsicName,
   getOrCreateModule,
 } from '../storage'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getCallSigner } from '../utils'
 import { Cache } from '../utils/cache'
 
 export async function processExtrinsics(
@@ -15,6 +15,7 @@ export async function processExtrinsics(
   api: ApiPromise,
   block: CtxBlock,
   extrinsics: CtxExtrinsic[],
+  blockOwner: string,
 ) {
   for (let [index, extrinsic] of extrinsics.entries()) {
     try {
@@ -29,6 +30,8 @@ export async function processExtrinsics(
         fee: extrinsic.fee ?? BigInt(0),
         success: extrinsic.success,
         blockId: block.header.id,
+        signer:
+          extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
         timestamp: BigInt(block.header.timestamp ?? 0),
         blockHeight: BigInt(block.header.height ?? 0),
       })
@@ -47,6 +50,8 @@ export async function processExtrinsics(
           blockId: block.header.id,
           extrinsicId: extrinsic.id,
           error: '',
+          accountId:
+            extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
           timestamp: BigInt(block.header.timestamp ?? 0),
         })
         cache.calls.set(_call.id, _call)
@@ -57,7 +62,7 @@ export async function processExtrinsics(
       console.error('Failed to process extrinsic:', error)
     }
 
-    cache = await processExtrinsic(cache, api, block, extrinsic)
+    cache = await processExtrinsic(cache, api, block, extrinsic, blockOwner)
   }
   return cache
 }
@@ -67,6 +72,7 @@ export async function processExtrinsic(
   api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  blockOwner: string,
 ) {
   if (extrinsic.call) {
     const module = getOrCreateModule(cache, block, extrinsic.call.name)
@@ -83,6 +89,6 @@ export async function processExtrinsic(
 
   switch (extrinsic.call?.name) {
     default:
-      return await processEvents(cache, api, block, extrinsic)
+      return await processEvents(cache, api, block, extrinsic, blockOwner)
   }
 }

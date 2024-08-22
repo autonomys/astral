@@ -74,11 +74,11 @@ type Block @entity {
   extrinsicsRoot: String!
   spacePledged: BigInt!
   blockchainSize: BigInt!
+  owner: String! @index
   extrinsicsCount: Int!
   eventsCount: Int!
   timestamp: BigInt! @index
   date: DateTime! @index
-  accountId: String! @index
 }
 
 type Extrinsic @entity {
@@ -87,7 +87,7 @@ type Extrinsic @entity {
   indexInBlock: Int!
   nonce: BigInt!
   name: String! @index
-  accountId: String! @index
+  signer: String! @index
   signature: String! @index
   error: String!
   tip: BigInt!
@@ -110,6 +110,7 @@ type Event @entity {
   pos: Int!
   args: String!
   blockId: String! @index
+  accountId: String! @index
   blockHeight: BigInt! @index
   extrinsicId: String! @index
   callId: String! @index
@@ -139,5 +140,6 @@ type Log @entity {
   kind: String! @index
   value: String!
   blockId: String! @index
+  accountId: String! @index
   createdAt: Int! @index
 }

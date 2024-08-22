@@ -25,10 +25,10 @@ export const getOrCreateModule = (
   eventOrCall: string,
   props: Partial<Module> = {},
 ): Module => {
-  const [moduleId, name] = splitModuleAndId(eventOrCall)
+  const [moduleId] = splitModuleAndId(eventOrCall)
   const moduleName = cache.modules.get(stringUID(moduleId))
 
-  if (!moduleName) return createModule(block, name, props)
+  if (!moduleName) return createModule(block, moduleId, props)
 
   return moduleName
 }

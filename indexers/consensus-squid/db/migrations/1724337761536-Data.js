@@ -1,5 +1,5 @@
-module.exports = class Data1724335983470 {
-    name = 'Data1724335983470'
+module.exports = class Data1724337761536 {
+    name = 'Data1724337761536'
 
     async up(db) {
         await db.query(`CREATE TABLE "module" ("id" character varying NOT NULL, "name" text NOT NULL, "extrinsic_count" integer NOT NULL, "event_count" integer NOT NULL, "created_at" integer NOT NULL, "updated_at" integer NOT NULL, CONSTRAINT "PK_0e20d657f968b051e674fbe3117" PRIMARY KEY ("id"))`)
@@ -36,25 +36,26 @@ module.exports = class Data1724335983470 {
         await db.query(`CREATE INDEX "IDX_70ff8b624c3118ac3a4862d22c" ON "transfer" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_58367bdb03b7f41ade3b09f26a" ON "transfer" ("date") `)
         await db.query(`CREATE INDEX "IDX_086e57d995900e69b54046e257" ON "transfer" ("created_at") `)
-        await db.query(`CREATE TABLE "block" ("id" character varying NOT NULL, "height" numeric NOT NULL, "hash" text NOT NULL, "parent_hash" text NOT NULL, "spec_id" text NOT NULL, "state_root" text NOT NULL, "extrinsics_root" text NOT NULL, "space_pledged" numeric NOT NULL, "blockchain_size" numeric NOT NULL, "extrinsics_count" integer NOT NULL, "events_count" integer NOT NULL, "timestamp" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "account_id" text NOT NULL, CONSTRAINT "PK_d0925763efb591c2e2ffb267572" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "block" ("id" character varying NOT NULL, "height" numeric NOT NULL, "hash" text NOT NULL, "parent_hash" text NOT NULL, "spec_id" text NOT NULL, "state_root" text NOT NULL, "extrinsics_root" text NOT NULL, "space_pledged" numeric NOT NULL, "blockchain_size" numeric NOT NULL, "owner" text NOT NULL, "extrinsics_count" integer NOT NULL, "events_count" integer NOT NULL, "timestamp" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_d0925763efb591c2e2ffb267572" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_bce676e2b005104ccb768495db" ON "block" ("height") `)
         await db.query(`CREATE INDEX "IDX_f8fba63d7965bfee9f304c487a" ON "block" ("hash") `)
+        await db.query(`CREATE INDEX "IDX_9f4b8d83ef6c743c966fd0ea49" ON "block" ("owner") `)
         await db.query(`CREATE INDEX "IDX_5c67cbcf4960c1a39e5fe25e87" ON "block" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_20d6346bd56643a5262eaddced" ON "block" ("date") `)
-        await db.query(`CREATE INDEX "IDX_fc33c4502a5338a540862a4438" ON "block" ("account_id") `)
-        await db.query(`CREATE TABLE "extrinsic" ("id" character varying NOT NULL, "hash" text NOT NULL, "index_in_block" integer NOT NULL, "nonce" numeric NOT NULL, "name" text NOT NULL, "account_id" text NOT NULL, "signature" text NOT NULL, "error" text NOT NULL, "tip" numeric NOT NULL, "fee" numeric NOT NULL, "success" boolean NOT NULL, "block_id" text NOT NULL, "block_height" numeric NOT NULL, "pos" integer NOT NULL, "args" text NOT NULL, "timestamp" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_80d7db0e4b1e83e30336bc76755" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "extrinsic" ("id" character varying NOT NULL, "hash" text NOT NULL, "index_in_block" integer NOT NULL, "nonce" numeric NOT NULL, "name" text NOT NULL, "signer" text NOT NULL, "signature" text NOT NULL, "error" text NOT NULL, "tip" numeric NOT NULL, "fee" numeric NOT NULL, "success" boolean NOT NULL, "block_id" text NOT NULL, "block_height" numeric NOT NULL, "pos" integer NOT NULL, "args" text NOT NULL, "timestamp" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_80d7db0e4b1e83e30336bc76755" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_1f45de0713a55049009e8e8127" ON "extrinsic" ("hash") `)
         await db.query(`CREATE INDEX "IDX_86604c0ff42c185b99ee69c718" ON "extrinsic" ("name") `)
-        await db.query(`CREATE INDEX "IDX_6292b3c295f2d9478678eac725" ON "extrinsic" ("account_id") `)
+        await db.query(`CREATE INDEX "IDX_001ddf290faf765f9dfd9154d3" ON "extrinsic" ("signer") `)
         await db.query(`CREATE INDEX "IDX_29ac1ee135f61e5f2e476d3e22" ON "extrinsic" ("signature") `)
         await db.query(`CREATE INDEX "IDX_a3b99daba1259dab0dd040d4f7" ON "extrinsic" ("block_id") `)
         await db.query(`CREATE INDEX "IDX_398d967b32b6d5fd121a7f6dc9" ON "extrinsic" ("block_height") `)
         await db.query(`CREATE INDEX "IDX_6e232918078798b1fade21dcf8" ON "extrinsic" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_91c0732a0bf8e06976cf832d34" ON "extrinsic" ("date") `)
         await db.query(`CREATE INDEX "IDX_b09d3ab32bef80d2e4bf48cdac" ON "extrinsic" ("created_at") `)
-        await db.query(`CREATE TABLE "event" ("id" character varying NOT NULL, "index_in_block" integer NOT NULL, "name" text NOT NULL, "phase" text NOT NULL, "pos" integer NOT NULL, "args" text NOT NULL, "block_id" text NOT NULL, "block_height" numeric NOT NULL, "extrinsic_id" text NOT NULL, "call_id" text NOT NULL, "timestamp" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "event" ("id" character varying NOT NULL, "index_in_block" integer NOT NULL, "name" text NOT NULL, "phase" text NOT NULL, "pos" integer NOT NULL, "args" text NOT NULL, "block_id" text NOT NULL, "account_id" text NOT NULL, "block_height" numeric NOT NULL, "extrinsic_id" text NOT NULL, "call_id" text NOT NULL, "timestamp" numeric NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_b535fbe8ec6d832dde22065ebd" ON "event" ("name") `)
         await db.query(`CREATE INDEX "IDX_2b0d35d675c4f99751855c4502" ON "event" ("block_id") `)
+        await db.query(`CREATE INDEX "IDX_77b76886d64fa0304db94dd4d9" ON "event" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_f0ad922cb716d6df1e08f1835c" ON "event" ("block_height") `)
         await db.query(`CREATE INDEX "IDX_129efedcb305c80256db2d57a5" ON "event" ("extrinsic_id") `)
         await db.query(`CREATE INDEX "IDX_83cf1bd59aa4521ed882fa5145" ON "event" ("call_id") `)
@@ -67,9 +68,10 @@ module.exports = class Data1724335983470 {
         await db.query(`CREATE INDEX "IDX_a032945f45cacda2d30f4286df" ON "call" ("timestamp") `)
         await db.query(`CREATE INDEX "IDX_81967fe06abefb07692bcc1b59" ON "call" ("date") `)
         await db.query(`CREATE INDEX "IDX_b06c9b51d1172fba69e828673a" ON "call" ("created_at") `)
-        await db.query(`CREATE TABLE "log" ("id" character varying NOT NULL, "kind" text NOT NULL, "value" text NOT NULL, "block_id" text NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_350604cbdf991d5930d9e618fbd" PRIMARY KEY ("id"))`)
+        await db.query(`CREATE TABLE "log" ("id" character varying NOT NULL, "kind" text NOT NULL, "value" text NOT NULL, "block_id" text NOT NULL, "account_id" text NOT NULL, "created_at" integer NOT NULL, CONSTRAINT "PK_350604cbdf991d5930d9e618fbd" PRIMARY KEY ("id"))`)
         await db.query(`CREATE INDEX "IDX_110007d6221b41e46fcada62a9" ON "log" ("kind") `)
         await db.query(`CREATE INDEX "IDX_7d3f5ac68148194ee7ced3032e" ON "log" ("block_id") `)
+        await db.query(`CREATE INDEX "IDX_08b9587d9698ee1d046a916483" ON "log" ("account_id") `)
         await db.query(`CREATE INDEX "IDX_a64ab7c456e914191342cfd215" ON "log" ("created_at") `)
     }
 
@@ -111,13 +113,13 @@ module.exports = class Data1724335983470 {
         await db.query(`DROP TABLE "block"`)
         await db.query(`DROP INDEX "public"."IDX_bce676e2b005104ccb768495db"`)
         await db.query(`DROP INDEX "public"."IDX_f8fba63d7965bfee9f304c487a"`)
+        await db.query(`DROP INDEX "public"."IDX_9f4b8d83ef6c743c966fd0ea49"`)
         await db.query(`DROP INDEX "public"."IDX_5c67cbcf4960c1a39e5fe25e87"`)
         await db.query(`DROP INDEX "public"."IDX_20d6346bd56643a5262eaddced"`)
-        await db.query(`DROP INDEX "public"."IDX_fc33c4502a5338a540862a4438"`)
         await db.query(`DROP TABLE "extrinsic"`)
         await db.query(`DROP INDEX "public"."IDX_1f45de0713a55049009e8e8127"`)
         await db.query(`DROP INDEX "public"."IDX_86604c0ff42c185b99ee69c718"`)
-        await db.query(`DROP INDEX "public"."IDX_6292b3c295f2d9478678eac725"`)
+        await db.query(`DROP INDEX "public"."IDX_001ddf290faf765f9dfd9154d3"`)
         await db.query(`DROP INDEX "public"."IDX_29ac1ee135f61e5f2e476d3e22"`)
         await db.query(`DROP INDEX "public"."IDX_a3b99daba1259dab0dd040d4f7"`)
         await db.query(`DROP INDEX "public"."IDX_398d967b32b6d5fd121a7f6dc9"`)
@@ -127,6 +129,7 @@ module.exports = class Data1724335983470 {
         await db.query(`DROP TABLE "event"`)
         await db.query(`DROP INDEX "public"."IDX_b535fbe8ec6d832dde22065ebd"`)
         await db.query(`DROP INDEX "public"."IDX_2b0d35d675c4f99751855c4502"`)
+        await db.query(`DROP INDEX "public"."IDX_77b76886d64fa0304db94dd4d9"`)
         await db.query(`DROP INDEX "public"."IDX_f0ad922cb716d6df1e08f1835c"`)
         await db.query(`DROP INDEX "public"."IDX_129efedcb305c80256db2d57a5"`)
         await db.query(`DROP INDEX "public"."IDX_83cf1bd59aa4521ed882fa5145"`)
@@ -142,6 +145,7 @@ module.exports = class Data1724335983470 {
         await db.query(`DROP TABLE "log"`)
         await db.query(`DROP INDEX "public"."IDX_110007d6221b41e46fcada62a9"`)
         await db.query(`DROP INDEX "public"."IDX_7d3f5ac68148194ee7ced3032e"`)
+        await db.query(`DROP INDEX "public"."IDX_08b9587d9698ee1d046a916483"`)
         await db.query(`DROP INDEX "public"."IDX_a64ab7c456e914191342cfd215"`)
     }
 }

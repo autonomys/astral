@@ -2,7 +2,7 @@ import type { ApiPromise } from '@autonomys/auto-utils'
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from '../processor'
 import { getOrCreateEvent, getOrCreateEventName, getOrCreateModule } from '../storage'
 import { events } from '../types'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getCallSigner } from '../utils'
 import { Cache } from '../utils/cache'
 import { processTransferEvent } from './account'
 import { processCodeUpdatedEvent } from './code'
@@ -12,6 +12,7 @@ export async function processEvents(
   api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  blockOwner: string,
 ) {
   for (let [index, event] of extrinsic.events.entries()) {
     try {
@@ -19,6 +20,8 @@ export async function processEvents(
         indexInBlock: index,
         name: event.name,
         extrinsicId: extrinsic.id,
+        accountId:
+          extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
         blockHeight: BigInt(block.header.height ?? 0),
         blockId: block.header.id,
         timestamp: BigInt(block.header.timestamp ?? 0),

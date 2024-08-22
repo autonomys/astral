@@ -17,7 +17,7 @@ export const createBlock = (block: CtxBlock, props: Partial<Block> = {}): Block 
     blockchainSize: props.blockchainSize ?? BigInt(0),
     extrinsicsCount: props.extrinsicsCount ?? 0,
     eventsCount: props.eventsCount ?? 0,
-    accountId: props.accountId ?? '',
+    owner: props.owner ?? '',
     timestamp: props.timestamp ?? BigInt(0),
     date: props.date ?? getTimestamp(block),
     ...props,

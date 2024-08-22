@@ -15,7 +15,7 @@ export const createExtrinsic = (
     indexInBlock: props.indexInBlock ?? 0,
     nonce: props.nonce ?? BigInt(0),
     name: props.name ?? '',
-    accountId: props.accountId ?? '',
+    signer: props.signer ?? '',
     signature: props.signature ?? '',
     error: props.error ?? '',
     tip: props.tip ?? BigInt(0),

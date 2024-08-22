@@ -10,6 +10,7 @@ export const createLog = (block: CtxBlock, id: string, props: Partial<Log> = {})
     kind: props.kind ?? '',
     value: props.value ?? '',
     blockId: props.blockId ?? '',
+    accountId: props.accountId ?? '',
     createdAt: blockNumber,
     ...props,
   })
