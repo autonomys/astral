@@ -28,7 +28,7 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
 
   return (
     <div className='w-full'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Domain #{domain.id} - {capitalizeFirstLetter(domain.name)}
@@ -49,7 +49,7 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
                     {domain.account_id && (
                       <Link
                         data-testid={`nominator-link-${domain.account_id}}`}
-                        className='hover:text-purpleAccent'
+                        className='hover:text-primaryAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
                           network,
                           Routes.consensus,
@@ -86,7 +86,7 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
             <StyledListItem title='Bundle count'>{domain.bundle_count}</StyledListItem>
             <StyledListItem title='Last bundle'>
               <Link
-                className='flex gap-2 hover:text-purpleAccent'
+                className='flex gap-2 hover:text-primaryAccent'
                 href={INTERNAL_ROUTES.blocks.id.page(
                   network,
                   Routes.consensus,

@@ -101,7 +101,7 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
     domainData.map(({ domain, stats }, domainIndex) => (
       <div
         key={domainIndex}
-        className='w-full min-w-80 rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:w-1/2'
+        className='w-full min-w-80 rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:w-1/2'
       >
         <h2 className='mb-4 text-lg font-bold text-grayDark dark:text-white sm:text-xl'>
           {capitalizeFirstLetter(domain)}

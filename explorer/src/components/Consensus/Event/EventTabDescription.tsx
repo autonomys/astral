@@ -11,7 +11,7 @@ export const EventTabDescription: FC<Props> = ({ event }) => {
   const [isActive, setIsActive] = useState(true)
   return (
     <div className='rounded-[20px] bg-white p-4 text-xs sm:bg-inherit'>
-      <div className='mb-2 grid text-purpleShade2 dark:text-white/75 sm:grid-cols-4'>
+      <div className='mb-2 grid text-purpleShade dark:text-white/75 sm:grid-cols-4'>
         <div>Event Id</div>
         <div>Hash</div>
         <div>Action</div>
@@ -38,7 +38,7 @@ export const EventTabDescription: FC<Props> = ({ event }) => {
         <div>{event.phase}</div>
       </div>
       <div
-        className={isActive ? 'block rounded-lg bg-blueLight px-5 py-8 dark:bg-white/10' : 'hidden'}
+        className={isActive ? 'block rounded-lg bg-purpleLight px-5 py-8 dark:bg-white/10' : 'hidden'}
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >

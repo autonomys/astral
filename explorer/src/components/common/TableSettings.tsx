@@ -114,7 +114,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
         id='accordion-open-body-1'
         aria-labelledby='accordion-open-heading-1'
       >
-        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
           <div>
             <div className='mt-4'>
               <div className='flex flex-col gap-3'>
@@ -278,7 +278,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
 
       {mobileMenuOpen && (
         <div className='mt-4 w-full sm:hidden'>
-          <div className='flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+          <div className='flex flex-col space-y-2 rounded-[20px] bg-grayLight p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
             {addExtraIcons && (
               <div className='mb-1 w-full'>
                 {React.Children.map(addExtraIcons, (child) =>

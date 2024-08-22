@@ -75,7 +75,7 @@ export const BlockDetailsEventList: FC = () => {
         cell: ({ row }: Cell<Event>) => (
           <div className='flex w-full gap-1' key={`${row.index}-block-event-id`}>
             <Link
-              className='w-full hover:text-purpleAccent'
+              className='w-full hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
               {`${row.original.block?.height}-${row.index}`}

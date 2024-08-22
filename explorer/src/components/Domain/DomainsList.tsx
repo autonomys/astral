@@ -76,7 +76,7 @@ export const DomainsList: FC = () => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.domains.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>
@@ -90,7 +90,7 @@ export const DomainsList: FC = () => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
-            className='flex items-center gap-2 hover:text-purpleAccent'
+            className='flex items-center gap-2 hover:text-primaryAccent'
             href={INTERNAL_ROUTES.accounts.id.page(
               network,
               Routes.consensus,
@@ -426,7 +426,7 @@ export const DomainsList: FC = () => {
               Routes.consensus,
               parseInt(row.original.last_bundle_at?.toString() ?? '0'),
             )}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
           >
             <div>{row.original.last_bundle_at}</div>
           </Link>
@@ -446,7 +446,7 @@ export const DomainsList: FC = () => {
               Routes.consensus,
               parseInt(row.original.created_at?.toString() ?? '0'),
             )}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
           >
             <div>{row.original.created_at}</div>
           </Link>
@@ -466,7 +466,7 @@ export const DomainsList: FC = () => {
               Routes.consensus,
               parseInt(row.original.created_at?.toString() ?? '0'),
             )}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
           >
             <div>{row.original.updated_at}</div>
           </Link>

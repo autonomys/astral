@@ -21,7 +21,7 @@ export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDeskt
 
   const theme = section === Routes.nova ? 'ethereum' : 'beachball'
   return (
-    <div className='mb-4 rounded-[20px] border border-slate-100 bg-white p-6 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset md:p-4'>
+    <div className='mb-4 rounded-[20px] border border-slate-100 bg-white p-6 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo md:p-4'>
       <div className='flex w-full items-center gap-3'>
         <Accordion
           title={

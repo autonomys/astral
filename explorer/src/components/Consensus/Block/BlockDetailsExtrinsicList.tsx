@@ -65,7 +65,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         cell: ({ row }: Cell<Extrinsic>) => (
           <Link
             key={`${row.index}-block-extrinsic-id`}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             {`${row.original.block.height}-${row.index}`}
