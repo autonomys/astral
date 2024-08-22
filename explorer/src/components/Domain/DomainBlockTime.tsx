@@ -54,7 +54,7 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
               currentEpochDuration && blockCount
                 ? BigInt(currentEpochDuration) /
                   BigInt(
-                    Math.min(blockCount % 100, 100) * 1000 > 0
+                    blockCount % 100 > 0
                       ? Math.min(blockCount % 100, 100) * 1000
                       : 1,
                   )
