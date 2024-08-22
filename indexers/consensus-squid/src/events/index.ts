@@ -24,6 +24,9 @@ export async function processEvents(
           extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
         blockHeight: BigInt(block.header.height ?? 0),
         blockId: block.header.id,
+        callId: extrinsic.call?.id ?? '',
+        phase: (extrinsic as any)?.phase ?? BigInt(0),
+        //       pos: Number((extrinsic as any)?.pos ?? 0),
         timestamp: BigInt(block.header.timestamp ?? 0),
       })
       try {

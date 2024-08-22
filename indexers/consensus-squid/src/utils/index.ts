@@ -1,10 +1,12 @@
 import { ApiPromise, DEFAULT_SS58_FORMAT } from '@autonomys/auto-utils'
 import { Struct, u64 } from '@polkadot/types'
 import { AccountId32 } from '@polkadot/types/interfaces'
+import { HexSink } from '@subsquid/scale-codec'
 import { codec } from '@subsquid/ss58'
 import { Store } from '@subsquid/typeorm-store'
 import { decodeHex, toHex } from '@subsquid/util-internal-hex'
-import type { CtxBlock, ProcessorContext } from '../processor'
+import { xxhash128 } from '@subsquid/util-xxhash'
+import type { Ctx, CtxBlock, ProcessorContext } from '../processor'
 import { digest } from '../types/system/storage'
 import { DigestItem_PreRuntime } from '../types/v0'
 
@@ -112,4 +114,44 @@ export const getBlockAuthor = async (block: CtxBlock, api: ApiPromise) => {
 
   const subPreDigest = api.registry.createType('SubPreDigest', preRuntimeRaw.value[1])
   return (subPreDigest as unknown as SubPreDigest).solution.reward_address.toString()
+}
+
+const getNameHash = (name: string): string => {
+  const digest = xxhash128().update(name).digest()
+  const sink = new HexSink()
+  sink.u128(digest)
+  const hash = sink.toHex()
+  return hash
+}
+
+export const getStorageHash = (prefix: string, name: string) => {
+  return getNameHash(prefix) + getNameHash(name).slice(2)
+}
+
+export const getHistorySize = async (ctx: Ctx<Store>, block: CtxBlock, api: ApiPromise) => {
+  const { client } = ctx._chain
+
+  const storageHash = getStorageHash('Subspace', 'SegmentCommitment')
+
+  const totalSize = (await client.call('state_getStorageSizeAt', [
+    storageHash,
+    block.header.hash,
+  ])) as number
+  if (totalSize === 0 || !totalSize) return BigInt(0)
+
+  const keys = (await client.call('state_getKeysPagedAt', [
+    storageHash,
+    1,
+    null,
+    block.header.hash,
+  ])) as string[]
+
+  const keySize = (await client.call('state_getStorageSizeAt', [
+    keys[0],
+    block.header.hash,
+  ])) as number
+
+  const segmentsCount = totalSize / keySize
+
+  return calcHistorySize(segmentsCount)
 }

@@ -19,21 +19,23 @@ export async function processExtrinsics(
 ) {
   for (let [index, extrinsic] of extrinsics.entries()) {
     try {
-      console.log('Processing extrinsic:', extrinsic.id)
-      console.log('extrinsic:', extrinsic)
-      console.log('extrinsic.call:', extrinsic.call)
+      //  console.log('Processing extrinsic:', extrinsic.id)
+      //  console.log('extrinsic:', extrinsic)
+      //  console.log('extrinsic.call:', extrinsic.call)
       const _extrinsic = getOrCreateExtrinsic(cache, block, extrinsic.id, {
         hash: extrinsic.hash,
         indexInBlock: index,
+        nonce: BigInt((extrinsic as any).nonce ?? 0),
         name: extrinsic.call?.name ?? '',
-        // tip: extrinsic.tip ?? BigInt(0),
+        //   tip: BigInt((extrinsic as any)?.tip ?? 0),
         fee: extrinsic.fee ?? BigInt(0),
         success: extrinsic.success,
         blockId: block.header.id,
         signer:
           extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
-        timestamp: BigInt(block.header.timestamp ?? 0),
         blockHeight: BigInt(block.header.height ?? 0),
+        //     pos: Number((extrinsic as any)?.pos ?? 0),
+        timestamp: BigInt(block.header.timestamp ?? 0),
       })
       try {
         _extrinsic.args = JSON.stringify(extrinsic.call?.args ?? {})
@@ -52,6 +54,7 @@ export async function processExtrinsics(
           error: '',
           accountId:
             extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
+          pos: Number((extrinsic as any)?.pos ?? 0),
           timestamp: BigInt(block.header.timestamp ?? 0),
         })
         cache.calls.set(_call.id, _call)
