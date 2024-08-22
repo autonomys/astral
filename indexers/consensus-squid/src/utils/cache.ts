@@ -9,6 +9,8 @@ import {
   Extrinsic,
   ExtrinsicName,
   Log,
+  LogKind,
+  Metadata,
   Module,
   Transfer,
 } from '../model'
@@ -19,6 +21,8 @@ export type PermanentCache = {
   eventNames: Map<string, EventName>
   extrinsicNames: Map<string, ExtrinsicName>
 
+  metadata: Map<string, Metadata>
+
   accounts: Map<string, Account>
 }
 
@@ -28,6 +32,7 @@ export type TemporaryCache = {
   events: Map<string, Event>
   calls: Map<string, Call>
   logs: Map<string, Log>
+  logKinds: Map<string, LogKind>
 
   transfers: Map<string, Transfer>
 }
@@ -42,6 +47,7 @@ export const initPermanentCache: PermanentCache = {
   modules: new Map(),
   eventNames: new Map(),
   extrinsicNames: new Map(),
+  metadata: new Map(),
   accounts: new Map(),
 }
 
@@ -51,6 +57,7 @@ export const initTemporaryCache: TemporaryCache = {
   events: new Map(),
   calls: new Map(),
   logs: new Map(),
+  logKinds: new Map(),
   transfers: new Map(),
 }
 
@@ -65,11 +72,12 @@ export const initCache: Cache = {
 }
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [modules, eventNames, extrinsicNames, accounts] = await Promise.all([
+  const [modules, eventNames, extrinsicNames, accounts, metadata] = await Promise.all([
     ctx.store.find(Module),
     ctx.store.find(EventName),
     ctx.store.find(ExtrinsicName),
     ctx.store.find(Account),
+    ctx.store.find(Metadata),
   ])
 
   console.log(
@@ -78,6 +86,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     eventNames.length + ' eventNames, ',
     extrinsicNames.length + ' extrinsicNames, ',
     accounts.length + ' accounts',
+    metadata.length + ' metadata',
   )
 
   return {
@@ -86,6 +95,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     eventNames: new Map(eventNames.map((e) => [e.id, e])),
     extrinsicNames: new Map(extrinsicNames.map((e) => [e.id, e])),
     accounts: new Map(accounts.map((a) => [a.id, a])),
+    metadata: new Map(metadata.map((m) => [m.id, m])),
   }
 }
 
@@ -111,12 +121,14 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logPerm += logEntry('eventNames', cache.eventNames)
   logPerm += logEntry('extrinsicNames', cache.extrinsicNames)
   logPerm += logEntry('accounts', cache.accounts)
+  logPerm += logEntry('metadata', cache.metadata)
 
   let logTemp = logEntry('blocks', cache.blocks)
   logTemp += logEntry('extrinsics', cache.extrinsics)
   logTemp += logEntry('events', cache.events)
   logTemp += logEntry('calls', cache.calls)
   logTemp += logEntry('logs', cache.logs)
+  logTemp += logEntry('logKinds', cache.logKinds)
   logTemp += logEntry('transfers', cache.transfers)
 
   console.log('\x1b[34mSaving in database:\x1b[0m', logPerm)
@@ -134,6 +146,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.events.clear()
   cache.calls.clear()
   cache.logs.clear()
+  cache.logKinds.clear()
   cache.transfers.clear()
 
   cache.isModified = false

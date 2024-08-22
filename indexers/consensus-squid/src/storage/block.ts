@@ -1,6 +1,6 @@
 import { Block } from '../model'
 import type { CtxBlock } from '../processor'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getTimestamp } from '../utils'
 import { Cache } from '../utils/cache'
 
 export const createBlock = (block: CtxBlock, props: Partial<Block> = {}): Block => {
@@ -8,7 +8,6 @@ export const createBlock = (block: CtxBlock, props: Partial<Block> = {}): Block 
   return new Block({
     id: props.id ?? '',
     height: props.height ?? BigInt(0),
-    timestamp: props.timestamp ?? BigInt(0),
     hash: props.hash ?? '',
     parentHash: props.parentHash ?? '',
     specId: props.specId ?? '',
@@ -19,6 +18,8 @@ export const createBlock = (block: CtxBlock, props: Partial<Block> = {}): Block 
     extrinsicsCount: props.extrinsicsCount ?? 0,
     eventsCount: props.eventsCount ?? 0,
     accountId: props.accountId ?? '',
+    timestamp: props.timestamp ?? BigInt(0),
+    date: props.date ?? getTimestamp(block),
     ...props,
   })
 }

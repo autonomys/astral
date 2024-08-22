@@ -1,6 +1,6 @@
 import { Transfer } from '../model'
 import type { CtxBlock } from '../processor'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getTimestamp } from '../utils'
 import { Cache } from '../utils/cache'
 
 export const createTransfer = (
@@ -16,6 +16,7 @@ export const createTransfer = (
     value: props.value ?? BigInt(0),
     fee: props.fee ?? BigInt(0),
     timestamp: props.timestamp ?? BigInt(0),
+    date: props.date ?? getTimestamp(block),
     createdAt: blockNumber,
   })
 }

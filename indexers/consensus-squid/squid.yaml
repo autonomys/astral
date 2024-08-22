@@ -1,6 +1,6 @@
 manifestVersion: subsquid.io/v0.1
 name: consensus-squid
-version: 1
+version: 3
 description: Autonomys - Astral - Consensus Indexer
 build:
 deploy:

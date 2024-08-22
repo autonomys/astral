@@ -1,6 +1,6 @@
 import { Extrinsic } from '../model'
 import type { CtxBlock } from '../processor'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getTimestamp } from '../utils'
 import { Cache } from '../utils/cache'
 
 export const createExtrinsic = (
@@ -24,8 +24,9 @@ export const createExtrinsic = (
     blockId: props.blockId ?? '',
     blockHeight: props.blockHeight ?? BigInt(0),
     pos: props.pos ?? 0,
-    timestamp: props.timestamp ?? new Date(),
     args: props.args ?? '',
+    timestamp: props.timestamp ?? BigInt(0),
+    date: props.date ?? getTimestamp(block),
     createdAt: blockNumber,
     ...props,
   })

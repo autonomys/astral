@@ -1,6 +1,6 @@
 import { Event } from '../model'
 import type { CtxBlock } from '../processor'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getTimestamp } from '../utils'
 import { Cache } from '../utils/cache'
 
 export const createEvent = (block: CtxBlock, id: string, props: Partial<Event> = {}): Event => {
@@ -9,7 +9,6 @@ export const createEvent = (block: CtxBlock, id: string, props: Partial<Event> =
     id: id,
     indexInBlock: props.indexInBlock ?? 0,
     name: props.name ?? '',
-    timestamp: props.timestamp ?? new Date(),
     phase: props.phase ?? '',
     pos: props.pos ?? 0,
     args: props.args ?? '',
@@ -17,6 +16,8 @@ export const createEvent = (block: CtxBlock, id: string, props: Partial<Event> =
     blockHeight: props.blockHeight ?? BigInt(0),
     extrinsicId: props.extrinsicId ?? '',
     callId: props.callId ?? '',
+    timestamp: props.timestamp ?? BigInt(0),
+    date: props.date ?? getTimestamp(block),
     createdAt: blockNumber,
     ...props,
   })

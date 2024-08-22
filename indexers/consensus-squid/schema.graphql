@@ -4,6 +4,7 @@ type Module @entity {
   extrinsicCount: Int!
   eventCount: Int!
   createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 type ExtrinsicName @entity {
@@ -12,6 +13,7 @@ type ExtrinsicName @entity {
   name: String! @index
   count: Int!
   createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 type EventName @entity {
@@ -20,6 +22,15 @@ type EventName @entity {
   name: String! @index
   count: Int!
   createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type LogKind @entity {
+  id: ID! @index
+  kind: String! @index
+  count: Int!
+  createdAt: Int! @index
+  updatedAt: Int! @index
 }
 
 type Metadata @entity {
@@ -49,13 +60,13 @@ type Transfer @entity {
   value: BigInt!
   fee: BigInt!
   timestamp: BigInt! @index
+  date: DateTime! @index
   createdAt: Int! @index
 }
 
 type Block @entity {
   id: ID! @index
   height: BigInt! @index
-  timestamp: BigInt! @index
   hash: String! @index
   parentHash: String!
   specId: String!
@@ -65,6 +76,8 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
+  timestamp: BigInt! @index
+  date: DateTime! @index
   accountId: String! @index
 }
 
@@ -83,8 +96,9 @@ type Extrinsic @entity {
   blockId: String! @index
   blockHeight: BigInt! @index
   pos: Int!
-  timestamp: DateTime! @index
   args: String!
+  timestamp: BigInt! @index
+  date: DateTime! @index
   createdAt: Int! @index
 }
 
@@ -92,7 +106,6 @@ type Event @entity {
   id: ID! @index
   indexInBlock: Int!
   name: String! @index
-  timestamp: DateTime! @index
   phase: String!
   pos: Int!
   args: String!
@@ -100,13 +113,14 @@ type Event @entity {
   blockHeight: BigInt! @index
   extrinsicId: String! @index
   callId: String! @index
+  timestamp: BigInt! @index
+  date: DateTime! @index
   createdAt: Int! @index
 }
 
 type Call @entity {
   id: ID! @index
   name: String! @index
-  timestamp: DateTime! @index
   success: Boolean!
   args: String!
   blockId: String!
@@ -115,6 +129,8 @@ type Call @entity {
   accountId: String! @index
   parent: String!
   pos: Int!
+  timestamp: BigInt! @index
+  date: DateTime! @index
   createdAt: Int! @index
 }
 

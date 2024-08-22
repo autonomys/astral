@@ -1,6 +1,6 @@
 import { Call } from '../model'
 import type { CtxBlock } from '../processor'
-import { getBlockNumber } from '../utils'
+import { getBlockNumber, getTimestamp } from '../utils'
 import { Cache } from '../utils/cache'
 
 export const createCall = (block: CtxBlock, id: string, props: Partial<Call> = {}): Call => {
@@ -8,7 +8,6 @@ export const createCall = (block: CtxBlock, id: string, props: Partial<Call> = {
   return new Call({
     id: id,
     name: props.name ?? '',
-    timestamp: props.timestamp ?? new Date(),
     success: props.success ?? false,
     args: props.args ?? '',
     blockId: props.blockId ?? '',
@@ -17,6 +16,8 @@ export const createCall = (block: CtxBlock, id: string, props: Partial<Call> = {
     accountId: props.accountId ?? '',
     parent: props.parent ?? '',
     pos: props.pos ?? 0,
+    timestamp: props.timestamp ?? BigInt(0),
+    date: props.date ?? getTimestamp(block),
     createdAt: blockNumber,
     ...props,
   })
