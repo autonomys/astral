@@ -5,9 +5,9 @@ description: Autonomys - Astral - Consensus Indexer
 build:
 deploy:
   env:
-    HASURA_GRAPHQL_ADMIN_SECRET: "${{ secrets.HASURA_SECRET }}"
+    HASURA_GRAPHQL_ADMIN_SECRET: '${{ secrets.HASURA_SECRET }}'
     HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
-    HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
+    HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: 'true'
   addons:
     postgres:
     hasura:

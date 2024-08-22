@@ -1,8 +1,15 @@
-import { DEFAULT_SS58_FORMAT } from '@autonomys/auto-utils'
+import { ApiPromise, DEFAULT_SS58_FORMAT } from '@autonomys/auto-utils'
+import { Struct, u64 } from '@polkadot/types'
+import { AccountId32 } from '@polkadot/types/interfaces'
 import { codec } from '@subsquid/ss58'
-import type { Store } from '@subsquid/typeorm-store'
-import { decodeHex } from '@subsquid/util-internal-hex'
+import { Store } from '@subsquid/typeorm-store'
+import { decodeHex, toHex } from '@subsquid/util-internal-hex'
 import type { CtxBlock, ProcessorContext } from '../processor'
+import { digest } from '../types/system/storage'
+import { DigestItem_PreRuntime } from '../types/v0'
+
+const PIECE_SIZE = 1048576n
+const MAX_PIECES_IN_SECTOR = 1000n
 
 export const hexToAccount = (hex: string): string => {
   try {
@@ -43,4 +50,66 @@ export const logBlock = (blocks: CtxBlock[]): void => {
     'From ' + from,
     'to ' + to + ' (' + (to - from) + ' blocks)',
   )
+}
+
+export const solutionRangeToSectors = (solutionRange: bigint): bigint => {
+  const MAX_U64 = 2n ** 64n - 1n
+  const SLOT_PROBABILITY = [1n, 6n]
+  const RECORD_NUM_CHUNKS = 32768n
+  const RECORD_NUM_S_BUCKETS = 65536n
+
+  const sectors =
+    ((MAX_U64 / SLOT_PROBABILITY[1]) * SLOT_PROBABILITY[0]) /
+    ((MAX_PIECES_IN_SECTOR * RECORD_NUM_CHUNKS) / RECORD_NUM_S_BUCKETS)
+
+  // Take solution range into account
+  return sectors / solutionRange
+}
+
+export const calcSpacePledged = (solutionRange: bigint): bigint => {
+  const sectors = solutionRangeToSectors(solutionRange)
+
+  return sectors * MAX_PIECES_IN_SECTOR * PIECE_SIZE
+}
+
+export const calcHistorySize = (segmentsCount: number): bigint => {
+  const PIECES_IN_SEGMENT = 256n
+  const segmentsCountBigInt = BigInt(segmentsCount)
+
+  return PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCountBigInt
+}
+
+export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
+  if (!value) return null
+
+  if (Array.isArray(value)) {
+    return {
+      engine: value[0].toString(),
+      data: toHex(value[1]),
+    }
+  }
+
+  return { data: toHex(value) }
+}
+
+interface Solution extends Struct {
+  readonly public_key: AccountId32
+  readonly reward_address: AccountId32
+}
+
+export interface SubPreDigest extends Struct {
+  readonly slot: u64
+  readonly solution: Solution
+}
+
+export const getBlockAuthor = async (block: CtxBlock, api: ApiPromise) => {
+  if (block.header.height === 0) return // genesis block does not have logs
+  const storage = (await digest.v0.get(block.header)) ?? digest.v0.getDefault(block.header)
+  const preRuntimeRaw = storage.logs.find(
+    (digestItem) => digestItem.__kind === 'PreRuntime',
+  ) as DigestItem_PreRuntime
+  if (!preRuntimeRaw) return
+
+  const subPreDigest = api.registry.createType('SubPreDigest', preRuntimeRaw.value[1])
+  return (subPreDigest as unknown as SubPreDigest).solution.reward_address.toString()
 }
