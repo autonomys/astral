@@ -189,7 +189,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         cell: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
             {row.original.account_id === subspaceAccount && (
-              <Tooltip text='You are the operator'>
+              <Tooltip text='You are the operator' direction='bottom'>
                 <AccountIcon address={row.original.account_id} size={26} />
               </Tooltip>
             )}
@@ -553,7 +553,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             )} ${TOKEN.symbol}`
           return (
             <div>
-              <Tooltip text={tooltip}>
+              <Tooltip text={tooltip} direction='bottom'>
                 {bigNumberToFormattedString(total)} {TOKEN.symbol}
               </Tooltip>
             </div>

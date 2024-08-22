@@ -116,6 +116,7 @@ export const DomainsList: FC = () => {
                   Details: {row.original.runtime_info}
                 </span>
               }
+              direction='bottom'
             >
               <div>{capitalizeFirstLetter(row.original.name)}</div>
             </Tooltip>
@@ -157,6 +158,7 @@ export const DomainsList: FC = () => {
                   Last block #: {row.original.last_domain_block_number}
                 </span>
               }
+              direction='bottom'
             >
               {row.original.completed_epoch}
             </Tooltip>
@@ -177,6 +179,7 @@ export const DomainsList: FC = () => {
                   Completed epoch: {numberFormattedString(row.original.completed_epoch)}
                 </span>
               }
+              direction='bottom'
             >
               {row.original.last_domain_block_number}
             </Tooltip>
@@ -353,6 +356,7 @@ export const DomainsList: FC = () => {
                 {TOKEN.symbol}
               </span>
             }
+            direction='bottom'
           >
             <div>{`${bigNumberToFormattedString(BigInt(row.original.current_total_stake) + BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
           </Tooltip>
@@ -375,6 +379,7 @@ export const DomainsList: FC = () => {
                 {TOKEN.symbol}
               </span>
             }
+            direction='bottom'
           >
             <div>{`${bigNumberToFormattedString(BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
           </Tooltip>

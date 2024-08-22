@@ -21,6 +21,10 @@ export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top' })
       {isVisible && (
         <div
           className={`absolute ${direction}-full z-10 mt-2 w-auto rounded-md bg-purpleAccent p-2 text-sm text-white shadow-lg`}
+          onMouseOver={() => setIsVisible(true)}
+          onMouseOut={() => setIsVisible(false)}
+          onFocus={() => setIsVisible(true)}
+          onBlur={() => setIsVisible(false)}
         >
           {text}
         </div>
