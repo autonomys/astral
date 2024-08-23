@@ -54,7 +54,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
         })
       }
     >
-      <div className='relative'>
+      <div className='relative z-30'>
         <Listbox.Button className='relative w-full cursor-default rounded-full bg-purpleAccent from-pinkAccent to-purpleDeepAccent py-[10px] pl-3 pr-16 text-left font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
           <div className='flex items-center justify-center'>
             <span className='ml-2 w-28 text-center text-sm'>Actions</span>
@@ -72,7 +72,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute z-40 mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute z-50 sticky mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
             {actionsAvailable.map((actionType, index) => (
               <Listbox.Option
                 key={index}

@@ -4,7 +4,7 @@ import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE } from 'constants/general'
+import { PAGE_SIZE, TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -21,8 +21,9 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useTableStates } from 'states/tables'
 import { useViewStates } from 'states/view'
-import type { Cell } from 'types/table'
+import type { Cell, LeaderboardFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
@@ -59,6 +60,11 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const { ref, inView } = useInView()
   const { myPositionOnly } = useViewStates()
   const { subspaceAccount } = useWallet()
+  const {
+    leaderboard: { columns: availableColumns, selectedColumns, filters: leaderboardFilters },
+  } = useTableStates()
+  const filters = useMemo(() => leaderboardFilters as LeaderboardFilters, [leaderboardFilters])
+
   const [sorting, setSorting] = useState<SortingState>([{ id: 'rank', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -70,16 +76,18 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
-    return [
-      {
+    const cols = []
+    if (selectedColumns.includes('id'))
+      cols.push({
         accessorKey: 'rank',
         header: 'Rank',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`rank-${row.original.id}`}>{row.original.rank}</div>
         ),
-      },
-      {
+      })
+    if (selectedColumns.includes('id'))
+      cols.push({
         accessorKey: 'id',
         header: idLabel,
         enableSorting: true,
@@ -97,8 +105,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
             </div>
           )
         },
-      },
-      {
+      })
+    if (selectedColumns.includes('value'))
+      cols.push({
         accessorKey: 'value',
         header: valueLabel,
         enableSorting: true,
@@ -110,8 +119,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
             {valueSuffix && ` ${valueSuffix}`}
           </div>
         ),
-      },
-      {
+      })
+    if (selectedColumns.includes('last_contribution_at'))
+      cols.push({
         accessorKey: 'last_contribution_at',
         header: 'Last contribution',
         enableSorting: true,
@@ -120,8 +130,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
             {dayjs(row.original.last_contribution_at).fromNow(true) + ' ago'}
           </div>
         ),
-      },
-      {
+      })
+    if (selectedColumns.includes('created_at'))
+      cols.push({
         accessorKey: 'created_at',
         header: 'First contribution block',
         enableSorting: true,
@@ -139,9 +150,10 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
             <div>{row.original.created_at}</div>
           </Link>
         ),
-      },
-      {
-        accessorKey: 'last_contribution_at',
+      })
+    if (selectedColumns.includes('updated_at'))
+      cols.push({
+        accessorKey: 'updated_at',
         header: 'Last contribution block',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
@@ -151,16 +163,26 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
             href={INTERNAL_ROUTES.blocks.id.page(
               network,
               Routes.consensus,
-              row.original.created_at,
+              row.original.updated_at,
             )}
             className='hover:text-purpleAccent'
           >
             <div>{row.original.updated_at}</div>
           </Link>
         ),
-      },
-    ]
-  }, [idLabel, valueLabel, showAccountIcon, idLink, isLargeLaptop, valueType, valueSuffix, network])
+      })
+    return cols
+  }, [
+    selectedColumns,
+    idLabel,
+    valueLabel,
+    showAccountIcon,
+    idLink,
+    isLargeLaptop,
+    valueType,
+    valueSuffix,
+    network,
+  ])
 
   const orderBy = useMemo(
     () =>
@@ -172,15 +194,58 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     [sorting],
   )
 
+  const where = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const conditions: Record<string, any> = {}
+
+    if (subspaceAccount && myPositionOnly) {
+      conditions.id._eq = subspaceAccount
+    }
+
+    // Add search conditions
+    availableColumns
+      .filter((column) => column.searchable)
+      .forEach((column) => {
+        const searchKey = `search-${column.name}` as keyof LeaderboardFilters
+        const searchValue = filters[searchKey]
+        if (searchValue) {
+          conditions[column.name] = { _ilike: `%${searchValue}%` }
+        }
+      })
+
+    // Rank
+    if (filters.rankMin || filters.rankMax) {
+      conditions['rank'] = {}
+      if (filters.rankMin) conditions.rank._gte = filters.rankMin
+      if (filters.rankMax) conditions.rank._lte = filters.rankMax
+    }
+
+    // Value
+    if (filters.valueMin || filters.valueMax) {
+      conditions['value'] = {}
+      if (filters.valueMin) {
+        conditions.value._gte = BigInt(
+          Math.floor(parseFloat(filters.valueMin) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+      if (filters.valueMax) {
+        conditions.value._lte = BigInt(
+          Math.floor(parseFloat(filters.valueMax) * 10 ** TOKEN.decimals),
+        ).toString()
+      }
+    }
+
+    return conditions
+  }, [availableColumns, filters, myPositionOnly, subspaceAccount])
+
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : 0,
       orderBy,
-      // eslint-disable-next-line camelcase
-      where: myPositionOnly ? { id: { _eq: subspaceAccount } } : {},
+      where,
     }),
-    [pagination.pageSize, pagination.pageIndex, orderBy, myPositionOnly, subspaceAccount],
+    [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
   const {

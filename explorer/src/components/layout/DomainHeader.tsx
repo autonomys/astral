@@ -22,6 +22,10 @@ export const DomainHeader = () => {
   const menuList = useMemo(
     () => [
       {
+        title: 'Domains',
+        link: `/${network}/${Routes.domains}`,
+      },
+      {
         title: 'Nova',
         link: `/${network}/${Routes.nova}`,
       },
