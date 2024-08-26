@@ -44,14 +44,15 @@ export const splitModuleAndId = (extrinsicName: string): [string, string] => {
 
 export const stringUID = (id: string): string => id.toLowerCase()
 
-export const logBlock = (blocks: CtxBlock[]): void => {
+export const logBlock = (blocks: CtxBlock[]): string => {
   const from = getBlockNumber(blocks[0])
   const to = getBlockNumber(blocks[blocks.length - 1])
-  return console.log(
+  console.log(
     '\x1b[33mProcessing ' + blocks.length + ' blocks\x1b[0m',
     'From ' + from,
     'to ' + to + ' (' + (to - from) + ' blocks)',
   )
+  return 'Processing ' + blocks.length + ' blocks, ' +  'From ' + from + 'to ' + to + ' (' + (to - from) + ' blocks)'
 }
 
 export const solutionRangeToSectors = (solutionRange: bigint): bigint => {
@@ -79,19 +80,6 @@ export const calcHistorySize = (segmentsCount: number): bigint => {
   const segmentsCountBigInt = BigInt(segmentsCount)
 
   return PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCountBigInt
-}
-
-export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
-  if (!value) return null
-
-  if (Array.isArray(value)) {
-    return {
-      engine: value[0].toString(),
-      data: toHex(value[1]),
-    }
-  }
-
-  return { data: toHex(value) }
 }
 
 interface Solution extends Struct {

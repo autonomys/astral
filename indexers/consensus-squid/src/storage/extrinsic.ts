@@ -24,7 +24,6 @@ export const createExtrinsic = (
     blockId: props.blockId ?? '',
     blockHeight: props.blockHeight ?? BigInt(0),
     pos: props.pos ?? 0,
-    args: props.args ?? '',
     timestamp: props.timestamp ?? BigInt(0),
     date: props.date ?? getTimestamp(block),
     createdAt: blockNumber,

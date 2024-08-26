@@ -1,8 +1,6 @@
-import type { ApiPromise } from '@autonomys/auto-utils'
 import { processEvents } from '../events'
 import type { CtxBlock, CtxExtrinsic } from '../processor'
 import {
-  getOrCreateCall,
   getOrCreateExtrinsic,
   getOrCreateExtrinsicName,
   getOrCreateModule,
@@ -10,18 +8,14 @@ import {
 import { getBlockNumber, getCallSigner } from '../utils'
 import { Cache } from '../utils/cache'
 
-export async function processExtrinsics(
+export function processExtrinsics(
   cache: Cache,
-  api: ApiPromise,
   block: CtxBlock,
   extrinsics: CtxExtrinsic[],
   blockOwner: string,
 ) {
   for (let [index, extrinsic] of extrinsics.entries()) {
     try {
-      //  console.log('Processing extrinsic:', extrinsic.id)
-      //  console.log('extrinsic:', extrinsic)
-      //  console.log('extrinsic.call:', extrinsic.call)
       const _extrinsic = getOrCreateExtrinsic(cache, block, extrinsic.id, {
         hash: extrinsic.hash,
         indexInBlock: index,
@@ -37,42 +31,20 @@ export async function processExtrinsics(
         //     pos: Number((extrinsic as any)?.pos ?? 0),
         timestamp: BigInt(block.header.timestamp ?? 0),
       })
-      try {
-        _extrinsic.args = JSON.stringify(extrinsic.call?.args ?? {})
-      } catch (error) {
-        console.error('Failed to process extrinsic:', error)
-      }
       cache.extrinsics.set(_extrinsic.id, _extrinsic)
-
-      if (extrinsic.call) {
-        const _call = getOrCreateCall(cache, block, extrinsic.call.id, {
-          name: extrinsic.call.name,
-          success: extrinsic.success,
-          args: JSON.stringify(extrinsic.call?.args ?? {}),
-          blockId: block.header.id,
-          extrinsicId: extrinsic.id,
-          error: '',
-          accountId:
-            extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
-          pos: Number((extrinsic as any)?.pos ?? 0),
-          timestamp: BigInt(block.header.timestamp ?? 0),
-        })
-        cache.calls.set(_call.id, _call)
-      }
 
       cache.isModified = true
     } catch (error) {
       console.error('Failed to process extrinsic:', error)
     }
 
-    cache = await processExtrinsic(cache, api, block, extrinsic, blockOwner)
+    cache = processExtrinsic(cache, block, extrinsic, blockOwner)
   }
   return cache
 }
 
-export async function processExtrinsic(
+export function processExtrinsic(
   cache: Cache,
-  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   blockOwner: string,
@@ -90,8 +62,5 @@ export async function processExtrinsic(
     cache.isModified = true
   }
 
-  switch (extrinsic.call?.name) {
-    default:
-      return await processEvents(cache, api, block, extrinsic, blockOwner)
-  }
+  return processEvents(cache, block, extrinsic, blockOwner)
 }

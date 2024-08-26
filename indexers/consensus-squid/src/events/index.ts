@@ -1,43 +1,36 @@
-import type { ApiPromise } from '@autonomys/auto-utils'
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from '../processor'
 import { getOrCreateEvent, getOrCreateEventName, getOrCreateModule } from '../storage'
-import { events } from '../types'
 import { getBlockNumber, getCallSigner } from '../utils'
 import { Cache } from '../utils/cache'
-import { processTransferEvent } from './account'
-import { processCodeUpdatedEvent } from './code'
 
-export async function processEvents(
+export function processEvents(
   cache: Cache,
-  api: ApiPromise,
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
   blockOwner: string,
 ) {
+  const blockHeight = BigInt(block.header.height ?? 0)
+  const blockId = block.header.id
+  const timestamp = BigInt(block.header.timestamp ?? 0)
+  const phase = (extrinsic as any)?.phase ?? BigInt(0)
+
   for (let [index, event] of extrinsic.events.entries()) {
     try {
       const _event = getOrCreateEvent(cache, block, event.id, {
         indexInBlock: index,
         name: event.name,
         extrinsicId: extrinsic.id,
-        accountId:
-          extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
-        blockHeight: BigInt(block.header.height ?? 0),
-        blockId: block.header.id,
+        accountId: extrinsic.call && extrinsic.call.origin ? getCallSigner(extrinsic.call) : blockOwner,
+        blockHeight,
+        blockId,
         callId: extrinsic.call?.id ?? '',
-        phase: (extrinsic as any)?.phase ?? BigInt(0),
-        //       pos: Number((extrinsic as any)?.pos ?? 0),
-        timestamp: BigInt(block.header.timestamp ?? 0),
+        phase,
+        timestamp,
       })
-      try {
-        _event.args = JSON.stringify(extrinsic.call?.args ?? {})
-      } catch (error) {
-        console.error('Failed to process event:', error)
-      }
       cache.events.set(_event.id, _event)
       cache.isModified = true
 
-      cache = await processEvent(cache, api, block, extrinsic, event)
+      cache = processEvent(cache, block, event)
     } catch (error) {
       console.error('Failed to process event:', error)
     }
@@ -45,11 +38,9 @@ export async function processEvents(
   return cache
 }
 
-async function processEvent(
+function processEvent(
   cache: Cache,
-  api: ApiPromise,
   block: CtxBlock,
-  extrinsic: CtxExtrinsic,
   event: CtxEvent,
 ) {
   const module = getOrCreateModule(cache, block, event.name)
@@ -63,14 +54,5 @@ async function processEvent(
   cache.eventNames.set(eventName.id, eventName)
   cache.isModified = true
 
-  switch (event.name) {
-    case events.balances.transfer.name:
-      return processTransferEvent(cache, block, event)
-
-    case events.system.codeUpdated.name:
-      return processCodeUpdatedEvent(cache, api, block, extrinsic, event)
-
-    default:
-      return cache
-  }
+  return cache
 }

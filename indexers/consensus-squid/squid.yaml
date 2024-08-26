@@ -1,6 +1,6 @@
 manifestVersion: subsquid.io/v0.1
 name: consensus-squid
-version: 5
+version: 7
 description: Autonomys - Astral - Consensus Indexer
 build:
 deploy:
@@ -18,6 +18,8 @@ deploy:
     env:
       CONSENSUS_GATEWAY: ${{ secrets.CONSENSUS_GATEWAY }}
       RPC_CONSENSUS_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      SLACK_CONVERSATION_ID: ${{ secrets.SLACK_CONVERSATION_ID }}
   api:
     cmd:
       - sqd
@@ -27,7 +29,7 @@ scale:
   dedicated: true
   addons:
     postgres:
-      storage: 100G
+      storage: 2000G
       profile: large
   processor:
     profile: medium

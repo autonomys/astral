@@ -1,40 +1,43 @@
 import type { ApiPromise } from '@autonomys/auto-utils'
 import { Store } from '@subsquid/typeorm-store'
 import { processExtrinsics } from '../extrinsics'
-import type { Ctx, CtxBlock } from '../processor'
+import { SlackMessage } from '../model'
+import type { Ctx } from '../processor'
 import {
-  getOrCreateAccount,
   getOrCreateBlock,
-  getOrCreateLog,
-  getOrCreateLogKind,
 } from '../storage'
 import { solutionRanges } from '../types/subspace/storage'
-import { digest } from '../types/system/storage'
 import {
   calcSpacePledged,
   getBlockAuthor,
-  getBlockNumber,
   getHistorySize,
   logBlock,
 } from '../utils'
-import { Cache, load, save } from '../utils/cache'
+import { Cache, LastSlackMsg, load, save } from '../utils/cache'
+import { sendSlackStatsMessage } from '../utils/slack'
 
 export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
   let cache: Cache = await load(ctx)
-  logBlock(ctx.blocks)
+
+  const logMsg = logBlock(ctx.blocks)
+  const lastSlackMsgKey: LastSlackMsg = 'lastSlackMsg'
+  const lastSlackMsg = cache.slackMessages.get(lastSlackMsgKey)
+  const slackMsg = await sendSlackStatsMessage(logMsg, lastSlackMsg ? lastSlackMsg.messageId : undefined)
+  if (slackMsg) cache.slackMessages.set(lastSlackMsgKey, new SlackMessage({
+    id: lastSlackMsgKey,
+    messageId: slackMsg,
+    }))
+
   for (let block of ctx.blocks) {
-    console.log('Processing block:', block.header.id)
-    const solutionRang = await solutionRanges.v0.get(block.header)
+    const [solutionRang, blockchainSize, owner] = await Promise.all([
+      solutionRanges.v0.get(block.header),
+      getHistorySize(ctx, block, api),
+      getBlockAuthor(block, api),
+    ])
     const spacePledged = solutionRang
       ? calcSpacePledged(solutionRang.current)
       : calcSpacePledged(solutionRanges.v0.getDefault(block.header).current)
-    const blockchainSize = await getHistorySize(ctx, block, api)
 
-    const owner = await getBlockAuthor(block, api)
-    if (owner) {
-      const account = getOrCreateAccount(cache, block, owner)
-      cache.accounts.set(account.id, account)
-    }
     const _block = getOrCreateBlock(cache, block, {
       id: block.header.id,
       height: BigInt(block.header.height ?? 0),
@@ -52,38 +55,10 @@ export async function processBlocks(ctx: Ctx<Store>, api: ApiPromise) {
     })
     cache.blocks.set(_block.id, _block)
 
-    try {
-      const _digest = await digest.v0.get(block.header)
-      if (_digest) {
-        _digest.logs.forEach((log, index) => {
-          const logKind = getOrCreateLogKind(cache, block, log.__kind, {
-            kind: log.__kind,
-          })
-          logKind.count++
-          logKind.updatedAt = getBlockNumber(block)
-          cache.logKinds.set(logKind.id, logKind)
+    cache = processExtrinsics(cache, block, block.extrinsics, owner ?? '')
 
-          const _log = getOrCreateLog(cache, block, `${block.header.id}-${index}`, {
-            kind: log.__kind,
-            value: (log as any).value,
-            blockId: block.header.id,
-            accountId: owner ?? '',
-          })
-          cache.logs.set(_log.id, _log)
-        })
-      }
-    } catch (error) {
-      console.error('Failed to process log:', error)
-    }
-
-    cache.isModified = true
-
-    cache = await processBlock(cache, api, block, owner ?? '')
+    if (block.header.height % 100 === 0) await save(ctx, cache)
   }
 
   await save(ctx, cache)
-}
-
-async function processBlock(cache: Cache, api: ApiPromise, block: CtxBlock, blockOwner: string) {
-  return await processExtrinsics(cache, api, block, block.extrinsics, blockOwner)
 }

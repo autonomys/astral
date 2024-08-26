@@ -1,18 +1,13 @@
 import { Store } from '@subsquid/typeorm-store'
 import { Entity } from '@subsquid/typeorm-store/src/store'
 import {
-  Account,
   Block,
-  Call,
   Event,
   EventName,
   Extrinsic,
   ExtrinsicName,
-  Log,
-  LogKind,
-  Metadata,
   Module,
-  Transfer,
+  SlackMessage,
 } from '../model'
 import type { Ctx } from '../processor'
 
@@ -21,24 +16,23 @@ export type PermanentCache = {
   eventNames: Map<string, EventName>
   extrinsicNames: Map<string, ExtrinsicName>
 
-  metadata: Map<string, Metadata>
-
-  accounts: Map<string, Account>
+  slackMessages: Map<string, SlackMessage>
 }
 
 export type TemporaryCache = {
   blocks: Map<string, Block>
   extrinsics: Map<string, Extrinsic>
   events: Map<string, Event>
-  calls: Map<string, Call>
-  logs: Map<string, Log>
-  logKinds: Map<string, LogKind>
-
-  transfers: Map<string, Transfer>
 }
+
+export type LastSlackMsg = `lastSlackMsg`
+export const lastSlackMsgKey: LastSlackMsg = 'lastSlackMsg'
+
+type InternalKeyStore = LastSlackMsg
 
 type CacheManager = {
   isModified: boolean
+  internalKeyStore: Map<InternalKeyStore, string>
 }
 
 export type Cache = PermanentCache & TemporaryCache & CacheManager
@@ -47,22 +41,18 @@ export const initPermanentCache: PermanentCache = {
   modules: new Map(),
   eventNames: new Map(),
   extrinsicNames: new Map(),
-  metadata: new Map(),
-  accounts: new Map(),
+  slackMessages: new Map(),
 }
 
 export const initTemporaryCache: TemporaryCache = {
   blocks: new Map(),
   extrinsics: new Map(),
   events: new Map(),
-  calls: new Map(),
-  logs: new Map(),
-  logKinds: new Map(),
-  transfers: new Map(),
 }
 
 export const initCacheManager: CacheManager = {
   isModified: false,
+  internalKeyStore: new Map(),
 }
 
 export const initCache: Cache = {
@@ -72,12 +62,11 @@ export const initCache: Cache = {
 }
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [modules, eventNames, extrinsicNames, accounts, metadata] = await Promise.all([
+  const [modules, eventNames, extrinsicNames, slackMessages] = await Promise.all([
     ctx.store.find(Module),
     ctx.store.find(EventName),
     ctx.store.find(ExtrinsicName),
-    ctx.store.find(Account),
-    ctx.store.find(Metadata),
+    ctx.store.find(SlackMessage),
   ])
 
   console.log(
@@ -85,8 +74,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     modules.length + ' modules, ',
     eventNames.length + ' eventNames, ',
     extrinsicNames.length + ' extrinsicNames, ',
-    accounts.length + ' accounts',
-    metadata.length + ' metadata',
+    slackMessages.length + ' slackMessages',
   )
 
   return {
@@ -94,8 +82,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     modules: new Map(modules.map((m) => [m.id, m])),
     eventNames: new Map(eventNames.map((e) => [e.id, e])),
     extrinsicNames: new Map(extrinsicNames.map((e) => [e.id, e])),
-    accounts: new Map(accounts.map((a) => [a.id, a])),
-    metadata: new Map(metadata.map((m) => [m.id, m])),
+    slackMessages: new Map(slackMessages.map((s) => [s.id, s])),
   }
 }
 
@@ -120,16 +107,11 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   let logPerm = logEntry('modules', cache.modules)
   logPerm += logEntry('eventNames', cache.eventNames)
   logPerm += logEntry('extrinsicNames', cache.extrinsicNames)
-  logPerm += logEntry('accounts', cache.accounts)
-  logPerm += logEntry('metadata', cache.metadata)
+  logPerm += logEntry('slackMessages', cache.slackMessages)
 
   let logTemp = logEntry('blocks', cache.blocks)
   logTemp += logEntry('extrinsics', cache.extrinsics)
   logTemp += logEntry('events', cache.events)
-  logTemp += logEntry('calls', cache.calls)
-  logTemp += logEntry('logs', cache.logs)
-  logTemp += logEntry('logKinds', cache.logKinds)
-  logTemp += logEntry('transfers', cache.transfers)
 
   console.log('\x1b[34mSaving in database:\x1b[0m', logPerm)
   console.log(' and ', logTemp, '\n')
@@ -144,10 +126,6 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   cache.blocks.clear()
   cache.extrinsics.clear()
   cache.events.clear()
-  cache.calls.clear()
-  cache.logs.clear()
-  cache.logKinds.clear()
-  cache.transfers.clear()
 
   cache.isModified = false
 }

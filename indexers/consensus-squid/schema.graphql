@@ -33,37 +33,6 @@ type LogKind @entity {
   updatedAt: Int! @index
 }
 
-type Metadata @entity {
-  id: ID! @index
-  sortId: Int! @index
-  blockHash: String! @index
-  specName: String! @index
-  metadata: String!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Account @entity {
-  id: ID! @index
-  nonce: BigInt!
-  free: BigInt!
-  reserved: BigInt!
-  total: BigInt @index
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Transfer @entity {
-  id: ID! @index
-  from: String! @index
-  to: String! @index
-  value: BigInt!
-  fee: BigInt!
-  timestamp: BigInt! @index
-  date: DateTime! @index
-  createdAt: Int! @index
-}
-
 type Block @entity {
   id: ID! @index
   height: BigInt! @index
@@ -96,7 +65,6 @@ type Extrinsic @entity {
   blockId: String! @index
   blockHeight: BigInt! @index
   pos: Int!
-  args: String!
   timestamp: BigInt! @index
   date: DateTime! @index
   createdAt: Int! @index
@@ -108,28 +76,11 @@ type Event @entity {
   name: String! @index
   phase: String!
   pos: Int!
-  args: String!
   blockId: String! @index
   accountId: String! @index
   blockHeight: BigInt! @index
   extrinsicId: String! @index
   callId: String! @index
-  timestamp: BigInt! @index
-  date: DateTime! @index
-  createdAt: Int! @index
-}
-
-type Call @entity {
-  id: ID! @index
-  name: String! @index
-  success: Boolean!
-  args: String!
-  blockId: String!
-  extrinsicId: String!
-  error: String!
-  accountId: String! @index
-  parent: String!
-  pos: Int!
   timestamp: BigInt! @index
   date: DateTime! @index
   createdAt: Int! @index
@@ -142,4 +93,9 @@ type Log @entity {
   blockId: String! @index
   accountId: String! @index
   createdAt: Int! @index
+}
+
+type SlackMessage @entity {
+  id: ID! @index
+  messageId: String! @index
 }
