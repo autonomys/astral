@@ -1,5 +1,5 @@
 import useWallet from 'hooks/useWallet'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import {
   ConfirmedDomainExecutionReceipt,
@@ -11,6 +11,8 @@ import {
 import { formatDeposits, formatOperators, formatWithdrawals } from 'utils/chainStateParsing'
 
 export const useConsensusData = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const {
     setProperties,
     setDomain,
@@ -29,8 +31,8 @@ export const useConsensusData = () => {
   const { api } = useWallet()
 
   const loadData = useCallback(async () => {
-    if (!api) return
-
+    if (!api || isLoading || isLoaded) return
+    setIsLoading(true)
     try {
       const [
         properties,
@@ -152,9 +154,10 @@ export const useConsensusData = () => {
       const withdrawals = await Promise.all(
         formattedOperators.map((o) => api.query.domains.withdrawals.entries(o.id)),
       )
-
       setDeposits(formatDeposits(deposits.flat()))
       setWithdrawals(formatWithdrawals(withdrawals.flat()))
+      setIsLoaded(true)
+      setIsLoading(false)
     } catch (error) {
       console.error('useConsensusData', error)
     }
@@ -180,6 +183,10 @@ export const useConsensusData = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [api],
   )
+
+  useEffect(() => {
+    if (!isLoaded) loadData()
+  }, [isLoaded, loadData])
 
   return { loadData, loadDataByOperatorId }
 }

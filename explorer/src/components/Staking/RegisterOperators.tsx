@@ -16,7 +16,7 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import { floatToStringWithDecimals } from 'utils/number'
 import { shortString } from 'utils/string'
@@ -45,22 +45,14 @@ export const RegisterOperators = () => {
   const [formError, setFormError] = useState<string | null>(null)
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const { tokenDecimals, tokenSymbol, domain, domainRegistry } = useConsensusStates()
-  const { loadData: loadDomainsData } = useDomainsData()
-  const { loadData: loadConsensusData } = useConsensusData()
+  useDomainsData()
+  useConsensusData()
   const { handleTxError, sendAndSaveTx } = useTxHelper()
 
   const minOperatorStake = useMemo(() => {
     if (domain) return parseFloat(domain.minOperatorStake)
     return 0
   }, [domain])
-
-  useEffect(() => {
-    if (api && (!domainRegistry || domainRegistry.length === 0)) loadDomainsData()
-  }, [api, domainRegistry, loadDomainsData])
-
-  useEffect(() => {
-    if (!tokenSymbol || tokenDecimals === 0) loadConsensusData()
-  }, [tokenSymbol, tokenDecimals, loadConsensusData])
 
   const [activeProofMethodTab, setActiveProofMethodTab] = useState<OwnershipProofMethod>(
     OwnershipProofMethod.keystore,

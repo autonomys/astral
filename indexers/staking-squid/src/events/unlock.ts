@@ -1,4 +1,5 @@
 import {
+  DepositStatus,
   NominatorPendingAction,
   NominatorStatus,
   OperatorPendingAction,
@@ -98,6 +99,30 @@ export function processFundsUnlockedEvent(
       cache.withdrawals.set(w.id, w);
     });
 
+  let amountToWithdraw = amountBigInt;
+  Array.from(cache.deposits.values())
+    .filter(
+      (d) =>
+        d.status === DepositStatus.DEPOSITED &&
+        d.operatorId === operator.id &&
+        d.accountId === account.id
+    )
+    .forEach((d) => {
+      if (amountToWithdraw > 0) {
+        if (amountToWithdraw > d.totalAmount) {
+          amountToWithdraw -= d.totalAmount;
+          d.totalWithdrawn = d.totalAmount;
+          d.status = DepositStatus.WITHDRAWN;
+        } else {
+          d.totalWithdrawn = amountToWithdraw;
+          d.status = DepositStatus.PARTIALLY_WITHDRAWN;
+          amountToWithdraw = BigInt(0);
+        }
+        d.updatedAt = blockNumber;
+        cache.deposits.set(d.id, d);
+      }
+    });
+
   domain.totalWithdrawals += amountBigInt;
   account.totalWithdrawals += amountBigInt;
   operator.totalWithdrawals += amountBigInt;
@@ -155,6 +180,30 @@ export function processNominatedStakedUnlockedEvent(
       cache.withdrawals.set(w.id, w);
     });
   }
+
+  let amountToWithdraw = unlockedAmountBigInt;
+  Array.from(cache.deposits.values())
+    .filter(
+      (d) =>
+        d.status === DepositStatus.DEPOSITED &&
+        d.operatorId === operator.id &&
+        d.accountId === account.id
+    )
+    .forEach((d) => {
+      if (amountToWithdraw > 0) {
+        if (amountToWithdraw > d.totalAmount) {
+          amountToWithdraw -= d.totalAmount;
+          d.totalWithdrawn = d.totalAmount;
+          d.status = DepositStatus.WITHDRAWN;
+        } else {
+          d.totalWithdrawn = amountToWithdraw;
+          d.status = DepositStatus.PARTIALLY_WITHDRAWN;
+          amountToWithdraw = BigInt(0);
+        }
+        d.updatedAt = blockNumber;
+        cache.deposits.set(d.id, d);
+      }
+    });
 
   domain.totalWithdrawals += unlockedAmountBigInt;
   account.totalWithdrawals += unlockedAmountBigInt;

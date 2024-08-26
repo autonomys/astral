@@ -20,6 +20,7 @@ export const createWithdrawal = (
     estimatedAmount: BigInt(0),
     unlockedAmount: BigInt(0),
     unlockedStorageFee: BigInt(0),
+    totalAmount: BigInt(0),
     status: WithdrawalStatus.PENDING_LOCK,
     timestamp: getTimestamp(block),
     withdrawExtrinsicHash: extrinsic.hash.toString(),

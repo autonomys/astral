@@ -7,32 +7,109 @@ import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
-import React, { FC } from 'react'
+import React, { FC, useCallback, useMemo } from 'react'
+import { hasValue, useQueryStates } from 'states/query'
+import { useTableStates } from 'states/tables'
+import type { LeaderboardFilters, TableSettingsTabs } from 'types/table'
+import { numberWithCommas } from 'utils/number'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
+import { TableSettings } from '../common/TableSettings'
 import { LeaderboardList } from './LeaderboardList'
 import * as Query from './leaderboard.query'
 
 type LeaderboardProps = {
   children: React.ReactNode
 }
+const TABLE = 'leaderboard'
 
 export const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
   const { subspaceAccount } = useWallet()
+  const {
+    leaderboard: {
+      columns: availableColumns,
+      selectedColumns,
+      filtersOptions,
+      filters: leaderboardFilters,
+      showTableSettings,
+    },
+    setColumns,
+    setFilters,
+    showSettings,
+    hideSettings,
+    resetSettings,
+    showReset,
+  } = useTableStates()
+  const filters = useMemo(() => leaderboardFilters as LeaderboardFilters, [leaderboardFilters])
+
+  const {
+    staking: { operators },
+  } = useQueryStates()
+
+  const totalCount = useMemo(
+    () => (hasValue(operators) && operators.value.operator_aggregate.aggregate?.count) || 0,
+    [operators],
+  )
+  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
+
+  const handleFilterChange = useCallback(
+    (filterName: string, value: string | boolean) => {
+      setFilters(TABLE, {
+        ...filters,
+        [filterName]: value,
+      })
+    },
+    [filters, setFilters],
+  )
+
+  const handleReset = useCallback(() => resetSettings(TABLE), [resetSettings])
+
+  const handleClickOnColumnToEditTable = useCallback(
+    (column: string, checked: boolean) =>
+      checked
+        ? setColumns(TABLE, [...selectedColumns, column])
+        : setColumns(
+            TABLE,
+            selectedColumns.filter((c) => c !== column),
+          ),
+    [selectedColumns, setColumns],
+  )
+
+  const _showSettings = useCallback(
+    (setting: TableSettingsTabs) => showSettings(TABLE, setting),
+    [showSettings],
+  )
+  const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
+
+  const _showReset = useCallback(
+    () => showReset(TABLE),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [showReset, selectedColumns, leaderboardFilters],
+  )
 
   return (
     <div className='flex w-full flex-col space-y-6'>
-      <div className='flex flex-col gap-2'>
-        <div className='mt-5 flex w-full justify-between'>
-          <div className='text-base font-medium text-grayDark dark:text-white'>Leaderboard</div>
-        </div>
-        <div className='flex items-center'>
-          {subspaceAccount && (
-            <div className='mr-4 flex w-40 items-center'>
-              <MyPositionSwitch labels={['My position', 'Everyone']} />
+      <TableSettings
+        tableName='Leaderboard'
+        totalLabel={totalLabel}
+        availableColumns={availableColumns}
+        selectedColumns={selectedColumns}
+        filters={filters}
+        addExtraIcons={
+          subspaceAccount && (
+            <div className='mr-4 flex w-44 items-center'>
+              <MyPositionSwitch />
             </div>
-          )}
-        </div>
-      </div>
+          )
+        }
+        showTableSettings={showTableSettings}
+        showSettings={_showSettings}
+        hideSettings={_hideSettings}
+        handleColumnChange={handleClickOnColumnToEditTable}
+        handleFilterChange={handleFilterChange}
+        filterOptions={filtersOptions}
+        handleReset={handleReset}
+        showReset={_showReset()}
+      />
       {children}
     </div>
   )

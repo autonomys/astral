@@ -29,6 +29,10 @@ export const StakingHeader = () => {
         title: 'Register Operator',
         link: `/${network}/${Routes.staking}/${INTERNAL_ROUTES.operators.register}`,
       },
+      {
+        title: 'Nominations',
+        link: `/${network}/${Routes.staking}/${INTERNAL_ROUTES.operators.nominations}`,
+      },
     ],
     [network],
   )

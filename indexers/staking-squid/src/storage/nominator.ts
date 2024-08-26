@@ -34,14 +34,19 @@ export const createNominator = (
     totalWithdrawals: BigInt(0),
     totalDepositsCount: 0,
     totalWithdrawalsCount: 0,
-    accumulatedEpochShares: BigInt(0),
+    currentTotalStake: BigInt(0),
+    currentStorageFeeDeposit: BigInt(0),
+    currentTotalShares: BigInt(0),
+    currentSharePrice: BigInt(0),
+    accumulatedEpochStake: BigInt(0),
     accumulatedEpochStorageFeeDeposit: BigInt(0),
+    accumulatedEpochShares: BigInt(0),
     activeEpochCount: 0,
     status: NominatorStatus.PENDING,
     pendingAction: NominatorPendingAction.NO_ACTION_REQUIRED,
-    ...props,
     createdAt: getBlockNumber(block),
     updatedAt: getBlockNumber(block),
+    ...props,
   });
 };
 

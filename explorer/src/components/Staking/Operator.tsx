@@ -1,10 +1,10 @@
 'use client'
 
-import { useConsensusData } from '@/hooks/useConsensusData'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/types/staking'
+import { useConsensusData } from 'hooks/useConsensusData'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -22,7 +22,7 @@ export const Operator: FC = () => {
   const { push } = useRouter()
   const inFocus = useWindowFocus()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
-  const { loadData: loadConsensusData, loadDataByOperatorId } = useConsensusData()
+  const { loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
   const { loading, setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
@@ -54,10 +54,6 @@ export const Operator: FC = () => {
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
-
-  useEffect(() => {
-    loadConsensusData()
-  }, [loadConsensusData])
 
   useEffect(() => {
     if (operatorId) loadDataByOperatorId(operatorId)
