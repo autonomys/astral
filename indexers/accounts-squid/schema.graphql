@@ -1,0 +1,25 @@
+type Account @entity {
+  id: ID! @index
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Transfer @entity {
+  id: ID! @index
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  fee: BigInt!
+  timestamp: BigInt! @index
+  date: DateTime! @index
+  createdAt: Int! @index
+}
+
+type SlackMessage @entity {
+  id: ID! @index
+  messageId: String! @index
+}

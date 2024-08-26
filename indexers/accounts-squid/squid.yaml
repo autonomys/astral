@@ -1,0 +1,35 @@
+manifestVersion: subsquid.io/v0.1
+name: accounts-squid
+version: 4
+description: Autonomys - Astral - Accounts Indexer
+build:
+deploy:
+  env:
+    HASURA_GRAPHQL_ADMIN_SECRET: '${{ secrets.HASURA_SECRET }}'
+    HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
+    HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: 'true'
+  addons:
+    postgres:
+    hasura:
+  processor:
+    cmd:
+      - sqd
+      - process:prod
+    env:
+      CONSENSUS_GATEWAY: ${{ secrets.CONSENSUS_GATEWAY }}
+      RPC_CONSENSUS_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      SLACK_CONVERSATION_ID: ${{ secrets.SLACK_CONVERSATION_ID }}
+  api:
+    cmd:
+      - sqd
+      - serve:prod
+
+scale:
+  dedicated: true
+  addons:
+    postgres:
+      storage: 10G
+      profile: medium
+  processor:
+    profile: medium
