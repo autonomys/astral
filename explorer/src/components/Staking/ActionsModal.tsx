@@ -425,16 +425,9 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             value={sliderValue}
                             onChange={(value) => {
                               const newValue = Array.isArray(value) ? value[0] : value
-                              console.log('newValue', newValue)
                               setSliderValue(newValue)
                               const newAmount =
                                 (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100)
-                              console.log('maxSharesToWithdraw', maxSharesToWithdraw)
-                              console.log('newAmount', newAmount)
-                              console.log(
-                                'newAmount > maxSharesToWithdraw',
-                                newAmount > maxSharesToWithdraw,
-                              )
                               setFieldValue(
                                 'amount',
                                 newAmount > maxSharesToWithdraw ? maxSharesToWithdraw : newAmount,
