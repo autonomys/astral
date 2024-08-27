@@ -24,7 +24,7 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
   return (
     <div className='w-full'>
       <div className='flex'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white md:text-2xl'>
               Event #{event.id}
@@ -68,7 +68,7 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                 </StyledListItem>
               </List>
             </div>
-            <div className='mb-4 w-full break-all rounded-lg border border-blueLight bg-blueLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
+            <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
               <Arguments args={event.args} />
             </div>
           </div>

@@ -242,23 +242,23 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
 
   return (
     <div
-      className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'
+      className='flex w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'
       ref={ref}
     >
       <div className='flex w-full flex-col gap-6 py-4 pl-4'>
         <div className='grid w-full grid-cols-3 gap-8 xl:gap-8'>
-          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
             Testnet
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
             Localized {TOKEN.symbol}
           </div>
-          <div className='col-span-1 text-[13px] font-normal text-purpleShade2 dark:text-white/75'>
+          <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
             Mainnet allocation %
           </div>
         </div>
         <div className='w-full'>
-          <ol className='relative border-l border-purpleLight dark:border-blueShade1'>
+          <ol className='relative border-l border-purpleLight dark:border-purpleLighterAccent'>
             {rewardsPhase.map((phase, index) => (
               <li
                 key={`${index}-account-rewards-block`}
@@ -270,8 +270,8 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
                   <div
                     className={`absolute -left-1.5 size-3 rounded-full ${
                       index === 0
-                        ? 'bg-purpleAccent dark:bg-purpleAccent'
-                        : 'bg-purpleLight dark:bg-blueShade1'
+                        ? 'bg-primaryAccent dark:bg-primaryAccent'
+                        : 'bg-purpleLight dark:bg-purpleLighterAccent'
                     }`}
                   ></div>
                   <div className='-mt-1 ml-4 text-[13px] font-normal text-grayDark dark:text-white '>

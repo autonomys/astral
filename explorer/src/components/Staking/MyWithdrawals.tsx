@@ -105,7 +105,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     enableSorting: true,
                     cell: ({ row }) => (
                       <Link
-                        className='hover:text-purpleAccent'
+                        className='hover:text-primaryAccent'
                         href={INTERNAL_ROUTES.operators.id.page(
                           network,
                           section,
@@ -252,7 +252,7 @@ export const MyPendingWithdrawals: FC = () => {
                     enableSorting: true,
                     cell: ({ row }) => (
                       <Link
-                        className='hover:text-purpleAccent'
+                        className='hover:text-primaryAccent'
                         href={INTERNAL_ROUTES.operators.id.page(
                           network,
                           section,
