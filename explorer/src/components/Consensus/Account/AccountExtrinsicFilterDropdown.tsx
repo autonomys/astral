@@ -62,7 +62,7 @@ export const AccountExtrinsicFilterDropdown: FC<Props> = ({ filters, setFilters 
   return (
     <div className='relative z-10'>
       <Listbox value={selectedPeople} onChange={handleSelect} multiple>
-        <Listbox.Button className='inline-flex w-full justify-center justify-items-end gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-purpleAccent shadow-sm dark:bg-grayDarker dark:text-white'>
+        <Listbox.Button className='inline-flex w-full justify-center justify-items-end gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-primaryAccent shadow-sm dark:bg-grayDarker dark:text-white'>
           <div className='size-3'>
             <FunnelIcon />
           </div>

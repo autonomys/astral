@@ -97,7 +97,7 @@ export const DomainProgress: FC = () => {
             ({ title, currentEpoch, lastBlock, progress, estimatedRemainingTime }, index) => (
               <div
                 key={index}
-                className='w-full min-w-80 rounded-[10px] bg-grayLight p-3 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:rounded-[20px] sm:p-5'
+                className='w-full min-w-80 rounded-[10px] bg-grayLight p-3 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:rounded-[20px] sm:p-5'
               >
                 <div className='flex items-center justify-between'>
                   <span className='text-base font-semibold text-grayDark dark:text-white sm:text-lg'>
@@ -107,9 +107,9 @@ export const DomainProgress: FC = () => {
                     {progress}%
                   </span>
                 </div>
-                <div className='mt-1 h-1.5 w-full rounded-full bg-grayLight dark:bg-purpleDeep sm:mt-2 sm:h-2'>
+                <div className='mt-1 h-1.5 w-full rounded-full bg-grayLight dark:bg-purpleUndertone sm:mt-2 sm:h-2'>
                   <div
-                    className='h-full rounded-full bg-gradient-to-r from-purpleLighterAccent to-purpleTint dark:from-purpleAccent dark:to-purplePastel'
+                    className='h-full rounded-full bg-gradient-to-r from-purpleLighterAccent to-pastelPink dark:from-primaryAccent dark:to-pastelBlue'
                     style={{ width: `${progress}%` }}
                   ></div>
                 </div>

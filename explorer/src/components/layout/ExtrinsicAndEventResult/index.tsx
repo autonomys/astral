@@ -47,7 +47,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
               ? INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)
               : INTERNAL_ROUTES.events.id.page(network, section, row.original.id)
           return (
-            <Link key={`${row.index}-result-id`} className='hover:text-purpleAccent' href={link}>
+            <Link key={`${row.index}-result-id`} className='hover:text-primaryAccent' href={link}>
               <div>{row.original.id}</div>
             </Link>
           )
@@ -60,7 +60,7 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
         cell: ({ row }: Cell<Result>) => (
           <Link
             key={`${row.index}-result-block`}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
           >
             <div>{row.original.blockHeight}</div>

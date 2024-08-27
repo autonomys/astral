@@ -100,7 +100,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                   title={
                     <Link
                       data-testid='extrinsic-link'
-                      className='hover:text-purpleAccent'
+                      className='hover:text-primaryAccent'
                       href={INTERNAL_ROUTES.extrinsics.id.page(
                         network,
                         Routes.consensus,
@@ -116,7 +116,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                   <Link
                     key='link-extrinsic'
                     data-testid='extrinsic-link'
-                    className='hover:text-purpleAccent'
+                    className='hover:text-primaryAccent'
                     href={INTERNAL_ROUTES.extrinsics.id.page(
                       network,
                       Routes.consensus,
@@ -132,7 +132,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                   <Link
                     key='link-blocks'
                     data-testid='extrinsic-link'
-                    className='px-2 hover:text-purpleAccent'
+                    className='px-2 hover:text-primaryAccent'
                     href={INTERNAL_ROUTES.blocks.id.page(
                       network,
                       Routes.consensus,

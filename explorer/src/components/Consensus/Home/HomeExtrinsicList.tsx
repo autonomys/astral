@@ -31,7 +31,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
         header: 'Hash',
         cell: ({ row }: Cell<Extrinsic>) => (
           <Link
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             key={`${row.index}-home-extrinsic-hash`}
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
@@ -81,7 +81,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
   )
 
   return (
-    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-purpleUndertone dark:to-blueMedium'>
+    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-purpleUndertone dark:to-gradientToSecondary'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
         <div className='text-md uppercase leading-normal text-gray-600 dark:text-white'>
           Latest Extrinsics

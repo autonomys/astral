@@ -1,6 +1,6 @@
 const AstronautImage = () => {
   return (
-    <div className='text-purpleSoft dark:text-blueAccent'>
+    <div className='text-purpleLight dark:text-blueAccent'>
       <svg
         width='164'
         height='185'

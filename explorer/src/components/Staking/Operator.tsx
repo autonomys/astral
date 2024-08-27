@@ -67,20 +67,20 @@ export const Operator: FC = () => {
           <div className='mt-5 flex w-full flex-col align-middle'>
             <div className='mb-5 flex justify-between'>
               <button
-                className='rounded-full bg-grayDarker p-4 px-4 py-2 text-white dark:bg-purpleAccent'
+                className='rounded-full bg-grayDarker p-4 px-4 py-2 text-white dark:bg-primaryAccent'
                 onClick={() => push((parseInt(operatorDetails.id) - 1).toString())}
                 disabled={parseInt(operatorDetails.id) === 0}
               >
                 Prev Operator
               </button>
               <button
-                className='rounded-full bg-grayDarker p-4 px-4 py-2  text-white dark:bg-purpleAccent'
+                className='rounded-full bg-grayDarker p-4 px-4 py-2  text-white dark:bg-primaryAccent'
                 onClick={() => push((parseInt(operatorDetails.id) + 1).toString())}
               >
                 Next Operator
               </button>
             </div>
-            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:mt-0'>
+            <div className='mt-5 flex w-full flex-col rounded-[20px] bg-white p-5 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:mt-0'>
               <OperatorNominatorTable operator={operatorDetails} />
             </div>
           </div>

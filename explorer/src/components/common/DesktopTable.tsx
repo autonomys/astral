@@ -9,8 +9,8 @@ interface TableProps<T extends object> {
 
 export const DesktopTable = <T extends object>({ table, emptyMessage }: TableProps<T>) => (
   <div className='overflow-x-auto'>
-    <table className="w-full min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
-      <thead className='border-b border-gray-200 text-sm text-purpleShade2 dark:text-white/75'>
+    <table className="w-full min-w-max table-auto rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo">
+      <thead className='border-b border-gray-200 text-sm text-purpleShade dark:text-white/75'>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map((header, index) => (
@@ -25,7 +25,7 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
                       ? 'rounded-tl-[20px]'
                       : 'rounded-tr-[20px]'
                     : 'rounded-[20px]'
-                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'sticky left-0 bg-white dark:bg-gradientTwilight' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-gradientSunset' : ''}`}
+                } px-3 py-4 text-start text-sm font-normal ${index === 0 ? 'sticky left-0 bg-white dark:bg-gradientFrom' : ''} ${index === headerGroup.headers.length - 1 ? 'sticky right-0 bg-white dark:bg-gradientTo' : ''}`}
               >
                 <div className='flex justify-items-center gap-1 align-middle'>
                   {header.isPlaceholder
@@ -34,17 +34,17 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
                   {(header.column.columnDef as SortingOptions<T>).enableSorting && (
                     <>
                       {header.column.getIsSorted() === 'asc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-purpleAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : header.column.getIsSorted() === 'desc' ? (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-purpleAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronDownIcon className='size-5' aria-hidden='true' />
                         </span>
                       ) : (
-                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-purpleAccent focus:z-20 dark:border-none  dark:text-white'>
+                        <span className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full text-sm font-medium  text-primaryAccent focus:z-20 dark:border-none  dark:text-white'>
                           <span className='sr-only'>Up</span>
                           <ChevronUpDownIcon className='size-5' aria-hidden='true' />
                         </span>
@@ -69,10 +69,10 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
               {row.getVisibleCells().map((cell, cellIndex) => (
                 <td
                   className={`whitespace-nowrap px-6 py-4 text-sm font-light ${
-                    cellIndex === 0 ? 'sticky left-0 bg-white dark:bg-gradientTwilight' : ''
+                    cellIndex === 0 ? 'sticky left-0 bg-white dark:bg-gradientFrom' : ''
                   } ${
                     cellIndex === row.getVisibleCells().length - 1
-                      ? 'sticky right-0 bg-white dark:bg-gradientSunset'
+                      ? 'sticky right-0 bg-white dark:bg-gradientTo'
                       : ''
                   } ${
                     rowIndex === table.getRowModel().rows.length - 1 && cellIndex === 0
@@ -94,7 +94,7 @@ export const DesktopTable = <T extends object>({ table, emptyMessage }: TablePro
         ) : (
           <tr>
             <td colSpan={table.getAllColumns().length} className='p-6 text-center'>
-              <div className='text-sm text-purpleShade2 dark:text-white/75'>
+              <div className='text-sm text-purpleShade dark:text-white/75'>
                 {emptyMessage || 'No entries to show'}
               </div>
             </td>
