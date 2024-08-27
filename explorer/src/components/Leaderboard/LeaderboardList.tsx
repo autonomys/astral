@@ -199,6 +199,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     const conditions: Record<string, any> = {}
 
     if (subspaceAccount && myPositionOnly) {
+      conditions['id'] = {}
       conditions.id._eq = subspaceAccount
     }
 
