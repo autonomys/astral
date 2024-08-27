@@ -20,7 +20,7 @@ export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top' })
     <div className='group relative flex flex-col items-center'>
       {isVisible && (
         <div
-          className={`absolute ${direction}-full z-10 mt-2 w-auto rounded-md bg-primaryAccent p-2 text-sm text-white shadow-lg`}
+          className={`absolute ${direction ?? 'top'}-full bg-primaryAccent z-10 mt-2 w-auto rounded-md p-2 text-sm text-white shadow-lg`}
           onMouseOver={() => setIsVisible(true)}
           onMouseOut={() => setIsVisible(false)}
           onFocus={() => setIsVisible(true)}
