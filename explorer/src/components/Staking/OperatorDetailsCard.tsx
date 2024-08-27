@@ -9,7 +9,7 @@ import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
-import { bigNumberToNumber } from 'utils/number'
+import { bigNumberToFormattedString } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
@@ -29,7 +29,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
 
   return (
     <div className='w-full'>
-      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+      <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
         <div className='mb-10 flex items-center justify-between'>
           <h3 className='text-sm font-semibold leading-none text-gray-900 dark:text-white lg:text-2xl'>
             Operator #{operator.id}
@@ -45,7 +45,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
                     {operator.account_id && (
                       <Link
                         data-testid={`nominator-link-${operator.account_id}}`}
-                        className='hover:text-purpleAccent'
+                        className='hover:text-primaryAccent'
                         href={INTERNAL_ROUTES.accounts.id.page(
                           network,
                           Routes.consensus,
@@ -69,11 +69,57 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Minimum Stake'>
-              {bigNumberToNumber(operator.minimum_nominator_stake)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.minimum_nominator_stake)} {TOKEN.symbol}
             </StyledListItem>
             <StyledListItem title='Nominator Tax'>{operator.nomination_tax} %</StyledListItem>
-            <StyledListItem title='Current Stake'>
-              {bigNumberToNumber(operator.current_total_stake)} {TOKEN.symbol}
+            <StyledListItem title='Bundle count'>{operator.bundle_count}</StyledListItem>
+            <StyledListItem title='Last bundle'>
+              <Link
+                className='flex gap-2 hover:text-primaryAccent'
+                href={INTERNAL_ROUTES.blocks.id.page(
+                  network,
+                  Routes.consensus,
+                  operator.last_bundle_at,
+                )}
+              >
+                <div>#{operator.last_bundle_at}</div>
+              </Link>
+            </StyledListItem>
+            <StyledListItem title='Current total stake'>
+              {bigNumberToFormattedString(operator.current_total_stake)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Current storage fee deposits'>
+              {bigNumberToFormattedString(operator.current_storage_fee_deposit)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total staked'>
+              {bigNumberToFormattedString(
+                BigInt(operator.current_total_stake) + BigInt(operator.current_storage_fee_deposit),
+              )}{' '}
+              {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total rewards collected'>
+              {bigNumberToFormattedString(operator.total_rewards_collected)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total consensus storage fee'>
+              {bigNumberToFormattedString(operator.total_consensus_storage_fee)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total domain execution fee'>
+              {bigNumberToFormattedString(operator.total_domain_execution_fee)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total burned balance'>
+              {bigNumberToFormattedString(operator.total_burned_balance)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Total tax collected'>
+              {bigNumberToFormattedString(operator.total_tax_collected)} {TOKEN.symbol}
+            </StyledListItem>
+            <StyledListItem title='Nominators count'>
+              {bigNumberToFormattedString(operator.nominators_aggregate.aggregate?.count ?? '0')}
+            </StyledListItem>
+            <StyledListItem title='Deposits count'>
+              {bigNumberToFormattedString(operator.deposits_aggregate.aggregate?.count ?? '0')}
+            </StyledListItem>
+            <StyledListItem title='Withdrawals count'>
+              {bigNumberToFormattedString(operator.withdrawals_aggregate.aggregate?.count ?? '0')}
             </StyledListItem>
             <StyledListItem title='Status'>
               {capitalizeFirstLetter(operatorStatus(operator.raw_status))}

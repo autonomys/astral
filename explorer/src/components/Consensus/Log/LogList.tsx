@@ -94,7 +94,7 @@ export const LogList: FC = () => {
         cell: ({ row }: Cell<Log>) => (
           <div className='flex w-full' key={`${row.index}-log-index`}>
             <Link
-              className='w-full hover:text-purpleAccent'
+              className='w-full hover:text-primaryAccent'
               data-testid={`log-link-${row.index}`}
               href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
             >

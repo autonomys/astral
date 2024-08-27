@@ -1,5 +1,5 @@
 import { INTERNAL_ROUTES } from '@/constants'
-import { bigNumberToNumber, bigNumberToString } from '@/utils/number'
+import { bigNumberToFormattedString } from '@/utils/number'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
 import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
@@ -15,55 +15,77 @@ interface MyUnlockedWithdrawalsProps {
   handleAction: (action: OperatorAction) => void
 }
 
+type MyUnlockedWithdrawal = {
+  operatorId: {
+    value: string
+    sortValue: number | bigint
+  }
+  totalWithdrawalAmount: {
+    value: string
+    sortValue: number | bigint
+  }
+  totalStorageFeeRefund: {
+    value: string
+    sortValue: number | bigint
+  }
+  unlockAtConfirmedDomainBlockNumber: {
+    value: string
+    sortValue: number | bigint
+  }
+  total: {
+    value: string
+    sortValue: number | bigint
+  }
+}
+
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
   const { section, network } = useChains()
   const { withdrawals } = useConsensusStates()
-  const myUnlockedWithdrawals = useMemo(
-    () =>
-      withdrawals
-        .filter(
-          (w) =>
-            w.account === subspaceAccount &&
-            w.totalWithdrawalAmount > BIGINT_ZERO &&
-            w.withdrawals.length > 0,
+
+  const myUnlockedWithdrawals = useMemo(() => {
+    const myUnlockedWithdrawals: MyUnlockedWithdrawal[] = []
+    withdrawals
+      .filter(
+        (w) =>
+          w.account === subspaceAccount &&
+          w.totalWithdrawalAmount > BIGINT_ZERO &&
+          w.withdrawals.length > 0,
+      )
+      .map((w) => {
+        const totalStorageFeeRefund = w.withdrawals.reduce(
+          (acc, w) => acc + w.storageFeeRefund,
+          BIGINT_ZERO,
         )
-        .map((w) => {
-          const totalStorageFeeRefund = w.withdrawals.reduce(
-            (acc, w) => acc + w.storageFeeRefund,
-            BIGINT_ZERO,
-          )
-          return {
+        w.withdrawals.map((ww) => {
+          myUnlockedWithdrawals.push({
             operatorId: {
               value: w.operatorId.toString(),
               sortValue: w.operatorId,
             },
             totalWithdrawalAmount: {
-              value: `${bigNumberToString(w.totalWithdrawalAmount.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(w.totalWithdrawalAmount.toString())} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount,
             },
             totalStorageFeeRefund: {
-              value: `${bigNumberToString(totalStorageFeeRefund.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(totalStorageFeeRefund.toString())} ${TOKEN.symbol}`,
               sortValue: totalStorageFeeRefund,
             },
             unlockAtConfirmedDomainBlockNumber: {
-              value: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber.toString(),
-              sortValue: w.withdrawalInShares.unlockAtConfirmedDomainBlockNumber,
-            },
-            withdrawalsCount: {
-              value: w.withdrawals.length.toString(),
-              sortValue: w.withdrawals.length,
+              value: ww.unlockAtConfirmedDomainBlockNumber.toString(),
+              sortValue: ww.unlockAtConfirmedDomainBlockNumber,
             },
             total: {
-              value: `${bigNumberToString(
+              value: `${bigNumberToFormattedString(
                 (w.totalWithdrawalAmount + totalStorageFeeRefund).toString(),
               )} ${TOKEN.symbol}`,
               sortValue: w.totalWithdrawalAmount + totalStorageFeeRefund,
             },
-          }
-        }),
-    [withdrawals, subspaceAccount],
-  )
+          })
+        })
+      })
+    return myUnlockedWithdrawals
+  }, [withdrawals, subspaceAccount])
 
   const myUnlockedWithdrawalsList = useMemo(
     () =>
@@ -83,7 +105,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     enableSorting: true,
                     cell: ({ row }) => (
                       <Link
-                        className='hover:text-purpleAccent'
+                        className='hover:text-primaryAccent'
                         href={INTERNAL_ROUTES.operators.id.page(
                           network,
                           section,
@@ -115,12 +137,6 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     ),
                   },
                   {
-                    accessorKey: 'withdrawalsCount.sortValue',
-                    header: 'Withdrawals Count',
-                    enableSorting: true,
-                    cell: ({ row }) => <div>{row.original.withdrawalsCount.value}</div>,
-                  },
-                  {
                     accessorKey: 'total.sortValue',
                     header: 'Total Withdrawal Amount',
                     enableSorting: true,
@@ -130,26 +146,24 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
                     accessorKey: 'actions',
                     header: 'Actions',
                     enableSorting: false,
-                    cell: ({ row }) => {
-                      return (
-                        <ActionsDropdown
-                          action={action}
-                          handleAction={handleAction}
-                          row={{
-                            original: {
-                              id: row.original.operatorId.toString(),
-                              // eslint-disable-next-line camelcase
-                              current_total_shares: BIGINT_ZERO,
-                            },
-                          }}
-                          excludeActions={[
-                            OperatorActionType.Nominating,
-                            OperatorActionType.Withdraw,
-                            OperatorActionType.Deregister,
-                          ]}
-                        />
-                      )
-                    },
+                    cell: ({ row }) => (
+                      <ActionsDropdown
+                        action={action}
+                        handleAction={handleAction}
+                        row={{
+                          original: {
+                            id: row.original.operatorId.toString(),
+                            // eslint-disable-next-line camelcase
+                            current_total_shares: BIGINT_ZERO,
+                          },
+                        }}
+                        excludeActions={[
+                          OperatorActionType.Nominating,
+                          OperatorActionType.Withdraw,
+                          OperatorActionType.Deregister,
+                        ]}
+                      />
+                    ),
                   },
                 ]}
                 showNavigation={false}
@@ -170,6 +184,7 @@ export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
   const { section, network } = useChains()
   const { operators, withdrawals } = useConsensusStates()
+
   const myPendingWithdrawals = useMemo(
     () =>
       withdrawals
@@ -181,10 +196,10 @@ export const MyPendingWithdrawals: FC = () => {
               ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
                 BigInt(op.currentTotalShares)
               : BIGINT_ZERO
-          const sharesWithdrawAmount = bigNumberToNumber(
+          const sharesWithdrawAmount = bigNumberToFormattedString(
             (w.withdrawalInShares.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
           )
-          const storageFeeWithdrawAmount = bigNumberToNumber(
+          const storageFeeWithdrawAmount = bigNumberToFormattedString(
             (w.withdrawalInShares.storageFeeRefund * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
           )
           const total =
@@ -207,7 +222,7 @@ export const MyPendingWithdrawals: FC = () => {
               sortValue: w.withdrawalInShares.storageFeeRefund,
             },
             total: {
-              value: `${bigNumberToString(total.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(total.toString())} ${TOKEN.symbol}`,
               sortValue: total,
             },
             unlockAtConfirmedDomainBlockNumber: {
@@ -237,7 +252,7 @@ export const MyPendingWithdrawals: FC = () => {
                     enableSorting: true,
                     cell: ({ row }) => (
                       <Link
-                        className='hover:text-purpleAccent'
+                        className='hover:text-primaryAccent'
                         href={INTERNAL_ROUTES.operators.id.page(
                           network,
                           section,

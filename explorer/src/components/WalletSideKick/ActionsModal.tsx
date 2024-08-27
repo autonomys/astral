@@ -375,7 +375,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -409,7 +409,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                           <Listbox value={actingAccount}>
                             <Listbox.Button
                               className={
-                                'absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                                'absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                               }
                               style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                               onClick={() => setAddressBookIsOpen(!addressBookIsOpen)}
@@ -449,7 +449,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                               className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                             >
                                               {account.name} {formattedAccount}{' '}
-                                              <span className='my-0 ml-4 rounded-full bg-grayDarker text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                                              <span className='my-0 ml-4 rounded-full bg-grayDarker text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                                 Wallet
                                               </span>
                                             </span>
@@ -482,7 +482,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                                               className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}
                                             >
                                               {address.label} {formattedAccount}{' '}
-                                              <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-purpleAccent md:space-x-6 md:text-xs'>
+                                              <span className='ml-4 rounded-full bg-grayDarker px-2 text-xs font-medium text-white dark:bg-primaryAccent md:space-x-6 md:text-xs'>
                                                 Saved
                                               </span>
                                             </span>
@@ -526,7 +526,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                             }`}
                           />
                           <button
-                            className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                            className='absolute flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                             type='button'
                             style={{ right: '10px', top: '50%', transform: 'translateY(-50%)' }}
                             onClick={() => setFieldValue('amount', maxAmount)}
@@ -587,7 +587,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -622,7 +622,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -714,7 +714,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       </div>
                     ) : (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(WalletAction[action])}
@@ -734,7 +734,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 <div className='flex items-center'>
                   <Link
                     data-testid='wallet-link'
-                    className='pr-2 hover:text-purpleAccent'
+                    className='pr-2 hover:text-primaryAccent'
                     href={INTERNAL_ROUTES.accounts.id.page(network, 'consensus', subspaceAccount)}
                   >
                     <span className='ml-2 w-5 truncate text-lg font-medium text-grayDarker underline dark:text-white md:w-full'>
@@ -772,7 +772,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                 />
                 <button
                   onClick={() => handleCopy(result)}
-                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                  className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                   type='submit'
                 >
                   Copy
@@ -852,7 +852,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                     )}
                     {selectedCategory && selectedMethod && (
                       <button
-                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                         type='submit'
                       >
                         {camelToNormal(selectedMethod)}

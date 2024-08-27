@@ -36,7 +36,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
         cell: ({ row }: Cell<Event>) => (
           <Link
             key={`${row.index}-extrinsic-event-id`}
-            className='w-full hover:text-purpleAccent'
+            className='w-full hover:text-primaryAccent'
             href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
           >
             <div>{`${row.original.block?.height}-${row.index}`}</div>

@@ -129,7 +129,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
                 <Link
                   key='topFarmers-link'
                   data-testid='topFarmers-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
                 >
                   <StyledListItem title='Top Farmer'>
@@ -141,7 +141,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
                 <Link
                   key='topOperators-link'
                   data-testid='topOperators-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`}
                 >
                   <StyledListItem title='Top Operator'>
@@ -153,7 +153,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
                 <Link
                   key='topNominators-link'
                   data-testid='topNominators-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`}
                 >
                   <StyledListItem title='Top Nominator'>
@@ -166,7 +166,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
             <div className='m-2 flex items-center pt-4'>
               <Link
                 data-testid='totalNominatedCount-link'
-                className='hover:text-purpleAccent'
+                className='hover:text-primaryAccent'
                 href={`/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`}
               >
                 <span className='text-sm font-medium text-grayDarker dark:text-white'>

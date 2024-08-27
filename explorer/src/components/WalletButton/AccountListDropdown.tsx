@@ -84,8 +84,8 @@ function AccountListDropdown() {
         <Listbox.Button
           className={`relative w-full cursor-default font-["Montserrat"] ${
             isDesktop
-              ? 'rounded-full from-pinkAccent to-purpleDeepAccent pr-10 dark:bg-gradient-to-r'
-              : 'rounded-l-full pr-6 dark:bg-pinkAccent'
+              ? 'rounded-full from-primaryAccent to-purpleUndertone pr-10 dark:bg-gradient-to-r'
+              : 'rounded-l-full pr-6 dark:bg-primaryAccent'
           } bg-white py-2 pl-3 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:text-white sm:text-sm`}
         >
           <div className='flex items-center justify-center'>
@@ -100,7 +100,7 @@ function AccountListDropdown() {
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
                 className={`size-5 text-gray-400 ui-open:rotate-180${
-                  isDesktop ? 'dark:text-purpleAccent' : 'dark:text-white'
+                  isDesktop ? 'dark:text-primaryAccent' : 'dark:text-white'
                 }`}
                 aria-hidden='true'
               />
