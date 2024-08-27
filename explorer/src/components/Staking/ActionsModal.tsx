@@ -82,14 +82,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .min(0, `Amount need to be greater than 0 ${tokenSymbol}`)
+      .moreThan(0, `Amount need to be greater than 0 ${tokenSymbol}`)
       .max(maxAmountToAdd, `Amount need to be less than ${maxAmountToAdd} ${tokenSymbol}`)
       .required('Amount to stake is required'),
   })
 
   const withdrawFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .min(0, 'Amount need to be greater than 0 shares')
+      .moreThan(0, 'Amount need to be greater than 0 shares')
       .test('max', `Amount need to be less than ${maxSharesToWithdraw} shares`, function (value) {
         return typeof value === 'number' && BigInt(value) <= maxSharesToWithdraw
       })
