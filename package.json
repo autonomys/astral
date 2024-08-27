@@ -1,0 +1,51 @@
+{
+  "name": "astral",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/autonomys/astral"
+  },
+  "author": {
+    "name": "Autonomys",
+    "url": "https://www.autonomys.xyz"
+  },
+  "bugs": {
+    "url": "https://github.com/autonomys/astral/issues"
+  },
+  "workspaces": {
+    "packages": [
+      "indexers/db",
+      "indexers/consensus-squid",
+      "indexers/leaderboard-squid",
+      "indexers/staking-squid",
+      "explorer"
+    ]
+  },
+  "scripts": {
+    "up": "docker compose up",
+    "down": "docker compose down",
+    "db": "lerna run start --scope=db",
+    "db:metadata": "lerna run metadata --scope=db",
+    "explorer:dev": "lerna run dev --scope=explorer",
+    "explorer:codegen": "lerna run codegen --scope=explorer",
+    "explorer:build": "lerna run build --scope=explorer",
+    "explorer:test": "lerna run test --scope=explorer",
+    "explorer:lint": "lerna run lint --scope=explorer",
+    "explorer:lint:fix": "lerna run lint:fix --scope=explorer",
+    "explorer:format": "lerna run format --scope=explorer",
+    "explorer": "lerna run all --scope=explorer",
+    "indexers:typegen": "lerna run typegen --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:codegen": "lerna run codegen --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:migration": "lerna run migration --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:build": "lerna run build --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:process": "lerna run process --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers:format": "lerna run format --stream --scope=consensus-squid --scope=leaderboard-squid --scope=staking-squid",
+    "indexers": "yarn indexers:typegen && yarn indexers:codegen && yarn indexers:migration && yarn indexers:build && yarn indexers:process"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.8"
+  }
+}
