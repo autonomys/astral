@@ -11,10 +11,13 @@ export const createTransfer = (
   const blockNumber = getBlockNumber(block)
   return new Transfer({
     id: id,
+    extrinsicId: props.extrinsicId ?? '',
+    eventId: props.eventId ?? '',
     from: props.from ?? '',
     to: props.to ?? '',
     value: props.value ?? BigInt(0),
     fee: props.fee ?? BigInt(0),
+    success: props.success ?? false,
     timestamp: props.timestamp ?? BigInt(0),
     date: props.date ?? getTimestamp(block),
     createdAt: blockNumber,

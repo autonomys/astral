@@ -10,10 +10,13 @@ type Account @entity {
 
 type Transfer @entity {
   id: ID! @index
+  extrinsicId: String! @index
+  eventId: String! @index
   from: String! @index
   to: String! @index
   value: BigInt!
   fee: BigInt!
+  success: Boolean!
   timestamp: BigInt! @index
   date: DateTime! @index
   createdAt: Int! @index

@@ -1,6 +1,6 @@
 manifestVersion: subsquid.io/v0.1
 name: accounts-squid
-version: 4
+version: 5
 description: Autonomys - Astral - Accounts Indexer
 build:
 deploy:
