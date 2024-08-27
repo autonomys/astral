@@ -34,39 +34,39 @@ export const HomeCards: FC<Props> = ({
         icon: <BlockIcon />,
         value: blocksCount,
         darkBgClass:
-          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleMedium dark:to-purplePale',
+          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-pastelPurple dark:to-pastelBlue',
       },
       {
         title: 'Signed Extrinsics',
         icon: <DocIcon />,
         value: signedExtrinsics,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleDeep dark:to-purplePastel',
+        darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
       },
       {
         title: section === Routes.nova ? 'Wallet addresses' : 'Qualified Reward Addresses',
         icon: <WalletIcon />,
         value: rewardAddresses,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleTint dark:to-purpleTinge',
+        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
       },
       {
         title: 'Total Space Pledged',
         icon: <PieChartIcon />,
         value: spacePledged,
         darkBgClass:
-          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleMedium dark:to-purplePale',
+          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
       },
       // TODO: uncomment when we have support for best blocks, currently all blocks are archived
       // {
       //   title: 'Best Block',
       //   icon: <BlockIcon />,
       //   value: bestBlock,
-      //   darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleDeep dark:to-purplePastel',
+      //   darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
       // },
       {
         title: 'Archived History Size',
         icon: <ArchivedHistoryIcon />,
         value: historySize,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleTint dark:to-purpleTinge',
+        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
     ],
     [blocksCount, historySize, section, rewardAddresses, signedExtrinsics, spacePledged],

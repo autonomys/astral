@@ -141,7 +141,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   key={'totalOperatorStake'}
                   data-testid='totalOperatorStake-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total staked in your own operators'>
@@ -153,7 +153,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   key={'totalNominatedStake'}
                   data-testid='totalNominatedStake-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Your total nominated to other operators'>
@@ -165,7 +165,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   key={'totalOperatorCount'}
                   data-testid='totalOperatorCount-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of operators you control'>
@@ -177,7 +177,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
                 <Link
                   key={'totalNominatedCount'}
                   data-testid='totalNominatedCount-link'
-                  className='hover:text-purpleAccent'
+                  className='hover:text-primaryAccent'
                   href={`/${network}/${Routes.staking}`}
                 >
                   <StyledListItem title='Amount of nomination'>
@@ -190,7 +190,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
             <div className='m-2 flex items-center pt-4'>
               <Link
                 data-testid='totalNominatedCount-link'
-                className='hover:text-purpleAccent'
+                className='hover:text-primaryAccent'
                 href={`/${network}/${Routes.staking}`}
               >
                 <span className='text-sm font-medium text-grayDarker dark:text-white'>

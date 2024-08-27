@@ -29,7 +29,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
         header: 'Height',
         cell: ({ row }: Cell<Block>) => (
           <Link
-            className='flex gap-2 hover:text-purpleAccent'
+            className='flex gap-2 hover:text-primaryAccent'
             key={`${row.index}-home-block-height`}
             href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.height)}
           >
@@ -65,7 +65,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
   )
 
   return (
-    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+    <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
         <div className='text-md uppercase leading-normal text-gray-600 dark:text-white'>
           Latest Blocks

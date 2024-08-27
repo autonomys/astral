@@ -34,7 +34,7 @@ export const AccountBalancePieChart: FC<Props> = ({ account }) => {
       id: 'staking',
       label: 'Staking',
       value: staking,
-      color: '#D9F0FC',
+      color: '#ABCFEF',
     },
   ]
 

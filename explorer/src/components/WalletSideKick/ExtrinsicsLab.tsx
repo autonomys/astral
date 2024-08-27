@@ -97,7 +97,7 @@ export const ExtrinsicsCategorySelector: FC<ExtrinsicsCategorySelectorProps> = (
     <Listbox value={selectedCategory} onChange={handleSetCategory}>
       <div className='relative'>
         <Listbox.Button
-          className='relative h-8 w-full cursor-default rounded-full bg-white from-pinkAccent to-purpleDeepAccent py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'
+          className='relative h-8 w-full cursor-default rounded-full bg-white from-primaryAccent to-purpleUndertone py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'
           onClick={resetCategory}
         >
           <div className='flex items-center justify-center'>
@@ -106,7 +106,7 @@ export const ExtrinsicsCategorySelector: FC<ExtrinsicsCategorySelectorProps> = (
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
-                className='size-5 text-gray-400 ui-open:rotate-180 dark:text-purpleAccent'
+                className='size-5 text-gray-400 ui-open:rotate-180 dark:text-primaryAccent'
                 aria-hidden='true'
               />
             </span>
@@ -185,7 +185,7 @@ export const ExtrinsicsMethodSelector: FC<ExtrinsicsMethodSelectorProps> = ({
     <Listbox value={selectedMethod} onChange={handleSetMethod}>
       <div className='relative'>
         <Listbox.Button
-          className='relative mt-4 h-8 w-full cursor-default rounded-full bg-white from-pinkAccent to-purpleDeepAccent py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'
+          className='relative mt-4 h-8 w-full cursor-default rounded-full bg-white from-primaryAccent to-purpleUndertone py-2 pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'
           onClick={resetMethod}
         >
           <div className='flex items-center justify-center'>
@@ -194,7 +194,7 @@ export const ExtrinsicsMethodSelector: FC<ExtrinsicsMethodSelectorProps> = ({
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
-                className='size-5 text-gray-400 ui-open:rotate-180 dark:text-purpleAccent'
+                className='size-5 text-gray-400 ui-open:rotate-180 dark:text-primaryAccent'
                 aria-hidden='true'
               />
             </span>

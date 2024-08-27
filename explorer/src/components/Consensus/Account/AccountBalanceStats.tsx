@@ -18,7 +18,7 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
   const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
 
   const backgroundStyle = !isDesktop
-    ? 'dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset rounded-[20px]'
+    ? 'dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo rounded-[20px]'
     : ''
 
   return (
@@ -39,14 +39,14 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
       <div className='flex w-full items-center lg:gap-4 lg:py-8'>
         <div className='flex flex-row justify-center gap-8 lg:flex-none lg:flex-col'>
           <div className='flex items-center'>
-            <div className='mr-2 h-[30px] w-1 bg-purpleElectric' />
+            <div className='mr-2 h-[30px] w-1 bg-primaryAccent' />
             <StatItem
               title='Free'
               value={`${numberWithCommas(accountFree)} ${TOKEN.symbol} (${freePercent.toFixed(2)}%)`}
             />
           </div>
           <div className='flex items-center'>
-            <div className='mr-2 h-[30px] w-1 bg-blueShade2' />
+            <div className='mr-2 h-[30px] w-1 bg-pastelBlue' />
             <StatItem
               title='Reserved'
               value={`${numberWithCommas(accountReserved)} ${TOKEN.symbol} (${reservedPercent.toFixed(2)}%)`}

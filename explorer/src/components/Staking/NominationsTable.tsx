@@ -113,7 +113,7 @@ export const NominationsTable: FC = () => {
           key={`created_at-${info.getValue()}`}
           data-testid={`created-at-${info.getValue()}`}
           href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}
-          className='hover:text-purpleAccent'
+          className='hover:text-primaryAccent'
         >
           <div>{info.getValue()}</div>
         </Link>
@@ -152,7 +152,7 @@ export const NominationsTable: FC = () => {
           key={`created_at-${info.getValue()}`}
           data-testid={`created-at-${info.getValue()}`}
           href={INTERNAL_ROUTES.blocks.id.page(network, Routes.consensus, info.getValue())}
-          className='hover:text-purpleAccent'
+          className='hover:text-primaryAccent'
         >
           <div>{info.getValue()}</div>
         </Link>
@@ -191,7 +191,7 @@ export const NominationsTable: FC = () => {
                   <div className='mb-2 sm:mb-0'>
                     <span className='mr-2'>Operator # {nominator.operator_id}</span>
                     {nominator.domain && (
-                      <span className='ml-2 text-sm text-purpleLighterAccent dark:text-purpleMedium'>
+                      <span className='ml-2 text-sm text-purpleLighterAccent dark:text-purpleShade'>
                         on {capitalizeFirstLetter(nominator.domain.name)}
                       </span>
                     )}

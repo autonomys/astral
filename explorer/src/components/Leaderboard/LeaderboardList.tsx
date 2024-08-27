@@ -98,7 +98,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
               <Link
                 data-testid={`account-link-${row.index}`}
                 href={idLink(row.original.id)}
-                className='hover:text-purpleAccent'
+                className='hover:text-primaryAccent'
               >
                 <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
               </Link>
@@ -145,7 +145,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
               Routes.consensus,
               row.original.created_at,
             )}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
           >
             <div>{row.original.created_at}</div>
           </Link>
@@ -165,7 +165,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
               Routes.consensus,
               row.original.updated_at,
             )}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
           >
             <div>{row.original.updated_at}</div>
           </Link>
@@ -199,6 +199,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     const conditions: Record<string, any> = {}
 
     if (subspaceAccount && myPositionOnly) {
+      conditions['id'] = {}
       conditions.id._eq = subspaceAccount
     }
 

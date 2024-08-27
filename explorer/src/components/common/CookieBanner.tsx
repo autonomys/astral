@@ -23,7 +23,7 @@ export const CookieBanner = () => {
             href={EXTERNAL_ROUTES.subspacePrivacyPolicy}
             target='_blank'
             rel='noreferrer'
-            className=' text-purpleAccent '
+            className=' text-primaryAccent '
           >
             Privacy Policy
           </a>{' '}

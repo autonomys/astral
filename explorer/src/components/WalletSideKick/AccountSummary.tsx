@@ -54,7 +54,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
         title={
           <Link
             data-testid='wallet-link'
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, subspaceAccount)}
           >
             <div className='m-2 flex items-center'>
@@ -120,7 +120,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           <Tooltip text='Address book'>
             <button
               onClick={() => onClick(AccountPreferenceSection.AddressBook)}
-              className='m-2 flex cursor-default items-center justify-center rounded-full bg-purpleAccent p-2'
+              className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
             >
               <BookOpenIcon className='w-8 text-white' />
             </button>
@@ -128,7 +128,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
           <Tooltip text='Account settings'>
             <button
               onClick={() => onClick(AccountPreferenceSection.Settings)}
-              className='m-2 flex cursor-default items-center justify-center rounded-full bg-purpleAccent p-2'
+              className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
             >
               <WrenchIcon className='w-8 text-white' />
             </button>

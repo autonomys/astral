@@ -99,7 +99,7 @@ export const EventList: FC = () => {
         cell: ({ row }: Cell<Event>) => (
           <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
             <Link
-              className='w-full hover:text-purpleAccent'
+              className='w-full hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
               data-testid={`event-link-${row.index}`}
             >
@@ -120,7 +120,7 @@ export const EventList: FC = () => {
         cell: ({ row }: Cell<Event>) => (
           <Link
             key={`${row.index}-event-block`}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
           >
             {row.original.block?.height}
