@@ -1,10 +1,10 @@
-const title = 'Astral - Subspace Explorer'
-const organization = 'Subspace Labs'
-const description = 'Subspace Labs Gemini Block Explorer'
+const title = 'Astral - Autonomys Explorer'
+const organization = 'Autonomys Labs'
+const description = 'Autonomys Labs Explorer'
 const keywords =
-  'Subspace, Subspace Network, Subspace Explorer, Subspace Labs, Subspace Labs Gemini, Subspace Labs Gemini Block Explorer'
+  'Autonomys,Autonomys Explorer,Autonomys Network,Autonomys Lab,Subspace,Subspace Network,Subspace Explorer,Subspace Labs,Subspace Labs Gemini,Subspace Labs Gemini Block Explorer'
 export const url = process.env.NEXTAUTH_URL || 'https://explorer.autonomys.xyz'
-const twitter = '@SubspaceLabs'
+const twitter = '@AutonomysNet'
 const images = {
   url: url + '/images/share.png',
   secureUrl: url + 'image/png',
