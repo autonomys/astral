@@ -41,6 +41,7 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, chil
     uri: ({ getContext }: Operation) => {
       const { clientName } = getContext()
 
+      if (clientName === 'accounts' && indexerSet.squids.accounts) return indexerSet.squids.accounts
       if (clientName === 'leaderboard' && indexerSet.squids.leaderboard)
         return indexerSet.squids.leaderboard
       if (clientName === 'staking' && indexerSet.squids.staking) return indexerSet.squids.staking
