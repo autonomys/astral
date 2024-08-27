@@ -8,4 +8,5 @@
 # IDE files
 /.idea
 
-/src/model/generated/
+/src/model/
+/src/types/
