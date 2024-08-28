@@ -1,3 +1,41 @@
 table:
   name: nominator
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - unlock_at_confirmed_domain_block_number
+        - id
+        - pending_action
+        - status
+        - active_epoch_count
+        - created_at
+        - pending_effective_domain_epoch
+        - total_deposits_count
+        - total_withdrawals_count
+        - updated_at
+        - accumulated_epoch_shares
+        - accumulated_epoch_stake
+        - accumulated_epoch_storage_fee_deposit
+        - current_share_price
+        - current_storage_fee_deposit
+        - current_total_shares
+        - current_total_stake
+        - known_shares
+        - known_storage_fee_deposit
+        - pending_amount
+        - pending_shares
+        - pending_storage_fee_deposit
+        - pending_storage_fee_refund
+        - total_deposits
+        - total_estimated_withdrawals
+        - total_storage_fee_refund
+        - total_withdrawal_amounts
+        - total_withdrawals
+        - account_id
+        - domain_id
+        - operator_id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

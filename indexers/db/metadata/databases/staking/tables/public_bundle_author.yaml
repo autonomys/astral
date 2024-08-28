@@ -1,3 +1,17 @@
 table:
   name: bundle_author
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - epoch
+        - account_id
+        - bundle_id
+        - domain_block_id
+        - domain_epoch_id
+        - domain_id
+        - operator_id
+      filter: {}
+    comment: ""

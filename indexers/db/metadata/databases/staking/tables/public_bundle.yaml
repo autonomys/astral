@@ -1,3 +1,31 @@
 table:
   name: bundle
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - consensus_block_number
+        - domain_block_number
+        - epoch
+        - rejected_transfers_claimed_count
+        - transfers_in_count
+        - transfers_out_count
+        - transfers_rejected_count
+        - burned_balance
+        - consensus_storage_fee
+        - domain_execution_fee
+        - total_rejected_transfers_claimed
+        - total_transfers_in
+        - total_transfers_out
+        - total_transfers_rejected
+        - total_volume
+        - consensus_block_hash
+        - domain_block_extrinsic_root
+        - domain_block_hash
+        - domain_block_id
+        - domain_epoch_id
+        - domain_id
+      filter: {}
+    comment: ""

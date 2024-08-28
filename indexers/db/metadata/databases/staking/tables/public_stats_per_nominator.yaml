@@ -1,3 +1,24 @@
 table:
   name: stats_per_nominator
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_number
+        - deposits_count
+        - withdrawals_count
+        - all_time_high_share_price
+        - all_time_high_staked
+        - current_share_price
+        - total_deposits
+        - total_shares
+        - total_staked
+        - total_withdrawals
+        - domain_id
+        - nominator_id
+        - operator_id
+        - timestamp
+      filter: {}
+    comment: ""

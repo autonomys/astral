@@ -1,3 +1,62 @@
 table:
   name: operator
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - email_verified
+        - website_verified
+        - id
+        - pending_action
+        - status
+        - active_epoch_count
+        - bundle_count
+        - created_at
+        - last_bundle_at
+        - nomination_tax
+        - rejected_transfers_claimed_count
+        - sort_id
+        - transfers_in_count
+        - transfers_out_count
+        - transfers_rejected_count
+        - updated_at
+        - accumulated_epoch_rewards
+        - accumulated_epoch_shares
+        - accumulated_epoch_stake
+        - accumulated_epoch_storage_fee_deposit
+        - current_epoch_rewards
+        - current_share_price
+        - current_storage_fee_deposit
+        - current_total_shares
+        - current_total_stake
+        - minimum_nominator_stake
+        - total_burned_balance
+        - total_consensus_storage_fee
+        - total_deposits
+        - total_domain_execution_fee
+        - total_estimated_withdrawals
+        - total_rejected_transfers_claimed
+        - total_rewards_collected
+        - total_tax_collected
+        - total_transfers_in
+        - total_transfers_out
+        - total_transfers_rejected
+        - total_volume
+        - total_withdrawals
+        - account_id
+        - banner
+        - description
+        - discord
+        - domain_id
+        - email
+        - github
+        - icon
+        - name
+        - raw_status
+        - signing_key
+        - twitter
+        - website
+      filter: {}
+      allow_aggregations: true
+    comment: ""

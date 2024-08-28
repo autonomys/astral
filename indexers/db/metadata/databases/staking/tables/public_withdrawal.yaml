@@ -1,3 +1,30 @@
 table:
   name: withdrawal
   schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - status
+        - created_at
+        - domain_block_number_withdrawal_requested_at
+        - epoch_withdrawal_requested_at
+        - ready_at
+        - unlocked_at
+        - updated_at
+        - estimated_amount
+        - shares
+        - total_amount
+        - unlocked_amount
+        - unlocked_storage_fee
+        - account_id
+        - domain_id
+        - nominator_id
+        - operator_id
+        - unlock_extrinsic_hash
+        - withdraw_extrinsic_hash
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""
