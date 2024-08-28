@@ -1,6 +1,44 @@
 table:
   name: bundle
   schema: public
+object_relationships:
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: domain_block
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_block_id: id
+        insertion_order: null
+        remote_table:
+          name: domain_block
+          schema: public
+  - name: domain_epoch
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_epoch_id: id
+        insertion_order: null
+        remote_table:
+          name: domain_epoch
+          schema: public
+array_relationships:
+  - name: bundle_authors
+    using:
+      manual_configuration:
+        column_mapping:
+          id: bundle_id
+        insertion_order: null
+        remote_table:
+          name: bundle_author
+          schema: public
 select_permissions:
   - role: user
     permission:

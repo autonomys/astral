@@ -1,6 +1,62 @@
 table:
   name: operator
   schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+array_relationships:
+  - name: bundle_authors
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: bundle_author
+          schema: public
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: deposit
+          schema: public
+  - name: nominators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: nominator
+          schema: public
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawal
+          schema: public
 select_permissions:
   - role: user
     permission:

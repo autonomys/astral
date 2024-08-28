@@ -1,6 +1,16 @@
 table:
   name: domain_epoch
   schema: public
+object_relationships:
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
 select_permissions:
   - role: user
     permission:

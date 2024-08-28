@@ -1,6 +1,16 @@
 table:
   name: stats_per_account
   schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
 select_permissions:
   - role: user
     permission:

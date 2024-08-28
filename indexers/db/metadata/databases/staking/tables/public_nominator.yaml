@@ -1,6 +1,53 @@
 table:
   name: nominator
   schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+array_relationships:
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: deposit
+          schema: public
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawal
+          schema: public
 select_permissions:
   - role: user
     permission:

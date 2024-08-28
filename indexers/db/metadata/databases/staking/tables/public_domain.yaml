@@ -1,6 +1,70 @@
 table:
   name: domain
   schema: public
+array_relationships:
+  - name: bundles
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: bundle
+          schema: public
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: deposit
+          schema: public
+  - name: domain_blocks
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: domain_block
+          schema: public
+  - name: domain_epochs
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: domain_epoch
+          schema: public
+  - name: nominators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: nominator
+          schema: public
+  - name: operators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: domain_id
+        insertion_order: null
+        remote_table:
+          name: withdrawal
+          schema: public
 select_permissions:
   - role: user
     permission:

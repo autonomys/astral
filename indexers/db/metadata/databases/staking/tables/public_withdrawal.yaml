@@ -1,6 +1,43 @@
 table:
   name: withdrawal
   schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: nominator
+    using:
+      manual_configuration:
+        column_mapping:
+          nominator_id: id
+        insertion_order: null
+        remote_table:
+          name: nominator
+          schema: public
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
 select_permissions:
   - role: user
     permission:
