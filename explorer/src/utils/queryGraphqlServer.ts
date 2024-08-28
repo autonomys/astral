@@ -14,9 +14,12 @@ export const queryGraphqlServer = async (query: string, variables: object) => {
     const callbackUrl = decodeURIComponent(callbackUrlCookie.value)
     const url = new URL(callbackUrl)
     console.log('url', url)
-    const networkId = url.pathname.split('/')[1] ?? defaultIndexer.network
+    let networkId = url.pathname.split('/')[1]
     console.log('networkId', networkId)
-    if (!networkId) throw new Error('No network ID found in callback URL')
+    if (!networkId) {
+      networkId = defaultIndexer.network
+    }
+    console.log('networkId', networkId)
 
     // Find the selected chain api
     const api = indexers.find((indexer) => indexer.network === networkId)
