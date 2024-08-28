@@ -1,0 +1,3 @@
+table:
+  name: operator_total_tax_collected
+  schema: public

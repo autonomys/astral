@@ -1,0 +1,3 @@
+table:
+  name: bundle_author
+  schema: public
