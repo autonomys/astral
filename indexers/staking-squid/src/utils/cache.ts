@@ -143,15 +143,13 @@ const saveEntry = async <E extends Entity>(
     const entity = cache[name] as unknown as Map<string, E>;
     if (entity.size === 0) return;
 
-    const entitiesArray = Array.from(entity.values());
-    const batchSize = 500;
-    const batches = [];
+    const entitiesArray = Array.from(entity.values()) as E[];
+    const batchSize = 300;
 
     for (let i = 0; i < entitiesArray.length; i += batchSize) {
-      batches.push(entitiesArray.slice(i, i + batchSize));
+      const batch = entitiesArray.slice(i, i + batchSize);
+      await ctx.store.save(batch);
     }
-
-    await Promise.all(batches.map((batch) => ctx.store.save(batch)));
   } catch (e) {
     console.error(`Failed to save ${name} with error:`, e);
   }
