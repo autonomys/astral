@@ -12,7 +12,6 @@ import {
 import { RetryLink } from '@apollo/client/link/retry'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
-import Cookies from 'js-cookie'
 import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 
 export type ChainContextValue = {
@@ -63,14 +62,11 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, chil
 
 export const ChainProvider: FC<Props> = ({ children }) => {
   const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
-  const [network, setNetwork] = useState<NetworkId>(defaultIndexer.network)
   const [section, setSection] = useState<Routes>(Routes.consensus)
 
   const setIndexerSet = useCallback(
     (indexer: Indexer) => {
-      Cookies.set('selected-network', indexer.network, { expires: 1 })
       _setIndexerSet(indexer)
-      setNetwork(indexer.network)
     },
     [_setIndexerSet],
   )
@@ -79,7 +75,7 @@ export const ChainProvider: FC<Props> = ({ children }) => {
     <ChainContext.Provider
       value={{
         indexerSet,
-        network,
+        network: indexerSet.network,
         section,
         setIndexerSet,
         setSection,
