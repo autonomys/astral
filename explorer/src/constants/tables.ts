@@ -97,7 +97,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'current_epoch_rewards', label: 'Current Epoch Rewards', isSelected: false },
     { name: 'current_total_shares', label: 'Total Shares', isSelected: false },
     { name: 'current_share_price', label: 'Current Share Price', isSelected: false },
-    { name: 'raw_status', label: 'Raw Status', isSelected: false },
     { name: 'total_deposits', label: 'Total Deposits', isSelected: false },
     {
       name: 'total_estimated_withdrawals',
