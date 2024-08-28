@@ -1,4 +1,4 @@
-import { indexers } from 'constants/indexers'
+import { defaultIndexer, indexers } from 'constants/indexers'
 import { cookies } from 'next/headers'
 
 export const queryGraphqlServer = async (query: string, variables: object) => {
@@ -14,7 +14,7 @@ export const queryGraphqlServer = async (query: string, variables: object) => {
     const callbackUrl = decodeURIComponent(callbackUrlCookie.value)
     const url = new URL(callbackUrl)
     console.log('url', url)
-    const networkId = url.pathname.split('/')[1] // The network ID is the second part of the path
+    const networkId = url.pathname.split('/')[1] ?? defaultIndexer.network
     console.log('networkId', networkId)
     if (!networkId) throw new Error('No network ID found in callback URL')
 
