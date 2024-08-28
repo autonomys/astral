@@ -6,7 +6,8 @@ export const queryGraphqlServer = async (query: string, variables: object) => {
     // Get the selected chain from the cookies
     const { get } = cookies()
     console.log('all-cookies', cookies())
-    const callbackUrlCookie = get('next-auth.callback-url')
+    const callbackUrlCookie =
+      get('next-auth.callback-url') || get('__Secure-next-auth.callback-url')
     if (!callbackUrlCookie) throw new Error('No callback URL cookie')
 
     // Extract the network ID from the callback URL
