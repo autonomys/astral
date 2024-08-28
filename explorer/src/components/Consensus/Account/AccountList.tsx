@@ -106,7 +106,7 @@ export const AccountList: FC = () => {
             <Link
               data-testid={`account-link-${row.index}`}
               href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.id)}
-              className='hover:text-purpleAccent'
+              className='hover:text-primaryAccent'
             >
               <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
             </Link>

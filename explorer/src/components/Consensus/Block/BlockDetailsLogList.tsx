@@ -36,7 +36,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
         cell: ({ row }: Cell<Log>) => (
           <Link
             key={`${row.index}-block-log-id`}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
           >
             {row.original.id}

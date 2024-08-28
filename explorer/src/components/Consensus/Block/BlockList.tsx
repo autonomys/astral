@@ -99,7 +99,7 @@ export const BlockList: FC = () => {
           <Link
             key={`${row.index}-block-height`}
             data-testid={`block-link-${row.index}`}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.blocks.id.page(chain, section, row.original.height)}
           >
             <div>{row.original.height}</div>

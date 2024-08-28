@@ -260,7 +260,7 @@ export const RegisterOperators = () => {
   return (
     <div className='flex w-full flex-col align-middle'>
       <div className='mt-5 flex w-full flex-col pt-20 sm:mt-0'>
-        <div className="w-full rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
+        <div className="w-full rounded-[20px] bg-white font-['Montserrat'] dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo">
           <div className='m-10'>
             <div className='flex items-center'>
               <WalletIcon width='44' height='48' />
@@ -284,7 +284,7 @@ export const RegisterOperators = () => {
             <div className='mt-4 text-xl'>
               <Link
                 data-testid={'operator-link-documentation'}
-                className='cursor-pointer text-purpleRoyal underline hover:text-purpleAccent dark:text-grayLight'
+                className='cursor-pointer text-purpleUndertone underline hover:text-primaryAccent dark:text-grayLight'
                 href={EXTERNAL_ROUTES.operatorDocs}
                 target='_blank'
               >
@@ -357,14 +357,14 @@ export const RegisterOperators = () => {
                               onChange={(val) => setFieldValue('domainId', val)}
                             >
                               <div className='relative'>
-                                <Listbox.Button className='relative mt-4 w-full cursor-default rounded-full bg-white from-pinkAccent to-purpleDeepAccent py-[10px] pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
+                                <Listbox.Button className='relative mt-4 w-full cursor-default rounded-full bg-white from-primaryAccent to-purpleUndertone py-[10px] pl-3 pr-10 text-left font-["Montserrat"] shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm'>
                                   <div className='flex items-center justify-center'>
                                     <span className='ml-2 hidden w-5 truncate text-sm sm:block md:w-full '>
                                       {currentDomainLabel(values)}
                                     </span>
                                     <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
                                       <ChevronDownIcon
-                                        className='size-5 text-gray-400 ui-open:rotate-180 dark:text-purpleAccent'
+                                        className='size-5 text-gray-400 ui-open:rotate-180 dark:text-primaryAccent'
                                         aria-hidden='true'
                                       />
                                     </span>
@@ -429,8 +429,8 @@ export const RegisterOperators = () => {
                                   type='button'
                                   className={`${
                                     activeProofMethodTab === OwnershipProofMethod.keystore
-                                      ? 'bg-pinkAccent'
-                                      : 'bg-white dark:bg-purpleDeepAccent'
+                                      ? 'bg-primaryAccent'
+                                      : 'bg-white dark:bg-purpleUndertone'
                                   } rounded-full px-4 py-2 shadow-md`}
                                   onClick={() =>
                                     resetActiveProofMethodTab(
@@ -446,8 +446,8 @@ export const RegisterOperators = () => {
                                   type='button'
                                   className={`${
                                     activeProofMethodTab === OwnershipProofMethod.seed
-                                      ? 'bg-pinkAccent'
-                                      : 'bg-white dark:bg-purpleDeepAccent'
+                                      ? 'bg-primaryAccent'
+                                      : 'bg-white dark:bg-purpleUndertone'
                                   } rounded-full px-4 shadow-md`}
                                   onClick={() =>
                                     resetActiveProofMethodTab(
@@ -471,7 +471,7 @@ export const RegisterOperators = () => {
                                 <Field
                                   name='signingKeySeed'
                                   placeholder='Signing Key seed'
-                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.signingKeySeed &&
                               touched.signingKeySeed &&
@@ -497,7 +497,7 @@ export const RegisterOperators = () => {
                                 <div className='mt-4 flex justify-around'>
                                   <button
                                     type='button'
-                                    className={'rounded-full bg-pinkAccent px-4 py-2 shadow-md'}
+                                    className={'rounded-full bg-primaryAccent px-4 py-2 shadow-md'}
                                     onClick={() =>
                                       handleProofOfOwnershipWithSeed(values, setFieldValue)
                                     }
@@ -521,7 +521,7 @@ export const RegisterOperators = () => {
                                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                     handleProofOfOwnershipWithKeystore(e, setFieldValue)
                                   }
-                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.signingKeystore &&
                               touched.signingKeystore &&
@@ -551,7 +551,7 @@ export const RegisterOperators = () => {
                                 <Field
                                   name='signingKey'
                                   placeholder='Signing Key'
-                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                                 ${
                                   errors.signingKey &&
                                   touched.signingKey &&
@@ -578,7 +578,7 @@ export const RegisterOperators = () => {
                                 <Field
                                   name='signature'
                                   placeholder='Signature'
-                                  className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                                  className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.signature &&
                               touched.signature &&
@@ -607,7 +607,7 @@ export const RegisterOperators = () => {
                             <Field
                               name='amountToStake'
                               placeholder='Amount to Stake'
-                              className={`mt-4 block w-full rounded-full bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              className={`mt-4 block w-full rounded-full bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.amountToStake &&
                               touched.amountToStake &&
@@ -633,7 +633,7 @@ export const RegisterOperators = () => {
                             <Field
                               name='nominatorTax'
                               placeholder='Nominator tax'
-                              className={`mt-4 block w-full rounded-xl bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              className={`mt-4 block w-full rounded-xl bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.nominatorTax &&
                               touched.nominatorTax &&
@@ -659,7 +659,7 @@ export const RegisterOperators = () => {
                             <Field
                               name='minimumNominatorStake'
                               placeholder='Minimum Nominator Stake'
-                              className={`mt-4 block w-full rounded-xl bg-white from-pinkAccent to-purpleDeepAccent px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
+                              className={`mt-4 block w-full rounded-xl bg-white from-primaryAccent to-purpleUndertone px-4 py-[10px] text-sm text-gray-900 shadow-lg dark:bg-gradient-to-r dark:text-white
                             ${
                               errors.minimumNominatorStake &&
                               touched.minimumNominatorStake &&
@@ -693,14 +693,14 @@ export const RegisterOperators = () => {
                     {!actingAccount ? (
                       <button
                         onClick={(e) => handleConnectWallet(e)}
-                        className='h-10 w-36 rounded-full bg-gradient-to-r from-pinkAccent to-purpleDeepAccent font-medium text-white'
+                        className='h-10 w-36 rounded-full bg-gradient-to-r from-primaryAccent to-purpleUndertone font-medium text-white'
                       >
                         Connect Wallet
                       </button>
                     ) : (
                       <button
                         onClick={() => handleRegister(values, resetForm)}
-                        className='block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-purpleAccent'
+                        className='block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                         type='submit'
                       >
                         Register

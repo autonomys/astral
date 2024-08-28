@@ -27,7 +27,7 @@ export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
           }
         }}
         className={`${
-          myPositionOnly ? 'bg-purpleAccent' : 'bg-transparent'
+          myPositionOnly ? 'bg-primaryAccent' : 'bg-transparent'
         } relative inline-flex h-8 w-16 cursor-pointer items-center rounded-full border-2 border-grayDarker dark:border-white`}
         role='switch'
         aria-checked={myPositionOnly}
@@ -36,7 +36,7 @@ export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
         <span
           className={`${
             myPositionOnly ? 'translate-x-10' : 'translate-x-1'
-          } inline-block h-4 w-4 transform rounded-full bg-grayDark transition-transform dark:bg-purpleSoft`}
+          } inline-block h-4 w-4 transform rounded-full bg-grayDark transition-transform dark:bg-purpleLight`}
         />
         <span className='sr-only'>{label}</span>
       </button>

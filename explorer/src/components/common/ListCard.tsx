@@ -12,13 +12,13 @@ export const ListCard = <T extends object>({ table, emptyMessage }: ListCardProp
         table.getRowModel().rows.map((row, index) => (
           <div
             key={`row-${index}`}
-            className="mb-4 w-full rounded-lg bg-white px-4 py-2 font-['Montserrat'] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset"
+            className="mb-4 w-full rounded-lg bg-white px-4 py-2 font-['Montserrat'] dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo"
           >
             {row.getVisibleCells().map((cell, index) => {
               const header = table.getHeaderGroups()[0].headers[index]
               return (
                 <div className='flex items-center justify-between py-2' key={`cell-${index}`}>
-                  <div className='text-xs text-purpleShade2  dark:text-white/75'>
+                  <div className='text-xs text-purpleShade  dark:text-white/75'>
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -32,9 +32,9 @@ export const ListCard = <T extends object>({ table, emptyMessage }: ListCardProp
           </div>
         ))
       ) : (
-        <div className="w-full rounded-lg bg-white px-4 py-4 font-['Montserrat'] dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset">
+        <div className="w-full rounded-lg bg-white px-4 py-4 font-['Montserrat'] dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo">
           <div className='flex w-full justify-center'>
-            <div className='text-sm text-purpleShade2 dark:text-white/75'>
+            <div className='text-sm text-purpleShade dark:text-white/75'>
               {emptyMessage || 'No entries to show'}
             </div>
           </div>

@@ -34,7 +34,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.academy}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Academy
@@ -44,7 +44,7 @@ const Footer: FC = () => {
                   <a
                     href={EXTERNAL_ROUTES.forum}
                     target='_blank'
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Forum
@@ -54,7 +54,7 @@ const Footer: FC = () => {
                   <a
                     href={EXTERNAL_ROUTES.docs}
                     target='_blank'
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Docs
@@ -64,7 +64,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.autonomys}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Website
@@ -81,7 +81,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.twitter}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     X / Twitter
@@ -91,7 +91,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.discord}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Discord
@@ -101,7 +101,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.telegram}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Telegram
@@ -111,7 +111,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.github}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     GitHub
@@ -123,7 +123,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.medium}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Medium
@@ -133,7 +133,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.youtube}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     YouTube
@@ -143,7 +143,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.linkedin}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     LinkedIn
