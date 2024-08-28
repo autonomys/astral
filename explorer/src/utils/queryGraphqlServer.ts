@@ -13,7 +13,9 @@ export const queryGraphqlServer = async (query: string, variables: object) => {
     // Extract the network ID from the callback URL
     const callbackUrl = decodeURIComponent(callbackUrlCookie.value)
     const url = new URL(callbackUrl)
+    console.log('url', url)
     const networkId = url.pathname.split('/')[1] // The network ID is the second part of the path
+    console.log('networkId', networkId)
     if (!networkId) throw new Error('No network ID found in callback URL')
 
     // Find the selected chain api
