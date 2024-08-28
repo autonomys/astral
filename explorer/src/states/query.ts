@@ -58,9 +58,14 @@ export interface ExplorerQueryState {
     operator: QueryState<StakingQuery.OperatorByIdQuery>
     operatorNominators: QueryState<StakingQuery.OperatorNominatorsByIdQuery>
   }
+  [Routes.domains]: {
+    domains: QueryState<StakingQuery.DomainsListQuery>
+
+    domain: QueryState<StakingQuery.DomainByIdQuery>
+  }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
-    stakingSummary: QueryState<OldGqlT.StakingSummaryQuery>
+    stakingSummary: QueryState<StakingQuery.StakingSummaryQuery>
     lastExtrinsics: QueryState<OldGqlT.ExtrinsicsSummaryQuery>
     leaderboard: QueryState<OldGqlT.AccountsTopLeaderboardQuery>
   }
@@ -71,6 +76,7 @@ export type ExplorerSection = keyof ExplorerQueryState
 export type Components =
   | keyof ExplorerQueryState[Routes.consensus]
   | keyof ExplorerQueryState[Routes.staking]
+  | keyof ExplorerQueryState[Routes.domains]
   | keyof ExplorerQueryState[ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]
 
 interface ExplorerQueryStateAndHelper extends ExplorerQueryState {
@@ -109,6 +115,11 @@ const initialState: ExplorerQueryState = {
 
     operator: initialized,
     operatorNominators: initialized,
+  },
+  domains: {
+    domains: initialized,
+
+    domain: initialized,
   },
   walletSidekick: {
     claim: initialized,

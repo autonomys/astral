@@ -2728,14 +2728,6 @@ export type ExtrinsicsSummaryQueryVariables = Exact<{
 
 export type ExtrinsicsSummaryQuery = { __typename?: 'Query', extrinsics: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', node: { __typename?: 'Extrinsic', id: string, hash: string, success: boolean, name: string, block: { __typename?: 'Block', id: string, timestamp: any, height: any } } }> } };
 
-export type StakingSummaryQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type StakingSummaryQuery = { __typename?: 'Query', operators: { __typename?: 'OperatorsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorEdge', node: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentTotalStake?: any | null, totalShares?: any | null } }> }, nominators: { __typename?: 'NominatorsConnection', totalCount: number, edges: Array<{ __typename?: 'NominatorEdge', node: { __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string }, operator: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentTotalStake?: any | null, totalShares?: any | null } } }> } };
-
 export type CheckRoleQueryVariables = Exact<{
   subspaceAccount: Scalars['String']['input'];
 }>;

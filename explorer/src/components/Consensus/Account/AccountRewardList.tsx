@@ -116,7 +116,7 @@ export const AccountRewardList: FC = () => {
           return (
             <Link
               key={`${row.original.id}-account-index`}
-              className='hover:text-purpleAccent'
+              className='hover:text-primaryAccent'
               href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.block?.height)}
             >
               <div>{row.original.block?.height}</div>

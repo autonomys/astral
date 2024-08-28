@@ -37,7 +37,7 @@ export const LogDetailsEventList: FC<Props> = ({ events }) => {
         cell: ({ row }: Cell<Event>) => (
           <div className='flex w-full gap-1' key={`${row.index}-log-event-id`}>
             <Link
-              className='w-full hover:text-purpleAccent'
+              className='w-full hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
               {`${row.original.block?.height}-${row.index}`}

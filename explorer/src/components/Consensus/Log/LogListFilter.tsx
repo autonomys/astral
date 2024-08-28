@@ -85,12 +85,12 @@ export const LogListFilter: FC<Props> = ({ filters, setFilters, title, logTypes 
       <Accordion
         title={title}
         icon={
-          <div className='text-purpleAccent dark:text-blueAccent'>
+          <div className='text-primaryAccent dark:text-blueAccent'>
             <FilterIcon />
           </div>
         }
       >
-        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset'>
+        <div className='w-full rounded-[20px] bg-grayLight p-5 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
           <div>
             <div className='mt-4 grid grid-cols-2 items-end gap-4 md:grid-cols-6'>
               <div className='flex flex-col gap-3'>

@@ -20,9 +20,10 @@ const config: Config = {
       },
       colors: {
         // Common Gradient
-        gradientTwilight: '#4141B3',
-        gradientDusk: '#6B5ACF',
-        gradientSunset: '#896BD2',
+        gradientFrom: '#4141B3',
+        gradientVia: '#6B5ACF',
+        gradientTo: '#896BD2',
+        gradientToSecondary: '#678CD5',
 
         // Grays and Blacks
         grayDark: '#282929',
@@ -35,41 +36,26 @@ const config: Config = {
         whiteOpaque: '#ffffffb3',
 
         // Purples
-        purpleShade1: '#9179EC',
-        purpleShade2: '#857EC2',
-        purpleAccent: '#DE67E4',
         purpleLight: '#E6EAFA',
-        purpleDeep: '#5649A3',
-        purpleDeepAccent: '#4D397A',
+        purpleShade: '#857EC2',
+        purpleUndertone: '#5649A3',
         purpleLighterAccent: '#6E6ECD',
-        purpleMedium: '#A196E1',
-        purplePale: '#C2B0EE',
-        purplePastel: '#8EABE4',
-        purpleTint: '#AC70E1',
-        purpleTinge: '#E6ADDC',
-        purpleUndertone: '#3A2D85',
-        purpleRoyal: '#4524C1', 
-        purpleSoft: '#D3DEF5', 
-        purpleElectric: '#E970F8', 
-        purpleMist: '#EFFDFF', 
+        
+        // Primary
+        primaryAccent: '#EA71F9',
 
         // Blues
-        blueShade1: '#6C6BCF', 
-        blueShade2: '#D9F0FC',
         blueAccent: '#1E254E',
-        blueLight: '#F3FBFF',
-        blueMedium: '#678CD5',
-        bluePastel: '#929EEA',
-        bluePale: '#ABCFEF',
         blueDarkAccent: '#2A345E',
+
+        // Pastels
+        pastelPurple: '#C2B0EE',
+        pastelBlue: '#ABCFEF',
+        pastelPink: '#E6ADDC',
+        pastelGreen: '#91D3A0',
 
         // Greens
         greenBright: '#37D058',
-        greenPastel: '#91D3A0',
-
-        // Misc
-        pinkAccent: '#EA71F9',
-        bronze: '#F1F7F8', 
       },
     },
     fontFamily: {
