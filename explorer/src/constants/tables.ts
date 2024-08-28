@@ -1,5 +1,7 @@
 import { AvailableColumns, FiltersOptions, InitialTables } from 'types/table'
+import { allCapsToNormal } from 'utils/string'
 import { PAGE_SIZE } from './general'
+import { OperatorStatus } from './staking'
 
 export const AVAILABLE_COLUMNS: AvailableColumns = {
   domains: [
@@ -179,7 +181,7 @@ export const FILTERS_OPTIONS: FiltersOptions = {
       type: 'checkbox',
       label: 'Status',
       key: 'status',
-      options: ['Registered', 'Deregistered', 'Slashed', 'Ready To Unlock'],
+      options: Object.values(OperatorStatus).map((status) => allCapsToNormal(status)),
     },
     { type: 'range', label: 'Active Epoch Count', key: 'activeEpochCount' },
     { type: 'range', label: 'Bundle Count', key: 'bundleCount' },
