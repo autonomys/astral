@@ -8,7 +8,7 @@ import {
   Extrinsic as _Extrinsic,
 } from "@subsquid/substrate-processor";
 import { assertNotNull } from "@subsquid/util-internal";
-import { calls, events } from "./types";
+import { events } from "./types";
 
 export const processor = new SubstrateBatchProcessor()
   .setGateway(
