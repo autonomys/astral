@@ -1,13 +1,12 @@
 'use client'
 
-import useChains from '@/hooks/useChains'
-import { useViewStates } from '@/states/view'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { Accordion } from 'components/common/Accordion'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, INTERNAL_ROUTES, Routes, TOKEN } from 'constants/'
+import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {
@@ -15,11 +14,13 @@ import {
   NominationsListQueryVariables,
   Order_By as OrderBy,
 } from 'gql/types/staking'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useViewStates } from 'states/view'
 import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter } from 'utils/string'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
@@ -209,19 +210,13 @@ export const NominationsTable: FC = () => {
                         OperatorActionType.UnlockNominator,
                       ]
 
-                      if (nominator.operator?.status === 'REGISTERED')
-                        excludeActions.push(
-                          OperatorActionType.Deregister,
-                          OperatorActionType.Nominating,
-                        )
-                      else if (nominator.operator?.status === 'DEREGISTERED')
-                        excludeActions.push(OperatorActionType.Nominating)
-                      else if (nominator.operator?.status === 'READY_TO_UNLOCK')
+                      if (nominator.operator?.status === OperatorStatus.DEREGISTERED)
                         excludeActions.push(
                           OperatorActionType.Nominating,
                           OperatorActionType.Deregister,
                         )
-                      else excludeActions.push(OperatorActionType.UnlockNominator)
+                      if (nominator.operator?.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+                        excludeActions.push(OperatorActionType.UnlockNominator)
 
                       if (!nominator)
                         excludeActions.push(
@@ -233,7 +228,7 @@ export const NominationsTable: FC = () => {
                         nominator.unlock_at_confirmed_domain_block_number.length === 0
                       )
                         excludeActions.push(OperatorActionType.UnlockFunds)
-                      if (nominator.operator?.status === 'SLASHED') return <></>
+                      if (nominator.operator?.status === OperatorStatus.SLASHED) return <></>
                       return (
                         <ActionsDropdown
                           action={action}
