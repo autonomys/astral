@@ -1,0 +1,34 @@
+table:
+  name: domain_epoch
+  schema: public
+object_relationships:
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_count
+        - block_number_end
+        - block_number_start
+        - consensus_block_number_end
+        - consensus_block_number_start
+        - created_at
+        - epoch
+        - updated_at
+        - epoch_duration
+        - consensus_block_hash_end
+        - consensus_block_hash_start
+        - domain_id
+        - timestamp_end
+        - timestamp_start
+      filter: {}
+    comment: ""

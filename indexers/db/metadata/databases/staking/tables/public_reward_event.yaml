@@ -1,0 +1,16 @@
+table:
+  name: reward_event
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_number
+        - amount
+        - domain_id
+        - extrinsic_hash
+        - operator_id
+        - timestamp
+      filter: {}
+    comment: ""

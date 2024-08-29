@@ -1,0 +1,45 @@
+table:
+  name: stats_per_operator
+  schema: public
+object_relationships:
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_number
+        - deposits_count
+        - nominators_count
+        - withdrawals_count
+        - all_time_high_share_price
+        - all_time_high_staked
+        - current_share_price
+        - total_deposits
+        - total_rewards_collected
+        - total_shares
+        - total_staked
+        - total_tax_collected
+        - total_withdrawals
+        - domain_id
+        - operator_id
+        - timestamp
+      filter: {}
+    comment: ""
