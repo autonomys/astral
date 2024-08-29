@@ -1,0 +1,59 @@
+type Account @entity {
+  id: ID! @index
+  totalCampaignsParticipated: BigInt!
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: String!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: String!
+  rank: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Campaign @entity {
+  id: ID! @index
+  name: String!
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: String!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: String!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountPerCampaign @entity {
+  id: ID! @index
+  accountId: String! @index
+  campaignId: String! @index
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: String!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: String!
+  rank: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Reward @entity {
+  id: ID! @index
+  campaignId: String! @index
+  accountId: String! @index
+  amount: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Verification @entity {
+  id: ID! @index
+  accountIds: [String!]! @index
+  totalAmount: BigInt!
+  totalPercentage: String!
+  totalCampaignsParticipated: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type SlackMessage @entity {
+  id: ID! @index
+  messageId: String! @index
+}
