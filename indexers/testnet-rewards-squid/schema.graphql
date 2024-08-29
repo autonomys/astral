@@ -45,7 +45,7 @@ type Reward @entity {
 
 type Verification @entity {
   id: ID! @index
-  accountIds: [String!]! @index
+  accountIds: [String!]!
   totalAmount: BigInt!
   totalPercentage: String!
   totalCampaignsParticipated: BigInt!
