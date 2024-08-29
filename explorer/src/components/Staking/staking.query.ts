@@ -25,6 +25,7 @@ export const QUERY_NOMINATIONS_LIST = gql`
         id
         account_id
         status
+        pending_action
         current_total_shares
       }
       known_shares

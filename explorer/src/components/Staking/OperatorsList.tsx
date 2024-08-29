@@ -7,6 +7,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
 import {
   OperatorsListQuery,
   OperatorsListQueryVariables,
@@ -574,20 +575,15 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           if (!isOperator)
             excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
 
-          const status = operatorStatus(JSON.parse(row.original.raw_status ?? '{}'))
-
-          if (status === 'REGISTERED')
-            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.Nominating)
-          else if (status === 'DEREGISTERED') excludeActions.push(OperatorActionType.Nominating)
-          else if (status === 'READY_TO_UNLOCK')
+          if (row.original.status === OperatorStatus.DEREGISTERED)
             excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-          else excludeActions.push(OperatorActionType.UnlockNominator)
+          if (row.original.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR) excludeActions.push(OperatorActionType.UnlockNominator)
 
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
           if (!nominator || nominator.unlock_at_confirmed_domain_block_number.length === 0)
             excludeActions.push(OperatorActionType.UnlockFunds)
-          if (status === 'SLASHED') return <></>
+          if (row.original.status === OperatorStatus.SLASHED) return <></>
           return (
             <ActionsDropdown
               action={action}

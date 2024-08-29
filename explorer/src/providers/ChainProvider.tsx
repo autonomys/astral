@@ -13,7 +13,7 @@ import { RetryLink } from '@apollo/client/link/retry'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
 import Cookies from 'js-cookie'
-import { FC, ReactNode, createContext, useCallback, useState } from 'react'
+import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 
 export type ChainContextValue = {
   indexerSet: Indexer
@@ -49,10 +49,14 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, chil
     },
   })
 
-  const client = new ApolloClient({
-    link: ApolloLink.from([new RetryLink(), httpLink]),
-    cache: new InMemoryCache(),
-  })
+  const client = useMemo(
+    () =>
+      new ApolloClient({
+        link: ApolloLink.from([new RetryLink(), httpLink]),
+        cache: new InMemoryCache(),
+      }),
+    [httpLink],
+  )
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
 }
