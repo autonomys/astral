@@ -23,6 +23,10 @@
     {
       "name": "indexer - Leaderboard Squid",
       "path": "../indexers/leaderboard-squid"
+    },
+    {
+      "name": "indexer - Testnet Rewards Squid",
+      "path": "../indexers/testnet-rewards-squid"
     }
   ],
   "settings": {
