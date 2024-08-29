@@ -18,6 +18,8 @@ deploy:
     env:
       CONSENSUS_GATEWAY: ${{ secrets.CONSENSUS_GATEWAY }}
       RPC_CONSENSUS_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
+      SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+      SLACK_CONVERSATION_ID: ${{ secrets.SLACK_CONVERSATION_ID }}
   api:
     cmd:
       - sqd
