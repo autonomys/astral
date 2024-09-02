@@ -1,24 +1,9 @@
 import { defaultIndexer, indexers } from 'constants/indexers'
-import { cookies } from 'next/headers'
 
 export const queryGraphqlServer = async (query: string, variables: object) => {
   try {
-    // Get the selected chain from the cookies
-    const { get } = cookies()
-    const callbackUrlCookie =
-      get('next-auth.callback-url') || get('__Secure-next-auth.callback-url')
-    if (!callbackUrlCookie) throw new Error('No callback URL cookie')
-
-    // Extract the network ID from the callback URL
-    const callbackUrl = decodeURIComponent(callbackUrlCookie.value)
-    const url = new URL(callbackUrl)
-    let networkId = url.pathname.split('/')[1]
-    if (!networkId) {
-      networkId = defaultIndexer.network
-    }
-
     // Find the selected chain api
-    const api = indexers.find((indexer) => indexer.network === networkId)
+    const api = indexers.find((indexer) => indexer.network === defaultIndexer.network)
     if (!api) throw new Error('No selected chain api')
 
     // Fetch the data from the api
