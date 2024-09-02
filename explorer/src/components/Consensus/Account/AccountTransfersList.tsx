@@ -1,10 +1,11 @@
 /* eslint-disable camelcase */
-import { Tooltip } from '@/components/common/Tooltip'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { AccountIcon } from 'components/common/AccountIcon'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { StatusIcon } from 'components/common/StatusIcon'
+import { Tooltip } from 'components/common/Tooltip'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -28,7 +29,7 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
-import { shortString } from 'utils/string'
+import { formatExtrinsicId, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { QUERY_ACCOUNT_TRANSFERS } from './accounts.query'
 
@@ -114,11 +115,54 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   const columns = useMemo(
     () => [
       {
+        accessorKey: 'created_at',
+        header: 'Block',
+        enableSorting: true,
+        cell: ({ row }: Row) => (
+          <div key={`created_at-${row.original.id}`} className='row flex items-center gap-3'>
+            <Link
+              data-testid={`transfer-created_at-${row.index}`}
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                row.original.created_at,
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.created_at}</div>
+            </Link>
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'extrinsic_id',
+        header: 'Extrinsic',
+        enableSorting: true,
+        cell: ({ row }: Row) => (
+          <div key={`extrinsic_id-${row.original.id}`} className='row flex items-center gap-3'>
+            <Link
+              data-testid={`transfer-extrinsic_id-${row.index}`}
+              href={INTERNAL_ROUTES.extrinsics.id.page(
+                network,
+                Routes.consensus,
+                row.original.extrinsic_id,
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{formatExtrinsicId(row.original.extrinsic_id)}</div>
+            </Link>
+          </div>
+        ),
+      },
+      {
         accessorKey: 'direction',
         header: 'Direction',
         enableSorting: false,
         cell: ({ row }: Row) => (
-          <div key={`from-${row.original.id}`} className='row flex items-center gap-3'>
+          <div
+            key={`direction-${row.original.id}`}
+            className={`row flex items-center gap-3 text-${row.original.from === accountId ? 'red-500' : 'greenBright'}`}
+          >
             {row.original.from === accountId ? 'Sent' : 'Received'}
           </div>
         ),
@@ -135,7 +179,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
               href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, row.original.from)}
               className='hover:text-primaryAccent'
             >
-              <div>{isLargeLaptop ? row.original.from : shortString(row.original.from)}</div>
+              <div>{shortString(row.original.from)}</div>
             </Link>
           </div>
         ),
@@ -152,7 +196,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
               href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, row.original.to)}
               className='hover:text-primaryAccent'
             >
-              <div>{isLargeLaptop ? row.original.to : shortString(row.original.to)}</div>
+              <div>{shortString(row.original.to)}</div>
             </Link>
           </div>
         ),
@@ -182,25 +226,25 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         ),
       },
       {
-        accessorKey: 'created_at',
-        header: 'Created at',
+        accessorKey: 'success',
+        header: 'Status',
+        enableSorting: true,
+        cell: ({ row }) => (
+          <div
+            className='md:flex md:items-center md:justify-start md:pl-5'
+            key={`${row.original.id}-home-extrinsic-status-${row.index}`}
+          >
+            <StatusIcon status={row.original.success} />
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'date',
+        header: 'Date',
         enableSorting: true,
         cell: ({ row }) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
-            <Tooltip text={dayjs(row.original.date).fromNow(true) + ' ago'}>
-              <Link
-                key={`created_at-${row.original.id}`}
-                data-testid={`created-at-${row.index}`}
-                href={INTERNAL_ROUTES.blocks.id.page(
-                  network,
-                  Routes.consensus,
-                  row.original.created_at,
-                )}
-                className='hover:text-primaryAccent'
-              >
-                <div>{row.original.created_at}</div>
-              </Link>
-            </Tooltip>
+            {dayjs(row.original.date).fromNow(true)} ago
           </div>
         ),
       },

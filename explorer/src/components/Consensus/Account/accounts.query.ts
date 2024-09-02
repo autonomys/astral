@@ -13,14 +13,17 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
       }
     }
     transfer(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
-      created_at
-      date
-      fee
-      from
       id
-      timestamp
+      extrinsic_id
+      event_id
+      from
       to
       value
+      fee
+      success
+      timestamp
+      date
+      created_at
     }
   }
 `

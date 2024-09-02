@@ -16,6 +16,19 @@ export type Scalars = {
   timestamptz: { input: any; output: any; }
 };
 
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Boolean']['input']>;
+  _gt?: InputMaybe<Scalars['Boolean']['input']>;
+  _gte?: InputMaybe<Scalars['Boolean']['input']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Boolean']['input']>;
+  _lte?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Scalars['Boolean']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']['input']>;
@@ -311,9 +324,12 @@ export type Transfer = {
   __typename?: 'transfer';
   created_at: Scalars['Int']['output'];
   date: Scalars['timestamptz']['output'];
+  event_id: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
   fee: Scalars['numeric']['output'];
   from: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
   timestamp: Scalars['numeric']['output'];
   to: Scalars['String']['output'];
   value: Scalars['numeric']['output'];
@@ -365,9 +381,12 @@ export type Transfer_Bool_Exp = {
   _or?: InputMaybe<Array<Transfer_Bool_Exp>>;
   created_at?: InputMaybe<Int_Comparison_Exp>;
   date?: InputMaybe<Timestamptz_Comparison_Exp>;
+  event_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
   fee?: InputMaybe<Numeric_Comparison_Exp>;
   from?: InputMaybe<String_Comparison_Exp>;
   id?: InputMaybe<String_Comparison_Exp>;
+  success?: InputMaybe<Boolean_Comparison_Exp>;
   timestamp?: InputMaybe<Numeric_Comparison_Exp>;
   to?: InputMaybe<String_Comparison_Exp>;
   value?: InputMaybe<Numeric_Comparison_Exp>;
@@ -378,6 +397,8 @@ export type Transfer_Max_Fields = {
   __typename?: 'transfer_max_fields';
   created_at?: Maybe<Scalars['Int']['output']>;
   date?: Maybe<Scalars['timestamptz']['output']>;
+  event_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   fee?: Maybe<Scalars['numeric']['output']>;
   from?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
@@ -391,6 +412,8 @@ export type Transfer_Min_Fields = {
   __typename?: 'transfer_min_fields';
   created_at?: Maybe<Scalars['Int']['output']>;
   date?: Maybe<Scalars['timestamptz']['output']>;
+  event_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
   fee?: Maybe<Scalars['numeric']['output']>;
   from?: Maybe<Scalars['String']['output']>;
   id?: Maybe<Scalars['String']['output']>;
@@ -403,9 +426,12 @@ export type Transfer_Min_Fields = {
 export type Transfer_Order_By = {
   created_at?: InputMaybe<Order_By>;
   date?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
   fee?: InputMaybe<Order_By>;
   from?: InputMaybe<Order_By>;
   id?: InputMaybe<Order_By>;
+  success?: InputMaybe<Order_By>;
   timestamp?: InputMaybe<Order_By>;
   to?: InputMaybe<Order_By>;
   value?: InputMaybe<Order_By>;
@@ -418,11 +444,17 @@ export enum Transfer_Select_Column {
   /** column name */
   Date = 'date',
   /** column name */
+  EventId = 'event_id',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
   Fee = 'fee',
   /** column name */
   From = 'from',
   /** column name */
   Id = 'id',
+  /** column name */
+  Success = 'success',
   /** column name */
   Timestamp = 'timestamp',
   /** column name */
@@ -470,9 +502,12 @@ export type Transfer_Stream_Cursor_Input = {
 export type Transfer_Stream_Cursor_Value_Input = {
   created_at?: InputMaybe<Scalars['Int']['input']>;
   date?: InputMaybe<Scalars['timestamptz']['input']>;
+  event_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['numeric']['input']>;
   from?: InputMaybe<Scalars['String']['input']>;
   id?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['Boolean']['input']>;
   timestamp?: InputMaybe<Scalars['numeric']['input']>;
   to?: InputMaybe<Scalars['String']['input']>;
   value?: InputMaybe<Scalars['numeric']['input']>;
@@ -522,4 +557,4 @@ export type TransfersByAccountIdQueryVariables = Exact<{
 }>;
 
 
-export type TransfersByAccountIdQuery = { __typename?: 'query_root', transfer_aggregate: { __typename?: 'transfer_aggregate', aggregate?: { __typename?: 'transfer_aggregate_fields', count: number } | null }, transfer: Array<{ __typename?: 'transfer', created_at: number, date: any, fee: any, from: string, id: string, timestamp: any, to: string, value: any }> };
+export type TransfersByAccountIdQuery = { __typename?: 'query_root', transfer_aggregate: { __typename?: 'transfer_aggregate', aggregate?: { __typename?: 'transfer_aggregate_fields', count: number } | null }, transfer: Array<{ __typename?: 'transfer', id: string, extrinsic_id: string, event_id: string, from: string, to: string, value: any, fee: any, success: boolean, timestamp: any, date: any, created_at: number }> };
