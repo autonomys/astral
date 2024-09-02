@@ -1,15 +1,9 @@
-import { indexers } from 'constants/indexers'
-import { cookies } from 'next/headers'
+import { defaultIndexer, indexers } from 'constants/indexers'
 
 export const queryGraphqlServer = async (query: string, variables: object) => {
   try {
-    // Get the selected chain from the cookies
-    const { get } = cookies()
-    const selectedNetwork = get('selected-network')
-    if (!selectedNetwork) throw new Error('No selected network')
-
     // Find the selected chain api
-    const api = indexers.find((indexer) => indexer.network === selectedNetwork.value)
+    const api = indexers.find((indexer) => indexer.network === defaultIndexer.network)
     if (!api) throw new Error('No selected chain api')
 
     // Fetch the data from the api
