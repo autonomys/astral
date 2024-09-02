@@ -1,0 +1,70 @@
+table:
+  name: account
+  schema: public
+array_relationships:
+  - name: bundle_authors
+    using:
+      manual_configuration:
+        column_mapping:
+          id: account_id
+        insertion_order: null
+        remote_table:
+          name: bundle_author
+          schema: public
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: account_id
+        insertion_order: null
+        remote_table:
+          name: deposit
+          schema: public
+  - name: nominators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: account_id
+        insertion_order: null
+        remote_table:
+          name: nominator
+          schema: public
+  - name: operators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: account_id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: account_id
+        insertion_order: null
+        remote_table:
+          name: withdrawal
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - updated_at
+        - accumulated_epoch_shares
+        - accumulated_epoch_stake
+        - accumulated_epoch_storage_fee_deposit
+        - current_share_price
+        - current_storage_fee_deposit
+        - current_total_shares
+        - current_total_stake
+        - total_deposits
+        - total_estimated_withdrawals
+        - total_tax_collected
+        - total_withdrawals
+      filter: {}
+      allow_aggregations: true
+    comment: ""

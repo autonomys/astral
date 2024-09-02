@@ -98,7 +98,7 @@ export const useTableStates = create<TableStatesAndFn>()(
     }),
     {
       name: 'table-storage',
-      version: 2,
+      version: 3,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),

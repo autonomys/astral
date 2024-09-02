@@ -1,0 +1,64 @@
+table:
+  name: deposit
+  schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: nominator
+    using:
+      manual_configuration:
+        column_mapping:
+          nominator_id: id
+        insertion_order: null
+        remote_table:
+          name: nominator
+          schema: public
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - status
+        - created_at
+        - domain_block_number_deposited_at
+        - epoch_deposited_at
+        - staked_at
+        - updated_at
+        - amount
+        - storage_fee_deposit
+        - total_amount
+        - total_withdrawn
+        - account_id
+        - domain_id
+        - extrinsic_hash
+        - nominator_id
+        - operator_id
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""

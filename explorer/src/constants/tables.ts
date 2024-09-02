@@ -1,5 +1,7 @@
 import { AvailableColumns, FiltersOptions, InitialTables } from 'types/table'
+import { allCapsToNormal } from 'utils/string'
 import { PAGE_SIZE } from './general'
+import { OperatorStatus } from './staking'
 
 export const AVAILABLE_COLUMNS: AvailableColumns = {
   domains: [
@@ -97,7 +99,6 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'current_epoch_rewards', label: 'Current Epoch Rewards', isSelected: false },
     { name: 'current_total_shares', label: 'Total Shares', isSelected: false },
     { name: 'current_share_price', label: 'Current Share Price', isSelected: false },
-    { name: 'raw_status', label: 'Raw Status', isSelected: false },
     { name: 'total_deposits', label: 'Total Deposits', isSelected: false },
     {
       name: 'total_estimated_withdrawals',
@@ -180,7 +181,7 @@ export const FILTERS_OPTIONS: FiltersOptions = {
       type: 'checkbox',
       label: 'Status',
       key: 'status',
-      options: ['Registered', 'Deregistered', 'Slashed', 'Ready To Unlock'],
+      options: Object.values(OperatorStatus).map((status) => allCapsToNormal(status)),
     },
     { type: 'range', label: 'Active Epoch Count', key: 'activeEpochCount' },
     { type: 'range', label: 'Bundle Count', key: 'bundleCount' },

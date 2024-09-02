@@ -1,0 +1,16 @@
+table:
+  name: account_extrinsic_total_count
+  schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - created_at
+        - rank
+        - updated_at
+        - value
+        - last_contribution_at
+      filter: {}
+      allow_aggregations: true
+    comment: ""
