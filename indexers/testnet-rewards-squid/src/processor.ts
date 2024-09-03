@@ -11,12 +11,9 @@ import { assertNotNull } from "@subsquid/util-internal";
 import { events } from "./types";
 
 export const processor = new SubstrateBatchProcessor()
-  .setGateway(
-    assertNotNull(process.env.CONSENSUS_GATEWAY, "No Gateway endpoint supplied")
-  )
   .setRpcEndpoint({
     url: assertNotNull(
-      process.env.RPC_CONSENSUS_HTTP,
+      process.env.RPC_CONSENSUS_3G_HTTP,
       "No RPC endpoint supplied"
     ),
     // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
@@ -31,7 +28,14 @@ export const processor = new SubstrateBatchProcessor()
       events.rewards.voteReward.name,
       events.rewards.blockReward.name,
       // staking
+      events.domains.domainInstantiated.name,
+      events.domains.operatorSwitchedDomain.name,
+      events.domains.operatorDeregistered.name,
+      events.domains.withdrewStake.name,
+      events.domains.operatorRegistered.name,
+      events.domains.operatorNominated.name,
       events.domains.operatorRewarded.name,
+      events.domains.operatorSlashed.name,
     ],
     call: true,
     extrinsic: true,
