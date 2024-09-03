@@ -53,7 +53,40 @@ type Verification @entity {
   updatedAt: Int! @index
 }
 
+type Domain @entity {
+  id: ID! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Operator @entity {
+  id: ID! @index
+  domainId: String! @index
+  accountId: String! @index
+  name: String!
+  currentTotalShares: BigInt!
+  currentTotalStake: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Nominator @entity {
+  id: ID! @index
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  currentTotalShares: BigInt!
+  currentTotalStake: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
 type SlackMessage @entity {
   id: ID! @index
   messageId: String! @index
+}
+
+type StaticData @entity {
+  id: ID! @index
+  added: Boolean!
 }
