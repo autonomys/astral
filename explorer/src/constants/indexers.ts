@@ -7,6 +7,7 @@ export interface Indexer {
     old: string
     leaderboard?: string
     staking?: string
+    testnetRewards?: string
   }
 }
 
@@ -19,6 +20,8 @@ export const indexers: Indexer[] = [
       leaderboard:
         'https://autonomys-labs.squids.live/leaderboard-squid/v/v6/addons/hasura/v1/graphql',
       staking: 'https://autonomys-labs.squids.live/staking-squid/v/v24/addons/hasura/v1/graphql',
+      testnetRewards:
+        'https://autonomys-labs.squids.live/testnet-rewards-squid/v/v1/addons/hasura/v1/graphql',
     },
   },
   {

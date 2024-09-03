@@ -44,6 +44,8 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, chil
       if (clientName === 'leaderboard' && indexerSet.squids.leaderboard)
         return indexerSet.squids.leaderboard
       if (clientName === 'staking' && indexerSet.squids.staking) return indexerSet.squids.staking
+      if (clientName === 'testnetRewards' && indexerSet.squids.testnetRewards)
+        return indexerSet.squids.testnetRewards
 
       return indexerSet.squids.old
     },
