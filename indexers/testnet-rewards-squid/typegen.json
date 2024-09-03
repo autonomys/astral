@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "gemini3h.jsonl",
+  "specVersions": "gemini3g.jsonl",
   "pallets": {
     "Subspace": {
       "events": true,
