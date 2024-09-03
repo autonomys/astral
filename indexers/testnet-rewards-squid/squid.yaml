@@ -18,6 +18,7 @@ deploy:
     env:
       CONSENSUS_GATEWAY: ${{ secrets.CONSENSUS_GATEWAY }}
       RPC_CONSENSUS_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
+      RPC_CONSENSUS_3G_HTTP: ${{ secrets.RPC_CONSENSUS_ENDPOINT }}
       SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
       SLACK_CONVERSATION_ID: ${{ secrets.SLACK_CONVERSATION_ID }}
   api:
@@ -29,7 +30,7 @@ scale:
   dedicated: true
   addons:
     postgres:
-      storage: 100G
-      profile: large
+      storage: 10G
+      profile: small
   processor:
-    profile: medium
+    profile: small
