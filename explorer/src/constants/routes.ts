@@ -6,8 +6,7 @@ export enum Routes {
   domains = 'domains',
   nova = 'nova',
   autoid = 'autoid',
-  // Route deactivated till bugs are fixed and feature is ready
-  // stake = 'stake',
+  testnetRewards = 'testnet-rewards',
 }
 
 export const ROUTES = [
@@ -41,11 +40,10 @@ export const ROUTES = [
       },
     ],
   },
-  // Route deactivated till bugs are fixed and feature is ready
-  // {
-  //   name: Routes.stake,
-  //   title: 'Stake Wars',
-  // },
+  {
+    name: Routes.testnetRewards,
+    title: 'Testnet Rewards',
+  },
 ]
 
 export const EXTERNAL_ROUTES = {
