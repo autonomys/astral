@@ -21,6 +21,16 @@ type Campaign @entity {
   updatedAt: Int! @index
 }
 
+type TotalEarnings @entity {
+  id: ID! @index
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: String!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: String!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
 type AccountPerCampaign @entity {
   id: ID! @index
   accountId: String! @index
