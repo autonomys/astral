@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
@@ -12,7 +11,6 @@ import dayjs from 'dayjs'
 import {
   Extrinsic,
   ExtrinsicOrderByInput,
-  ExtrinsicWhereInput,
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
 } from 'gql/graphql'
@@ -27,7 +25,6 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { AccountExtrinsicFilterDropdown } from './AccountExtrinsicFilterDropdown'
 import { QUERY_ACCOUNT_EXTRINSICS } from './query'
 
 type Props = {
@@ -48,7 +45,6 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
 
   const { network, section } = useChains()
   const apolloClient = useApolloClient()
@@ -61,12 +57,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
 
   const where = useMemo(
     () => ({
-      ...filters,
       signer: {
+        /* eslint-disable camelcase */
         id_eq: accountId,
       },
     }),
-    [accountId, filters],
+    [accountId],
   )
 
   const variables = useMemo(() => {
@@ -204,31 +200,23 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   }, [inView, setIsVisible])
 
   return (
-    <div className='mt-5 flex w-full flex-col align-middle'>
-      <div className='mt-6 rounded-[20px] bg-white p-6 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
-        <div className='flex w-full justify-center gap-2'>
-          <div className='text-sm text-purpleShade dark:text-white/75'>Action Filter:</div>
-          <AccountExtrinsicFilterDropdown filters={filters} setFilters={setFilters} />
-        </div>
-      </div>
-      <div className='my-6 rounded' ref={ref}>
-        {!loading && extrinsics ? (
-          <SortedTable
-            data={extrinsics}
-            columns={columns}
-            showNavigation={true}
-            sorting={sorting}
-            onSortingChange={setSorting}
-            pagination={pagination}
-            pageCount={pageCount}
-            onPaginationChange={setPagination}
-            filename='account-extrinsic-list'
-            fullDataDownloader={fullDataDownloader}
-          />
-        ) : (
-          noData
-        )}
-      </div>
+    <div className='flex w-full flex-col sm:mt-0' ref={ref}>
+      {!loading && extrinsics ? (
+        <SortedTable
+          data={extrinsics}
+          columns={columns}
+          showNavigation={true}
+          sorting={sorting}
+          onSortingChange={setSorting}
+          pagination={pagination}
+          pageCount={pageCount}
+          onPaginationChange={setPagination}
+          filename='account-extrinsic-list'
+          fullDataDownloader={fullDataDownloader}
+        />
+      ) : (
+        noData
+      )}
     </div>
   )
 }
