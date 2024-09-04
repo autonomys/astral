@@ -17,23 +17,26 @@ export const Tooltip: FC<TooltipProps> = ({ text, children, direction = 'top' })
   const toggleVisibility = useCallback(() => setIsVisible(!isVisible), [isVisible])
   const className = useMemo(
     () =>
-      `absolute ${direction ?? 'top'}-full bg-primaryAccent z-10 mt-2 w-auto rounded-md p-2 text-sm text-white shadow-lg`,
+      `absolute ${direction === 'top' ? 'bottom-full' : 'top-full'} ${direction === 'left' && 'right-full'} ${direction === 'right' && 'left-full'} bg-primaryAccent z-10 mt-2 w-auto rounded-md p-2 text-sm text-white shadow-lg`,
     [direction],
   )
+  const tooltip = useMemo(() => {
+    return (
+      <div
+        className={className}
+        onMouseOver={() => setIsVisible(true)}
+        onMouseOut={() => setIsVisible(false)}
+        onFocus={() => setIsVisible(true)}
+        onBlur={() => setIsVisible(false)}
+      >
+        {text}
+      </div>
+    )
+  }, [className, text])
 
   return (
     <div className='group relative flex flex-col items-center'>
-      {isVisible && (
-        <div
-          className={className}
-          onMouseOver={() => setIsVisible(true)}
-          onMouseOut={() => setIsVisible(false)}
-          onFocus={() => setIsVisible(true)}
-          onBlur={() => setIsVisible(false)}
-        >
-          {text}
-        </div>
-      )}
+      {isVisible && tooltip}
       <div
         onClick={toggleVisibility}
         onMouseEnter={() => setIsVisible(true)}
