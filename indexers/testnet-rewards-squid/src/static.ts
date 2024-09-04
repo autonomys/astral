@@ -86,7 +86,11 @@ export const loadStaticData = async (cache: Cache) => {
   const oldRewardsData = await parseCSV(OLD_REWARDS_FILE_PATH);
   oldRewardsData.forEach((row) => {
     try {
-      if (row.accountId !== "" && row.accountId.startsWith("st")) {
+      if (
+        row.accountId &&
+        row.accountId !== "" &&
+        row.accountId.startsWith("st")
+      ) {
         const rewards = {
           aries: BigInt(
             row.aries_blocks_won && row.aries_blocks_won !== ""
@@ -305,7 +309,11 @@ export const loadStaticData = async (cache: Cache) => {
   const gemini3GData = await parseCSV(GEMINI_3G_REWARDS_FILE_PATH);
   gemini3GData.forEach((row) => {
     try {
-      if (row.accountId !== "" && row.accountId.startsWith("st")) {
+      if (
+        row.accountId &&
+        row.accountId !== "" &&
+        row.accountId.startsWith("st")
+      ) {
         const reward = BigInt(parseEther(row.rewards));
 
         const accountPerCampaign5 = new AccountPerCampaign({
