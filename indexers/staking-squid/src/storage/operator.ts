@@ -3,9 +3,9 @@ import {
   Operator,
   OperatorPendingAction,
   OperatorStatus,
-  RewardEvent,
+  Reward,
 } from "../model";
-import type { CtxBlock, CtxExtrinsic } from "../processor";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getTimestamp, operatorUID } from "../utils";
 import { Cache } from "../utils/cache";
 
@@ -22,17 +22,6 @@ export const createOperator = (
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,
-    name: "",
-    description: "",
-    icon: "",
-    banner: "",
-    website: "",
-    websiteVerified: false,
-    email: "",
-    emailVerified: false,
-    discord: "",
-    github: "",
-    twitter: "",
     currentTotalStake: BigInt(0),
     currentStorageFeeDeposit: BigInt(0),
     currentEpochRewards: BigInt(0),
@@ -88,10 +77,11 @@ export const getOrCreateOperator = (
 export const createRewardEvent = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  props: Partial<RewardEvent>
-): RewardEvent =>
-  new RewardEvent({
-    id: randomUUID(),
+  event: CtxEvent,
+  props: Partial<Reward>
+): Reward =>
+  new Reward({
+    id: event.id,
     ...props,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),

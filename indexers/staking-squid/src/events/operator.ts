@@ -195,15 +195,12 @@ export function processOperatorRewardedEvent(
   domain.totalRewardsCollected += amount;
   cache.domains.set(domain.id, domain);
 
-  const operatorRewardedEvent = createRewardEvent(block, extrinsic, {
+  const operatorRewardedEvent = createRewardEvent(block, extrinsic, event, {
     operatorId: operator.id,
     domainId: operator.domainId,
     amount,
   });
-  cache.operatorRewardedEvents.set(
-    operatorRewardedEvent.id,
-    operatorRewardedEvent
-  );
+  cache.operatorRewards.set(operatorRewardedEvent.id, operatorRewardedEvent);
 
   cache.isModified = true;
 

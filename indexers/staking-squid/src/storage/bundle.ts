@@ -45,7 +45,7 @@ export const createBundleAuthor = (
   props?: Partial<BundleAuthor>
 ): BundleAuthor =>
   new BundleAuthor({
-    id: randomUUID(),
+    id: bundleUID(domainId, bundleId, operatorId),
     domainId,
     accountId,
     operatorId,

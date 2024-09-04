@@ -90,7 +90,7 @@ export async function processEpochTransitionEvent(
     _domain.runtimeId = pDomain.domainConfig.runtimeId;
 
     const stringifiedRuntime = JSON.stringify(pDomain.domainRuntimeInfo);
-    _domain.runtime = stringifiedRuntime.includes("AutoId")
+    _domain.runtime = stringifiedRuntime.includes("autoId")
       ? DomainRuntime.AutoId
       : DomainRuntime.EVM;
     _domain.runtimeInfo = stringifiedRuntime;
@@ -158,8 +158,7 @@ export async function processEpochTransitionEvent(
           )
           .forEach((n) => {
             n.status = NominatorStatus.PENDING;
-            n.pendingAction =
-              NominatorPendingAction.PENDING_DEREGISTRATION_LOCK;
+            n.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
             n.updatedAt = currentBlockNumber;
             cache.nominators.set(n.id, n);
           });
@@ -185,15 +184,25 @@ export async function processEpochTransitionEvent(
   }
   domain.currentTotalStake = BigInt(0);
   domain.currentStorageFeeDeposit = BigInt(0);
+  domain.currentTotalShares = BigInt(0);
+  domain.currentSharePrice = BigInt(0);
   domain.accumulatedEpochStake = BigInt(0);
   domain.accumulatedEpochStorageFeeDeposit = BigInt(0);
 
   allOperators.forEach((o) => {
     domain.currentTotalStake += o.operatorDetails.currentTotalStake;
     domain.currentStorageFeeDeposit += o.operatorDetails.totalStorageFeeDeposit;
+    domain.currentTotalShares += o.operatorDetails.currentTotalShares;
+    domain.currentSharePrice =
+      domain.currentTotalShares > BigInt(0)
+        ? (domain.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+          domain.currentTotalShares
+        : BigInt(0);
     domain.accumulatedEpochStake += o.operatorDetails.currentTotalStake;
     domain.accumulatedEpochStorageFeeDeposit +=
       o.operatorDetails.totalStorageFeeDeposit;
+    domain.accumulatedEpochRewards += domain.totalRewardsCollected;
+    domain.accumulatedEpochShares += o.operatorDetails.currentTotalShares;
   });
 
   domain.completedEpoch = completedEpoch;
