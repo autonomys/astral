@@ -13,6 +13,7 @@ import { loadStaticData } from "./static";
 import { events } from "./types";
 import { getBlockNumber, hexToAccount, logBlock } from "./utils";
 import { Cache, load, save } from "./utils/cache";
+import { sort } from "./utils/sort";
 
 const campaign6 = new Campaign({
   id: "gemini-3h",
@@ -74,7 +75,7 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
     }
   }
 
-  await save(ctx, cache);
+  await save(ctx, sort(cache));
 });
 
 export function processFarmerVoteRewardEvent(
