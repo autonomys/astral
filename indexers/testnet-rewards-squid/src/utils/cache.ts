@@ -10,6 +10,7 @@ import {
   Reward,
   SlackMessage,
   StaticData,
+  TotalEarnings,
   Verification,
 } from "../model";
 import type { Ctx } from "../processor";
@@ -24,6 +25,7 @@ export type PermanentCache = {
 
   slackMessages: Map<string, SlackMessage>;
   staticDataAdded: Map<string, StaticData>;
+  totalEarnings: Map<string, TotalEarnings>;
 };
 
 export type TemporaryCache = {
@@ -50,6 +52,7 @@ export const initPermanentCache: PermanentCache = {
 
   slackMessages: new Map(),
   staticDataAdded: new Map(),
+  totalEarnings: new Map(),
 };
 
 export const initTemporaryCache: TemporaryCache = {
@@ -78,6 +81,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     nominators,
     slackMessages,
     staticDataAdded,
+    totalEarnings,
   ] = await Promise.all([
     ctx.store.find(Account),
     ctx.store.find(Campaign),
@@ -87,6 +91,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     ctx.store.find(Nominator),
     ctx.store.find(SlackMessage),
     ctx.store.find(StaticData),
+    ctx.store.find(TotalEarnings),
   ]);
 
   console.log(
@@ -98,7 +103,8 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     domains.length + " domains, ",
     nominators.length + " nominators, ",
     slackMessages.length + " slackMessages, ",
-    staticDataAdded.length + " staticDataAdded"
+    staticDataAdded.length + " staticDataAdded, ",
+    totalEarnings.length + " totalEarnings"
   );
 
   return {
@@ -111,6 +117,7 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     nominators: new Map(nominators.map((n) => [n.id, n])),
     slackMessages: new Map(slackMessages.map((sm) => [sm.id, sm])),
     staticDataAdded: new Map(staticDataAdded.map((sd) => [sd.id, sd])),
+    totalEarnings: new Map(totalEarnings.map((te) => [te.id, te])),
   };
 };
 
@@ -124,7 +131,7 @@ const saveEntry = async <E extends Entity>(
     if (entity.size === 0) return;
 
     const entitiesArray = Array.from(entity.values()) as E[];
-    const batchSize = 300;
+    const batchSize = 200;
 
     for (let i = 0; i < entitiesArray.length; i += batchSize) {
       const batch = entitiesArray.slice(i, i + batchSize);
@@ -149,6 +156,7 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logPerm += logEntry("domains", cache.domains);
   logPerm += logEntry("slackMessages", cache.slackMessages);
   logPerm += logEntry("staticDataAdded", cache.staticDataAdded);
+  logPerm += logEntry("totalEarnings", cache.totalEarnings);
 
   let logTemp = logEntry("rewards", cache.rewards);
   logTemp += logEntry("verifications", cache.verifications);

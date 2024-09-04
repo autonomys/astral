@@ -13,7 +13,9 @@ import { loadStaticData } from "./static";
 import { events } from "./types";
 import { getBlockNumber, hexToAccount, logBlock } from "./utils";
 import { Cache, load, save } from "./utils/cache";
+import { calculatePercentage } from "./utils/percentage";
 import { sort } from "./utils/sort";
+import { calculateTotalEarnings } from "./utils/total";
 
 const campaign6 = new Campaign({
   id: "gemini-3h",
@@ -75,7 +77,11 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
     }
   }
 
-  await save(ctx, sort(cache));
+  const lastBlock = ctx.blocks[ctx.blocks.length - 1];
+  const cacheWithTotalEarnings = await calculateTotalEarnings(cache, lastBlock);
+  const cacheWithPercentage = calculatePercentage(cacheWithTotalEarnings);
+
+  await save(ctx, sort(cacheWithPercentage));
 });
 
 export function processFarmerVoteRewardEvent(

@@ -1,6 +1,12 @@
 import { parseEther } from "ethers";
 import fs from "fs/promises";
-import { Account, AccountPerCampaign, Campaign, StaticData } from "./model";
+import {
+  Account,
+  AccountPerCampaign,
+  Campaign,
+  StaticData,
+  TotalEarnings,
+} from "./model";
 import { Cache } from "./utils/cache";
 
 const OLD_REWARDS_FILE_PATH = "static/rewards.csv";
