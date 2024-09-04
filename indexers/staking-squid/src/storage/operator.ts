@@ -1,6 +1,11 @@
 import { randomUUID } from "crypto";
-import { Operator, OperatorStatus, RewardEvent } from "../model";
-import type { CtxBlock, CtxExtrinsic } from "../processor";
+import {
+  Operator,
+  OperatorPendingAction,
+  OperatorStatus,
+  Reward,
+} from "../model";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import { getBlockNumber, getTimestamp, operatorUID } from "../utils";
 import { Cache } from "../utils/cache";
 
@@ -12,25 +17,20 @@ export const createOperator = (
   new Operator({
     id: typeof operatorId === "string" ? operatorId : operatorUID(operatorId),
     sortId: typeof operatorId === "string" ? parseInt(operatorId) : operatorId,
+    accountId: "",
+    domainId: "",
     signingKey: "0x",
     minimumNominatorStake: BigInt(0),
     nominationTax: 0,
-    name: "",
-    description: "",
-    icon: "",
-    banner: "",
-    website: "",
-    websiteVerified: false,
-    email: "",
-    emailVerified: false,
-    discord: "",
-    github: "",
-    twitter: "",
     currentTotalStake: BigInt(0),
     currentStorageFeeDeposit: BigInt(0),
     currentEpochRewards: BigInt(0),
     currentTotalShares: BigInt(0),
+    currentSharePrice: BigInt(0),
+    rawStatus: JSON.stringify({}),
     totalDeposits: BigInt(0),
+    totalEstimatedWithdrawals: BigInt(0),
+    totalWithdrawals: BigInt(0),
     totalTaxCollected: BigInt(0),
     totalRewardsCollected: BigInt(0),
     totalTransfersIn: BigInt(0),
@@ -45,10 +45,14 @@ export const createOperator = (
     totalConsensusStorageFee: BigInt(0),
     totalDomainExecutionFee: BigInt(0),
     totalBurnedBalance: BigInt(0),
-    rawStatus: JSON.stringify({}),
-    status: OperatorStatus.PENDING,
+    accumulatedEpochStake: BigInt(0),
+    accumulatedEpochStorageFeeDeposit: BigInt(0),
+    accumulatedEpochRewards: BigInt(0),
+    accumulatedEpochShares: BigInt(0),
     activeEpochCount: 0,
     bundleCount: 0,
+    status: OperatorStatus.PENDING,
+    pendingAction: OperatorPendingAction.NO_ACTION_REQUIRED,
     lastBundleAt: 0,
     ...props,
     createdAt: getBlockNumber(block),
@@ -73,10 +77,11 @@ export const getOrCreateOperator = (
 export const createRewardEvent = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
-  props: Partial<RewardEvent>
-): RewardEvent =>
-  new RewardEvent({
-    id: randomUUID(),
+  event: CtxEvent,
+  props: Partial<Reward>
+): Reward =>
+  new Reward({
+    id: event.id,
     ...props,
     blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),

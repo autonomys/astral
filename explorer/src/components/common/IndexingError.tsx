@@ -20,7 +20,7 @@ export const IndexingError: FC = () => {
           <a
             href={EXTERNAL_ROUTES.subscan}
             target='_blank'
-            className='text-md text-whiteOpaque hover:text-purpleAccent'
+            className='text-md text-whiteOpaque hover:text-primaryAccent'
             rel='noreferrer'
           >
             Subscan
@@ -29,7 +29,7 @@ export const IndexingError: FC = () => {
           <a
             href={EXTERNAL_ROUTES.polkadot}
             target='_blank'
-            className='text-md text-whiteOpaque hover:text-purpleAccent'
+            className='text-md text-whiteOpaque hover:text-primaryAccent'
             rel='noreferrer'
           >
             Polkadot

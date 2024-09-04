@@ -66,7 +66,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
             <AccountIcon address={row.original.account_id} size={26} />
             <Link
               data-testid={`nominator-link-${row.original.id}-${row.original.account_id}-${row.index}}`}
-              className='hover:text-purpleAccent'
+              className='hover:text-primaryAccent'
               href={INTERNAL_ROUTES.accounts.id.page(
                 network,
                 Routes.consensus,

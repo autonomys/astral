@@ -6,11 +6,15 @@ import {
   BundleAuthor,
   Deposit,
   Domain,
+  DomainBlock,
+  DomainEpoch,
   Nominator,
   Operator,
-  RewardEvent,
+  Reward,
   Stats,
+  StatsPerAccount,
   StatsPerDomain,
+  StatsPerNominator,
   StatsPerOperator,
   Withdrawal,
 } from "../model";
@@ -21,50 +25,90 @@ export type PermanentCache = {
   accounts: Map<string, Account>;
   operators: Map<string, Operator>;
   nominators: Map<string, Nominator>;
+  deposits: Map<string, Deposit>;
+  withdrawals: Map<string, Withdrawal>;
+  domainEpochs: Map<string, DomainEpoch>;
 };
 
 export type TemporaryCache = {
-  deposits: Map<string, Deposit>;
-  withdrawals: Map<string, Withdrawal>;
   bundles: Map<string, Bundle>;
   bundleAuthors: Map<string, BundleAuthor>;
-  operatorRewardedEvents: Map<string, RewardEvent>;
+  domainBlocks: Map<string, DomainBlock>;
+  operatorRewards: Map<string, Reward>;
   stats: Map<string, Stats>;
   statsPerDomain: Map<string, StatsPerDomain>;
   statsPerOperator: Map<string, StatsPerOperator>;
+  statsPerAccount: Map<string, StatsPerAccount>;
+  statsPerNominator: Map<string, StatsPerNominator>;
 };
+
+export type LastBlockBundleIndexKey =
+  `lastBlockBundleIndex:${string}-${string}`;
+export type AllTimeHighStakedKey = `allTimeHighStaked:${string}`;
+export type AllTimeHighSharePriceKey =
+  `allTimeHighSharePrice:${string}:${string}`;
+type InternalKeyStore =
+  | LastBlockBundleIndexKey
+  | AllTimeHighStakedKey
+  | AllTimeHighSharePriceKey;
 
 type CacheManager = {
   isModified: boolean;
-  internalKeyStore: Map<string, string>;
+  internalKeyStore: Map<InternalKeyStore, string>;
 };
 
 export type Cache = PermanentCache & TemporaryCache & CacheManager;
 
-export const initCache: Cache = {
-  isModified: false,
-  internalKeyStore: new Map(),
-
+export const initPermanentCache: PermanentCache = {
   domains: new Map(),
   accounts: new Map(),
   operators: new Map(),
   nominators: new Map(),
   deposits: new Map(),
   withdrawals: new Map(),
+  domainEpochs: new Map(),
+};
+
+export const initTemporaryCache: TemporaryCache = {
   bundles: new Map(),
   bundleAuthors: new Map(),
-  operatorRewardedEvents: new Map(),
+  domainBlocks: new Map(),
+  operatorRewards: new Map(),
   stats: new Map(),
   statsPerDomain: new Map(),
   statsPerOperator: new Map(),
+  statsPerAccount: new Map(),
+  statsPerNominator: new Map(),
+};
+
+export const initCacheManager: CacheManager = {
+  isModified: false,
+  internalKeyStore: new Map(),
+};
+
+export const initCache: Cache = {
+  ...initPermanentCache,
+  ...initTemporaryCache,
+  ...initCacheManager,
 };
 
 export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
-  const [domains, accounts, operators, nominators] = await Promise.all([
+  const [
+    domains,
+    accounts,
+    operators,
+    nominators,
+    deposits,
+    withdrawals,
+    domainEpochs,
+  ] = await Promise.all([
     ctx.store.find(Domain),
     ctx.store.find(Account),
     ctx.store.find(Operator),
     ctx.store.find(Nominator),
+    ctx.store.find(Deposit),
+    ctx.store.find(Withdrawal),
+    ctx.store.find(DomainEpoch),
   ]);
 
   console.log(
@@ -72,7 +116,10 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     domains.length + " domains, ",
     accounts.length + " accounts, ",
     operators.length + " operators, ",
-    nominators.length + " nominators"
+    nominators.length + " nominators, ",
+    deposits.length + " deposits, ",
+    withdrawals.length + " withdrawals, ",
+    domainEpochs.length + " domainEpochs"
   );
 
   return {
@@ -81,6 +128,9 @@ export const load = async (ctx: Ctx<Store>): Promise<Cache> => {
     accounts: new Map(accounts.map((a) => [a.id, a])),
     operators: new Map(operators.map((o) => [o.id, o])),
     nominators: new Map(nominators.map((n) => [n.id, n])),
+    deposits: new Map(deposits.map((d) => [d.id, d])),
+    withdrawals: new Map(withdrawals.map((w) => [w.id, w])),
+    domainEpochs: new Map(domainEpochs.map((de) => [de.id, de])),
   };
 };
 
@@ -93,7 +143,13 @@ const saveEntry = async <E extends Entity>(
     const entity = cache[name] as unknown as Map<string, E>;
     if (entity.size === 0) return;
 
-    await ctx.store.save(Array.from(entity.values()));
+    const entitiesArray = Array.from(entity.values()) as E[];
+    const batchSize = 300;
+
+    for (let i = 0; i < entitiesArray.length; i += batchSize) {
+      const batch = entitiesArray.slice(i, i + batchSize);
+      await ctx.store.save(batch);
+    }
   } catch (e) {
     console.error(`Failed to save ${name} with error:`, e);
   }
@@ -110,33 +166,42 @@ export const save = async (ctx: Ctx<Store>, cache: Cache) => {
   logPerm += logEntry("accounts", cache.accounts);
   logPerm += logEntry("operators", cache.operators);
   logPerm += logEntry("nominators", cache.nominators);
+  logPerm += logEntry("deposits", cache.deposits);
+  logPerm += logEntry("withdrawals", cache.withdrawals);
+  logPerm += logEntry("domainEpochs", cache.domainEpochs);
 
-  let logTemp = logEntry("deposits", cache.deposits);
-  logTemp += logEntry("withdrawals", cache.withdrawals);
-  logTemp += logEntry("bundles", cache.bundles);
+  let logTemp = logEntry("bundles", cache.bundles);
   logTemp += logEntry("bundleAuthors", cache.bundleAuthors);
-  logTemp += logEntry("operatorRewardedEvents", cache.operatorRewardedEvents);
+  logTemp += logEntry("domainBlocks", cache.domainBlocks);
+  logTemp += logEntry("operatorRewards", cache.operatorRewards);
   logTemp += logEntry("stats", cache.stats);
   logTemp += logEntry("statsPerDomain", cache.statsPerDomain);
   logTemp += logEntry("statsPerOperator", cache.statsPerOperator);
+  logTemp += logEntry("statsPerAccount", cache.statsPerAccount);
+  logTemp += logEntry("statsPerNominator", cache.statsPerNominator);
 
   console.log("\x1b[34mSaving in database:\x1b[0m", logPerm);
   console.log(" and ", logTemp, "\n");
 
   await Promise.all(
     Object.keys(cache).map((k) =>
-      k !== "isModified" ? saveEntry(ctx, cache, k as keyof Cache) : null
+      !Object.keys(initCacheManager).includes(k)
+        ? saveEntry(ctx, cache, k as keyof Cache)
+        : null
     )
   );
 
   // Clear the cache for entries not needed for reference
   cache.internalKeyStore.clear();
-  cache.deposits.clear();
-  cache.withdrawals.clear();
   cache.bundles.clear();
   cache.bundleAuthors.clear();
-  cache.operatorRewardedEvents.clear();
+  cache.operatorRewards.clear();
+  cache.domainBlocks.clear();
   cache.stats.clear();
   cache.statsPerDomain.clear();
   cache.statsPerOperator.clear();
+  cache.statsPerAccount.clear();
+  cache.statsPerNominator.clear();
+
+  cache.isModified = false;
 };

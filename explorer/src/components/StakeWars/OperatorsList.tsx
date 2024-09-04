@@ -49,7 +49,7 @@ export const OperatorsList: FC<Props> = ({ currentBlock }) => {
         cell: ({ row }: Cell<GetAllOperatorsQuery['operatorsConnection']['edges'][0]['node']>) => (
           <Link
             data-testid={`operator-link-${row.original.id}-${row.original.signingKey}-${row.index}}`}
-            className='hover:text-purpleAccent'
+            className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.operators.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>

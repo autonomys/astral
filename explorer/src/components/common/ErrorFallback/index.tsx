@@ -17,7 +17,7 @@ export const ErrorFallback = ({ resetErrorBoundary }: Props) => {
         <p className='mb-8 mt-4 w-1/2 text-slate-600 dark:text-white lg:text-lg'>
           If the problem persists, visit our{' '}
           <a
-            className='font-medium text-purpleShade1 dark:text-purpleAccent'
+            className='font-medium text-purpleShade dark:text-primaryAccent'
             href='https://status.subspace.network'
             target='_blank'
             rel='noreferrer'

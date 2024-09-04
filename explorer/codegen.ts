@@ -6,6 +6,11 @@ dotenv.config()
 
 const config: CodegenConfig = {
   generates: {
+    './gql/types/accounts.ts': {
+      schema: defaultIndexer.squids.accounts,
+      documents: ['./src/**/accounts.query.ts'],
+      plugins: ['typescript', 'typescript-operations'],
+    },
     './gql/types/leaderboard.ts': {
       schema: defaultIndexer.squids.leaderboard,
       documents: ['./src/**/leaderboard.query.ts'],
@@ -14,11 +19,6 @@ const config: CodegenConfig = {
     './gql/types/staking.ts': {
       schema: defaultIndexer.squids.staking,
       documents: ['./src/**/staking.query.ts'],
-      plugins: ['typescript', 'typescript-operations'],
-    },
-    './gql/rewardTypes.ts': {
-      schema: defaultIndexer.squids.rewards,
-      documents: ['./src/**/rewardsQuery.ts'],
       plugins: ['typescript', 'typescript-operations'],
     },
     './gql/oldSquidTypes.ts': {

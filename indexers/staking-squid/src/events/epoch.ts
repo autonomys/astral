@@ -7,21 +7,25 @@ import type { ApiPromise } from "@autonomys/auto-utils";
 import {
   DepositStatus,
   DomainRuntime,
+  NominatorPendingAction,
   NominatorStatus,
+  OperatorPendingAction,
   OperatorStatus,
   WithdrawalStatus,
 } from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createStats,
+  createStatsPerAccount,
   createStatsPerDomain,
+  createStatsPerNominator,
   createStatsPerOperator,
   getOrCreateAccount,
   getOrCreateDomain,
   getOrCreateNominator,
   getOrCreateOperator,
 } from "../storage";
-import { getBlockNumber } from "../utils";
+import { getBlockNumber, SHARES_CALCULATION_MULTIPLIER } from "../utils";
 import { Cache } from "../utils/cache";
 
 export async function processEpochTransitionEvent(
@@ -86,7 +90,7 @@ export async function processEpochTransitionEvent(
     _domain.runtimeId = pDomain.domainConfig.runtimeId;
 
     const stringifiedRuntime = JSON.stringify(pDomain.domainRuntimeInfo);
-    _domain.runtime = stringifiedRuntime.includes("AutoId")
+    _domain.runtime = stringifiedRuntime.includes("autoId")
       ? DomainRuntime.AutoId
       : DomainRuntime.EVM;
     _domain.runtimeInfo = stringifiedRuntime;
@@ -114,6 +118,17 @@ export async function processEpochTransitionEvent(
     op.rawStatus = rawStatus;
     op.updatedAt = currentBlockNumber;
 
+    op.currentSharePrice =
+      op.currentTotalShares > BigInt(0)
+        ? (op.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+          op.currentTotalShares
+        : BigInt(0);
+
+    op.accumulatedEpochRewards += op.currentEpochRewards;
+    op.accumulatedEpochStake += op.currentTotalStake;
+    op.accumulatedEpochStorageFeeDeposit += op.currentStorageFeeDeposit;
+    op.accumulatedEpochShares += op.currentTotalShares;
+
     cache.operators.set(op.id, op);
 
     try {
@@ -130,16 +145,20 @@ export async function processEpochTransitionEvent(
         _status.deregistered.unlockAtConfirmedDomainBlockNumber <=
           domain.lastDomainBlockNumber
       ) {
-        op.status = OperatorStatus.READY_TO_UNLOCK;
+        op.status = OperatorStatus.DEREGISTERED;
+        op.pendingAction = OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR;
         cache.operators.set(op.id, op);
 
         Array.from(cache.nominators.values())
           .filter(
             (n) =>
-              n.status === NominatorStatus.STAKING && n.operatorId === op.id
+              (n.status === NominatorStatus.PENDING ||
+                n.status === NominatorStatus.STAKED) &&
+              n.operatorId === op.id
           )
           .forEach((n) => {
-            n.status = NominatorStatus.READY_TO_UNLOCK;
+            n.status = NominatorStatus.PENDING;
+            n.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
             n.updatedAt = currentBlockNumber;
             cache.nominators.set(n.id, n);
           });
@@ -147,10 +166,12 @@ export async function processEpochTransitionEvent(
         Array.from(cache.withdrawals.values())
           .filter(
             (w) =>
-              w.status === WithdrawalStatus.PENDING && w.domainId === domain.id
+              w.status === WithdrawalStatus.PENDING_LOCK &&
+              w.domainId === domain.id
           )
           .forEach((w) => {
-            w.status = WithdrawalStatus.READY;
+            w.status = WithdrawalStatus.PENDING_OPERATOR;
+            w.updatedAt = currentBlockNumber;
             cache.withdrawals.set(w.id, w);
           });
       }
@@ -161,15 +182,28 @@ export async function processEpochTransitionEvent(
       );
     }
   }
+  domain.currentTotalStake = BigInt(0);
+  domain.currentStorageFeeDeposit = BigInt(0);
+  domain.currentTotalShares = BigInt(0);
+  domain.currentSharePrice = BigInt(0);
+  domain.accumulatedEpochStake = BigInt(0);
+  domain.accumulatedEpochStorageFeeDeposit = BigInt(0);
 
-  domain.currentTotalStake = allOperators.reduce(
-    (acc, o) => acc + o.operatorDetails.currentTotalStake,
-    BigInt(0)
-  );
-  domain.currentStorageFeeDeposit = allOperators.reduce(
-    (acc, o) => acc + o.operatorDetails.totalStorageFeeDeposit,
-    BigInt(0)
-  );
+  allOperators.forEach((o) => {
+    domain.currentTotalStake += o.operatorDetails.currentTotalStake;
+    domain.currentStorageFeeDeposit += o.operatorDetails.totalStorageFeeDeposit;
+    domain.currentTotalShares += o.operatorDetails.currentTotalShares;
+    domain.currentSharePrice =
+      domain.currentTotalShares > BigInt(0)
+        ? (domain.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+          domain.currentTotalShares
+        : BigInt(0);
+    domain.accumulatedEpochStake += o.operatorDetails.currentTotalStake;
+    domain.accumulatedEpochStorageFeeDeposit +=
+      o.operatorDetails.totalStorageFeeDeposit;
+    domain.accumulatedEpochRewards += domain.totalRewardsCollected;
+    domain.accumulatedEpochShares += o.operatorDetails.currentTotalShares;
+  });
 
   domain.completedEpoch = completedEpoch;
   domain.updatedAt = currentBlockNumber;
@@ -192,6 +226,7 @@ export async function processEpochTransitionEvent(
     )
     .forEach((o) => {
       o.status = OperatorStatus.REGISTERED;
+      o.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED;
       o.updatedAt = currentBlockNumber;
       cache.operators.set(o.id, o);
     });
@@ -201,7 +236,8 @@ export async function processEpochTransitionEvent(
       (n) => n.status === NominatorStatus.PENDING && n.domainId === domain.id
     )
     .forEach((n) => {
-      n.status = NominatorStatus.STAKING;
+      n.status = NominatorStatus.STAKED;
+      n.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
       n.updatedAt = currentBlockNumber;
       cache.nominators.set(n.id, n);
     });
@@ -212,6 +248,8 @@ export async function processEpochTransitionEvent(
     )
     .forEach((d) => {
       d.status = DepositStatus.DEPOSITED;
+      d.stakedAt = currentBlockNumber;
+      d.updatedAt = currentBlockNumber;
       cache.deposits.set(d.id, d);
     });
 
@@ -223,7 +261,10 @@ export async function processEpochTransitionEvent(
   cache.statsPerDomain.set(statsPerDomain.id, statsPerDomain);
 
   const operators = Array.from(cache.operators.values()).filter(
-    (o) => o.domainId === domain.id && o.status === OperatorStatus.REGISTERED
+    (o) =>
+      o.domainId === domain.id &&
+      (o.status === OperatorStatus.REGISTERED ||
+        o.status === OperatorStatus.DEREGISTERED)
   );
 
   for (const operator of operators) {
@@ -234,6 +275,25 @@ export async function processEpochTransitionEvent(
       operator
     );
     cache.statsPerOperator.set(statsPerOperator.id, statsPerOperator);
+
+    const nominators = Array.from(cache.nominators.values()).filter(
+      (n) => n.operatorId === operator.id
+    );
+
+    for (const nominator of nominators) {
+      const statsPerNominator = createStatsPerNominator(
+        cache,
+        block,
+        domain,
+        operator,
+        nominator
+      );
+      cache.statsPerNominator.set(statsPerNominator.id, statsPerNominator);
+
+      const account = getOrCreateAccount(cache, block, nominator.accountId);
+      const statsPerAccount = createStatsPerAccount(cache, block, account);
+      cache.statsPerAccount.set(statsPerAccount.id, statsPerAccount);
+    }
   }
 
   const operatorsIds = allOperators.map((o) => o.operatorId.toString());
@@ -245,6 +305,7 @@ export async function processEpochTransitionEvent(
 
   for (const deposit of allDeposits) {
     const operator = getOrCreateOperator(cache, block, deposit.operatorId);
+    const account = getOrCreateAccount(cache, block, deposit.account);
     const nominator = getOrCreateNominator(
       cache,
       block,
@@ -265,9 +326,41 @@ export async function processEpochTransitionEvent(
       deposit.pending?.storageFeeDeposit ?? BigInt(0);
     nominator.pendingEffectiveDomainEpoch =
       deposit.pending?.effectiveDomainEpoch ?? 0;
+
+    nominator.currentTotalStake =
+      nominator.knownShares * operator.currentSharePrice;
+    nominator.currentStorageFeeDeposit =
+      nominator.knownStorageFeeDeposit + nominator.pendingStorageFeeDeposit;
+    nominator.currentTotalShares = nominator.knownShares;
+    nominator.currentSharePrice = operator.currentSharePrice;
+
+    nominator.accumulatedEpochStake += nominator.currentTotalStake;
+    nominator.accumulatedEpochStorageFeeDeposit +=
+      nominator.currentStorageFeeDeposit;
+    nominator.accumulatedEpochShares += nominator.currentTotalShares;
+    nominator.activeEpochCount++;
+
     nominator.updatedAt = currentBlockNumber;
 
     cache.nominators.set(nominator.id, nominator);
+
+    account.currentTotalStake += nominator.currentTotalStake;
+    account.currentStorageFeeDeposit += nominator.currentStorageFeeDeposit;
+    account.currentTotalShares += nominator.currentTotalShares;
+    account.currentSharePrice =
+      account.currentTotalStake > BigInt(0)
+        ? (account.currentTotalStake * SHARES_CALCULATION_MULTIPLIER) /
+          account.currentTotalShares
+        : BigInt(0);
+
+    account.accumulatedEpochStake += nominator.currentTotalStake;
+    account.accumulatedEpochStorageFeeDeposit +=
+      nominator.currentStorageFeeDeposit;
+    account.accumulatedEpochShares += nominator.currentTotalShares;
+
+    account.updatedAt = currentBlockNumber;
+
+    cache.accounts.set(account.id, account);
   }
 
   // Process all rpc chain withdrawals

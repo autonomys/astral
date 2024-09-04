@@ -85,50 +85,6 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
   }
 `
 
-export const QUERY_STAKING_SUMMARY = gql`
-  query StakingSummary($first: Int!, $subspaceAccount: String) {
-    operators: operatorsConnection(
-      orderBy: id_ASC
-      first: $first
-      where: { operatorOwner_eq: $subspaceAccount }
-    ) {
-      edges {
-        node {
-          id
-          operatorOwner
-          currentDomainId
-          currentTotalStake
-          totalShares
-        }
-      }
-      totalCount
-    }
-    nominators: nominatorsConnection(
-      orderBy: id_ASC
-      first: $first
-      where: { account: { id_eq: $subspaceAccount } }
-    ) {
-      edges {
-        node {
-          id
-          shares
-          account {
-            id
-          }
-          operator {
-            id
-            operatorOwner
-            currentDomainId
-            currentTotalStake
-            totalShares
-          }
-        }
-      }
-      totalCount
-    }
-  }
-`
-
 export const QUERY_CHECK_ROLE = gql`
   query CheckRole($subspaceAccount: String!) {
     isFarmer: rewardEvents(

@@ -32,6 +32,14 @@ export const bigNumberToNumber = (bigNumber: string | bigint | number, precision
   return limitNumberDecimals(number, precision)
 }
 
+export const numberFormattedString = (number: number): string =>
+  new Intl.NumberFormat('en-US').format(number)
+
+export const bigNumberToFormattedString = (
+  bigNumber: string | bigint | number,
+  precision = 4,
+): string => numberFormattedString(bigNumberToNumber(bigNumber, precision))
+
 export const bigNumberToString = (bigNumber: string, precision = 4): string => {
   const number = formatUnits(bigNumber)
 

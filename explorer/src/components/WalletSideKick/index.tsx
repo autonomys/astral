@@ -51,8 +51,8 @@ export const PendingTransactionsLabel: FC = () => {
     <div
       className={
         !isDesktop
-          ? 'inline-flex items-center bg-pinkAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
-          : 'ml-4 rounded-full from-pinkAccent to-purpleDeepAccent p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
+          ? 'inline-flex items-center bg-primaryAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
+          : 'ml-4 rounded-full from-primaryAccent to-purpleUndertone p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
       }
     >
       <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
@@ -104,7 +104,7 @@ export const WalletSidekick: FC = () => {
         onClick={onClick}
         className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
-        } from-pinkAccent to-purpleDeepAccent shadow-md dark:bg-gradient-to-r`}
+        } from-primaryAccent to-purpleUndertone shadow-md dark:bg-gradient-to-r`}
       >
         <WalletIcon width='24' height='24' />
       </button>

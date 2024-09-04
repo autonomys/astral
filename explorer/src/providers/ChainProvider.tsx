@@ -12,14 +12,12 @@ import {
 import { RetryLink } from '@apollo/client/link/retry'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
-import Cookies from 'js-cookie'
-import { FC, ReactNode, createContext, useCallback, useState } from 'react'
+import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 
 export type ChainContextValue = {
   indexerSet: Indexer
   network: NetworkId
   section: Routes
-  isEvm: boolean
   setIndexerSet: (children: Indexer) => void
   setSection: (section: Routes) => void
 }
@@ -42,36 +40,34 @@ export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, chil
     uri: ({ getContext }: Operation) => {
       const { clientName } = getContext()
 
-      if (clientName === 'general' && indexerSet.squids.general) return indexerSet.squids.general
+      if (clientName === 'accounts' && indexerSet.squids.accounts) return indexerSet.squids.accounts
       if (clientName === 'leaderboard' && indexerSet.squids.leaderboard)
         return indexerSet.squids.leaderboard
       if (clientName === 'staking' && indexerSet.squids.staking) return indexerSet.squids.staking
-      if (clientName === 'account' && indexerSet.squids.account) return indexerSet.squids.account
-      if (clientName === 'rewards' && indexerSet.squids.rewards) return indexerSet.squids.rewards
-      if (clientName === 'nova' && indexerSet.squids.nova) return indexerSet.squids.nova
 
       return indexerSet.squids.old
     },
   })
 
-  const client = new ApolloClient({
-    link: ApolloLink.from([new RetryLink(), httpLink]),
-    cache: new InMemoryCache(),
-  })
+  const client = useMemo(
+    () =>
+      new ApolloClient({
+        link: ApolloLink.from([new RetryLink(), httpLink]),
+        cache: new InMemoryCache(),
+      }),
+    [httpLink],
+  )
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
   const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
-  const [network, setNetwork] = useState<NetworkId>(defaultIndexer.network)
   const [section, setSection] = useState<Routes>(Routes.consensus)
 
   const setIndexerSet = useCallback(
     (indexer: Indexer) => {
-      Cookies.set('selected-network', indexer.network, { expires: 1 })
       _setIndexerSet(indexer)
-      setNetwork(indexer.network)
     },
     [_setIndexerSet],
   )
@@ -80,9 +76,8 @@ export const ChainProvider: FC<Props> = ({ children }) => {
     <ChainContext.Provider
       value={{
         indexerSet,
-        network,
+        network: indexerSet.network,
         section,
-        isEvm: section === Routes.nova,
         setIndexerSet,
         setSection,
       }}

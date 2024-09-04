@@ -53,7 +53,7 @@ export const Pagination: FC<Props> = ({
               ...
             </span>
           }
-          nextClassName='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
+          nextClassName='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
           nextLabel={
             <span>
               <span className='sr-only'>Next</span>
@@ -61,7 +61,7 @@ export const Pagination: FC<Props> = ({
             </span>
           }
           pageRangeDisplayed={3}
-          previousClassName='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
+          previousClassName='relative inline-flex items-center rounded-full bg-white px-2 py-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 mr-[14px] dark:text-white dark:bg-blueAccent dark:border-none'
           previousLabel={
             <span>
               <span className='sr-only'>Previous</span>
@@ -71,7 +71,7 @@ export const Pagination: FC<Props> = ({
           onPageChange={(page) => onChange(page.selected)}
           pageClassName='relative inline-flex items-center bg-white px-4 py-2 text-sm font-medium text-grayDark hover:bg-gray-50 focus:z-20 rounded-full mx-1 dark:text-white dark:bg-blueAccent dark:border-none '
           renderOnZeroPageCount={null}
-          activeClassName='relative z-10 inline-flex items-center bg-black px-4 py-2 text-sm font-medium text-white focus:z-20 rounded-full mx-1 dark:text-white dark:bg-purpleAccent dark:border-none'
+          activeClassName='relative z-10 inline-flex items-center bg-black px-4 py-2 text-sm font-medium text-white focus:z-20 rounded-full mx-1 dark:text-white dark:bg-primaryAccent dark:border-none'
           containerClassName='flex items-center justify-between'
         />
       </div>

@@ -163,7 +163,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                     <div className='flex items-center gap-4'>
                       <button
-                        className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                         onClick={() => handleDeleteClick(address)}
                       >
                         Delete
@@ -243,7 +243,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                       type='submit'
                     >
                       Add address
@@ -284,7 +284,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                   </div>
                   <button
-                    className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                    className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                     type='submit'
                   >
                     Save Settings

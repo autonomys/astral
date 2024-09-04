@@ -1,4 +1,9 @@
-import { NominatorStatus, OperatorStatus } from "../model";
+import {
+  NominatorPendingAction,
+  NominatorStatus,
+  OperatorStatus,
+  WithdrawalStatus,
+} from "../model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "../processor";
 import {
   createDeposit,
@@ -26,9 +31,13 @@ export function processOperatorNominatedEvent(
   const storageFeeDepositedEvent = extrinsic.events.find(
     (e) => e.name === events.domains.storageFeeDeposited.name
   );
+  const operatorNominatedEvent = extrinsic.events.find(
+    (e) => e.name === events.domains.operatorNominated.name
+  );
 
-  const amount = BigInt(extrinsic.call?.args.amount ?? 0);
+  const amount = BigInt(operatorNominatedEvent?.args.amount ?? 0);
   const storageFeeDeposit = BigInt(storageFeeDepositedEvent?.args.amount ?? 0);
+  const totalAmount = BigInt(amount + storageFeeDeposit);
 
   const account = getOrCreateAccount(cache, block, address);
   const operator = getOrCreateOperator(cache, block, operatorIdNum, {});
@@ -46,28 +55,42 @@ export function processOperatorNominatedEvent(
     }
   );
 
-  const deposit = createDeposit(block, extrinsic, {
-    domainId: domain.id,
-    accountId: account.id,
-    operatorId: operator.id,
-    nominatorId: nominator.id,
-    amount,
-    storageFeeDeposit,
-  });
+  const deposit = createDeposit(
+    block,
+    extrinsic,
+    operator.id,
+    account.id,
+    nominator.totalDepositsCount,
+    {
+      domainId: domain.id,
+      accountId: account.id,
+      operatorId: operator.id,
+      nominatorId: nominator.id,
+      amount,
+      storageFeeDeposit,
+      totalAmount,
+      epochDepositedAt: domain.completedEpoch ?? 0,
+      domainBlockNumberDepositedAt: domain.lastDomainBlockNumber ?? 0,
+    }
+  );
 
-  operator.totalDeposits += amount;
+  operator.totalDeposits += totalAmount;
   operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
-  nominator.totalDeposits += amount;
+  if (nominator.totalDepositsCount === 0) {
+    nominator.pendingAction = NominatorPendingAction.PENDING_EPOCH_CHANGE;
+  }
+  nominator.totalDeposits += totalAmount;
+  nominator.totalDepositsCount++;
   nominator.updatedAt = blockNumber;
   cache.nominators.set(nominator.id, nominator);
 
-  domain.totalDeposits += amount;
+  domain.totalDeposits += totalAmount;
   domain.updatedAt = blockNumber;
   cache.domains.set(domain.id, domain);
 
-  account.totalDeposits += amount;
+  account.totalDeposits += totalAmount;
   account.updatedAt = blockNumber;
   cache.accounts.set(account.id, account);
 
@@ -85,20 +108,37 @@ export function processOperatorSlashedEvent(
   event: CtxEvent
 ) {
   const { operatorId } = event.args;
+  const blockNumber = getBlockNumber(block);
+
   const operator = getOrCreateOperator(cache, block, operatorId);
 
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
   operator.status = OperatorStatus.SLASHED;
-  operator.updatedAt = getBlockNumber(block);
+  operator.updatedAt = blockNumber;
   cache.operators.set(operator.id, operator);
 
   Array.from(cache.nominators.values())
     .filter((n) => n.operatorId === operator.id)
     .forEach((n) => {
       n.status = NominatorStatus.SLASHED;
-      n.updatedAt = operator.updatedAt;
+      n.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
+      n.updatedAt = blockNumber;
       cache.nominators.set(n.id, n);
+    });
+
+  Array.from(cache.withdrawals.values())
+    .filter(
+      (w) =>
+        (w.status === WithdrawalStatus.PENDING_LOCK ||
+          w.status === WithdrawalStatus.PENDING_OPERATOR ||
+          w.status === WithdrawalStatus.READY) &&
+        w.operatorId === operator.id
+    )
+    .forEach((w) => {
+      w.status = WithdrawalStatus.SLASHED;
+      w.updatedAt = blockNumber;
+      cache.withdrawals.set(w.id, w);
     });
 
   cache.isModified = true;
@@ -155,15 +195,12 @@ export function processOperatorRewardedEvent(
   domain.totalRewardsCollected += amount;
   cache.domains.set(domain.id, domain);
 
-  const operatorRewardedEvent = createRewardEvent(block, extrinsic, {
+  const operatorRewardedEvent = createRewardEvent(block, extrinsic, event, {
     operatorId: operator.id,
     domainId: operator.domainId,
     amount,
   });
-  cache.operatorRewardedEvents.set(
-    operatorRewardedEvent.id,
-    operatorRewardedEvent
-  );
+  cache.operatorRewards.set(operatorRewardedEvent.id, operatorRewardedEvent);
 
   cache.isModified = true;
 

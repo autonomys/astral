@@ -131,6 +131,17 @@ export const INTERNAL_ROUTES = {
     },
     list: 'list',
     register: 'register',
+    nominations: 'nominations',
+  },
+  domains: {
+    id: {
+      path: ':domainId',
+      page: (chain: string, domain: string, domainId: string): string =>
+        `/${chain}/${domain}/${domainId}`,
+    },
+    list: 'list',
+    nova: Routes.nova,
+    autoid: Routes.autoid,
   },
   search: {
     result: {

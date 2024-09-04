@@ -12,8 +12,17 @@ export const createAccount = (
   return new Account({
     id: address,
     totalDeposits: props.totalDeposits ?? BigInt(0),
+    totalEstimatedWithdrawals: props.totalEstimatedWithdrawals ?? BigInt(0),
+    totalWithdrawals: props.totalWithdrawals ?? BigInt(0),
     totalTaxCollected: props.totalTaxCollected ?? BigInt(0),
-    ...props,
+    currentTotalStake: props.currentTotalStake ?? BigInt(0),
+    currentStorageFeeDeposit: props.currentStorageFeeDeposit ?? BigInt(0),
+    currentTotalShares: props.currentTotalShares ?? BigInt(0),
+    currentSharePrice: props.currentSharePrice ?? BigInt(0),
+    accumulatedEpochStake: props.accumulatedEpochStake ?? BigInt(0),
+    accumulatedEpochStorageFeeDeposit:
+      props.accumulatedEpochStorageFeeDeposit ?? BigInt(0),
+    accumulatedEpochShares: props.accumulatedEpochShares ?? BigInt(0),
     createdAt: blockNumber,
     updatedAt: blockNumber,
   });

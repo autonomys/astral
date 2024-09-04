@@ -1,21 +1,32 @@
-import { randomUUID } from "crypto";
 import { Deposit, DepositStatus } from "../model";
 import type { CtxBlock, CtxExtrinsic } from "../processor";
-import { getBlockNumber, getTimestamp } from "../utils";
-import { Cache } from "../utils/cache";
+import { depositUID, getBlockNumber, getTimestamp } from "../utils";
 
 export const createDeposit = (
   block: CtxBlock,
   extrinsic: CtxExtrinsic,
+  operatorId: number | string,
+  accountId: string,
+  depositIndex: number | string,
   props: Partial<Deposit>
 ): Deposit =>
   new Deposit({
-    id: randomUUID(),
+    id: depositUID(operatorId, accountId, depositIndex),
+    accountId: accountId,
+    domainId: "",
+    operatorId: operatorId.toString(),
+    nominatorId: "",
     amount: BigInt(0),
     storageFeeDeposit: BigInt(0),
     status: DepositStatus.PENDING,
-    ...props,
-    blockNumber: getBlockNumber(block),
     timestamp: getTimestamp(block),
-    extrinsicHash: extrinsic.hash,
+    extrinsicHash: extrinsic.hash.toString(),
+    epochDepositedAt: 0,
+    domainBlockNumberDepositedAt: 0,
+    createdAt: getBlockNumber(block),
+    stakedAt: 0,
+    updatedAt: getBlockNumber(block),
+    totalAmount: BigInt(0),
+    totalWithdrawn: BigInt(0),
+    ...props,
   });
