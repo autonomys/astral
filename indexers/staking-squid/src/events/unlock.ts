@@ -124,9 +124,17 @@ export function processFundsUnlockedEvent(
     });
 
   domain.totalWithdrawals += amountBigInt;
+  cache.domains.set(domain.id, domain);
+
   account.totalWithdrawals += amountBigInt;
+  cache.accounts.set(account.id, account);
+
   operator.totalWithdrawals += amountBigInt;
+  cache.operators.set(operator.id, operator);
+
   nominator.totalWithdrawals += amountBigInt;
+  nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
+  cache.nominators.set(nominator.id, nominator);
 
   cache.isModified = true;
 
@@ -206,44 +214,17 @@ export function processNominatedStakedUnlockedEvent(
     });
 
   domain.totalWithdrawals += unlockedAmountBigInt;
+  cache.domains.set(domain.id, domain);
+
   account.totalWithdrawals += unlockedAmountBigInt;
+  cache.accounts.set(account.id, account);
+
   operator.totalWithdrawals += unlockedAmountBigInt;
+  cache.operators.set(operator.id, operator);
+
   nominator.totalWithdrawals += unlockedAmountBigInt;
-
-  cache.isModified = true;
-
-  return cache;
-}
-
-export function processNominatorUnlockedEvent(
-  cache: Cache,
-  block: CtxBlock,
-  extrinsic: CtxExtrinsic,
-  event: CtxEvent
-) {
-  const { operatorId, nominatorId } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-
-  cache.isModified = true;
-
-  return cache;
-}
-
-export function processStorageFeeUnlockedEvent(
-  cache: Cache,
-  block: CtxBlock,
-  extrinsic: CtxExtrinsic,
-  event: CtxEvent
-) {
-  const { operatorId, nominatorId, storageFee } = event.args;
-  const operatorIdNum = Number(operatorId);
-  const nominatorIdNum = Number(nominatorId);
-  const address = getCallSigner(extrinsic.call);
-  const blockNumber = getBlockNumber(block);
-  const storageFeeBigInt = BigInt(storageFee);
+  nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
+  cache.nominators.set(nominator.id, nominator);
 
   cache.isModified = true;
 
