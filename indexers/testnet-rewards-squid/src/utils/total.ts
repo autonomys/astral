@@ -11,9 +11,9 @@ export const calculateTotalEarnings = (cache: Cache, lastBlock: CtxBlock) => {
     totalEarnings = new TotalEarnings({
       id: "0",
       totalEarningsAmountTestnetToken: BigInt(0),
-      totalEarningsPercentageTestnetToken: "0",
+      totalEarningsPercentageTestnetToken: BigInt(0),
       totalEarningsAmountATCToken: BigInt(0),
-      totalEarningsPercentageATCToken: "0",
+      totalEarningsPercentageATCToken: BigInt(0),
       createdAt: blockNumber,
       updatedAt: blockNumber,
     });

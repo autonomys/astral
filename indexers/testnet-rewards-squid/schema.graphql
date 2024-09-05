@@ -2,9 +2,9 @@ type Account @entity {
   id: ID! @index
   totalCampaignsParticipated: BigInt!
   totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: String!
+  totalEarningsPercentageTestnetToken: BigInt!
   totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: String!
+  totalEarningsPercentageATCToken: BigInt!
   rank: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -14,9 +14,9 @@ type Campaign @entity {
   id: ID! @index
   name: String!
   totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: String!
+  totalEarningsPercentageTestnetToken: BigInt!
   totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: String!
+  totalEarningsPercentageATCToken: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -24,9 +24,9 @@ type Campaign @entity {
 type TotalEarnings @entity {
   id: ID! @index
   totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: String!
+  totalEarningsPercentageTestnetToken: BigInt!
   totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: String!
+  totalEarningsPercentageATCToken: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -36,9 +36,9 @@ type AccountPerCampaign @entity {
   accountId: String! @index
   campaignId: String! @index
   totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: String!
+  totalEarningsPercentageTestnetToken: BigInt!
   totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: String!
+  totalEarningsPercentageATCToken: BigInt!
   rank: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -57,7 +57,7 @@ type Verification @entity {
   id: ID! @index
   accountIds: [String!]!
   totalAmount: BigInt!
-  totalPercentage: String!
+  totalPercentage: BigInt!
   totalCampaignsParticipated: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index

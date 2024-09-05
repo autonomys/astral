@@ -25,8 +25,7 @@ export const calculatePercentage = (cache: Cache): Cache => {
           BigInt(100)) /
         totalEarningsAmountTestnetToken;
 
-      accountPerCampaign.totalEarningsPercentageTestnetToken =
-        percentage.toString();
+      accountPerCampaign.totalEarningsPercentageTestnetToken = percentage;
 
       cache.accountPerCampaigns.set(accountPerCampaign.id, accountPerCampaign);
     }
@@ -37,7 +36,7 @@ export const calculatePercentage = (cache: Cache): Cache => {
       (account.totalEarningsAmountTestnetToken * precision * BigInt(100)) /
       totalEarningsAmountTestnetToken;
 
-    account.totalEarningsPercentageTestnetToken = percentage.toString();
+    account.totalEarningsPercentageTestnetToken = percentage;
 
     cache.accounts.set(account.id, account);
   }
