@@ -78,7 +78,7 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   }
 
   const lastBlock = ctx.blocks[ctx.blocks.length - 1];
-  const cacheWithTotalEarnings = await calculateTotalEarnings(cache, lastBlock);
+  const cacheWithTotalEarnings = calculateTotalEarnings(cache, lastBlock);
   const cacheWithPercentage = calculatePercentage(cacheWithTotalEarnings);
 
   await save(ctx, sort(cacheWithPercentage));

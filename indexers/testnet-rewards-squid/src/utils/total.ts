@@ -3,10 +3,7 @@ import { TotalEarnings } from "../model";
 import { CtxBlock } from "../processor";
 import { Cache } from "./cache";
 
-export const calculateTotalEarnings = async (
-  cache: Cache,
-  lastBlock: CtxBlock
-) => {
+export const calculateTotalEarnings = (cache: Cache, lastBlock: CtxBlock) => {
   const blockNumber = getBlockNumber(lastBlock);
 
   let totalEarnings = cache.totalEarnings.get("0");
