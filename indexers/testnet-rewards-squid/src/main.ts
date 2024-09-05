@@ -1,4 +1,5 @@
 import { TypeormDatabase } from "@subsquid/typeorm-store";
+import { randomUUID } from "crypto";
 import {
   Account,
   AccountPerCampaign,
@@ -6,6 +7,7 @@ import {
   Domain,
   Nominator,
   Operator,
+  Reward,
 } from "./model";
 import type { CtxBlock, CtxEvent, CtxExtrinsic } from "./processor";
 import { processor } from "./processor";
@@ -20,6 +22,17 @@ import { calculateTotalEarnings } from "./utils/total";
 const campaign6 = new Campaign({
   id: "gemini-3h",
   name: "Gemini 3H",
+  totalEarningsAmountATCToken: BigInt(0),
+  totalEarningsPercentageATCToken: BigInt(0),
+  totalEarningsAmountTestnetToken: BigInt(0),
+  totalEarningsPercentageTestnetToken: BigInt(0),
+  createdAt: 0,
+  updatedAt: 0,
+});
+
+const campaign7 = new Campaign({
+  id: "stake-war-1",
+  name: "Stake War 1",
   totalEarningsAmountATCToken: BigInt(0),
   totalEarningsPercentageATCToken: BigInt(0),
   totalEarningsAmountTestnetToken: BigInt(0),
@@ -95,8 +108,17 @@ export function processFarmerVoteRewardEvent(
 ) {
   const accountId = hexToAccount(event.args.voter);
   const reward = BigInt(event.args.reward);
+  const updatedAt = getBlockNumber(block);
 
-  const blockNumber = getBlockNumber(block);
+  const rewardEntity = new Reward({
+    id: randomUUID(),
+    campaignId: campaign6.id,
+    accountId,
+    amount: reward,
+    createdAt: updatedAt,
+    updatedAt,
+  });
+  cache.rewards.set(rewardEntity.id, rewardEntity);
 
   // Create or update Account entity
   let accountPerCampaign6 = cache.accountPerCampaigns.get(
@@ -105,24 +127,24 @@ export function processFarmerVoteRewardEvent(
   if (!accountPerCampaign6) {
     accountPerCampaign6 = new AccountPerCampaign({
       id: accountId + "-" + campaign6.id,
-      accountId: accountId,
+      accountId,
       campaignId: campaign6.id,
       totalEarningsAmountTestnetToken: reward,
       totalEarningsPercentageTestnetToken: BigInt(0),
       totalEarningsAmountATCToken: BigInt(0),
       totalEarningsPercentageATCToken: BigInt(0),
       rank: BigInt(0),
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
+      createdAt: updatedAt,
+      updatedAt,
     });
   } else {
     accountPerCampaign6.totalEarningsAmountTestnetToken += reward;
-    accountPerCampaign6.updatedAt = blockNumber;
+    accountPerCampaign6.updatedAt = updatedAt;
   }
   cache.accountPerCampaigns.set(accountPerCampaign6.id, accountPerCampaign6);
 
   campaign6.totalEarningsAmountTestnetToken += reward;
-  campaign6.updatedAt = blockNumber;
+  campaign6.updatedAt = updatedAt;
   cache.campaigns.set(campaign6.id, campaign6);
 
   // Create or update Account entity
@@ -136,12 +158,13 @@ export function processFarmerVoteRewardEvent(
       totalEarningsAmountATCToken: BigInt(0),
       totalEarningsPercentageATCToken: BigInt(0),
       rank: BigInt(0),
-      createdAt: 0,
-      updatedAt: 0,
+      createdAt: updatedAt,
+      updatedAt,
     });
   } else {
     account5.totalCampaignsParticipated += BigInt(1);
     account5.totalEarningsAmountTestnetToken += reward;
+    account5.updatedAt = updatedAt;
   }
   cache.accounts.set(account5.id, account5);
 
@@ -155,8 +178,17 @@ export function processFarmerBlockRewardEvent(
 ) {
   const accountId = hexToAccount(event.args.blockAuthor);
   const reward = BigInt(event.args.reward);
+  const updatedAt = getBlockNumber(block);
 
-  const blockNumber = getBlockNumber(block);
+  const rewardEntity = new Reward({
+    id: randomUUID(),
+    campaignId: campaign6.id,
+    accountId,
+    amount: reward,
+    createdAt: updatedAt,
+    updatedAt,
+  });
+  cache.rewards.set(rewardEntity.id, rewardEntity);
 
   // Create or update Account entity
   let accountPerCampaign6 = cache.accountPerCampaigns.get(
@@ -165,24 +197,24 @@ export function processFarmerBlockRewardEvent(
   if (!accountPerCampaign6) {
     accountPerCampaign6 = new AccountPerCampaign({
       id: accountId + "-" + campaign6.id,
-      accountId: accountId,
+      accountId,
       campaignId: campaign6.id,
       totalEarningsAmountTestnetToken: reward,
       totalEarningsPercentageTestnetToken: BigInt(0),
       totalEarningsAmountATCToken: BigInt(0),
       totalEarningsPercentageATCToken: BigInt(0),
       rank: BigInt(0),
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
+      createdAt: updatedAt,
+      updatedAt,
     });
   } else {
     accountPerCampaign6.totalEarningsAmountTestnetToken += reward;
-    accountPerCampaign6.updatedAt = blockNumber;
+    accountPerCampaign6.updatedAt = updatedAt;
   }
   cache.accountPerCampaigns.set(accountPerCampaign6.id, accountPerCampaign6);
 
   campaign6.totalEarningsAmountTestnetToken += reward;
-  campaign6.updatedAt = blockNumber;
+  campaign6.updatedAt = updatedAt;
   cache.campaigns.set(campaign6.id, campaign6);
 
   // Create or update Account entity
@@ -196,12 +228,13 @@ export function processFarmerBlockRewardEvent(
       totalEarningsAmountATCToken: BigInt(0),
       totalEarningsPercentageATCToken: BigInt(0),
       rank: BigInt(0),
-      createdAt: 0,
-      updatedAt: 0,
+      createdAt: updatedAt,
+      updatedAt,
     });
   } else {
     account5.totalCampaignsParticipated += BigInt(1);
     account5.totalEarningsAmountTestnetToken += reward;
+    account5.updatedAt = updatedAt;
   }
   cache.accounts.set(account5.id, account5);
 
@@ -329,6 +362,8 @@ export function processWithdrewStakeEvent(
       currentTotalStake: BigInt(0),
       totalDeposits: BigInt(0),
       totalWithdrawn: BigInt(amount),
+      createdAt: updatedAt,
+      updatedAt: updatedAt,
     });
   } else {
     nominator.totalWithdrawn += BigInt(amount);
@@ -398,6 +433,8 @@ export function processOperatorRegisteredExtrinsic(
       currentTotalShares: BigInt(0),
       currentTotalStake: BigInt(0),
       totalDeposits: BigInt(amount),
+      createdAt: updatedAt,
+      updatedAt: updatedAt,
     });
   } else {
     nominator.totalDeposits += BigInt(amount);

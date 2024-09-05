@@ -1,11 +1,12 @@
+import { randomUUID } from "crypto";
 import { parseEther } from "ethers";
 import fs from "fs/promises";
 import {
   Account,
   AccountPerCampaign,
   Campaign,
+  Reward,
   StaticData,
-  TotalEarnings,
 } from "./model";
 import { Cache } from "./utils/cache";
 
@@ -121,6 +122,16 @@ export const loadStaticData = async (cache: Cache) => {
         };
 
         if (rewards.aries > BigInt(0)) {
+          const reward1 = new Reward({
+            id: randomUUID(),
+            campaignId: campaign1.id,
+            accountId: row.accountId,
+            amount: rewards.aries,
+            createdAt: 0,
+            updatedAt: 0,
+          });
+          cache.rewards.set(reward1.id, reward1);
+
           const accountPerCampaign1 = new AccountPerCampaign({
             id: row.accountId + "-" + campaign1.id,
             accountId: row.accountId,
@@ -164,6 +175,16 @@ export const loadStaticData = async (cache: Cache) => {
         }
 
         if (rewards.gemini1 > BigInt(0)) {
+          const reward2 = new Reward({
+            id: randomUUID(),
+            campaignId: campaign2.id,
+            accountId: row.accountId,
+            amount: rewards.gemini1,
+            createdAt: 0,
+            updatedAt: 0,
+          });
+          cache.rewards.set(reward2.id, reward2);
+
           const accountPerCampaign2 = new AccountPerCampaign({
             id: row.accountId + "-" + campaign2.id,
             accountId: row.accountId,
@@ -207,6 +228,16 @@ export const loadStaticData = async (cache: Cache) => {
         }
 
         if (rewards.gemini21 > BigInt(0)) {
+          const reward3 = new Reward({
+            id: randomUUID(),
+            campaignId: campaign3.id,
+            accountId: row.accountId,
+            amount: rewards.gemini21,
+            createdAt: 0,
+            updatedAt: 0,
+          });
+          cache.rewards.set(reward3.id, reward3);
+
           const accountPerCampaign3 = new AccountPerCampaign({
             id: row.accountId + "-" + campaign3.id,
             accountId: row.accountId,
@@ -250,6 +281,16 @@ export const loadStaticData = async (cache: Cache) => {
         }
 
         if (rewards.gemini22 > BigInt(0)) {
+          const reward4 = new Reward({
+            id: randomUUID(),
+            campaignId: campaign4.id,
+            accountId: row.accountId,
+            amount: rewards.gemini22,
+            createdAt: 0,
+            updatedAt: 0,
+          });
+          cache.rewards.set(reward4.id, reward4);
+
           const accountPerCampaign4 = new AccountPerCampaign({
             id: row.accountId + "-" + campaign4.id,
             accountId: row.accountId,
@@ -321,6 +362,16 @@ export const loadStaticData = async (cache: Cache) => {
         row.accountId.startsWith("st")
       ) {
         const reward = BigInt(parseEther(row.rewards));
+
+        const reward5 = new Reward({
+          id: randomUUID(),
+          campaignId: campaign5.id,
+          accountId: row.accountId,
+          amount: reward,
+          createdAt: 0,
+          updatedAt: 0,
+        });
+        cache.rewards.set(reward5.id, reward5);
 
         const accountPerCampaign5 = new AccountPerCampaign({
           id: row.accountId + "-" + campaign5.id,
