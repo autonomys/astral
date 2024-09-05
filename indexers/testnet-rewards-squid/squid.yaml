@@ -1,6 +1,6 @@
 manifestVersion: subsquid.io/v0.1
 name: testnet-rewards-squid
-version: 2
+version: 1
 description: Autonomys - Astral - Testnet Rewards Indexer
 build:
 deploy:

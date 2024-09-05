@@ -27,6 +27,7 @@ type TotalEarnings @entity {
   totalEarningsPercentageTestnetToken: BigInt!
   totalEarningsAmountATCToken: BigInt!
   totalEarningsPercentageATCToken: BigInt!
+  totalSupplyATCToken: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -76,6 +77,9 @@ type Operator @entity {
   name: String!
   currentTotalShares: BigInt!
   currentTotalStake: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawn: BigInt!
+  totalRewards: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -87,6 +91,8 @@ type Nominator @entity {
   operatorId: String! @index
   currentTotalShares: BigInt!
   currentTotalStake: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawn: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
