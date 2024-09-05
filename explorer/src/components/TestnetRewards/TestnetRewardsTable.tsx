@@ -5,10 +5,12 @@ import { bigNumberToFormattedString } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
   AriesStressTestIcon,
-  Gemini3fTestnetIcon,
   Gemini3hTestnetIcon,
-  GeminiIIncentivizedTestnetIcon,
-  GeminiIITestnetIcon,
+  Gemini3p1TestnetIcon,
+  Gemini3p2TestnetIcon,
+  GeminiIIp1TestnetIcon,
+  GeminiIIp2TestnetIcon,
+  GeminiITestnetIcon,
   StakeWarsIIcon,
   StakeWarsIIIcon,
 } from 'components/icons/TestnetIcon'
@@ -34,7 +36,7 @@ export const TestnetRewardsTable: FC = () => {
 
     if (subspaceAccount) {
       // eslint-disable-next-line camelcase
-      conditions.account_id = { _eq: subspaceAccount }
+      conditions.account_id = { _eq: process.env.NEXT_PUBLIC_MOCK_WALLET_ADDRESS }
     }
 
     return conditions
@@ -71,27 +73,27 @@ export const TestnetRewardsTable: FC = () => {
       },
       'gemini-1': {
         testnet: 'Gemini 1',
-        icon: <GeminiIIncentivizedTestnetIcon />,
+        icon: <GeminiITestnetIcon />,
         dateRange: '01.04.2022 - 25.07.2022',
       },
       'gemini-2.1': {
         testnet: 'Gemini 2.1',
-        icon: <GeminiIIncentivizedTestnetIcon />,
+        icon: <GeminiIIp1TestnetIcon />,
         dateRange: '01.04.2022 - 25.07.2022',
       },
       'gemini-2.2': {
         testnet: 'Gemini 2.2',
-        icon: <GeminiIITestnetIcon />,
+        icon: <GeminiIIp2TestnetIcon />,
         dateRange: '01.04.2022 - 25.07.2022',
       },
       'gemini-3f': {
         testnet: 'Gemini 3f',
-        icon: <Gemini3fTestnetIcon />,
+        icon: <Gemini3p1TestnetIcon />,
         dateRange: '01.04.2022 - 25.07.2022',
       },
       'gemini-3g': {
         testnet: 'Gemini 3g',
-        icon: <Gemini3fTestnetIcon />,
+        icon: <Gemini3p2TestnetIcon />,
         dateRange: '01.04.2022 - 25.07.2022',
       },
       'gemini-3h': {
@@ -118,7 +120,7 @@ export const TestnetRewardsTable: FC = () => {
 
     return data.account_per_campaign.map((item) => ({
       ...campaigns[item.campaign_id as keyof typeof campaigns],
-      earningsPercent: item.total_earnings_percentage_testnet_token,
+      earningsPercent: Number(item.total_earnings_percentage_testnet_token) / Number(10n ** 16n),
       earningsTSSC: bigNumberToFormattedString(item.total_earnings_amount_testnet_token),
       earningsATC: bigNumberToFormattedString(item.total_earnings_amount_atc_token),
       rank: item.rank,
@@ -227,7 +229,7 @@ export const TestnetRewardsTable: FC = () => {
           <div className='mt-4 flex justify-between bg-gray-50 p-4 dark:bg-gray-700'>
             <div className='text-xl font-medium text-gray-900 dark:text-white'>TOTAL EARNINGS</div>
             <div className='text-sm text-gray-500 dark:text-gray-300'>
-              {totalEarningsPercent} out of 0.1%
+              {totalEarningsPercent}% out of 0.1%
             </div>
             <div className='text-sm text-gray-500 dark:text-gray-300'>
               {bigNumberToFormattedString(totalEarningsTSSC)} out of 10000 tSSC
