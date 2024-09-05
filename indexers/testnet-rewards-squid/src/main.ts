@@ -7,11 +7,11 @@ import {
   Nominator,
   Operator,
 } from "./model";
-import type { CtxBlock, CtxEvent } from "./processor";
+import type { CtxBlock, CtxEvent, CtxExtrinsic } from "./processor";
 import { processor } from "./processor";
 import { loadStaticData } from "./static";
-import { events } from "./types";
-import { getBlockNumber, hexToAccount, logBlock } from "./utils";
+import { calls, events } from "./types";
+import { getBlockNumber, getCallSigner, hexToAccount, logBlock } from "./utils";
 import { Cache, load, save } from "./utils/cache";
 import { calculatePercentage } from "./utils/percentage";
 import { sort } from "./utils/sort";
@@ -39,6 +39,13 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
   cache.campaigns.set(campaign6.id, campaign6);
 
   for (let block of ctx.blocks) {
+    for (let extrinsic of block.extrinsics) {
+      switch (extrinsic.call?.name) {
+        case calls.domains.registerOperator.name:
+          cache = processOperatorRegisteredExtrinsic(cache, block, extrinsic);
+          break;
+      }
+    }
     for (let event of block.events) {
       switch (event.name) {
         case events.rewards.voteReward.name:
@@ -58,9 +65,6 @@ processor.run(new TypeormDatabase({ supportHotBlocks: true }), async (ctx) => {
           break;
         case events.domains.withdrewStake.name:
           cache = processWithdrewStakeEvent(cache, block, event);
-          break;
-        case events.domains.operatorRegistered.name:
-          cache = processOperatorRegisteredEvent(cache, block, event);
           break;
         case events.domains.operatorNominated.name:
           cache = processOperatorNominatedEvent(cache, block, event);
@@ -211,6 +215,28 @@ export function processOperatorRewardedEvent(
 ) {
   const operatorId = String(event.args.operatorId) ?? "0";
   const reward = BigInt(event.args.reward);
+  const updatedAt = getBlockNumber(block);
+
+  let operator = cache.operators.get(operatorId);
+  if (!operator) {
+    operator = new Operator({
+      id: operatorId,
+      accountId: "0",
+      domainId: "0",
+      currentTotalShares: BigInt(0),
+      currentTotalStake: BigInt(0),
+      totalDeposits: BigInt(0),
+      totalWithdrawn: BigInt(0),
+      totalRewards: BigInt(reward),
+      createdAt: updatedAt,
+      updatedAt,
+    });
+  } else {
+    operator.totalRewards += reward;
+    operator.updatedAt = updatedAt;
+  }
+
+  cache.operators.set(operator.id, operator);
 
   return cache;
 }
@@ -236,6 +262,7 @@ export function processDomainInstantiatedEvent(
   }
 
   cache.domains.set(domain.id, domain);
+
   cache.isModified = true;
 
   return cache;
@@ -264,36 +291,121 @@ export function processWithdrewStakeEvent(
   block: CtxBlock,
   event: CtxEvent
 ) {
+  const operatorId = String(event.args.operatorId);
   const accountId = hexToAccount(event.args.account);
   const amount = BigInt(event.args.amount);
-  // Process stake withdrawal logic here
-  return cache;
-}
-
-export function processOperatorRegisteredEvent(
-  cache: Cache,
-  block: CtxBlock,
-  event: CtxEvent
-) {
-  const operatorId = String(event.args.operatorId);
-  const domainId = String(event.args.domainId);
   const updatedAt = getBlockNumber(block);
 
   let operator = cache.operators.get(operatorId);
   if (!operator) {
     operator = new Operator({
       id: operatorId,
-      domainId,
+      accountId,
+      domainId: "0",
       currentTotalShares: BigInt(0),
       currentTotalStake: BigInt(0),
+      totalDeposits: BigInt(0),
+      totalWithdrawn: BigInt(amount),
+      totalRewards: BigInt(0),
       createdAt: updatedAt,
       updatedAt,
     });
   } else {
+    operator.totalWithdrawn += BigInt(amount);
     operator.updatedAt = updatedAt;
   }
 
   cache.operators.set(operator.id, operator);
+
+  const nominatorKey = `${accountId}-${operatorId}`;
+  let nominator = cache.nominators.get(nominatorKey);
+  if (!nominator) {
+    nominator = new Nominator({
+      id: nominatorKey,
+      accountId,
+      domainId: "0",
+      operatorId,
+      currentTotalShares: BigInt(0),
+      currentTotalStake: BigInt(0),
+      totalDeposits: BigInt(0),
+      totalWithdrawn: BigInt(amount),
+    });
+  } else {
+    nominator.totalWithdrawn += BigInt(amount);
+    nominator.updatedAt = updatedAt;
+  }
+
+  cache.nominators.set(nominator.id, nominator);
+
+  cache.isModified = true;
+
+  return cache;
+}
+
+export function processOperatorRegisteredExtrinsic(
+  cache: Cache,
+  block: CtxBlock,
+  extrinsic: CtxExtrinsic
+) {
+  const operatorId = String(extrinsic.call?.args.operatorId);
+  const accountId = getCallSigner(extrinsic.call);
+  const domainId = String(extrinsic.call?.args.domainId);
+  const amount = BigInt(extrinsic.call?.args.amount);
+  const updatedAt = getBlockNumber(block);
+
+  let domain = cache.domains.get(domainId);
+  if (!domain) {
+    domain = new Domain({
+      id: domainId,
+      createdAt: updatedAt,
+      updatedAt,
+    });
+  } else {
+    domain.updatedAt = updatedAt;
+  }
+
+  cache.domains.set(domain.id, domain);
+
+  let operator = cache.operators.get(operatorId);
+  if (!operator) {
+    operator = new Operator({
+      id: operatorId,
+      domainId,
+      accountId,
+      currentTotalShares: BigInt(0),
+      currentTotalStake: BigInt(0),
+      totalDeposits: BigInt(amount),
+      totalWithdrawn: BigInt(0),
+      totalRewards: BigInt(0),
+      createdAt: updatedAt,
+      updatedAt,
+    });
+  } else {
+    operator.totalDeposits += BigInt(amount);
+    operator.updatedAt = updatedAt;
+  }
+
+  cache.operators.set(operator.id, operator);
+
+  const nominatorKey = `${accountId}-${operatorId}`;
+  let nominator = cache.nominators.get(nominatorKey);
+  if (!nominator) {
+    nominator = new Nominator({
+      id: nominatorKey,
+      accountId,
+      domainId,
+      operatorId,
+      currentTotalShares: BigInt(0),
+      currentTotalStake: BigInt(0),
+      totalDeposits: BigInt(amount),
+    });
+  } else {
+    nominator.totalDeposits += BigInt(amount);
+    nominator.updatedAt = updatedAt;
+  }
+
+  cache.nominators.set(nominator.id, nominator);
+
   cache.isModified = true;
 
   return cache;
@@ -305,7 +417,7 @@ export function processOperatorNominatedEvent(
   event: CtxEvent
 ) {
   const operatorId = String(event.args.operatorId);
-  const nominatorId = hexToAccount(event.args.nominator);
+  const accountId = hexToAccount(event.args.nominator);
   const amount = BigInt(event.args.amount);
   const updatedAt = getBlockNumber(block);
 
@@ -317,12 +429,12 @@ export function processOperatorNominatedEvent(
   }
 
   // Create or update the Nominator entity
-  const nominatorKey = `${nominatorId}-${operatorId}`;
+  const nominatorKey = `${accountId}-${operatorId}`;
   let nominator = cache.nominators.get(nominatorKey);
   if (!nominator) {
     nominator = new Nominator({
       id: nominatorKey,
-      accountId: nominatorId,
+      accountId,
       domainId: operator.domainId,
       operatorId: operatorId,
       currentTotalShares: BigInt(0),
@@ -357,7 +469,27 @@ export function processOperatorSlashedEvent(
   event: CtxEvent
 ) {
   const operatorId = String(event.args.operatorId);
-  const amount = BigInt(event.args.amount);
-  // Process operator slashing logic here
+  const updatedAt = getBlockNumber(block);
+
+  let operator = cache.operators.get(operatorId);
+  if (!operator) {
+    operator = new Operator({
+      id: operatorId,
+      domainId: "0",
+      accountId: "0",
+      currentTotalShares: BigInt(0),
+      currentTotalStake: BigInt(0),
+      totalDeposits: BigInt(0),
+      totalWithdrawn: BigInt(0),
+      totalRewards: BigInt(0),
+      createdAt: updatedAt,
+      updatedAt,
+    });
+  } else {
+    operator.updatedAt = updatedAt;
+  }
+
+  cache.operators.set(operator.id, operator);
+
   return cache;
 }
