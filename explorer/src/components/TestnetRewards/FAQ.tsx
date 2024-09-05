@@ -11,7 +11,7 @@ export const FAQ: FC = () => {
 
   return (
     <div className='mt-8 w-full max-w-xl'>
-      <h2 className='text-center text-xl font-bold text-gray-900 dark:text-white'>FAQ</h2>
+      <h2 className='text-center text-xl font-bold text-gray-900 dark:text-white '>FAQ</h2>
       <div className='mt-4'>
         {[
           'How will the rewards be converted to ATC?',
@@ -20,7 +20,7 @@ export const FAQ: FC = () => {
         ].map((question, index) => (
           <div key={index} className='m-4'>
             <button
-              className='w-full rounded-lg bg-white p-8 text-left shadow-md dark:bg-gray-800'
+              className='w-full rounded-lg bg-white p-8 text-left text-gray-900 shadow-md  dark:border-none dark:bg-gray-800 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo dark:text-white'
               onClick={() => toggleFAQ(index)}
             >
               <span className='font-semibold'>

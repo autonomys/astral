@@ -36,7 +36,7 @@ export const TestnetRewardsTable: FC = () => {
 
     if (subspaceAccount) {
       // eslint-disable-next-line camelcase
-      conditions.account_id = { _eq: process.env.NEXT_PUBLIC_MOCK_WALLET_ADDRESS }
+      conditions.account_id = { _eq: subspaceAccount }
     }
 
     return conditions
@@ -151,7 +151,7 @@ export const TestnetRewardsTable: FC = () => {
 
   return (
     <div className='max-w-8xl mt-8 w-full' ref={ref}>
-      <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:bg-gray-800'>
+      <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-gray-800 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
         <h3 className='text-center text-lg font-bold text-gray-400 dark:text-white'>
           Your rewards at Autonomys (Subspace Network) Testnets
         </h3>

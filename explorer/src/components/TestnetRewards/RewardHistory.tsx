@@ -1,6 +1,7 @@
 'use client'
 
 import { FC } from 'react'
+import AccountListDropdown from '../WalletButton/AccountListDropdown'
 
 export const RewardHistory: FC = () => {
   return (
@@ -27,6 +28,7 @@ export const RewardHistory: FC = () => {
               <button className='rounded-full bg-blue-600 px-6 py-2 font-semibold text-white hover:bg-blue-700'>
                 ⚡ Connect Wallet ⚡
               </button>
+              <AccountListDropdown />
             </div>
           </div>
         </div>
