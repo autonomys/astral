@@ -1,11 +1,13 @@
-import { TransactionStatus } from '@/constants'
 import type { ISubmittableResult, Signer, SubmittableExtrinsic } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
+import { TransactionStatus } from 'constants/transaction'
 import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
+import { usePathname } from 'next/navigation'
 import { useCallback } from 'react'
 import toast from 'react-hot-toast'
 import { useTransactionsStates } from 'states/transactions'
+import { logError, logTx } from 'utils/log'
 
 export interface SendAndSaveTx {
   call: string
@@ -23,14 +25,16 @@ export const useTxHelper = () => {
   const { network } = useChains()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const { addPendingTransactions, getNextNonceForAccount } = useTransactionsStates()
+  const pathname = usePathname()
 
   const handleTxSuccess = useCallback(
-    (message: string, call: string, handleSuccess?: (message: string) => void) => {
+    (txHash: string, message: string, call: string, handleSuccess?: (message: string) => void) => {
       handleSuccess ? handleSuccess(message) : console.info('Success', message)
       sendGAEvent('event', 'tx_call', { value: call })
       toast.success(message, { position: 'bottom-center' })
+      logTx(pathname, txHash, call)
     },
-    [],
+    [pathname],
   )
 
   const handleTxError = useCallback(
@@ -39,8 +43,9 @@ export const useTxHelper = () => {
       sendGAEvent('event', 'error_message', { value: message })
       sendGAEvent('event', 'error', { value: call })
       toast.error(message, { position: 'bottom-center' })
+      logError(pathname, 'call: ' + call)
     },
-    [],
+    [pathname],
   )
 
   const sendAndSaveTx = useCallback(
@@ -63,6 +68,7 @@ export const useTxHelper = () => {
         if (!nonce || txCount > nonce) nonce = txCount
         if (nextNonceFromPending > nonce) nonce = nextNonceFromPending
         const hash = await tx.signAndSend(from, { nonce, signer })
+        const txHash = hash.toString()
 
         addPendingTransactions({
           ownerAccount: actingAccount,
@@ -71,7 +77,7 @@ export const useTxHelper = () => {
           submittedAtBlockHash: block.block.header.hash.toHex(),
           submittedAtBlockNumber: block.block.header.number.toNumber(),
           call,
-          txHash: hash.toString(),
+          txHash,
           blockHash: '',
           from,
           to: to || from,
@@ -79,7 +85,7 @@ export const useTxHelper = () => {
           fee: fee || '0',
           nonce,
         })
-        handleTxSuccess('The transaction was sent successfully', call)
+        handleTxSuccess(txHash, 'The transaction was sent successfully', call)
 
         return hash
       } catch (e) {
