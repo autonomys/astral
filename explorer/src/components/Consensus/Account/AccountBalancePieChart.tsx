@@ -15,7 +15,7 @@ export const AccountBalancePieChart: FC<Props> = ({ account }) => {
     : 0
   const transferable = account ? bigNumberToNumber(account.free) : 0
   const staking = account ? bigNumberToNumber(account.reserved) : 0
-  const other = otherNumber ? bigNumberToNumber(otherNumber.toString()) : 0
+  const other = otherNumber ? bigNumberToNumber(otherNumber) : 0
 
   const data = [
     {
