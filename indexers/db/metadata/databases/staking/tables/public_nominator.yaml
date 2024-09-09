@@ -1,0 +1,88 @@
+table:
+  name: nominator
+  schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+array_relationships:
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: deposit
+          schema: public
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: nominator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawal
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - unlock_at_confirmed_domain_block_number
+        - id
+        - pending_action
+        - status
+        - active_epoch_count
+        - created_at
+        - pending_effective_domain_epoch
+        - total_deposits_count
+        - total_withdrawals_count
+        - updated_at
+        - accumulated_epoch_shares
+        - accumulated_epoch_stake
+        - accumulated_epoch_storage_fee_deposit
+        - current_share_price
+        - current_storage_fee_deposit
+        - current_total_shares
+        - current_total_stake
+        - known_shares
+        - known_storage_fee_deposit
+        - pending_amount
+        - pending_shares
+        - pending_storage_fee_deposit
+        - pending_storage_fee_refund
+        - total_deposits
+        - total_estimated_withdrawals
+        - total_storage_fee_refund
+        - total_withdrawal_amounts
+        - total_withdrawals
+        - account_id
+        - domain_id
+        - operator_id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

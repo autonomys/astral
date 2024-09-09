@@ -1,6 +1,5 @@
 'use client'
 
-import { WalletType } from '@/constants'
 import {
   deregisterOperator,
   nominateOperator,
@@ -11,12 +10,15 @@ import {
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
 import { TOKEN } from 'constants/general'
+import { WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
+import { usePathname } from 'next/navigation'
 import Slider from 'rc-slider'
 import 'rc-slider/assets/index.css'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { logTx } from 'utils/log'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
 import * as Yup from 'yup'
 
@@ -61,6 +63,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [sliderValue, setSliderValue] = useState(0)
   const { handleTxError, sendAndSaveTx } = useTxHelper()
+  const pathname = usePathname()
 
   const initialValues: FormValues = useMemo(
     () => ({
@@ -82,14 +85,14 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
 
   const addFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .min(0, `Amount need to be greater than 0 ${tokenSymbol}`)
+      .moreThan(0, `Amount need to be greater than 0 ${tokenSymbol}`)
       .max(maxAmountToAdd, `Amount need to be less than ${maxAmountToAdd} ${tokenSymbol}`)
       .required('Amount to stake is required'),
   })
 
   const withdrawFundsFormValidationSchema = Yup.object().shape({
     amount: Yup.number()
-      .min(0, 'Amount need to be greater than 0 shares')
+      .moreThan(0, 'Amount need to be greater than 0 shares')
       .test('max', `Amount need to be less than ${maxSharesToWithdraw} shares`, function (value) {
         return typeof value === 'number' && BigInt(value) <= maxSharesToWithdraw
       })
@@ -138,7 +141,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           operatorId,
           amountToStake,
         })
-        await sendAndSaveTx({
+        const hash = await sendAndSaveTx({
           call: 'nominateOperator',
           tx,
           signer: injector.signer,
@@ -148,6 +151,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
           value: `operatorID:${action.operatorId.toString()}`,
         })
         resetForm()
+        if (hash) await logTx(pathname, hash.toString(), 'nominateOperator')
         handleClose()
       } catch (error) {
         handleTxError(
@@ -164,6 +168,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
       action.operatorId,
       tokenDecimals,
       sendAndSaveTx,
+      pathname,
       handleClose,
       handleTxError,
     ],
@@ -426,9 +431,11 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                             onChange={(value) => {
                               const newValue = Array.isArray(value) ? value[0] : value
                               setSliderValue(newValue)
+                              const newAmount =
+                                (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100)
                               setFieldValue(
                                 'amount',
-                                (maxSharesToWithdraw * BigInt(newValue)) / BigInt(100),
+                                newAmount > maxSharesToWithdraw ? maxSharesToWithdraw : newAmount,
                               )
                             }}
                             style={{ flexGrow: 1, marginRight: '10px' }} // Added margin to the right

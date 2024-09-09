@@ -1,0 +1,34 @@
+table:
+  name: stats_per_account
+  schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - block_number
+        - deposits_count
+        - nominators_count
+        - operators_count
+        - withdrawals_count
+        - all_time_high_share_price
+        - all_time_high_staked
+        - current_share_price
+        - total_deposits
+        - total_shares
+        - total_staked
+        - total_withdrawals
+        - account_id
+        - timestamp
+      filter: {}
+    comment: ""

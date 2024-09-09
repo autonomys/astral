@@ -1,0 +1,67 @@
+table:
+  name: withdrawal
+  schema: public
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: account
+          schema: public
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domain
+          schema: public
+  - name: nominator
+    using:
+      manual_configuration:
+        column_mapping:
+          nominator_id: id
+        insertion_order: null
+        remote_table:
+          name: nominator
+          schema: public
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operator
+          schema: public
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - status
+        - created_at
+        - domain_block_number_withdrawal_requested_at
+        - epoch_withdrawal_requested_at
+        - ready_at
+        - unlocked_at
+        - updated_at
+        - estimated_amount
+        - shares
+        - total_amount
+        - unlocked_amount
+        - unlocked_storage_fee
+        - account_id
+        - domain_id
+        - nominator_id
+        - operator_id
+        - unlock_extrinsic_hash
+        - withdraw_extrinsic_hash
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""
