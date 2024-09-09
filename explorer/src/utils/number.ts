@@ -25,6 +25,7 @@ export const floatToStringWithDecimals = (value: number, decimals = 4): string =
   BigInt(value * 10 ** decimals).toString()
 
 export const bigNumberToNumber = (bigNumber: string | bigint | number, precision = 4): number => {
+  if (!bigNumber) return 0
   if (typeof bigNumber !== 'string') bigNumber = bigNumber.toString()
 
   const number = formatUnits(bigNumber)
