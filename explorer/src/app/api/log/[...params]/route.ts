@@ -9,14 +9,21 @@ export const POST = async (req: NextRequest) => {
         type: 'header',
         text: {
           type: 'plain_text',
-          text: 'Astral Error',
+          text: logData.type === 'error' ? 'Astral Error' : 'Astral Tx',
         },
       },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Path: ${req.nextUrl.pathname}`,
+          text: `Error Path: ${logData.pathname}`,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Api Path: ${req.nextUrl.pathname}`,
         },
       },
       {

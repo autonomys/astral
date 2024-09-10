@@ -5,6 +5,8 @@ const log = async (type: string, pathname: string, error: Error | string) =>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      type,
+      pathname,
       message: typeof error === 'string' ? error : error.message,
       stack: typeof error === 'string' ? null : error.stack,
     }),
