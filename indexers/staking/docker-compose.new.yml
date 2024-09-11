@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  subquery-node:
+    image: subquerynetwork/subql-node-substrate:latest
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_DATABASE: ${DB_LEADERBOARD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    volumes:
+      - ./:/app
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/app
+      - --db-schema=leaderboard
+      - --workers=4
+      - --batch-size=30
+      - --unfinalized-blocks=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://subquery-node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  graphql-engine:
+    image: subquerynetwork/subql-query:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      "subquery-node":
+        condition: service_healthy
+    restart: always
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_DATABASE: ${DB_LEADERBOARD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    command:
+      - --name=app
+      - --playground
+      - --indexer=http://subquery-node:3000
