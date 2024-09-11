@@ -1,0 +1,112 @@
+# To improve query performance, we strongly suggest adding indexes to any field that you plan to filter or sort by
+# Add the `@index` or `@index(unique: true)` annotation after any non-key field
+# https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
+
+type Account @entity {
+  id: ID!
+  totalCampaignsParticipated: BigInt!
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: BigInt!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: BigInt!
+  rank: BigInt! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Campaign @entity {
+  id: ID!
+  name: String!
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: BigInt!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type TotalEarnings @entity {
+  id: ID!
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: BigInt!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: BigInt!
+  totalSupplyATCToken: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountPerCampaign @entity {
+  id: ID!
+  accountId: String! @index
+  campaignId: String! @index
+  totalEarningsAmountTestnetToken: BigInt!
+  totalEarningsPercentageTestnetToken: BigInt!
+  totalEarningsAmountATCToken: BigInt!
+  totalEarningsPercentageATCToken: BigInt!
+  rank: BigInt! @index
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Reward @entity {
+  id: ID!
+  campaignId: String! @index
+  accountId: String! @index
+  amount: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Verification @entity {
+  id: ID!
+  accountIds: [String!]!
+  totalAmount: BigInt!
+  totalPercentage: BigInt!
+  totalCampaignsParticipated: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Domain @entity {
+  id: ID!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Operator @entity {
+  id: ID!
+  domainId: String! @index
+  accountId: String! @index
+  name: String!
+  currentTotalShares: BigInt!
+  currentTotalStake: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawn: BigInt!
+  totalRewards: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Nominator @entity {
+  id: ID!
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  currentTotalShares: BigInt!
+  currentTotalStake: BigInt!
+  totalDeposits: BigInt!
+  totalWithdrawn: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type SlackMessage @entity {
+  id: ID!
+  messageId: String! @index
+}
+
+type StaticData @entity {
+  id: ID!
+  added: Boolean!
+}
