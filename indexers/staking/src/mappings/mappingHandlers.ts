@@ -29,7 +29,16 @@ import {
 export async function handleRegisterOperatorCall(
   extrinsic: SubstrateExtrinsic
 ): Promise<void> {
-  // Implementation for handleRegisterOperatorCall
+  logger.info(
+    `New ${extrinsic.extrinsic.registry}.${
+      extrinsic.extrinsic.method
+    } extrinsic found at block ${extrinsic.block.block.header.number.toString()}`
+  );
+  const {
+    extrinsic: {
+      data: [_from, _to, _amount],
+    },
+  } = extrinsic;
 }
 
 export async function handleNominateOperatorCall(
@@ -71,7 +80,25 @@ export async function handleUnlockNominatorCall(
 export async function handleDomainInstantiatedEvent(
   event: SubstrateEvent
 ): Promise<void> {
-  // Implementation for handleDomainInstantiatedEvent
+  logger.info(
+    `New ${event.event.section}.${
+      event.event.method
+    } event found at block ${event.block.block.header.number.toString()}`
+  );
+  const {
+    event: {
+      data: [_domainId, _completedEpochIndex],
+    },
+  } = event;
+  const domainId = _domainId.toString();
+  const completedEpoch = Number(_completedEpochIndex?.toString() ?? 0);
+  const blockNumber = event.block.block.header.number.toNumber();
+
+  const domain = await checkAndGetDomain(domainId, blockNumber);
+  domain.completedEpoch = completedEpoch;
+  domain.updatedAt = blockNumber;
+
+  await domain.save();
 }
 
 export async function handleDomainEpochCompletedEvent(
