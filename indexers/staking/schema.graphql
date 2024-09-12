@@ -286,12 +286,12 @@ type Deposit @entity {
   totalAmount: BigInt!
   totalWithdrawn: BigInt!
   status: DepositStatus!
-  timestamp: Date! @index
-  extrinsicHash: String! @index
-  epochDepositedAt: Int! @index
-  domainBlockNumberDepositedAt: Int! @index
+  timestamp: Date!
+  extrinsicHash: String!
+  epochDepositedAt: Int!
+  domainBlockNumberDepositedAt: Int!
   createdAt: Int! @index
-  stakedAt: Int! @index
+  stakedAt: Int!
   updatedAt: Int! @index
 }
 
@@ -315,15 +315,15 @@ type Withdrawal @entity {
   unlockedStorageFee: BigInt!
   totalAmount: BigInt!
   status: WithdrawalStatus!
-  timestamp: Date! @index
-  withdrawExtrinsicHash: String! @index
-  unlockExtrinsicHash: String! @index
-  epochWithdrawalRequestedAt: Int! @index
-  domainBlockNumberWithdrawalRequestedAt: Int! @index
+  timestamp: Date!
+  withdrawExtrinsicHash: String!
+  unlockExtrinsicHash: String!
+  epochWithdrawalRequestedAt: Int!
+  domainBlockNumberWithdrawalRequestedAt: Int!
   createdAt: Int! @index
-  readyAt: Int! @index
-  unlockedAt: Int! @index
-  updatedAt: Int! @index
+  readyAt: Int!
+  unlockedAt: Int!
+  updatedAt: Int!
 }
 
 type Reward @entity {

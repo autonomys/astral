@@ -68,7 +68,7 @@ const project: SubstrateProject = {
             handler: "handleNominateOperatorCall",
             filter: {
               module: "domains",
-              method: "nominateOperator",
+              method: "NominateOperator",
             },
           },
           {
@@ -76,7 +76,7 @@ const project: SubstrateProject = {
             handler: "handleDeregisterOperatorCall",
             filter: {
               module: "domains",
-              method: "deregisterOperator",
+              method: "DeregisterOperator",
             },
           },
           {
@@ -84,7 +84,7 @@ const project: SubstrateProject = {
             handler: "handleWithdrawStakeCall",
             filter: {
               module: "domains",
-              method: "withdrawStake",
+              method: "WithdrawStake",
             },
           },
           {
@@ -92,7 +92,7 @@ const project: SubstrateProject = {
             handler: "handleUnlockFundsCall",
             filter: {
               module: "domains",
-              method: "unlockFunds",
+              method: "UnlockFunds",
             },
           },
           {
@@ -100,7 +100,7 @@ const project: SubstrateProject = {
             handler: "handleUnlockOperatorCall",
             filter: {
               module: "domains",
-              method: "unlockOperator",
+              method: "UnlockOperator",
             },
           },
           {
@@ -108,7 +108,7 @@ const project: SubstrateProject = {
             handler: "handleUnlockNominatorCall",
             filter: {
               module: "domains",
-              method: "unlockNominator",
+              method: "UnlockNominator",
             },
           },
           {
