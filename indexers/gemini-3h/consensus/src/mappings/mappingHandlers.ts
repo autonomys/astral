@@ -40,12 +40,12 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
   // getBlockAuthor(blockHeader as any, api as any),
   // ]);
 
-  const solutionRang = await solutionRanges.v0.get(blockHeader as any);
-  const spacePledged = solutionRang
-    ? calcSpacePledged(solutionRang.current)
-    : calcSpacePledged(
-        solutionRanges.v0.getDefault(blockHeader as any).current
-      );
+  // const solutionRang = await solutionRanges.v0.get(blockHeader as any);
+  // const spacePledged = solutionRang
+  //   ? calcSpacePledged(solutionRang.current)
+  //   : calcSpacePledged(
+  //       solutionRanges.v0.getDefault(blockHeader as any).current
+  //     );
 
   logger.info(`Block number: ${number.toString()}`);
   logger.info(`Timestamp: ${timestamp}`);
@@ -58,8 +58,8 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
   logger.info(`Events count: ${events.length}`);
 
   // To-Do
-  // const spacePledged = BigInt(0);
-  // const blockchainSize = BigInt(0);
+  const spacePledged = BigInt(0);
+  const blockchainSize = BigInt(0);
   logger.info(`spacePledged: ${spacePledged.toString()}`);
   logger.info(`blockchainSize: ${blockchainSize.toString()}`);
 

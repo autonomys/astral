@@ -1,0 +1,19 @@
+{
+  "name": "indexers",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "workspaces": [
+    "gemini-3h/*",
+    "gemini-3g/*"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "codegen": "lerna run codegen",
+    "prepack": "lerna run prepack"
+  },
+  "dependencies": {
+    "lerna": "^8.1.8"
+  }
+}
