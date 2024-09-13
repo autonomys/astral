@@ -47,11 +47,12 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.ENDPOINT!?.split(",") as string[] | string,
+    // dictionary: process.env.DICTIONARY!,
   },
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
+      startBlock: 316220,
       mapping: {
         file: "./dist/index.js",
         handlers: [

@@ -269,48 +269,44 @@ export async function handleDeregisterOperatorCall(
 export async function handleOperatorSlashedEvent(
   event: SubstrateEvent
 ): Promise<void> {
-  const {
-    event: {
-      data: [operatorId],
-    },
-    block,
-  } = event;
-  const blockNumber = block.block.header.number.toNumber();
+  const blockNumber = event.block.block.header.number.toNumber();
+  const operatorId = event.event.data[0].toString();
 
-  const operator = await checkAndGetOperator(
-    operatorId.toString(),
-    blockNumber
-  );
+  // Query operator details
+  const operator = await checkAndGetOperator(operatorId, blockNumber);
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
   operator.status = OperatorStatus.SLASHED;
   operator.updatedAt = blockNumber;
 
+  // Fetch nominators associated with the operator
   const nominators = await Nominator.getByOperatorId(operator.id);
   if (nominators) {
-    nominators.forEach(async (n) => {
-      n.status = NominatorStatus.SLASHED;
-      n.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
-      n.updatedAt = blockNumber;
-      await n.save();
+    nominators.forEach(async (nominator) => {
+      nominator.status = NominatorStatus.SLASHED;
+      nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
+      nominator.updatedAt = blockNumber;
+      await nominator.save();
     });
   }
 
+  // Fetch withdrawals associated with the operator
   const withdrawals = await Withdrawal.getByOperatorId(operator.id);
   if (withdrawals) {
-    withdrawals.forEach(async (w) => {
+    withdrawals.forEach(async (withdrawal) => {
       if (
-        w.status === WithdrawalStatus.PENDING_LOCK ||
-        w.status === WithdrawalStatus.PENDING_OPERATOR ||
-        w.status === WithdrawalStatus.READY
+        withdrawal.status === WithdrawalStatus.PENDING_LOCK ||
+        withdrawal.status === WithdrawalStatus.PENDING_OPERATOR ||
+        withdrawal.status === WithdrawalStatus.READY
       ) {
-        w.status = WithdrawalStatus.SLASHED;
-        w.updatedAt = blockNumber;
-        await w.save();
+        withdrawal.status = WithdrawalStatus.SLASHED;
+        withdrawal.updatedAt = blockNumber;
+        await withdrawal.save();
       }
     });
   }
 
+  // Save operator changes
   await operator.save();
 }
 
@@ -456,7 +452,68 @@ export async function handleWithdrawStakeCall(
 export async function handleUnlockFundsCall(
   extrinsic: SubstrateExtrinsic
 ): Promise<void> {
-  // Implementation for handleUnlockFundsCall
+  const blockNumber = extrinsic.block.block.header.number.toNumber();
+  const signer = extrinsic.extrinsic.signer.toString();
+  const [operatorId, shares] = extrinsic.extrinsic.method.args;
+
+  // Query operator details
+  const operator = await checkAndGetOperator(
+    operatorId.toString(),
+    blockNumber
+  );
+
+  // Calculate estimated amount
+  const sharesBigInt = BigInt(shares.toString());
+  const estimatedAmount =
+    (operator.currentSharePrice * sharesBigInt) / SHARES_CALCULATION_MULTIPLIER;
+
+  // Fetch or create Withdrawal entity
+  const withdrawal = await checkAndGetWithdrawal(
+    signer,
+    operator.domainId,
+    operator.id,
+    signer,
+    blockNumber
+  );
+
+  withdrawal.shares = sharesBigInt;
+  withdrawal.estimatedAmount = estimatedAmount;
+  withdrawal.status = WithdrawalStatus.PENDING_LOCK;
+  withdrawal.createdAt = blockNumber;
+  withdrawal.updatedAt = blockNumber;
+
+  // Update related entities
+  const account = await checkAndGetAccount(signer, blockNumber);
+  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
+  const nominator = await checkAndGetNominator(
+    signer,
+    domain.id,
+    operator.id,
+    blockNumber
+  );
+
+  nominator.totalWithdrawalsCount++;
+  nominator.totalEstimatedWithdrawals += estimatedAmount;
+  nominator.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
+  nominator.updatedAt = blockNumber;
+
+  operator.totalEstimatedWithdrawals += estimatedAmount;
+  operator.updatedAt = blockNumber;
+
+  account.totalEstimatedWithdrawals += estimatedAmount;
+  account.updatedAt = blockNumber;
+
+  domain.totalEstimatedWithdrawals += estimatedAmount;
+  domain.updatedAt = blockNumber;
+
+  // Save all changes
+  await Promise.all([
+    withdrawal.save(),
+    nominator.save(),
+    operator.save(),
+    account.save(),
+    domain.save(),
+  ]);
 }
 
 export async function handleUnlockOperatorCall(
@@ -498,7 +555,41 @@ export async function handleDomainInstantiatedEvent(
 export async function handleDomainEpochCompletedEvent(
   event: SubstrateEvent
 ): Promise<void> {
-  // Implementation for handleDomainEpochCompletedEvent
+  logger.info(
+    `New ${event.event.section}.${
+      event.event.method
+    } event found at block ${event.block.block.header.number.toString()}`
+  );
+  const {
+    event: {
+      data: [domainId, epochIndex],
+    },
+  } = event;
+  const blockNumber = event.block.block.header.number.toNumber();
+
+  // Querying additional state if necessary
+  const _domainEntry = await api.query.domains.domainRegistry(domainId);
+  const domainEntry = _domainEntry.toJSON() as any[0];
+
+  // Parse domain details
+  const parsedDomain = {
+    domainId: domainEntry.toHuman()?.domainId,
+    ownerAccountId: domainEntry.toHuman()?.ownerAccountId,
+    // Add other necessary fields
+  };
+
+  // Fetch or create Domain entity
+  const domain = await checkAndGetDomain(domainId.toString(), blockNumber);
+  domain.completedEpoch = Number(epochIndex);
+  domain.updatedAt = blockNumber;
+
+  // Update domain based on fetched data
+  if (parsedDomain.ownerAccountId) {
+    domain.accountId = parsedDomain.ownerAccountId;
+    // Update other domain fields as necessary
+  }
+
+  await domain.save();
 }
 
 export async function handleForceDomainEpochTransitionEvent(
@@ -552,8 +643,8 @@ export async function handleBundleStoredEvent(
     block,
     extrinsic,
   } = event;
-  // const domainIdNum = Number(domainId);
-  // const operatorId = Number(bundleAuthor);
+  const domainIdNum = Number(domainId);
+  const operatorId = Number(bundleAuthor);
 
   // const sealedHeader = extrinsic.extrinsic.method.args[0].sealedHeader as SealedBundleHeader;
   // const domain = await checkAndGetDomain(domainId.toString(), block.block.header.number.toNumber());
