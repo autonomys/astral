@@ -1,0 +1,27 @@
+- name: gemini_3h_consensus
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_GEMINI_3H_CONSENSUS_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include gemini_3h_consensus/tables/tables.yaml"
+- name: gemini_3h_leaderboard
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_GEMINI_3H_LEADERBOARD_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include gemini_3h_leaderboard/tables/tables.yaml"
+- name: gemini_3h_staking
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_GEMINI_3H_STAKING_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include gemini_3h_staking/tables/tables.yaml"
