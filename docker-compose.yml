@@ -1,24 +1,32 @@
 version: "3"
 
 services:
-  db:
-    container_name: explorer-db
-    image: postgres:14
+  postgres:
+    container_name: postgres
+    image: postgres:16-alpine
     environment:
+      POSTGRES_DB: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_PASSWORD}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
+      #      - ./indexers/db/data/postgres:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  graphql-engine:
+  hasura-engine:
     container_name: explorer-graphql
     image: hasura/graphql-engine:v2.40.0
     depends_on:
-      - "db"
+      - "postgres"
     restart: always
     environment:
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_CONSENSUS}
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
       HASURA_GRAPHQL_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_CONSENSUS}
       HASURA_GRAPHQL_ACCOUNTS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_ACCOUNTS}
       HASURA_GRAPHQL_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_LEADERBOARD}
@@ -26,7 +34,6 @@ services:
       HASURA_GRAPHQL_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_TESTNET_REWARDS}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
       HASURA_GRAPHQL_DEV_MODE: "true"
-      # HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
       HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
@@ -35,3 +42,163 @@ services:
     command:
       - graphql-engine
       - serve
+
+  # accounts-subquery-node:
+  #   image: subquerynetwork/subql-node-substrate:latest
+  #   depends_on:
+  #     "postgres":
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   environment:
+  #     DB_USER: postgres
+  #     DB_PASS: postgres
+  #     DB_DATABASE: accounts
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #   volumes:
+  #     - ./indexers/accounts:/accounts
+  #   command:
+  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+  #     - -f=/accounts
+  #     - --db-schema=accounts
+  #     - --workers=4
+  #     - --batch-size=30
+  #     - --unfinalized-blocks=true
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://accounts-subquery-node:3000/ready"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
+
+  consensus-subquery-node:
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: consensus
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/consensus:/consensus
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/consensus
+      - --db-schema=consensus
+      - --workers=4
+      - --batch-size=30
+      - --unfinalized-blocks=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://consensus-subquery-node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  leaderboard-subquery-node:
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: leaderboard
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/leaderboard:/leaderboard
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/leaderboard
+      - --db-schema=leaderboard
+      - --workers=4
+      - --batch-size=30
+      - --unfinalized-blocks=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://leaderboard-subquery-node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  staking-subquery-node:
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: staking
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/staking:/staking
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/staking
+      - --db-schema=staking
+      - --workers=4
+      - --batch-size=30
+      - --unfinalized-blocks=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://staking-subquery-node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  # accounts-subquery-node:
+  #   image: subquerynetwork/subql-node-substrate:latest
+  #   depends_on:
+  #     "postgres":
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   environment:
+  #     DB_USER: postgres
+  #     DB_PASS: postgres
+  #     DB_DATABASE: accounts
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #   volumes:
+  #     - ./indexers/accounts:/accounts
+  #   command:
+  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+  #     - -f=/accounts
+  #     - --db-schema=accounts
+  #     - --workers=4
+  #     - --batch-size=30
+  #     - --unfinalized-blocks=true
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://accounts-subquery-node:3000/ready"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 10
+
+  # graphql-engine:
+  #   image: subquerynetwork/subql-query:latest
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     "consensus-subquery-node":
+  #       condition: service_healthy
+  #     "staking-subquery-node":
+  #       condition: service_healthy
+  #     "accounts-subquery-node":
+  #       condition: service_healthy
+  #   restart: always
+  #   environment:
+  #     DB_USER: postgres
+  #     DB_PASS: postgres
+  #     DB_DATABASE: ${DB_DATABASE}
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #   command:
+  #     - --name=app
+  #     - --playground
+  #     - --indexer=http://consensus-subquery-node:3000
+  #     - --indexer=http://staking-subquery-node:3000
+  #     - --indexer=http://accounts-subquery-node:3000
