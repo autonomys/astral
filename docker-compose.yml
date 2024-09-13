@@ -27,11 +27,12 @@ services:
     restart: always
     environment:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
-      HASURA_GRAPHQL_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_CONSENSUS}
-      HASURA_GRAPHQL_ACCOUNTS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_ACCOUNTS}
-      HASURA_GRAPHQL_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_LEADERBOARD}
-      HASURA_GRAPHQL_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_STAKING}
-      HASURA_GRAPHQL_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_TESTNET_REWARDS}
+      # Gemini 3H
+      HASURA_GRAPHQL_GEMINI_3H_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_CONSENSUS}
+      HASURA_GRAPHQL_GEMINI_3H_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_LEADERBOARD}
+      HASURA_GRAPHQL_GEMINI_3H_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_STAKING}
+      # Gemini 3G
+      HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3G_TESTNET_REWARDS}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
       HASURA_GRAPHQL_DEV_MODE: "true"
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
@@ -79,15 +80,15 @@ services:
     environment:
       DB_USER: postgres
       DB_PASS: postgres
-      DB_DATABASE: consensus
+      DB_DATABASE: gemini-3h-consensus
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
-      - ./indexers/consensus:/consensus
+      - ./indexers/gemini-3h/consensus:/gemini-3h/consensus
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/consensus
-      - --db-schema=consensus
+      - -f=/gemini-3h/consensus
+      - --db-schema=gemini-3h-consensus
       - --workers=4
       - --batch-size=30
       - --unfinalized-blocks=true
@@ -106,15 +107,15 @@ services:
     environment:
       DB_USER: postgres
       DB_PASS: postgres
-      DB_DATABASE: leaderboard
+      DB_DATABASE: gemini-3h-leaderboard
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
-      - ./indexers/leaderboard:/leaderboard
+      - ./indexers/gemini-3h/leaderboard:/gemini-3h/leaderboard
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/leaderboard
-      - --db-schema=leaderboard
+      - -f=/gemini-3h/leaderboard
+      - --db-schema=gemini-3h-leaderboard
       - --workers=4
       - --batch-size=30
       - --unfinalized-blocks=true
@@ -133,15 +134,15 @@ services:
     environment:
       DB_USER: postgres
       DB_PASS: postgres
-      DB_DATABASE: staking
+      DB_DATABASE: gemini-3h-staking
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
-      - ./indexers/staking:/staking
+      - ./indexers/gemini-3h/staking:/gemini-3h/staking
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/staking
-      - --db-schema=staking
+      - -f=/gemini-3h/staking
+      - --db-schema=gemini-3h-staking
       - --workers=4
       - --batch-size=30
       - --unfinalized-blocks=true
