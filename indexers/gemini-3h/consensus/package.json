@@ -1,5 +1,5 @@
 {
-  "name": "consensus",
+  "name": "gemini_3h_consensus",
   "version": "1.0.0",
   "description": "Autonomys Gemini 3H Testnet - Consensus",
   "main": "dist/index.js",
@@ -39,6 +39,7 @@
     "@subql/types": "latest",
     "@subsquid/substrate-runtime": "^2.0.0",
     "dotenv": "latest",
+    "@types/node": "latest",
     "typescript": "^5.2.2"
   },
   "resolutions": {

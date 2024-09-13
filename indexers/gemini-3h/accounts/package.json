@@ -1,5 +1,5 @@
 {
-  "name": "accounts",
+  "name": "gemini_3h_accounts",
   "version": "1.0.0",
   "description": "Autonomys Gemini 3H Testnet - Accounts",
   "main": "dist/index.js",
@@ -33,11 +33,12 @@
   "devDependencies": {
     "@polkadot/api": "^12",
     "@subql/cli": "latest",
+    "@subql/common-substrate": "latest",
     "@subql/testing": "latest",
     "@subql/types": "latest",
-    "typescript": "^5.2.2",
-    "@subql/common-substrate": "latest",
-    "dotenv": "latest"
+    "@types/node": "latest",
+    "dotenv": "latest",
+    "typescript": "^5.2.2"
   },
   "resolutions": {
     "ipfs-unixfs": "6.0.6"

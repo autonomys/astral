@@ -6,9 +6,11 @@
   "license": "MIT",
   "workspaces": [
     "gemini-3h/*",
-    "gemini-3g/*"
+    "gemini-3g/*",
+    "db/*"
   ],
   "scripts": {
+    "dev": "lerna run codegen && lerna run build && docker compose -f ../docker-compose.yml up --remove-orphans",
     "build": "lerna run build",
     "codegen": "lerna run codegen",
     "prepack": "lerna run prepack"

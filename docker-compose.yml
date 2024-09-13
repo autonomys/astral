@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+  # Postgres Database
   postgres:
     container_name: postgres
     image: postgres:16-alpine
@@ -19,7 +20,8 @@ services:
       timeout: 5s
       retries: 5
 
-  hasura-engine:
+  # Hasura GraphQL Engine
+  hasura_engine:
     container_name: explorer-graphql
     image: hasura/graphql-engine:v2.40.0
     depends_on:
@@ -44,34 +46,8 @@ services:
       - graphql-engine
       - serve
 
-  # accounts-subquery-node:
-  #   image: subquerynetwork/subql-node-substrate:latest
-  #   depends_on:
-  #     "postgres":
-  #       condition: service_healthy
-  #   restart: unless-stopped
-  #   environment:
-  #     DB_USER: postgres
-  #     DB_PASS: postgres
-  #     DB_DATABASE: accounts
-  #     DB_HOST: postgres
-  #     DB_PORT: 5432
-  #   volumes:
-  #     - ./indexers/accounts:/accounts
-  #   command:
-  #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-  #     - -f=/accounts
-  #     - --db-schema=accounts
-  #     - --workers=4
-  #     - --batch-size=30
-  #     - --unfinalized-blocks=true
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://accounts-subquery-node:3000/ready"]
-  #     interval: 3s
-  #     timeout: 5s
-  #     retries: 10
-
-  consensus-subquery-node:
+  # Gemini 3H Subquery Nodes
+  gemini_3h_accounts-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -80,7 +56,35 @@ services:
     environment:
       DB_USER: postgres
       DB_PASS: postgres
-      DB_DATABASE: gemini-3h-consensus
+      DB_DATABASE: gemini_3h_accounts
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/gemini-3h/accounts:/gemini-3h/accounts
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/gemini-3h/accounts
+      - --db-schema=gemini_3h_accounts
+      - --workers=4
+      - --unsafe
+      - --batch-size=30
+      - --unfinalized-blocks=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://accounts-subquery-node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  gemini_3h_consensus-subquery-node:
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: gemini_3h_consensus
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
@@ -88,8 +92,9 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/consensus
-      - --db-schema=gemini-3h-consensus
+      - --db-schema=gemini_3h_consensus
       - --workers=4
+      - --unsafe
       - --batch-size=30
       - --unfinalized-blocks=true
     healthcheck:
@@ -98,7 +103,7 @@ services:
       timeout: 5s
       retries: 10
 
-  leaderboard-subquery-node:
+  gemini_3h_leaderboard-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -107,7 +112,7 @@ services:
     environment:
       DB_USER: postgres
       DB_PASS: postgres
-      DB_DATABASE: gemini-3h-leaderboard
+      DB_DATABASE: gemini_3h_leaderboard
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
@@ -115,8 +120,9 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/leaderboard
-      - --db-schema=gemini-3h-leaderboard
+      - --db-schema=gemini_3h_leaderboard
       - --workers=4
+      - --unsafe
       - --batch-size=30
       - --unfinalized-blocks=true
     healthcheck:
@@ -125,7 +131,7 @@ services:
       timeout: 5s
       retries: 10
 
-  staking-subquery-node:
+  gemini_3h_staking-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -134,7 +140,7 @@ services:
     environment:
       DB_USER: postgres
       DB_PASS: postgres
-      DB_DATABASE: gemini-3h-staking
+      DB_DATABASE: gemini_3h_staking
       DB_HOST: postgres
       DB_PORT: 5432
     volumes:
@@ -142,8 +148,9 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/staking
-      - --db-schema=gemini-3h-staking
+      - --db-schema=gemini_3h_staking
       - --workers=4
+      - --unsafe
       - --batch-size=30
       - --unfinalized-blocks=true
     healthcheck:

@@ -1,5 +1,5 @@
 {
-  "name": "staking",
+  "name": "gemini_3h_staking",
   "version": "1.0.0",
   "description": "Autonomys Gemini 3H Testnet - Staking",
   "main": "dist/index.js",
@@ -37,6 +37,7 @@
     "@subql/types": "latest",
     "typescript": "^5.2.2",
     "@subql/common-substrate": "latest",
+    "@types/node": "latest",
     "dotenv": "latest"
   },
   "resolutions": {
