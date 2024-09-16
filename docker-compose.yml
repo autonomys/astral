@@ -6,8 +6,8 @@ services:
     container_name: postgres
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "${DB_PORT}:${DB_PORT}"
@@ -57,17 +57,17 @@ services:
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_DATABASE: gemini_3h_accounts
-      DB_HOST: postgres
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H_ACCOUNTS}
+      DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/accounts:/gemini-3h/accounts
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/accounts
-      - --db-schema=gemini_3h_accounts
+      - --db-schema=${DB_GEMINI_3H_ACCOUNTS}
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -87,17 +87,17 @@ services:
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_DATABASE: gemini_3h_consensus
-      DB_HOST: postgres
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H_CONSENSUS}
+      DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/consensus:/gemini-3h/consensus
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/consensus
-      - --db-schema=gemini_3h_consensus
+      - --db-schema=${DB_GEMINI_3H_CONSENSUS}
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -117,17 +117,17 @@ services:
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_DATABASE: gemini_3h_leaderboard
-      DB_HOST: postgres
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H_LEADERBOARD}
+      DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/leaderboard:/gemini-3h/leaderboard
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/leaderboard
-      - --db-schema=gemini_3h_leaderboard
+      - --db-schema=${DB_GEMINI_3H_LEADERBOARD}
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -147,17 +147,17 @@ services:
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
-      DB_USER: postgres
-      DB_PASS: postgres
-      DB_DATABASE: gemini_3h_staking
-      DB_HOST: postgres
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H_STAKING}
+      DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/staking:/gemini-3h/staking
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/staking
-      - --db-schema=gemini_3h_staking
+      - --db-schema=${DB_GEMINI_3H_STAKING}
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -177,17 +177,17 @@ services:
   #   environment:
   #     ENDPOINT: ${GEMINI_3G_RPC}
   #     CHAIN_ID: "0x418040fc282f5e5ddd432c46d05297636f6f75ce68d66499ff4cbda69ccd180b"
-  #     DB_USER: postgres
-  #     DB_PASS: postgres
-  #     DB_DATABASE: gemini_3g_testnet_rewards
-  #     DB_HOST: postgres
+  #     DB_USER: ${DB_USER}
+  #     DB_PASS: ${DB_PASSWORD}
+  #     DB_DATABASE: ${DB_GEMINI_3G_TESTNET_REWARDS}
+  #     DB_HOST: ${DB_HOST}
   #     DB_PORT: 5432
   #   volumes:
   #     - ./indexers/gemini-3g/testnet-rewards:/gemini-3g/testnet-rewards
   #   command:
   #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
   #     - -f=/gemini-3g/testnet-rewards
-  #     - --db-schema=gemini_3g_testnet_rewards
+  #     - --db-schema=${DB_GEMINI_3G_TESTNET_REWARDS}
   #     - --workers=4
   #     - --unsafe
   #     - --batch-size=30
@@ -211,11 +211,11 @@ services:
   #       condition: service_healthy
   #   restart: always
   #   environment:
-  #     DB_USER: postgres
-  #     DB_PASS: postgres
+  #     DB_USER: ${DB_USER}
+  #     DB_PASS: ${DB_PASSWORD}
   #     DB_DATABASE: ${DB_DATABASE}
-  #     DB_HOST: postgres
-  #     DB_PORT: 5432
+  #     DB_HOST: ${DB_HOST}
+  #     DB_PORT: ${DB_PORT}
   #   command:
   #     - --name=app
   #     - --playground
