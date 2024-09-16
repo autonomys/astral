@@ -1,12 +1,12 @@
-import { decodeAddress } from "@polkadot/util-crypto";
+// import { decodeAddress } from "@polkadot/util-crypto";
 import {
   SubstrateBlock,
   SubstrateEvent,
   SubstrateExtrinsic,
 } from "@subql/types";
-import { randomUUID } from "crypto";
+// import { randomUUID } from "crypto";
 import {
-  baseEntry,
+  //  baseEntry,
   CampaignIds,
   campaigns,
   defaultAccount,
@@ -23,18 +23,22 @@ import {
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
   const blockNumber = block.block.header.number.toNumber();
-  // if (blockNumber === 0) {
-  //  const campaignsCreated = await Promise.all(
-  //    campaigns.map((campaign) =>
-  //      checkAndGetCampaign(campaign.id, campaign.name, blockNumber)
-  //    )
-  //  );
-  //  await Promise.all([campaignsCreated.map((campaign) => campaign.save())]);
+  logger.info(`blockNumber: ${blockNumber}`);
+  if (blockNumber === 0) {
+    logger.info(`blockNumber: ${blockNumber}`);
+    const campaignsCreated = await Promise.all(
+      campaigns.map((campaign) =>
+        checkAndGetCampaign(campaign.id, campaign.name, blockNumber)
+      )
+    );
+    logger.info(`campaignsCreated: ${campaignsCreated}`);
+    await Promise.all([campaignsCreated.map((campaign) => campaign.save())]);
 
-  //   const staticDataAdded = await StaticData.get("0");
-  //   if (!staticDataAdded || staticDataAdded.added === false)
-  //     await loadStaticData();
-  // }
+    const staticDataAdded = await StaticData.get("0");
+    logger.info(`staticDataAdded: ${staticDataAdded}`);
+    //   if (!staticDataAdded || staticDataAdded.added === false)
+    //     await loadStaticData();
+  }
 }
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {

@@ -50,6 +50,14 @@ const project: SubstrateProject = {
       mapping: {
         file: "./dist/index.js",
         handlers: [
+          // initial data
+          {
+            kind: SubstrateHandlerKind.Block,
+            handler: "handleBlock",
+            filter: {
+              modulo: 100,
+            },
+          },
           // accounts
           {
             kind: SubstrateHandlerKind.Event,

@@ -33,12 +33,12 @@ const parseCSV = async (filePath: string) => {
   }
 };
 
-const csvFilePath = path.resolve(__dirname, "../src/static/rewards.csv");
+const csvFilePath = path.resolve(__dirname, "../static/rewards.csv");
 const csv3FFilePath = path.resolve(
   __dirname,
-  "../src/static/gemini-3f-rewards.csv"
+  "../static/gemini-3f-rewards.csv"
 );
-const outputFilePath = path.resolve(__dirname, "../src/constants/rewards.ts");
+const outputFilePath = path.resolve(__dirname, "../constants/rewards.ts");
 
 interface Reward {
   accountId: string;
