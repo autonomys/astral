@@ -23,7 +23,7 @@ services:
   # Hasura GraphQL Engine
   hasura_engine:
     container_name: explorer-graphql
-    image: hasura/graphql-engine:v2.40.0
+    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     depends_on:
       - "postgres"
     restart: always
@@ -35,7 +35,7 @@ services:
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
       # Console and Development Mode
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # Disable console in production
+      HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE} # Disable console in production
       HASURA_GRAPHQL_DEV_MODE: "true" # Disable development mode features
 
       # Role and CORS Settings
