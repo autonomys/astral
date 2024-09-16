@@ -19,6 +19,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   # Hasura GraphQL Engine
   hasura_engine:
@@ -78,6 +82,10 @@ services:
     command:
       - graphql-engine
       - serve
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   # Gemini 3H Subquery Nodes
   gemini_3h_accounts-subquery-node:
@@ -109,6 +117,10 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   gemini_3h_consensus-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
@@ -139,6 +151,10 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   gemini_3h_leaderboard-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
@@ -169,6 +185,10 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   gemini_3h_staking-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
@@ -199,6 +219,10 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   gemini_3g_testnet_rewards-subquery-node:
     image: subquerynetwork/subql-node-substrate:latest
@@ -229,3 +253,7 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
