@@ -33,6 +33,7 @@ services:
       HASURA_GRAPHQL_GEMINI_3H_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_CONSENSUS}
       HASURA_GRAPHQL_GEMINI_3H_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_LEADERBOARD}
       HASURA_GRAPHQL_GEMINI_3H_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_STAKING}
+      HASURA_GRAPHQL_GEMINI_3H_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_TESTNET_REWARDS}
       # Gemini 3G
       HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3G_TESTNET_REWARDS}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
@@ -54,6 +55,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
     environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
       DB_USER: postgres
       DB_PASS: postgres
       DB_DATABASE: gemini_3h_accounts
@@ -82,6 +85,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
     environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
       DB_USER: postgres
       DB_PASS: postgres
       DB_DATABASE: gemini_3h_consensus
@@ -110,6 +115,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
     environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
       DB_USER: postgres
       DB_PASS: postgres
       DB_DATABASE: gemini_3h_leaderboard
@@ -138,6 +145,8 @@ services:
         condition: service_healthy
     restart: unless-stopped
     environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
       DB_USER: postgres
       DB_PASS: postgres
       DB_DATABASE: gemini_3h_staking
@@ -159,29 +168,32 @@ services:
       timeout: 5s
       retries: 10
 
-  # accounts-subquery-node:
+  # gemini_3g_testnet_rewards-subquery-node:
   #   image: subquerynetwork/subql-node-substrate:latest
   #   depends_on:
   #     "postgres":
   #       condition: service_healthy
   #   restart: unless-stopped
   #   environment:
+  #     ENDPOINT: ${GEMINI_3G_RPC}
+  #     CHAIN_ID: "0x418040fc282f5e5ddd432c46d05297636f6f75ce68d66499ff4cbda69ccd180b"
   #     DB_USER: postgres
   #     DB_PASS: postgres
-  #     DB_DATABASE: accounts
+  #     DB_DATABASE: gemini_3g_testnet_rewards
   #     DB_HOST: postgres
   #     DB_PORT: 5432
   #   volumes:
-  #     - ./indexers/accounts:/accounts
+  #     - ./indexers/gemini-3g/testnet-rewards:/gemini-3g/testnet-rewards
   #   command:
   #     - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-  #     - -f=/accounts
-  #     - --db-schema=accounts
+  #     - -f=/gemini-3g/testnet-rewards
+  #     - --db-schema=gemini_3g_testnet_rewards
   #     - --workers=4
+  #     - --unsafe
   #     - --batch-size=30
   #     - --unfinalized-blocks=true
   #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://accounts-subquery-node:3000/ready"]
+  #     test: ["CMD", "curl", "-f", "http://staking-subquery-node:3000/ready"]
   #     interval: 3s
   #     timeout: 5s
   #     retries: 10
