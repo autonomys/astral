@@ -1,0 +1,5 @@
+- "!include gemini_3g_testnet_rewards_account_per_campaigns.yaml"
+- "!include gemini_3g_testnet_rewards_accounts.yaml"
+- "!include gemini_3g_testnet_rewards_campaigns.yaml"
+- "!include gemini_3g_testnet_rewards_rewards.yaml"
+- "!include gemini_3g_testnet_rewards_total_earnings.yaml"

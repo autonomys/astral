@@ -1,0 +1,3 @@
+table:
+  name: account_per_campaigns
+  schema: gemini_3g_testnet_rewards
