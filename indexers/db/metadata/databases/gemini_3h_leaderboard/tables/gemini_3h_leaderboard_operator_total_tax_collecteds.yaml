@@ -1,0 +1,3 @@
+table:
+  name: operator_total_tax_collecteds
+  schema: gemini_3h_leaderboard
