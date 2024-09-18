@@ -350,7 +350,7 @@ export async function handleOperatorRewardedEvent(
               rewardTimeTotalShare / nominatorShares;
 
             const nominatorReward = await checkAndGetNominatorReward(
-              nominator.id,
+              nominator.nominatorId,
               operatorId,
               nominatorRewardAmount,
               reward,

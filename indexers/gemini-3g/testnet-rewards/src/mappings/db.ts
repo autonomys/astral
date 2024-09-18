@@ -32,6 +32,7 @@ export async function checkAndGetCampaign(
     campaign = Campaign.create({
       ...defaultCampaign,
       id: campaignId,
+      campaignId,
       name,
       ...dateEntry(blockNumber),
     });
@@ -50,6 +51,7 @@ export async function checkAndGetAccount(
     account = Account.create({
       ...defaultAccount,
       id: accountId,
+      accountId,
       ...dateEntry(blockNumber),
     });
     await account.save();
@@ -85,11 +87,12 @@ export async function checkAndGetDomain(
   domainId: string,
   blockNumber: number
 ): Promise<Domain> {
-  const domains = await Domain.getByDomainId(domainId);
+  const id = `${domainId}`;
+  const domains = await Domain.getByDomainId(id);
   let domain = domains ? domains[0] : undefined;
   if (!domain) {
     domain = Domain.create({
-      id: randomUUID(),
+      id,
       domainId,
       ...dateEntry(blockNumber),
     });
@@ -104,11 +107,12 @@ export async function checkAndGetOperator(
   accountId: string,
   blockNumber: number
 ): Promise<Operator> {
-  const operators = await Operator.getByOperatorId(operatorId);
+  const id = `${operatorId}`;
+  const operators = await Operator.getByOperatorId(id);
   let operator = operators ? operators[0] : undefined;
   if (!operator) {
     operator = Operator.create({
-      id: randomUUID(),
+      id,
       operatorId,
       domainId,
       accountId,
@@ -125,7 +129,7 @@ export async function checkAndGetOperatorState(
   currentTotalStake: bigint,
   blockNumber: number
 ): Promise<OperatorState> {
-  const id = `${operatorId}-${blockNumber}`;
+  const id = `${blockNumber}-${operatorId}`;
   let operatorState = await OperatorState.get(id);
   if (!operatorState) {
     operatorState = OperatorState.create({
@@ -170,7 +174,7 @@ export async function checkAndGetDeposit(
   amount: bigint,
   blockNumber: number
 ): Promise<Deposit> {
-  const id = `${accountId}-${domainId}-${operatorId}-${nominatorId}-${blockNumber}`;
+  const id = `${blockNumber}-${nominatorId}`;
   const deposits = await Deposit.getByFields([["id", "=", id]]);
   let deposit = deposits ? deposits[0] : undefined;
   if (!deposit) {
@@ -194,7 +198,7 @@ export async function checkAndGetNominatorDepositState(
   shares: bigint,
   blockNumber: number
 ): Promise<NominatorDepositState> {
-  const id = `${operatorId}-${accountId}-${blockNumber}`;
+  const id = `${blockNumber}-${operatorId}-${accountId}`;
   let nominatorDepositState = await NominatorDepositState.get(id);
   if (!nominatorDepositState) {
     nominatorDepositState = NominatorDepositState.create({
@@ -215,7 +219,7 @@ export async function checkAndGetOperatorReward(
   amount: bigint,
   blockNumber: number
 ): Promise<OperatorReward> {
-  const id = `${operatorId}-${blockNumber}`;
+  const id = `${blockNumber}-${operatorId}`;
   const operatorRewards = await OperatorReward.getByFields([["id", "=", id]]);
   let operatorReward = operatorRewards ? operatorRewards[0] : undefined;
   if (!operatorReward) {
@@ -239,7 +243,7 @@ export async function checkAndGetNominatorReward(
   nominatorCurrentShares: bigint,
   blockNumber: number
 ): Promise<NominatorReward> {
-  const id = `${nominatorId}-${operatorId}-${blockNumber}`;
+  const id = `${blockNumber}-${nominatorId}`;
   const nominatorRewards = await NominatorReward.getByFields([["id", "=", id]]);
   let nominatorReward = nominatorRewards ? nominatorRewards[0] : undefined;
   if (!nominatorReward) {
