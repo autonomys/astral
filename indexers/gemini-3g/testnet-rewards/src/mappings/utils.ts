@@ -9,6 +9,11 @@ export const stringify = (value: any) =>
     typeof value === "bigint" ? value.toString() : value
   );
 
+export const dateEntry = (blockNumber: number) => ({
+  createdAt: blockNumber,
+  updatedAt: blockNumber,
+});
+
 export const getBlockNumberFromBlock = (block: SubstrateBlock): number => {
   try {
     return block.block.header.number.toNumber();

@@ -70,9 +70,6 @@ type Verification @entity {
 
 type Domain @entity {
   id: ID!
-  totalDeposits: BigInt!
-  totalWithdrawn: BigInt!
-  totalRewards: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -100,11 +97,38 @@ type Nominator @entity {
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
-  currentTotalShares: BigInt!
-  currentTotalStake: BigInt!
-  totalDeposits: BigInt!
-  totalWithdrawn: BigInt!
-  totalRewards: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type NominatorDepositState @entity {
+  id: ID!
+  accountId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  shares: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Deposit @entity {
+  id: ID!
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  amount: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type Withdrawal @entity {
+  id: ID!
+  accountId: String! @index
+  domainId: String! @index
+  operatorId: String! @index
+  nominatorId: String! @index
+  amount: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }

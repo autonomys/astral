@@ -1,29 +1,25 @@
-import { deposits, domains, operators } from "@autonomys/auto-consensus";
+import { domains } from "@autonomys/auto-consensus";
 import {
   SubstrateBlock,
   SubstrateEvent,
   SubstrateExtrinsic,
 } from "@subql/types";
+import { CampaignIds, campaigns } from "../constants/campaign";
+import { Campaign, Nominator, Reward, StaticData } from "../types";
 import {
-  CampaignIds,
-  campaigns,
-  defaultAccount,
-  defaultAccountPerCampaign,
-  defaultCampaign,
-} from "../constants/campaign";
-import {
-  Account,
-  AccountPerCampaign,
-  Campaign,
-  Domain,
-  Nominator,
-  NominatorReward,
-  Operator,
-  OperatorReward,
-  OperatorState,
-  Reward,
-  StaticData,
-} from "../types";
+  checkAndGetAccount,
+  checkAndGetAccountPerCampaign,
+  checkAndGetCampaign,
+  checkAndGetDeposit,
+  checkAndGetDomain,
+  checkAndGetNominator,
+  checkAndGetNominatorDepositState,
+  checkAndGetNominatorReward,
+  checkAndGetOperator,
+  checkAndGetOperatorReward,
+  checkAndGetOperatorState,
+  checkAndGetReward,
+} from "./db";
 import {
   getBlockNumberFromBlock,
   getBlockNumberFromEvent,
@@ -81,38 +77,37 @@ export async function updateData(blockNumber: number) {
     )?.owner;
     logger.info("owner: " + stringify(owner));
 
-    const operatorState = await checkAndGetOperatorState(
+    await checkAndGetOperatorState(
       operatorId,
-      BigInt(0),
-      BigInt(0),
+      BigInt(currentTotalStake),
+      BigInt(totalShares),
       blockNumber
     );
-    if (operatorState) {
-      operatorState.currentTotalShares = BigInt(totalShares);
-      operatorState.currentTotalStake = BigInt(currentTotalStake);
-      await operatorState.save();
-      logger.info("Operator saved: " + operatorId);
-    } else logger.warn("Operator not found: " + operatorId);
   });
 
   _nominators.forEach(async ([_header, _data]) => {
-    const [operatorId, nominatorId] = _header.toHuman() as [string, string];
+    const [operatorId, accountId] = _header.toHuman() as [string, string];
     logger.info("operatorId: " + stringify(operatorId));
-    logger.info("nominatorId: " + stringify(nominatorId));
+    logger.info("accountId: " + stringify(accountId));
 
     const { shares } = _data.toPrimitive() as {
       shares: string;
     };
     logger.info("shares: " + stringify(shares));
 
-    const nominator = await checkAndGetNominator(
-      nominatorId,
-      "0",
+    const nominator = await Nominator.get(`${operatorId}-${accountId}`);
+    logger.info("nominator: " + stringify(nominator));
+    const __nominator = await Nominator.getByOperatorId(operatorId);
+    logger.info("__nominator: " + stringify(__nominator));
+    if (nominator) logger.info("nominator: " + stringify(nominator));
+    else logger.info("nominator not found");
+
+    await checkAndGetNominatorDepositState(
       operatorId,
+      accountId,
+      BigInt(shares),
       blockNumber
     );
-    nominator.currentTotalShares = BigInt(shares);
-    await nominator.save();
   });
 }
 
@@ -150,25 +145,18 @@ export async function handleFarmerEvent(event: SubstrateEvent): Promise<void> {
     },
   } = event;
 
-  const accountPerCampaign = await checkAndGetAccountPerCampaign(
+  await checkAndGetAccountPerCampaign(
     rewardAddress.toString(),
     CampaignIds.Gemini3g,
     blockNumber
   );
-  accountPerCampaign.totalEarningsAmountTestnetToken += BigInt(
-    rewardAmount.toString()
+
+  await checkAndGetReward(
+    rewardAddress.toString(),
+    CampaignIds.Gemini3g,
+    BigInt(rewardAmount.toString()),
+    blockNumber
   );
-  accountPerCampaign.updatedAt = blockNumber;
-
-  const reward = Reward.create({
-    id: `${event.block.block.header.number.toNumber()}-${event.idx}`,
-    campaignId: CampaignIds.Gemini3g,
-    accountId: rewardAddress.toString(),
-    amount: BigInt(rewardAmount.toString()),
-    ...dateEntry(blockNumber),
-  });
-
-  await Promise.all([accountPerCampaign.save(), reward.save()]);
 }
 
 export async function handleDomainInstantiatedEvent(
@@ -187,9 +175,7 @@ export async function handleDomainInstantiatedEvent(
     throw new Error("No extrinsic found");
   }
 
-  const domain = await checkAndGetDomain(domainId.toString(), blockNumber);
-
-  await Promise.all([domain.save()]);
+  await checkAndGetDomain(domainId.toString(), blockNumber);
 }
 
 export async function handleOperatorRegisteredEvent(
@@ -217,30 +203,23 @@ export async function handleOperatorRegisteredEvent(
   const amount = args.amount;
   logger.info("amount: " + amount.toString());
 
-  const domain = await checkAndGetDomain(domainId.toString(), blockNumber);
+  await checkAndGetDomain(domainId.toString(), blockNumber);
 
-  const account = await checkAndGetAccount(signer, blockNumber);
+  await checkAndGetAccount(signer, blockNumber);
 
-  const operator = await checkAndGetOperator(
+  await checkAndGetOperator(
     operatorId.toString(),
     domainId.toString(),
     signer,
     blockNumber
   );
 
-  const nominator = await checkAndGetNominator(
+  await checkAndGetNominator(
     signer,
     domainId.toString(),
     operatorId.toString(),
     blockNumber
   );
-
-  await Promise.all([
-    domain.save(),
-    account.save(),
-    operator.save(),
-    nominator.save(),
-  ]);
 }
 
 export async function handleOperatorDeregisteredEvent(
@@ -255,21 +234,6 @@ export async function handleOperatorDeregisteredEvent(
     extrinsic,
   } = event;
   logger.info(`New event (${method}) at block ${blockNumber.toString()}`);
-
-  if (!extrinsic) {
-    logger.info("No extrinsic found");
-    throw new Error("No extrinsic found");
-  }
-
-  const operator = await checkAndGetOperator(
-    operatorId.toString(),
-    "0",
-    "0x",
-    blockNumber
-  );
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-
-  await Promise.all([domain.save(), operator.save()]);
 }
 
 export async function handleOperatorNominatedEvent(
@@ -313,13 +277,6 @@ export async function handleOperatorNominatedEvent(
     operatorId.toString(),
     blockNumber
   );
-
-  await Promise.all([
-    domain.save(),
-    account.save(),
-    operator.save(),
-    nominator.save(),
-  ]);
 }
 
 export async function handleWithdrewStakeEvent(
@@ -378,10 +335,8 @@ export async function handleOperatorRewardedEvent(
     BigInt(0),
     blockNumber
   );
-  //operatorState.totalRewards += reward;
 
   const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-  domain.totalRewards += reward;
 
   const operatorReward = await checkAndGetOperatorReward(
     operatorId,
@@ -389,10 +344,10 @@ export async function handleOperatorRewardedEvent(
     blockNumber
   );
 
-  await Promise.all([operator.save(), domain.save(), operatorReward.save()]);
-
   if (operatorState.currentTotalShares >= BigInt(0)) {
-    const nominators = await Nominator.getByOperatorId(operatorId);
+    logger.warn("skipping nominator reward wip");
+
+    /* const nominators = await Nominator.getByOperatorId(operatorId);
     if (nominators) {
       // logger.info("nominators: " + stringify(nominators));
       for (const nominator of nominators) {
@@ -409,231 +364,13 @@ export async function handleOperatorRewardedEvent(
             nominatorRewardAmount,
             blockNumber
           );
-          await nominatorReward.save();
         } else
           logger.warn(
             "Current total shares is less than reward * nominator.currentTotalShares"
           );
       }
-    }
+    }*/
   } else logger.warn("Current total shares is 0");
-}
-
-function dateEntry(blockNumber: number) {
-  return {
-    createdAt: blockNumber,
-    updatedAt: blockNumber,
-  };
-}
-
-async function checkAndGetCampaign(
-  campaignId: CampaignIds,
-  name: string,
-  blockNumber: number
-): Promise<Campaign> {
-  const campaigns = await Campaign.getByFields([["id", "=", campaignId]]);
-  let campaign = campaigns ? campaigns[0] : undefined;
-  if (!campaign) {
-    campaign = Campaign.create({
-      ...defaultCampaign,
-      id: campaignId,
-      name,
-      ...dateEntry(blockNumber),
-    });
-  }
-  return campaign;
-}
-
-async function checkAndGetAccount(
-  accountId: string,
-  blockNumber: number
-): Promise<Account> {
-  const accounts = await Account.getByFields([["id", "=", accountId]]);
-  let account = accounts ? accounts[0] : undefined;
-  if (!account) {
-    account = Account.create({
-      ...defaultAccount,
-      id: accountId,
-      ...dateEntry(blockNumber),
-    });
-  }
-  return account;
-}
-
-async function checkAndGetAccountPerCampaign(
-  accountId: string,
-  campaignId: CampaignIds,
-  blockNumber: number
-): Promise<AccountPerCampaign> {
-  const id = accountId + "-" + campaignId;
-  const accountPerCampaigns = await AccountPerCampaign.getByFields([
-    ["id", "=", id],
-  ]);
-  let accountPerCampaign = accountPerCampaigns
-    ? accountPerCampaigns[0]
-    : undefined;
-  if (!accountPerCampaign) {
-    accountPerCampaign = AccountPerCampaign.create({
-      ...defaultAccountPerCampaign,
-      id,
-      accountId,
-      campaignId,
-      ...dateEntry(blockNumber),
-    });
-  }
-  return accountPerCampaign;
-}
-
-async function checkAndGetDomain(
-  domainId: string,
-  blockNumber: number
-): Promise<Domain> {
-  const domains = await Domain.getByFields([["id", "=", domainId]]);
-  let domain = domains ? domains[0] : undefined;
-  if (!domain) {
-    domain = Domain.create({
-      id: domainId,
-      totalDeposits: BigInt(0),
-      totalWithdrawn: BigInt(0),
-      totalRewards: BigInt(0),
-      ...dateEntry(blockNumber),
-    });
-  }
-  return domain;
-}
-
-async function checkAndGetOperator(
-  operatorId: string,
-  domainId: string,
-  accountId: string,
-  blockNumber: number
-): Promise<Operator> {
-  logger.info(
-    "checkAndGetOperator is called with: " +
-      stringify({ operatorId, domainId, accountId, blockNumber })
-  );
-  const id = `${operatorId}`;
-  logger.info("id: " + id);
-
-  let operator = await Operator.get(id);
-  logger.info("operator: " + stringify(operator));
-
-  if (!operator) {
-    logger.info("Creating new operator");
-    operator = Operator.create({
-      id,
-      operatorId,
-      domainId,
-      accountId,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return operator;
-}
-
-async function checkAndGetOperatorState(
-  operatorId: string,
-  currentTotalShares: bigint,
-  currentTotalStake: bigint,
-  blockNumber: number
-): Promise<OperatorState> {
-  logger.info(
-    "checkAndGetOperatorState is called with: " +
-      stringify({
-        operatorId,
-        currentTotalShares,
-        currentTotalStake,
-        blockNumber,
-      })
-  );
-  const id = `${operatorId}-${blockNumber}`;
-  logger.info("id: " + id);
-
-  let operatorState = await OperatorState.get(id);
-  logger.info("operatorState: " + stringify(operatorState));
-
-  if (!operatorState) {
-    logger.info("Creating new operatorState");
-    operatorState = OperatorState.create({
-      id,
-      operatorId,
-      currentTotalShares,
-      currentTotalStake,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return operatorState;
-}
-
-async function checkAndGetNominator(
-  accountId: string,
-  domainId: string,
-  operatorId: string,
-  blockNumber: number
-): Promise<Nominator> {
-  const id = `${operatorId}-${accountId}`;
-  const nominatorRewards = await Nominator.getByFields([["id", "=", id]]);
-  let nominator = nominatorRewards ? nominatorRewards[0] : undefined;
-  if (!nominator) {
-    nominator = Nominator.create({
-      id,
-      accountId,
-      domainId,
-      operatorId,
-      currentTotalShares: BigInt(0),
-      currentTotalStake: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalWithdrawn: BigInt(0),
-      totalRewards: BigInt(0),
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return nominator;
-}
-
-async function checkAndGetOperatorReward(
-  operatorId: string,
-  amount: bigint,
-  blockNumber: number
-): Promise<OperatorReward> {
-  const id = `${operatorId}-${blockNumber}`;
-  const operatorRewards = await OperatorReward.getByFields([["id", "=", id]]);
-  let operatorReward = operatorRewards ? operatorRewards[0] : undefined;
-  if (!operatorReward) {
-    operatorReward = OperatorReward.create({
-      id,
-      operatorId,
-      amount,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return operatorReward;
-}
-
-async function checkAndGetNominatorReward(
-  nominatorId: string,
-  operatorId: string,
-  amount: bigint,
-  blockNumber: number
-): Promise<NominatorReward> {
-  const id = `${nominatorId}-${operatorId}-${blockNumber}`;
-  const nominatorRewards = await NominatorReward.getByFields([["id", "=", id]]);
-  let nominatorReward = nominatorRewards ? nominatorRewards[0] : undefined;
-  if (!nominatorReward) {
-    nominatorReward = NominatorReward.create({
-      id,
-      nominatorId,
-      operatorId,
-      amount,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return nominatorReward;
 }
 
 export const loadStaticData = async () => {
@@ -696,13 +433,6 @@ export const loadStaticData = async () => {
   //             const account = await checkAndGetAccount(row.accountId, 0);
   //             account.totalCampaignsParticipated += BigInt(1);
   //             account.totalEarningsAmountTestnetToken += amount;
-
-  //             await Promise.all([
-  //               _campaign.save(),
-  //               account.save(),
-  //               accountPerCampaign.save(),
-  //               reward.save(),
-  //             ]);
   //           }
   //         }
   //       }
