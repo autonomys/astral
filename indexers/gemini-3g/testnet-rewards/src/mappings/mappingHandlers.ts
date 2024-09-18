@@ -158,7 +158,7 @@ export async function handleDomainInstantiatedEvent(
     throw new Error("No extrinsic found");
   }
 
-  const args = getExtrinsicCall(extrinsic);
+  const { args } = getSignedExtrinsicCallArgs(extrinsic);
   logger.info("args: " + stringify(args));
 
   await checkAndGetDomain(domainId.toString(), blockNumber);
@@ -298,11 +298,12 @@ export async function handleOperatorRewardedEvent(
       data: [_operatorId, _reward],
     },
   } = event;
-  if (_reward.toString() !== "0")
+  if (_reward.toString() !== "0") {
     logger.info(
       `New event (${method}) at block ${blockNumber.toString()} ${_reward.toString()}`
     );
-  else return;
+    logger.info("blockHash: " + event.block.block.header.hash.toString());
+  } else return;
   const operatorId = _operatorId.toString();
   const reward = BigInt(_reward.toString());
 
@@ -317,13 +318,16 @@ export async function handleOperatorRewardedEvent(
 
   await checkAndGetOperatorReward(operatorId, reward, blockNumber);
 
-  const [_operators, _nominators] = await Promise.all([
+  logger.info("operatorId:--: " + stringify(operatorId));
+  const [_operators, _nominators, _nominatorCount] = await Promise.all([
     api.query.domains.operators.entries(),
-    api.query.domains.nominators.entries(),
+    api.query.domains.nominators.entries([operatorId]),
+    api.query.domains.nominatorCount.entries(),
   ]);
 
   logger.info("_operators" + stringify(_operators));
   logger.info("_nominators" + stringify(_nominators));
+  logger.info("_nominatorCount " + stringify(_nominatorCount));
 
   const operatorState = _operators
     .map(([_header, _data]) => {
@@ -354,20 +358,22 @@ export async function handleOperatorRewardedEvent(
     .find((op) => op.operatorId === operatorId);
   logger.info("___operators" + stringify(operatorState));
 
+  logger.info("operatorId: " + operatorId);
   if (operatorState) {
     const operatorTotalShares = BigInt(operatorState.totalShares);
     if (operatorTotalShares >= BigInt(0)) {
-      _nominators.forEach(async ([_header, _data]) => {
+      _nominators.forEach(async ([_header, _data]: any) => {
         const [_nOpId, accountId] = _header.toHuman() as [string, string];
+        logger.info("_nOpId: " + _nOpId);
         if (operatorId !== _nOpId) return;
         const { shares } = _data.toPrimitive() as { shares: string };
         const nominatorShares = BigInt(shares);
 
         logger.info(
-          "operatorId: " +
+          "nominatorId: " +
+            stringify({ _nOpId, accountId }) +
+            " _nOpId: " +
             stringify({ _nOpId }) +
-            " accountId: " +
-            stringify({ accountId }) +
             " shares: " +
             stringify({ shares })
         );
