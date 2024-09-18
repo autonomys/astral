@@ -4,6 +4,7 @@
 
 type Account @entity {
   id: ID!
+  accountId: ID!
   totalCampaignsParticipated: BigInt!
   totalEarningsAmountTestnetToken: BigInt!
   totalEarningsPercentageTestnetToken: BigInt!
@@ -16,6 +17,7 @@ type Account @entity {
 
 type Campaign @entity {
   id: ID!
+  campaignId: ID!
   name: String!
   totalEarningsAmountTestnetToken: BigInt!
   totalEarningsPercentageTestnetToken: BigInt!
