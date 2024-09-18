@@ -13,7 +13,8 @@
     "dev": "lerna run codegen && lerna run build && docker compose -f ../docker-compose.yml up --remove-orphans",
     "build": "lerna run build",
     "codegen": "lerna run codegen",
-    "prepack": "lerna run prepack"
+    "prepack": "lerna run prepack",
+    "bootstrap": "lerna run bootstrap"
   },
   "dependencies": {
     "lerna": "^8.1.8"

@@ -16,10 +16,17 @@ const project: SubstrateProject = {
   version: "0.0.1",
   name: "autonomys-gemini-3g-testnet-rewards",
   description: "Autonomys Gemini 3G Testnet - Testnet Rewards",
+  repository: "https://github.com/autonomys/astral",
   runner: {
     node: {
       name: "@subql/node",
-      version: ">=3.0.1",
+      version: "*",
+      options: {
+        historical: true,
+        unsafe: false,
+        unfinalizedBlocks: false,
+        skipTransactions: false,
+      },
     },
     query: {
       name: "@subql/query",
@@ -45,8 +52,13 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 1,
-      endBlock: 1040169, // End of Gemixni 3G campaign
+      //  startBlock: 1,
+      startBlock: 102535, // 1st: DomainInstantiated
+      //  startBlock: 102891, // 1st: OperatorRegistered
+      //  startBlock: 119859, // 1st: OperatorNominated
+      //  startBlock: 129241, // 1st: OperatorDeregistered
+      //  startBlock: 144368, // 1st: WithdrewStake
+      //  endBlock: 1040169, // End of Gemixni 3G campaign
       mapping: {
         file: "./dist/index.js",
         handlers: [
@@ -78,7 +90,7 @@ const project: SubstrateProject = {
           // Operator
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
+            handler: "handleDomainInstantiatedEvent",
             filter: {
               module: "domains",
               method: "DomainInstantiated",
@@ -86,15 +98,7 @@ const project: SubstrateProject = {
           },
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorSwitchedDomain",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
+            handler: "handleOperatorDeregisteredEvent",
             filter: {
               module: "domains",
               method: "OperatorDeregistered",
@@ -102,7 +106,7 @@ const project: SubstrateProject = {
           },
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
+            handler: "handleWithdrewStakeEvent",
             filter: {
               module: "domains",
               method: "WithdrewStake",
@@ -110,7 +114,7 @@ const project: SubstrateProject = {
           },
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
+            handler: "handleOperatorRegisteredEvent",
             filter: {
               module: "domains",
               method: "OperatorRegistered",
@@ -118,7 +122,7 @@ const project: SubstrateProject = {
           },
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
+            handler: "handleOperatorNominatedEvent",
             filter: {
               module: "domains",
               method: "OperatorNominated",
@@ -126,18 +130,10 @@ const project: SubstrateProject = {
           },
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
+            handler: "handleOperatorRewardedEvent",
             filter: {
               module: "domains",
               method: "OperatorRewarded",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorSlashed",
             },
           },
         ],

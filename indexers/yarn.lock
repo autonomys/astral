@@ -14,10 +14,26 @@
   dependencies:
     "@autonomys/auto-utils" "^0.4.0"
 
+"@autonomys/auto-consensus@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.5.0.tgz#df9811f25631cffabdc5eb451805c478a6d5ca29"
+  integrity sha512-VjsemtBi86bCBBzqd8biYFfiw6k3W4LaxzTNr1CCY2uwkihj+PW9MEnA+3bgNzGJ76a0tv4BWP3GGaTNe8OXVg==
+  dependencies:
+    "@autonomys/auto-utils" "^0.5.0"
+
 "@autonomys/auto-utils@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.4.0.tgz#3cb38bcc23cb7b7780015447cd5cbdc765fba3b8"
   integrity sha512-YAOHOq+uFBOZ8Pqw8nogKyyk9xsQDxeTa3xveDweYKDMNQnMtvWZDI2mFPtigUuNcLyqVPEIlz42SIp4K17nPA==
+  dependencies:
+    "@polkadot/api" "^11.2.1"
+    "@polkadot/extension-dapp" "^0.47.5"
+    fs "^0.0.1-security"
+
+"@autonomys/auto-utils@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.5.0.tgz#0f5d173a66daa4ae0a9c25f7e27c6fd52c1f2ab0"
+  integrity sha512-nU/VsBQcUY4xpyIQ1vA6rFJtPApmOKaKtlcYp4Z/XW/LdPgUKuZUCmWSBTFUZus+sDa4zRvzMIUhrj2JZfG3gg==
   dependencies:
     "@polkadot/api" "^11.2.1"
     "@polkadot/extension-dapp" "^0.47.5"
