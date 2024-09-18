@@ -5,12 +5,17 @@ import {
   SubstrateExtrinsic,
 } from "@subql/types";
 import { CampaignIds, campaigns } from "../constants/campaign";
-import { Campaign, Nominator, Reward, StaticData } from "../types";
+import {
+  Campaign,
+  Nominator,
+  NominatorDepositState,
+  OperatorState,
+  StaticData,
+} from "../types";
 import {
   checkAndGetAccount,
   checkAndGetAccountPerCampaign,
   checkAndGetCampaign,
-  checkAndGetDeposit,
   checkAndGetDomain,
   checkAndGetNominator,
   checkAndGetNominatorDepositState,
@@ -23,6 +28,7 @@ import {
 import {
   getBlockNumberFromBlock,
   getBlockNumberFromEvent,
+  getExtrinsicCall,
   getSignedExtrinsicCallArgs,
   stringify,
 } from "./utils";
@@ -35,21 +41,15 @@ export async function updateData(blockNumber: number) {
       api.query.domains.operatorIdOwner.entries(),
       api.query.domains.nominators.entries(),
     ]);
-  logger.info("_domains: " + stringify(_domains));
-  logger.info("_operators: " + stringify(_operators));
-  logger.info("_operatorIdOwner: " + stringify(_operatorIdOwner));
-  logger.info("_nominators: " + stringify(_nominators));
 
   const operatorIdOwner = _operatorIdOwner.map(([key, value]) => {
     const [operatorId] = key.toHuman() as [string];
     const owner = value.toHuman();
     return { operatorId, owner };
   });
-  logger.info("operatorIdOwner: " + stringify(operatorIdOwner));
 
   _operators.forEach(async ([_header, _data]) => {
     const [operatorId] = _header.toHuman() as [string];
-    logger.info("operatorId: " + stringify(operatorId));
 
     const { currentDomainId, currentTotalStake, totalShares } =
       _data.toPrimitive() as {
@@ -63,20 +63,17 @@ export async function updateData(blockNumber: number) {
         totalShares: string;
         status: string;
       };
-    logger.info(
-      "operatorData: " +
-        stringify({
-          currentDomainId,
-          currentTotalStake,
-          totalShares,
-        })
-    );
 
     const owner = operatorIdOwner.find(
       (operator) => operator.operatorId === operatorId
     )?.owner;
-    logger.info("owner: " + stringify(owner));
 
+    await checkAndGetOperator(
+      operatorId,
+      currentDomainId.toString(),
+      owner?.toString() || "0x",
+      blockNumber
+    );
     await checkAndGetOperatorState(
       operatorId,
       BigInt(currentTotalStake),
@@ -87,21 +84,9 @@ export async function updateData(blockNumber: number) {
 
   _nominators.forEach(async ([_header, _data]) => {
     const [operatorId, accountId] = _header.toHuman() as [string, string];
-    logger.info("operatorId: " + stringify(operatorId));
-    logger.info("accountId: " + stringify(accountId));
+    const { shares } = _data.toPrimitive() as { shares: string };
 
-    const { shares } = _data.toPrimitive() as {
-      shares: string;
-    };
-    logger.info("shares: " + stringify(shares));
-
-    const nominator = await Nominator.get(`${operatorId}-${accountId}`);
-    logger.info("nominator: " + stringify(nominator));
-    const __nominator = await Nominator.getByOperatorId(operatorId);
-    logger.info("__nominator: " + stringify(__nominator));
-    if (nominator) logger.info("nominator: " + stringify(nominator));
-    else logger.info("nominator not found");
-
+    await checkAndGetNominator(accountId, operatorId, "-1", blockNumber);
     await checkAndGetNominatorDepositState(
       operatorId,
       accountId,
@@ -123,11 +108,9 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
         checkAndGetCampaign(campaign.id, campaign.name, blockNumber)
       )
     );
-    logger.info(`campaignsCreated: ${campaignsCreated}`);
     await Promise.all([campaignsCreated.map((campaign) => campaign.save())]);
 
     const staticDataAdded = await StaticData.get("0");
-    logger.info(`staticDataAdded: ${staticDataAdded}`);
     if (!staticDataAdded || staticDataAdded.added === false)
       await loadStaticData();
   }
@@ -175,6 +158,9 @@ export async function handleDomainInstantiatedEvent(
     throw new Error("No extrinsic found");
   }
 
+  const args = getExtrinsicCall(extrinsic);
+  logger.info("args: " + stringify(args));
+
   await checkAndGetDomain(domainId.toString(), blockNumber);
 }
 
@@ -216,8 +202,8 @@ export async function handleOperatorRegisteredEvent(
 
   await checkAndGetNominator(
     signer,
-    domainId.toString(),
     operatorId.toString(),
+    domainId.toString(),
     blockNumber
   );
 }
@@ -273,8 +259,8 @@ export async function handleOperatorNominatedEvent(
 
   const nominator = await checkAndGetNominator(
     signer,
-    operator.domainId,
     operatorId.toString(),
+    operator.domainId,
     blockNumber
   );
 }
@@ -312,12 +298,11 @@ export async function handleOperatorRewardedEvent(
       data: [_operatorId, _reward],
     },
   } = event;
-  logger.info(
-    `New event (${method}) at block ${blockNumber.toString()} ${
-      _reward.toString() === "0" ? " (skipped/no-reward)" : _reward.toString()
-    }`
-  );
-  if (_reward.toString() === "0") return;
+  if (_reward.toString() !== "0")
+    logger.info(
+      `New event (${method}) at block ${blockNumber.toString()} ${_reward.toString()}`
+    );
+  else return;
   const operatorId = _operatorId.toString();
   const reward = BigInt(_reward.toString());
 
@@ -329,47 +314,58 @@ export async function handleOperatorRewardedEvent(
     "0x",
     blockNumber
   );
-  const operatorState = await checkAndGetOperatorState(
-    operatorId,
-    BigInt(0),
-    BigInt(0),
-    blockNumber
-  );
 
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
+  await checkAndGetDomain(operator.domainId, blockNumber);
 
-  const operatorReward = await checkAndGetOperatorReward(
-    operatorId,
-    reward,
-    blockNumber
-  );
+  await checkAndGetOperatorReward(operatorId, reward, blockNumber);
+
+  const operatorStates = await OperatorState.getByOperatorId(operatorId);
+  if (!operatorStates) {
+    logger.warn("Operator states not found");
+    return;
+  }
+  const operatorState = operatorStates[0];
 
   if (operatorState.currentTotalShares >= BigInt(0)) {
-    logger.warn("skipping nominator reward wip");
+    const nominators = await Nominator.getByOperatorId(operatorId);
 
-    /* const nominators = await Nominator.getByOperatorId(operatorId);
     if (nominators) {
-      // logger.info("nominators: " + stringify(nominators));
       for (const nominator of nominators) {
-        const _nom = reward * nominator.currentTotalShares;
-        if (operatorState.currentTotalShares >= _nom) {
-          // logger.info("nominator: " + stringify(nominator));
-          const nominatorRewardAmount = _nom / operatorState.currentTotalShares;
-          logger.info(
-            "nominatorRewardAmount: " + nominatorRewardAmount.toString()
+        const nominatorDepositStates =
+          await NominatorDepositState.getByNominatorId(nominator.nominatorId);
+        if (nominatorDepositStates) {
+          const sortedNominatorDepositStates = nominatorDepositStates.sort(
+            (a, b) => b.updatedAt - a.updatedAt
           );
-          const nominatorReward = await checkAndGetNominatorReward(
-            nominator.id,
-            operatorId,
-            nominatorRewardAmount,
-            blockNumber
-          );
-        } else
-          logger.warn(
-            "Current total shares is less than reward * nominator.currentTotalShares"
-          );
+          const latestNominatorDepositState = sortedNominatorDepositStates[0];
+
+          const rewardTimeTotalShare =
+            reward * operatorState.currentTotalShares;
+          const nominatorShares = latestNominatorDepositState
+            ? latestNominatorDepositState.shares
+            : operatorState.currentTotalShares;
+
+          if (rewardTimeTotalShare >= nominatorShares) {
+            const nominatorRewardAmount =
+              rewardTimeTotalShare / nominatorShares;
+
+            const nominatorReward = await checkAndGetNominatorReward(
+              nominator.id,
+              operatorId,
+              nominatorRewardAmount,
+              reward,
+              operatorState.currentTotalShares,
+              nominatorShares,
+              blockNumber
+            );
+            logger.info("nominatorReward: " + nominatorReward.toString());
+          } else
+            logger.warn(
+              "Current total shares is less than reward * nominator.currentTotalShares"
+            );
+        }
       }
-    }*/
+    }
   } else logger.warn("Current total shares is 0");
 }
 

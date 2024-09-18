@@ -70,6 +70,7 @@ type Verification @entity {
 
 type Domain @entity {
   id: ID!
+  domainId: String! @index
   createdAt: Int! @index
   updatedAt: Int! @index
 }
@@ -94,6 +95,7 @@ type OperatorState @entity {
 
 type Nominator @entity {
   id: ID!
+  nominatorId: String! @index
   accountId: String! @index
   domainId: String! @index
   operatorId: String! @index
@@ -145,6 +147,9 @@ type NominatorReward @entity {
   id: ID!
   operatorId: String! @index
   nominatorId: String! @index
+  operatorReward: BigInt!
+  operatorCurrentTotalShares: BigInt!
+  nominatorCurrentShares: BigInt!
   amount: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index

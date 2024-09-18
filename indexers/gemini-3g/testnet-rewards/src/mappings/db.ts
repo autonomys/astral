@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import {
   CampaignIds,
   defaultAccount,
@@ -84,11 +85,12 @@ export async function checkAndGetDomain(
   domainId: string,
   blockNumber: number
 ): Promise<Domain> {
-  const domains = await Domain.getByFields([["id", "=", domainId]]);
+  const domains = await Domain.getByDomainId(domainId);
   let domain = domains ? domains[0] : undefined;
   if (!domain) {
     domain = Domain.create({
-      id: domainId,
+      id: randomUUID(),
+      domainId,
       ...dateEntry(blockNumber),
     });
     await domain.save();
@@ -102,20 +104,11 @@ export async function checkAndGetOperator(
   accountId: string,
   blockNumber: number
 ): Promise<Operator> {
-  logger.info(
-    "checkAndGetOperator is called with: " +
-      stringify({ operatorId, domainId, accountId, blockNumber })
-  );
-  const id = `${operatorId}`;
-  logger.info("id: " + id);
-
-  let operator = await Operator.get(id);
-  logger.info("operator: " + stringify(operator));
-
+  const operators = await Operator.getByOperatorId(operatorId);
+  let operator = operators ? operators[0] : undefined;
   if (!operator) {
-    logger.info("Creating new operator");
     operator = Operator.create({
-      id,
+      id: randomUUID(),
       operatorId,
       domainId,
       accountId,
@@ -132,23 +125,9 @@ export async function checkAndGetOperatorState(
   currentTotalStake: bigint,
   blockNumber: number
 ): Promise<OperatorState> {
-  logger.info(
-    "checkAndGetOperatorState is called with: " +
-      stringify({
-        operatorId,
-        currentTotalShares,
-        currentTotalStake,
-        blockNumber,
-      })
-  );
   const id = `${operatorId}-${blockNumber}`;
-  logger.info("id: " + id);
-
   let operatorState = await OperatorState.get(id);
-  logger.info("operatorState: " + stringify(operatorState));
-
   if (!operatorState) {
-    logger.info("Creating new operatorState");
     operatorState = OperatorState.create({
       id,
       operatorId,
@@ -163,16 +142,17 @@ export async function checkAndGetOperatorState(
 
 export async function checkAndGetNominator(
   accountId: string,
-  domainId: string,
   operatorId: string,
+  domainId: string,
   blockNumber: number
 ): Promise<Nominator> {
-  const id = `${operatorId}-${accountId}`;
-  const nominatorRewards = await Nominator.getByFields([["id", "=", id]]);
+  const nominatorId = `${operatorId}-${accountId}`;
+  const nominatorRewards = await Nominator.getByNominatorId(nominatorId);
   let nominator = nominatorRewards ? nominatorRewards[0] : undefined;
   if (!nominator) {
     nominator = Nominator.create({
-      id,
+      id: randomUUID(),
+      nominatorId,
       accountId,
       domainId,
       operatorId,
@@ -254,6 +234,9 @@ export async function checkAndGetNominatorReward(
   nominatorId: string,
   operatorId: string,
   amount: bigint,
+  operatorReward: bigint,
+  operatorCurrentTotalShares: bigint,
+  nominatorCurrentShares: bigint,
   blockNumber: number
 ): Promise<NominatorReward> {
   const id = `${nominatorId}-${operatorId}-${blockNumber}`;
@@ -265,6 +248,9 @@ export async function checkAndGetNominatorReward(
       nominatorId,
       operatorId,
       amount,
+      operatorReward,
+      operatorCurrentTotalShares,
+      nominatorCurrentShares,
       ...dateEntry(blockNumber),
     });
     await nominatorReward.save();
