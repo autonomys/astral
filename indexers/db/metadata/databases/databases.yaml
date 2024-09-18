@@ -1,3 +1,12 @@
+- name: gemini_3g_testnet_rewards
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL
+      isolation_level: read-committed
+      use_prepared_statements: false
+  tables: "!include gemini_3g_testnet_rewards/tables/tables.yaml"
 - name: gemini_3h_consensus
   kind: postgres
   configuration:
@@ -25,12 +34,3 @@
       isolation_level: read-committed
       use_prepared_statements: false
   tables: "!include gemini_3h_staking/tables/tables.yaml"
-- name: gemini_3g_testnet_rewards
-  kind: postgres
-  configuration:
-    connection_info:
-      database_url:
-        from_env: HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL
-      isolation_level: read-committed
-      use_prepared_statements: false
-  tables: "!include gemini_3g_testnet_rewards/tables/tables.yaml"

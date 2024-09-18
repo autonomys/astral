@@ -1,0 +1,3 @@
+table:
+  name: operator_states
+  schema: gemini_3g_testnet_rewards
