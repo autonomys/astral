@@ -7,10 +7,11 @@
   "workspaces": [
     "gemini-3h/*",
     "gemini-3g/*",
-    "db/*"
+    "db"
   ],
   "scripts": {
     "dev": "lerna run codegen && lerna run build && docker compose -f ../docker-compose.yml up --remove-orphans",
+    "prod": "lerna run codegen && lerna run build && docker compose -f ../docker-compose.yml  -f ../docker-compose.prod.yml up -d up --remove-orphans",
     "build": "lerna run build",
     "codegen": "lerna run codegen",
     "prepack": "lerna run prepack",
