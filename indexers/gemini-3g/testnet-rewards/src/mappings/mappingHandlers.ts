@@ -306,8 +306,6 @@ export async function handleOperatorRewardedEvent(
   const operatorId = _operatorId.toString();
   const reward = BigInt(_reward.toString());
 
-  await updateData(blockNumber);
-
   const operator = await checkAndGetOperator(
     operatorId,
     "0",
@@ -319,54 +317,79 @@ export async function handleOperatorRewardedEvent(
 
   await checkAndGetOperatorReward(operatorId, reward, blockNumber);
 
-  const operatorStates = await OperatorState.getByOperatorId(operatorId);
-  if (!operatorStates) {
-    logger.warn("Operator states not found");
-    return;
-  }
-  const operatorState = operatorStates[0];
+  const [_operators, _nominators] = await Promise.all([
+    api.query.domains.operators.entries(),
+    api.query.domains.nominators.entries(),
+  ]);
 
-  if (operatorState.currentTotalShares >= BigInt(0)) {
-    const nominators = await Nominator.getByOperatorId(operatorId);
+  logger.info("_operators" + stringify(_operators));
+  logger.info("_nominators" + stringify(_nominators));
 
-    if (nominators) {
-      for (const nominator of nominators) {
-        const nominatorDepositStates =
-          await NominatorDepositState.getByNominatorId(nominator.nominatorId);
-        if (nominatorDepositStates) {
-          const sortedNominatorDepositStates = nominatorDepositStates.sort(
-            (a, b) => b.updatedAt - a.updatedAt
+  const operatorState = _operators
+    .map(([_header, _data]) => {
+      const [operatorId] = _header.toHuman() as [string];
+
+      const { currentDomainId, currentTotalStake, totalShares } =
+        _data.toPrimitive() as {
+          signingKey: string;
+          currentDomainId: number;
+          nextDomainId: number;
+          minimumNominatorStake: string;
+          nominationTax: number;
+          currentTotalStake: string;
+          currentEpochRewards: number;
+          totalShares: string;
+          status: string;
+        };
+      logger.info(
+        "operatorId: " +
+          stringify({ operatorId }) +
+          " currentTotalStake: " +
+          stringify({ currentTotalStake }) +
+          " totalShares: " +
+          stringify({ totalShares })
+      );
+      return { operatorId, currentDomainId, currentTotalStake, totalShares };
+    })
+    .find((op) => op.operatorId === operatorId);
+  logger.info("___operators" + stringify(operatorState));
+
+  if (operatorState) {
+    const operatorTotalShares = BigInt(operatorState.totalShares);
+    if (operatorTotalShares >= BigInt(0)) {
+      _nominators.forEach(async ([_header, _data]) => {
+        const [_nOpId, accountId] = _header.toHuman() as [string, string];
+        if (operatorId !== _nOpId) return;
+        const { shares } = _data.toPrimitive() as { shares: string };
+        const nominatorShares = BigInt(shares);
+
+        logger.info(
+          "operatorId: " +
+            stringify({ _nOpId }) +
+            " accountId: " +
+            stringify({ accountId }) +
+            " shares: " +
+            stringify({ shares })
+        );
+        const rewardTimeTotalShare = reward * operatorTotalShares;
+
+        if (rewardTimeTotalShare >= nominatorShares) {
+          const nominatorRewardAmount = rewardTimeTotalShare / nominatorShares;
+
+          const nominatorReward = await checkAndGetNominatorReward(
+            `${operatorId}-${accountId}`,
+            operatorId,
+            nominatorRewardAmount,
+            reward,
+            operatorTotalShares,
+            nominatorShares,
+            blockNumber
           );
-          const latestNominatorDepositState = sortedNominatorDepositStates[0];
-
-          const rewardTimeTotalShare =
-            reward * operatorState.currentTotalShares;
-          const nominatorShares = latestNominatorDepositState
-            ? latestNominatorDepositState.shares
-            : operatorState.currentTotalShares;
-
-          if (rewardTimeTotalShare >= nominatorShares) {
-            const nominatorRewardAmount =
-              rewardTimeTotalShare / nominatorShares;
-
-            const nominatorReward = await checkAndGetNominatorReward(
-              nominator.nominatorId,
-              operatorId,
-              nominatorRewardAmount,
-              reward,
-              operatorState.currentTotalShares,
-              nominatorShares,
-              blockNumber
-            );
-            logger.info("nominatorReward: " + nominatorReward.toString());
-          } else
-            logger.warn(
-              "Current total shares is less than reward * nominator.currentTotalShares"
-            );
-        }
-      }
+          logger.info("nominatorReward: " + nominatorReward.toString());
+        } else logger.warn("Current total shares is 0");
+      });
     }
-  } else logger.warn("Current total shares is 0");
+  }
 }
 
 export const loadStaticData = async () => {
