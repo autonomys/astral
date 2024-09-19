@@ -1,12 +1,38 @@
 'use client'
 
+import { INTERNAL_ROUTES, Routes } from '@/constants'
+import { shortString } from '@/utils/string'
 import { WalletButton } from 'components/WalletButton'
 import AccountListDropdown from 'components/WalletButton/AccountListDropdown'
+import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
-import { FC } from 'react'
+import Link from 'next/link'
+import { FC, useCallback, useMemo } from 'react'
+import { useViewStates } from 'states/view'
+import { AccountIcon } from '../common/AccountIcon'
 
 export const RewardHistory: FC = () => {
-  const { actingAccount } = useWallet()
+  const { network } = useChains()
+  const { actingAccount, subspaceAccount } = useWallet()
+  const { mySubspaceWallets, addSubspaceWallet, removeSubspaceWallet } = useViewStates()
+
+  const isSubspaceWalletConnected = useMemo(
+    () => (subspaceAccount ? mySubspaceWallets.includes(subspaceAccount) : false),
+    [subspaceAccount, mySubspaceWallets],
+  )
+
+  const handleAddSubspaceWallet = useCallback(() => {
+    if (subspaceAccount && !isSubspaceWalletConnected) {
+      addSubspaceWallet(subspaceAccount)
+    }
+  }, [addSubspaceWallet, subspaceAccount, isSubspaceWalletConnected])
+
+  const handleRemoveSubspaceWallet = useCallback(() => {
+    if (subspaceAccount && isSubspaceWalletConnected) {
+      removeSubspaceWallet(subspaceAccount)
+    }
+  }, [removeSubspaceWallet, subspaceAccount, isSubspaceWalletConnected])
+
   return (
     <div className='w-full max-w-xl'>
       <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
@@ -30,6 +56,60 @@ export const RewardHistory: FC = () => {
             <div className='flex justify-center'>
               {!actingAccount ? <WalletButton /> : <AccountListDropdown />}
             </div>
+            {actingAccount && !subspaceAccount && (
+              <div className='flex justify-center'>
+                <span className='py-4 text-red-500'>
+                  Please connect a substrate-compatible wallet to view your rewards.
+                </span>
+              </div>
+            )}
+            {actingAccount && (
+              <div className='flex justify-center'>
+                <button
+                  className={`rounded-full px-6 py-2 font-semibold text-white ${
+                    isSubspaceWalletConnected
+                      ? 'cursor-not-allowed bg-blue-300'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  }`}
+                  onClick={handleAddSubspaceWallet}
+                  disabled={isSubspaceWalletConnected}
+                >
+                  ⚡ Connect more Wallets ⚡
+                </button>
+              </div>
+            )}
+            {isSubspaceWalletConnected && (
+              <div className='flex justify-center'>
+                <button
+                  className='rounded-full bg-red-600 px-6 py-2 font-semibold text-white hover:bg-red-700'
+                  onClick={handleRemoveSubspaceWallet}
+                >
+                  ⚡ Remove Wallet ⚡
+                </button>
+              </div>
+            )}
+
+            {mySubspaceWallets.length > 0 && (
+              <div className='mt-4 w-full px-4 py-2'>
+                <h2 className='pb-4 text-center text-xl font-semibold text-gray-800 dark:text-gray-200'>
+                  Connected Wallets
+                </h2>
+                <ul className='mt-2 list-inside list-disc space-y-4 text-gray-700 dark:text-gray-300'>
+                  {mySubspaceWallets.map((wallet) => (
+                    <div key={`${wallet}-account-id`} className='row flex items-center gap-3'>
+                      <AccountIcon address={wallet} size={26} theme='beachball' />
+                      <Link
+                        data-testid={`account-link-${wallet}`}
+                        href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, wallet)}
+                        className='hover:text-primaryAccent'
+                      >
+                        <div>{shortString(wallet)}</div>
+                      </Link>
+                    </div>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
