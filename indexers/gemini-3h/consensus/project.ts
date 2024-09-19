@@ -60,14 +60,6 @@ const project: SubstrateProject = {
             kind: SubstrateHandlerKind.Block,
             handler: "handleBlock",
           },
-          {
-            kind: SubstrateHandlerKind.Call,
-            handler: "handleCall",
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleEvent",
-          },
         ],
       },
     },
