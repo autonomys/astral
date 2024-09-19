@@ -1,3 +1,18 @@
 table:
   name: account_transfer_sender_total_values
   schema: gemini_3h_leaderboard
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - rank
+        - updated_at
+        - value
+        - id
+        - last_contribution_at
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
