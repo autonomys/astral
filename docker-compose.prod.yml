@@ -1,7 +1,16 @@
 version: "3"
 
+volumes:
+  db_data: {}
+
 services:
   postgres:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - type: bind
+        source: /home/ubuntu/postgresql/conf/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        read_only: true
     logging:
       driver: loki
       options:

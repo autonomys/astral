@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # Postgres Database
@@ -12,7 +12,6 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
-      #      - ./indexers/db/data/postgres:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
