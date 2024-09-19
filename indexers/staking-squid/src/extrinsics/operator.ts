@@ -173,7 +173,9 @@ export function processDeregisterOperator(
       cache.withdrawals.set(w.id, w);
 
       n.status = NominatorStatus.PENDING;
+      n.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
       n.totalWithdrawalsCount++;
+      n.totalEstimatedWithdrawals += estimatedAmount;
       n.updatedAt = blockNumber;
       cache.nominators.set(n.id, n);
 

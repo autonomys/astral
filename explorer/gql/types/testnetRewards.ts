@@ -1510,6 +1510,10 @@ export type Query_Root = {
   reward_aggregate: Reward_Aggregate;
   /** fetch data from the table: "reward" using primary key columns */
   reward_by_pk?: Maybe<Reward>;
+  /** fetch data from the table: "total_earnings" */
+  total_earnings: Array<Total_Earnings>;
+  /** fetch data from the table: "total_earnings" using primary key columns */
+  total_earnings_by_pk?: Maybe<Total_Earnings>;
 };
 
 
@@ -1670,6 +1674,20 @@ export type Query_RootReward_AggregateArgs = {
 
 
 export type Query_RootReward_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootTotal_EarningsArgs = {
+  distinct_on?: InputMaybe<Array<Total_Earnings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Total_Earnings_Order_By>>;
+  where?: InputMaybe<Total_Earnings_Bool_Exp>;
+};
+
+
+export type Query_RootTotal_Earnings_By_PkArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -1915,6 +1933,12 @@ export type Subscription_Root = {
   reward_by_pk?: Maybe<Reward>;
   /** fetch data from the table in a streaming manner: "reward" */
   reward_stream: Array<Reward>;
+  /** fetch data from the table: "total_earnings" */
+  total_earnings: Array<Total_Earnings>;
+  /** fetch data from the table: "total_earnings" using primary key columns */
+  total_earnings_by_pk?: Maybe<Total_Earnings>;
+  /** fetch data from the table in a streaming manner: "total_earnings" */
+  total_earnings_stream: Array<Total_Earnings>;
 };
 
 
@@ -2125,6 +2149,107 @@ export type Subscription_RootReward_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Reward_Stream_Cursor_Input>>;
   where?: InputMaybe<Reward_Bool_Exp>;
+};
+
+
+export type Subscription_RootTotal_EarningsArgs = {
+  distinct_on?: InputMaybe<Array<Total_Earnings_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Total_Earnings_Order_By>>;
+  where?: InputMaybe<Total_Earnings_Bool_Exp>;
+};
+
+
+export type Subscription_RootTotal_Earnings_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootTotal_Earnings_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Total_Earnings_Stream_Cursor_Input>>;
+  where?: InputMaybe<Total_Earnings_Bool_Exp>;
+};
+
+/** columns and relationships of "total_earnings" */
+export type Total_Earnings = {
+  __typename?: 'total_earnings';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  total_earnings_amount_atc_token: Scalars['numeric']['output'];
+  total_earnings_amount_testnet_token: Scalars['numeric']['output'];
+  total_earnings_percentage_atc_token: Scalars['numeric']['output'];
+  total_earnings_percentage_testnet_token: Scalars['numeric']['output'];
+  total_supply_atc_token: Scalars['numeric']['output'];
+  updated_at: Scalars['Int']['output'];
+};
+
+/** Boolean expression to filter rows from the table "total_earnings". All fields are combined with a logical 'AND'. */
+export type Total_Earnings_Bool_Exp = {
+  _and?: InputMaybe<Array<Total_Earnings_Bool_Exp>>;
+  _not?: InputMaybe<Total_Earnings_Bool_Exp>;
+  _or?: InputMaybe<Array<Total_Earnings_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  total_earnings_amount_atc_token?: InputMaybe<Numeric_Comparison_Exp>;
+  total_earnings_amount_testnet_token?: InputMaybe<Numeric_Comparison_Exp>;
+  total_earnings_percentage_atc_token?: InputMaybe<Numeric_Comparison_Exp>;
+  total_earnings_percentage_testnet_token?: InputMaybe<Numeric_Comparison_Exp>;
+  total_supply_atc_token?: InputMaybe<Numeric_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "total_earnings". */
+export type Total_Earnings_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  total_earnings_amount_atc_token?: InputMaybe<Order_By>;
+  total_earnings_amount_testnet_token?: InputMaybe<Order_By>;
+  total_earnings_percentage_atc_token?: InputMaybe<Order_By>;
+  total_earnings_percentage_testnet_token?: InputMaybe<Order_By>;
+  total_supply_atc_token?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "total_earnings" */
+export enum Total_Earnings_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  TotalEarningsAmountAtcToken = 'total_earnings_amount_atc_token',
+  /** column name */
+  TotalEarningsAmountTestnetToken = 'total_earnings_amount_testnet_token',
+  /** column name */
+  TotalEarningsPercentageAtcToken = 'total_earnings_percentage_atc_token',
+  /** column name */
+  TotalEarningsPercentageTestnetToken = 'total_earnings_percentage_testnet_token',
+  /** column name */
+  TotalSupplyAtcToken = 'total_supply_atc_token',
+  /** column name */
+  UpdatedAt = 'updated_at'
+}
+
+/** Streaming cursor of the table "total_earnings" */
+export type Total_Earnings_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Total_Earnings_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Total_Earnings_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  total_earnings_amount_atc_token?: InputMaybe<Scalars['numeric']['input']>;
+  total_earnings_amount_testnet_token?: InputMaybe<Scalars['numeric']['input']>;
+  total_earnings_percentage_atc_token?: InputMaybe<Scalars['numeric']['input']>;
+  total_earnings_percentage_testnet_token?: InputMaybe<Scalars['numeric']['input']>;
+  total_supply_atc_token?: InputMaybe<Scalars['numeric']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type CampaignsListQueryVariables = Exact<{

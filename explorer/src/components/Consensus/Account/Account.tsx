@@ -1,7 +1,9 @@
 'use client'
 
 import { sendGAEvent } from '@next/third-parties/google'
+import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
+import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import {
@@ -23,6 +25,7 @@ import { AccountDetailsCard } from './AccountDetailsCard'
 import { AccountExtrinsicList } from './AccountExtrinsicList'
 import { AccountGraphs } from './AccountGraphs'
 import { AccountRewardsHistory } from './AccountRewardsHistory'
+import { AccountTransfersList } from './AccountTransfersList'
 import { QUERY_ACCOUNT_BY_ID } from './query'
 
 export const Account: FC = () => {
@@ -77,11 +80,18 @@ export const Account: FC = () => {
               accountAddress={accountId}
               isDesktop={isDesktop}
             />
-            <div className='flex flex-col gap-8 lg:flex-row lg:justify-between'>
+            <div className='mb-8 flex flex-col gap-8 lg:flex-row lg:justify-between'>
               <AccountGraphs account={account} isDesktop={isDesktop} />
               <AccountRewardsHistory isDesktop={isDesktop} rewards={rewards} />
             </div>
-            <AccountExtrinsicList accountId={accountId} />
+            <PageTabs isDesktop={isDesktop}>
+              <Tab title='Extrinsic List'>
+                <AccountExtrinsicList accountId={accountId} />
+              </Tab>
+              <Tab title='Transfers'>
+                <AccountTransfersList accountId={accountId} />
+              </Tab>
+            </PageTabs>
           </>
         ) : (
           noData

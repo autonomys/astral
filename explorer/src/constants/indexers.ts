@@ -5,6 +5,7 @@ export interface Indexer {
   network: NetworkId
   squids: {
     old: string
+    accounts?: string
     leaderboard?: string
     staking?: string
     testnetRewards?: string
@@ -17,11 +18,11 @@ export const indexers: Indexer[] = [
     network: NetworkId.GEMINI_3H,
     squids: {
       old: 'https://squid.gemini-3h.subspace.network/graphql',
-      leaderboard:
-        'https://autonomys-labs.squids.live/leaderboard-squid/v/v6/addons/hasura/v1/graphql',
-      staking: 'https://autonomys-labs.squids.live/staking-squid/v/v24/addons/hasura/v1/graphql',
+      accounts: 'https://autonomys-labs.squids.live/accounts-squid/addons/hasura/v1/graphql',
+      leaderboard: 'https://autonomys-labs.squids.live/leaderboard-squid/addons/hasura/v1/graphql',
+      staking: 'https://autonomys-labs.squids.live/staking-squid/addons/hasura/v1/graphql',
       testnetRewards:
-        'https://autonomys-labs.squids.live/testnet-rewards-squid/v/v1/addons/hasura/v1/graphql',
+        'https://autonomys-labs.squids.live/testnet-rewards-squid/v/v3/addons/hasura/v1/graphql',
     },
   },
   {
