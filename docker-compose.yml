@@ -15,8 +15,6 @@ services:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_PORT: ${DB_PORT}
-      POSTGRES_HOST: ${DB_HOST}
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
