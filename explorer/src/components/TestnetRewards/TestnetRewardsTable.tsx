@@ -23,11 +23,13 @@ import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useViewStates } from 'states/view'
 import { QUERY_ACCOUNTS_PER_CAMPAIGN_LIST } from './testnetRewards.query'
 
 export const TestnetRewardsTable: FC = () => {
   const { ref, inView } = useInView()
   const { subspaceAccount } = useWallet()
+  const { mySubspaceWallets } = useViewStates()
   const inFocus = useWindowFocus()
 
   const where = useMemo(() => {
@@ -39,8 +41,13 @@ export const TestnetRewardsTable: FC = () => {
       conditions.account_id = { _eq: subspaceAccount }
     }
 
+    if (mySubspaceWallets.length > 0) {
+      // eslint-disable-next-line camelcase
+      conditions.account_id = { _in: mySubspaceWallets }
+    }
+
     return conditions
-  }, [subspaceAccount])
+  }, [subspaceAccount, mySubspaceWallets])
 
   const variables = useMemo(
     () =>
@@ -127,7 +134,7 @@ export const TestnetRewardsTable: FC = () => {
     }))
   }, [data, loading, campaigns])
 
-  const totalEarningsPercent = '0.1'
+  const totalEarningsPercent = '0.0000001'
   const totalEarningsTSSC = data
     ? data.account_per_campaign.reduce(
         (acc, reward) => acc + parseFloat(reward.total_earnings_amount_testnet_token),
@@ -152,9 +159,6 @@ export const TestnetRewardsTable: FC = () => {
   return (
     <div className='max-w-8xl mt-8 w-full' ref={ref}>
       <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-gray-800 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
-        <h3 className='text-center text-lg font-bold text-gray-400 dark:text-white'>
-          Your rewards at Autonomys (Subspace Network) Testnets
-        </h3>
         <div className='mb-4 mt-4 flex justify-center'>
           <div className='mx-8 flex w-full max-w-4xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
             <div className='text-2xl font-semibold'>TOTAL EARNINGS</div>
@@ -219,7 +223,7 @@ export const TestnetRewardsTable: FC = () => {
                   </td>
                   <td className='whitespace-nowrap px-6 py-4 text-sm'>
                     <button className='rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700'>
-                      Link to the table
+                      How it’s calculated
                     </button>
                   </td>
                 </tr>
