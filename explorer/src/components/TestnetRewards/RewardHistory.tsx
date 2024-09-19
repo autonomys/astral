@@ -1,6 +1,7 @@
 'use client'
 
-import { INTERNAL_ROUTES, Routes } from '@/constants'
+import { INTERNAL_ROUTES, Routes, WalletType } from '@/constants'
+import { formatAddress } from '@/utils/formatAddress'
 import { shortString } from '@/utils/string'
 import { WalletButton } from 'components/WalletButton'
 import AccountListDropdown from 'components/WalletButton/AccountListDropdown'
@@ -13,7 +14,7 @@ import { AccountIcon } from '../common/AccountIcon'
 
 export const RewardHistory: FC = () => {
   const { network } = useChains()
-  const { actingAccount, subspaceAccount } = useWallet()
+  const { actingAccount, subspaceAccount, accounts } = useWallet()
   const { mySubspaceWallets, addSubspaceWallet, removeSubspaceWallet } = useViewStates()
 
   const isSubspaceWalletConnected = useMemo(
@@ -32,6 +33,41 @@ export const RewardHistory: FC = () => {
       removeSubspaceWallet(subspaceAccount)
     }
   }, [removeSubspaceWallet, subspaceAccount, isSubspaceWalletConnected])
+
+  const connectedWallets = useMemo(
+    () => (
+      <div className='mt-4 w-full px-4 py-2'>
+        <h2 className='pb-4 text-center text-xl font-semibold text-gray-800 dark:text-gray-200'>
+          Connected Wallets
+        </h2>
+        <ul className='mt-2 list-inside list-disc space-y-4 text-gray-700 dark:text-gray-300'>
+          {mySubspaceWallets.map((wallet) => (
+            <div key={`${wallet}-account-id`} className='row flex items-center gap-3'>
+              <AccountIcon address={wallet} size={26} theme='beachball' />
+              <Link
+                data-testid={`account-link-${wallet}`}
+                href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, wallet)}
+                className='hover:text-primaryAccent'
+              >
+                <div>
+                  {shortString(wallet)}{' '}
+                  {
+                    accounts?.find((account) =>
+                      account.type === WalletType.subspace ||
+                      (account as { type: string }).type === 'sr25519'
+                        ? formatAddress(account.address) === wallet
+                        : account.address === wallet,
+                    )?.name
+                  }
+                </div>
+              </Link>
+            </div>
+          ))}
+        </ul>
+      </div>
+    ),
+    [accounts, mySubspaceWallets, network],
+  )
 
   return (
     <div className='w-full max-w-xl'>
@@ -88,28 +124,7 @@ export const RewardHistory: FC = () => {
                 </button>
               </div>
             )}
-
-            {mySubspaceWallets.length > 0 && (
-              <div className='mt-4 w-full px-4 py-2'>
-                <h2 className='pb-4 text-center text-xl font-semibold text-gray-800 dark:text-gray-200'>
-                  Connected Wallets
-                </h2>
-                <ul className='mt-2 list-inside list-disc space-y-4 text-gray-700 dark:text-gray-300'>
-                  {mySubspaceWallets.map((wallet) => (
-                    <div key={`${wallet}-account-id`} className='row flex items-center gap-3'>
-                      <AccountIcon address={wallet} size={26} theme='beachball' />
-                      <Link
-                        data-testid={`account-link-${wallet}`}
-                        href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, wallet)}
-                        className='hover:text-primaryAccent'
-                      >
-                        <div>{shortString(wallet)}</div>
-                      </Link>
-                    </div>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {mySubspaceWallets.length > 0 && connectedWallets}
           </div>
         </div>
       </div>
