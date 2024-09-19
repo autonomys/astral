@@ -2,7 +2,6 @@ version: "3.9"
 
 volumes:
   postgres_db: {}
-  redis_db: {}
 
 services:
   # Postgres Database
@@ -11,6 +10,7 @@ services:
     volumes:
       - postgres_db:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
@@ -24,7 +24,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
   # Hasura GraphQL Engine
   hasura:
@@ -34,6 +33,7 @@ services:
     volumes:
       - ./indexers/db/migrations:/hasura-migrations
       - ./indexers/db/metadata:/hasura-metadata
+    restart: unless-stopped
     environment:
       # Essential Environment Variables
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS}
@@ -82,16 +82,14 @@ services:
     command:
       - graphql-engine
       - serve
-    restart: unless-stopped
 
   # Gemini 3H Subquery Nodes
   gemini_3h_accounts-subquery-node:
+    profiles: [gemini_3h]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
         condition: service_healthy
-    profiles:
-      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -118,12 +116,11 @@ services:
       retries: 10
 
   gemini_3h_consensus-subquery-node:
+    profiles: [gemini_3h]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
         condition: service_healthy
-    profiles:
-      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -150,12 +147,11 @@ services:
       retries: 10
 
   gemini_3h_leaderboard-subquery-node:
+    profiles: [gemini_3h]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
         condition: service_healthy
-    profiles:
-      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -182,12 +178,11 @@ services:
       retries: 10
 
   gemini_3h_staking-subquery-node:
+    profiles: [gemini_3h]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
         condition: service_healthy
-    profiles:
-      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -214,12 +209,11 @@ services:
       retries: 10
 
   gemini_3g_testnet_rewards-subquery-node:
+    profiles: [gemini_3g]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
         condition: service_healthy
-    profiles:
-      - gemini_3g
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3G_RPC}
