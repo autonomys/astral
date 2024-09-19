@@ -1,0 +1,8 @@
+- "!include gemini_3h_staking_accounts.yaml"
+- "!include gemini_3h_staking_bundle_authors.yaml"
+- "!include gemini_3h_staking_bundles.yaml"
+- "!include gemini_3h_staking_deposits.yaml"
+- "!include gemini_3h_staking_domain_blocks.yaml"
+- "!include gemini_3h_staking_domain_epoches.yaml"
+- "!include gemini_3h_staking_stats.yaml"
+- "!include gemini_3h_staking_stats_per_operators.yaml"

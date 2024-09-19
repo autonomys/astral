@@ -17,12 +17,12 @@
       "path": "../indexers"
     },
     {
-      "name": "indexer - Staking Squid",
-      "path": "../indexers/staking-squid"
+      "name": "indexer - Gemini 3H",
+      "path": "../indexers/gemini-3h"
     },
     {
-      "name": "indexer - Leaderboard Squid",
-      "path": "../indexers/leaderboard-squid"
+      "name": "indexer - Gemini 3G",
+      "path": "../indexers/gemini-3g"
     }
   ],
   "settings": {
