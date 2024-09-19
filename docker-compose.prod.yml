@@ -47,11 +47,3 @@ services:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  web:
-    build:
-      args:
-        NODE_ENV: production
-    environment:
-      NODE_ENV: production
-    command: yarn start
