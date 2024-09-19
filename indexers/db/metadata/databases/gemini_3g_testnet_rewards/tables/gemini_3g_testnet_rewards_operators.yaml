@@ -1,3 +1,18 @@
 table:
   name: operators
   schema: gemini_3g_testnet_rewards
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - updated_at
+        - account_id
+        - domain_id
+        - id
+        - operator_id
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
