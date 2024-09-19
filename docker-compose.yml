@@ -145,6 +145,7 @@ services:
       retries: 10
 
   gemini_3h_leaderboard-subquery-node:
+    profiles: [gemini_3h]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -175,6 +176,7 @@ services:
       retries: 10
 
   gemini_3h_staking-subquery-node:
+    profiles: [gemini_3h]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -205,6 +207,7 @@ services:
       retries: 10
 
   gemini_3g_testnet_rewards-subquery-node:
+    profiles: [gemini_3g]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
