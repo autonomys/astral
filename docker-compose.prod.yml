@@ -1,12 +1,8 @@
 version: "3"
 
-volumes:
-  db_data: {}
-
 services:
   postgres:
     volumes:
-      - db_data:/var/lib/postgresql/data
       - type: bind
         source: /home/ubuntu/postgresql/conf/postgresql.conf
         target: /etc/postgresql/postgresql.conf
@@ -51,3 +47,11 @@ services:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  web:
+    build:
+      args:
+        NODE_ENV: production
+    environment:
+      NODE_ENV: production
+    command: yarn start

@@ -1,9 +1,12 @@
 version: "3.8"
 
+volumes:
+  postgres_data: {}
+  redis_data: {}
+
 services:
   # Postgres Database
   postgres:
-    container_name: postgres
     image: postgres:16-alpine
     environment:
       POSTGRES_DB: ${DB_DATABASE}
@@ -12,6 +15,7 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
+      - postgres_data:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -21,7 +25,6 @@ services:
 
   # Hasura GraphQL Engine
   hasura_engine:
-    container_name: explorer-graphql
     image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     depends_on:
       - "postgres"
@@ -70,7 +73,7 @@ services:
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
       HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
     ports:
-      - "8080:8080"
+      - "${HASURA_GRAPHQL_PORT}:${HASURA_GRAPHQL_PORT}"
     volumes:
       - ./indexers/db/migrations:/hasura-migrations
       - ./indexers/db/metadata:/hasura-metadata
@@ -87,12 +90,12 @@ services:
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
-      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_ACCOUNTS}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/gemini-3h/accounts:/gemini-3h/accounts
     command:
@@ -117,12 +120,12 @@ services:
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
-      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_CONSENSUS}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/gemini-3h/consensus:/gemini-3h/consensus
     command:
@@ -147,12 +150,12 @@ services:
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
-      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_LEADERBOARD}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/gemini-3h/leaderboard:/gemini-3h/leaderboard
     command:
@@ -177,12 +180,12 @@ services:
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
-      CHAIN_ID: "0x0c121c75f4ef450f40619e1fca9d1e8e7fbabc42c895bc4790801e85d5a91c34"
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_STAKING}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/gemini-3h/staking:/gemini-3h/staking
     command:
@@ -207,12 +210,12 @@ services:
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3G_RPC}
-      CHAIN_ID: "0x418040fc282f5e5ddd432c46d05297636f6f75ce68d66499ff4cbda69ccd180b"
+      CHAIN_ID: ${GEMINI_3G_CHAIN_ID}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3G_TESTNET_REWARDS}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/gemini-3g/testnet-rewards:/gemini-3g/testnet-rewards
     command:
