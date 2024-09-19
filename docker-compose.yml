@@ -83,7 +83,7 @@ services:
 
   # Gemini 3H Subquery Nodes
   gemini_3h_accounts-subquery-node:
-    profiles: [gemini_3h]
+    profiles: [gemini_3h, gemini_3h_accounts]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -96,7 +96,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_ACCOUNTS}
       DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/accounts:/gemini-3h/accounts
     command:
@@ -114,7 +114,7 @@ services:
       retries: 10
 
   gemini_3h_consensus-subquery-node:
-    profiles: [gemini_3h]
+    profiles: [gemini_3h, gemini_3h_consensus]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -127,7 +127,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_CONSENSUS}
       DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/consensus:/gemini-3h/consensus
     command:
@@ -145,7 +145,7 @@ services:
       retries: 10
 
   gemini_3h_leaderboard-subquery-node:
-    profiles: [gemini_3h]
+    profiles: [gemini_3h, gemini_3h_leaderboard]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -158,7 +158,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_LEADERBOARD}
       DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/leaderboard:/gemini-3h/leaderboard
     command:
@@ -176,7 +176,7 @@ services:
       retries: 10
 
   gemini_3h_staking-subquery-node:
-    profiles: [gemini_3h]
+    profiles: [gemini_3h, gemini_3h_staking]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -189,7 +189,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_STAKING}
       DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3h/staking:/gemini-3h/staking
     command:
@@ -207,7 +207,7 @@ services:
       retries: 10
 
   gemini_3g_testnet_rewards-subquery-node:
-    profiles: [gemini_3g]
+    profiles: [gemini_3g, gemini_3g_testnet_rewards]
     image: subquerynetwork/subql-node-substrate:latest
     depends_on:
       "postgres":
@@ -220,7 +220,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3G_TESTNET_REWARDS}
       DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
+      DB_PORT: 5432
     volumes:
       - ./indexers/gemini-3g/testnet-rewards:/gemini-3g/testnet-rewards
     command:
@@ -232,7 +232,8 @@ services:
       - --batch-size=30
       - --unfinalized-blocks=true
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://staking-subquery-node:3000/ready"]
+      test:
+        ["CMD", "curl", "-f", "http://testnet-rewards-subquery-node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
