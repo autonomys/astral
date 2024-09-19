@@ -18,6 +18,7 @@
     "prod": "lerna run codegen && lerna run build && yarn docker:prod:up",
     "build": "lerna run build",
     "codegen": "lerna run codegen",
+    "console": "export $(grep -v '^#' ../.env | xargs) && lerna run console",
     "prepack": "lerna run prepack",
     "bootstrap": "lerna run bootstrap"
   },

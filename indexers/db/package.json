@@ -15,7 +15,7 @@
     "url": "https://github.com/autonomys/astral/issues"
   },
   "scripts": {
-    "console": "hasura console",
+    "console": "hasura console --endpoint http://localhost:${HASURA_GRAPHQL_PORT:8080}",
     "metadata": "hasura metadata apply --skip-update-check",
     "start": "yarn metadata && yarn console"
   },
