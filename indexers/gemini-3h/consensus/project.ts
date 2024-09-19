@@ -10,18 +10,23 @@ import path from "path";
 const dotenvPath = path.resolve(__dirname, `../../../.env`);
 dotenv.config({ path: dotenvPath });
 
-console.log("env", process.env);
-
 // Can expand the Datasource processor types via the genreic param
 const project: SubstrateProject = {
   specVersion: "1.0.0",
   version: "0.0.1",
   name: "autonomys-gemini-3h-consensus",
   description: "Autonomys Gemini 3H Testnet - Consensus",
+  repository: "https://github.com/autonomys/astral",
   runner: {
     node: {
       name: "@subql/node",
-      version: ">=3.0.1",
+      version: "*",
+      options: {
+        historical: true,
+        unsafe: false,
+        unfinalizedBlocks: false,
+        skipTransactions: false,
+      },
     },
     query: {
       name: "@subql/query",
