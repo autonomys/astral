@@ -1,38 +1,43 @@
-version: "3.8"
+version: "3.9"
 
 volumes:
-  postgres_data: {}
-  redis_data: {}
+  postgres_db: {}
+  redis_db: {}
 
 services:
   # Postgres Database
   postgres:
     image: postgres:16-alpine
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_HOST: ${DB_HOST}
     ports:
-      - "${DB_PORT}:${DB_PORT}"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - "${DB_PORT}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   # Hasura GraphQL Engine
-  hasura_engine:
+  hasura:
     image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     depends_on:
       - "postgres"
-    restart: always
+    volumes:
+      - ./indexers/db/migrations:/hasura-migrations
+      - ./indexers/db/metadata:/hasura-metadata
     environment:
       # Essential Environment Variables
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_CONSENSUS}
-      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_CONSENSUS} # Main database connection
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS} # Main database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
@@ -60,26 +65,24 @@ services:
       HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true" # Enable query allowlisting
 
       # Gemini 3H Databases
-      HASURA_GRAPHQL_GEMINI_3H_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_CONSENSUS}
-      HASURA_GRAPHQL_GEMINI_3H_ACCOUNTS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_ACCOUNTS}
-      HASURA_GRAPHQL_GEMINI_3H_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_LEADERBOARD}
-      HASURA_GRAPHQL_GEMINI_3H_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_STAKING}
-      HASURA_GRAPHQL_GEMINI_3H_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3H_TESTNET_REWARDS}
+      HASURA_GRAPHQL_GEMINI_3H_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS}
+      HASURA_GRAPHQL_GEMINI_3H_ACCOUNTS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_ACCOUNTS}
+      HASURA_GRAPHQL_GEMINI_3H_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_LEADERBOARD}
+      HASURA_GRAPHQL_GEMINI_3H_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_STAKING}
+      HASURA_GRAPHQL_GEMINI_3H_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_TESTNET_REWARDS}
 
       # Gemini 3G Database
-      HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_GEMINI_3G_TESTNET_REWARDS}
+      HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3G_TESTNET_REWARDS}
 
       # Hasura Migrations and Metadata
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
       HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
     ports:
-      - "${HASURA_GRAPHQL_PORT}:${HASURA_GRAPHQL_PORT}"
-    volumes:
-      - ./indexers/db/migrations:/hasura-migrations
-      - ./indexers/db/metadata:/hasura-metadata
+      - "${HASURA_GRAPHQL_PORT}:8080"
     command:
       - graphql-engine
       - serve
+    restart: unless-stopped
 
   # Gemini 3H Subquery Nodes
   gemini_3h_accounts-subquery-node:
@@ -87,6 +90,8 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+    profiles:
+      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -117,6 +122,8 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+    profiles:
+      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -147,6 +154,8 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+    profiles:
+      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -177,6 +186,8 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+    profiles:
+      - gemini_3h
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
@@ -207,6 +218,8 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+    profiles:
+      - gemini_3g
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3G_RPC}

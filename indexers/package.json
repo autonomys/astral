@@ -10,10 +10,12 @@
     "db"
   ],
   "scripts": {
-    "docker:dev": "docker compose -p dev-astral-indexers -f ../docker-compose.yml up --remove-orphans",
-    "docker:prod": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml up --remove-orphans -d",
-    "dev": "lerna run codegen && lerna run build && yarn docker:dev",
-    "prod": "lerna run codegen && lerna run build && yarn docker:prod",
+    "docker:dev:up": "docker compose -p dev-astral-indexers -f ../docker-compose.yml  --profile gemini_3h --profile gemini_3g up --remove-orphans",
+    "docker:prod:up": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml --profile gemini_3h --profile gemini_3g up --remove-orphans -d",
+    "docker:dev:down": "docker compose -p dev-astral-indexers -f ../docker-compose.yml down",
+    "docker:prod:down": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml down",
+    "dev": "lerna run codegen && lerna run build && yarn docker:dev:up",
+    "prod": "lerna run codegen && lerna run build && yarn docker:prod:up",
     "build": "lerna run build",
     "codegen": "lerna run codegen",
     "prepack": "lerna run prepack",
