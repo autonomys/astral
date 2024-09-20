@@ -80,27 +80,3 @@ type EventModule @entity {
   section: String! @index
   method: String! @index
 }
-
-type Account @entity {
-  id: ID!
-  accountId: String! @index
-  nonce: BigInt! @index
-  free: BigInt! @index
-  reserved: BigInt! @index
-  total: BigInt! @index
-  createdAt: BigInt!
-  updatedAt: BigInt!
-}
-
-type RewardEvent @entity {
-  id: ID!
-  blockHeight: BigInt! @index
-  extrinsicId: String! @index
-  accountId: String! @index
-  indexInBlock: Int!
-  name: String! @index
-  timestamp: Date! @index
-  phase: String!
-  pos: Int
-  amount: BigInt
-}

@@ -1,5 +1,4 @@
 import {
-  Account,
   Block,
   Event,
   EventModule,
@@ -212,31 +211,4 @@ export async function createAndSaveEvent(
   });
   await event.save();
   return event;
-}
-
-export async function createAndSaveAccountIfNotExists(
-  accountId: string,
-  nonce: bigint,
-  free: bigint,
-  reserved: bigint,
-  total: bigint,
-  createdAt: bigint,
-  updatedAt: bigint
-): Promise<Account> {
-  const accounts = await Account.getByAccountId(accountId);
-  let account = accounts ? accounts[0] : undefined;
-  if (!account) {
-    account = Account.create({
-      id: accountId,
-      accountId,
-      nonce,
-      free,
-      reserved,
-      total,
-      createdAt,
-      updatedAt,
-    });
-    await account.save();
-  }
-  return account;
 }

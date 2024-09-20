@@ -1,12 +1,9 @@
-import { balance } from "@autonomys/auto-consensus";
 import {
   SubstrateBlock,
   SubstrateEvent,
   SubstrateExtrinsic,
 } from "@subql/types";
-import { DEFAULT_ACCOUNT_ID } from "../constants";
 import {
-  createAndSaveAccountIfNotExists,
   createAndSaveBlock,
   createAndSaveEvent,
   createAndSaveExtrinsic,
@@ -75,20 +72,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     eventsCount,
     authorId
   );
-
-  if (authorId !== DEFAULT_ACCOUNT_ID) {
-    // Create and save account of block author
-    const { free, reserved } = await balance(api as any, authorId);
-    await createAndSaveAccountIfNotExists(
-      authorId,
-      BigInt(0),
-      BigInt(free.toString()),
-      BigInt(reserved.toString()),
-      BigInt(free.toString() + reserved.toString()),
-      height,
-      height
-    );
-  }
 
   // Create and save block logs
   const _logs = digest.logs.map((log, i) => {
