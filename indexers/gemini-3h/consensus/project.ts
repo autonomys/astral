@@ -48,6 +48,18 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.GEMINI_3H_RPC!?.split(",") as string[] | string,
+
+    // @ts-ignore
+    types: {
+      Solution: {
+        public_key: "AccountId32",
+        reward_address: "AccountId32",
+      },
+      SubPreDigest: {
+        slot: "u64",
+        solution: "Solution",
+      },
+    },
   },
   dataSources: [
     {
@@ -59,6 +71,32 @@ const project: SubstrateProject = {
           {
             kind: SubstrateHandlerKind.Block,
             handler: "handleBlock",
+          },
+        ],
+      },
+    },
+    {
+      kind: SubstrateDatasourceKind.Runtime,
+      startBlock: 1,
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [
+          {
+            kind: SubstrateHandlerKind.Call,
+            handler: "handleCall",
+          },
+        ],
+      },
+    },
+    {
+      kind: SubstrateDatasourceKind.Runtime,
+      startBlock: 1,
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [
+          {
+            kind: SubstrateHandlerKind.Event,
+            handler: "handleEvent",
           },
         ],
       },

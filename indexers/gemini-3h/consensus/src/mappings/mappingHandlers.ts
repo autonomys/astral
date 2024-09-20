@@ -1,36 +1,68 @@
-import { SubstrateBlock } from "@subql/types";
-import { Account, Block, Event, Extrinsic } from "../types";
-import { checkAndGetBlock } from "./db";
+import { balance } from "@autonomys/auto-consensus";
+import {
+  SubstrateBlock,
+  SubstrateEvent,
+  SubstrateExtrinsic,
+} from "@subql/types";
+import { DEFAULT_ACCOUNT_ID } from "../constants";
+import {
+  createAndSaveAccountIfNotExists,
+  createAndSaveBlock,
+  createAndSaveEvent,
+  createAndSaveExtrinsic,
+  prepareLog,
+  saveLog,
+} from "./db";
+import { getBlockAuthor } from "./helper";
 import { stringify } from "./utils";
 
-export async function handleBlock(block: SubstrateBlock): Promise<void> {
-  logger.info(
-    `Handling block ${stringify({
-      block: Object.keys(block),
-      blockHeader: Object.keys(block.block),
-      blockHeaderHeader: Object.keys(block.block.header),
-    })}`
-  );
-  const { block: blockHeader, timestamp, specVersion, events } = block;
+type ExtrinsicPrimitive = {
+  callIndex: string;
+  args: any;
+};
+
+type ExtrinsicHuman = ExtrinsicPrimitive & {
+  method: string;
+  section: string;
+};
+
+type EventPrimitive = {
+  index: string;
+  data: any;
+};
+
+type EventHuman = EventPrimitive & {
+  method: string;
+  section: string;
+};
+
+export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
-    header: { number, parentHash, stateRoot, extrinsicsRoot },
-    hash,
-    extrinsics,
-  } = blockHeader;
+    block: {
+      header: { number, parentHash, stateRoot, extrinsicsRoot, digest },
+      hash,
+      extrinsics,
+    },
+    timestamp,
+    specVersion,
+    events,
+  } = _block;
   const height = BigInt(number.toString());
+  const blockHash = hash.toString();
 
-  logger.info(`height ${height}`);
-  logger.info(`events ${stringify(events)}`);
+  // Get block author
+  const authorId = getBlockAuthor(_block);
 
-  // To-Do
+  // To-Do:
   const spacePledged = BigInt(0);
   const blockchainSize = BigInt(0);
-  const authorId = "st0x";
-  logger.info(`spacePledged: ${spacePledged.toString()}`);
-  logger.info(`blockchainSize: ${blockchainSize.toString()}`);
 
-  await checkAndGetBlock(
-    hash.toString(),
+  const eventsCount = events.length;
+  const extrinsicsCount = extrinsics.length;
+
+  // Create block
+  await createAndSaveBlock(
+    blockHash,
     height,
     timestamp ? timestamp : new Date(0),
     parentHash.toString(),
@@ -39,64 +71,117 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
     extrinsicsRoot.toString(),
     spacePledged,
     blockchainSize,
-    extrinsics.length,
-    events.length,
+    extrinsicsCount,
+    eventsCount,
     authorId
   );
-  /*
-  if (extrinsics.length > 0) {
-    for (let i = 0; i < extrinsics.length; i++) {
-      const extrinsic = extrinsics[i];
-      logger.info(
-        `Extrinsic: ${extrinsic.method.section}.${extrinsic.method.method}`
-      );
-      const {
-        method: { args },
-      } = extrinsic;
 
-      const extrinsicRecord = Extrinsic.create({
-        id: `${height}-${extrinsic.callIndex}`,
-        hash: extrinsic.hash.toString(),
-        indexInBlock: i,
-        nonce: extrinsic.nonce?.toBigInt(),
-        name: `${extrinsic.method.section}.${extrinsic.method.method}`,
-        signerId: extrinsic.signer?.toString(),
-        signature: extrinsic.signature?.toString(),
-        error: "",
-        tip: extrinsic.tip?.toBigInt(),
-        fee: BigInt(0),
-        success: true,
-        blockId: height.toString(),
-        timestamp: new Date(Number(timestamp)),
-        args: JSON.stringify(args),
-      });
-      await extrinsicRecord.save();
-    }
+  if (authorId !== DEFAULT_ACCOUNT_ID) {
+    // Create and save account of block author
+    const { free, reserved } = await balance(api as any, authorId);
+    await createAndSaveAccountIfNotExists(
+      authorId,
+      BigInt(0),
+      BigInt(free.toString()),
+      BigInt(reserved.toString()),
+      BigInt(free.toString() + reserved.toString()),
+      height,
+      height
+    );
   }
-*/
-  /*
-  if (events.length > 0) {
-    for (let i = 0; i < events.length; i++) {
-      const event = events[i];
-      logger.info(`Event: ${event.toString()}`);
 
-      const eventRecord = Event.create({
-        id: `${height}-${i}`,
-        indexInBlock: i,
-        name: ``,
-        timestamp: new Date(Number(timestamp) * 1000),
-        phase: event.phase.isApplyExtrinsic
-          ? "ApplyExtrinsic"
-          : event.phase.toString(),
-        pos: 0,
-        args: "",
-        blockId: height.toString(),
-        extrinsicId: "",
-      });
+  // Create and save block logs
+  const _logs = digest.logs.map((log, i) => {
+    const logData = log.toHuman();
+    const logJson = log.toPrimitive();
+    const kind = logData ? Object.keys(logData)[0] : "";
+    const rawKind = logJson ? Object.keys(logJson)[0] : "";
+    const value = logJson
+      ? stringify(logJson[rawKind as keyof typeof logJson])
+      : "";
+    const logObj = prepareLog(height, blockHash, i, rawKind, kind, value);
+    return logObj;
+  });
+  await saveLog(_logs);
+}
 
-      await eventRecord.save();
-    }
-  }
-  */
-  logger.info("Block record saved successfully");
+export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
+  const {
+    idx,
+    block: {
+      timestamp,
+      block: {
+        header: { number },
+      },
+    },
+    extrinsic: { method, hash, nonce, signer, signature, tip, args },
+    success,
+  } = _call;
+
+  const extrinsic_human = method.toHuman() as ExtrinsicHuman;
+  const extrinsic_primitive = method.toPrimitive() as ExtrinsicPrimitive;
+
+  const error = "";
+  const fee = BigInt(0);
+  const pos = 0;
+
+  await createAndSaveExtrinsic(
+    hash.toString(),
+    BigInt(number.toString()),
+    hash.toString(),
+    idx,
+    extrinsic_primitive.callIndex,
+    extrinsic_human.section,
+    extrinsic_human.method,
+    success,
+    timestamp ? timestamp : new Date(0),
+    BigInt(nonce.toString()),
+    signer.toString(),
+    signature.toString(),
+    stringify(args),
+    error,
+    BigInt(tip.toString()),
+    fee,
+    pos
+  );
+}
+
+export async function handleEvent(_event: SubstrateEvent): Promise<void> {
+  const {
+    idx,
+    block: {
+      block: {
+        header: { number, hash },
+      },
+    },
+    extrinsic,
+    event,
+  } = _event;
+
+  const primitive = event.toPrimitive() as EventPrimitive;
+  const human = event.toHuman() as EventHuman;
+
+  const timestamp = new Date(0); // Default value
+  const phase = ""; // Placeholder for phase
+  const pos = 0;
+  const args = extrinsic ? stringify(extrinsic.extrinsic.args) : "";
+  const extrinsicId = extrinsic
+    ? number + "-" + extrinsic.extrinsic.hash.toString()
+    : "";
+  const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
+
+  await createAndSaveEvent(
+    BigInt(number.toString()),
+    hash.toString(),
+    BigInt(idx),
+    extrinsicId,
+    extrinsicHash,
+    primitive.index,
+    human.section,
+    human.method,
+    timestamp,
+    phase,
+    pos,
+    args
+  );
 }
