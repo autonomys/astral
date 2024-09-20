@@ -1,60 +1,49 @@
 import { SubstrateBlock } from "@subql/types";
 import { Account, Block, Event, Extrinsic } from "../types";
+import { checkAndGetBlock } from "./db";
+import { stringify } from "./utils";
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
-  const {
-    block: blockHeader,
-    timestamp: blockTimestamp,
-    specVersion,
-    events,
-  } = block;
+  logger.info(
+    `Handling block ${stringify({
+      block: Object.keys(block),
+      blockHeader: Object.keys(block.block),
+      blockHeaderHeader: Object.keys(block.block.header),
+    })}`
+  );
+  const { block: blockHeader, timestamp, specVersion, events } = block;
   const {
     header: { number, parentHash, stateRoot, extrinsicsRoot },
-    hash: blockHash,
+    hash,
     extrinsics,
   } = blockHeader;
-
   const height = BigInt(number.toString());
-  const timestamp = new Date(Number(blockTimestamp) * 1000);
-  const hash = blockHash.toString();
-  const specId = specVersion.toString();
 
-  logger.info(`Block Hash: ${hash.toString()}`);
-  logger.info(`Block number: ${height.toString()}`);
-  logger.info(`Timestamp: ${timestamp}`);
-  logger.info(`Block hash: ${hash.toString()}`);
-  logger.info(`Parent hash: ${parentHash.toString()}`);
-  logger.info(`Spec version: ${specVersion.toString()}`);
-  logger.info(`State root: ${stateRoot.toString()}`);
-  logger.info(`Extrinsics root: ${extrinsicsRoot.toString()}`);
-  logger.info(`Extrinsics count: ${extrinsics.length}`);
-  logger.info(`Events count: ${events.length}`);
+  logger.info(`height ${height}`);
+  logger.info(`events ${stringify(events)}`);
 
   // To-Do
   const spacePledged = BigInt(0);
   const blockchainSize = BigInt(0);
+  const authorId = "st0x";
   logger.info(`spacePledged: ${spacePledged.toString()}`);
   logger.info(`blockchainSize: ${blockchainSize.toString()}`);
 
-  const _blockRecord = await Block.getByHeight(height);
-  if (_blockRecord) return;
-
-  const blockRecord = Block.create({
-    id: number.toString(),
+  await checkAndGetBlock(
+    hash.toString(),
     height,
-    timestamp,
-    hash,
-    parentHash: parentHash.toString(),
-    specId,
-    stateRoot: stateRoot.toString(),
-    extrinsicsRoot: extrinsicsRoot.toString(),
+    timestamp ? timestamp : new Date(0),
+    parentHash.toString(),
+    specVersion.toString(),
+    stateRoot.toString(),
+    extrinsicsRoot.toString(),
     spacePledged,
     blockchainSize,
-    extrinsicsCount: extrinsics.length,
-    eventsCount: events.length,
-  });
-  await blockRecord.save();
-
+    extrinsics.length,
+    events.length,
+    authorId
+  );
+  /*
   if (extrinsics.length > 0) {
     for (let i = 0; i < extrinsics.length; i++) {
       const extrinsic = extrinsics[i];
@@ -66,7 +55,7 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
       } = extrinsic;
 
       const extrinsicRecord = Extrinsic.create({
-        id: `${blockRecord.id}-${extrinsic.callIndex}`,
+        id: `${height}-${extrinsic.callIndex}`,
         hash: extrinsic.hash.toString(),
         indexInBlock: i,
         nonce: extrinsic.nonce?.toBigInt(),
@@ -77,21 +66,22 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
         tip: extrinsic.tip?.toBigInt(),
         fee: BigInt(0),
         success: true,
-        blockId: blockRecord.id,
+        blockId: height.toString(),
         timestamp: new Date(Number(timestamp)),
         args: JSON.stringify(args),
       });
       await extrinsicRecord.save();
     }
   }
-
+*/
+  /*
   if (events.length > 0) {
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       logger.info(`Event: ${event.toString()}`);
 
       const eventRecord = Event.create({
-        id: `${blockRecord.id}-${i}`,
+        id: `${height}-${i}`,
         indexInBlock: i,
         name: ``,
         timestamp: new Date(Number(timestamp) * 1000),
@@ -100,12 +90,13 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
           : event.phase.toString(),
         pos: 0,
         args: "",
-        blockId: blockRecord.id,
+        blockId: height.toString(),
         extrinsicId: "",
       });
 
       await eventRecord.save();
     }
   }
+  */
   logger.info("Block record saved successfully");
 }

@@ -25,7 +25,7 @@ services:
 
   # Hasura GraphQL Engine
   hasura:
-    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
+    image: hasura/graphql-engine:v2.40.0 # .cli-migrations-v3 (uncomment to automatically run migrations on startup)
     depends_on:
       - "postgres"
     volumes:
@@ -135,9 +135,8 @@ services:
       - -f=/gemini-3h/consensus
       - --db-schema=${DB_GEMINI_3H_CONSENSUS}
       - --workers=4
-      - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --unfinalized-blocks=false
     healthcheck:
       test: ["CMD", "curl", "-f", "http://consensus-subquery-node:3000/ready"]
       interval: 3s

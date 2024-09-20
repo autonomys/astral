@@ -19,6 +19,7 @@
     "build": "lerna run build",
     "codegen": "lerna run codegen",
     "console": "export $(grep -v '^#' ../.env | xargs) && lerna run console",
+    "metadata": "export $(grep -v '^#' ../.env | xargs) && lerna run metadata",
     "prepack": "lerna run prepack",
     "bootstrap": "lerna run bootstrap"
   },

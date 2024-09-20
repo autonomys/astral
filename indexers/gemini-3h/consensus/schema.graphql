@@ -20,7 +20,7 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
-  author: Account @index
+  authorId: String! @index
 }
 
 type ExtrinsicModuleName @entity {
