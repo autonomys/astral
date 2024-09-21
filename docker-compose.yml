@@ -25,7 +25,7 @@ services:
 
   # Hasura GraphQL Engine
   hasura:
-    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
+    image: hasura/graphql-engine:v2.40.0
     depends_on:
       - "postgres"
     volumes:
