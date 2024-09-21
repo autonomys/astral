@@ -1,1 +1,3 @@
-[]
+- "!include dictionary_events.yaml"
+- "!include dictionary_extrinsics.yaml"
+- "!include dictionary_spec_versions.yaml"

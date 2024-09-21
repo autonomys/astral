@@ -92,7 +92,7 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
-      - ./indexers/dictionary/autonomys-gemini-3h:/app
+      - ./indexers/dictionary/autonomys-gemini-3h:/dictionary
     healthcheck:
       test:
         [
@@ -105,7 +105,7 @@ services:
       timeout: 5s
       retries: 10
     command:
-      - -f=/app
+      - -f=/dictionary
       - --disable-historical=true
 
   gemini_3h_dictionary_graphql_engine:
@@ -124,7 +124,7 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     command:
-      - --name=app
+      - --name=dictionary
       - --playground
 
   # Gemini 3H Subquery Nodes
