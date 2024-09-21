@@ -31,25 +31,18 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@autonomys/auto-utils": "^0.4.0",
+    "@autonomys/auto-consensus": "^0.5.0",
+    "@autonomys/auto-utils": "^0.5.0",
     "@polkadot/api": "^12",
     "@subql/cli": "latest",
     "@subql/common-substrate": "latest",
     "@subql/testing": "latest",
     "@subql/types": "latest",
-    "@subsquid/substrate-runtime": "^2.0.0",
     "dotenv": "latest",
     "@types/node": "latest",
     "typescript": "^5.2.2"
   },
   "resolutions": {
     "ipfs-unixfs": "6.0.6"
-  },
-  "dependencies": {
-    "@autonomys/auto-consensus": "^0.4.0",
-    "@subsquid/scale-codec": "^4.0.1",
-    "@subsquid/substrate-typegen": "^8.1.0",
-    "@subsquid/typeorm-store": "^1.5.1",
-    "@subsquid/util-xxhash": "^1.2.2"
   }
 }

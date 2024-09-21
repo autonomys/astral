@@ -1,12 +1,3 @@
-type Account @entity {
-  id: ID!
-  free: BigInt
-  reserved: BigInt
-  total: BigInt @index
-  updatedAt: BigInt
-  nonce: BigInt
-}
-
 type Block @entity {
   id: ID!
   height: BigInt! @index
@@ -20,81 +11,72 @@ type Block @entity {
   blockchainSize: BigInt!
   extrinsicsCount: Int!
   eventsCount: Int!
-  author: Account @index
-}
-
-type ExtrinsicModuleName @entity {
-  id: ID!
-  name: String! @index
-}
-
-type Extrinsic @entity {
-  id: ID!
-  hash: String! @index
-  indexInBlock: Int!
-  nonce: BigInt
-  name: String! @index
-  signer: Account @index
-  signature: String @index
-  error: String
-  tip: BigInt
-  fee: BigInt
-  success: Boolean!
-  block: Block!
-  pos: Int
-  timestamp: Date! @index
-  args: String
-}
-
-type EventModuleName @entity {
-  id: ID!
-  name: String! @index
-}
-
-type Event @entity {
-  id: ID!
-  indexInBlock: Int!
-  name: String! @index
-  timestamp: Date! @index
-  phase: String!
-  pos: Int
-  args: String
-  block: Block
-  extrinsic: Extrinsic
-  call: Call
-}
-
-type RewardEvent @entity {
-  id: ID!
-  indexInBlock: Int!
-  name: String! @index
-  timestamp: Date! @index
-  phase: String!
-  pos: Int
-  block: Block
-  extrinsic: Extrinsic
-  call: Call
-  account: Account @index
-  amount: BigInt
-}
-
-type Call @entity {
-  id: ID!
-  name: String! @index
-  timestamp: Date! @index
-  success: Boolean!
-  args: String
-  block: Block!
-  extrinsic: Extrinsic!
-  error: String
-  signer: String @index
-  parent: Call
-  pos: Int
+  authorId: String! @index
 }
 
 type Log @entity {
   id: ID!
-  kind: String! @index
+  logId: String! @index
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  indexInBlock: Int! @index
+  rawKind: String! @index
+  kind: String!
   value: String
-  block: Block!
+}
+
+type Extrinsic @entity {
+  id: ID!
+  extrinsicId: String! @index
+  extrinsicHash: String! @index
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  moduleId: String! @index
+  indexInBlock: Int!
+  success: Boolean! @index
+  timestamp: Date! @index
+  nonce: BigInt!
+  signer: String! @index
+  signature: String! @index
+  args: String!
+  error: String!
+  tip: BigInt!
+  fee: BigInt!
+  pos: Int!
+}
+
+type Event @entity {
+  id: ID!
+  eventId: String! @index
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  extrinsicId: String! @index
+  extrinsicHash: String! @index
+  moduleId: String! @index
+  indexInBlock: BigInt!
+  timestamp: Date! @index
+  phase: String!
+  pos: Int!
+  args: String!
+}
+
+type Section @entity {
+  id: ID!
+  section: String! @index
+}
+
+type ExtrinsicModule @entity {
+  id: ID!
+  moduleId: String! @index
+  index: String! @index
+  section: String! @index
+  method: String! @index
+}
+
+type EventModule @entity {
+  id: ID!
+  moduleId: String! @index
+  index: String! @index
+  section: String! @index
+  method: String! @index
 }
