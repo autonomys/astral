@@ -19,7 +19,8 @@
     "build": "lerna run build",
     "codegen": "lerna run codegen",
     "prepack": "lerna run prepack",
-    "bootstrap": "lerna run bootstrap"
+    "bootstrap": "lerna run bootstrap",
+    "graph": "nx graph"
   },
   "dependencies": {
     "lerna": "^8.1.8"

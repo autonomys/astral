@@ -1,0 +1,10 @@
+{
+  "targetDefaults": {
+    "codegen": {
+      "cache": true
+    },
+    "build": {
+      "cache": true
+    }
+  }
+}
