@@ -81,17 +81,63 @@ services:
       - graphql-engine
       - serve
 
-  # Gemini 3H Subquery Nodes
-  gemini_3h_accounts-subquery-node:
-    profiles: [gemini_3h, gemini_3h_accounts]
-    image: subquerynetwork/subql-node-substrate:latest
+  # Gemini 3H Dictionary
+  gemini_3h_dictionary_subquery_node:
+    build:
+      context: ./indexers/dictionary/autonomys-gemini-3h
     depends_on:
       "postgres":
         condition: service_healthy
     restart: unless-stopped
     environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H_DICTIONARY}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/dictionary/autonomys-gemini-3h:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://accounts-subquery-node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    command:
+      - -f=/app
+      - --disable-historical=true
+
+  gemini_3h_dictionary_graphql_engine:
+    image: onfinality/subql-query:latest
+    ports:
+      - "${GEMINI_3H_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
+    depends_on:
+      - "postgres"
+      - "gemini_3h_dictionary_subquery_node"
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H_DICTIONARY}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    command:
+      - --name=app
+      - --playground
+
+  # Gemini 3H Subquery Nodes
+  gemini_3h_accounts_subquery_node:
+    profiles: [gemini_3h, gemini_3h_accounts]
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_ACCOUNTS}
@@ -119,10 +165,13 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_CONSENSUS}
@@ -150,10 +199,13 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_LEADERBOARD}
@@ -181,10 +233,13 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${GEMINI_3H_RPC}
       CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_GEMINI_3H_STAKING}
