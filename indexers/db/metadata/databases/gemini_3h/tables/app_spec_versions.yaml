@@ -1,0 +1,3 @@
+table:
+  name: spec_versions
+  schema: app
