@@ -1,6 +1,35 @@
 table:
   name: extrinsics
   schema: gemini_3h_consensus
+object_relationships:
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: gemini_3h_consensus
+  - name: extrinsic_module
+    using:
+      manual_configuration:
+        column_mapping:
+          module_id: module_id
+        insertion_order: null
+        remote_table:
+          name: extrinsic_modules
+          schema: gemini_3h_consensus
+array_relationships:
+  - name: events
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: block_height
+        insertion_order: null
+        remote_table:
+          name: events
+          schema: gemini_3h_consensus
 select_permissions:
   - role: user
     permission:

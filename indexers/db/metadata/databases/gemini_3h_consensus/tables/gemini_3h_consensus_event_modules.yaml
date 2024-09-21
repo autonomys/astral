@@ -1,6 +1,16 @@
 table:
   name: event_modules
   schema: gemini_3h_consensus
+array_relationships:
+  - name: events
+    using:
+      manual_configuration:
+        column_mapping:
+          module_id: module_id
+        insertion_order: null
+        remote_table:
+          name: events
+          schema: gemini_3h_consensus
 select_permissions:
   - role: user
     permission:
