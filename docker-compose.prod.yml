@@ -13,6 +13,7 @@ services:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   hasura:
+    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     logging:
       driver: loki
       options:

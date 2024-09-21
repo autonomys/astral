@@ -25,7 +25,7 @@ services:
 
   # Hasura GraphQL Engine
   hasura:
-    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
+    image: hasura/graphql-engine:v2.40.0
     depends_on:
       - "postgres"
     volumes:
@@ -34,8 +34,8 @@ services:
     restart: unless-stopped
     environment:
       # Essential Environment Variables
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS}
-      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS} # Main database connection
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_DATABASE} # Main database connection
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
 
@@ -63,12 +63,7 @@ services:
       HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true" # Enable query allowlisting
 
       # Gemini 3H Databases
-      HASURA_GRAPHQL_GEMINI_3H_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_CONSENSUS}
-      HASURA_GRAPHQL_GEMINI_3H_ACCOUNTS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_ACCOUNTS}
-      HASURA_GRAPHQL_GEMINI_3H_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_LEADERBOARD}
-      HASURA_GRAPHQL_GEMINI_3H_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_STAKING}
-      HASURA_GRAPHQL_GEMINI_3H_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H_TESTNET_REWARDS}
-
+      HASURA_GRAPHQL_GEMINI_3H_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H}
       # Gemini 3G Database
       HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3G_TESTNET_REWARDS}
 
@@ -93,7 +88,7 @@ services:
     environment:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H_DICTIONARY}
+      DB_DATABASE: ${DB_GEMINI_3H}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
@@ -125,7 +120,7 @@ services:
     environment:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H_DICTIONARY}
+      DB_DATABASE: ${DB_GEMINI_3H}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     command:
@@ -148,7 +143,7 @@ services:
       DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H_ACCOUNTS}
+      DB_DATABASE: ${DB_GEMINI_3H}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
@@ -156,7 +151,7 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/accounts
-      - --db-schema=${DB_GEMINI_3H_ACCOUNTS}
+      - --db-schema=accounts
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -188,7 +183,7 @@ services:
       DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H_CONSENSUS}
+      DB_DATABASE: ${DB_GEMINI_3H}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
@@ -196,7 +191,7 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/consensus
-      - --db-schema=${DB_GEMINI_3H_CONSENSUS}
+      - --db-schema=consensus
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -228,7 +223,7 @@ services:
       DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H_LEADERBOARD}
+      DB_DATABASE: ${DB_GEMINI_3H}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
@@ -236,7 +231,7 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/leaderboard
-      - --db-schema=${DB_GEMINI_3H_LEADERBOARD}
+      - --db-schema=leaderboard
       - --workers=4
       - --unsafe
       - --batch-size=30
@@ -268,7 +263,7 @@ services:
       DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H_STAKING}
+      DB_DATABASE: ${DB_GEMINI_3H}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
@@ -276,7 +271,7 @@ services:
     command:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/staking
-      - --db-schema=${DB_GEMINI_3H_STAKING}
+      - --db-schema=staking
       - --workers=4
       - --unsafe
       - --batch-size=30
