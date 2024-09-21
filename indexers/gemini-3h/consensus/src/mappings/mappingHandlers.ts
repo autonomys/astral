@@ -1,229 +1,170 @@
-import { balance } from "@autonomys/auto-consensus";
-// import { ApiAtBlockHash } from "@autonomys/auto-utils";
-// import { Struct, u64 } from "@polkadot/types";
-// import { AccountId32 } from "@polkadot/types/interfaces";
-import { SubstrateBlock } from "@subql/types";
-// import { HexSink } from "@subsquid/scale-codec";
-// import { xxhash128 } from "@subsquid/util-xxhash";
-import { solutionRanges } from "../typegens/subspace/storage";
-// import { Block as BlockSQD } from "../typegens/support";
-// import { digest } from "../typegens/system/storage";
-// import { DigestItem_PreRuntime } from "../typegens/v0";
-import { Account, Block, Event, Extrinsic } from "../types";
+import {
+  SubstrateBlock,
+  SubstrateEvent,
+  SubstrateExtrinsic,
+} from "@subql/types";
+import {
+  createAndSaveBlock,
+  createAndSaveEvent,
+  createAndSaveExtrinsic,
+  prepareLog,
+  saveLog,
+} from "./db";
+import { getBlockAuthor } from "./helper";
+import { stringify } from "./utils";
 
-const PIECE_SIZE = BigInt(1048576);
-const MAX_PIECES_IN_SECTOR = BigInt(1000);
+type ExtrinsicPrimitive = {
+  callIndex: string;
+  args: any;
+};
 
-const ENDPOINT = "wss://rpc-squids.gemini-3h.subspace.network/ws";
+type ExtrinsicHuman = ExtrinsicPrimitive & {
+  method: string;
+  section: string;
+};
 
-export async function handleBlock(block: SubstrateBlock): Promise<void> {
-  const test = await balance(
-    api as any,
-    "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
-  );
-  logger.info(`test: ${test} ${test.free.toString()}`);
-  // Deconstruct the block object
-  const { block: blockHeader, timestamp, specVersion, events } = block;
+type EventPrimitive = {
+  index: string;
+  data: any;
+};
+
+type EventHuman = EventPrimitive & {
+  method: string;
+  section: string;
+};
+
+export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
-    header: { number, parentHash, stateRoot, extrinsicsRoot },
-    hash,
-    extrinsics,
-  } = blockHeader;
+    block: {
+      header: { number, parentHash, stateRoot, extrinsicsRoot, digest },
+      hash,
+      extrinsics,
+    },
+    timestamp,
+    specVersion,
+    events,
+  } = _block;
+  const height = BigInt(number.toString());
+  const blockHash = hash.toString();
 
-  logger.info(`Connecting to ${ENDPOINT}`);
+  // Get block author
+  const authorId = getBlockAuthor(_block);
 
-  logger.info(`Block Hash: ${hash.toString()}`);
-
-  // const [solutionRang, blockchainSize, owner] = await Promise.all([
-  // solutionRanges.v0.get(blockHeader as any),
-  // getHistorySize(blockHeader.hash.toString(), api as any),
-  // getBlockAuthor(blockHeader as any, api as any),
-  // ]);
-
-  // const solutionRang = await solutionRanges.v0.get(blockHeader as any);
-  // const spacePledged = solutionRang
-  //   ? calcSpacePledged(solutionRang.current)
-  //   : calcSpacePledged(
-  //       solutionRanges.v0.getDefault(blockHeader as any).current
-  //     );
-
-  logger.info(`Block number: ${number.toString()}`);
-  logger.info(`Timestamp: ${timestamp}`);
-  logger.info(`Block hash: ${hash.toString()}`);
-  logger.info(`Parent hash: ${parentHash.toString()}`);
-  logger.info(`Spec version: ${specVersion.toString()}`);
-  logger.info(`State root: ${stateRoot.toString()}`);
-  logger.info(`Extrinsics root: ${extrinsicsRoot.toString()}`);
-  logger.info(`Extrinsics count: ${extrinsics.length}`);
-  logger.info(`Events count: ${events.length}`);
-
-  // To-Do
+  // To-Do:
   const spacePledged = BigInt(0);
   const blockchainSize = BigInt(0);
-  logger.info(`spacePledged: ${spacePledged.toString()}`);
-  logger.info(`blockchainSize: ${blockchainSize.toString()}`);
 
-  const blockRecord = Block.create({
-    id: number.toString(),
-    height: number.toBigInt(),
-    timestamp: new Date(Number(timestamp) * 1000),
-    hash: hash.toString(),
-    parentHash: parentHash.toString(),
-    specId: specVersion.toString(),
-    stateRoot: stateRoot.toString(),
-    extrinsicsRoot: extrinsicsRoot.toString(),
+  const eventsCount = events.length;
+  const extrinsicsCount = extrinsics.length;
+
+  // Create block
+  await createAndSaveBlock(
+    blockHash,
+    height,
+    timestamp ? timestamp : new Date(0),
+    parentHash.toString(),
+    specVersion.toString(),
+    stateRoot.toString(),
+    extrinsicsRoot.toString(),
     spacePledged,
     blockchainSize,
-    extrinsicsCount: extrinsics.length,
-    eventsCount: events.length,
+    extrinsicsCount,
+    eventsCount,
+    authorId
+  );
+
+  // Create and save block logs
+  const _logs = digest.logs.map((log, i) => {
+    const logData = log.toHuman();
+    const logJson = log.toPrimitive();
+    const kind = logData ? Object.keys(logData)[0] : "";
+    const rawKind = logJson ? Object.keys(logJson)[0] : "";
+    const value = logJson
+      ? stringify(logJson[rawKind as keyof typeof logJson])
+      : "";
+    const logObj = prepareLog(height, blockHash, i, rawKind, kind, value);
+    return logObj;
   });
-
-  if (extrinsics.length > 0) {
-    for (let i = 0; i < extrinsics.length; i++) {
-      const extrinsic = extrinsics[i];
-      logger.info(
-        `Extrinsic: ${extrinsic.method.section}.${extrinsic.method.method}`
-      );
-      const {
-        method: { args },
-      } = extrinsic;
-
-      const extrinsicRecord = Extrinsic.create({
-        id: `${blockRecord.id}-${extrinsic.callIndex}`,
-        hash: extrinsic.hash.toString(),
-        indexInBlock: i,
-        nonce: extrinsic.nonce?.toBigInt(),
-        name: `${extrinsic.method.section}.${extrinsic.method.method}`,
-        signerId: extrinsic.signer?.toString(),
-        signature: extrinsic.signature?.toString(),
-        error: "",
-        tip: extrinsic.tip?.toBigInt(),
-        fee: BigInt(0),
-        success: true,
-        blockId: blockRecord.id,
-        timestamp: new Date(Number(timestamp)),
-        args: JSON.stringify(args),
-      });
-      await extrinsicRecord.save();
-    }
-  }
-
-  if (events.length > 0) {
-    for (let i = 0; i < events.length; i++) {
-      const event = events[i];
-      logger.info(`Event: ${event.toString()}`);
-
-      const eventRecord = Event.create({
-        id: `${blockRecord.id}-${i}`,
-        indexInBlock: i,
-        name: ``,
-        timestamp: new Date(Number(timestamp) * 1000),
-        phase: event.phase.isApplyExtrinsic
-          ? "ApplyExtrinsic"
-          : event.phase.toString(),
-        pos: 0,
-        args: "",
-        blockId: blockRecord.id,
-        extrinsicId: "",
-      });
-
-      await eventRecord.save();
-    }
-  }
-
-  await blockRecord.save();
-  logger.info("Block record saved successfully");
+  await saveLog(_logs);
 }
 
-export const solutionRangeToSectors = (solutionRange: bigint): bigint => {
-  const MAX_U64 = BigInt(2) ** BigInt(64) - BigInt(1);
-  const SLOT_PROBABILITY = [BigInt(1), BigInt(6)];
-  const RECORD_NUM_CHUNKS = BigInt(32768);
-  const RECORD_NUM_S_BUCKETS = BigInt(65536);
+export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
+  const {
+    idx,
+    block: {
+      timestamp,
+      block: {
+        header: { number },
+      },
+    },
+    extrinsic: { method, hash, nonce, signer, signature, tip, args },
+    success,
+  } = _call;
 
-  const sectors =
-    ((MAX_U64 / SLOT_PROBABILITY[1]) * SLOT_PROBABILITY[0]) /
-    ((MAX_PIECES_IN_SECTOR * RECORD_NUM_CHUNKS) / RECORD_NUM_S_BUCKETS);
+  const extrinsic_human = method.toHuman() as ExtrinsicHuman;
+  const extrinsic_primitive = method.toPrimitive() as ExtrinsicPrimitive;
 
-  // Take solution range into account
-  return sectors / solutionRange;
-};
+  const error = "";
+  const fee = BigInt(0);
+  const pos = 0;
 
-export const calcSpacePledged = (solutionRange: bigint): bigint => {
-  const sectors = solutionRangeToSectors(solutionRange);
+  await createAndSaveExtrinsic(
+    hash.toString(),
+    BigInt(number.toString()),
+    hash.toString(),
+    idx,
+    extrinsic_primitive.callIndex,
+    extrinsic_human.section,
+    extrinsic_human.method,
+    success,
+    timestamp ? timestamp : new Date(0),
+    BigInt(nonce.toString()),
+    signer.toString(),
+    signature.toString(),
+    stringify(args),
+    error,
+    BigInt(tip.toString()),
+    fee,
+    pos
+  );
+}
 
-  return sectors * MAX_PIECES_IN_SECTOR * PIECE_SIZE;
-};
+export async function handleEvent(_event: SubstrateEvent): Promise<void> {
+  const {
+    idx,
+    block: {
+      block: {
+        header: { number, hash },
+      },
+    },
+    extrinsic,
+    event,
+  } = _event;
 
-// export const calcHistorySize = (segmentsCount: number): bigint => {
-//   const PIECES_IN_SEGMENT = BigInt(256);
-//   const segmentsCountBigInt = BigInt(segmentsCount);
+  const primitive = event.toPrimitive() as EventPrimitive;
+  const human = event.toHuman() as EventHuman;
 
-//   return PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCountBigInt;
-// };
+  const timestamp = new Date(0); // Default value
+  const phase = ""; // Placeholder for phase
+  const pos = 0;
+  const args = extrinsic ? stringify(extrinsic.extrinsic.args) : "";
+  const extrinsicId = extrinsic
+    ? number + "-" + extrinsic.extrinsic.hash.toString()
+    : "";
+  const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
 
-// interface Solution extends Struct {
-//   readonly public_key: AccountId32;
-//   readonly reward_address: AccountId32;
-// }
-
-// export interface SubPreDigest extends Struct {
-//   readonly slot: u64;
-//   readonly solution: Solution;
-// }
-
-// export const getBlockAuthor = async (
-//   blockHeader: BlockSQD,
-//   api: ApiAtBlockHash
-// ) => {
-//   if (blockHeader.height === 0) return; // genesis block does not have logs
-//   const storage =
-//     (await digest.v0.get(blockHeader)) ?? digest.v0.getDefault(blockHeader);
-//   const preRuntimeRaw = storage.logs.find(
-//     (digestItem) => digestItem.__kind === "PreRuntime"
-//   ) as DigestItem_PreRuntime;
-//   if (!preRuntimeRaw) return;
-
-//   const subPreDigest = api.registry.createType(
-//     "SubPreDigest",
-//     preRuntimeRaw.value[1]
-//   );
-//   return (
-//     subPreDigest as unknown as SubPreDigest
-//   ).solution.reward_address.toString();
-// };
-
-// const getNameHash = (name: string): string => {
-//   const digest = xxhash128().update(name).digest();
-//   const sink = new HexSink();
-//   sink.u128(digest);
-//   const hash = sink.toHex();
-//   return hash;
-// };
-
-// export const getStorageHash = (prefix: string, name: string) => {
-//   return getNameHash(prefix) + getNameHash(name).slice(2);
-// };
-
-// export const getHistorySize = async (
-//   blockHeaderHash: string,
-//   api: ApiAtBlockHash
-// ) => {
-//   const storageHash = getStorageHash("Subspace", "SegmentCommitment");
-
-//   const totalSizeBytes = await api.query.state.getStorageSizeAt(
-//     storageHash,
-//     blockHeaderHash
-//   );
-//   const totalSize = BigInt(totalSizeBytes.toString());
-//   if (totalSize === BigInt(0)) return BigInt(0);
-
-//   const keys = await api.query.state.getChildKeys(storageHash, blockHeaderHash);
-
-//   const keySize = await api.query.state.getStorageSizeAt(keys, blockHeaderHash);
-//   const keySizeBigInt = BigInt(keySize.toString());
-
-//   const segmentsCount = totalSize / keySizeBigInt;
-
-//   return calcHistorySize(Number(segmentsCount));
-// };
+  await createAndSaveEvent(
+    BigInt(number.toString()),
+    hash.toString(),
+    BigInt(idx),
+    extrinsicId,
+    extrinsicHash,
+    primitive.index,
+    human.section,
+    human.method,
+    timestamp,
+    phase,
+    pos,
+    args
+  );
+}
