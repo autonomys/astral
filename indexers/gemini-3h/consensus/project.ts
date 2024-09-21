@@ -43,6 +43,7 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.GEMINI_3H_RPC!?.split(",") as string[] | string,
+    dictionary: process.env.DICTIONARY!,
   },
   dataSources: [
     {
