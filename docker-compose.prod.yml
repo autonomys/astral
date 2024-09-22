@@ -12,37 +12,50 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  hasura_engine:
+  hasura:
+    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_accounts-subquery-node:
+  gemini_3h_dictionary_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_consensus-subquery-node:
+  gemini_3h_dictionary_graphql_engine:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_leaderboard-subquery-node:
+  gemini_3h_accounts_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_staking-subquery-node:
+  gemini_3h_consensus_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3g_testnet_rewards-subquery-node:
+  gemini_3h_leaderboard_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_staking_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3g_testnet_rewards_subquery_node:
     logging:
       driver: loki
       options:
