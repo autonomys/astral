@@ -1,3 +1,20 @@
 table:
   name: logs
   schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - index_in_block
+        - block_height
+        - block_hash
+        - id
+        - kind
+        - log_id
+        - raw_kind
+        - value
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
