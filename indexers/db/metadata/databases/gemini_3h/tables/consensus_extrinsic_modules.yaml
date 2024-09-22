@@ -1,0 +1,3 @@
+table:
+  name: extrinsic_modules
+  schema: consensus

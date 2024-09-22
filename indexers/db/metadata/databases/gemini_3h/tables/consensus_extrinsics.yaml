@@ -1,0 +1,3 @@
+table:
+  name: extrinsics
+  schema: consensus
