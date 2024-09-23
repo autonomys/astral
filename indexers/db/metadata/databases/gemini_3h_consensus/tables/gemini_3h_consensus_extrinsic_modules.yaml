@@ -1,0 +1,27 @@
+table:
+  name: extrinsic_modules
+  schema: gemini_3h_consensus
+array_relationships:
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          module_id: module_id
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: gemini_3h_consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - id
+        - index
+        - method
+        - module_id
+        - section
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

@@ -10,18 +10,23 @@ import path from "path";
 const dotenvPath = path.resolve(__dirname, `../../../.env`);
 dotenv.config({ path: dotenvPath });
 
-console.log("env", process.env);
-
 // Can expand the Datasource processor types via the genreic param
 const project: SubstrateProject = {
   specVersion: "1.0.0",
   version: "0.0.1",
   name: "autonomys-gemini-3h-consensus",
   description: "Autonomys Gemini 3H Testnet - Consensus",
+  repository: "https://github.com/autonomys/astral",
   runner: {
     node: {
       name: "@subql/node",
-      version: ">=3.0.1",
+      version: "*",
+      options: {
+        historical: true,
+        unsafe: false,
+        unfinalizedBlocks: false,
+        skipTransactions: false,
+      },
     },
     query: {
       name: "@subql/query",
@@ -44,6 +49,17 @@ const project: SubstrateProject = {
      */
     endpoint: process.env.GEMINI_3H_RPC!?.split(",") as string[] | string,
     dictionary: process.env.DICTIONARY!,
+    // @ts-ignore
+    types: {
+      Solution: {
+        public_key: "AccountId32",
+        reward_address: "AccountId32",
+      },
+      SubPreDigest: {
+        slot: "u64",
+        solution: "Solution",
+      },
+    },
   },
   dataSources: [
     {
@@ -56,10 +72,28 @@ const project: SubstrateProject = {
             kind: SubstrateHandlerKind.Block,
             handler: "handleBlock",
           },
+        ],
+      },
+    },
+    {
+      kind: SubstrateDatasourceKind.Runtime,
+      startBlock: 1,
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [
           {
             kind: SubstrateHandlerKind.Call,
             handler: "handleCall",
           },
+        ],
+      },
+    },
+    {
+      kind: SubstrateDatasourceKind.Runtime,
+      startBlock: 1,
+      mapping: {
+        file: "./dist/index.js",
+        handlers: [
           {
             kind: SubstrateHandlerKind.Event,
             handler: "handleEvent",

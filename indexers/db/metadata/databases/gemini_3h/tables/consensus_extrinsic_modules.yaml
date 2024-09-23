@@ -1,0 +1,17 @@
+table:
+  name: extrinsic_modules
+  schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - id
+        - index
+        - method
+        - module_id
+        - section
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

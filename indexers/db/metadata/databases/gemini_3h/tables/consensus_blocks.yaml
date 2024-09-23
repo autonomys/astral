@@ -1,0 +1,25 @@
+table:
+  name: blocks
+  schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - events_count
+        - extrinsics_count
+        - blockchain_size
+        - height
+        - space_pledged
+        - author_id
+        - extrinsics_root
+        - hash
+        - id
+        - parent_hash
+        - spec_id
+        - state_root
+        - timestamp
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
