@@ -1,0 +1,3 @@
+table:
+  name: balance_histories
+  schema: accounts
