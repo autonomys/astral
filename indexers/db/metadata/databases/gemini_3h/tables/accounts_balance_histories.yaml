@@ -1,3 +1,18 @@
 table:
   name: balance_histories
   schema: accounts
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - free
+        - reserved
+        - total
+        - account_id
+        - id
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
