@@ -1,0 +1,28 @@
+{
+  "name": "taskboard",
+  "version": "1.0.0",
+  "description": "A taskboard using Express and BullMQ to manage tasks",
+  "private": true,
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@bull-board/api": "^5.23.0",
+    "@bull-board/express": "^5.23.0",
+    "body-parser": "^1.20.0",
+    "bullmq": "^4.6.0",
+    "connect-ensure-login": "^0.1.1",
+    "express": "^4.21.0",
+    "express-session": "^1.17.2",
+    "ioredis": "^5.4.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  }
+}

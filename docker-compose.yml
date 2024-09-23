@@ -2,6 +2,7 @@ version: "3.9"
 
 volumes:
   postgres_db: {}
+  redis_db: {}
 
 services:
   # Postgres Database
@@ -324,3 +325,45 @@ services:
       interval: 3s
       timeout: 5s
       retries: 10
+
+  # Redis
+  redis:
+    profiles: [task]
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_db:/data
+    hostname: redis
+    command: ["redis-server", "--bind", "0.0.0.0", "--port", "6379"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -h localhost -p 6379 ping | grep PONG || exit 1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Express + BullMQ
+  taskboard:
+    profiles: [task]
+    build:
+      context: ./indexers/taskboard
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./indexers/taskboard:/app
+    restart: unless-stopped
+    ports:
+      - "${BULL_PORT}:3000"
+    environment:
+      BULL_USERNAME: ${BULL_USERNAME}
+      BULL_PASSWORD: ${BULL_PASSWORD}
+      BULL_PORT: ${BULL_PORT}
+
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}

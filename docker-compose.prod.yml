@@ -60,3 +60,15 @@ services:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  redis:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taskboard:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
