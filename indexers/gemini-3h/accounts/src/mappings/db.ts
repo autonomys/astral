@@ -34,10 +34,10 @@ export async function createAndSaveBalanceHistory(
   reserved: bigint,
   total: bigint
 ): Promise<BalanceHistory> {
-  const id = accountId.toLowerCase();
+  const id = accountId.toLowerCase() + "-" + blockNumber.toString();
   const balanceHistory = BalanceHistory.create({
     id,
-    accountId: id,
+    accountId: accountId.toLowerCase(),
     free,
     reserved,
     total,
