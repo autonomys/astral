@@ -6,28 +6,21 @@ const LocalStrategy = require("passport-local").Strategy;
 const { createBullBoard } = require("@bull-board/api");
 const { BullMQAdapter } = require("@bull-board/api/bullMQAdapter");
 const { ExpressAdapter } = require("@bull-board/express");
-const { Queue: QueueMQ, Worker } = require("bullmq");
-const Redis = require("ioredis");
 const { ensureLoggedIn } = require("connect-ensure-login");
-
-const NETWORKS = ["gemini-3h"];
-const QUEUES = [
-  {
-    name: "accountBalanceUpdate",
-    title: "Account Balance Update",
-    enabled: true,
-  },
-  {
-    name: "leaderboardSortAndRank",
-    title: "Leaderboard Sort and Rank",
-    enabled: false,
-  },
-  {
-    name: "stackingUpdateOperator",
-    title: "Stacking Update Operator",
-    enabled: false,
-  },
-];
+const tasks = require("./tasks");
+const { checkRedisConnection } = require("./utils/store");
+const {
+  NETWORKS,
+  QUEUES,
+  JOB_RETENTION_HOURS,
+  GARBAGE_COLLECTION_INTERVAL,
+  BULL_BOARD_OPTIONS,
+} = require("./constants");
+const {
+  createQueueMQ,
+  setupBullMQProcessor,
+  cleanOldJobs,
+} = require("./utils/bull");
 
 passport.use(
   new LocalStrategy((username, password, cb) => {
@@ -44,50 +37,6 @@ passport.use(
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((user, cb) => cb(null, user));
 
-const sleep = (t) => new Promise((resolve) => setTimeout(resolve, t * 1000));
-
-const connection = {
-  port: process.env.REDIS_PORT ?? 6379,
-  host: process.env.REDIS_HOST ?? "redis",
-  retryStrategy: (times) => {
-    const delay = Math.min(times * 50, 2000);
-    console.log(`Retrying Redis connection in ${delay}ms...`);
-    return delay;
-  },
-};
-
-async function checkRedisConnection() {
-  const redis = new Redis(connection);
-  return new Promise((resolve, reject) => {
-    redis.on("ready", () => {
-      console.log("Connected to Redis successfully!");
-      redis.disconnect();
-      resolve();
-    });
-
-    redis.on("error", (err) => {
-      console.error("Redis connection error:", err);
-      redis.disconnect();
-      reject(err);
-    });
-  });
-}
-
-const createQueueMQ = (name) => new QueueMQ(name, { connection });
-
-async function setupBullMQProcessor(queueName) {
-  new Worker(queueName, async (job) => {
-    for (let i = 0; i <= 100; i++) {
-      await sleep(Math.random());
-      await job.updateProgress(i);
-      await job.log(`Processing job at interval ${i}`);
-
-      if (Math.random() * 200 < 1) throw new Error(`Random error ${i}`);
-    }
-    return { jobId: `This is the return value of job (${job.id})` };
-  });
-}
-
 const run = async () => {
   await checkRedisConnection();
   const app = express();
@@ -103,7 +52,10 @@ const run = async () => {
     for (const queue of activeQueues) {
       const queueName = `${network} - ${queue.title}`;
       const _queue = createQueueMQ(queueName);
-      await setupBullMQProcessor(_queue.name);
+      const task = tasks[queue.name];
+      if (task) {
+        await setupBullMQProcessor(_queue.name, task);
+      }
       if (!queues[network]) {
         queues[network] = {};
       }
@@ -116,6 +68,7 @@ const run = async () => {
         (queue) => new BullMQAdapter(queues[network][queue.name])
       ),
       serverAdapter,
+      options: BULL_BOARD_OPTIONS,
     });
 
     serverAdapter.setBasePath(`/${network}`);
@@ -123,35 +76,93 @@ const run = async () => {
     serverAdapters[network] = serverAdapter;
   }
 
-  app.use("/add", (req, res) => {
-    const opts = req.query.opts || {};
-    if (opts.delay) opts.delay = +opts.delay * 1000;
+  for (const network of NETWORKS) {
+    app.use(`/${network}/add`, async (req, res) => {
+      const opts = req.query.opts || {};
+      const jobId = req.query.jobId;
 
-    for (const network of NETWORKS) {
-      queues[network][activeQueues[0].name].add(
+      if (!jobId) {
+        return res.status(400).json({ error: "jobId is required" });
+      }
+
+      const queue = queues[network][activeQueues[0].name];
+      const existingJob = await queue.getJob(jobId);
+
+      if (
+        existingJob &&
+        !existingJob.isCompleted() &&
+        !existingJob.isFailed()
+      ) {
+        return res.status(400).json({ error: "Job is already in progress" });
+      }
+
+      await queue.add(
         `Add ${network}`,
         { title: req.query.title },
-        opts
+        { ...opts, jobId }
       );
-    }
 
-    res.json({ ok: true });
-  });
+      res.json({ ok: true });
+    });
+  }
 
   app.use(bodyParser.json());
   app.post("/add-task", async (req, res) => {
-    const { queueName, taskName, data, opts } = req.body;
+    const { queueName, taskName, data, opts, jobId } = req.body;
+    console.log("jobId: ", jobId);
+
+    if (!jobId) {
+      console.log("jobId is required");
+      return res.status(400).json({ error: "jobId is required" });
+    }
 
     try {
       const queue = queues[queueName];
       if (!queue) return res.status(400).json({ error: "Invalid queue name" });
 
-      await queue[activeQueues[0].name].add(taskName, data, opts);
-      res.json({ ok: true, message: `Task added to ${queueName}` });
+      const existingTaskQueue = queue[taskName];
+      if (!existingTaskQueue) {
+        console.log("Invalid task name");
+        return res.status(400).json({ error: "Invalid task name" });
+      }
+      const existingJob = await existingTaskQueue.getJob(jobId);
+
+      if (
+        existingJob &&
+        !existingJob.isCompleted() &&
+        !existingJob.isFailed()
+      ) {
+        console.log("Job is already in progress");
+        return res.status(400).json({ error: "Job is already in progress" });
+      }
+
+      const job = await existingTaskQueue.add(taskName, data, {
+        ...opts,
+        jobId,
+      });
+      if (!job) {
+        console.log("Failed to create task");
+        return res.status(500).json({ error: "Failed to create task" });
+      }
+      res.json({
+        ok: true,
+        message: `Task added to ${queueName}`,
+        jobId: job.id,
+      });
     } catch (error) {
+      console.log("Error adding task:", error);
       res.status(500).json({ error: error.message });
     }
   });
+
+  // Schedule garbage collection to run every hour
+  setInterval(async () => {
+    for (const network in queues) {
+      for (const queueName in queues[network]) {
+        await cleanOldJobs(queues[network][queueName], JOB_RETENTION_HOURS);
+      }
+    }
+  }, GARBAGE_COLLECTION_INTERVAL);
 
   app.listen(3000, () => {
     console.log(`Running on ${process.env.BULL_PORT}...`);
@@ -163,19 +174,13 @@ const run = async () => {
     console.log("Make sure Redis is running on port 6379 by default");
     console.log("To populate the queue, run:");
     console.log(
-      `  curl http://localhost:${process.env.BULL_PORT}/add?title=Example`
-    );
-    console.log("To populate the queue with custom options (opts), run:");
-    console.log(
-      `  curl http://localhost:${process.env.BULL_PORT}/add?title=Test&opts[delay]=9`
-    );
-    console.log(
-      "To add a task to the queue, send a POST request to /add-task with JSON body:"
+      "To add a task to the queue, send a POST request to /<network>/add-task with JSON body:"
     );
     console.log(`  {
-      "queueName": "accounts",
-      "taskName": "Test Task",
-      "data": { "key": "value" },
+      "queueName": "gemini-3h",
+      "taskName": "accountBalanceUpdate",
+      "jobId": "123",
+      "data": { "accountId": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "blockNumber": 10000000, "free": 1000000000000000000, "reserved": 1000000000000000000, "frozen": 1000000000000000000 },
       "opts": { "delay": 5000 }
     }`);
   });

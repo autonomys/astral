@@ -12,10 +12,12 @@ services:
       - postgres_db:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     restart: unless-stopped
+    hostname: postgres
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_MAX_CONNECTIONS: 500
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
@@ -357,6 +359,7 @@ services:
         condition: service_healthy
     volumes:
       - ./indexers/taskboard:/app
+    hostname: taskboard
     restart: unless-stopped
     ports:
       - "${BULL_PORT}:3000"
@@ -367,3 +370,11 @@ services:
 
       REDIS_HOST: redis
       REDIS_PORT: ${REDIS_PORT}
+
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+
+      DB_GEMINI_3H: ${DB_GEMINI_3H}
