@@ -1,4 +1,5 @@
 import { Account, BalanceHistory, Transfer } from "../types";
+import { dateEntry } from "./utils";
 
 export async function createAndSaveAccountIfNotExists(
   accountId: string,
@@ -19,8 +20,7 @@ export async function createAndSaveAccountIfNotExists(
       free,
       reserved,
       total,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
+      ...dateEntry(blockNumber),
     });
     await account.save();
   }
