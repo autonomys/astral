@@ -31,6 +31,8 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@autonomys/auto-consensus": "^0.5.0",
+    "@autonomys/auto-utils": "^0.5.0",
     "@polkadot/api": "^12",
     "@subql/cli": "latest",
     "@subql/common-substrate": "latest",
