@@ -10,7 +10,11 @@ import {
   prepareLog,
   saveLog,
 } from "./db";
-import { getBlockAuthor } from "./helper";
+import {
+  calculateBlockchainSize,
+  calculateSpacePledged,
+  getBlockAuthor,
+} from "./helper";
 import { stringify } from "./utils";
 
 type ExtrinsicPrimitive = {
@@ -50,9 +54,11 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   // Get block author
   const authorId = getBlockAuthor(_block);
 
-  // To-Do:
-  const spacePledged = BigInt(0);
-  const blockchainSize = BigInt(0);
+  // Calculate space pledged and blockchain size concurrently
+  const [spacePledged, blockchainSize] = await Promise.all([
+    calculateSpacePledged(),
+    calculateBlockchainSize(),
+  ]);
 
   const eventsCount = events.length;
   const extrinsicsCount = extrinsics.length;
