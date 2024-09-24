@@ -31,13 +31,17 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@autonomys/auto-consensus": "^0.5.0",
+    "@autonomys/auto-utils": "^0.5.0",
     "@polkadot/api": "^12",
     "@subql/cli": "latest",
     "@subql/common-substrate": "latest",
     "@subql/testing": "latest",
     "@subql/types": "latest",
     "@types/node": "latest",
+    "axios": "^1.7.7",
     "dotenv": "latest",
+    "http": "^0.0.1-security",
     "typescript": "^5.2.2"
   },
   "resolutions": {

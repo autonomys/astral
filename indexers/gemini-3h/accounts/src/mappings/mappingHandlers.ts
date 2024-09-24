@@ -1,44 +1,45 @@
-import { SubstrateEvent } from "@subql/types";
-import { Account, Transfer } from "../types";
+import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
+import { createAndSaveAccountIfNotExists, createAndSaveTransfer } from "./db";
+import { updateAccountBalance } from "./helper";
 
 export async function handleTransferEvent(
   event: SubstrateEvent
 ): Promise<void> {
-  logger.info(
-    `New ${event.event.section}.${
-      event.event.method
-    } event found at block ${event.block.block.header.number.toString()}`
-  );
   const {
     event: {
       data: [_from, _to, _amount],
     },
   } = event;
+  const blockNumber = BigInt(event.block.block.header.number.toString());
+  const timestamp = Number(event.block.timestamp) * 1000;
   const from = _from.toString();
   const to = _to.toString();
   const amount = BigInt(_amount.toString());
-  console.log("event.extrinsic", event.extrinsic);
-  // const fee = BigInt(event.extrinsic?.extrinsic?.fee ?? 0);
-  const blockNumber = event.block.block.header.number.toNumber();
-  const timestamp = Number(event.block.timestamp) * 1000;
 
-  const accountSender = await checkAndGetAccount(from, blockNumber);
-  accountSender.nonce = BigInt(accountSender.nonce.toString());
-  accountSender.free = accountSender.free;
-  accountSender.reserved = accountSender.reserved;
-  accountSender.total = accountSender.free + accountSender.reserved;
-  accountSender.updatedAt = blockNumber;
+  const fromBalance = await updateAccountBalance(from, blockNumber);
+  const toBalance = await updateAccountBalance(to, blockNumber);
 
-  const accountReceiver = await checkAndGetAccount(to, blockNumber);
-  accountReceiver.nonce = BigInt(accountReceiver.nonce.toString());
-  accountReceiver.free = accountReceiver.free;
-  accountReceiver.reserved = accountReceiver.reserved;
-  accountReceiver.total = accountReceiver.free + accountReceiver.reserved;
-  accountReceiver.updatedAt = blockNumber;
+  // create and save accounts if not exists
+  await createAndSaveAccountIfNotExists(
+    from,
+    blockNumber,
+    BigInt(0),
+    fromBalance.free,
+    fromBalance.reserved,
+    fromBalance.free + fromBalance.reserved
+  );
+  await createAndSaveAccountIfNotExists(
+    to,
+    blockNumber,
+    BigInt(0),
+    toBalance.free,
+    toBalance.reserved,
+    toBalance.free + toBalance.reserved
+  );
 
-  const transfer = await checkAndGetTransfer(
-    blockNumber + "-" + event.event.index.toString(),
-    event.extrinsic?.extrinsic.hash.toString() ?? "",
+  await createAndSaveTransfer(
+    blockNumber,
+    event.extrinsic ? blockNumber + "-" + event.extrinsic.idx.toString() : "",
     event.event.index.toString(),
     from,
     to,
@@ -46,64 +47,91 @@ export async function handleTransferEvent(
     BigInt(0),
     event.extrinsic?.success ?? false,
     BigInt(timestamp),
-    new Date(timestamp),
-    blockNumber
+    new Date(timestamp)
   );
-
-  await Promise.all([
-    accountSender.save(),
-    accountReceiver.save(),
-    transfer.save(),
-  ]);
 }
 
-async function checkAndGetAccount(
-  id: string,
-  blockNumber: number
-): Promise<Account> {
-  let account = await Account.get(id.toLowerCase());
-  if (!account) {
-    account = Account.create({
-      id: id.toLowerCase(),
-      nonce: BigInt(0),
-      free: BigInt(0),
-      reserved: BigInt(0),
-      total: BigInt(0),
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return account;
+export async function handleExtrinsic(
+  extrinsic: SubstrateExtrinsic
+): Promise<void> {
+  const {
+    extrinsic: { signer },
+    block: {
+      block: {
+        header: { number },
+      },
+    },
+  } = extrinsic;
+  const blockNumber = BigInt(number.toString());
+  const address = signer.toString();
+
+  const balance = await updateAccountBalance(address, blockNumber);
+
+  // create and save accounts if not exists
+  await createAndSaveAccountIfNotExists(
+    address,
+    blockNumber,
+    BigInt(0),
+    balance.free,
+    balance.reserved,
+    balance.free + balance.reserved
+  );
 }
 
-async function checkAndGetTransfer(
-  id: string,
-  extrinsicId: string,
-  eventId: string,
-  from: string,
-  to: string,
-  value: bigint,
-  fee: bigint,
-  success: boolean,
-  timestamp: bigint,
-  date: Date,
-  createdAt: number
-): Promise<Transfer> {
-  let transfer = await Transfer.get(id);
-  if (!transfer) {
-    transfer = Transfer.create({
-      id: id,
-      extrinsicId: extrinsicId,
-      eventId: eventId,
-      from: from,
-      to: to,
-      value: value,
-      fee: fee,
-      success: success,
-      timestamp: timestamp,
-      date: date,
-      createdAt: createdAt,
-    });
-  }
-  return transfer;
+export async function handleFarmerVoteRewardEvent(
+  event: SubstrateEvent
+): Promise<void> {
+  const {
+    event: {
+      data: [_voter, _reward],
+    },
+    block: {
+      block: {
+        header: { number },
+      },
+    },
+  } = event;
+  const voter = _voter.toString();
+  const blockNumber = BigInt(number.toString());
+
+  const balance = await updateAccountBalance(voter, blockNumber);
+
+  // create and save accounts if not exists
+  await createAndSaveAccountIfNotExists(
+    voter,
+    blockNumber,
+    BigInt(0),
+    balance.free,
+    balance.reserved,
+    balance.free + balance.reserved
+  );
+}
+
+export async function handleFarmerBlockRewardEvent(
+  event: SubstrateEvent
+): Promise<void> {
+  const {
+    event: {
+      data: [_blockAuthor, _reward],
+    },
+    block: {
+      block: {
+        header: { number },
+      },
+    },
+  } = event;
+  const blockAuthor = _blockAuthor.toString();
+  const blockNumber = BigInt(number.toString());
+
+  const balance = await updateAccountBalance(blockAuthor, blockNumber);
+
+  // create and save accounts if not exists
+  await createAndSaveAccountIfNotExists(
+    blockAuthor,
+    blockNumber,
+    BigInt(0),
+    balance.free,
+    balance.reserved,
+    balance.free + balance.reserved
+  );
 }
