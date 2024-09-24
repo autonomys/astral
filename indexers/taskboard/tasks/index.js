@@ -1,9 +1,14 @@
 const { accountBalanceUpdate } = require("./accountBalanceUpdate");
+const { leaderboardSortAndRank } = require("./leaderboardSortAndRank");
 
 const tasks = {
   accountBalanceUpdate: {
     handler: accountBalanceUpdate,
-    concurrency: 5,
+    concurrency: 1,
+  },
+  leaderboardSortAndRank: {
+    handler: leaderboardSortAndRank,
+    concurrency: 1,
   },
 };
 
