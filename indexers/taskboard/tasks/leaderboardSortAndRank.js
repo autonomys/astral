@@ -42,10 +42,6 @@ async function leaderboardSortAndRank(job) {
           " - " +
           blockNumber
       );
-      return {
-        query: leaderboardEntries.query,
-        leaderboardEntries: leaderboardEntries.rowCount,
-      };
     }
 
     const filteredEntries = {};
@@ -122,10 +118,7 @@ async function leaderboardSortAndRank(job) {
       }
     }
 
-    /* const updateAccountsByAccountId = await pool.query(
-      queries.updateAccountsByAccountId,
-      updateValues
-    ); */
+    await pool.query(queries.updateAccountedForStatus, selectValues);
 
     return {
       query: leaderboardEntries.query,

@@ -69,12 +69,21 @@ FROM ranked_entries r
 WHERE t._id = r._id;
 `;
 
+const updateAccountedForStatus = `
+UPDATE leaderboard.leaderboard_entries 
+SET accounted_for = true 
+WHERE accounted_for = false 
+  AND created_at > $1 
+  AND created_at <= $2
+`;
+
 const queries = {
   selectAccountsByAccountId,
   updateAccountsByAccountId,
   selectLeaderboardEntryByInterval,
   createOrUpdateLeaderboardEntry,
   updateLeaderboardRanking,
+  updateAccountedForStatus,
 };
 
 module.exports = { connectToDB, entryTypeToTable, stringToUUID, queries };
