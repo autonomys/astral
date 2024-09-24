@@ -5,6 +5,7 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - accounted_for
         - _block_range
         - created_at
         - value
