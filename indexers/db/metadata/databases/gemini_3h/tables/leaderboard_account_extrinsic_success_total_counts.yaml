@@ -1,0 +1,3 @@
+table:
+  name: account_extrinsic_success_total_counts
+  schema: leaderboard

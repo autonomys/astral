@@ -1,0 +1,3 @@
+table:
+  name: account_remark_counts
+  schema: leaderboard

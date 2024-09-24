@@ -1,0 +1,3 @@
+table:
+  name: farmer_block_total_counts
+  schema: leaderboard

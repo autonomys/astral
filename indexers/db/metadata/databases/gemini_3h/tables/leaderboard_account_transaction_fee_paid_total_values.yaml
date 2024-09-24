@@ -1,0 +1,3 @@
+table:
+  name: account_transaction_fee_paid_total_values
+  schema: leaderboard

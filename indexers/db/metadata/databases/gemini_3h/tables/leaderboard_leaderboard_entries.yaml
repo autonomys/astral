@@ -1,0 +1,18 @@
+table:
+  name: leaderboard_entries
+  schema: leaderboard
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - value
+        - id
+        - leaderboard
+        - owner
+        - timestamp
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
