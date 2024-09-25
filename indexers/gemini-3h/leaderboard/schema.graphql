@@ -2,9 +2,24 @@
 # Add the `@index` or `@index(unique: true)` annotation after any non-key field
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
+# leaderboard entries
+type LeaderboardEntry @entity {
+  id: ID!
+  leaderboard: String! @index
+  owner: String! @index # the owner of the entry, can be an account or an operator
+  value: BigInt! @index # the value of the entry, can be an amount or a 1 for count
+  accountedFor: Boolean! @index # if the entry is accounted for by the taskboard service
+  timestamp: Date! @index # the timestamp of the last contribution
+  createdAt: Int! @index # the block number
+}
+
+# Underneath are the actual leaderboard tables use by the leaderboard page
+# These tables are handle by the taskboard service, using the LeaderboardEntry entity
+
 # account
 type AccountTransferSenderTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -14,6 +29,7 @@ type AccountTransferSenderTotalCount @entity {
 
 type AccountTransferSenderTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -23,6 +39,7 @@ type AccountTransferSenderTotalValue @entity {
 
 type AccountTransferReceiverTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -32,6 +49,7 @@ type AccountTransferReceiverTotalCount @entity {
 
 type AccountTransferReceiverTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -41,6 +59,7 @@ type AccountTransferReceiverTotalValue @entity {
 
 type AccountRemarkCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -50,6 +69,7 @@ type AccountRemarkCount @entity {
 
 type AccountExtrinsicTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -59,6 +79,7 @@ type AccountExtrinsicTotalCount @entity {
 
 type AccountExtrinsicSuccessTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -68,6 +89,7 @@ type AccountExtrinsicSuccessTotalCount @entity {
 
 type AccountExtrinsicFailedTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -77,6 +99,7 @@ type AccountExtrinsicFailedTotalCount @entity {
 
 type AccountTransactionFeePaidTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -87,6 +110,7 @@ type AccountTransactionFeePaidTotalValue @entity {
 # farmer
 type FarmerVoteTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -96,6 +120,7 @@ type FarmerVoteTotalCount @entity {
 
 type FarmerVoteTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -105,6 +130,7 @@ type FarmerVoteTotalValue @entity {
 
 type FarmerBlockTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -114,6 +140,7 @@ type FarmerBlockTotalCount @entity {
 
 type FarmerBlockTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -123,6 +150,7 @@ type FarmerBlockTotalValue @entity {
 
 type FarmerVoteAndBlockTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -132,6 +160,7 @@ type FarmerVoteAndBlockTotalCount @entity {
 
 type FarmerVoteAndBlockTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -142,6 +171,7 @@ type FarmerVoteAndBlockTotalValue @entity {
 # operator
 type OperatorTotalRewardsCollected @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -151,6 +181,7 @@ type OperatorTotalRewardsCollected @entity {
 
 type OperatorTotalTaxCollected @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -160,6 +191,7 @@ type OperatorTotalTaxCollected @entity {
 
 type OperatorBundleTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -169,6 +201,7 @@ type OperatorBundleTotalCount @entity {
 
 type OperatorDepositsTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -178,6 +211,7 @@ type OperatorDepositsTotalCount @entity {
 
 type OperatorDepositsTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -187,6 +221,7 @@ type OperatorDepositsTotalValue @entity {
 
 type OperatorWithdrawalsTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -197,6 +232,7 @@ type OperatorWithdrawalsTotalCount @entity {
 # nominator/account
 type NominatorDepositsTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
@@ -206,6 +242,7 @@ type NominatorDepositsTotalCount @entity {
 
 type NominatorDepositsTotalValue @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: BigInt! @index
   lastContributionAt: Date!
@@ -215,6 +252,7 @@ type NominatorDepositsTotalValue @entity {
 
 type NominatorWithdrawalsTotalCount @entity {
   id: ID!
+  owner: String! @index
   rank: Int! @index
   value: Int! @index
   lastContributionAt: Date!
