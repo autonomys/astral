@@ -15,4 +15,5 @@ select_permissions:
         - last_contribution_at
         - _id
       filter: {}
+      allow_aggregations: true
     comment: ""
