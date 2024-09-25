@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  bigNumberToFormattedString,
-  formatUnitsToNumber,
-  numberFormattedString,
-} from '@/utils/number'
+import { numberFormattedString } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
   AriesStressTestIcon,
