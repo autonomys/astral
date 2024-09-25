@@ -5,7 +5,7 @@ import {
 } from "@subql/types";
 import * as dotenv from "dotenv";
 import path from "path";
-
+import { BLOCK_SORT_AND_RANK_INTERVAL } from "./src/mappings/contants";
 // Load the appropriate .env file
 const dotenvPath = path.resolve(__dirname, `../../../.env`);
 dotenv.config({ path: dotenvPath });
@@ -155,6 +155,13 @@ const project: SubstrateProject = {
             filter: {
               module: "domains",
               method: "WithdrewStake",
+            },
+          },
+          {
+            kind: SubstrateHandlerKind.Block,
+            handler: "handleSortAndRankLeaderboard",
+            filter: {
+              modulo: BLOCK_SORT_AND_RANK_INTERVAL,
             },
           },
         ],
