@@ -41,6 +41,7 @@
     "cSpell.words": [
       "autonomys",
       "autoid",
+      "codegen",
       "hasura",
       "deregister",
       "extrinsics",
@@ -51,6 +52,7 @@
       "subscan",
       "subspace",
       "subsquid",
+      "taskboard",
       "typegen"
     ]
   }

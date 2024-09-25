@@ -1,6 +1,25 @@
 table:
   name: sections
   schema: gemini_3h_consensus
+array_relationships:
+  - name: event_modules
+    using:
+      manual_configuration:
+        column_mapping:
+          section: section
+        insertion_order: null
+        remote_table:
+          name: event_modules
+          schema: gemini_3h_consensus
+  - name: extrinsic_modules
+    using:
+      manual_configuration:
+        column_mapping:
+          section: section
+        insertion_order: null
+        remote_table:
+          name: extrinsic_modules
+          schema: gemini_3h_consensus
 select_permissions:
   - role: user
     permission:

@@ -1,16 +1,6 @@
 table:
   name: events
-  schema: gemini_3h_consensus
-object_relationships:
-  - name: event_module
-    using:
-      manual_configuration:
-        column_mapping:
-          module_id: module_id
-        insertion_order: null
-        remote_table:
-          name: event_modules
-          schema: gemini_3h_consensus
+  schema: consensus
 select_permissions:
   - role: user
     permission:

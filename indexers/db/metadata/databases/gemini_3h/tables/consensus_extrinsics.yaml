@@ -1,0 +1,29 @@
+table:
+  name: extrinsics
+  schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - success
+        - _block_range
+        - index_in_block
+        - pos
+        - block_height
+        - fee
+        - nonce
+        - tip
+        - args
+        - block_hash
+        - error
+        - extrinsic_hash
+        - extrinsic_id
+        - id
+        - module_id
+        - signature
+        - signer
+        - timestamp
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

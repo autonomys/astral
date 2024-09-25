@@ -41,6 +41,7 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.GEMINI_3H_RPC!?.split(",") as string[] | string,
+    dictionary: process.env.DICTIONARY!,
   },
   dataSources: [
     {
@@ -58,67 +59,23 @@ const project: SubstrateProject = {
             },
           },
           {
+            kind: SubstrateHandlerKind.Call,
+            handler: "handleExtrinsic",
+          },
+          {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
+            handler: "handleFarmerVoteRewardEvent",
             filter: {
-              module: "system",
-              method: "ExtrinsicSuccess",
+              module: "rewards",
+              method: "VoteReward",
             },
           },
           {
             kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
+            handler: "handleFarmerBlockRewardEvent",
             filter: {
-              module: "transactionPayment",
-              method: "TransactionFeePaid",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorRewarded",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorTaxCollected",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorRegistered",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorNominated",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "domains",
-              method: "WithdrewStake",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleTransferEvent",
-            filter: {
-              module: "domains",
-              method: "StorageFeeDeposited",
+              module: "rewards",
+              method: "BlockReward",
             },
           },
         ],

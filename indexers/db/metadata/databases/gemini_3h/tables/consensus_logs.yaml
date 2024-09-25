@@ -1,16 +1,6 @@
 table:
   name: logs
-  schema: gemini_3h_consensus
-object_relationships:
-  - name: block
-    using:
-      manual_configuration:
-        column_mapping:
-          block_height: height
-        insertion_order: null
-        remote_table:
-          name: blocks
-          schema: gemini_3h_consensus
+  schema: consensus
 select_permissions:
   - role: user
     permission:
