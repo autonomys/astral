@@ -66,6 +66,9 @@ const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }
 
 const MAINNET_TOTAL_SUPPLY = 1000000000
 
+const PERCENTAGE_PRECISION = 6
+const EARNINGS_PRECISION = 6
+
 export const TestnetRewardsTable: FC = () => {
   const { subspaceAccount } = useWallet()
   const { mySubspaceWallets } = useViewStates()
@@ -245,7 +248,7 @@ export const TestnetRewardsTable: FC = () => {
         const rewardObj = mergedRewards.get(address)!
         rewardObj[testnet] = {
           earnings: rewards.toString(),
-          percentage: ((rewards / totalRewards[testnet]) * 100).toFixed(18),
+          percentage: ((rewards / totalRewards[testnet]) * 100).toFixed(PERCENTAGE_PRECISION),
         }
       })
     }
@@ -297,17 +300,17 @@ export const TestnetRewardsTable: FC = () => {
     (phase: string) => {
       switch (phase) {
         case 'aries':
-          return parseFloat(previousRewards.aries.earnings).toFixed(2)
+          return parseFloat(previousRewards.aries.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiI':
-          return parseFloat(previousRewards.geminiI.earnings).toFixed(2)
+          return parseFloat(previousRewards.geminiI.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiIIphase1':
-          return parseFloat(previousRewards.geminiIIphase1.earnings).toFixed(2)
+          return parseFloat(previousRewards.geminiIIphase1.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiIIphase2':
-          return parseFloat(previousRewards.geminiIIphase2.earnings).toFixed(2)
+          return parseFloat(previousRewards.geminiIIphase2.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiIIIf':
-          return parseFloat(previousRewards.geminiIIIf.earnings).toFixed(2)
+          return parseFloat(previousRewards.geminiIIIf.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiIIIg':
-          return parseFloat(previousRewards.geminiIIIg.earnings).toFixed(2)
+          return parseFloat(previousRewards.geminiIIIg.earnings).toFixed(EARNINGS_PRECISION)
         default:
           return '0.00'
       }
@@ -341,19 +344,35 @@ export const TestnetRewardsTable: FC = () => {
     (phase: string) => {
       switch (phase) {
         case 'geminiI':
-          return parseFloat(previousRewards.geminiI.percentage.replace('%', '')).toFixed(6) + '%'
+          return (
+            parseFloat(previousRewards.geminiI.percentage.replace('%', '')).toFixed(
+              PERCENTAGE_PRECISION,
+            ) + '%'
+          )
         case 'geminiIIphase1':
           return (
-            parseFloat(previousRewards.geminiIIphase1.percentage.replace('%', '')).toFixed(6) + '%'
+            parseFloat(previousRewards.geminiIIphase1.percentage.replace('%', '')).toFixed(
+              PERCENTAGE_PRECISION,
+            ) + '%'
           )
         case 'geminiIIphase2':
           return (
-            parseFloat(previousRewards.geminiIIphase2.percentage.replace('%', '')).toFixed(6) + '%'
+            parseFloat(previousRewards.geminiIIphase2.percentage.replace('%', '')).toFixed(
+              PERCENTAGE_PRECISION,
+            ) + '%'
           )
         case 'geminiIIIf':
-          return parseFloat(previousRewards.geminiIIIf.percentage.replace('%', '')).toFixed(6) + '%'
+          return (
+            parseFloat(previousRewards.geminiIIIf.percentage.replace('%', '')).toFixed(
+              PERCENTAGE_PRECISION,
+            ) + '%'
+          )
         case 'geminiIIIg':
-          return parseFloat(previousRewards.geminiIIIg.percentage.replace('%', '')).toFixed(6) + '%'
+          return (
+            parseFloat(previousRewards.geminiIIIg.percentage.replace('%', '')).toFixed(
+              PERCENTAGE_PRECISION,
+            ) + '%'
+          )
         case 'aries':
         default:
           return '0.00%'
@@ -362,7 +381,6 @@ export const TestnetRewardsTable: FC = () => {
     [previousRewards],
   )
 
-  const totalEarningsPercent = useMemo(() => '0.0%', [])
   const totalEarningsTSSC = useMemo(() => {
     return (
       parseFloat(previousRewards.geminiI.earnings) +
@@ -370,8 +388,22 @@ export const TestnetRewardsTable: FC = () => {
       parseFloat(previousRewards.geminiIIphase2.earnings) +
       parseFloat(previousRewards.geminiIIIf.earnings) +
       parseFloat(previousRewards.geminiIIIg.earnings)
-    ).toFixed(2)
+    )
   }, [previousRewards])
+
+  const totalTestnetTokenEmissions = useMemo(() => {
+    return (
+      totalRewards.geminiI +
+      totalRewards.geminiIIphase1 +
+      totalRewards.geminiIIphase2 +
+      totalRewards.geminiIIIf +
+      totalRewards.geminiIIIg
+    )
+  }, [totalRewards])
+
+  const totalEarningsTSSCPercentage = useMemo(() => {
+    return (totalEarningsTSSC / totalTestnetTokenEmissions).toFixed(PERCENTAGE_PRECISION) + '%'
+  }, [totalEarningsTSSC, totalTestnetTokenEmissions])
 
   const campaignsList = useMemo(() => Object.values(campaigns), [campaigns])
 
@@ -397,7 +429,7 @@ export const TestnetRewardsTable: FC = () => {
       const portionOfMainnet = campaign.portionOfMainnet
       if (campaign.portionOfMainnet === 0 || !userTotalReward) return '0.00%'
       const total = (userTotalReward * portionOfMainnet) / MAINNET_TOTAL_SUPPLY
-      return (total * 100).toFixed(8) + '%'
+      return (total * 100).toFixed(PERCENTAGE_PRECISION) + '%'
     },
     [campaigns, previousRewards],
   )
@@ -417,7 +449,7 @@ export const TestnetRewardsTable: FC = () => {
           )
           return acc + percentage
         }, 0)
-        .toFixed(8) + '%'
+        .toFixed(PERCENTAGE_PRECISION) + '%'
     )
   }, [campaignsList, totalMainnetRewardPercentagePerTestnet])
 
@@ -520,8 +552,12 @@ export const TestnetRewardsTable: FC = () => {
           </table>
           <div className='mt-4 flex justify-between bg-gray-50 p-4 dark:bg-gray-700'>
             <div className='text-xl font-medium text-gray-900 dark:text-white'>TOTAL EARNINGS</div>
-            <div className='text-sm text-gray-500 dark:text-gray-300'>{totalEarningsPercent}</div>
-            <div className='text-sm text-gray-500 dark:text-gray-300'>{totalEarningsTSSC} tSSC</div>
+            <div className='text-sm text-gray-500 dark:text-gray-300'>
+              {totalEarningsTSSCPercentage}
+            </div>
+            <div className='text-sm text-gray-500 dark:text-gray-300'>
+              {totalEarningsTSSC.toFixed(EARNINGS_PRECISION)} tSSC
+            </div>
             <div className='text-sm text-gray-500 dark:text-gray-300'>
               {totalMainnetRewardsPercentage}
             </div>
