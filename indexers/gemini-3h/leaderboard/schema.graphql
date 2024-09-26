@@ -1,0 +1,261 @@
+# To improve query performance, we strongly suggest adding indexes to any field that you plan to filter or sort by
+# Add the `@index` or `@index(unique: true)` annotation after any non-key field
+# https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
+
+# leaderboard entries
+type LeaderboardEntry @entity {
+  id: ID!
+  leaderboard: String! @index
+  owner: String! @index # the owner of the entry, can be an account or an operator
+  value: BigInt! @index # the value of the entry, can be an amount or a 1 for count
+  accountedFor: Boolean! @index # if the entry is accounted for by the taskboard service
+  timestamp: Date! @index # the timestamp of the last contribution
+  createdAt: Int! @index # the block number
+}
+
+# Underneath are the actual leaderboard tables use by the leaderboard page
+# These tables are handle by the taskboard service, using the LeaderboardEntry entity
+
+# account
+type AccountTransferSenderTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransferSenderTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransferReceiverTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransferReceiverTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountRemarkCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountExtrinsicTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountExtrinsicSuccessTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountExtrinsicFailedTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransactionFeePaidTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+# farmer
+type FarmerVoteTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerVoteTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerBlockTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerBlockTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerVoteAndBlockTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerVoteAndBlockTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+# operator
+type OperatorTotalRewardsCollected @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorTotalTaxCollected @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorBundleTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorDepositsTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorDepositsTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorWithdrawalsTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+# nominator/account
+type NominatorDepositsTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type NominatorDepositsTotalValue @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type NominatorWithdrawalsTotalCount @entity {
+  id: ID!
+  owner: String! @index
+  rank: Int! @index
+  value: Int! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}

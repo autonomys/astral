@@ -1,0 +1,23 @@
+table:
+  name: transfers
+  schema: accounts
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - success
+        - _block_range
+        - created_at
+        - fee
+        - timestamp
+        - value
+        - event_id
+        - extrinsic_id
+        - from
+        - id
+        - to
+        - date
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

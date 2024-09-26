@@ -1,0 +1,19 @@
+table:
+  name: operator_bundle_total_counts
+  schema: leaderboard
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - rank
+        - updated_at
+        - value
+        - id
+        - owner
+        - last_contribution_at
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

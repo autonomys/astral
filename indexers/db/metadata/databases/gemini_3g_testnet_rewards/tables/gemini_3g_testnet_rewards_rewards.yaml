@@ -1,0 +1,18 @@
+table:
+  name: rewards
+  schema: gemini_3g_testnet_rewards
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - updated_at
+        - amount
+        - account_id
+        - campaign_id
+        - id
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""
