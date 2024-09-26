@@ -176,13 +176,6 @@ const run = async () => {
     console.log(
       "To add a task to the queue, send a POST request to /<network>/add-task with JSON body:"
     );
-    console.log(`  {
-      "queueName": "gemini-3h",
-      "taskName": "accountBalanceUpdate",
-      "jobId": "123",
-      "data": { "accountId": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", "blockNumber": 10000000, "free": 1000000000000000000, "reserved": 1000000000000000000, "frozen": 1000000000000000000 },
-      "opts": { "delay": 5000 }
-    }`);
   });
 };
 
