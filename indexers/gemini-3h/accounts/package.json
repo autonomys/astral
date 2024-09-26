@@ -39,9 +39,7 @@
     "@subql/testing": "latest",
     "@subql/types": "latest",
     "@types/node": "latest",
-    "axios": "^1.7.7",
     "dotenv": "latest",
-    "http": "^0.0.1-security",
     "typescript": "^5.2.2"
   },
   "resolutions": {

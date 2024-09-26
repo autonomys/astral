@@ -1,7 +1,7 @@
 import { Account, BalanceHistory, Transfer } from "../types";
 import { dateEntry } from "./utils";
 
-export async function createAndSaveAccountIfNotExists(
+export async function createOrUpdateAndSaveAccount(
   accountId: string,
   blockNumber: bigint,
   nonce: bigint,
@@ -10,20 +10,25 @@ export async function createAndSaveAccountIfNotExists(
   total: bigint
 ): Promise<Account> {
   const id = accountId.toLowerCase();
-  const accounts = await Account.getByAccountId(id);
-  let account = accounts ? accounts[0] : undefined;
+  let account = await Account.get(id);
   if (!account) {
     account = Account.create({
       id,
-      accountId: id,
+      accountId,
       nonce,
       free,
       reserved,
       total,
       ...dateEntry(blockNumber),
     });
-    await account.save();
+  } else {
+    account.nonce = nonce;
+    account.free = free;
+    account.reserved = reserved;
+    account.total = total;
+    account.updatedAt = blockNumber;
   }
+  await account.save();
   return account;
 }
 

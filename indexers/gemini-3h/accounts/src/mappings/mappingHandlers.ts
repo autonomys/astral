@@ -1,5 +1,5 @@
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
-import { createAndSaveAccountIfNotExists, createAndSaveTransfer } from "./db";
+import { createAndSaveTransfer, createOrUpdateAndSaveAccount } from "./db";
 import { updateAccountBalance } from "./helper";
 
 export async function handleTransferEvent(
@@ -19,8 +19,8 @@ export async function handleTransferEvent(
   const fromBalance = await updateAccountBalance(from, blockNumber);
   const toBalance = await updateAccountBalance(to, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     from,
     blockNumber,
     BigInt(0),
@@ -28,7 +28,7 @@ export async function handleTransferEvent(
     fromBalance.reserved,
     fromBalance.free + fromBalance.reserved
   );
-  await createAndSaveAccountIfNotExists(
+  await createOrUpdateAndSaveAccount(
     to,
     blockNumber,
     BigInt(0),
@@ -67,8 +67,8 @@ export async function handleExtrinsic(
 
   const balance = await updateAccountBalance(address, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     address,
     blockNumber,
     BigInt(0),
@@ -96,8 +96,8 @@ export async function handleFarmerVoteRewardEvent(
 
   const balance = await updateAccountBalance(voter, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     voter,
     blockNumber,
     BigInt(0),
@@ -125,8 +125,8 @@ export async function handleFarmerBlockRewardEvent(
 
   const balance = await updateAccountBalance(blockAuthor, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     blockAuthor,
     blockNumber,
     BigInt(0),
