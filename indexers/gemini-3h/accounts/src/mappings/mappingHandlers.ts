@@ -23,18 +23,18 @@ export async function handleTransferEvent(
   await createOrUpdateAndSaveAccount(
     from,
     blockNumber,
-    BigInt(0),
-    fromBalance.free,
-    fromBalance.reserved,
-    fromBalance.free + fromBalance.reserved
+    BigInt(fromBalance.nonce.toString()),
+    fromBalance.data.free,
+    fromBalance.data.reserved,
+    fromBalance.data.free + fromBalance.data.reserved
   );
   await createOrUpdateAndSaveAccount(
     to,
     blockNumber,
-    BigInt(0),
-    toBalance.free,
-    toBalance.reserved,
-    toBalance.free + toBalance.reserved
+    BigInt(toBalance.nonce.toString()),
+    toBalance.data.free,
+    toBalance.data.reserved,
+    toBalance.data.free + toBalance.data.reserved
   );
 
   await createAndSaveTransfer(
@@ -71,10 +71,10 @@ export async function handleExtrinsic(
   await createOrUpdateAndSaveAccount(
     address,
     blockNumber,
-    BigInt(0),
-    balance.free,
-    balance.reserved,
-    balance.free + balance.reserved
+    BigInt(balance.nonce.toString()),
+    balance.data.free,
+    balance.data.reserved,
+    balance.data.free + balance.data.reserved
   );
 }
 
@@ -100,10 +100,10 @@ export async function handleFarmerVoteRewardEvent(
   await createOrUpdateAndSaveAccount(
     voter,
     blockNumber,
-    BigInt(0),
-    balance.free,
-    balance.reserved,
-    balance.free + balance.reserved
+    BigInt(balance.nonce.toString()),
+    balance.data.free,
+    balance.data.reserved,
+    balance.data.free + balance.data.reserved
   );
 }
 
@@ -129,9 +129,9 @@ export async function handleFarmerBlockRewardEvent(
   await createOrUpdateAndSaveAccount(
     blockAuthor,
     blockNumber,
-    BigInt(0),
-    balance.free,
-    balance.reserved,
-    balance.free + balance.reserved
+    BigInt(balance.nonce.toString()),
+    balance.data.free,
+    balance.data.reserved,
+    balance.data.free + balance.data.reserved
   );
 }

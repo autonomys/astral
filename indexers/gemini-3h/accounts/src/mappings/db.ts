@@ -42,7 +42,7 @@ export async function createAndSaveBalanceHistory(
   const id = accountId.toLowerCase() + "-" + blockNumber.toString();
   const balanceHistory = BalanceHistory.create({
     id,
-    accountId: accountId.toLowerCase(),
+    accountId,
     free,
     reserved,
     total,
@@ -64,9 +64,8 @@ export async function createAndSaveTransfer(
   timestamp: bigint,
   date: Date
 ): Promise<Transfer> {
-  const id = blockNumber + "-" + extrinsicId.toLowerCase();
-  const transfers = await Transfer.getByExtrinsicId(id);
-  let transfer = transfers ? transfers[0] : undefined;
+  const id = extrinsicId + "-" + eventId;
+  let transfer = await Transfer.get(id);
   if (!transfer) {
     transfer = Transfer.create({
       id,

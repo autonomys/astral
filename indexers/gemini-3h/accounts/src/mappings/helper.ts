@@ -1,19 +1,20 @@
-import { balance } from "@autonomys/auto-consensus";
+import { account } from "@autonomys/auto-consensus";
 import { createAndSaveBalanceHistory } from "./db";
 
 export const updateAccountBalance = async (
   accountId: string,
   blockNumber: bigint
 ) => {
-  const _balance = await balance(api as any, accountId);
+  const _account = await account(api as any, accountId);
+  const { free, reserved } = _account.data;
 
   await createAndSaveBalanceHistory(
     accountId,
     blockNumber,
-    _balance.free,
-    _balance.reserved,
-    _balance.free + _balance.reserved
+    free,
+    reserved,
+    free + reserved
   );
 
-  return _balance;
+  return _account;
 };
