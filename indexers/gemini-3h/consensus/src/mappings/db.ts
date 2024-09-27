@@ -136,7 +136,7 @@ export async function createAndSaveLogKindIfNotExists(
   let logKind = await LogKind.get(rawKind);
   if (!logKind) {
     logKind = LogKind.create({
-      id: kind,
+      id: rawKind,
       kind,
     });
     await logKind.save();
