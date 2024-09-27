@@ -10,7 +10,7 @@ select_permissions:
         - block_hash
         - id
         - kind
-        - raw_kind
+        - log_kind_id
         - value
       filter: {}
       allow_aggregations: true

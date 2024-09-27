@@ -13,7 +13,8 @@ select_permissions:
         - extrinsic_hash
         - extrinsic_id
         - id
-        - module_id
+        - event_module_id
+        - name
         - phase
         - timestamp
       filter: {}

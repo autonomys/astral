@@ -6,9 +6,7 @@ select_permissions:
     permission:
       columns:
         - id
-        - index
         - method
-        - module_id
         - section
       filter: {}
       allow_aggregations: true
