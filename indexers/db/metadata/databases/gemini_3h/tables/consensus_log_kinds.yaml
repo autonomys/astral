@@ -6,7 +6,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          kind: log_kind_id
+          id: log_kind_id
         insertion_order: null
         remote_table:
           name: logs
