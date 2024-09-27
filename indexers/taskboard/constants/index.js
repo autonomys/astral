@@ -1,11 +1,6 @@
 const NETWORKS = ["gemini-3h"];
 const QUEUES = [
   {
-    name: "accountBalanceUpdate",
-    title: "Account Balance Update",
-    enabled: true,
-  },
-  {
     name: "leaderboardSortAndRank",
     title: "Leaderboard Sort and Rank",
     enabled: true,

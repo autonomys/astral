@@ -6,7 +6,6 @@ select_permissions:
     permission:
       columns:
         - success
-        - _block_range
         - created_at
         - fee
         - timestamp
@@ -17,7 +16,6 @@ select_permissions:
         - id
         - to
         - date
-        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

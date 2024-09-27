@@ -1,5 +1,5 @@
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
-import { createAndSaveAccountIfNotExists, createAndSaveTransfer } from "./db";
+import { createAndSaveTransfer, createOrUpdateAndSaveAccount } from "./db";
 import { updateAccountBalance } from "./helper";
 
 export async function handleTransferEvent(
@@ -19,22 +19,22 @@ export async function handleTransferEvent(
   const fromBalance = await updateAccountBalance(from, blockNumber);
   const toBalance = await updateAccountBalance(to, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     from,
     blockNumber,
-    BigInt(0),
-    fromBalance.free,
-    fromBalance.reserved,
-    fromBalance.free + fromBalance.reserved
+    BigInt(fromBalance.nonce.toString()),
+    fromBalance.data.free,
+    fromBalance.data.reserved,
+    fromBalance.data.free + fromBalance.data.reserved
   );
-  await createAndSaveAccountIfNotExists(
+  await createOrUpdateAndSaveAccount(
     to,
     blockNumber,
-    BigInt(0),
-    toBalance.free,
-    toBalance.reserved,
-    toBalance.free + toBalance.reserved
+    BigInt(toBalance.nonce.toString()),
+    toBalance.data.free,
+    toBalance.data.reserved,
+    toBalance.data.free + toBalance.data.reserved
   );
 
   await createAndSaveTransfer(
@@ -67,14 +67,14 @@ export async function handleExtrinsic(
 
   const balance = await updateAccountBalance(address, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     address,
     blockNumber,
-    BigInt(0),
-    balance.free,
-    balance.reserved,
-    balance.free + balance.reserved
+    BigInt(balance.nonce.toString()),
+    balance.data.free,
+    balance.data.reserved,
+    balance.data.free + balance.data.reserved
   );
 }
 
@@ -96,14 +96,14 @@ export async function handleFarmerVoteRewardEvent(
 
   const balance = await updateAccountBalance(voter, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     voter,
     blockNumber,
-    BigInt(0),
-    balance.free,
-    balance.reserved,
-    balance.free + balance.reserved
+    BigInt(balance.nonce.toString()),
+    balance.data.free,
+    balance.data.reserved,
+    balance.data.free + balance.data.reserved
   );
 }
 
@@ -125,13 +125,13 @@ export async function handleFarmerBlockRewardEvent(
 
   const balance = await updateAccountBalance(blockAuthor, blockNumber);
 
-  // create and save accounts if not exists
-  await createAndSaveAccountIfNotExists(
+  // create or update and save accounts
+  await createOrUpdateAndSaveAccount(
     blockAuthor,
     blockNumber,
-    BigInt(0),
-    balance.free,
-    balance.reserved,
-    balance.free + balance.reserved
+    BigInt(balance.nonce.toString()),
+    balance.data.free,
+    balance.data.reserved,
+    balance.data.free + balance.data.reserved
   );
 }
