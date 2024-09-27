@@ -5,10 +5,8 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - id
         - section
-        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

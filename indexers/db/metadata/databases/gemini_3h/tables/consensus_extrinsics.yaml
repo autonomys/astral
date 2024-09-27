@@ -6,7 +6,6 @@ select_permissions:
     permission:
       columns:
         - success
-        - _block_range
         - index_in_block
         - pos
         - block_height
@@ -16,14 +15,12 @@ select_permissions:
         - args
         - block_hash
         - error
-        - extrinsic_hash
-        - extrinsic_id
+        - hash
         - id
         - module_id
         - signature
         - signer
         - timestamp
-        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

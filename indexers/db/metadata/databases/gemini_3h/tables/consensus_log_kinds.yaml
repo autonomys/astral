@@ -1,0 +1,3 @@
+table:
+  name: log_kinds
+  schema: consensus

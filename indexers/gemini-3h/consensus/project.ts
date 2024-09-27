@@ -21,12 +21,6 @@ const project: SubstrateProject = {
     node: {
       name: "@subql/node",
       version: "*",
-      options: {
-        historical: true,
-        unsafe: false,
-        unfinalizedBlocks: false,
-        skipTransactions: false,
-      },
     },
     query: {
       name: "@subql/query",
