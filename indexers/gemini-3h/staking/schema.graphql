@@ -2,18 +2,13 @@
 # Add the `@index` or `@index(unique: true)` annotation after any non-key field
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
-enum DomainRuntime {
-  EVM
-  AutoId
-}
-
 type Domain @entity {
   id: ID!
   sortId: Int! @index
   accountId: String! @index
   name: String! @index
   runtimeId: Int! @index
-  runtime: DomainRuntime!
+  runtime: String!
   runtimeInfo: String!
   completedEpoch: Int! @index
   lastDomainBlockNumber: Int! @index
@@ -70,21 +65,6 @@ type Account @entity {
   updatedAt: Int! @index
 }
 
-enum OperatorStatus {
-  PENDING
-  REGISTERED
-  DEREGISTERED
-  SLASHED
-}
-
-enum OperatorPendingAction {
-  NO_ACTION_REQUIRED
-  PENDING_REGISTRATION
-  WAITING_TO_UNLOCK_NOMINATOR
-  READY_FOR_UNLOCK_NOMINATOR
-  READY_FOR_UNLOCK_FUNDS
-}
-
 type Operator @entity {
   id: ID!
   sortId: Int! @index
@@ -122,8 +102,8 @@ type Operator @entity {
   accumulatedEpochShares: BigInt!
   activeEpochCount: Int!
   bundleCount: Int!
-  status: OperatorStatus!
-  pendingAction: OperatorPendingAction!
+  status: String!
+  pendingAction: String!
   lastBundleAt: Int!
   createdAt: Int! @index
   updatedAt: Int! @index
@@ -219,20 +199,6 @@ type BundleAuthor @entity {
   epoch: Int! @index
 }
 
-enum NominatorStatus {
-  PENDING
-  STAKED
-  SLASHED
-  WITHDRAW
-}
-
-enum NominatorPendingAction {
-  NO_ACTION_REQUIRED
-  PENDING_EPOCH_CHANGE
-  PENDING_LOCK_PERIOD
-  READY_TO_UNLOCK_ALL_FUNDS
-}
-
 type Nominator @entity {
   id: ID!
   accountId: String! @index
@@ -261,18 +227,10 @@ type Nominator @entity {
   accumulatedEpochStorageFeeDeposit: BigInt!
   accumulatedEpochShares: BigInt!
   activeEpochCount: Int!
-  status: NominatorStatus!
-  pendingAction: NominatorPendingAction!
+  status: String! # NominatorStatus!
+  pendingAction: String! # NominatorPendingAction!
   createdAt: Int! @index
   updatedAt: Int! @index
-}
-
-enum DepositStatus {
-  PENDING
-  DEPOSITED
-  PARTIALLY_WITHDRAWN
-  WITHDRAWN
-  SLASHED
 }
 
 type Deposit @entity {
@@ -285,7 +243,7 @@ type Deposit @entity {
   storageFeeDeposit: BigInt!
   totalAmount: BigInt!
   totalWithdrawn: BigInt!
-  status: DepositStatus!
+  status: String! # DepositStatus!
   timestamp: Date!
   extrinsicHash: String!
   epochDepositedAt: Int!
@@ -293,14 +251,6 @@ type Deposit @entity {
   createdAt: Int! @index
   stakedAt: Int!
   updatedAt: Int! @index
-}
-
-enum WithdrawalStatus {
-  PENDING_LOCK
-  PENDING_OPERATOR
-  READY
-  WITHDRAW
-  SLASHED
 }
 
 type Withdrawal @entity {
@@ -314,7 +264,7 @@ type Withdrawal @entity {
   unlockedAmount: BigInt!
   unlockedStorageFee: BigInt!
   totalAmount: BigInt!
-  status: WithdrawalStatus!
+  status: String! # WithdrawalStatus!
   timestamp: Date!
   withdrawExtrinsicHash: String!
   unlockExtrinsicHash: String!
