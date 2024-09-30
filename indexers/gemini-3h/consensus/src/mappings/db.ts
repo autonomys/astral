@@ -5,10 +5,10 @@ import {
   Extrinsic,
   ExtrinsicModule,
   Log,
+  LogKind,
   Section,
 } from "../types";
-
-const moduleId = (section: string, method: string) => `${section}.${method}`;
+import { capitalizeFirstLetter, moduleId, moduleName } from "./utils";
 
 export async function createAndSaveBlock(
   hash: string,
@@ -24,14 +24,14 @@ export async function createAndSaveBlock(
   eventsCount: number,
   authorId: string
 ): Promise<Block> {
-  const blocks = await Block.getByHash(hash);
-  let block = blocks ? blocks[0] : undefined;
+  const id = height.toString();
+  let block = await Block.get(id);
   if (!block) {
     block = Block.create({
-      id: hash,
+      id,
       height,
-      timestamp,
       hash,
+      timestamp,
       parentHash,
       specId,
       stateRoot,
@@ -47,25 +47,31 @@ export async function createAndSaveBlock(
   return block;
 }
 
-export function prepareLog(
+export async function createAndSaveLog(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
   rawKind: string,
   kind: string,
   value: string
-): Log {
+): Promise<Log> {
+  await createAndSaveLogKindIfNotExists(rawKind, kind);
+
   const id = `${blockHeight}-${indexInBlock}`;
-  return Log.create({
-    id,
-    logId: id,
-    blockHeight,
-    blockHash,
-    indexInBlock,
-    rawKind,
-    kind,
-    value,
-  });
+  let log = await Log.get(id);
+  if (!log) {
+    log = Log.create({
+      id,
+      blockHeight,
+      blockHash,
+      indexInBlock,
+      logKindId: rawKind,
+      kind,
+      value,
+    });
+    await log.save();
+  }
+  return log;
 }
 
 export async function saveLog(logs: Log[]): Promise<void> {
@@ -75,12 +81,12 @@ export async function saveLog(logs: Log[]): Promise<void> {
 export async function createAndSaveSectionIfNotExists(
   section: string
 ): Promise<Section> {
-  const sections = await Section.getBySection(section);
-  let sectionObj = sections ? sections[0] : undefined;
+  const id = section;
+  let sectionObj = await Section.get(id);
   if (!sectionObj) {
     sectionObj = Section.create({
-      id: section,
-      section,
+      id,
+      section: capitalizeFirstLetter(section),
     });
     await sectionObj.save();
   }
@@ -89,18 +95,15 @@ export async function createAndSaveSectionIfNotExists(
 
 export async function createAndSaveExtrinsicModuleNameIfNotExists(
   section: string,
-  method: string,
-  index: string
+  method: string
 ): Promise<ExtrinsicModule> {
   const id = moduleId(section, method);
-  const modules = await ExtrinsicModule.getByModuleId(id);
-  let module = modules ? modules[0] : undefined;
+  let module = await ExtrinsicModule.get(id);
   if (!module) {
     module = ExtrinsicModule.create({
       id,
-      moduleId: id,
-      index,
-      section,
+      sectionId: section,
+      section: capitalizeFirstLetter(section),
       method,
     });
     await module.save();
@@ -110,18 +113,15 @@ export async function createAndSaveExtrinsicModuleNameIfNotExists(
 
 export async function createAndSaveEventModuleNameIfNotExists(
   section: string,
-  method: string,
-  index: string
+  method: string
 ): Promise<EventModule> {
   const id = moduleId(section, method);
-  const modules = await EventModule.getByModuleId(id);
-  let module = modules ? modules[0] : undefined;
+  let module = await EventModule.get(id);
   if (!module) {
     module = EventModule.create({
       id,
-      moduleId: id,
-      index,
-      section,
+      sectionId: section,
+      section: capitalizeFirstLetter(section),
       method,
     });
     await module.save();
@@ -129,8 +129,23 @@ export async function createAndSaveEventModuleNameIfNotExists(
   return module;
 }
 
+export async function createAndSaveLogKindIfNotExists(
+  rawKind: string,
+  kind: string
+): Promise<LogKind> {
+  let logKind = await LogKind.get(rawKind);
+  if (!logKind) {
+    logKind = LogKind.create({
+      id: rawKind,
+      kind,
+    });
+    await logKind.save();
+  }
+  return logKind;
+}
+
 export async function createAndSaveExtrinsic(
-  extrinsicHash: string,
+  hash: string,
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
@@ -149,18 +164,18 @@ export async function createAndSaveExtrinsic(
   pos: number
 ): Promise<Extrinsic> {
   await createAndSaveSectionIfNotExists(section);
-  await createAndSaveExtrinsicModuleNameIfNotExists(section, method, callIndex);
+  await createAndSaveExtrinsicModuleNameIfNotExists(section, method);
 
   // Create extrinsic
   const extrinsicId = `${blockHeight}-${indexInBlock}`;
   const extrinsic = Extrinsic.create({
     id: extrinsicId,
-    extrinsicId,
-    extrinsicHash,
+    hash,
     blockHeight,
     blockHash,
     indexInBlock,
-    moduleId: moduleId(section, method),
+    extrinsicModuleId: moduleId(section, method),
+    name: moduleName(section, method),
     success,
     timestamp,
     nonce,
@@ -191,19 +206,19 @@ export async function createAndSaveEvent(
   args: string
 ): Promise<Event> {
   await createAndSaveSectionIfNotExists(section);
-  await createAndSaveEventModuleNameIfNotExists(section, method, callIndex);
+  await createAndSaveEventModuleNameIfNotExists(section, method);
 
   // Create event
-  const eventId = `${blockHeight}-${indexInBlock.toString()}`;
+  const id = `${blockHeight}-${indexInBlock.toString()}`;
   const event = Event.create({
-    id: eventId,
-    eventId,
+    id,
     blockHeight,
     blockHash,
     extrinsicId,
     extrinsicHash,
     indexInBlock,
-    moduleId: moduleId(section, method),
+    eventModuleId: moduleId(section, method),
+    name: moduleName(section, method),
     timestamp,
     phase,
     pos,

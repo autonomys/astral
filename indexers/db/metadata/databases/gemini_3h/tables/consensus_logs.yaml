@@ -1,20 +1,36 @@
 table:
   name: logs
   schema: consensus
+object_relationships:
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
+  - name: log_kind
+    using:
+      manual_configuration:
+        column_mapping:
+          log_kind_id: id
+        insertion_order: null
+        remote_table:
+          name: log_kinds
+          schema: consensus
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - index_in_block
         - block_height
         - block_hash
         - id
         - kind
-        - log_id
-        - raw_kind
+        - log_kind_id
         - value
-        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

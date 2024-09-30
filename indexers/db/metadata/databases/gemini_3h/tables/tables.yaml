@@ -6,6 +6,7 @@
 - "!include consensus_events.yaml"
 - "!include consensus_extrinsic_modules.yaml"
 - "!include consensus_extrinsics.yaml"
+- "!include consensus_log_kinds.yaml"
 - "!include consensus_logs.yaml"
 - "!include consensus_sections.yaml"
 - "!include dictionary_events.yaml"
