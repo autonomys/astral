@@ -36,6 +36,7 @@
 - "!include leaderboard_operator_total_rewards_collecteds.yaml"
 - "!include leaderboard_operator_total_tax_collecteds.yaml"
 - "!include leaderboard_operator_withdrawals_total_counts.yaml"
+- "!include staking_accounts.yaml"
 - "!include staking_deposits.yaml"
 - "!include staking_domains.yaml"
 - "!include staking_nominators.yaml"
