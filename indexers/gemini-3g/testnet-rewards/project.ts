@@ -21,12 +21,6 @@ const project: SubstrateProject = {
     node: {
       name: "@subql/node",
       version: "*",
-      options: {
-        historical: true,
-        unsafe: false,
-        unfinalizedBlocks: false,
-        skipTransactions: false,
-      },
     },
     query: {
       name: "@subql/query",
@@ -58,60 +52,10 @@ const project: SubstrateProject = {
       //  startBlock: 119859, // 1st: OperatorNominated
       //  startBlock: 129241, // 1st: OperatorDeregistered
       //  startBlock: 144368, // 1st: WithdrewStake
-      //  endBlock: 1040169, // End of Gemixni 3G campaign
+      endBlock: 1040169, // End of Gemixni 3G campaign
       mapping: {
         file: "./dist/index.js",
         handlers: [
-          // initial data
-          {
-            kind: SubstrateHandlerKind.Block,
-            handler: "handleBlock",
-            filter: {
-              modulo: 100,
-            },
-          },
-          // accounts
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleFarmerEvent",
-            filter: {
-              module: "rewards",
-              method: "BlockReward",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleFarmerEvent",
-            filter: {
-              module: "rewards",
-              method: "VoteReward",
-            },
-          },
-          // Operator
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleDomainInstantiatedEvent",
-            filter: {
-              module: "domains",
-              method: "DomainInstantiated",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleOperatorDeregisteredEvent",
-            filter: {
-              module: "domains",
-              method: "OperatorDeregistered",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleWithdrewStakeEvent",
-            filter: {
-              module: "domains",
-              method: "WithdrewStake",
-            },
-          },
           {
             kind: SubstrateHandlerKind.Event,
             handler: "handleOperatorRegisteredEvent",
