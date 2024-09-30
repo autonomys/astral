@@ -156,14 +156,14 @@ export const TestnetRewardsTable: FC = () => {
         testnet: 'Gemini 3h',
         icon: <Gemini3hTestnetIcon />,
         dateRange: '10.01.2024 - 25.07.2024', // TODO: Check end date
-        portionOfMainnet: 4.71,
+        portionOfMainnet: 4.71, // TODO: Check
       },
       stakeWarsI: {
         name: 'stakeWarsI',
         testnet: 'Stake Wars I',
         icon: <StakeWarsIIcon />,
         dateRange: '22.11.2023 - 10.01.2024',
-        portionOfMainnet: 0.0,
+        portionOfMainnet: 0.6,
       },
     }),
     [],
