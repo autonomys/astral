@@ -477,9 +477,9 @@ export const TestnetRewardsTable: FC = () => {
                 <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
                   Date Range
                 </th>
-                <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
+                {/* <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
                   Link
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className='divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800'>
@@ -509,16 +509,17 @@ export const TestnetRewardsTable: FC = () => {
                     {numberFormattedString(totalMainnetRewardPerTestnet(campaign.name))}
                   </td>
                   <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
-                    {campaign.dateRange}
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    {(campaign as any).dateRange ? (campaign as any).dateRange : 'N/A'}
                   </td>
-                  <td className='whitespace-nowrap px-6 py-4 text-sm'>
+                  {/* <td className='whitespace-nowrap px-6 py-4 text-sm'>
                     <button
                       className='rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700'
                       onClick={() => setModalOpen(true)}
                     >
                       How it&apos;s calculated
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
