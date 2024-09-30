@@ -3,7 +3,6 @@
 import { numberFormattedString } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
-  AriesStressTestIcon,
   Gemini3hTestnetIcon,
   Gemini3p1TestnetIcon,
   Gemini3p2TestnetIcon,
@@ -11,7 +10,6 @@ import {
   GeminiIIp2TestnetIcon,
   GeminiITestnetIcon,
   StakeWarsIIcon,
-  StakeWarsIIIcon,
 } from 'components/icons/TestnetIcon'
 import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -23,7 +21,6 @@ type Reward = {
 }
 
 type Rewards = {
-  aries: Reward
   geminiI: Reward
   geminiIIphase1: Reward
   geminiIIphase2: Reward
@@ -32,7 +29,6 @@ type Rewards = {
 }
 
 type TotalRewards = {
-  aries: number
   geminiI: number
   geminiIIphase1: number
   geminiIIphase2: number
@@ -76,10 +72,6 @@ export const TestnetRewardsTable: FC = () => {
 
   const defaultRewards: Rewards = useMemo(() => {
     return {
-      aries: {
-        earnings: '0',
-        percentage: '0',
-      },
       geminiI: {
         earnings: '0',
         percentage: '0',
@@ -111,7 +103,7 @@ export const TestnetRewardsTable: FC = () => {
     }
   }, [])
   const defaultTotalRewards: TotalRewards = {
-    aries: 0,
+    // aries: 0,
     geminiI: 0,
     geminiIIphase1: 0,
     geminiIIphase2: 0,
@@ -121,70 +113,56 @@ export const TestnetRewardsTable: FC = () => {
   const [previousRewards, setRewards] = useState<Rewards>(defaultRewards)
   const [totalRewards, setTotalRewards] = useState<TotalRewards>(defaultTotalRewards)
 
-  // TODO: Validate dateRanges and portionOfMainnet
+  // TODO: Validate portionOfMainnet
   const campaigns = useMemo(
     () => ({
-      aries: {
-        name: 'aries',
-        testnet: 'Aries Stress Test',
-        icon: <AriesStressTestIcon />,
-        dateRange: '01.05.2021 - 01.06.2021',
-        portionOfMainnet: 0,
-      },
       geminiI: {
         name: 'geminiI',
         testnet: 'Gemini 1',
         icon: <GeminiITestnetIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        dateRange: '11.06.2022 - 27.06.2022',
         portionOfMainnet: 0.5,
       },
       geminiIIphase1: {
         name: 'geminiIIphase1',
         testnet: 'Gemini 2.1',
         icon: <GeminiIIp1TestnetIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        dateRange: '20.09.2022 - 25.10.2022',
         portionOfMainnet: 0.05,
       },
       geminiIIphase2: {
         name: 'geminiIIphase2',
         testnet: 'Gemini 2.2',
         icon: <GeminiIIp2TestnetIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        //  dateRange: '01.04.2022 - 25.07.2022', // TODO: Check dates
         portionOfMainnet: 0.5,
       },
       geminiIIIf: {
         name: 'geminiIIIf',
         testnet: 'Gemini 3f',
         icon: <Gemini3p1TestnetIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        dateRange: '06.09.2023 - 02.11.2023',
         portionOfMainnet: 0.81,
       },
       geminiIIIg: {
         name: 'geminiIIIg',
         testnet: 'Gemini 3g',
         icon: <Gemini3p2TestnetIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        dateRange: '02.11.2023 - 10.01.2024',
         portionOfMainnet: 1.39,
       },
       geminiIIIh: {
         name: 'geminiIIIh',
         testnet: 'Gemini 3h',
         icon: <Gemini3hTestnetIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        dateRange: '10.01.2024 - 25.07.2024', // TODO: Check end date
         portionOfMainnet: 4.71,
       },
       stakeWarsI: {
         name: 'stakeWarsI',
         testnet: 'Stake Wars I',
         icon: <StakeWarsIIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
-        portionOfMainnet: 0.0,
-      },
-      stakeWarsII: {
-        name: 'stakeWarsII',
-        testnet: 'Stake Wars II',
-        icon: <StakeWarsIIIcon />,
-        dateRange: '01.04.2022 - 25.07.2022',
+        dateRange: '22.11.2023 - 10.01.2024',
         portionOfMainnet: 0.0,
       },
     }),
@@ -237,7 +215,7 @@ export const TestnetRewardsTable: FC = () => {
       data.forEach(({ address, rewards }) => {
         if (!mergedRewards.has(address)) {
           mergedRewards.set(address, {
-            aries: { earnings: '0', percentage: '0.00' },
+            // aries: { earnings: '0', percentage: '0.00' },
             geminiI: { earnings: '0', percentage: '0.00' },
             geminiIIphase1: { earnings: '0', percentage: '0.00' },
             geminiIIphase2: { earnings: '0', percentage: '0.00' },
@@ -299,8 +277,6 @@ export const TestnetRewardsTable: FC = () => {
   const rewardsByPhase = useCallback(
     (phase: string) => {
       switch (phase) {
-        case 'aries':
-          return parseFloat(previousRewards.aries.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiI':
           return parseFloat(previousRewards.geminiI.earnings).toFixed(EARNINGS_PRECISION)
         case 'geminiIIphase1':
@@ -321,8 +297,6 @@ export const TestnetRewardsTable: FC = () => {
   const totalTSSC = useCallback(
     (phase: string) => {
       switch (phase) {
-        case 'aries':
-          return numberFormattedString(totalRewards.aries)
         case 'geminiI':
           return numberFormattedString(totalRewards.geminiI)
         case 'geminiIIphase1':
@@ -373,7 +347,6 @@ export const TestnetRewardsTable: FC = () => {
               PERCENTAGE_PRECISION,
             ) + '%'
           )
-        case 'aries':
         default:
           return '0.00%'
       }
