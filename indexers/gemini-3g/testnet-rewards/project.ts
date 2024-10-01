@@ -5,6 +5,10 @@ import {
 } from "@subql/types";
 import * as dotenv from "dotenv";
 import path from "path";
+import {
+  STAKE_WARS_END_BLOCK,
+  STAKE_WARS_START_BLOCK,
+} from "./src/mappings/constants";
 
 // Load the appropriate .env file
 const dotenvPath = path.resolve(__dirname, `../../../.env`);
@@ -46,13 +50,8 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      //  startBlock: 1,
-      startBlock: 102535, // 1st: DomainInstantiated
-      //  startBlock: 102891, // 1st: OperatorRegistered
-      //  startBlock: 119859, // 1st: OperatorNominated
-      //  startBlock: 129241, // 1st: OperatorDeregistered
-      //  startBlock: 144368, // 1st: WithdrewStake
-      endBlock: 1040169, // End of Gemixni 3G campaign
+      startBlock: STAKE_WARS_START_BLOCK,
+      endBlock: STAKE_WARS_END_BLOCK,
       mapping: {
         file: "./dist/index.js",
         handlers: [
@@ -78,6 +77,13 @@ const project: SubstrateProject = {
             filter: {
               module: "domains",
               method: "OperatorRewarded",
+            },
+          },
+          {
+            kind: SubstrateHandlerKind.Block,
+            handler: "handleBlock",
+            filter: {
+              modulo: 100,
             },
           },
         ],

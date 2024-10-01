@@ -9,6 +9,7 @@ type Operator @entity {
   accountId: String! @index
   totalRewards: BigInt!
   totalAmount: BigInt!
+  totalShares: BigInt!
   createdAt: Int!
   updatedAt: Int!
 }
@@ -18,6 +19,8 @@ type Nominator @entity {
   operatorId: String! @index
   accountId: String! @index
   amount: BigInt!
+  totalReward: BigInt!
+  shares: BigInt!
   createdAt: Int!
   updatedAt: Int!
 }
@@ -26,6 +29,18 @@ type OperatorReward @entity {
   id: ID!
   operatorId: String! @index
   amount: BigInt!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type NominatorReward @entity {
+  id: ID!
+  operatorId: String! @index
+  nominatorId: String! @index
+  operatorShares: BigInt!
+  nominatorShares: BigInt!
+  operatorTotalReward: BigInt!
+  nominatorTotalReward: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
 }

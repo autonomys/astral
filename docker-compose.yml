@@ -312,10 +312,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3g/testnet-rewards
       - --db-schema=${DB_GEMINI_3G_TESTNET_REWARDS}
-      - --workers=4
-      - --unsafe
-      - --batch-size=30
-      - --unfinalized-blocks=true
+      - --workers=6
+      - --batch-size=150
+      - --disable-historical=true
     healthcheck:
       test:
         [
