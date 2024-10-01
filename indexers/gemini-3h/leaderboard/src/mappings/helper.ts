@@ -1,5 +1,4 @@
 import { request } from "http";
-import { BLOCK_SORT_AND_RANK_INTERVAL } from "./contants";
 import { stringify } from "./utils";
 
 export const sortAndRankLeaderboard = async (blockNumber: bigint) => {
@@ -8,10 +7,9 @@ export const sortAndRankLeaderboard = async (blockNumber: bigint) => {
     taskName: "leaderboardSortAndRank",
     data: {
       blockNumber: blockNumber.toString(),
-      interval: BLOCK_SORT_AND_RANK_INTERVAL,
     },
     opts: {
-      delay: 60000,
+      delay: 30000,
     },
     jobId: "sortAndRankLeaderboard:" + blockNumber.toString(),
   });
