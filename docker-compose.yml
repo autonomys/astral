@@ -313,7 +313,7 @@ services:
       - -f=/gemini-3g/testnet-rewards
       - --db-schema=${DB_GEMINI_3G_TESTNET_REWARDS}
       - --workers=6
-      - --batch-size=150
+      - --batch-size=200
       - --disable-historical=true
     healthcheck:
       test:
