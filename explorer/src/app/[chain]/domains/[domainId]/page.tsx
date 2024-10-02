@@ -1,6 +1,8 @@
 import { Domain } from 'components/Domain/Domain'
+import { NotFound } from 'components/layout/NotFound'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
+import { Routes, ROUTES } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { AccountIdPageProps, ChainPageProps } from 'types/app'
@@ -24,8 +26,10 @@ export async function generateMetadata({
   }
 }
 
-const Page: FC = () => {
-  return <Domain />
+const Page: FC<ChainPageProps> = ({ params: { chain } }: ChainPageProps) => {
+  const item = ROUTES.find((item) => item.name === Routes.domains)
+  if (chain && item && item.networks?.includes(chain)) return <Domain />
+  return <NotFound />
 }
 
 export default Page

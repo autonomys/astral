@@ -1,6 +1,8 @@
-import { NovaPage } from '@/components/Nova'
+import { NotFound } from 'components/layout/NotFound'
+import { NovaPage } from 'components/Nova'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
+import { Routes, ROUTES } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps } from 'types/app'
@@ -22,8 +24,11 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
   }
 }
 
-const Page: FC = () => {
-  return <NovaPage />
+const Page: FC<ChainPageProps> = ({ params: { chain } }: ChainPageProps) => {
+  const parent = ROUTES.find((item) => item.name === Routes.domains)
+  const item = parent && parent.children?.find((item) => item.name === Routes.nova)
+  if (chain && item && (!item.networks || item.networks?.includes(chain))) return <NovaPage />
+  return <NotFound />
 }
 
 export default Page
