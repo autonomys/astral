@@ -1,12 +1,9 @@
 'use client'
 
-import Link from 'next/link'
-import { FC } from 'react'
-
-// common
 import { ArrowButton } from 'components/common/ArrowButton'
 import useChains from 'hooks/useChains'
-// layout
+import Link from 'next/link'
+import { FC } from 'react'
 import { NotFoundImage } from './NotFoundImage'
 
 export const NotFound: FC = () => {
