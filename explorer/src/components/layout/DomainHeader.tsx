@@ -21,21 +21,20 @@ export const DomainHeader = () => {
 
   const menuList = useMemo(() => {
     const domainsChildren = ROUTES.find((item) => item.name === Routes.domains)?.children
-    const list = [
+    return [
       {
         title: 'Domains',
         link: `/${network}/${Routes.domains}`,
       },
+      ...(domainsChildren
+        ? domainsChildren
+            .filter((item) => !item.networks || item.networks?.includes(network))
+            .map((item) => ({
+              title: item.title,
+              link: `/${network}/${item.name}`,
+            }))
+        : []),
     ]
-    if (domainsChildren)
-      for (const item of domainsChildren) {
-        if (!item.networks || item.networks?.includes(network))
-          list.push({
-            title: item.title,
-            link: `/${network}/${item.name}`,
-          })
-      }
-    return list
   }, [network])
 
   return (
