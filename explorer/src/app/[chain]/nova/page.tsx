@@ -2,10 +2,11 @@ import { NotFound } from 'components/layout/NotFound'
 import { NovaPage } from 'components/Nova'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { Routes, ROUTES } from 'constants/routes'
+import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps } from 'types/app'
+import { isRouteSupportingNetwork } from 'utils/route'
 
 export async function generateMetadata({ params: { chain } }: ChainPageProps): Promise<Metadata> {
   const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
@@ -24,11 +25,7 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
   }
 }
 
-const Page: FC<ChainPageProps> = ({ params: { chain } }: ChainPageProps) => {
-  const parent = ROUTES.find((item) => item.name === Routes.domains)
-  const item = parent && parent.children?.find((item) => item.name === Routes.nova)
-  if (chain && item && (!item.networks || item.networks?.includes(chain))) return <NovaPage />
-  return <NotFound />
-}
+const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
+  isRouteSupportingNetwork(chain, Routes.domains, Routes.nova) ? <NovaPage /> : <NotFound />
 
 export default Page
