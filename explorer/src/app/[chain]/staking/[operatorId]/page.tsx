@@ -28,7 +28,7 @@ export async function generateMetadata({
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }: ChainPageProps) => {
   const item = ROUTES.find((item) => item.name === Routes.staking)
-  if (chain && item && item.networks?.includes(chain)) return <Operator />
+  if (chain && item && (!item.networks || item.networks?.includes(chain))) return <Operator />
   return <NotFound />
 }
 
