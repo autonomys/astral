@@ -51,7 +51,7 @@ export const ROUTES = [
 export const EXTERNAL_ROUTES = {
   autonomys: 'https://autonomys.xyz/',
   academy: 'https://academy.autonomys.xyz/',
-  subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
+  privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
     'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
