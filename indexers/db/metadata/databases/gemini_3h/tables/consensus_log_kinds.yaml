@@ -1,0 +1,13 @@
+table:
+  name: log_kinds
+  schema: consensus
+array_relationships:
+  - name: logs
+    using:
+      manual_configuration:
+        column_mapping:
+          id: log_kind_id
+        insertion_order: null
+        remote_table:
+          name: logs
+          schema: consensus

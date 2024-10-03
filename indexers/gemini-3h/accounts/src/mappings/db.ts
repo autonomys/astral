@@ -1,7 +1,7 @@
 import { Account, BalanceHistory, Transfer } from "../types";
 import { dateEntry } from "./utils";
 
-export async function createAndSaveAccountIfNotExists(
+export async function createOrUpdateAndSaveAccount(
   accountId: string,
   blockNumber: bigint,
   nonce: bigint,
@@ -10,20 +10,25 @@ export async function createAndSaveAccountIfNotExists(
   total: bigint
 ): Promise<Account> {
   const id = accountId.toLowerCase();
-  const accounts = await Account.getByAccountId(id);
-  let account = accounts ? accounts[0] : undefined;
+  let account = await Account.get(id);
   if (!account) {
     account = Account.create({
       id,
-      accountId: id,
+      accountId,
       nonce,
       free,
       reserved,
       total,
       ...dateEntry(blockNumber),
     });
-    await account.save();
+  } else {
+    account.nonce = nonce;
+    account.free = free;
+    account.reserved = reserved;
+    account.total = total;
+    account.updatedAt = blockNumber;
   }
+  await account.save();
   return account;
 }
 
@@ -37,7 +42,7 @@ export async function createAndSaveBalanceHistory(
   const id = accountId.toLowerCase() + "-" + blockNumber.toString();
   const balanceHistory = BalanceHistory.create({
     id,
-    accountId: accountId.toLowerCase(),
+    accountId,
     free,
     reserved,
     total,
@@ -59,9 +64,8 @@ export async function createAndSaveTransfer(
   timestamp: bigint,
   date: Date
 ): Promise<Transfer> {
-  const id = blockNumber + "-" + extrinsicId.toLowerCase();
-  const transfers = await Transfer.getByExtrinsicId(id);
-  let transfer = transfers ? transfers[0] : undefined;
+  const id = extrinsicId + "-" + eventId;
+  let transfer = await Transfer.get(id);
   if (!transfer) {
     transfer = Transfer.create({
       id,

@@ -7,8 +7,7 @@ import {
   createAndSaveBlock,
   createAndSaveEvent,
   createAndSaveExtrinsic,
-  prepareLog,
-  saveLog,
+  createAndSaveLog,
 } from "./db";
 import {
   calculateBlockchainSize,
@@ -80,18 +79,18 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   );
 
   // Create and save block logs
-  const _logs = digest.logs.map((log, i) => {
-    const logData = log.toHuman();
-    const logJson = log.toPrimitive();
-    const kind = logData ? Object.keys(logData)[0] : "";
-    const rawKind = logJson ? Object.keys(logJson)[0] : "";
-    const value = logJson
-      ? stringify(logJson[rawKind as keyof typeof logJson])
-      : "";
-    const logObj = prepareLog(height, blockHash, i, rawKind, kind, value);
-    return logObj;
-  });
-  await saveLog(_logs);
+  await Promise.all(
+    digest.logs.map((log, i) => {
+      const logData = log.toHuman();
+      const logJson = log.toPrimitive();
+      const kind = logData ? Object.keys(logData)[0] : "";
+      const rawKind = logJson ? Object.keys(logJson)[0] : "";
+      const value = logJson
+        ? stringify(logJson[rawKind as keyof typeof logJson])
+        : "";
+      return createAndSaveLog(height, blockHash, i, rawKind, kind, value);
+    })
+  );
 }
 
 export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
@@ -105,14 +104,34 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     },
     extrinsic: { method, hash, nonce, signer, signature, tip, args },
     success,
+    events,
   } = _call;
 
   const extrinsic_human = method.toHuman() as ExtrinsicHuman;
   const extrinsic_primitive = method.toPrimitive() as ExtrinsicPrimitive;
+  const eventRecord = events[idx];
 
-  const error = "";
-  const fee = BigInt(0);
-  const pos = 0;
+  const feeEvent = events.find(
+    (e) =>
+      e.phase.isApplyExtrinsic &&
+      e.event.section === "balances" &&
+      e.event.method === "Withdraw"
+  );
+  const fee =
+    feeEvent && feeEvent.event && feeEvent.event.data[1]
+      ? BigInt(feeEvent.event.data[1].toString())
+      : BigInt(0);
+
+  const errorEvent = events.find(
+    (e) => e.event.section === "system" && e.event.method === "ExtrinsicFailed"
+  );
+  const error = errorEvent ? stringify(errorEvent.event.data) : "";
+
+  const pos = eventRecord
+    ? eventRecord.phase.isApplyExtrinsic
+      ? eventRecord.phase.asApplyExtrinsic.toNumber()
+      : 0
+    : 0;
 
   await createAndSaveExtrinsic(
     hash.toString(),
@@ -142,6 +161,8 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
       block: {
         header: { number, hash },
       },
+      timestamp,
+      events,
     },
     extrinsic,
     event,
@@ -150,9 +171,14 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
   const primitive = event.toPrimitive() as EventPrimitive;
   const human = event.toHuman() as EventHuman;
 
-  const timestamp = new Date(0); // Default value
-  const phase = ""; // Placeholder for phase
-  const pos = 0;
+  const eventRecord = events.find(
+    (e) => e.event.index.toString() === primitive.index
+  );
+  const pos = eventRecord
+    ? eventRecord.phase.isApplyExtrinsic
+      ? eventRecord.phase.asApplyExtrinsic.toNumber()
+      : 0
+    : 0;
   const args = extrinsic ? stringify(extrinsic.extrinsic.args) : "";
   const extrinsicId = extrinsic
     ? number + "-" + extrinsic.extrinsic.hash.toString()
@@ -168,8 +194,8 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     primitive.index,
     human.section,
     human.method,
-    timestamp,
-    phase,
+    timestamp ? timestamp : new Date(0),
+    eventRecord ? eventRecord.phase.type : "",
     pos,
     args
   );

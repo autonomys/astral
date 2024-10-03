@@ -1,6 +1,5 @@
 import { SubstrateBlock, SubstrateEvent } from "@subql/types";
-import { LEADERBOARD_ENTRY_TYPE } from "./contants";
-import { createAndSaveLeaderboardEntry } from "./db";
+import * as db from "./db";
 import { sortAndRankLeaderboard } from "./helper";
 
 export async function handleTransferEvent(
@@ -17,34 +16,30 @@ export async function handleTransferEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_TRANSFER_SENDER_TOTAL_COUNT,
+  await db.checkAndGetAccountTransferSenderTotalCount(
     from,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE,
+  await db.checkAndGetAccountTransferSenderTotalValue(
     from,
     amount,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_TRANSFER_RECEIVER_TOTAL_COUNT,
+  await db.checkAndGetAccountTransferReceiverTotalCount(
     to,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_TRANSFER_RECEIVER_TOTAL_VALUE,
+  await db.checkAndGetAccountTransferReceiverTotalValue(
     to,
     amount,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -59,12 +54,11 @@ export async function handleRemarkEvent(event: SubstrateEvent): Promise<void> {
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_REMARK_COUNT,
+  await db.checkAndGetAccountRemarkCount(
     accountId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
 }
 
@@ -81,19 +75,17 @@ export async function handleExtrinsicSuccessEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_EXTRINSIC_TOTAL_COUNT,
+  await db.checkAndGetAccountExtrinsicTotalCount(
     accountId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_EXTRINSIC_SUCCESS_TOTAL_COUNT,
+  await db.checkAndGetAccountExtrinsicSuccessTotalCount(
     accountId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
 }
 
@@ -109,19 +101,17 @@ export async function handleExtrinsicFailedEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_EXTRINSIC_TOTAL_COUNT,
+  await db.checkAndGetAccountExtrinsicTotalCount(
     accountId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_EXTRINSIC_FAILED_TOTAL_COUNT,
+  await db.checkAndGetAccountExtrinsicFailedTotalCount(
     accountId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
 }
 
@@ -140,12 +130,11 @@ export async function handleTransactionFeePaidEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.ACCOUNT_TRANSACTION_FEE_PAID_TOTAL_VALUE,
+  await db.checkAndGetAccountTransactionFeePaidTotalValue(
     who,
     totalFeePaid,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -162,34 +151,30 @@ export async function handleFarmerVoteRewardEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_VOTE_TOTAL_COUNT,
+  await db.checkAndGetFarmerVoteTotalCount(
     voter,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_VOTE_TOTAL_VALUE,
+  await db.checkAndGetFarmerVoteTotalValue(
     voter,
     reward,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_VOTE_AND_BLOCK_TOTAL_COUNT,
+  await db.checkAndGetFarmerVoteAndBlockTotalCount(
     voter,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_VOTE_AND_BLOCK_TOTAL_VALUE,
+  await db.checkAndGetFarmerVoteAndBlockTotalValue(
     voter,
     reward,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -206,34 +191,30 @@ export async function handleFarmerBlockRewardEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_BLOCK_TOTAL_COUNT,
+  await db.checkAndGetFarmerBlockTotalCount(
     blockAuthor,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_BLOCK_TOTAL_VALUE,
+  await db.checkAndGetFarmerBlockTotalValue(
     blockAuthor,
     reward,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_VOTE_AND_BLOCK_TOTAL_COUNT,
+  await db.checkAndGetFarmerVoteAndBlockTotalCount(
     blockAuthor,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.FARMER_VOTE_AND_BLOCK_TOTAL_VALUE,
+  await db.checkAndGetFarmerVoteAndBlockTotalValue(
     blockAuthor,
     reward,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -252,12 +233,11 @@ export async function handleOperatorRewardedEvent(
 
   if (reward === BigInt(0)) return;
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_TOTAL_REWARDS_COLLECTED,
+  await db.checkAndGetOperatorTotalRewardsCollected(
     operatorId,
     reward,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -274,12 +254,11 @@ export async function handleOperatorTaxCollectedEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_TOTAL_TAX_COLLECTED,
+  await db.checkAndGetOperatorTotalTaxCollected(
     operatorId,
     tax,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -295,12 +274,11 @@ export async function handleBundleStoredEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_BUNDLE_TOTAL_COUNT,
+  await db.checkAndGetOperatorBundleTotalCount(
     operatorId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
 }
 
@@ -317,12 +295,11 @@ export async function handleOperatorRegisteredEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_TOTAL_REWARDS_COLLECTED,
+  await db.checkAndGetOperatorTotalRewardsCollected(
     operatorId,
     reward,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -340,34 +317,30 @@ export async function handleOperatorNominatedEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_DEPOSITS_TOTAL_COUNT,
+  await db.checkAndGetOperatorDepositsTotalCount(
     operatorId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_DEPOSITS_TOTAL_VALUE,
+  await db.checkAndGetOperatorDepositsTotalValue(
     operatorId,
     amount,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.NOMINATOR_DEPOSITS_TOTAL_COUNT,
+  await db.checkAndGetNominatorDepositsTotalCount(
     nominatorId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.NOMINATOR_DEPOSITS_TOTAL_VALUE,
+  await db.checkAndGetNominatorDepositsTotalValue(
     nominatorId,
     amount,
-    timestamp,
-    blockNumber
+    blockNumber,
+    timestamp
   );
 }
 
@@ -384,19 +357,17 @@ export async function handleWithdrewStakeEvent(
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.OPERATOR_WITHDRAWALS_TOTAL_COUNT,
+  await db.checkAndGetOperatorWithdrawalsTotalCount(
     operatorId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
-  await createAndSaveLeaderboardEntry(
-    LEADERBOARD_ENTRY_TYPE.NOMINATOR_WITHDRAWALS_TOTAL_COUNT,
+  await db.checkAndGetNominatorWithdrawalsTotalCount(
     nominatorId,
-    1,
-    timestamp,
-    blockNumber
+    BigInt(1),
+    blockNumber,
+    timestamp
   );
 }
 

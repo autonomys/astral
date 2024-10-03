@@ -66,3 +66,12 @@ export const calcHistorySize = (segmentsCount: number): bigint => {
 
   return PIECE_SIZE * PIECES_IN_SEGMENT * segmentsCountBigInt;
 };
+
+export const capitalizeFirstLetter = (str: string) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
+
+export const moduleId = (section: string, method: string) =>
+  `${section}.${method}`;
+
+export const moduleName = (section: string, method: string) =>
+  `${capitalizeFirstLetter(section)}.${capitalizeFirstLetter(method)}`;

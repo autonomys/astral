@@ -158,7 +158,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --disable-historical=true
     healthcheck:
       test:
         [
@@ -198,7 +198,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --disable-historical=true
     healthcheck:
       test:
         [
@@ -238,7 +238,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --disable-historical=true
     healthcheck:
       test:
         [
