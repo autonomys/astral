@@ -1,3 +1,6 @@
+import { NetworkId } from '@autonomys/auto-utils'
+import { Route } from 'types/app'
+
 export enum Routes {
   consensus = 'consensus',
   farming = 'farming',
@@ -10,7 +13,7 @@ export enum Routes {
   // stake = 'stake',
 }
 
-export const ROUTES = [
+export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
     title: 'Consensus Chain',
@@ -22,6 +25,7 @@ export const ROUTES = [
   {
     name: Routes.staking,
     title: 'Staking',
+    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.leaderboard,
@@ -34,12 +38,15 @@ export const ROUTES = [
       {
         name: Routes.nova,
         title: 'Nova',
+        networks: [NetworkId.GEMINI_3H],
       },
       {
         name: Routes.autoid,
         title: 'Auto-ID',
+        networks: [NetworkId.GEMINI_3H],
       },
     ],
+    networks: [NetworkId.GEMINI_3H],
   },
   // Route deactivated till bugs are fixed and feature is ready
   // {
