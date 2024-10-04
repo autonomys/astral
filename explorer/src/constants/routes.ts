@@ -58,7 +58,7 @@ export const ROUTES: Route[] = [
 export const EXTERNAL_ROUTES = {
   autonomys: 'https://autonomys.xyz/',
   academy: 'https://academy.autonomys.xyz/',
-  subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
+  privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
     'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
@@ -70,7 +70,7 @@ export const EXTERNAL_ROUTES = {
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/autonomys',
-    reddit: 'https://www.reddit.com/r/sub',
+    reddit: 'https://www.reddit.com/r/autonomys',
     medium: 'https://medium.com/subspace-network',
     youtube: 'https://www.youtube.com/@AutonomysNetwork',
     linkedin: 'https://www.linkedin.com/company/autonomys/',
