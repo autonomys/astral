@@ -72,8 +72,14 @@ const update = async (number: number) => {
 
   for (const operatorState of _operatorState) {
     const operator = await Operator.get(operatorState.operatorId);
+    const currentNominators = _nominatorsState
+      .filter((n) => n.operatorId === operatorState.operatorId)
+      .map((n) => n.nominatorId);
+
     if (operator) {
       operator.totalShares = BigInt(operatorState.operatorState.totalShares);
+      operator.currentNominators = currentNominators;
+      operator.toUpdate = false;
       await operator.save();
     } else {
       const operator = Operator.create({
@@ -84,6 +90,8 @@ const update = async (number: number) => {
         totalRewards: BigInt(0),
         totalAmount: BigInt(operatorState.operatorState.currentTotalStake),
         totalShares: BigInt(operatorState.operatorState.totalShares),
+        currentNominators,
+        toUpdate: false,
         ...dateEntry(number),
       });
       _operatorToSave.push(operator);
@@ -117,25 +125,52 @@ const update = async (number: number) => {
   ]);
 };
 
-export async function handleBlock(block: SubstrateBlock): Promise<void> {
-  const {
-    block: {
-      header: { number },
-    },
-  } = block;
-  await update(number.toNumber());
-}
-
 export async function handleOperatorRegisteredEvent(
   event: SubstrateEvent
 ): Promise<void> {
+  const {
+    event: {
+      data: [domainId, operatorId],
+    },
+  } = event;
   await update(getBlockNumberFromEvent(event));
+  const operator = await Operator.get(operatorId.toString());
+  if (operator) {
+    operator.toUpdate = true;
+    await operator.save();
+  }
 }
 
 export async function handleOperatorNominatedEvent(
   event: SubstrateEvent
 ): Promise<void> {
+  const {
+    event: {
+      data: [operatorId, nominatorId],
+    },
+  } = event;
   await update(getBlockNumberFromEvent(event));
+  const operator = await Operator.get(operatorId.toString());
+  if (operator) {
+    operator.toUpdate = true;
+    await operator.save();
+  }
+}
+
+export async function handleWithdrewStakeEvent(
+  event: SubstrateEvent
+): Promise<void> {
+  const {
+    event: {
+      data: [operatorId, nominatorId],
+    },
+  } = event;
+  await update(getBlockNumberFromEvent(event));
+  const operator = await Operator.get(operatorId.toString());
+  if (operator) {
+    operator.toUpdate = true;
+    await operator.save();
+  }
 }
 
 export async function handleOperatorRewardedEvent(
@@ -163,18 +198,12 @@ export async function handleOperatorRewardedEvent(
   }
 
   let operator = await Operator.get(operatorId);
-  if (!operator) {
+  if (!operator || operator.toUpdate) {
     logger.info(`Operator ${operatorId} not found, updating...`);
     await update(blockNumber);
     operator = await Operator.get(operatorId);
   }
   if (operator) {
-    if (operator.totalRewards === BigInt(0)) {
-      const operatorState = await api.query.domains.operators(operatorId);
-      const _operatorState = operatorState.toPrimitive() as OperatorDetails;
-      operator.totalShares = BigInt(_operatorState.totalShares);
-    }
-
     operator.totalRewards += reward;
     operator.updatedAt = blockNumber;
     await operator.save();
@@ -192,23 +221,25 @@ export async function handleOperatorRewardedEvent(
 
   if (nominators) {
     for (const nominator of nominators) {
-      const nominatorReward = NominatorReward.create({
-        id: `${operatorId}-${nominator.accountId}-${blockNumber}-${idx}`,
-        operatorId,
-        nominatorId: nominator.accountId,
-        operatorShares: operator.totalShares,
-        nominatorShares: nominator.shares,
-        operatorTotalReward: reward,
-        nominatorTotalReward:
-          operator.totalShares > BigInt(0)
-            ? (reward * nominator.shares) / operator.totalShares
-            : BigInt(0),
-        ...dateEntry(blockNumber),
-      });
-      _nominatorRewardsToSave.push(nominatorReward);
-      nominator.totalReward += nominatorReward.nominatorTotalReward;
-      nominator.updatedAt = blockNumber;
-      _nominatorToSave.push(nominator);
+      if (operator.currentNominators.includes(nominator.accountId)) {
+        const nominatorReward = NominatorReward.create({
+          id: `${operatorId}-${nominator.accountId}-${blockNumber}-${idx}`,
+          operatorId,
+          nominatorId: nominator.accountId,
+          operatorShares: operator.totalShares,
+          nominatorShares: nominator.shares,
+          operatorTotalReward: reward,
+          nominatorTotalReward:
+            operator.totalShares > BigInt(0)
+              ? (reward * nominator.shares) / operator.totalShares
+              : BigInt(0),
+          ...dateEntry(blockNumber),
+        });
+        _nominatorRewardsToSave.push(nominatorReward);
+        nominator.totalReward += nominatorReward.nominatorTotalReward;
+        nominator.updatedAt = blockNumber;
+        _nominatorToSave.push(nominator);
+      }
     }
   }
 

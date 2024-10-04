@@ -10,6 +10,8 @@ type Operator @entity {
   totalRewards: BigInt!
   totalAmount: BigInt!
   totalShares: BigInt!
+  currentNominators: [String!]!
+  toUpdate: Boolean!
   createdAt: Int!
   updatedAt: Int!
 }

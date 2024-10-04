@@ -73,17 +73,18 @@ const project: SubstrateProject = {
           },
           {
             kind: SubstrateHandlerKind.Event,
+            handler: "handleWithdrewStakeEvent",
+            filter: {
+              module: "domains",
+              method: "WithdrewStake",
+            },
+          },
+          {
+            kind: SubstrateHandlerKind.Event,
             handler: "handleOperatorRewardedEvent",
             filter: {
               module: "domains",
               method: "OperatorRewarded",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Block,
-            handler: "handleBlock",
-            filter: {
-              modulo: 100,
             },
           },
         ],
