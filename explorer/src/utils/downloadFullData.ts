@@ -6,8 +6,7 @@ export const downloadFullData = async (
   query: DocumentNode,
   path: string,
   variables?: object,
-  delimiterKey: [string, string] = ['first', 'after'],
-  context: object = {},
+  delimiterKey: [string, string] = ['limit', 'offset'],
 ) => {
   const entries: unknown[] = []
 
@@ -20,15 +19,8 @@ export const downloadFullData = async (
     const { data } = await apolloClient.query({
       query,
       variables: variables ? { ..._variables, ...variables } : _variables,
-      context,
     })
-    if (data[path].edges && data[path].edges.length > 0) {
-      const newEntries = extractNestedData(data, path + '.edges')
-
-      entries.push(...newEntries)
-
-      hasNextPage = entries.length < data[path].totalCount
-    } else if (data[path + '_aggregate']) {
+    if (data[path + '_aggregate']) {
       const totalCount = data[path + '_aggregate'].aggregate.count
       const newEntries = data[path]
       entries.push(...newEntries)
