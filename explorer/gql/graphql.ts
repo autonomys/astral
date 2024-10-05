@@ -10335,13 +10335,13 @@ export type AccountQueryVariables = Exact<{
 
 export type AccountQuery = { __typename?: 'query_root', accounts_accounts: Array<{ __typename?: 'accounts_accounts', free: any, id: string, reserved: any, total?: any | null, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
 
-export type AccountsConnectionQueryVariables = Exact<{
+export type AccountsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type AccountsConnectionQuery = { __typename?: 'query_root', accounts_accounts_aggregate: { __typename?: 'accounts_accounts_aggregate', aggregate?: { __typename?: 'accounts_accounts_aggregate_fields', count: number } | null }, accounts_accounts: Array<{ __typename?: 'accounts_accounts', free: any, id: string, reserved: any, total?: any | null, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, timestamp: any, block?: { __typename?: 'consensus_blocks', height: any, hash: string } | null }> }> };
+export type AccountsQuery = { __typename?: 'query_root', accounts_accounts_aggregate: { __typename?: 'accounts_accounts_aggregate', aggregate?: { __typename?: 'accounts_accounts_aggregate_fields', count: number } | null }, accounts_accounts: Array<{ __typename?: 'accounts_accounts', free: any, id: string, reserved: any, total?: any | null, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, timestamp: any, block?: { __typename?: 'consensus_blocks', height: any, hash: string } | null }> }> };
 
 export type AccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];

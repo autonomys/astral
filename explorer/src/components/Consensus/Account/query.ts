@@ -20,8 +20,8 @@ export const QUERY_ACCOUNT_LIST = gql`
   }
 `
 
-export const QUERY_ACCOUNT_CONNECTION_LIST = gql`
-  query AccountsConnection($limit: Int!, $offset: Int) {
+export const QUERY_ACCOUNTS = gql`
+  query Accounts($limit: Int!, $offset: Int) {
     accounts_accounts_aggregate(where: { total: { _gt: "0" } }) {
       aggregate {
         count
