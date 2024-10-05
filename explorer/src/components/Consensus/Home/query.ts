@@ -1,23 +1,23 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_HOME = gql`
-  query HomeQuery($limit: Int!, $offset: Int!, $accountTotal: BigInt!) {
-    blocks(limit: $limit, offset: $offset, orderBy: height_DESC) {
+  query HomeQuery($limit: Int!, $offset: Int!, $accountTotal: numeric!) {
+    consensus_blocks(limit: $limit, offset: $offset, order_by: { height: desc }) {
       id
       hash
       height
       timestamp
-      stateRoot
-      blockchainSize
-      spacePledged
-      extrinsicsCount
-      eventsCount
+      state_root
+      blockchain_size
+      space_pledged
+      extrinsics_count
+      events_count
     }
-    extrinsics(limit: $limit, offset: $offset, orderBy: timestamp_DESC) {
+    consensus_extrinsics(limit: $limit, offset: $offset, order_by: { timestamp: desc }) {
       hash
       id
       success
-      indexInBlock
+      index_in_block
       timestamp
       block {
         id
@@ -25,11 +25,18 @@ export const QUERY_HOME = gql`
       }
       name
     }
-    accountsConnection(orderBy: id_ASC, where: { total_gt: $accountTotal }) {
-      totalCount
+    accounts_accounts_aggregate(order_by: { id: asc }, where: { total: { _gt: $accountTotal } }) {
+      aggregate {
+        count
+      }
     }
-    extrinsicsConnection(orderBy: id_ASC, where: { signature_isNull: false }) {
-      totalCount
+    consensus_extrinsics_aggregate(
+      order_by: { id: asc }
+      where: { signature: { _is_null: false } }
+    ) {
+      aggregate {
+        count
+      }
     }
   }
 `

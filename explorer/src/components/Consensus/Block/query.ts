@@ -1,57 +1,48 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_BLOCK_LIST_CONNECTION = gql`
-  query BlocksConnection($first: Int!, $after: String, $orderBy: [BlockOrderByInput!]!) {
-    blocksConnection(orderBy: $orderBy, first: $first, after: $after) {
-      edges {
-        cursor
-        node {
-          blockchainSize
-          extrinsicsRoot
-          hash
-          height
-          id
-          parentHash
-          spacePledged
-          specId
-          stateRoot
-          timestamp
-          events(limit: 10) {
-            id
-          }
-          extrinsics(limit: 10) {
-            id
-          }
-          author {
-            id
-          }
-        }
+  query BlocksConnection($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!) {
+    consensus_blocks_aggregate(order_by: $orderBy) {
+      aggregate {
+        count
       }
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
+    }
+    consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset) {
+      blockchain_size
+      extrinsics_root
+      hash
+      height
+      id
+      parent_hash
+      space_pledged
+      spec_id
+      state_root
+      timestamp
+      events(limit: 10) {
+        id
       }
+      extrinsics(limit: 10) {
+        id
+      }
+      author_id
     }
   }
 `
 
 export const QUERY_BLOCK_BY_ID = gql`
-  query BlockById($blockId: BigInt!) {
-    blocks(limit: 10, where: { height_eq: $blockId }) {
+  query BlockById($blockId: numeric!) {
+    consensus_blocks(limit: 10, where: { height: { _eq: $blockId } }) {
       id
       height
       hash
-      stateRoot
+      state_root
       timestamp
-      extrinsicsRoot
-      specId
-      parentHash
-      extrinsicsCount
-      eventsCount
-      logs(limit: 10, orderBy: block_height_DESC) {
+      extrinsics_root
+      spec_id
+      parent_hash
+      extrinsics_count
+      events_count
+      logs(limit: 10, order_by: { block_height: desc }) {
         block {
           height
           timestamp
@@ -59,79 +50,64 @@ export const QUERY_BLOCK_BY_ID = gql`
         kind
         id
       }
-      author {
-        id
-      }
+      author_id
     }
   }
 `
 
 export const QUERY_BLOCK_EXTRINSICS = gql`
-  query ExtrinsicsByBlockId($blockId: BigInt!, $first: Int!, $after: String) {
-    extrinsicsConnection(
-      orderBy: indexInBlock_ASC
-      first: $first
-      after: $after
-      where: { block: { height_eq: $blockId } }
+  query ExtrinsicsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int) {
+    consensus_extrinsics_aggregate(where: { block_height: { _eq: $blockId } }) {
+      aggregate {
+        count
+      }
+    }
+    consensus_extrinsics(
+      order_by: { index_in_block: asc }
+      limit: $limit
+      offset: $offset
+      where: { block_height: { _eq: $blockId } }
     ) {
-      edges {
-        node {
-          id
-          hash
-          name
-          success
-          block {
-            height
-            timestamp
-          }
-          indexInBlock
-        }
-        cursor
+      id
+      hash
+      name
+      success
+      block {
+        height
+        timestamp
       }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-        hasPreviousPage
-        startCursor
-      }
+      index_in_block
     }
   }
 `
 
 export const QUERY_BLOCK_EVENTS = gql`
-  query EventsByBlockId($blockId: BigInt!, $first: Int!, $after: String) {
-    eventsConnection(
-      orderBy: indexInBlock_ASC
-      first: $first
-      after: $after
-      where: { block: { height_eq: $blockId } }
-    ) {
-      edges {
-        node {
-          id
-          name
-          phase
-          indexInBlock
-          block {
-            height
-            id
-          }
-          extrinsic {
-            indexInBlock
-            block {
-              height
-              id
-            }
-          }
-        }
+  query EventsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int) {
+    consensus_events_aggregate(where: { block_height: { _eq: $blockId } }) {
+      aggregate {
+        count
       }
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
+    }
+    consensus_events(
+      order_by: { index_in_block: asc }
+      limit: $limit
+      offset: $offset
+      where: { block_height: { _eq: $blockId } }
+    ) {
+      id
+      name
+      phase
+      index_in_block
+      block {
+        height
+        id
+      }
+      extrinsic {
+        index_in_block
+        block {
+          height
+          id
+        }
       }
     }
   }
@@ -139,7 +115,7 @@ export const QUERY_BLOCK_EVENTS = gql`
 
 export const QUERY_BLOCK_BY_HASH = gql`
   query BlocksByHash($hash: String!) {
-    blocks(limit: 10, where: { hash_eq: $hash }) {
+    consensus_blocks(limit: 10, where: { hash: { _eq: $hash } }) {
       id
       height
     }

@@ -2,52 +2,31 @@ import { gql } from '@apollo/client'
 
 export const QUERY_TOP_LEADERBOARD = gql`
   query AccountsTopLeaderboard($first: Int!) {
-    farmers: accountRewardsConnection(
-      orderBy: amount_DESC
-      first: $first
-      where: { vote_gt: 0, vote_isNull: false, OR: { block_gt: 0, block_isNull: false } }
+    farmers: accounts_rewards(
+      order_by: { amount: desc }
+      limit: $first
+      where: {
+        _or: [
+          { reward_type: { _eq: "Rewards.VoteReward" } }
+          { reward_type: { _eq: "Rewards.BlockReward" } }
+        ]
+      }
     ) {
-      edges {
-        cursor
-        node {
-          id
-        }
-      }
-    }
-    operators: operatorRewardsConnection(orderBy: amount_DESC, first: $first, where: {}) {
-      edges {
-        cursor
-        node {
-          amount
-          id
-        }
-      }
-    }
-    nominators: accountRewardsConnection(
-      orderBy: operator_DESC
-      first: $first
-      where: { operator_gt: 0, operator_isNull: false }
-    ) {
-      edges {
-        cursor
-        node {
-          id
-        }
-      }
+      id
     }
   }
 `
 
 export const QUERY_PENDING_TX = gql`
   query PendingTransaction($subspaceAccount: String, $extrinsics: [String!]) {
-    accounts(where: { id_eq: $subspaceAccount }) {
+    accounts_accounts(where: { id: { _eq: $subspaceAccount } }) {
       id
-      extrinsics(where: { hash_in: $extrinsics }) {
+      extrinsics(where: { hash: { _in: $extrinsics } }) {
         hash
         success
         timestamp
         name
-        events(limit: 1, orderBy: id_DESC) {
+        events(limit: 1, order_by: { id: desc }) {
           name
         }
         block {
@@ -62,33 +41,39 @@ export const QUERY_PENDING_TX = gql`
 
 export const QUERY_EXTRINSIC_SUMMARY = gql`
   query ExtrinsicsSummary($first: Int!, $subspaceAccount: String) {
-    extrinsics: extrinsicsConnection(
-      orderBy: id_DESC
-      first: $first
-      where: { signer: { id_eq: $subspaceAccount } }
-    ) {
-      edges {
-        node {
-          id
-          hash
-          success
-          block {
-            id
-            timestamp
-            height
-          }
-          name
-        }
+    consensus_extrinsics_aggregate(where: { signer: { _eq: $subspaceAccount } }) {
+      aggregate {
+        count
       }
-      totalCount
+    }
+    extrinsics: consensus_extrinsics(
+      order_by: { id: desc }
+      limit: $first
+      where: { signer: { _eq: $subspaceAccount } }
+    ) {
+      id
+      hash
+      success
+      block {
+        id
+        timestamp
+        height
+      }
+      name
     }
   }
 `
 
 export const QUERY_CHECK_ROLE = gql`
   query CheckRole($subspaceAccount: String!) {
-    isFarmer: rewardEvents(
-      where: { name_eq: "Rewards.VoteReward", account: { id_eq: $subspaceAccount } }
+    isFarmer: accounts_rewards(
+      where: {
+        _or: [
+          { reward_type: { _eq: "Rewards.VoteReward" } }
+          { reward_type: { _eq: "Rewards.BlockReward" } }
+        ]
+        account_id: { _eq: $subspaceAccount }
+      }
       limit: 1
     ) {
       account {

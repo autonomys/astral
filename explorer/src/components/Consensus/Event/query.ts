@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_EVENT_LIST = gql`
   query Events($limit: Int!, $offset: Int!) {
-    events(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
+    consensus_events(limit: $limit, offset: $offset, order_by: { block_height: desc }) {
       name
       phase
       id
@@ -10,75 +10,66 @@ export const QUERY_EVENT_LIST = gql`
         height
         timestamp
       }
-      indexInBlock
+      index_in_block
     }
   }
 `
 
 export const QUERY_EVENT_CONNECTION_LIST = gql`
-  query EventsConnection($first: Int!, $after: String, $where: EventWhereInput) {
-    eventsConnection(orderBy: id_DESC, first: $first, after: $after, where: $where) {
-      edges {
-        cursor
-        node {
-          args
-          id
-          indexInBlock
-          name
-          phase
-          timestamp
-          block {
-            id
-            timestamp
-            height
-          }
-        }
+  query EventsConnection($limit: Int!, $offset: Int, $where: consensus_events_bool_exp) {
+    consensus_events_aggregate(order_by: { id: desc }, where: $where) {
+      aggregate {
+        count
       }
-      pageInfo {
-        hasNextPage
-        endCursor
-        hasPreviousPage
-        startCursor
-      }
-      totalCount
     }
-    eventModuleNames(limit: 300) {
+    consensus_events(order_by: { id: desc }, limit: $limit, offset: $offset, where: $where) {
+      args
+      id
+      index_in_block
       name
+      phase
+      timestamp
+      block {
+        id
+        timestamp
+        height
+      }
+    }
+    consensus_event_modules(limit: 300) {
+      id
     }
   }
 `
 
 export const QUERY_EVENT_BY_ID = gql`
   query EventById($eventId: String!) {
-    eventById(id: $eventId) {
+    consensus_events_by_pk(id: $eventId) {
       args
       id
-      indexInBlock
+      index_in_block
       name
       phase
       timestamp
-      call {
-        args
-        name
-        success
-        timestamp
-        id
-      }
+      #  call {
+      #    args
+      #    name
+      #    success
+      #    timestamp
+      #    id
+      #  }
       extrinsic {
         args
         success
         tip
         fee
         id
-        signer {
-          id
-        }
+        signer
       }
       block {
         height
         id
         timestamp
-        specId
+        spec_id
         hash
       }
     }
