@@ -1,0 +1,18 @@
+table:
+  name: rewards
+  schema: accounts
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - amount
+        - block_height
+        - index_in_block
+        - account_id
+        - block_hash
+        - id
+        - reward_type
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""
