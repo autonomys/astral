@@ -11,6 +11,15 @@ array_relationships:
         remote_table:
           name: extrinsics
           schema: consensus
+  - name: rewards
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: account_id
+        insertion_order: null
+        remote_table:
+          name: rewards
+          schema: accounts
 select_permissions:
   - role: user
     permission:

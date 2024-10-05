@@ -1,6 +1,16 @@
 table:
   name: rewards
   schema: accounts
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: account_id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: accounts
 select_permissions:
   - role: user
     permission:
