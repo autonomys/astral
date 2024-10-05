@@ -95,6 +95,7 @@ export async function handleFarmerVoteRewardEvent(
     block: {
       block: {
         header: { number },
+        hash,
       },
       timestamp,
     },
@@ -116,7 +117,7 @@ export async function handleFarmerVoteRewardEvent(
 
   await createAndSaveReward(
     blockNumber,
-    event.block.block.hash.toString(),
+    hash.toString(),
     voter,
     BigInt(idx.toString()),
     section + "." + method,
@@ -138,6 +139,7 @@ export async function handleFarmerBlockRewardEvent(
     block: {
       block: {
         header: { number },
+        hash,
       },
       timestamp,
     },
@@ -159,7 +161,7 @@ export async function handleFarmerBlockRewardEvent(
 
   await createAndSaveReward(
     blockNumber,
-    event.block.block.hash.toString(),
+    hash.toString(),
     blockAuthor,
     BigInt(idx.toString()),
     section + "." + method,
