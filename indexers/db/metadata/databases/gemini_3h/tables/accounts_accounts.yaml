@@ -1,6 +1,16 @@
 table:
   name: accounts
   schema: accounts
+array_relationships:
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: signer
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: consensus
 select_permissions:
   - role: user
     permission:
