@@ -1,5 +1,3 @@
-/* eslint-disable */
-import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -14,2522 +12,10319 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** Big number integer */
-  BigInt: { input: any; output: any; }
-  /** A date-time string in simplified extended ISO 8601 format (YYYY-MM-DDTHH:mm:ss.sssZ) */
-  DateTime: { input: any; output: any; }
-  /** A scalar that can represent any JSON value */
-  JSON: { input: any; output: any; }
+  numeric: { input: any; output: any; }
+  timestamp: { input: any; output: any; }
 };
 
-export type Account = {
-  __typename?: 'Account';
-  extrinsics: Array<Extrinsic>;
-  free?: Maybe<Scalars['BigInt']['output']>;
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Boolean']['input']>;
+  _gt?: InputMaybe<Scalars['Boolean']['input']>;
+  _gte?: InputMaybe<Scalars['Boolean']['input']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Boolean']['input']>;
+  _lte?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Scalars['Boolean']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+};
+
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type Int_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Int']['input']>;
+  _gt?: InputMaybe<Scalars['Int']['input']>;
+  _gte?: InputMaybe<Scalars['Int']['input']>;
+  _in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Int']['input']>;
+  _lte?: InputMaybe<Scalars['Int']['input']>;
+  _neq?: InputMaybe<Scalars['Int']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
+export type String_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['String']['input']>;
+  _gt?: InputMaybe<Scalars['String']['input']>;
+  _gte?: InputMaybe<Scalars['String']['input']>;
+  /** does the column match the given case-insensitive pattern */
+  _ilike?: InputMaybe<Scalars['String']['input']>;
+  _in?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** does the column match the given POSIX regular expression, case insensitive */
+  _iregex?: InputMaybe<Scalars['String']['input']>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  /** does the column match the given pattern */
+  _like?: InputMaybe<Scalars['String']['input']>;
+  _lt?: InputMaybe<Scalars['String']['input']>;
+  _lte?: InputMaybe<Scalars['String']['input']>;
+  _neq?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given case-insensitive pattern */
+  _nilike?: InputMaybe<Scalars['String']['input']>;
+  _nin?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** does the column NOT match the given POSIX regular expression, case insensitive */
+  _niregex?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given pattern */
+  _nlike?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given POSIX regular expression, case sensitive */
+  _nregex?: InputMaybe<Scalars['String']['input']>;
+  /** does the column NOT match the given SQL regular expression */
+  _nsimilar?: InputMaybe<Scalars['String']['input']>;
+  /** does the column match the given POSIX regular expression, case sensitive */
+  _regex?: InputMaybe<Scalars['String']['input']>;
+  /** does the column match the given SQL regular expression */
+  _similar?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "accounts.accounts" */
+export type Accounts_Accounts = {
+  __typename?: 'accounts_accounts';
+  account_id: Scalars['String']['output'];
+  created_at: Scalars['numeric']['output'];
+  /** An array relationship */
+  extrinsics: Array<Consensus_Extrinsics>;
+  /** An aggregate relationship */
+  extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
+  free: Scalars['numeric']['output'];
   id: Scalars['String']['output'];
-  nonce?: Maybe<Scalars['BigInt']['output']>;
-  reserved?: Maybe<Scalars['BigInt']['output']>;
-  rewards: Array<RewardEvent>;
-  total?: Maybe<Scalars['BigInt']['output']>;
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
+  nonce: Scalars['numeric']['output'];
+  reserved: Scalars['numeric']['output'];
+  /** An array relationship */
+  rewards: Array<Accounts_Rewards>;
+  /** An aggregate relationship */
+  rewards_aggregate: Accounts_Rewards_Aggregate;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at: Scalars['numeric']['output'];
 };
 
 
-export type AccountExtrinsicsArgs = {
+/** columns and relationships of "accounts.accounts" */
+export type Accounts_AccountsExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 };
 
 
-export type AccountRewardsArgs = {
+/** columns and relationships of "accounts.accounts" */
+export type Accounts_AccountsExtrinsics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
-  where?: InputMaybe<RewardEventWhereInput>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 };
 
-export type AccountEdge = {
-  __typename?: 'AccountEdge';
-  cursor: Scalars['String']['output'];
-  node: Account;
+
+/** columns and relationships of "accounts.accounts" */
+export type Accounts_AccountsRewardsArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Rewards_Order_By>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
 };
 
-export enum AccountOrderByInput {
-  FreeAsc = 'free_ASC',
-  FreeDesc = 'free_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  NonceAsc = 'nonce_ASC',
-  NonceDesc = 'nonce_DESC',
-  ReservedAsc = 'reserved_ASC',
-  ReservedDesc = 'reserved_DESC',
-  TotalAsc = 'total_ASC',
-  TotalDesc = 'total_DESC',
-  UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC'
+
+/** columns and relationships of "accounts.accounts" */
+export type Accounts_AccountsRewards_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Rewards_Order_By>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+};
+
+/** aggregated selection of "accounts.accounts" */
+export type Accounts_Accounts_Aggregate = {
+  __typename?: 'accounts_accounts_aggregate';
+  aggregate?: Maybe<Accounts_Accounts_Aggregate_Fields>;
+  nodes: Array<Accounts_Accounts>;
+};
+
+/** aggregate fields of "accounts.accounts" */
+export type Accounts_Accounts_Aggregate_Fields = {
+  __typename?: 'accounts_accounts_aggregate_fields';
+  avg?: Maybe<Accounts_Accounts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Accounts_Accounts_Max_Fields>;
+  min?: Maybe<Accounts_Accounts_Min_Fields>;
+  stddev?: Maybe<Accounts_Accounts_Stddev_Fields>;
+  stddev_pop?: Maybe<Accounts_Accounts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Accounts_Accounts_Stddev_Samp_Fields>;
+  sum?: Maybe<Accounts_Accounts_Sum_Fields>;
+  var_pop?: Maybe<Accounts_Accounts_Var_Pop_Fields>;
+  var_samp?: Maybe<Accounts_Accounts_Var_Samp_Fields>;
+  variance?: Maybe<Accounts_Accounts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "accounts.accounts" */
+export type Accounts_Accounts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Accounts_Accounts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Accounts_Accounts_Avg_Fields = {
+  __typename?: 'accounts_accounts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "accounts.accounts". All fields are combined with a logical 'AND'. */
+export type Accounts_Accounts_Bool_Exp = {
+  _and?: InputMaybe<Array<Accounts_Accounts_Bool_Exp>>;
+  _not?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+  _or?: InputMaybe<Array<Accounts_Accounts_Bool_Exp>>;
+  account_id?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  extrinsics?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  extrinsics_aggregate?: InputMaybe<Consensus_Extrinsics_Aggregate_Bool_Exp>;
+  free?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  nonce?: InputMaybe<Numeric_Comparison_Exp>;
+  reserved?: InputMaybe<Numeric_Comparison_Exp>;
+  rewards?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+  rewards_aggregate?: InputMaybe<Accounts_Rewards_Aggregate_Bool_Exp>;
+  total?: InputMaybe<Numeric_Comparison_Exp>;
+  updated_at?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Accounts_Accounts_Max_Fields = {
+  __typename?: 'accounts_accounts_max_fields';
+  account_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Accounts_Accounts_Min_Fields = {
+  __typename?: 'accounts_accounts_min_fields';
+  account_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "accounts.accounts". */
+export type Accounts_Accounts_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  extrinsics_aggregate?: InputMaybe<Consensus_Extrinsics_Aggregate_Order_By>;
+  free?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  reserved?: InputMaybe<Order_By>;
+  rewards_aggregate?: InputMaybe<Accounts_Rewards_Aggregate_Order_By>;
+  total?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "accounts.accounts" */
+export enum Accounts_Accounts_Select_Column {
+  /** column name */
+  AccountId = 'account_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Free = 'free',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Nonce = 'nonce',
+  /** column name */
+  Reserved = 'reserved',
+  /** column name */
+  Total = 'total',
+  /** column name */
+  UpdatedAt = 'updated_at'
 }
 
-export type AccountRewards = {
-  __typename?: 'AccountRewards';
-  account: Account;
-  amount?: Maybe<Scalars['BigInt']['output']>;
-  block?: Maybe<Scalars['BigInt']['output']>;
+/** aggregate stddev on columns */
+export type Accounts_Accounts_Stddev_Fields = {
+  __typename?: 'accounts_accounts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Accounts_Accounts_Stddev_Pop_Fields = {
+  __typename?: 'accounts_accounts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Accounts_Accounts_Stddev_Samp_Fields = {
+  __typename?: 'accounts_accounts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "accounts_accounts" */
+export type Accounts_Accounts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Accounts_Accounts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Accounts_Accounts_Stream_Cursor_Value_Input = {
+  account_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['numeric']['input']>;
+  free?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  nonce?: InputMaybe<Scalars['numeric']['input']>;
+  reserved?: InputMaybe<Scalars['numeric']['input']>;
+  total?: InputMaybe<Scalars['numeric']['input']>;
+  updated_at?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Accounts_Accounts_Sum_Fields = {
+  __typename?: 'accounts_accounts_sum_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Accounts_Accounts_Var_Pop_Fields = {
+  __typename?: 'accounts_accounts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Accounts_Accounts_Var_Samp_Fields = {
+  __typename?: 'accounts_accounts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Accounts_Accounts_Variance_Fields = {
+  __typename?: 'accounts_accounts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "accounts.balance_histories" */
+export type Accounts_Balance_Histories = {
+  __typename?: 'accounts_balance_histories';
+  account_id: Scalars['String']['output'];
+  created_at: Scalars['numeric']['output'];
+  free: Scalars['numeric']['output'];
   id: Scalars['String']['output'];
-  operator?: Maybe<Scalars['BigInt']['output']>;
-  updatedAt: Scalars['BigInt']['output'];
-  vote?: Maybe<Scalars['BigInt']['output']>;
+  reserved: Scalars['numeric']['output'];
+  total?: Maybe<Scalars['numeric']['output']>;
 };
 
-export type AccountRewardsConnection = {
-  __typename?: 'AccountRewardsConnection';
-  edges: Array<AccountRewardsEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** aggregated selection of "accounts.balance_histories" */
+export type Accounts_Balance_Histories_Aggregate = {
+  __typename?: 'accounts_balance_histories_aggregate';
+  aggregate?: Maybe<Accounts_Balance_Histories_Aggregate_Fields>;
+  nodes: Array<Accounts_Balance_Histories>;
 };
 
-export type AccountRewardsEdge = {
-  __typename?: 'AccountRewardsEdge';
-  cursor: Scalars['String']['output'];
-  node: AccountRewards;
+/** aggregate fields of "accounts.balance_histories" */
+export type Accounts_Balance_Histories_Aggregate_Fields = {
+  __typename?: 'accounts_balance_histories_aggregate_fields';
+  avg?: Maybe<Accounts_Balance_Histories_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Accounts_Balance_Histories_Max_Fields>;
+  min?: Maybe<Accounts_Balance_Histories_Min_Fields>;
+  stddev?: Maybe<Accounts_Balance_Histories_Stddev_Fields>;
+  stddev_pop?: Maybe<Accounts_Balance_Histories_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Accounts_Balance_Histories_Stddev_Samp_Fields>;
+  sum?: Maybe<Accounts_Balance_Histories_Sum_Fields>;
+  var_pop?: Maybe<Accounts_Balance_Histories_Var_Pop_Fields>;
+  var_samp?: Maybe<Accounts_Balance_Histories_Var_Samp_Fields>;
+  variance?: Maybe<Accounts_Balance_Histories_Variance_Fields>;
 };
 
-export enum AccountRewardsOrderByInput {
-  AccountFreeAsc = 'account_free_ASC',
-  AccountFreeDesc = 'account_free_DESC',
-  AccountIdAsc = 'account_id_ASC',
-  AccountIdDesc = 'account_id_DESC',
-  AccountNonceAsc = 'account_nonce_ASC',
-  AccountNonceDesc = 'account_nonce_DESC',
-  AccountReservedAsc = 'account_reserved_ASC',
-  AccountReservedDesc = 'account_reserved_DESC',
-  AccountTotalAsc = 'account_total_ASC',
-  AccountTotalDesc = 'account_total_DESC',
-  AccountUpdatedAtAsc = 'account_updatedAt_ASC',
-  AccountUpdatedAtDesc = 'account_updatedAt_DESC',
-  AmountAsc = 'amount_ASC',
-  AmountDesc = 'amount_DESC',
-  BlockAsc = 'block_ASC',
-  BlockDesc = 'block_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  OperatorAsc = 'operator_ASC',
-  OperatorDesc = 'operator_DESC',
-  UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC',
-  VoteAsc = 'vote_ASC',
-  VoteDesc = 'vote_DESC'
+
+/** aggregate fields of "accounts.balance_histories" */
+export type Accounts_Balance_Histories_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Accounts_Balance_Histories_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Accounts_Balance_Histories_Avg_Fields = {
+  __typename?: 'accounts_balance_histories_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "accounts.balance_histories". All fields are combined with a logical 'AND'. */
+export type Accounts_Balance_Histories_Bool_Exp = {
+  _and?: InputMaybe<Array<Accounts_Balance_Histories_Bool_Exp>>;
+  _not?: InputMaybe<Accounts_Balance_Histories_Bool_Exp>;
+  _or?: InputMaybe<Array<Accounts_Balance_Histories_Bool_Exp>>;
+  account_id?: InputMaybe<String_Comparison_Exp>;
+  created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  free?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  reserved?: InputMaybe<Numeric_Comparison_Exp>;
+  total?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Accounts_Balance_Histories_Max_Fields = {
+  __typename?: 'accounts_balance_histories_max_fields';
+  account_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Accounts_Balance_Histories_Min_Fields = {
+  __typename?: 'accounts_balance_histories_min_fields';
+  account_id?: Maybe<Scalars['String']['output']>;
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "accounts.balance_histories". */
+export type Accounts_Balance_Histories_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  created_at?: InputMaybe<Order_By>;
+  free?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  reserved?: InputMaybe<Order_By>;
+  total?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "accounts.balance_histories" */
+export enum Accounts_Balance_Histories_Select_Column {
+  /** column name */
+  AccountId = 'account_id',
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Free = 'free',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Reserved = 'reserved',
+  /** column name */
+  Total = 'total'
 }
 
-export type AccountRewardsWhereInput = {
-  AND?: InputMaybe<Array<AccountRewardsWhereInput>>;
-  OR?: InputMaybe<Array<AccountRewardsWhereInput>>;
-  account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  block_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  block_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  block_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  block_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  block_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  block_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  block_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  block_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  operator_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  operator_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  operator_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  operator_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  operator_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  operator_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  operator_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  operator_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  vote_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  vote_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  vote_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  vote_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  vote_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  vote_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  vote_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  vote_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  vote_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+/** aggregate stddev on columns */
+export type Accounts_Balance_Histories_Stddev_Fields = {
+  __typename?: 'accounts_balance_histories_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
 };
 
-export type AccountWhereInput = {
-  AND?: InputMaybe<Array<AccountWhereInput>>;
-  OR?: InputMaybe<Array<AccountWhereInput>>;
-  extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
-  free_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  free_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  free_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  free_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  free_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  free_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  free_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  free_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  free_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  nonce_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  nonce_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  nonce_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  reserved_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  reserved_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  reserved_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  reserved_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  reserved_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  reserved_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  reserved_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  reserved_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  reserved_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  rewards_every?: InputMaybe<RewardEventWhereInput>;
-  rewards_none?: InputMaybe<RewardEventWhereInput>;
-  rewards_some?: InputMaybe<RewardEventWhereInput>;
-  total_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  total_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  total_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  total_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  total_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  total_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  total_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  total_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  total_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+/** aggregate stddev_pop on columns */
+export type Accounts_Balance_Histories_Stddev_Pop_Fields = {
+  __typename?: 'accounts_balance_histories_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
 };
 
-export type AccountsConnection = {
-  __typename?: 'AccountsConnection';
-  edges: Array<AccountEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** aggregate stddev_samp on columns */
+export type Accounts_Balance_Histories_Stddev_Samp_Fields = {
+  __typename?: 'accounts_balance_histories_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
 };
 
-export type Block = {
-  __typename?: 'Block';
-  author?: Maybe<Account>;
-  blockchainSize: Scalars['BigInt']['output'];
-  calls: Array<Call>;
-  events: Array<Event>;
-  eventsCount: Scalars['Int']['output'];
-  extrinsics: Array<Extrinsic>;
-  extrinsicsCount: Scalars['Int']['output'];
-  extrinsicsRoot: Scalars['String']['output'];
-  hash: Scalars['String']['output'];
-  height: Scalars['BigInt']['output'];
+/** Streaming cursor of the table "accounts_balance_histories" */
+export type Accounts_Balance_Histories_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Accounts_Balance_Histories_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Accounts_Balance_Histories_Stream_Cursor_Value_Input = {
+  account_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars['numeric']['input']>;
+  free?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  reserved?: InputMaybe<Scalars['numeric']['input']>;
+  total?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Accounts_Balance_Histories_Sum_Fields = {
+  __typename?: 'accounts_balance_histories_sum_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Accounts_Balance_Histories_Var_Pop_Fields = {
+  __typename?: 'accounts_balance_histories_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Accounts_Balance_Histories_Var_Samp_Fields = {
+  __typename?: 'accounts_balance_histories_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Accounts_Balance_Histories_Variance_Fields = {
+  __typename?: 'accounts_balance_histories_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "accounts.rewards" */
+export type Accounts_Rewards = {
+  __typename?: 'accounts_rewards';
+  /** An object relationship */
+  account?: Maybe<Accounts_Accounts>;
+  account_id: Scalars['String']['output'];
+  amount: Scalars['numeric']['output'];
+  /** An object relationship */
+  block?: Maybe<Consensus_Blocks>;
+  block_hash: Scalars['String']['output'];
+  block_height: Scalars['numeric']['output'];
   id: Scalars['String']['output'];
-  logs: Array<Log>;
-  parentHash: Scalars['String']['output'];
-  rewards: Array<RewardEvent>;
-  spacePledged: Scalars['BigInt']['output'];
-  specId: Scalars['String']['output'];
-  stateRoot: Scalars['String']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  index_in_block: Scalars['numeric']['output'];
+  reward_type: Scalars['String']['output'];
+  timestamp: Scalars['timestamp']['output'];
+};
+
+/** aggregated selection of "accounts.rewards" */
+export type Accounts_Rewards_Aggregate = {
+  __typename?: 'accounts_rewards_aggregate';
+  aggregate?: Maybe<Accounts_Rewards_Aggregate_Fields>;
+  nodes: Array<Accounts_Rewards>;
+};
+
+export type Accounts_Rewards_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Accounts_Rewards_Aggregate_Bool_Exp_Count>;
+};
+
+export type Accounts_Rewards_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "accounts.rewards" */
+export type Accounts_Rewards_Aggregate_Fields = {
+  __typename?: 'accounts_rewards_aggregate_fields';
+  avg?: Maybe<Accounts_Rewards_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Accounts_Rewards_Max_Fields>;
+  min?: Maybe<Accounts_Rewards_Min_Fields>;
+  stddev?: Maybe<Accounts_Rewards_Stddev_Fields>;
+  stddev_pop?: Maybe<Accounts_Rewards_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Accounts_Rewards_Stddev_Samp_Fields>;
+  sum?: Maybe<Accounts_Rewards_Sum_Fields>;
+  var_pop?: Maybe<Accounts_Rewards_Var_Pop_Fields>;
+  var_samp?: Maybe<Accounts_Rewards_Var_Samp_Fields>;
+  variance?: Maybe<Accounts_Rewards_Variance_Fields>;
 };
 
 
-export type BlockCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
+/** aggregate fields of "accounts.rewards" */
+export type Accounts_Rewards_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-
-export type BlockEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
+/** order by aggregate values of table "accounts.rewards" */
+export type Accounts_Rewards_Aggregate_Order_By = {
+  avg?: InputMaybe<Accounts_Rewards_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Accounts_Rewards_Max_Order_By>;
+  min?: InputMaybe<Accounts_Rewards_Min_Order_By>;
+  stddev?: InputMaybe<Accounts_Rewards_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Accounts_Rewards_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Accounts_Rewards_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Accounts_Rewards_Sum_Order_By>;
+  var_pop?: InputMaybe<Accounts_Rewards_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Accounts_Rewards_Var_Samp_Order_By>;
+  variance?: InputMaybe<Accounts_Rewards_Variance_Order_By>;
 };
 
-
-export type BlockExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
+/** aggregate avg on columns */
+export type Accounts_Rewards_Avg_Fields = {
+  __typename?: 'accounts_rewards_avg_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
 };
 
-
-export type BlockLogsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<LogOrderByInput>>;
-  where?: InputMaybe<LogWhereInput>;
+/** order by avg() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Avg_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
 };
 
-
-export type BlockRewardsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
-  where?: InputMaybe<RewardEventWhereInput>;
+/** Boolean expression to filter rows from the table "accounts.rewards". All fields are combined with a logical 'AND'. */
+export type Accounts_Rewards_Bool_Exp = {
+  _and?: InputMaybe<Array<Accounts_Rewards_Bool_Exp>>;
+  _not?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+  _or?: InputMaybe<Array<Accounts_Rewards_Bool_Exp>>;
+  account?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+  account_id?: InputMaybe<String_Comparison_Exp>;
+  amount?: InputMaybe<Numeric_Comparison_Exp>;
+  block?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+  block_hash?: InputMaybe<String_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  index_in_block?: InputMaybe<Numeric_Comparison_Exp>;
+  reward_type?: InputMaybe<String_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
 };
 
-export type BlockEdge = {
-  __typename?: 'BlockEdge';
-  cursor: Scalars['String']['output'];
-  node: Block;
+/** aggregate max on columns */
+export type Accounts_Rewards_Max_Fields = {
+  __typename?: 'accounts_rewards_max_fields';
+  account_id?: Maybe<Scalars['String']['output']>;
+  amount?: Maybe<Scalars['numeric']['output']>;
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['numeric']['output']>;
+  reward_type?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
 };
 
-export enum BlockOrderByInput {
-  AuthorFreeAsc = 'author_free_ASC',
-  AuthorFreeDesc = 'author_free_DESC',
-  AuthorIdAsc = 'author_id_ASC',
-  AuthorIdDesc = 'author_id_DESC',
-  AuthorNonceAsc = 'author_nonce_ASC',
-  AuthorNonceDesc = 'author_nonce_DESC',
-  AuthorReservedAsc = 'author_reserved_ASC',
-  AuthorReservedDesc = 'author_reserved_DESC',
-  AuthorTotalAsc = 'author_total_ASC',
-  AuthorTotalDesc = 'author_total_DESC',
-  AuthorUpdatedAtAsc = 'author_updatedAt_ASC',
-  AuthorUpdatedAtDesc = 'author_updatedAt_DESC',
-  BlockchainSizeAsc = 'blockchainSize_ASC',
-  BlockchainSizeDesc = 'blockchainSize_DESC',
-  EventsCountAsc = 'eventsCount_ASC',
-  EventsCountDesc = 'eventsCount_DESC',
-  ExtrinsicsCountAsc = 'extrinsicsCount_ASC',
-  ExtrinsicsCountDesc = 'extrinsicsCount_DESC',
-  ExtrinsicsRootAsc = 'extrinsicsRoot_ASC',
-  ExtrinsicsRootDesc = 'extrinsicsRoot_DESC',
-  HashAsc = 'hash_ASC',
-  HashDesc = 'hash_DESC',
-  HeightAsc = 'height_ASC',
-  HeightDesc = 'height_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  ParentHashAsc = 'parentHash_ASC',
-  ParentHashDesc = 'parentHash_DESC',
-  SpacePledgedAsc = 'spacePledged_ASC',
-  SpacePledgedDesc = 'spacePledged_DESC',
-  SpecIdAsc = 'specId_ASC',
-  SpecIdDesc = 'specId_DESC',
-  StateRootAsc = 'stateRoot_ASC',
-  StateRootDesc = 'stateRoot_DESC',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
+/** order by max() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Max_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  reward_type?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Accounts_Rewards_Min_Fields = {
+  __typename?: 'accounts_rewards_min_fields';
+  account_id?: Maybe<Scalars['String']['output']>;
+  amount?: Maybe<Scalars['numeric']['output']>;
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['numeric']['output']>;
+  reward_type?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+};
+
+/** order by min() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Min_Order_By = {
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  reward_type?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "accounts.rewards". */
+export type Accounts_Rewards_Order_By = {
+  account?: InputMaybe<Accounts_Accounts_Order_By>;
+  account_id?: InputMaybe<Order_By>;
+  amount?: InputMaybe<Order_By>;
+  block?: InputMaybe<Consensus_Blocks_Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  reward_type?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "accounts.rewards" */
+export enum Accounts_Rewards_Select_Column {
+  /** column name */
+  AccountId = 'account_id',
+  /** column name */
+  Amount = 'amount',
+  /** column name */
+  BlockHash = 'block_hash',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IndexInBlock = 'index_in_block',
+  /** column name */
+  RewardType = 'reward_type',
+  /** column name */
+  Timestamp = 'timestamp'
 }
 
-export type BlockWhereInput = {
-  AND?: InputMaybe<Array<BlockWhereInput>>;
-  OR?: InputMaybe<Array<BlockWhereInput>>;
-  author?: InputMaybe<AccountWhereInput>;
-  author_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockchainSize_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  blockchainSize_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  blockchainSize_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  blockchainSize_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  blockchainSize_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  blockchainSize_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  blockchainSize_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  blockchainSize_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  blockchainSize_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  calls_every?: InputMaybe<CallWhereInput>;
-  calls_none?: InputMaybe<CallWhereInput>;
-  calls_some?: InputMaybe<CallWhereInput>;
-  eventsCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  eventsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  eventsCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  eventsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  events_every?: InputMaybe<EventWhereInput>;
-  events_none?: InputMaybe<EventWhereInput>;
-  events_some?: InputMaybe<EventWhereInput>;
-  extrinsicsCount_eq?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_gt?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_gte?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  extrinsicsCount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsicsCount_lt?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_lte?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  extrinsicsCount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  extrinsicsRoot_contains?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_endsWith?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_eq?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_gt?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_gte?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  extrinsicsRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsicsRoot_lt?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_lte?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_not_contains?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_not_eq?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  extrinsicsRoot_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  extrinsicsRoot_startsWith?: InputMaybe<Scalars['String']['input']>;
-  extrinsics_every?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsics_none?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsics_some?: InputMaybe<ExtrinsicWhereInput>;
-  hash_contains?: InputMaybe<Scalars['String']['input']>;
-  hash_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  hash_endsWith?: InputMaybe<Scalars['String']['input']>;
-  hash_eq?: InputMaybe<Scalars['String']['input']>;
-  hash_gt?: InputMaybe<Scalars['String']['input']>;
-  hash_gte?: InputMaybe<Scalars['String']['input']>;
-  hash_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  hash_lt?: InputMaybe<Scalars['String']['input']>;
-  hash_lte?: InputMaybe<Scalars['String']['input']>;
-  hash_not_contains?: InputMaybe<Scalars['String']['input']>;
-  hash_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  hash_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  hash_not_eq?: InputMaybe<Scalars['String']['input']>;
-  hash_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  hash_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  hash_startsWith?: InputMaybe<Scalars['String']['input']>;
-  height_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  height_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  height_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  height_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  height_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  height_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  height_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  height_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  height_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  logs_every?: InputMaybe<LogWhereInput>;
-  logs_none?: InputMaybe<LogWhereInput>;
-  logs_some?: InputMaybe<LogWhereInput>;
-  parentHash_contains?: InputMaybe<Scalars['String']['input']>;
-  parentHash_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  parentHash_endsWith?: InputMaybe<Scalars['String']['input']>;
-  parentHash_eq?: InputMaybe<Scalars['String']['input']>;
-  parentHash_gt?: InputMaybe<Scalars['String']['input']>;
-  parentHash_gte?: InputMaybe<Scalars['String']['input']>;
-  parentHash_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  parentHash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  parentHash_lt?: InputMaybe<Scalars['String']['input']>;
-  parentHash_lte?: InputMaybe<Scalars['String']['input']>;
-  parentHash_not_contains?: InputMaybe<Scalars['String']['input']>;
-  parentHash_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  parentHash_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  parentHash_not_eq?: InputMaybe<Scalars['String']['input']>;
-  parentHash_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  parentHash_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  parentHash_startsWith?: InputMaybe<Scalars['String']['input']>;
-  rewards_every?: InputMaybe<RewardEventWhereInput>;
-  rewards_none?: InputMaybe<RewardEventWhereInput>;
-  rewards_some?: InputMaybe<RewardEventWhereInput>;
-  spacePledged_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  spacePledged_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  spacePledged_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  spacePledged_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  spacePledged_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  spacePledged_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  spacePledged_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  spacePledged_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  spacePledged_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  specId_contains?: InputMaybe<Scalars['String']['input']>;
-  specId_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  specId_endsWith?: InputMaybe<Scalars['String']['input']>;
-  specId_eq?: InputMaybe<Scalars['String']['input']>;
-  specId_gt?: InputMaybe<Scalars['String']['input']>;
-  specId_gte?: InputMaybe<Scalars['String']['input']>;
-  specId_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  specId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  specId_lt?: InputMaybe<Scalars['String']['input']>;
-  specId_lte?: InputMaybe<Scalars['String']['input']>;
-  specId_not_contains?: InputMaybe<Scalars['String']['input']>;
-  specId_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  specId_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  specId_not_eq?: InputMaybe<Scalars['String']['input']>;
-  specId_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  specId_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  specId_startsWith?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_contains?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_endsWith?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_eq?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_gt?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_gte?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  stateRoot_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  stateRoot_lt?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_lte?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_not_contains?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_not_eq?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  stateRoot_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  stateRoot_startsWith?: InputMaybe<Scalars['String']['input']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+/** aggregate stddev on columns */
+export type Accounts_Rewards_Stddev_Fields = {
+  __typename?: 'accounts_rewards_stddev_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
 };
 
-export type BlocksConnection = {
-  __typename?: 'BlocksConnection';
-  edges: Array<BlockEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Stddev_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
 };
 
-export type Call = {
-  __typename?: 'Call';
-  args?: Maybe<Scalars['JSON']['output']>;
-  block: Block;
-  calls: Array<Call>;
-  error?: Maybe<Scalars['JSON']['output']>;
-  extrinsic: Extrinsic;
+/** aggregate stddev_pop on columns */
+export type Accounts_Rewards_Stddev_Pop_Fields = {
+  __typename?: 'accounts_rewards_stddev_pop_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Stddev_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Accounts_Rewards_Stddev_Samp_Fields = {
+  __typename?: 'accounts_rewards_stddev_samp_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Stddev_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "accounts_rewards" */
+export type Accounts_Rewards_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Accounts_Rewards_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Accounts_Rewards_Stream_Cursor_Value_Input = {
+  account_id?: InputMaybe<Scalars['String']['input']>;
+  amount?: InputMaybe<Scalars['numeric']['input']>;
+  block_hash?: InputMaybe<Scalars['String']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  index_in_block?: InputMaybe<Scalars['numeric']['input']>;
+  reward_type?: InputMaybe<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Accounts_Rewards_Sum_Fields = {
+  __typename?: 'accounts_rewards_sum_fields';
+  amount?: Maybe<Scalars['numeric']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  index_in_block?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** order by sum() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Sum_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Accounts_Rewards_Var_Pop_Fields = {
+  __typename?: 'accounts_rewards_var_pop_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Var_Pop_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Accounts_Rewards_Var_Samp_Fields = {
+  __typename?: 'accounts_rewards_var_samp_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Var_Samp_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Accounts_Rewards_Variance_Fields = {
+  __typename?: 'accounts_rewards_variance_fields';
+  amount?: Maybe<Scalars['Float']['output']>;
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "accounts.rewards" */
+export type Accounts_Rewards_Variance_Order_By = {
+  amount?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "accounts.transfers" */
+export type Accounts_Transfers = {
+  __typename?: 'accounts_transfers';
+  created_at: Scalars['numeric']['output'];
+  date: Scalars['timestamp']['output'];
+  event_id: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  fee: Scalars['numeric']['output'];
+  from: Scalars['String']['output'];
   id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  parent?: Maybe<Call>;
-  pos?: Maybe<Scalars['Int']['output']>;
-  signer?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
-  timestamp: Scalars['DateTime']['output'];
+  timestamp: Scalars['numeric']['output'];
+  to: Scalars['String']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "accounts.transfers" */
+export type Accounts_Transfers_Aggregate = {
+  __typename?: 'accounts_transfers_aggregate';
+  aggregate?: Maybe<Accounts_Transfers_Aggregate_Fields>;
+  nodes: Array<Accounts_Transfers>;
+};
+
+/** aggregate fields of "accounts.transfers" */
+export type Accounts_Transfers_Aggregate_Fields = {
+  __typename?: 'accounts_transfers_aggregate_fields';
+  avg?: Maybe<Accounts_Transfers_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Accounts_Transfers_Max_Fields>;
+  min?: Maybe<Accounts_Transfers_Min_Fields>;
+  stddev?: Maybe<Accounts_Transfers_Stddev_Fields>;
+  stddev_pop?: Maybe<Accounts_Transfers_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Accounts_Transfers_Stddev_Samp_Fields>;
+  sum?: Maybe<Accounts_Transfers_Sum_Fields>;
+  var_pop?: Maybe<Accounts_Transfers_Var_Pop_Fields>;
+  var_samp?: Maybe<Accounts_Transfers_Var_Samp_Fields>;
+  variance?: Maybe<Accounts_Transfers_Variance_Fields>;
 };
 
 
-export type CallCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
+/** aggregate fields of "accounts.transfers" */
+export type Accounts_Transfers_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Accounts_Transfers_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
-export type CallEdge = {
-  __typename?: 'CallEdge';
-  cursor: Scalars['String']['output'];
-  node: Call;
+/** aggregate avg on columns */
+export type Accounts_Transfers_Avg_Fields = {
+  __typename?: 'accounts_transfers_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
 };
 
-export enum CallOrderByInput {
-  BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
-  BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsRootAsc = 'block_extrinsicsRoot_ASC',
-  BlockExtrinsicsRootDesc = 'block_extrinsicsRoot_DESC',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdDesc = 'block_id_DESC',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockSpacePledgedAsc = 'block_spacePledged_ASC',
-  BlockSpacePledgedDesc = 'block_spacePledged_DESC',
-  BlockSpecIdAsc = 'block_specId_ASC',
-  BlockSpecIdDesc = 'block_specId_DESC',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
-  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
-  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
-  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
-  ExtrinsicIdAsc = 'extrinsic_id_ASC',
-  ExtrinsicIdDesc = 'extrinsic_id_DESC',
-  ExtrinsicIndexInBlockAsc = 'extrinsic_indexInBlock_ASC',
-  ExtrinsicIndexInBlockDesc = 'extrinsic_indexInBlock_DESC',
-  ExtrinsicNameAsc = 'extrinsic_name_ASC',
-  ExtrinsicNameDesc = 'extrinsic_name_DESC',
-  ExtrinsicNonceAsc = 'extrinsic_nonce_ASC',
-  ExtrinsicNonceDesc = 'extrinsic_nonce_DESC',
-  ExtrinsicPosAsc = 'extrinsic_pos_ASC',
-  ExtrinsicPosDesc = 'extrinsic_pos_DESC',
-  ExtrinsicSignatureAsc = 'extrinsic_signature_ASC',
-  ExtrinsicSignatureDesc = 'extrinsic_signature_DESC',
-  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
-  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
-  ExtrinsicTimestampAsc = 'extrinsic_timestamp_ASC',
-  ExtrinsicTimestampDesc = 'extrinsic_timestamp_DESC',
-  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
-  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC',
-  ParentIdAsc = 'parent_id_ASC',
-  ParentIdDesc = 'parent_id_DESC',
-  ParentNameAsc = 'parent_name_ASC',
-  ParentNameDesc = 'parent_name_DESC',
-  ParentPosAsc = 'parent_pos_ASC',
-  ParentPosDesc = 'parent_pos_DESC',
-  ParentSignerAsc = 'parent_signer_ASC',
-  ParentSignerDesc = 'parent_signer_DESC',
-  ParentSuccessAsc = 'parent_success_ASC',
-  ParentSuccessDesc = 'parent_success_DESC',
-  ParentTimestampAsc = 'parent_timestamp_ASC',
-  ParentTimestampDesc = 'parent_timestamp_DESC',
-  PosAsc = 'pos_ASC',
-  PosDesc = 'pos_DESC',
-  SignerAsc = 'signer_ASC',
-  SignerDesc = 'signer_DESC',
-  SuccessAsc = 'success_ASC',
-  SuccessDesc = 'success_DESC',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
+/** Boolean expression to filter rows from the table "accounts.transfers". All fields are combined with a logical 'AND'. */
+export type Accounts_Transfers_Bool_Exp = {
+  _and?: InputMaybe<Array<Accounts_Transfers_Bool_Exp>>;
+  _not?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+  _or?: InputMaybe<Array<Accounts_Transfers_Bool_Exp>>;
+  created_at?: InputMaybe<Numeric_Comparison_Exp>;
+  date?: InputMaybe<Timestamp_Comparison_Exp>;
+  event_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  fee?: InputMaybe<Numeric_Comparison_Exp>;
+  from?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  success?: InputMaybe<Boolean_Comparison_Exp>;
+  timestamp?: InputMaybe<Numeric_Comparison_Exp>;
+  to?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Accounts_Transfers_Max_Fields = {
+  __typename?: 'accounts_transfers_max_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  date?: Maybe<Scalars['timestamp']['output']>;
+  event_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  from?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['numeric']['output']>;
+  to?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Accounts_Transfers_Min_Fields = {
+  __typename?: 'accounts_transfers_min_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  date?: Maybe<Scalars['timestamp']['output']>;
+  event_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  from?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['numeric']['output']>;
+  to?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "accounts.transfers". */
+export type Accounts_Transfers_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  date?: InputMaybe<Order_By>;
+  event_id?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  from?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  success?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  to?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "accounts.transfers" */
+export enum Accounts_Transfers_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Date = 'date',
+  /** column name */
+  EventId = 'event_id',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Fee = 'fee',
+  /** column name */
+  From = 'from',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Success = 'success',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  To = 'to',
+  /** column name */
+  Value = 'value'
 }
 
-export type CallWhereInput = {
-  AND?: InputMaybe<Array<CallWhereInput>>;
-  OR?: InputMaybe<Array<CallWhereInput>>;
-  args_eq?: InputMaybe<Scalars['JSON']['input']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  calls_every?: InputMaybe<CallWhereInput>;
-  calls_none?: InputMaybe<CallWhereInput>;
-  calls_some?: InputMaybe<CallWhereInput>;
-  error_eq?: InputMaybe<Scalars['JSON']['input']>;
-  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  parent?: InputMaybe<CallWhereInput>;
-  parent_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pos_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_gt?: InputMaybe<Scalars['Int']['input']>;
-  pos_gte?: InputMaybe<Scalars['Int']['input']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pos_lt?: InputMaybe<Scalars['Int']['input']>;
-  pos_lte?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  signer_contains?: InputMaybe<Scalars['String']['input']>;
-  signer_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  signer_endsWith?: InputMaybe<Scalars['String']['input']>;
-  signer_eq?: InputMaybe<Scalars['String']['input']>;
-  signer_gt?: InputMaybe<Scalars['String']['input']>;
-  signer_gte?: InputMaybe<Scalars['String']['input']>;
-  signer_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  signer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  signer_lt?: InputMaybe<Scalars['String']['input']>;
-  signer_lte?: InputMaybe<Scalars['String']['input']>;
-  signer_not_contains?: InputMaybe<Scalars['String']['input']>;
-  signer_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  signer_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  signer_not_eq?: InputMaybe<Scalars['String']['input']>;
-  signer_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  signer_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  signer_startsWith?: InputMaybe<Scalars['String']['input']>;
-  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+/** aggregate stddev on columns */
+export type Accounts_Transfers_Stddev_Fields = {
+  __typename?: 'accounts_transfers_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
 };
 
-export type CallsConnection = {
-  __typename?: 'CallsConnection';
-  edges: Array<CallEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** aggregate stddev_pop on columns */
+export type Accounts_Transfers_Stddev_Pop_Fields = {
+  __typename?: 'accounts_transfers_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
 };
 
-export type Event = {
-  __typename?: 'Event';
-  args?: Maybe<Scalars['JSON']['output']>;
-  block?: Maybe<Block>;
-  call?: Maybe<Call>;
-  extrinsic?: Maybe<Extrinsic>;
+/** aggregate stddev_samp on columns */
+export type Accounts_Transfers_Stddev_Samp_Fields = {
+  __typename?: 'accounts_transfers_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "accounts_transfers" */
+export type Accounts_Transfers_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Accounts_Transfers_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Accounts_Transfers_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['numeric']['input']>;
+  date?: InputMaybe<Scalars['timestamp']['input']>;
+  event_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  fee?: InputMaybe<Scalars['numeric']['input']>;
+  from?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp?: InputMaybe<Scalars['numeric']['input']>;
+  to?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Accounts_Transfers_Sum_Fields = {
+  __typename?: 'accounts_transfers_sum_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  timestamp?: Maybe<Scalars['numeric']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Accounts_Transfers_Var_Pop_Fields = {
+  __typename?: 'accounts_transfers_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Accounts_Transfers_Var_Samp_Fields = {
+  __typename?: 'accounts_transfers_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Accounts_Transfers_Variance_Fields = {
+  __typename?: 'accounts_transfers_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  timestamp?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_Blocks = {
+  __typename?: 'consensus_blocks';
+  author_id: Scalars['String']['output'];
+  blockchain_size: Scalars['numeric']['output'];
+  /** An array relationship */
+  events: Array<Consensus_Events>;
+  /** An aggregate relationship */
+  events_aggregate: Consensus_Events_Aggregate;
+  events_count: Scalars['Int']['output'];
+  /** An array relationship */
+  extrinsics: Array<Consensus_Extrinsics>;
+  /** An aggregate relationship */
+  extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
+  extrinsics_count: Scalars['Int']['output'];
+  extrinsics_root: Scalars['String']['output'];
+  hash: Scalars['String']['output'];
+  height: Scalars['numeric']['output'];
   id: Scalars['String']['output'];
-  indexInBlock: Scalars['Int']['output'];
+  /** An array relationship */
+  logs: Array<Consensus_Logs>;
+  /** An aggregate relationship */
+  logs_aggregate: Consensus_Logs_Aggregate;
+  parent_hash: Scalars['String']['output'];
+  space_pledged: Scalars['numeric']['output'];
+  spec_id: Scalars['String']['output'];
+  state_root: Scalars['String']['output'];
+  timestamp: Scalars['timestamp']['output'];
+};
+
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_BlocksEventsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_BlocksEvents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_BlocksExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_BlocksExtrinsics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_BlocksLogsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.blocks" */
+export type Consensus_BlocksLogs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+/** aggregated selection of "consensus.blocks" */
+export type Consensus_Blocks_Aggregate = {
+  __typename?: 'consensus_blocks_aggregate';
+  aggregate?: Maybe<Consensus_Blocks_Aggregate_Fields>;
+  nodes: Array<Consensus_Blocks>;
+};
+
+/** aggregate fields of "consensus.blocks" */
+export type Consensus_Blocks_Aggregate_Fields = {
+  __typename?: 'consensus_blocks_aggregate_fields';
+  avg?: Maybe<Consensus_Blocks_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Blocks_Max_Fields>;
+  min?: Maybe<Consensus_Blocks_Min_Fields>;
+  stddev?: Maybe<Consensus_Blocks_Stddev_Fields>;
+  stddev_pop?: Maybe<Consensus_Blocks_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Consensus_Blocks_Stddev_Samp_Fields>;
+  sum?: Maybe<Consensus_Blocks_Sum_Fields>;
+  var_pop?: Maybe<Consensus_Blocks_Var_Pop_Fields>;
+  var_samp?: Maybe<Consensus_Blocks_Var_Samp_Fields>;
+  variance?: Maybe<Consensus_Blocks_Variance_Fields>;
+};
+
+
+/** aggregate fields of "consensus.blocks" */
+export type Consensus_Blocks_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Blocks_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Consensus_Blocks_Avg_Fields = {
+  __typename?: 'consensus_blocks_avg_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.blocks". All fields are combined with a logical 'AND'. */
+export type Consensus_Blocks_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Blocks_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Blocks_Bool_Exp>>;
+  author_id?: InputMaybe<String_Comparison_Exp>;
+  blockchain_size?: InputMaybe<Numeric_Comparison_Exp>;
+  events?: InputMaybe<Consensus_Events_Bool_Exp>;
+  events_aggregate?: InputMaybe<Consensus_Events_Aggregate_Bool_Exp>;
+  events_count?: InputMaybe<Int_Comparison_Exp>;
+  extrinsics?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  extrinsics_aggregate?: InputMaybe<Consensus_Extrinsics_Aggregate_Bool_Exp>;
+  extrinsics_count?: InputMaybe<Int_Comparison_Exp>;
+  extrinsics_root?: InputMaybe<String_Comparison_Exp>;
+  hash?: InputMaybe<String_Comparison_Exp>;
+  height?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  logs?: InputMaybe<Consensus_Logs_Bool_Exp>;
+  logs_aggregate?: InputMaybe<Consensus_Logs_Aggregate_Bool_Exp>;
+  parent_hash?: InputMaybe<String_Comparison_Exp>;
+  space_pledged?: InputMaybe<Numeric_Comparison_Exp>;
+  spec_id?: InputMaybe<String_Comparison_Exp>;
+  state_root?: InputMaybe<String_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Blocks_Max_Fields = {
+  __typename?: 'consensus_blocks_max_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  blockchain_size?: Maybe<Scalars['numeric']['output']>;
+  events_count?: Maybe<Scalars['Int']['output']>;
+  extrinsics_count?: Maybe<Scalars['Int']['output']>;
+  extrinsics_root?: Maybe<Scalars['String']['output']>;
+  hash?: Maybe<Scalars['String']['output']>;
+  height?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  parent_hash?: Maybe<Scalars['String']['output']>;
+  space_pledged?: Maybe<Scalars['numeric']['output']>;
+  spec_id?: Maybe<Scalars['String']['output']>;
+  state_root?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Blocks_Min_Fields = {
+  __typename?: 'consensus_blocks_min_fields';
+  author_id?: Maybe<Scalars['String']['output']>;
+  blockchain_size?: Maybe<Scalars['numeric']['output']>;
+  events_count?: Maybe<Scalars['Int']['output']>;
+  extrinsics_count?: Maybe<Scalars['Int']['output']>;
+  extrinsics_root?: Maybe<Scalars['String']['output']>;
+  hash?: Maybe<Scalars['String']['output']>;
+  height?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  parent_hash?: Maybe<Scalars['String']['output']>;
+  space_pledged?: Maybe<Scalars['numeric']['output']>;
+  spec_id?: Maybe<Scalars['String']['output']>;
+  state_root?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+};
+
+/** Ordering options when selecting data from "consensus.blocks". */
+export type Consensus_Blocks_Order_By = {
+  author_id?: InputMaybe<Order_By>;
+  blockchain_size?: InputMaybe<Order_By>;
+  events_aggregate?: InputMaybe<Consensus_Events_Aggregate_Order_By>;
+  events_count?: InputMaybe<Order_By>;
+  extrinsics_aggregate?: InputMaybe<Consensus_Extrinsics_Aggregate_Order_By>;
+  extrinsics_count?: InputMaybe<Order_By>;
+  extrinsics_root?: InputMaybe<Order_By>;
+  hash?: InputMaybe<Order_By>;
+  height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  logs_aggregate?: InputMaybe<Consensus_Logs_Aggregate_Order_By>;
+  parent_hash?: InputMaybe<Order_By>;
+  space_pledged?: InputMaybe<Order_By>;
+  spec_id?: InputMaybe<Order_By>;
+  state_root?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.blocks" */
+export enum Consensus_Blocks_Select_Column {
+  /** column name */
+  AuthorId = 'author_id',
+  /** column name */
+  BlockchainSize = 'blockchain_size',
+  /** column name */
+  EventsCount = 'events_count',
+  /** column name */
+  ExtrinsicsCount = 'extrinsics_count',
+  /** column name */
+  ExtrinsicsRoot = 'extrinsics_root',
+  /** column name */
+  Hash = 'hash',
+  /** column name */
+  Height = 'height',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ParentHash = 'parent_hash',
+  /** column name */
+  SpacePledged = 'space_pledged',
+  /** column name */
+  SpecId = 'spec_id',
+  /** column name */
+  StateRoot = 'state_root',
+  /** column name */
+  Timestamp = 'timestamp'
+}
+
+/** aggregate stddev on columns */
+export type Consensus_Blocks_Stddev_Fields = {
+  __typename?: 'consensus_blocks_stddev_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Consensus_Blocks_Stddev_Pop_Fields = {
+  __typename?: 'consensus_blocks_stddev_pop_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Consensus_Blocks_Stddev_Samp_Fields = {
+  __typename?: 'consensus_blocks_stddev_samp_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "consensus_blocks" */
+export type Consensus_Blocks_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Blocks_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Blocks_Stream_Cursor_Value_Input = {
+  author_id?: InputMaybe<Scalars['String']['input']>;
+  blockchain_size?: InputMaybe<Scalars['numeric']['input']>;
+  events_count?: InputMaybe<Scalars['Int']['input']>;
+  extrinsics_count?: InputMaybe<Scalars['Int']['input']>;
+  extrinsics_root?: InputMaybe<Scalars['String']['input']>;
+  hash?: InputMaybe<Scalars['String']['input']>;
+  height?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  parent_hash?: InputMaybe<Scalars['String']['input']>;
+  space_pledged?: InputMaybe<Scalars['numeric']['input']>;
+  spec_id?: InputMaybe<Scalars['String']['input']>;
+  state_root?: InputMaybe<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Consensus_Blocks_Sum_Fields = {
+  __typename?: 'consensus_blocks_sum_fields';
+  blockchain_size?: Maybe<Scalars['numeric']['output']>;
+  events_count?: Maybe<Scalars['Int']['output']>;
+  extrinsics_count?: Maybe<Scalars['Int']['output']>;
+  height?: Maybe<Scalars['numeric']['output']>;
+  space_pledged?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Consensus_Blocks_Var_Pop_Fields = {
+  __typename?: 'consensus_blocks_var_pop_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Consensus_Blocks_Var_Samp_Fields = {
+  __typename?: 'consensus_blocks_var_samp_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Consensus_Blocks_Variance_Fields = {
+  __typename?: 'consensus_blocks_variance_fields';
+  blockchain_size?: Maybe<Scalars['Float']['output']>;
+  events_count?: Maybe<Scalars['Float']['output']>;
+  extrinsics_count?: Maybe<Scalars['Float']['output']>;
+  height?: Maybe<Scalars['Float']['output']>;
+  space_pledged?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "consensus.event_modules" */
+export type Consensus_Event_Modules = {
+  __typename?: 'consensus_event_modules';
+  /** An array relationship */
+  events: Array<Consensus_Events>;
+  /** An aggregate relationship */
+  events_aggregate: Consensus_Events_Aggregate;
+  id: Scalars['String']['output'];
+  method: Scalars['String']['output'];
+  /** An object relationship */
+  module_section?: Maybe<Consensus_Sections>;
+  section: Scalars['String']['output'];
+};
+
+
+/** columns and relationships of "consensus.event_modules" */
+export type Consensus_Event_ModulesEventsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.event_modules" */
+export type Consensus_Event_ModulesEvents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+/** aggregated selection of "consensus.event_modules" */
+export type Consensus_Event_Modules_Aggregate = {
+  __typename?: 'consensus_event_modules_aggregate';
+  aggregate?: Maybe<Consensus_Event_Modules_Aggregate_Fields>;
+  nodes: Array<Consensus_Event_Modules>;
+};
+
+export type Consensus_Event_Modules_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Consensus_Event_Modules_Aggregate_Bool_Exp_Count>;
+};
+
+export type Consensus_Event_Modules_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "consensus.event_modules" */
+export type Consensus_Event_Modules_Aggregate_Fields = {
+  __typename?: 'consensus_event_modules_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Event_Modules_Max_Fields>;
+  min?: Maybe<Consensus_Event_Modules_Min_Fields>;
+};
+
+
+/** aggregate fields of "consensus.event_modules" */
+export type Consensus_Event_Modules_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "consensus.event_modules" */
+export type Consensus_Event_Modules_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Consensus_Event_Modules_Max_Order_By>;
+  min?: InputMaybe<Consensus_Event_Modules_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.event_modules". All fields are combined with a logical 'AND'. */
+export type Consensus_Event_Modules_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Event_Modules_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Event_Modules_Bool_Exp>>;
+  events?: InputMaybe<Consensus_Events_Bool_Exp>;
+  events_aggregate?: InputMaybe<Consensus_Events_Aggregate_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  method?: InputMaybe<String_Comparison_Exp>;
+  module_section?: InputMaybe<Consensus_Sections_Bool_Exp>;
+  section?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Event_Modules_Max_Fields = {
+  __typename?: 'consensus_event_modules_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  method?: Maybe<Scalars['String']['output']>;
+  section?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "consensus.event_modules" */
+export type Consensus_Event_Modules_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  method?: InputMaybe<Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Event_Modules_Min_Fields = {
+  __typename?: 'consensus_event_modules_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  method?: Maybe<Scalars['String']['output']>;
+  section?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "consensus.event_modules" */
+export type Consensus_Event_Modules_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  method?: InputMaybe<Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "consensus.event_modules". */
+export type Consensus_Event_Modules_Order_By = {
+  events_aggregate?: InputMaybe<Consensus_Events_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  method?: InputMaybe<Order_By>;
+  module_section?: InputMaybe<Consensus_Sections_Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.event_modules" */
+export enum Consensus_Event_Modules_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Method = 'method',
+  /** column name */
+  Section = 'section'
+}
+
+/** Streaming cursor of the table "consensus_event_modules" */
+export type Consensus_Event_Modules_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Event_Modules_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Event_Modules_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  method?: InputMaybe<Scalars['String']['input']>;
+  section?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "consensus.events" */
+export type Consensus_Events = {
+  __typename?: 'consensus_events';
+  args: Scalars['String']['output'];
+  /** An object relationship */
+  block?: Maybe<Consensus_Blocks>;
+  block_hash: Scalars['String']['output'];
+  block_height: Scalars['numeric']['output'];
+  event_module_id: Scalars['String']['output'];
+  /** An object relationship */
+  extrinsic?: Maybe<Consensus_Extrinsics>;
+  extrinsic_hash: Scalars['String']['output'];
+  extrinsic_id: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  index_in_block: Scalars['numeric']['output'];
+  /** An object relationship */
+  module?: Maybe<Consensus_Event_Modules>;
   name: Scalars['String']['output'];
   phase: Scalars['String']['output'];
+  pos: Scalars['Int']['output'];
+  timestamp: Scalars['timestamp']['output'];
+};
+
+/** aggregated selection of "consensus.events" */
+export type Consensus_Events_Aggregate = {
+  __typename?: 'consensus_events_aggregate';
+  aggregate?: Maybe<Consensus_Events_Aggregate_Fields>;
+  nodes: Array<Consensus_Events>;
+};
+
+export type Consensus_Events_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Consensus_Events_Aggregate_Bool_Exp_Count>;
+};
+
+export type Consensus_Events_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Events_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "consensus.events" */
+export type Consensus_Events_Aggregate_Fields = {
+  __typename?: 'consensus_events_aggregate_fields';
+  avg?: Maybe<Consensus_Events_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Events_Max_Fields>;
+  min?: Maybe<Consensus_Events_Min_Fields>;
+  stddev?: Maybe<Consensus_Events_Stddev_Fields>;
+  stddev_pop?: Maybe<Consensus_Events_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Consensus_Events_Stddev_Samp_Fields>;
+  sum?: Maybe<Consensus_Events_Sum_Fields>;
+  var_pop?: Maybe<Consensus_Events_Var_Pop_Fields>;
+  var_samp?: Maybe<Consensus_Events_Var_Samp_Fields>;
+  variance?: Maybe<Consensus_Events_Variance_Fields>;
+};
+
+
+/** aggregate fields of "consensus.events" */
+export type Consensus_Events_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "consensus.events" */
+export type Consensus_Events_Aggregate_Order_By = {
+  avg?: InputMaybe<Consensus_Events_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Consensus_Events_Max_Order_By>;
+  min?: InputMaybe<Consensus_Events_Min_Order_By>;
+  stddev?: InputMaybe<Consensus_Events_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Consensus_Events_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Consensus_Events_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Consensus_Events_Sum_Order_By>;
+  var_pop?: InputMaybe<Consensus_Events_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Consensus_Events_Var_Samp_Order_By>;
+  variance?: InputMaybe<Consensus_Events_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Consensus_Events_Avg_Fields = {
+  __typename?: 'consensus_events_avg_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "consensus.events" */
+export type Consensus_Events_Avg_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.events". All fields are combined with a logical 'AND'. */
+export type Consensus_Events_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Events_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Events_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Events_Bool_Exp>>;
+  args?: InputMaybe<String_Comparison_Exp>;
+  block?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+  block_hash?: InputMaybe<String_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  event_module_id?: InputMaybe<String_Comparison_Exp>;
+  extrinsic?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  extrinsic_hash?: InputMaybe<String_Comparison_Exp>;
+  extrinsic_id?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  index_in_block?: InputMaybe<Numeric_Comparison_Exp>;
+  module?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  phase?: InputMaybe<String_Comparison_Exp>;
+  pos?: InputMaybe<Int_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Events_Max_Fields = {
+  __typename?: 'consensus_events_max_fields';
+  args?: Maybe<Scalars['String']['output']>;
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  event_module_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['numeric']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  phase?: Maybe<Scalars['String']['output']>;
   pos?: Maybe<Scalars['Int']['output']>;
-  timestamp: Scalars['DateTime']['output'];
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
 };
 
-export type EventEdge = {
-  __typename?: 'EventEdge';
-  cursor: Scalars['String']['output'];
-  node: Event;
+/** order by max() on columns of table "consensus.events" */
+export type Consensus_Events_Max_Order_By = {
+  args?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  event_module_id?: InputMaybe<Order_By>;
+  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  phase?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
 };
 
-export type EventModuleName = {
-  __typename?: 'EventModuleName';
+/** aggregate min on columns */
+export type Consensus_Events_Min_Fields = {
+  __typename?: 'consensus_events_min_fields';
+  args?: Maybe<Scalars['String']['output']>;
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  event_module_id?: Maybe<Scalars['String']['output']>;
+  extrinsic_hash?: Maybe<Scalars['String']['output']>;
+  extrinsic_id?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['numeric']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  phase?: Maybe<Scalars['String']['output']>;
+  pos?: Maybe<Scalars['Int']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+};
+
+/** order by min() on columns of table "consensus.events" */
+export type Consensus_Events_Min_Order_By = {
+  args?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  event_module_id?: InputMaybe<Order_By>;
+  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  phase?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "consensus.events". */
+export type Consensus_Events_Order_By = {
+  args?: InputMaybe<Order_By>;
+  block?: InputMaybe<Consensus_Blocks_Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  event_module_id?: InputMaybe<Order_By>;
+  extrinsic?: InputMaybe<Consensus_Extrinsics_Order_By>;
+  extrinsic_hash?: InputMaybe<Order_By>;
+  extrinsic_id?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  module?: InputMaybe<Consensus_Event_Modules_Order_By>;
+  name?: InputMaybe<Order_By>;
+  phase?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.events" */
+export enum Consensus_Events_Select_Column {
+  /** column name */
+  Args = 'args',
+  /** column name */
+  BlockHash = 'block_hash',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  EventModuleId = 'event_module_id',
+  /** column name */
+  ExtrinsicHash = 'extrinsic_hash',
+  /** column name */
+  ExtrinsicId = 'extrinsic_id',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IndexInBlock = 'index_in_block',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Phase = 'phase',
+  /** column name */
+  Pos = 'pos',
+  /** column name */
+  Timestamp = 'timestamp'
+}
+
+/** aggregate stddev on columns */
+export type Consensus_Events_Stddev_Fields = {
+  __typename?: 'consensus_events_stddev_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "consensus.events" */
+export type Consensus_Events_Stddev_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Consensus_Events_Stddev_Pop_Fields = {
+  __typename?: 'consensus_events_stddev_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "consensus.events" */
+export type Consensus_Events_Stddev_Pop_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Consensus_Events_Stddev_Samp_Fields = {
+  __typename?: 'consensus_events_stddev_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "consensus.events" */
+export type Consensus_Events_Stddev_Samp_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "consensus_events" */
+export type Consensus_Events_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Events_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Events_Stream_Cursor_Value_Input = {
+  args?: InputMaybe<Scalars['String']['input']>;
+  block_hash?: InputMaybe<Scalars['String']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  event_module_id?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_hash?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_id?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  index_in_block?: InputMaybe<Scalars['numeric']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  phase?: InputMaybe<Scalars['String']['input']>;
+  pos?: InputMaybe<Scalars['Int']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Consensus_Events_Sum_Fields = {
+  __typename?: 'consensus_events_sum_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  index_in_block?: Maybe<Scalars['numeric']['output']>;
+  pos?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "consensus.events" */
+export type Consensus_Events_Sum_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Consensus_Events_Var_Pop_Fields = {
+  __typename?: 'consensus_events_var_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "consensus.events" */
+export type Consensus_Events_Var_Pop_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Consensus_Events_Var_Samp_Fields = {
+  __typename?: 'consensus_events_var_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "consensus.events" */
+export type Consensus_Events_Var_Samp_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Consensus_Events_Variance_Fields = {
+  __typename?: 'consensus_events_variance_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "consensus.events" */
+export type Consensus_Events_Variance_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules = {
+  __typename?: 'consensus_extrinsic_modules';
+  /** An array relationship */
+  extrinsics: Array<Consensus_Extrinsics>;
+  /** An aggregate relationship */
+  extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
   id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
+  method: Scalars['String']['output'];
+  /** An object relationship */
+  module_section?: Maybe<Consensus_Sections>;
+  section: Scalars['String']['output'];
 };
 
-export type EventModuleNameEdge = {
-  __typename?: 'EventModuleNameEdge';
-  cursor: Scalars['String']['output'];
-  node: EventModuleName;
+
+/** columns and relationships of "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_ModulesExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 };
 
-export enum EventModuleNameOrderByInput {
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC'
+
+/** columns and relationships of "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_ModulesExtrinsics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+/** aggregated selection of "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Aggregate = {
+  __typename?: 'consensus_extrinsic_modules_aggregate';
+  aggregate?: Maybe<Consensus_Extrinsic_Modules_Aggregate_Fields>;
+  nodes: Array<Consensus_Extrinsic_Modules>;
+};
+
+export type Consensus_Extrinsic_Modules_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Consensus_Extrinsic_Modules_Aggregate_Bool_Exp_Count>;
+};
+
+export type Consensus_Extrinsic_Modules_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Aggregate_Fields = {
+  __typename?: 'consensus_extrinsic_modules_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Extrinsic_Modules_Max_Fields>;
+  min?: Maybe<Consensus_Extrinsic_Modules_Min_Fields>;
+};
+
+
+/** aggregate fields of "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Aggregate_Order_By = {
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Consensus_Extrinsic_Modules_Max_Order_By>;
+  min?: InputMaybe<Consensus_Extrinsic_Modules_Min_Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.extrinsic_modules". All fields are combined with a logical 'AND'. */
+export type Consensus_Extrinsic_Modules_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Extrinsic_Modules_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Extrinsic_Modules_Bool_Exp>>;
+  extrinsics?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  extrinsics_aggregate?: InputMaybe<Consensus_Extrinsics_Aggregate_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  method?: InputMaybe<String_Comparison_Exp>;
+  module_section?: InputMaybe<Consensus_Sections_Bool_Exp>;
+  section?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Extrinsic_Modules_Max_Fields = {
+  __typename?: 'consensus_extrinsic_modules_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  method?: Maybe<Scalars['String']['output']>;
+  section?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Max_Order_By = {
+  id?: InputMaybe<Order_By>;
+  method?: InputMaybe<Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Extrinsic_Modules_Min_Fields = {
+  __typename?: 'consensus_extrinsic_modules_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  method?: Maybe<Scalars['String']['output']>;
+  section?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "consensus.extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Min_Order_By = {
+  id?: InputMaybe<Order_By>;
+  method?: InputMaybe<Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "consensus.extrinsic_modules". */
+export type Consensus_Extrinsic_Modules_Order_By = {
+  extrinsics_aggregate?: InputMaybe<Consensus_Extrinsics_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  method?: InputMaybe<Order_By>;
+  module_section?: InputMaybe<Consensus_Sections_Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.extrinsic_modules" */
+export enum Consensus_Extrinsic_Modules_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Method = 'method',
+  /** column name */
+  Section = 'section'
 }
 
-export type EventModuleNameWhereInput = {
-  AND?: InputMaybe<Array<EventModuleNameWhereInput>>;
-  OR?: InputMaybe<Array<EventModuleNameWhereInput>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
+/** Streaming cursor of the table "consensus_extrinsic_modules" */
+export type Consensus_Extrinsic_Modules_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Extrinsic_Modules_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
 };
 
-export type EventModuleNamesConnection = {
-  __typename?: 'EventModuleNamesConnection';
-  edges: Array<EventModuleNameEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Extrinsic_Modules_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  method?: InputMaybe<Scalars['String']['input']>;
+  section?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type EventNamesResult = {
-  __typename?: 'EventNamesResult';
-  result: Array<Scalars['String']['output']>;
-};
-
-export enum EventOrderByInput {
-  BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
-  BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsRootAsc = 'block_extrinsicsRoot_ASC',
-  BlockExtrinsicsRootDesc = 'block_extrinsicsRoot_DESC',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdDesc = 'block_id_DESC',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockSpacePledgedAsc = 'block_spacePledged_ASC',
-  BlockSpacePledgedDesc = 'block_spacePledged_DESC',
-  BlockSpecIdAsc = 'block_specId_ASC',
-  BlockSpecIdDesc = 'block_specId_DESC',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  CallIdAsc = 'call_id_ASC',
-  CallIdDesc = 'call_id_DESC',
-  CallNameAsc = 'call_name_ASC',
-  CallNameDesc = 'call_name_DESC',
-  CallPosAsc = 'call_pos_ASC',
-  CallPosDesc = 'call_pos_DESC',
-  CallSignerAsc = 'call_signer_ASC',
-  CallSignerDesc = 'call_signer_DESC',
-  CallSuccessAsc = 'call_success_ASC',
-  CallSuccessDesc = 'call_success_DESC',
-  CallTimestampAsc = 'call_timestamp_ASC',
-  CallTimestampDesc = 'call_timestamp_DESC',
-  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
-  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
-  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
-  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
-  ExtrinsicIdAsc = 'extrinsic_id_ASC',
-  ExtrinsicIdDesc = 'extrinsic_id_DESC',
-  ExtrinsicIndexInBlockAsc = 'extrinsic_indexInBlock_ASC',
-  ExtrinsicIndexInBlockDesc = 'extrinsic_indexInBlock_DESC',
-  ExtrinsicNameAsc = 'extrinsic_name_ASC',
-  ExtrinsicNameDesc = 'extrinsic_name_DESC',
-  ExtrinsicNonceAsc = 'extrinsic_nonce_ASC',
-  ExtrinsicNonceDesc = 'extrinsic_nonce_DESC',
-  ExtrinsicPosAsc = 'extrinsic_pos_ASC',
-  ExtrinsicPosDesc = 'extrinsic_pos_DESC',
-  ExtrinsicSignatureAsc = 'extrinsic_signature_ASC',
-  ExtrinsicSignatureDesc = 'extrinsic_signature_DESC',
-  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
-  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
-  ExtrinsicTimestampAsc = 'extrinsic_timestamp_ASC',
-  ExtrinsicTimestampDesc = 'extrinsic_timestamp_DESC',
-  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
-  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  IndexInBlockAsc = 'indexInBlock_ASC',
-  IndexInBlockDesc = 'indexInBlock_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC',
-  PhaseAsc = 'phase_ASC',
-  PhaseDesc = 'phase_DESC',
-  PosAsc = 'pos_ASC',
-  PosDesc = 'pos_DESC',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
-}
-
-export type EventWhereInput = {
-  AND?: InputMaybe<Array<EventWhereInput>>;
-  OR?: InputMaybe<Array<EventWhereInput>>;
-  args_eq?: InputMaybe<Scalars['JSON']['input']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_contains?: InputMaybe<Scalars['String']['input']>;
-  phase_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  phase_endsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_eq?: InputMaybe<Scalars['String']['input']>;
-  phase_gt?: InputMaybe<Scalars['String']['input']>;
-  phase_gte?: InputMaybe<Scalars['String']['input']>;
-  phase_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  phase_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  phase_lt?: InputMaybe<Scalars['String']['input']>;
-  phase_lte?: InputMaybe<Scalars['String']['input']>;
-  phase_not_contains?: InputMaybe<Scalars['String']['input']>;
-  phase_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  phase_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_not_eq?: InputMaybe<Scalars['String']['input']>;
-  phase_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  phase_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_startsWith?: InputMaybe<Scalars['String']['input']>;
-  pos_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_gt?: InputMaybe<Scalars['Int']['input']>;
-  pos_gte?: InputMaybe<Scalars['Int']['input']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pos_lt?: InputMaybe<Scalars['Int']['input']>;
-  pos_lte?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-};
-
-export type EventsConnection = {
-  __typename?: 'EventsConnection';
-  edges: Array<EventEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type Extrinsic = {
-  __typename?: 'Extrinsic';
-  args?: Maybe<Scalars['JSON']['output']>;
-  block: Block;
-  calls: Array<Call>;
-  error?: Maybe<Scalars['JSON']['output']>;
-  events: Array<Event>;
-  fee?: Maybe<Scalars['BigInt']['output']>;
+/** columns and relationships of "consensus.extrinsics" */
+export type Consensus_Extrinsics = {
+  __typename?: 'consensus_extrinsics';
+  args: Scalars['String']['output'];
+  /** An object relationship */
+  block?: Maybe<Consensus_Blocks>;
+  block_hash: Scalars['String']['output'];
+  block_height: Scalars['numeric']['output'];
+  error: Scalars['String']['output'];
+  /** An array relationship */
+  events: Array<Consensus_Events>;
+  /** An aggregate relationship */
+  events_aggregate: Consensus_Events_Aggregate;
+  extrinsic_module_id: Scalars['String']['output'];
+  fee: Scalars['numeric']['output'];
   hash: Scalars['String']['output'];
   id: Scalars['String']['output'];
-  indexInBlock: Scalars['Int']['output'];
+  index_in_block: Scalars['Int']['output'];
+  /** An object relationship */
+  module?: Maybe<Consensus_Extrinsic_Modules>;
   name: Scalars['String']['output'];
-  nonce?: Maybe<Scalars['BigInt']['output']>;
+  nonce: Scalars['numeric']['output'];
+  pos: Scalars['Int']['output'];
+  signature: Scalars['String']['output'];
+  signer: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  timestamp: Scalars['timestamp']['output'];
+  tip: Scalars['numeric']['output'];
+};
+
+
+/** columns and relationships of "consensus.extrinsics" */
+export type Consensus_ExtrinsicsEventsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.extrinsics" */
+export type Consensus_ExtrinsicsEvents_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+/** aggregated selection of "consensus.extrinsics" */
+export type Consensus_Extrinsics_Aggregate = {
+  __typename?: 'consensus_extrinsics_aggregate';
+  aggregate?: Maybe<Consensus_Extrinsics_Aggregate_Fields>;
+  nodes: Array<Consensus_Extrinsics>;
+};
+
+export type Consensus_Extrinsics_Aggregate_Bool_Exp = {
+  bool_and?: InputMaybe<Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_And>;
+  bool_or?: InputMaybe<Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_Or>;
+  count?: InputMaybe<Consensus_Extrinsics_Aggregate_Bool_Exp_Count>;
+};
+
+export type Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_And = {
+  arguments: Consensus_Extrinsics_Select_Column_Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_Or = {
+  arguments: Consensus_Extrinsics_Select_Column_Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Consensus_Extrinsics_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "consensus.extrinsics" */
+export type Consensus_Extrinsics_Aggregate_Fields = {
+  __typename?: 'consensus_extrinsics_aggregate_fields';
+  avg?: Maybe<Consensus_Extrinsics_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Extrinsics_Max_Fields>;
+  min?: Maybe<Consensus_Extrinsics_Min_Fields>;
+  stddev?: Maybe<Consensus_Extrinsics_Stddev_Fields>;
+  stddev_pop?: Maybe<Consensus_Extrinsics_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Consensus_Extrinsics_Stddev_Samp_Fields>;
+  sum?: Maybe<Consensus_Extrinsics_Sum_Fields>;
+  var_pop?: Maybe<Consensus_Extrinsics_Var_Pop_Fields>;
+  var_samp?: Maybe<Consensus_Extrinsics_Var_Samp_Fields>;
+  variance?: Maybe<Consensus_Extrinsics_Variance_Fields>;
+};
+
+
+/** aggregate fields of "consensus.extrinsics" */
+export type Consensus_Extrinsics_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Aggregate_Order_By = {
+  avg?: InputMaybe<Consensus_Extrinsics_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Consensus_Extrinsics_Max_Order_By>;
+  min?: InputMaybe<Consensus_Extrinsics_Min_Order_By>;
+  stddev?: InputMaybe<Consensus_Extrinsics_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Consensus_Extrinsics_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Consensus_Extrinsics_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Consensus_Extrinsics_Sum_Order_By>;
+  var_pop?: InputMaybe<Consensus_Extrinsics_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Consensus_Extrinsics_Var_Samp_Order_By>;
+  variance?: InputMaybe<Consensus_Extrinsics_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Consensus_Extrinsics_Avg_Fields = {
+  __typename?: 'consensus_extrinsics_avg_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Avg_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.extrinsics". All fields are combined with a logical 'AND'. */
+export type Consensus_Extrinsics_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Extrinsics_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Extrinsics_Bool_Exp>>;
+  args?: InputMaybe<String_Comparison_Exp>;
+  block?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+  block_hash?: InputMaybe<String_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  error?: InputMaybe<String_Comparison_Exp>;
+  events?: InputMaybe<Consensus_Events_Bool_Exp>;
+  events_aggregate?: InputMaybe<Consensus_Events_Aggregate_Bool_Exp>;
+  extrinsic_module_id?: InputMaybe<String_Comparison_Exp>;
+  fee?: InputMaybe<Numeric_Comparison_Exp>;
+  hash?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  index_in_block?: InputMaybe<Int_Comparison_Exp>;
+  module?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+  name?: InputMaybe<String_Comparison_Exp>;
+  nonce?: InputMaybe<Numeric_Comparison_Exp>;
+  pos?: InputMaybe<Int_Comparison_Exp>;
+  signature?: InputMaybe<String_Comparison_Exp>;
+  signer?: InputMaybe<String_Comparison_Exp>;
+  success?: InputMaybe<Boolean_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
+  tip?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Extrinsics_Max_Fields = {
+  __typename?: 'consensus_extrinsics_max_fields';
+  args?: Maybe<Scalars['String']['output']>;
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  error?: Maybe<Scalars['String']['output']>;
+  extrinsic_module_id?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  hash?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
   pos?: Maybe<Scalars['Int']['output']>;
   signature?: Maybe<Scalars['String']['output']>;
-  signer?: Maybe<Account>;
-  success: Scalars['Boolean']['output'];
-  timestamp: Scalars['DateTime']['output'];
-  tip?: Maybe<Scalars['BigInt']['output']>;
-};
-
-
-export type ExtrinsicCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-
-export type ExtrinsicEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-export type ExtrinsicEdge = {
-  __typename?: 'ExtrinsicEdge';
-  cursor: Scalars['String']['output'];
-  node: Extrinsic;
-};
-
-export type ExtrinsicModuleName = {
-  __typename?: 'ExtrinsicModuleName';
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-};
-
-export type ExtrinsicModuleNameEdge = {
-  __typename?: 'ExtrinsicModuleNameEdge';
-  cursor: Scalars['String']['output'];
-  node: ExtrinsicModuleName;
-};
-
-export enum ExtrinsicModuleNameOrderByInput {
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC'
-}
-
-export type ExtrinsicModuleNameWhereInput = {
-  AND?: InputMaybe<Array<ExtrinsicModuleNameWhereInput>>;
-  OR?: InputMaybe<Array<ExtrinsicModuleNameWhereInput>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ExtrinsicModuleNamesConnection = {
-  __typename?: 'ExtrinsicModuleNamesConnection';
-  edges: Array<ExtrinsicModuleNameEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type ExtrinsicNamesResult = {
-  __typename?: 'ExtrinsicNamesResult';
-  result: Array<Scalars['String']['output']>;
-};
-
-export enum ExtrinsicOrderByInput {
-  BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
-  BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsRootAsc = 'block_extrinsicsRoot_ASC',
-  BlockExtrinsicsRootDesc = 'block_extrinsicsRoot_DESC',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdDesc = 'block_id_DESC',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockSpacePledgedAsc = 'block_spacePledged_ASC',
-  BlockSpacePledgedDesc = 'block_spacePledged_DESC',
-  BlockSpecIdAsc = 'block_specId_ASC',
-  BlockSpecIdDesc = 'block_specId_DESC',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  FeeAsc = 'fee_ASC',
-  FeeDesc = 'fee_DESC',
-  HashAsc = 'hash_ASC',
-  HashDesc = 'hash_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  IndexInBlockAsc = 'indexInBlock_ASC',
-  IndexInBlockDesc = 'indexInBlock_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC',
-  NonceAsc = 'nonce_ASC',
-  NonceDesc = 'nonce_DESC',
-  PosAsc = 'pos_ASC',
-  PosDesc = 'pos_DESC',
-  SignatureAsc = 'signature_ASC',
-  SignatureDesc = 'signature_DESC',
-  SignerFreeAsc = 'signer_free_ASC',
-  SignerFreeDesc = 'signer_free_DESC',
-  SignerIdAsc = 'signer_id_ASC',
-  SignerIdDesc = 'signer_id_DESC',
-  SignerNonceAsc = 'signer_nonce_ASC',
-  SignerNonceDesc = 'signer_nonce_DESC',
-  SignerReservedAsc = 'signer_reserved_ASC',
-  SignerReservedDesc = 'signer_reserved_DESC',
-  SignerTotalAsc = 'signer_total_ASC',
-  SignerTotalDesc = 'signer_total_DESC',
-  SignerUpdatedAtAsc = 'signer_updatedAt_ASC',
-  SignerUpdatedAtDesc = 'signer_updatedAt_DESC',
-  SuccessAsc = 'success_ASC',
-  SuccessDesc = 'success_DESC',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC',
-  TipAsc = 'tip_ASC',
-  TipDesc = 'tip_DESC'
-}
-
-export type ExtrinsicWhereInput = {
-  AND?: InputMaybe<Array<ExtrinsicWhereInput>>;
-  OR?: InputMaybe<Array<ExtrinsicWhereInput>>;
-  args_eq?: InputMaybe<Scalars['JSON']['input']>;
-  args_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  args_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  args_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  args_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  calls_every?: InputMaybe<CallWhereInput>;
-  calls_none?: InputMaybe<CallWhereInput>;
-  calls_some?: InputMaybe<CallWhereInput>;
-  error_eq?: InputMaybe<Scalars['JSON']['input']>;
-  error_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  error_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  error_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  error_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-  events_every?: InputMaybe<EventWhereInput>;
-  events_none?: InputMaybe<EventWhereInput>;
-  events_some?: InputMaybe<EventWhereInput>;
-  fee_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  fee_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  fee_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  fee_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  hash_contains?: InputMaybe<Scalars['String']['input']>;
-  hash_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  hash_endsWith?: InputMaybe<Scalars['String']['input']>;
-  hash_eq?: InputMaybe<Scalars['String']['input']>;
-  hash_gt?: InputMaybe<Scalars['String']['input']>;
-  hash_gte?: InputMaybe<Scalars['String']['input']>;
-  hash_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  hash_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  hash_lt?: InputMaybe<Scalars['String']['input']>;
-  hash_lte?: InputMaybe<Scalars['String']['input']>;
-  hash_not_contains?: InputMaybe<Scalars['String']['input']>;
-  hash_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  hash_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  hash_not_eq?: InputMaybe<Scalars['String']['input']>;
-  hash_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  hash_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  hash_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  nonce_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  nonce_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  nonce_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  nonce_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  pos_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_gt?: InputMaybe<Scalars['Int']['input']>;
-  pos_gte?: InputMaybe<Scalars['Int']['input']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pos_lt?: InputMaybe<Scalars['Int']['input']>;
-  pos_lte?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  signature_contains?: InputMaybe<Scalars['String']['input']>;
-  signature_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  signature_endsWith?: InputMaybe<Scalars['String']['input']>;
-  signature_eq?: InputMaybe<Scalars['String']['input']>;
-  signature_gt?: InputMaybe<Scalars['String']['input']>;
-  signature_gte?: InputMaybe<Scalars['String']['input']>;
-  signature_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  signature_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  signature_lt?: InputMaybe<Scalars['String']['input']>;
-  signature_lte?: InputMaybe<Scalars['String']['input']>;
-  signature_not_contains?: InputMaybe<Scalars['String']['input']>;
-  signature_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  signature_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  signature_not_eq?: InputMaybe<Scalars['String']['input']>;
-  signature_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  signature_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  signature_startsWith?: InputMaybe<Scalars['String']['input']>;
-  signer?: InputMaybe<AccountWhereInput>;
-  signer_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  success_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  success_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  success_not_eq?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  tip_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  tip_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  tip_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  tip_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-};
-
-export type ExtrinsicsConnection = {
-  __typename?: 'ExtrinsicsConnection';
-  edges: Array<ExtrinsicEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type Log = {
-  __typename?: 'Log';
-  block: Block;
-  id: Scalars['String']['output'];
-  kind: Scalars['String']['output'];
-  value?: Maybe<Scalars['JSON']['output']>;
-};
-
-export type LogEdge = {
-  __typename?: 'LogEdge';
-  cursor: Scalars['String']['output'];
-  node: Log;
-};
-
-export type LogNamesResult = {
-  __typename?: 'LogNamesResult';
-  result: Array<Scalars['String']['output']>;
-};
-
-export enum LogOrderByInput {
-  BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
-  BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsRootAsc = 'block_extrinsicsRoot_ASC',
-  BlockExtrinsicsRootDesc = 'block_extrinsicsRoot_DESC',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdDesc = 'block_id_DESC',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockSpacePledgedAsc = 'block_spacePledged_ASC',
-  BlockSpacePledgedDesc = 'block_spacePledged_DESC',
-  BlockSpecIdAsc = 'block_specId_ASC',
-  BlockSpecIdDesc = 'block_specId_DESC',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  KindAsc = 'kind_ASC',
-  KindDesc = 'kind_DESC'
-}
-
-export type LogWhereInput = {
-  AND?: InputMaybe<Array<LogWhereInput>>;
-  OR?: InputMaybe<Array<LogWhereInput>>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  kind_contains?: InputMaybe<Scalars['String']['input']>;
-  kind_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  kind_endsWith?: InputMaybe<Scalars['String']['input']>;
-  kind_eq?: InputMaybe<Scalars['String']['input']>;
-  kind_gt?: InputMaybe<Scalars['String']['input']>;
-  kind_gte?: InputMaybe<Scalars['String']['input']>;
-  kind_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  kind_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  kind_lt?: InputMaybe<Scalars['String']['input']>;
-  kind_lte?: InputMaybe<Scalars['String']['input']>;
-  kind_not_contains?: InputMaybe<Scalars['String']['input']>;
-  kind_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  kind_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  kind_not_eq?: InputMaybe<Scalars['String']['input']>;
-  kind_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  kind_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  kind_startsWith?: InputMaybe<Scalars['String']['input']>;
-  value_eq?: InputMaybe<Scalars['JSON']['input']>;
-  value_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  value_jsonContains?: InputMaybe<Scalars['JSON']['input']>;
-  value_jsonHasKey?: InputMaybe<Scalars['JSON']['input']>;
-  value_not_eq?: InputMaybe<Scalars['JSON']['input']>;
-};
-
-export type LogsConnection = {
-  __typename?: 'LogsConnection';
-  edges: Array<LogEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type Nominator = {
-  __typename?: 'Nominator';
-  account: Account;
-  id: Scalars['String']['output'];
-  operator: Operator;
-  shares?: Maybe<Scalars['BigInt']['output']>;
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-};
-
-export type NominatorEdge = {
-  __typename?: 'NominatorEdge';
-  cursor: Scalars['String']['output'];
-  node: Nominator;
-};
-
-export enum NominatorOrderByInput {
-  AccountFreeAsc = 'account_free_ASC',
-  AccountFreeDesc = 'account_free_DESC',
-  AccountIdAsc = 'account_id_ASC',
-  AccountIdDesc = 'account_id_DESC',
-  AccountNonceAsc = 'account_nonce_ASC',
-  AccountNonceDesc = 'account_nonce_DESC',
-  AccountReservedAsc = 'account_reserved_ASC',
-  AccountReservedDesc = 'account_reserved_DESC',
-  AccountTotalAsc = 'account_total_ASC',
-  AccountTotalDesc = 'account_total_DESC',
-  AccountUpdatedAtAsc = 'account_updatedAt_ASC',
-  AccountUpdatedAtDesc = 'account_updatedAt_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  OperatorCurrentDomainIdAsc = 'operator_currentDomainId_ASC',
-  OperatorCurrentDomainIdDesc = 'operator_currentDomainId_DESC',
-  OperatorCurrentEpochRewardsAsc = 'operator_currentEpochRewards_ASC',
-  OperatorCurrentEpochRewardsDesc = 'operator_currentEpochRewards_DESC',
-  OperatorCurrentTotalStakeAsc = 'operator_currentTotalStake_ASC',
-  OperatorCurrentTotalStakeDesc = 'operator_currentTotalStake_DESC',
-  OperatorIdAsc = 'operator_id_ASC',
-  OperatorIdDesc = 'operator_id_DESC',
-  OperatorMinimumNominatorStakeAsc = 'operator_minimumNominatorStake_ASC',
-  OperatorMinimumNominatorStakeDesc = 'operator_minimumNominatorStake_DESC',
-  OperatorNextDomainIdAsc = 'operator_nextDomainId_ASC',
-  OperatorNextDomainIdDesc = 'operator_nextDomainId_DESC',
-  OperatorNominationTaxAsc = 'operator_nominationTax_ASC',
-  OperatorNominationTaxDesc = 'operator_nominationTax_DESC',
-  OperatorNominatorAmountAsc = 'operator_nominatorAmount_ASC',
-  OperatorNominatorAmountDesc = 'operator_nominatorAmount_DESC',
-  OperatorOperatorOwnerAsc = 'operator_operatorOwner_ASC',
-  OperatorOperatorOwnerDesc = 'operator_operatorOwner_DESC',
-  OperatorOrderingIdAsc = 'operator_orderingId_ASC',
-  OperatorOrderingIdDesc = 'operator_orderingId_DESC',
-  OperatorSigningKeyAsc = 'operator_signingKey_ASC',
-  OperatorSigningKeyDesc = 'operator_signingKey_DESC',
-  OperatorStatusAsc = 'operator_status_ASC',
-  OperatorStatusDesc = 'operator_status_DESC',
-  OperatorTotalSharesAsc = 'operator_totalShares_ASC',
-  OperatorTotalSharesDesc = 'operator_totalShares_DESC',
-  OperatorUpdatedAtAsc = 'operator_updatedAt_ASC',
-  OperatorUpdatedAtDesc = 'operator_updatedAt_DESC',
-  SharesAsc = 'shares_ASC',
-  SharesDesc = 'shares_DESC',
-  UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC'
-}
-
-export type NominatorWhereInput = {
-  AND?: InputMaybe<Array<NominatorWhereInput>>;
-  OR?: InputMaybe<Array<NominatorWhereInput>>;
-  account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  operator?: InputMaybe<OperatorWhereInput>;
-  operator_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  shares_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  shares_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  shares_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  shares_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  shares_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  shares_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  shares_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  shares_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  shares_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-};
-
-export type NominatorsConnection = {
-  __typename?: 'NominatorsConnection';
-  edges: Array<NominatorEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type Operator = {
-  __typename?: 'Operator';
-  currentDomainId?: Maybe<Scalars['Int']['output']>;
-  currentEpochRewards?: Maybe<Scalars['BigInt']['output']>;
-  currentTotalStake?: Maybe<Scalars['BigInt']['output']>;
-  id: Scalars['String']['output'];
-  minimumNominatorStake?: Maybe<Scalars['BigInt']['output']>;
-  nextDomainId?: Maybe<Scalars['Int']['output']>;
-  nominationTax?: Maybe<Scalars['Int']['output']>;
-  nominatorAmount: Scalars['Int']['output'];
-  nominators: Array<Nominator>;
-  operatorOwner?: Maybe<Scalars['String']['output']>;
-  orderingId: Scalars['Int']['output'];
-  signingKey: Scalars['String']['output'];
-  status?: Maybe<Scalars['String']['output']>;
-  totalShares?: Maybe<Scalars['BigInt']['output']>;
-  updatedAt?: Maybe<Scalars['BigInt']['output']>;
-};
-
-
-export type OperatorNominatorsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<NominatorOrderByInput>>;
-  where?: InputMaybe<NominatorWhereInput>;
-};
-
-export type OperatorEdge = {
-  __typename?: 'OperatorEdge';
-  cursor: Scalars['String']['output'];
-  node: Operator;
-};
-
-export enum OperatorOrderByInput {
-  CurrentDomainIdAsc = 'currentDomainId_ASC',
-  CurrentDomainIdDesc = 'currentDomainId_DESC',
-  CurrentEpochRewardsAsc = 'currentEpochRewards_ASC',
-  CurrentEpochRewardsDesc = 'currentEpochRewards_DESC',
-  CurrentTotalStakeAsc = 'currentTotalStake_ASC',
-  CurrentTotalStakeDesc = 'currentTotalStake_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  MinimumNominatorStakeAsc = 'minimumNominatorStake_ASC',
-  MinimumNominatorStakeDesc = 'minimumNominatorStake_DESC',
-  NextDomainIdAsc = 'nextDomainId_ASC',
-  NextDomainIdDesc = 'nextDomainId_DESC',
-  NominationTaxAsc = 'nominationTax_ASC',
-  NominationTaxDesc = 'nominationTax_DESC',
-  NominatorAmountAsc = 'nominatorAmount_ASC',
-  NominatorAmountDesc = 'nominatorAmount_DESC',
-  OperatorOwnerAsc = 'operatorOwner_ASC',
-  OperatorOwnerDesc = 'operatorOwner_DESC',
-  OrderingIdAsc = 'orderingId_ASC',
-  OrderingIdDesc = 'orderingId_DESC',
-  SigningKeyAsc = 'signingKey_ASC',
-  SigningKeyDesc = 'signingKey_DESC',
-  StatusAsc = 'status_ASC',
-  StatusDesc = 'status_DESC',
-  TotalSharesAsc = 'totalShares_ASC',
-  TotalSharesDesc = 'totalShares_DESC',
-  UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC'
-}
-
-export type OperatorRewards = {
-  __typename?: 'OperatorRewards';
-  amount?: Maybe<Scalars['BigInt']['output']>;
-  id: Scalars['String']['output'];
-  updatedAt: Scalars['BigInt']['output'];
-};
-
-export type OperatorRewardsConnection = {
-  __typename?: 'OperatorRewardsConnection';
-  edges: Array<OperatorRewardsEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type OperatorRewardsEdge = {
-  __typename?: 'OperatorRewardsEdge';
-  cursor: Scalars['String']['output'];
-  node: OperatorRewards;
-};
-
-export enum OperatorRewardsOrderByInput {
-  AmountAsc = 'amount_ASC',
-  AmountDesc = 'amount_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  UpdatedAtAsc = 'updatedAt_ASC',
-  UpdatedAtDesc = 'updatedAt_DESC'
-}
-
-export type OperatorRewardsWhereInput = {
-  AND?: InputMaybe<Array<OperatorRewardsWhereInput>>;
-  OR?: InputMaybe<Array<OperatorRewardsWhereInput>>;
-  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-};
-
-export type OperatorWhereInput = {
-  AND?: InputMaybe<Array<OperatorWhereInput>>;
-  OR?: InputMaybe<Array<OperatorWhereInput>>;
-  currentDomainId_eq?: InputMaybe<Scalars['Int']['input']>;
-  currentDomainId_gt?: InputMaybe<Scalars['Int']['input']>;
-  currentDomainId_gte?: InputMaybe<Scalars['Int']['input']>;
-  currentDomainId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  currentDomainId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  currentDomainId_lt?: InputMaybe<Scalars['Int']['input']>;
-  currentDomainId_lte?: InputMaybe<Scalars['Int']['input']>;
-  currentDomainId_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  currentDomainId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  currentEpochRewards_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  currentEpochRewards_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  currentEpochRewards_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  currentEpochRewards_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  currentEpochRewards_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  currentEpochRewards_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  currentEpochRewards_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  currentEpochRewards_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  currentEpochRewards_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  currentTotalStake_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  currentTotalStake_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  currentTotalStake_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  currentTotalStake_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  currentTotalStake_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  currentTotalStake_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  currentTotalStake_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  currentTotalStake_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  currentTotalStake_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  minimumNominatorStake_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  minimumNominatorStake_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  minimumNominatorStake_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  minimumNominatorStake_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  minimumNominatorStake_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  minimumNominatorStake_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  minimumNominatorStake_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  minimumNominatorStake_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  minimumNominatorStake_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  nextDomainId_eq?: InputMaybe<Scalars['Int']['input']>;
-  nextDomainId_gt?: InputMaybe<Scalars['Int']['input']>;
-  nextDomainId_gte?: InputMaybe<Scalars['Int']['input']>;
-  nextDomainId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  nextDomainId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  nextDomainId_lt?: InputMaybe<Scalars['Int']['input']>;
-  nextDomainId_lte?: InputMaybe<Scalars['Int']['input']>;
-  nextDomainId_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  nextDomainId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  nominationTax_eq?: InputMaybe<Scalars['Int']['input']>;
-  nominationTax_gt?: InputMaybe<Scalars['Int']['input']>;
-  nominationTax_gte?: InputMaybe<Scalars['Int']['input']>;
-  nominationTax_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  nominationTax_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  nominationTax_lt?: InputMaybe<Scalars['Int']['input']>;
-  nominationTax_lte?: InputMaybe<Scalars['Int']['input']>;
-  nominationTax_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  nominationTax_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  nominatorAmount_eq?: InputMaybe<Scalars['Int']['input']>;
-  nominatorAmount_gt?: InputMaybe<Scalars['Int']['input']>;
-  nominatorAmount_gte?: InputMaybe<Scalars['Int']['input']>;
-  nominatorAmount_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  nominatorAmount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  nominatorAmount_lt?: InputMaybe<Scalars['Int']['input']>;
-  nominatorAmount_lte?: InputMaybe<Scalars['Int']['input']>;
-  nominatorAmount_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  nominatorAmount_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  nominators_every?: InputMaybe<NominatorWhereInput>;
-  nominators_none?: InputMaybe<NominatorWhereInput>;
-  nominators_some?: InputMaybe<NominatorWhereInput>;
-  operatorOwner_contains?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_endsWith?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_eq?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_gt?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_gte?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  operatorOwner_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  operatorOwner_lt?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_lte?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_not_contains?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_not_eq?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  operatorOwner_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  operatorOwner_startsWith?: InputMaybe<Scalars['String']['input']>;
-  orderingId_eq?: InputMaybe<Scalars['Int']['input']>;
-  orderingId_gt?: InputMaybe<Scalars['Int']['input']>;
-  orderingId_gte?: InputMaybe<Scalars['Int']['input']>;
-  orderingId_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  orderingId_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  orderingId_lt?: InputMaybe<Scalars['Int']['input']>;
-  orderingId_lte?: InputMaybe<Scalars['Int']['input']>;
-  orderingId_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  orderingId_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  signingKey_contains?: InputMaybe<Scalars['String']['input']>;
-  signingKey_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  signingKey_endsWith?: InputMaybe<Scalars['String']['input']>;
-  signingKey_eq?: InputMaybe<Scalars['String']['input']>;
-  signingKey_gt?: InputMaybe<Scalars['String']['input']>;
-  signingKey_gte?: InputMaybe<Scalars['String']['input']>;
-  signingKey_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  signingKey_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  signingKey_lt?: InputMaybe<Scalars['String']['input']>;
-  signingKey_lte?: InputMaybe<Scalars['String']['input']>;
-  signingKey_not_contains?: InputMaybe<Scalars['String']['input']>;
-  signingKey_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  signingKey_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  signingKey_not_eq?: InputMaybe<Scalars['String']['input']>;
-  signingKey_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  signingKey_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  signingKey_startsWith?: InputMaybe<Scalars['String']['input']>;
-  status_contains?: InputMaybe<Scalars['String']['input']>;
-  status_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  status_endsWith?: InputMaybe<Scalars['String']['input']>;
-  status_eq?: InputMaybe<Scalars['String']['input']>;
-  status_gt?: InputMaybe<Scalars['String']['input']>;
-  status_gte?: InputMaybe<Scalars['String']['input']>;
-  status_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  status_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  status_lt?: InputMaybe<Scalars['String']['input']>;
-  status_lte?: InputMaybe<Scalars['String']['input']>;
-  status_not_contains?: InputMaybe<Scalars['String']['input']>;
-  status_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  status_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  status_not_eq?: InputMaybe<Scalars['String']['input']>;
-  status_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  status_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  status_startsWith?: InputMaybe<Scalars['String']['input']>;
-  totalShares_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  totalShares_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  totalShares_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  totalShares_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  totalShares_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  totalShares_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  totalShares_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  totalShares_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  totalShares_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  updatedAt_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  updatedAt_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  updatedAt_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-};
-
-export type OperatorsConnection = {
-  __typename?: 'OperatorsConnection';
-  edges: Array<OperatorEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
-};
-
-export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor: Scalars['String']['output'];
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor: Scalars['String']['output'];
-};
-
-export type Query = {
-  __typename?: 'Query';
-  accountById?: Maybe<Account>;
-  /** @deprecated Use accountById */
-  accountByUniqueInput?: Maybe<Account>;
-  accountRewards: Array<AccountRewards>;
-  accountRewardsById?: Maybe<AccountRewards>;
-  /** @deprecated Use accountRewardsById */
-  accountRewardsByUniqueInput?: Maybe<AccountRewards>;
-  accountRewardsConnection: AccountRewardsConnection;
-  accounts: Array<Account>;
-  accountsConnection: AccountsConnection;
-  blockById?: Maybe<Block>;
-  /** @deprecated Use blockById */
-  blockByUniqueInput?: Maybe<Block>;
-  blocks: Array<Block>;
-  blocksConnection: BlocksConnection;
-  callById?: Maybe<Call>;
-  /** @deprecated Use callById */
-  callByUniqueInput?: Maybe<Call>;
-  calls: Array<Call>;
-  callsConnection: CallsConnection;
-  eventById?: Maybe<Event>;
-  /** @deprecated Use eventById */
-  eventByUniqueInput?: Maybe<Event>;
-  eventModuleNameById?: Maybe<EventModuleName>;
-  /** @deprecated Use eventModuleNameById */
-  eventModuleNameByUniqueInput?: Maybe<EventModuleName>;
-  eventModuleNames: Array<EventModuleName>;
-  eventModuleNamesConnection: EventModuleNamesConnection;
-  events: Array<Event>;
-  eventsConnection: EventsConnection;
-  eventsNamesQuery: EventNamesResult;
-  extrinsicById?: Maybe<Extrinsic>;
-  /** @deprecated Use extrinsicById */
-  extrinsicByUniqueInput?: Maybe<Extrinsic>;
-  extrinsicModuleNameById?: Maybe<ExtrinsicModuleName>;
-  /** @deprecated Use extrinsicModuleNameById */
-  extrinsicModuleNameByUniqueInput?: Maybe<ExtrinsicModuleName>;
-  extrinsicModuleNames: Array<ExtrinsicModuleName>;
-  extrinsicModuleNamesConnection: ExtrinsicModuleNamesConnection;
-  extrinsicNamesQuery: ExtrinsicNamesResult;
-  extrinsics: Array<Extrinsic>;
-  extrinsicsConnection: ExtrinsicsConnection;
-  logById?: Maybe<Log>;
-  /** @deprecated Use logById */
-  logByUniqueInput?: Maybe<Log>;
-  logTypesQuery: LogNamesResult;
-  logs: Array<Log>;
-  logsConnection: LogsConnection;
-  nominatorById?: Maybe<Nominator>;
-  /** @deprecated Use nominatorById */
-  nominatorByUniqueInput?: Maybe<Nominator>;
-  nominators: Array<Nominator>;
-  nominatorsConnection: NominatorsConnection;
-  operatorById?: Maybe<Operator>;
-  /** @deprecated Use operatorById */
-  operatorByUniqueInput?: Maybe<Operator>;
-  operatorRewards: Array<OperatorRewards>;
-  operatorRewardsById?: Maybe<OperatorRewards>;
-  /** @deprecated Use operatorRewardsById */
-  operatorRewardsByUniqueInput?: Maybe<OperatorRewards>;
-  operatorRewardsConnection: OperatorRewardsConnection;
-  operators: Array<Operator>;
-  operatorsConnection: OperatorsConnection;
-  rewardEventById?: Maybe<RewardEvent>;
-  /** @deprecated Use rewardEventById */
-  rewardEventByUniqueInput?: Maybe<RewardEvent>;
-  rewardEvents: Array<RewardEvent>;
-  rewardEventsConnection: RewardEventsConnection;
-  squidStatus?: Maybe<SquidStatus>;
-};
-
-
-export type QueryAccountByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryAccountByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryAccountRewardsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AccountRewardsOrderByInput>>;
-  where?: InputMaybe<AccountRewardsWhereInput>;
-};
-
-
-export type QueryAccountRewardsByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryAccountRewardsByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryAccountRewardsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<AccountRewardsOrderByInput>;
-  where?: InputMaybe<AccountRewardsWhereInput>;
-};
-
-
-export type QueryAccountsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<AccountOrderByInput>>;
-  where?: InputMaybe<AccountWhereInput>;
-};
-
-
-export type QueryAccountsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<AccountOrderByInput>;
-  where?: InputMaybe<AccountWhereInput>;
-};
-
-
-export type QueryBlockByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryBlockByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryBlocksArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<BlockOrderByInput>>;
-  where?: InputMaybe<BlockWhereInput>;
-};
-
-
-export type QueryBlocksConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<BlockOrderByInput>;
-  where?: InputMaybe<BlockWhereInput>;
-};
-
-
-export type QueryCallByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryCallByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryCallsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CallOrderByInput>>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-
-export type QueryCallsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<CallOrderByInput>;
-  where?: InputMaybe<CallWhereInput>;
-};
-
-
-export type QueryEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryEventByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryEventModuleNameByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryEventModuleNameByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryEventModuleNamesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventModuleNameOrderByInput>>;
-  where?: InputMaybe<EventModuleNameWhereInput>;
-};
-
-
-export type QueryEventModuleNamesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<EventModuleNameOrderByInput>;
-  where?: InputMaybe<EventModuleNameWhereInput>;
-};
-
-
-export type QueryEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<EventOrderByInput>>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-
-export type QueryEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<EventOrderByInput>;
-  where?: InputMaybe<EventWhereInput>;
-};
-
-
-export type QueryExtrinsicByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryExtrinsicByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryExtrinsicModuleNameByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryExtrinsicModuleNameByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryExtrinsicModuleNamesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicModuleNameOrderByInput>>;
-  where?: InputMaybe<ExtrinsicModuleNameWhereInput>;
-};
-
-
-export type QueryExtrinsicModuleNamesConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<ExtrinsicModuleNameOrderByInput>;
-  where?: InputMaybe<ExtrinsicModuleNameWhereInput>;
-};
-
-
-export type QueryExtrinsicsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ExtrinsicOrderByInput>>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-
-export type QueryExtrinsicsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<ExtrinsicOrderByInput>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-};
-
-
-export type QueryLogByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryLogByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryLogsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<LogOrderByInput>>;
-  where?: InputMaybe<LogWhereInput>;
-};
-
-
-export type QueryLogsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<LogOrderByInput>;
-  where?: InputMaybe<LogWhereInput>;
-};
-
-
-export type QueryNominatorByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryNominatorByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryNominatorsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<NominatorOrderByInput>>;
-  where?: InputMaybe<NominatorWhereInput>;
-};
-
-
-export type QueryNominatorsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<NominatorOrderByInput>;
-  where?: InputMaybe<NominatorWhereInput>;
-};
-
-
-export type QueryOperatorByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryOperatorByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryOperatorRewardsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<OperatorRewardsOrderByInput>>;
-  where?: InputMaybe<OperatorRewardsWhereInput>;
-};
-
-
-export type QueryOperatorRewardsByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryOperatorRewardsByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryOperatorRewardsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<OperatorRewardsOrderByInput>;
-  where?: InputMaybe<OperatorRewardsWhereInput>;
-};
-
-
-export type QueryOperatorsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<OperatorOrderByInput>>;
-  where?: InputMaybe<OperatorWhereInput>;
-};
-
-
-export type QueryOperatorsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<OperatorOrderByInput>;
-  where?: InputMaybe<OperatorWhereInput>;
-};
-
-
-export type QueryRewardEventByIdArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryRewardEventByUniqueInputArgs = {
-  where: WhereIdInput;
-};
-
-
-export type QueryRewardEventsArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<RewardEventOrderByInput>>;
-  where?: InputMaybe<RewardEventWhereInput>;
-};
-
-
-export type QueryRewardEventsConnectionArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  orderBy: Array<RewardEventOrderByInput>;
-  where?: InputMaybe<RewardEventWhereInput>;
-};
-
-export type RewardEvent = {
-  __typename?: 'RewardEvent';
-  account?: Maybe<Account>;
-  amount?: Maybe<Scalars['BigInt']['output']>;
-  block?: Maybe<Block>;
-  call?: Maybe<Call>;
-  extrinsic?: Maybe<Extrinsic>;
-  id: Scalars['String']['output'];
-  indexInBlock: Scalars['Int']['output'];
-  name: Scalars['String']['output'];
-  phase: Scalars['String']['output'];
+  signer?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** order by max() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Max_Order_By = {
+  args?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  error?: InputMaybe<Order_By>;
+  extrinsic_module_id?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  hash?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  signature?: InputMaybe<Order_By>;
+  signer?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Extrinsics_Min_Fields = {
+  __typename?: 'consensus_extrinsics_min_fields';
+  args?: Maybe<Scalars['String']['output']>;
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  error?: Maybe<Scalars['String']['output']>;
+  extrinsic_module_id?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  hash?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
   pos?: Maybe<Scalars['Int']['output']>;
-  timestamp: Scalars['DateTime']['output'];
+  signature?: Maybe<Scalars['String']['output']>;
+  signer?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
 };
 
-export type RewardEventEdge = {
-  __typename?: 'RewardEventEdge';
-  cursor: Scalars['String']['output'];
-  node: RewardEvent;
+/** order by min() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Min_Order_By = {
+  args?: InputMaybe<Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  error?: InputMaybe<Order_By>;
+  extrinsic_module_id?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  hash?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  name?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  signature?: InputMaybe<Order_By>;
+  signer?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
 };
 
-export enum RewardEventOrderByInput {
-  AccountFreeAsc = 'account_free_ASC',
-  AccountFreeDesc = 'account_free_DESC',
-  AccountIdAsc = 'account_id_ASC',
-  AccountIdDesc = 'account_id_DESC',
-  AccountNonceAsc = 'account_nonce_ASC',
-  AccountNonceDesc = 'account_nonce_DESC',
-  AccountReservedAsc = 'account_reserved_ASC',
-  AccountReservedDesc = 'account_reserved_DESC',
-  AccountTotalAsc = 'account_total_ASC',
-  AccountTotalDesc = 'account_total_DESC',
-  AccountUpdatedAtAsc = 'account_updatedAt_ASC',
-  AccountUpdatedAtDesc = 'account_updatedAt_DESC',
-  AmountAsc = 'amount_ASC',
-  AmountDesc = 'amount_DESC',
-  BlockBlockchainSizeAsc = 'block_blockchainSize_ASC',
-  BlockBlockchainSizeDesc = 'block_blockchainSize_DESC',
-  BlockEventsCountAsc = 'block_eventsCount_ASC',
-  BlockEventsCountDesc = 'block_eventsCount_DESC',
-  BlockExtrinsicsCountAsc = 'block_extrinsicsCount_ASC',
-  BlockExtrinsicsCountDesc = 'block_extrinsicsCount_DESC',
-  BlockExtrinsicsRootAsc = 'block_extrinsicsRoot_ASC',
-  BlockExtrinsicsRootDesc = 'block_extrinsicsRoot_DESC',
-  BlockHashAsc = 'block_hash_ASC',
-  BlockHashDesc = 'block_hash_DESC',
-  BlockHeightAsc = 'block_height_ASC',
-  BlockHeightDesc = 'block_height_DESC',
-  BlockIdAsc = 'block_id_ASC',
-  BlockIdDesc = 'block_id_DESC',
-  BlockParentHashAsc = 'block_parentHash_ASC',
-  BlockParentHashDesc = 'block_parentHash_DESC',
-  BlockSpacePledgedAsc = 'block_spacePledged_ASC',
-  BlockSpacePledgedDesc = 'block_spacePledged_DESC',
-  BlockSpecIdAsc = 'block_specId_ASC',
-  BlockSpecIdDesc = 'block_specId_DESC',
-  BlockStateRootAsc = 'block_stateRoot_ASC',
-  BlockStateRootDesc = 'block_stateRoot_DESC',
-  BlockTimestampAsc = 'block_timestamp_ASC',
-  BlockTimestampDesc = 'block_timestamp_DESC',
-  CallIdAsc = 'call_id_ASC',
-  CallIdDesc = 'call_id_DESC',
-  CallNameAsc = 'call_name_ASC',
-  CallNameDesc = 'call_name_DESC',
-  CallPosAsc = 'call_pos_ASC',
-  CallPosDesc = 'call_pos_DESC',
-  CallSignerAsc = 'call_signer_ASC',
-  CallSignerDesc = 'call_signer_DESC',
-  CallSuccessAsc = 'call_success_ASC',
-  CallSuccessDesc = 'call_success_DESC',
-  CallTimestampAsc = 'call_timestamp_ASC',
-  CallTimestampDesc = 'call_timestamp_DESC',
-  ExtrinsicFeeAsc = 'extrinsic_fee_ASC',
-  ExtrinsicFeeDesc = 'extrinsic_fee_DESC',
-  ExtrinsicHashAsc = 'extrinsic_hash_ASC',
-  ExtrinsicHashDesc = 'extrinsic_hash_DESC',
-  ExtrinsicIdAsc = 'extrinsic_id_ASC',
-  ExtrinsicIdDesc = 'extrinsic_id_DESC',
-  ExtrinsicIndexInBlockAsc = 'extrinsic_indexInBlock_ASC',
-  ExtrinsicIndexInBlockDesc = 'extrinsic_indexInBlock_DESC',
-  ExtrinsicNameAsc = 'extrinsic_name_ASC',
-  ExtrinsicNameDesc = 'extrinsic_name_DESC',
-  ExtrinsicNonceAsc = 'extrinsic_nonce_ASC',
-  ExtrinsicNonceDesc = 'extrinsic_nonce_DESC',
-  ExtrinsicPosAsc = 'extrinsic_pos_ASC',
-  ExtrinsicPosDesc = 'extrinsic_pos_DESC',
-  ExtrinsicSignatureAsc = 'extrinsic_signature_ASC',
-  ExtrinsicSignatureDesc = 'extrinsic_signature_DESC',
-  ExtrinsicSuccessAsc = 'extrinsic_success_ASC',
-  ExtrinsicSuccessDesc = 'extrinsic_success_DESC',
-  ExtrinsicTimestampAsc = 'extrinsic_timestamp_ASC',
-  ExtrinsicTimestampDesc = 'extrinsic_timestamp_DESC',
-  ExtrinsicTipAsc = 'extrinsic_tip_ASC',
-  ExtrinsicTipDesc = 'extrinsic_tip_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  IndexInBlockAsc = 'indexInBlock_ASC',
-  IndexInBlockDesc = 'indexInBlock_DESC',
-  NameAsc = 'name_ASC',
-  NameDesc = 'name_DESC',
-  PhaseAsc = 'phase_ASC',
-  PhaseDesc = 'phase_DESC',
-  PosAsc = 'pos_ASC',
-  PosDesc = 'pos_DESC',
-  TimestampAsc = 'timestamp_ASC',
-  TimestampDesc = 'timestamp_DESC'
+/** Ordering options when selecting data from "consensus.extrinsics". */
+export type Consensus_Extrinsics_Order_By = {
+  args?: InputMaybe<Order_By>;
+  block?: InputMaybe<Consensus_Blocks_Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  error?: InputMaybe<Order_By>;
+  events_aggregate?: InputMaybe<Consensus_Events_Aggregate_Order_By>;
+  extrinsic_module_id?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  hash?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  module?: InputMaybe<Consensus_Extrinsic_Modules_Order_By>;
+  name?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  signature?: InputMaybe<Order_By>;
+  signer?: InputMaybe<Order_By>;
+  success?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.extrinsics" */
+export enum Consensus_Extrinsics_Select_Column {
+  /** column name */
+  Args = 'args',
+  /** column name */
+  BlockHash = 'block_hash',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Error = 'error',
+  /** column name */
+  ExtrinsicModuleId = 'extrinsic_module_id',
+  /** column name */
+  Fee = 'fee',
+  /** column name */
+  Hash = 'hash',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IndexInBlock = 'index_in_block',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  Nonce = 'nonce',
+  /** column name */
+  Pos = 'pos',
+  /** column name */
+  Signature = 'signature',
+  /** column name */
+  Signer = 'signer',
+  /** column name */
+  Success = 'success',
+  /** column name */
+  Timestamp = 'timestamp',
+  /** column name */
+  Tip = 'tip'
 }
 
-export type RewardEventWhereInput = {
-  AND?: InputMaybe<Array<RewardEventWhereInput>>;
-  OR?: InputMaybe<Array<RewardEventWhereInput>>;
-  account?: InputMaybe<AccountWhereInput>;
-  account_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_gte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  amount_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  amount_lt?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_lte?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_eq?: InputMaybe<Scalars['BigInt']['input']>;
-  amount_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  block?: InputMaybe<BlockWhereInput>;
-  block_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  call?: InputMaybe<CallWhereInput>;
-  call_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  extrinsic?: InputMaybe<ExtrinsicWhereInput>;
-  extrinsic_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_contains?: InputMaybe<Scalars['String']['input']>;
-  id_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_eq?: InputMaybe<Scalars['String']['input']>;
-  id_gt?: InputMaybe<Scalars['String']['input']>;
-  id_gte?: InputMaybe<Scalars['String']['input']>;
-  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  id_lt?: InputMaybe<Scalars['String']['input']>;
-  id_lte?: InputMaybe<Scalars['String']['input']>;
-  id_not_contains?: InputMaybe<Scalars['String']['input']>;
-  id_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  id_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  id_not_eq?: InputMaybe<Scalars['String']['input']>;
-  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  id_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  id_startsWith?: InputMaybe<Scalars['String']['input']>;
-  indexInBlock_eq?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_gt?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_gte?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  indexInBlock_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  indexInBlock_lt?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_lte?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  indexInBlock_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  name_contains?: InputMaybe<Scalars['String']['input']>;
-  name_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_eq?: InputMaybe<Scalars['String']['input']>;
-  name_gt?: InputMaybe<Scalars['String']['input']>;
-  name_gte?: InputMaybe<Scalars['String']['input']>;
-  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  name_lt?: InputMaybe<Scalars['String']['input']>;
-  name_lte?: InputMaybe<Scalars['String']['input']>;
-  name_not_contains?: InputMaybe<Scalars['String']['input']>;
-  name_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  name_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  name_not_eq?: InputMaybe<Scalars['String']['input']>;
-  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  name_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  name_startsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_contains?: InputMaybe<Scalars['String']['input']>;
-  phase_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  phase_endsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_eq?: InputMaybe<Scalars['String']['input']>;
-  phase_gt?: InputMaybe<Scalars['String']['input']>;
-  phase_gte?: InputMaybe<Scalars['String']['input']>;
-  phase_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  phase_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  phase_lt?: InputMaybe<Scalars['String']['input']>;
-  phase_lte?: InputMaybe<Scalars['String']['input']>;
-  phase_not_contains?: InputMaybe<Scalars['String']['input']>;
-  phase_not_containsInsensitive?: InputMaybe<Scalars['String']['input']>;
-  phase_not_endsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_not_eq?: InputMaybe<Scalars['String']['input']>;
-  phase_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
-  phase_not_startsWith?: InputMaybe<Scalars['String']['input']>;
-  phase_startsWith?: InputMaybe<Scalars['String']['input']>;
-  pos_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_gt?: InputMaybe<Scalars['Int']['input']>;
-  pos_gte?: InputMaybe<Scalars['Int']['input']>;
-  pos_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  pos_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  pos_lt?: InputMaybe<Scalars['Int']['input']>;
-  pos_lte?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_eq?: InputMaybe<Scalars['Int']['input']>;
-  pos_not_in?: InputMaybe<Array<Scalars['Int']['input']>>;
-  timestamp_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_gte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
-  timestamp_isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  timestamp_lt?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_lte?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_eq?: InputMaybe<Scalars['DateTime']['input']>;
-  timestamp_not_in?: InputMaybe<Array<Scalars['DateTime']['input']>>;
+/** select "consensus_extrinsics_aggregate_bool_exp_bool_and_arguments_columns" columns of table "consensus.extrinsics" */
+export enum Consensus_Extrinsics_Select_Column_Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+  /** column name */
+  Success = 'success'
+}
+
+/** select "consensus_extrinsics_aggregate_bool_exp_bool_or_arguments_columns" columns of table "consensus.extrinsics" */
+export enum Consensus_Extrinsics_Select_Column_Consensus_Extrinsics_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+  /** column name */
+  Success = 'success'
+}
+
+/** aggregate stddev on columns */
+export type Consensus_Extrinsics_Stddev_Fields = {
+  __typename?: 'consensus_extrinsics_stddev_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
 };
 
-export type RewardEventsConnection = {
-  __typename?: 'RewardEventsConnection';
-  edges: Array<RewardEventEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars['Int']['output'];
+/** order by stddev() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Stddev_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
 };
 
-export type SquidStatus = {
-  __typename?: 'SquidStatus';
-  /** The height of the processed part of the chain */
-  height?: Maybe<Scalars['Int']['output']>;
+/** aggregate stddev_pop on columns */
+export type Consensus_Extrinsics_Stddev_Pop_Fields = {
+  __typename?: 'consensus_extrinsics_stddev_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
 };
 
-export type WhereIdInput = {
+/** order by stddev_pop() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Stddev_Pop_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Consensus_Extrinsics_Stddev_Samp_Fields = {
+  __typename?: 'consensus_extrinsics_stddev_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Stddev_Samp_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "consensus_extrinsics" */
+export type Consensus_Extrinsics_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Extrinsics_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Extrinsics_Stream_Cursor_Value_Input = {
+  args?: InputMaybe<Scalars['String']['input']>;
+  block_hash?: InputMaybe<Scalars['String']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  error?: InputMaybe<Scalars['String']['input']>;
+  extrinsic_module_id?: InputMaybe<Scalars['String']['input']>;
+  fee?: InputMaybe<Scalars['numeric']['input']>;
+  hash?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  index_in_block?: InputMaybe<Scalars['Int']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  nonce?: InputMaybe<Scalars['numeric']['input']>;
+  pos?: InputMaybe<Scalars['Int']['input']>;
+  signature?: InputMaybe<Scalars['String']['input']>;
+  signer?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['Boolean']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
+  tip?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Consensus_Extrinsics_Sum_Fields = {
+  __typename?: 'consensus_extrinsics_sum_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  fee?: Maybe<Scalars['numeric']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  pos?: Maybe<Scalars['Int']['output']>;
+  tip?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** order by sum() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Sum_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Consensus_Extrinsics_Var_Pop_Fields = {
+  __typename?: 'consensus_extrinsics_var_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Var_Pop_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Consensus_Extrinsics_Var_Samp_Fields = {
+  __typename?: 'consensus_extrinsics_var_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Var_Samp_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Consensus_Extrinsics_Variance_Fields = {
+  __typename?: 'consensus_extrinsics_variance_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  pos?: Maybe<Scalars['Float']['output']>;
+  tip?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "consensus.extrinsics" */
+export type Consensus_Extrinsics_Variance_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  fee?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  nonce?: InputMaybe<Order_By>;
+  pos?: InputMaybe<Order_By>;
+  tip?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "consensus.logs" */
+export type Consensus_Logs = {
+  __typename?: 'consensus_logs';
+  /** An object relationship */
+  block?: Maybe<Consensus_Blocks>;
+  block_hash: Scalars['String']['output'];
+  block_height: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+  index_in_block: Scalars['Int']['output'];
+  kind: Scalars['String']['output'];
+  log_kind_id: Scalars['String']['output'];
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregated selection of "consensus.logs" */
+export type Consensus_Logs_Aggregate = {
+  __typename?: 'consensus_logs_aggregate';
+  aggregate?: Maybe<Consensus_Logs_Aggregate_Fields>;
+  nodes: Array<Consensus_Logs>;
+};
+
+export type Consensus_Logs_Aggregate_Bool_Exp = {
+  count?: InputMaybe<Consensus_Logs_Aggregate_Bool_Exp_Count>;
+};
+
+export type Consensus_Logs_Aggregate_Bool_Exp_Count = {
+  arguments?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Consensus_Logs_Bool_Exp>;
+  predicate: Int_Comparison_Exp;
+};
+
+/** aggregate fields of "consensus.logs" */
+export type Consensus_Logs_Aggregate_Fields = {
+  __typename?: 'consensus_logs_aggregate_fields';
+  avg?: Maybe<Consensus_Logs_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Logs_Max_Fields>;
+  min?: Maybe<Consensus_Logs_Min_Fields>;
+  stddev?: Maybe<Consensus_Logs_Stddev_Fields>;
+  stddev_pop?: Maybe<Consensus_Logs_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Consensus_Logs_Stddev_Samp_Fields>;
+  sum?: Maybe<Consensus_Logs_Sum_Fields>;
+  var_pop?: Maybe<Consensus_Logs_Var_Pop_Fields>;
+  var_samp?: Maybe<Consensus_Logs_Var_Samp_Fields>;
+  variance?: Maybe<Consensus_Logs_Variance_Fields>;
+};
+
+
+/** aggregate fields of "consensus.logs" */
+export type Consensus_Logs_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** order by aggregate values of table "consensus.logs" */
+export type Consensus_Logs_Aggregate_Order_By = {
+  avg?: InputMaybe<Consensus_Logs_Avg_Order_By>;
+  count?: InputMaybe<Order_By>;
+  max?: InputMaybe<Consensus_Logs_Max_Order_By>;
+  min?: InputMaybe<Consensus_Logs_Min_Order_By>;
+  stddev?: InputMaybe<Consensus_Logs_Stddev_Order_By>;
+  stddev_pop?: InputMaybe<Consensus_Logs_Stddev_Pop_Order_By>;
+  stddev_samp?: InputMaybe<Consensus_Logs_Stddev_Samp_Order_By>;
+  sum?: InputMaybe<Consensus_Logs_Sum_Order_By>;
+  var_pop?: InputMaybe<Consensus_Logs_Var_Pop_Order_By>;
+  var_samp?: InputMaybe<Consensus_Logs_Var_Samp_Order_By>;
+  variance?: InputMaybe<Consensus_Logs_Variance_Order_By>;
+};
+
+/** aggregate avg on columns */
+export type Consensus_Logs_Avg_Fields = {
+  __typename?: 'consensus_logs_avg_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "consensus.logs" */
+export type Consensus_Logs_Avg_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.logs". All fields are combined with a logical 'AND'. */
+export type Consensus_Logs_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Logs_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Logs_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Logs_Bool_Exp>>;
+  block?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+  block_hash?: InputMaybe<String_Comparison_Exp>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  index_in_block?: InputMaybe<Int_Comparison_Exp>;
+  kind?: InputMaybe<String_Comparison_Exp>;
+  log_kind_id?: InputMaybe<String_Comparison_Exp>;
+  value?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Logs_Max_Fields = {
+  __typename?: 'consensus_logs_max_fields';
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  kind?: Maybe<Scalars['String']['output']>;
+  log_kind_id?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "consensus.logs" */
+export type Consensus_Logs_Max_Order_By = {
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  kind?: InputMaybe<Order_By>;
+  log_kind_id?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Logs_Min_Fields = {
+  __typename?: 'consensus_logs_min_fields';
+  block_hash?: Maybe<Scalars['String']['output']>;
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+  kind?: Maybe<Scalars['String']['output']>;
+  log_kind_id?: Maybe<Scalars['String']['output']>;
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "consensus.logs" */
+export type Consensus_Logs_Min_Order_By = {
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  kind?: InputMaybe<Order_By>;
+  log_kind_id?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** Ordering options when selecting data from "consensus.logs". */
+export type Consensus_Logs_Order_By = {
+  block?: InputMaybe<Consensus_Blocks_Order_By>;
+  block_hash?: InputMaybe<Order_By>;
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+  kind?: InputMaybe<Order_By>;
+  log_kind_id?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.logs" */
+export enum Consensus_Logs_Select_Column {
+  /** column name */
+  BlockHash = 'block_hash',
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IndexInBlock = 'index_in_block',
+  /** column name */
+  Kind = 'kind',
+  /** column name */
+  LogKindId = 'log_kind_id',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Consensus_Logs_Stddev_Fields = {
+  __typename?: 'consensus_logs_stddev_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "consensus.logs" */
+export type Consensus_Logs_Stddev_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Consensus_Logs_Stddev_Pop_Fields = {
+  __typename?: 'consensus_logs_stddev_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_pop() on columns of table "consensus.logs" */
+export type Consensus_Logs_Stddev_Pop_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Consensus_Logs_Stddev_Samp_Fields = {
+  __typename?: 'consensus_logs_stddev_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev_samp() on columns of table "consensus.logs" */
+export type Consensus_Logs_Stddev_Samp_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** Streaming cursor of the table "consensus_logs" */
+export type Consensus_Logs_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Logs_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Logs_Stream_Cursor_Value_Input = {
+  block_hash?: InputMaybe<Scalars['String']['input']>;
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  index_in_block?: InputMaybe<Scalars['Int']['input']>;
+  kind?: InputMaybe<Scalars['String']['input']>;
+  log_kind_id?: InputMaybe<Scalars['String']['input']>;
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Consensus_Logs_Sum_Fields = {
+  __typename?: 'consensus_logs_sum_fields';
+  block_height?: Maybe<Scalars['numeric']['output']>;
+  index_in_block?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "consensus.logs" */
+export type Consensus_Logs_Sum_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_pop on columns */
+export type Consensus_Logs_Var_Pop_Fields = {
+  __typename?: 'consensus_logs_var_pop_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_pop() on columns of table "consensus.logs" */
+export type Consensus_Logs_Var_Pop_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Consensus_Logs_Var_Samp_Fields = {
+  __typename?: 'consensus_logs_var_samp_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by var_samp() on columns of table "consensus.logs" */
+export type Consensus_Logs_Var_Samp_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Consensus_Logs_Variance_Fields = {
+  __typename?: 'consensus_logs_variance_fields';
+  block_height?: Maybe<Scalars['Float']['output']>;
+  index_in_block?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "consensus.logs" */
+export type Consensus_Logs_Variance_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  index_in_block?: InputMaybe<Order_By>;
+};
+
+/** columns and relationships of "consensus.sections" */
+export type Consensus_Sections = {
+  __typename?: 'consensus_sections';
+  /** An array relationship */
+  event_modules: Array<Consensus_Event_Modules>;
+  /** An aggregate relationship */
+  event_modules_aggregate: Consensus_Event_Modules_Aggregate;
+  /** An array relationship */
+  extrinsic_modules: Array<Consensus_Extrinsic_Modules>;
+  /** An aggregate relationship */
+  extrinsic_modules_aggregate: Consensus_Extrinsic_Modules_Aggregate;
+  id: Scalars['String']['output'];
+  section: Scalars['String']['output'];
+};
+
+
+/** columns and relationships of "consensus.sections" */
+export type Consensus_SectionsEvent_ModulesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Event_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.sections" */
+export type Consensus_SectionsEvent_Modules_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Event_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.sections" */
+export type Consensus_SectionsExtrinsic_ModulesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsic_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.sections" */
+export type Consensus_SectionsExtrinsic_Modules_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsic_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+/** aggregated selection of "consensus.sections" */
+export type Consensus_Sections_Aggregate = {
+  __typename?: 'consensus_sections_aggregate';
+  aggregate?: Maybe<Consensus_Sections_Aggregate_Fields>;
+  nodes: Array<Consensus_Sections>;
+};
+
+/** aggregate fields of "consensus.sections" */
+export type Consensus_Sections_Aggregate_Fields = {
+  __typename?: 'consensus_sections_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Sections_Max_Fields>;
+  min?: Maybe<Consensus_Sections_Min_Fields>;
+};
+
+
+/** aggregate fields of "consensus.sections" */
+export type Consensus_Sections_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Sections_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.sections". All fields are combined with a logical 'AND'. */
+export type Consensus_Sections_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Sections_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Sections_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Sections_Bool_Exp>>;
+  event_modules?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+  event_modules_aggregate?: InputMaybe<Consensus_Event_Modules_Aggregate_Bool_Exp>;
+  extrinsic_modules?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+  extrinsic_modules_aggregate?: InputMaybe<Consensus_Extrinsic_Modules_Aggregate_Bool_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  section?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Sections_Max_Fields = {
+  __typename?: 'consensus_sections_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  section?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Sections_Min_Fields = {
+  __typename?: 'consensus_sections_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  section?: Maybe<Scalars['String']['output']>;
+};
+
+/** Ordering options when selecting data from "consensus.sections". */
+export type Consensus_Sections_Order_By = {
+  event_modules_aggregate?: InputMaybe<Consensus_Event_Modules_Aggregate_Order_By>;
+  extrinsic_modules_aggregate?: InputMaybe<Consensus_Extrinsic_Modules_Aggregate_Order_By>;
+  id?: InputMaybe<Order_By>;
+  section?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "consensus.sections" */
+export enum Consensus_Sections_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Section = 'section'
+}
+
+/** Streaming cursor of the table "consensus_sections" */
+export type Consensus_Sections_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Sections_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Sections_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  section?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** ordering argument of a cursor */
+export enum Cursor_Ordering {
+  /** ascending ordering of the cursor */
+  Asc = 'ASC',
+  /** descending ordering of the cursor */
+  Desc = 'DESC'
+}
+
+/** columns and relationships of "dictionary.events" */
+export type Dictionary_Events = {
+  __typename?: 'dictionary_events';
+  block_height: Scalars['numeric']['output'];
+  event: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  module: Scalars['String']['output'];
+};
+
+/** Boolean expression to filter rows from the table "dictionary.events". All fields are combined with a logical 'AND'. */
+export type Dictionary_Events_Bool_Exp = {
+  _and?: InputMaybe<Array<Dictionary_Events_Bool_Exp>>;
+  _not?: InputMaybe<Dictionary_Events_Bool_Exp>;
+  _or?: InputMaybe<Array<Dictionary_Events_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  event?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  module?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "dictionary.events". */
+export type Dictionary_Events_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  event?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  module?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "dictionary.events" */
+export enum Dictionary_Events_Select_Column {
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Event = 'event',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Module = 'module'
+}
+
+/** Streaming cursor of the table "dictionary_events" */
+export type Dictionary_Events_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Dictionary_Events_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Dictionary_Events_Stream_Cursor_Value_Input = {
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  event?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  module?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "dictionary.extrinsics" */
+export type Dictionary_Extrinsics = {
+  __typename?: 'dictionary_extrinsics';
+  block_height: Scalars['numeric']['output'];
+  call: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  is_signed: Scalars['Boolean']['output'];
+  module: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  tx_hash: Scalars['String']['output'];
+};
+
+/** Boolean expression to filter rows from the table "dictionary.extrinsics". All fields are combined with a logical 'AND'. */
+export type Dictionary_Extrinsics_Bool_Exp = {
+  _and?: InputMaybe<Array<Dictionary_Extrinsics_Bool_Exp>>;
+  _not?: InputMaybe<Dictionary_Extrinsics_Bool_Exp>;
+  _or?: InputMaybe<Array<Dictionary_Extrinsics_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  call?: InputMaybe<String_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  is_signed?: InputMaybe<Boolean_Comparison_Exp>;
+  module?: InputMaybe<String_Comparison_Exp>;
+  success?: InputMaybe<Boolean_Comparison_Exp>;
+  tx_hash?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "dictionary.extrinsics". */
+export type Dictionary_Extrinsics_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  call?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  is_signed?: InputMaybe<Order_By>;
+  module?: InputMaybe<Order_By>;
+  success?: InputMaybe<Order_By>;
+  tx_hash?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "dictionary.extrinsics" */
+export enum Dictionary_Extrinsics_Select_Column {
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Call = 'call',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  IsSigned = 'is_signed',
+  /** column name */
+  Module = 'module',
+  /** column name */
+  Success = 'success',
+  /** column name */
+  TxHash = 'tx_hash'
+}
+
+/** Streaming cursor of the table "dictionary_extrinsics" */
+export type Dictionary_Extrinsics_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Dictionary_Extrinsics_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Dictionary_Extrinsics_Stream_Cursor_Value_Input = {
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  call?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  is_signed?: InputMaybe<Scalars['Boolean']['input']>;
+  module?: InputMaybe<Scalars['String']['input']>;
+  success?: InputMaybe<Scalars['Boolean']['input']>;
+  tx_hash?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "dictionary.spec_versions" */
+export type Dictionary_Spec_Versions = {
+  __typename?: 'dictionary_spec_versions';
+  block_height: Scalars['numeric']['output'];
+  id: Scalars['String']['output'];
+};
+
+/** Boolean expression to filter rows from the table "dictionary.spec_versions". All fields are combined with a logical 'AND'. */
+export type Dictionary_Spec_Versions_Bool_Exp = {
+  _and?: InputMaybe<Array<Dictionary_Spec_Versions_Bool_Exp>>;
+  _not?: InputMaybe<Dictionary_Spec_Versions_Bool_Exp>;
+  _or?: InputMaybe<Array<Dictionary_Spec_Versions_Bool_Exp>>;
+  block_height?: InputMaybe<Numeric_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Ordering options when selecting data from "dictionary.spec_versions". */
+export type Dictionary_Spec_Versions_Order_By = {
+  block_height?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "dictionary.spec_versions" */
+export enum Dictionary_Spec_Versions_Select_Column {
+  /** column name */
+  BlockHeight = 'block_height',
+  /** column name */
+  Id = 'id'
+}
+
+/** Streaming cursor of the table "dictionary_spec_versions" */
+export type Dictionary_Spec_Versions_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Dictionary_Spec_Versions_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Dictionary_Spec_Versions_Stream_Cursor_Value_Input = {
+  block_height?: InputMaybe<Scalars['numeric']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** columns and relationships of "leaderboard.account_extrinsic_failed_total_counts" */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_extrinsic_failed_total_counts" */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.account_extrinsic_failed_total_counts" */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_extrinsic_failed_total_counts" */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_extrinsic_failed_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_extrinsic_failed_total_counts". */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_extrinsic_failed_total_counts" */
+export enum Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_extrinsic_failed_total_counts" */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Extrinsic_Failed_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_failed_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_extrinsic_success_total_counts" */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_extrinsic_success_total_counts" */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Extrinsic_Success_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.account_extrinsic_success_total_counts" */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_extrinsic_success_total_counts" */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_extrinsic_success_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_extrinsic_success_total_counts". */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_extrinsic_success_total_counts" */
+export enum Leaderboard_Account_Extrinsic_Success_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_extrinsic_success_total_counts" */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Extrinsic_Success_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Extrinsic_Success_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_success_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_extrinsic_total_counts" */
+export type Leaderboard_Account_Extrinsic_Total_Counts = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_extrinsic_total_counts" */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Extrinsic_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.account_extrinsic_total_counts" */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_extrinsic_total_counts" */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_extrinsic_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_extrinsic_total_counts". */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_extrinsic_total_counts" */
+export enum Leaderboard_Account_Extrinsic_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_extrinsic_total_counts" */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Extrinsic_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Extrinsic_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_account_extrinsic_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_remark_counts" */
+export type Leaderboard_Account_Remark_Counts = {
+  __typename?: 'leaderboard_account_remark_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_remark_counts" */
+export type Leaderboard_Account_Remark_Counts_Aggregate = {
+  __typename?: 'leaderboard_account_remark_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Remark_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Remark_Counts>;
+};
+
+/** aggregate fields of "leaderboard.account_remark_counts" */
+export type Leaderboard_Account_Remark_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Remark_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Remark_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Remark_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Remark_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Remark_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Remark_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Remark_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Remark_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Remark_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Remark_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_remark_counts" */
+export type Leaderboard_Account_Remark_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Remark_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_remark_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Remark_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Remark_Counts_Max_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Remark_Counts_Min_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_remark_counts". */
+export type Leaderboard_Account_Remark_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_remark_counts" */
+export enum Leaderboard_Account_Remark_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Remark_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Remark_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Remark_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_remark_counts" */
+export type Leaderboard_Account_Remark_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Remark_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Remark_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Remark_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Remark_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Remark_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Remark_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_account_remark_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_transaction_fee_paid_total_values" */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_transaction_fee_paid_total_values" */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.account_transaction_fee_paid_total_values" */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_transaction_fee_paid_total_values" */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_transaction_fee_paid_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_transaction_fee_paid_total_values". */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_transaction_fee_paid_total_values" */
+export enum Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_transaction_fee_paid_total_values" */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_account_transaction_fee_paid_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_transfer_receiver_total_counts" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_transfer_receiver_total_counts" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Transfer_Receiver_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.account_transfer_receiver_total_counts" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_transfer_receiver_total_counts" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_transfer_receiver_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_transfer_receiver_total_counts". */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_transfer_receiver_total_counts" */
+export enum Leaderboard_Account_Transfer_Receiver_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_transfer_receiver_total_counts" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Transfer_Receiver_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_transfer_receiver_total_values" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_transfer_receiver_total_values" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Transfer_Receiver_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.account_transfer_receiver_total_values" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_transfer_receiver_total_values" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_transfer_receiver_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_transfer_receiver_total_values". */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_transfer_receiver_total_values" */
+export enum Leaderboard_Account_Transfer_Receiver_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_transfer_receiver_total_values" */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Transfer_Receiver_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Transfer_Receiver_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_account_transfer_receiver_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_transfer_sender_total_counts" */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_transfer_sender_total_counts" */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Transfer_Sender_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.account_transfer_sender_total_counts" */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_transfer_sender_total_counts" */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_transfer_sender_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_transfer_sender_total_counts". */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_transfer_sender_total_counts" */
+export enum Leaderboard_Account_Transfer_Sender_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_transfer_sender_total_counts" */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Transfer_Sender_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.account_transfer_sender_total_values" */
+export type Leaderboard_Account_Transfer_Sender_Total_Values = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.account_transfer_sender_total_values" */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Account_Transfer_Sender_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.account_transfer_sender_total_values" */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.account_transfer_sender_total_values" */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.account_transfer_sender_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.account_transfer_sender_total_values". */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.account_transfer_sender_total_values" */
+export enum Leaderboard_Account_Transfer_Sender_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_account_transfer_sender_total_values" */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Account_Transfer_Sender_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Account_Transfer_Sender_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_account_transfer_sender_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.farmer_block_total_counts" */
+export type Leaderboard_Farmer_Block_Total_Counts = {
+  __typename?: 'leaderboard_farmer_block_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.farmer_block_total_counts" */
+export type Leaderboard_Farmer_Block_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_farmer_block_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Farmer_Block_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.farmer_block_total_counts" */
+export type Leaderboard_Farmer_Block_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Farmer_Block_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.farmer_block_total_counts" */
+export type Leaderboard_Farmer_Block_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.farmer_block_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Farmer_Block_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.farmer_block_total_counts". */
+export type Leaderboard_Farmer_Block_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.farmer_block_total_counts" */
+export enum Leaderboard_Farmer_Block_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_farmer_block_total_counts" */
+export type Leaderboard_Farmer_Block_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Farmer_Block_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Farmer_Block_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Farmer_Block_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.farmer_block_total_values" */
+export type Leaderboard_Farmer_Block_Total_Values = {
+  __typename?: 'leaderboard_farmer_block_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.farmer_block_total_values" */
+export type Leaderboard_Farmer_Block_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_farmer_block_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Farmer_Block_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Farmer_Block_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.farmer_block_total_values" */
+export type Leaderboard_Farmer_Block_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Farmer_Block_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Farmer_Block_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Farmer_Block_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Farmer_Block_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Farmer_Block_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Farmer_Block_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Farmer_Block_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Farmer_Block_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Farmer_Block_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Farmer_Block_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.farmer_block_total_values" */
+export type Leaderboard_Farmer_Block_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.farmer_block_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Farmer_Block_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.farmer_block_total_values". */
+export type Leaderboard_Farmer_Block_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.farmer_block_total_values" */
+export enum Leaderboard_Farmer_Block_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_farmer_block_total_values" */
+export type Leaderboard_Farmer_Block_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Farmer_Block_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Farmer_Block_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Farmer_Block_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_farmer_block_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.farmer_vote_and_block_total_counts" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.farmer_vote_and_block_total_counts" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.farmer_vote_and_block_total_counts" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.farmer_vote_and_block_total_counts" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.farmer_vote_and_block_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.farmer_vote_and_block_total_counts". */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.farmer_vote_and_block_total_counts" */
+export enum Leaderboard_Farmer_Vote_And_Block_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_farmer_vote_and_block_total_counts" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.farmer_vote_and_block_total_values" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.farmer_vote_and_block_total_values" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Farmer_Vote_And_Block_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.farmer_vote_and_block_total_values" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.farmer_vote_and_block_total_values" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.farmer_vote_and_block_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.farmer_vote_and_block_total_values". */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.farmer_vote_and_block_total_values" */
+export enum Leaderboard_Farmer_Vote_And_Block_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_farmer_vote_and_block_total_values" */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Farmer_Vote_And_Block_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Farmer_Vote_And_Block_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_farmer_vote_and_block_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.farmer_vote_total_counts" */
+export type Leaderboard_Farmer_Vote_Total_Counts = {
+  __typename?: 'leaderboard_farmer_vote_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.farmer_vote_total_counts" */
+export type Leaderboard_Farmer_Vote_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Farmer_Vote_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.farmer_vote_total_counts" */
+export type Leaderboard_Farmer_Vote_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Farmer_Vote_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.farmer_vote_total_counts" */
+export type Leaderboard_Farmer_Vote_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.farmer_vote_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.farmer_vote_total_counts". */
+export type Leaderboard_Farmer_Vote_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.farmer_vote_total_counts" */
+export enum Leaderboard_Farmer_Vote_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_farmer_vote_total_counts" */
+export type Leaderboard_Farmer_Vote_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Farmer_Vote_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Farmer_Vote_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Farmer_Vote_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.farmer_vote_total_values" */
+export type Leaderboard_Farmer_Vote_Total_Values = {
+  __typename?: 'leaderboard_farmer_vote_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.farmer_vote_total_values" */
+export type Leaderboard_Farmer_Vote_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_farmer_vote_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Farmer_Vote_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.farmer_vote_total_values" */
+export type Leaderboard_Farmer_Vote_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Farmer_Vote_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.farmer_vote_total_values" */
+export type Leaderboard_Farmer_Vote_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.farmer_vote_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Farmer_Vote_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.farmer_vote_total_values". */
+export type Leaderboard_Farmer_Vote_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.farmer_vote_total_values" */
+export enum Leaderboard_Farmer_Vote_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_farmer_vote_total_values" */
+export type Leaderboard_Farmer_Vote_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Farmer_Vote_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Farmer_Vote_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Farmer_Vote_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_farmer_vote_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.nominator_deposits_total_counts" */
+export type Leaderboard_Nominator_Deposits_Total_Counts = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.nominator_deposits_total_counts" */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Nominator_Deposits_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.nominator_deposits_total_counts" */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.nominator_deposits_total_counts" */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.nominator_deposits_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.nominator_deposits_total_counts". */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.nominator_deposits_total_counts" */
+export enum Leaderboard_Nominator_Deposits_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_nominator_deposits_total_counts" */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Nominator_Deposits_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Nominator_Deposits_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.nominator_deposits_total_values" */
+export type Leaderboard_Nominator_Deposits_Total_Values = {
+  __typename?: 'leaderboard_nominator_deposits_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.nominator_deposits_total_values" */
+export type Leaderboard_Nominator_Deposits_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Nominator_Deposits_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.nominator_deposits_total_values" */
+export type Leaderboard_Nominator_Deposits_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Nominator_Deposits_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.nominator_deposits_total_values" */
+export type Leaderboard_Nominator_Deposits_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.nominator_deposits_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.nominator_deposits_total_values". */
+export type Leaderboard_Nominator_Deposits_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.nominator_deposits_total_values" */
+export enum Leaderboard_Nominator_Deposits_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_nominator_deposits_total_values" */
+export type Leaderboard_Nominator_Deposits_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Nominator_Deposits_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Nominator_Deposits_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Nominator_Deposits_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_nominator_deposits_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.nominator_withdrawals_total_counts" */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.nominator_withdrawals_total_counts" */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Nominator_Withdrawals_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.nominator_withdrawals_total_counts" */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.nominator_withdrawals_total_counts" */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.nominator_withdrawals_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.nominator_withdrawals_total_counts". */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.nominator_withdrawals_total_counts" */
+export enum Leaderboard_Nominator_Withdrawals_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_nominator_withdrawals_total_counts" */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Nominator_Withdrawals_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Nominator_Withdrawals_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_nominator_withdrawals_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.operator_bundle_total_counts" */
+export type Leaderboard_Operator_Bundle_Total_Counts = {
+  __typename?: 'leaderboard_operator_bundle_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.operator_bundle_total_counts" */
+export type Leaderboard_Operator_Bundle_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Operator_Bundle_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.operator_bundle_total_counts" */
+export type Leaderboard_Operator_Bundle_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Operator_Bundle_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.operator_bundle_total_counts" */
+export type Leaderboard_Operator_Bundle_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.operator_bundle_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.operator_bundle_total_counts". */
+export type Leaderboard_Operator_Bundle_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.operator_bundle_total_counts" */
+export enum Leaderboard_Operator_Bundle_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_operator_bundle_total_counts" */
+export type Leaderboard_Operator_Bundle_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Operator_Bundle_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Operator_Bundle_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Operator_Bundle_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_operator_bundle_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.operator_deposits_total_counts" */
+export type Leaderboard_Operator_Deposits_Total_Counts = {
+  __typename?: 'leaderboard_operator_deposits_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.operator_deposits_total_counts" */
+export type Leaderboard_Operator_Deposits_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Operator_Deposits_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.operator_deposits_total_counts" */
+export type Leaderboard_Operator_Deposits_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Operator_Deposits_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.operator_deposits_total_counts" */
+export type Leaderboard_Operator_Deposits_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.operator_deposits_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.operator_deposits_total_counts". */
+export type Leaderboard_Operator_Deposits_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.operator_deposits_total_counts" */
+export enum Leaderboard_Operator_Deposits_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_operator_deposits_total_counts" */
+export type Leaderboard_Operator_Deposits_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Operator_Deposits_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Operator_Deposits_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Operator_Deposits_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.operator_deposits_total_values" */
+export type Leaderboard_Operator_Deposits_Total_Values = {
+  __typename?: 'leaderboard_operator_deposits_total_values';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.operator_deposits_total_values" */
+export type Leaderboard_Operator_Deposits_Total_Values_Aggregate = {
+  __typename?: 'leaderboard_operator_deposits_total_values_aggregate';
+  aggregate?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Operator_Deposits_Total_Values>;
+};
+
+/** aggregate fields of "leaderboard.operator_deposits_total_values" */
+export type Leaderboard_Operator_Deposits_Total_Values_Aggregate_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_aggregate_fields';
+  avg?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Max_Fields>;
+  min?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Operator_Deposits_Total_Values_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.operator_deposits_total_values" */
+export type Leaderboard_Operator_Deposits_Total_Values_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Avg_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.operator_deposits_total_values". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Operator_Deposits_Total_Values_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Max_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Min_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.operator_deposits_total_values". */
+export type Leaderboard_Operator_Deposits_Total_Values_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.operator_deposits_total_values" */
+export enum Leaderboard_Operator_Deposits_Total_Values_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Stddev_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_operator_deposits_total_values" */
+export type Leaderboard_Operator_Deposits_Total_Values_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Operator_Deposits_Total_Values_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Operator_Deposits_Total_Values_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Sum_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Var_Pop_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Var_Samp_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Operator_Deposits_Total_Values_Variance_Fields = {
+  __typename?: 'leaderboard_operator_deposits_total_values_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.operator_total_rewards_collecteds" */
+export type Leaderboard_Operator_Total_Rewards_Collecteds = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.operator_total_rewards_collecteds" */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Aggregate = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate';
+  aggregate?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Operator_Total_Rewards_Collecteds>;
+};
+
+/** aggregate fields of "leaderboard.operator_total_rewards_collecteds" */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Aggregate_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate_fields';
+  avg?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Max_Fields>;
+  min?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.operator_total_rewards_collecteds" */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Avg_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.operator_total_rewards_collecteds". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Max_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Min_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.operator_total_rewards_collecteds". */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.operator_total_rewards_collecteds" */
+export enum Leaderboard_Operator_Total_Rewards_Collecteds_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Stddev_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_operator_total_rewards_collecteds" */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Operator_Total_Rewards_Collecteds_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Sum_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Var_Pop_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Var_Samp_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Operator_Total_Rewards_Collecteds_Variance_Fields = {
+  __typename?: 'leaderboard_operator_total_rewards_collecteds_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.operator_total_tax_collecteds" */
+export type Leaderboard_Operator_Total_Tax_Collecteds = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.operator_total_tax_collecteds" */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Aggregate = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate';
+  aggregate?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Operator_Total_Tax_Collecteds>;
+};
+
+/** aggregate fields of "leaderboard.operator_total_tax_collecteds" */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Aggregate_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate_fields';
+  avg?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Max_Fields>;
+  min?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.operator_total_tax_collecteds" */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Avg_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.operator_total_tax_collecteds". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Max_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Min_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.operator_total_tax_collecteds". */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.operator_total_tax_collecteds" */
+export enum Leaderboard_Operator_Total_Tax_Collecteds_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Stddev_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_operator_total_tax_collecteds" */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Operator_Total_Tax_Collecteds_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Sum_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Var_Pop_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Var_Samp_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Operator_Total_Tax_Collecteds_Variance_Fields = {
+  __typename?: 'leaderboard_operator_total_tax_collecteds_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** columns and relationships of "leaderboard.operator_withdrawals_total_counts" */
+export type Leaderboard_Operator_Withdrawals_Total_Counts = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts';
+  created_at: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  last_contribution_at: Scalars['timestamp']['output'];
+  rank: Scalars['Int']['output'];
+  updated_at: Scalars['Int']['output'];
+  value: Scalars['numeric']['output'];
+};
+
+/** aggregated selection of "leaderboard.operator_withdrawals_total_counts" */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate';
+  aggregate?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate_Fields>;
+  nodes: Array<Leaderboard_Operator_Withdrawals_Total_Counts>;
+};
+
+/** aggregate fields of "leaderboard.operator_withdrawals_total_counts" */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate_fields';
+  avg?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Max_Fields>;
+  min?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Min_Fields>;
+  stddev?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Stddev_Fields>;
+  stddev_pop?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Stddev_Samp_Fields>;
+  sum?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Sum_Fields>;
+  var_pop?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Var_Pop_Fields>;
+  var_samp?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Var_Samp_Fields>;
+  variance?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts_Variance_Fields>;
+};
+
+
+/** aggregate fields of "leaderboard.operator_withdrawals_total_counts" */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Avg_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "leaderboard.operator_withdrawals_total_counts". All fields are combined with a logical 'AND'. */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp = {
+  _and?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>>;
+  _not?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+  _or?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>>;
+  created_at?: InputMaybe<Int_Comparison_Exp>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  last_contribution_at?: InputMaybe<Timestamp_Comparison_Exp>;
+  rank?: InputMaybe<Int_Comparison_Exp>;
+  updated_at?: InputMaybe<Int_Comparison_Exp>;
+  value?: InputMaybe<Numeric_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Max_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_max_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate min on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Min_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_min_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  last_contribution_at?: Maybe<Scalars['timestamp']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** Ordering options when selecting data from "leaderboard.operator_withdrawals_total_counts". */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Order_By = {
+  created_at?: InputMaybe<Order_By>;
+  id?: InputMaybe<Order_By>;
+  last_contribution_at?: InputMaybe<Order_By>;
+  rank?: InputMaybe<Order_By>;
+  updated_at?: InputMaybe<Order_By>;
+  value?: InputMaybe<Order_By>;
+};
+
+/** select columns of table "leaderboard.operator_withdrawals_total_counts" */
+export enum Leaderboard_Operator_Withdrawals_Total_Counts_Select_Column {
+  /** column name */
+  CreatedAt = 'created_at',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  LastContributionAt = 'last_contribution_at',
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  UpdatedAt = 'updated_at',
+  /** column name */
+  Value = 'value'
+}
+
+/** aggregate stddev on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Stddev_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Stddev_Pop_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Stddev_Samp_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "leaderboard_operator_withdrawals_total_counts" */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Leaderboard_Operator_Withdrawals_Total_Counts_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Stream_Cursor_Value_Input = {
+  created_at?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['String']['input']>;
+  last_contribution_at?: InputMaybe<Scalars['timestamp']['input']>;
+  rank?: InputMaybe<Scalars['Int']['input']>;
+  updated_at?: InputMaybe<Scalars['Int']['input']>;
+  value?: InputMaybe<Scalars['numeric']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Sum_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_sum_fields';
+  created_at?: Maybe<Scalars['Int']['output']>;
+  rank?: Maybe<Scalars['Int']['output']>;
+  updated_at?: Maybe<Scalars['Int']['output']>;
+  value?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Var_Pop_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Var_Samp_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Leaderboard_Operator_Withdrawals_Total_Counts_Variance_Fields = {
+  __typename?: 'leaderboard_operator_withdrawals_total_counts_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  rank?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+  value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'. */
+export type Numeric_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['numeric']['input']>;
+  _gt?: InputMaybe<Scalars['numeric']['input']>;
+  _gte?: InputMaybe<Scalars['numeric']['input']>;
+  _in?: InputMaybe<Array<Scalars['numeric']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['numeric']['input']>;
+  _lte?: InputMaybe<Scalars['numeric']['input']>;
+  _neq?: InputMaybe<Scalars['numeric']['input']>;
+  _nin?: InputMaybe<Array<Scalars['numeric']['input']>>;
+};
+
+/** column ordering options */
+export enum Order_By {
+  /** in ascending order, nulls last */
+  Asc = 'asc',
+  /** in ascending order, nulls first */
+  AscNullsFirst = 'asc_nulls_first',
+  /** in ascending order, nulls last */
+  AscNullsLast = 'asc_nulls_last',
+  /** in descending order, nulls first */
+  Desc = 'desc',
+  /** in descending order, nulls first */
+  DescNullsFirst = 'desc_nulls_first',
+  /** in descending order, nulls last */
+  DescNullsLast = 'desc_nulls_last'
+}
+
+export type Query_Root = {
+  __typename?: 'query_root';
+  /** fetch data from the table: "accounts.accounts" */
+  accounts_accounts: Array<Accounts_Accounts>;
+  /** fetch aggregated fields from the table: "accounts.accounts" */
+  accounts_accounts_aggregate: Accounts_Accounts_Aggregate;
+  /** fetch data from the table: "accounts.accounts" using primary key columns */
+  accounts_accounts_by_pk?: Maybe<Accounts_Accounts>;
+  /** fetch data from the table: "accounts.balance_histories" */
+  accounts_balance_histories: Array<Accounts_Balance_Histories>;
+  /** fetch aggregated fields from the table: "accounts.balance_histories" */
+  accounts_balance_histories_aggregate: Accounts_Balance_Histories_Aggregate;
+  /** fetch data from the table: "accounts.balance_histories" using primary key columns */
+  accounts_balance_histories_by_pk?: Maybe<Accounts_Balance_Histories>;
+  /** fetch data from the table: "accounts.rewards" */
+  accounts_rewards: Array<Accounts_Rewards>;
+  /** fetch aggregated fields from the table: "accounts.rewards" */
+  accounts_rewards_aggregate: Accounts_Rewards_Aggregate;
+  /** fetch data from the table: "accounts.rewards" using primary key columns */
+  accounts_rewards_by_pk?: Maybe<Accounts_Rewards>;
+  /** fetch data from the table: "accounts.transfers" */
+  accounts_transfers: Array<Accounts_Transfers>;
+  /** fetch aggregated fields from the table: "accounts.transfers" */
+  accounts_transfers_aggregate: Accounts_Transfers_Aggregate;
+  /** fetch data from the table: "accounts.transfers" using primary key columns */
+  accounts_transfers_by_pk?: Maybe<Accounts_Transfers>;
+  /** fetch data from the table: "consensus.blocks" */
+  consensus_blocks: Array<Consensus_Blocks>;
+  /** fetch aggregated fields from the table: "consensus.blocks" */
+  consensus_blocks_aggregate: Consensus_Blocks_Aggregate;
+  /** fetch data from the table: "consensus.blocks" using primary key columns */
+  consensus_blocks_by_pk?: Maybe<Consensus_Blocks>;
+  /** fetch data from the table: "consensus.event_modules" */
+  consensus_event_modules: Array<Consensus_Event_Modules>;
+  /** fetch aggregated fields from the table: "consensus.event_modules" */
+  consensus_event_modules_aggregate: Consensus_Event_Modules_Aggregate;
+  /** fetch data from the table: "consensus.event_modules" using primary key columns */
+  consensus_event_modules_by_pk?: Maybe<Consensus_Event_Modules>;
+  /** fetch data from the table: "consensus.events" */
+  consensus_events: Array<Consensus_Events>;
+  /** fetch aggregated fields from the table: "consensus.events" */
+  consensus_events_aggregate: Consensus_Events_Aggregate;
+  /** fetch data from the table: "consensus.events" using primary key columns */
+  consensus_events_by_pk?: Maybe<Consensus_Events>;
+  /** fetch data from the table: "consensus.extrinsic_modules" */
+  consensus_extrinsic_modules: Array<Consensus_Extrinsic_Modules>;
+  /** fetch aggregated fields from the table: "consensus.extrinsic_modules" */
+  consensus_extrinsic_modules_aggregate: Consensus_Extrinsic_Modules_Aggregate;
+  /** fetch data from the table: "consensus.extrinsic_modules" using primary key columns */
+  consensus_extrinsic_modules_by_pk?: Maybe<Consensus_Extrinsic_Modules>;
+  /** fetch data from the table: "consensus.extrinsics" */
+  consensus_extrinsics: Array<Consensus_Extrinsics>;
+  /** fetch aggregated fields from the table: "consensus.extrinsics" */
+  consensus_extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
+  /** fetch data from the table: "consensus.extrinsics" using primary key columns */
+  consensus_extrinsics_by_pk?: Maybe<Consensus_Extrinsics>;
+  /** fetch data from the table: "consensus.logs" */
+  consensus_logs: Array<Consensus_Logs>;
+  /** fetch aggregated fields from the table: "consensus.logs" */
+  consensus_logs_aggregate: Consensus_Logs_Aggregate;
+  /** fetch data from the table: "consensus.logs" using primary key columns */
+  consensus_logs_by_pk?: Maybe<Consensus_Logs>;
+  /** fetch data from the table: "consensus.sections" */
+  consensus_sections: Array<Consensus_Sections>;
+  /** fetch aggregated fields from the table: "consensus.sections" */
+  consensus_sections_aggregate: Consensus_Sections_Aggregate;
+  /** fetch data from the table: "consensus.sections" using primary key columns */
+  consensus_sections_by_pk?: Maybe<Consensus_Sections>;
+  /** fetch data from the table: "dictionary.events" */
+  dictionary_events: Array<Dictionary_Events>;
+  /** fetch data from the table: "dictionary.events" using primary key columns */
+  dictionary_events_by_pk?: Maybe<Dictionary_Events>;
+  /** fetch data from the table: "dictionary.extrinsics" */
+  dictionary_extrinsics: Array<Dictionary_Extrinsics>;
+  /** fetch data from the table: "dictionary.extrinsics" using primary key columns */
+  dictionary_extrinsics_by_pk?: Maybe<Dictionary_Extrinsics>;
+  /** fetch data from the table: "dictionary.spec_versions" */
+  dictionary_spec_versions: Array<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "dictionary.spec_versions" using primary key columns */
+  dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
+  leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
+  leaderboard_account_extrinsic_failed_total_counts_aggregate: Leaderboard_Account_Extrinsic_Failed_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" using primary key columns */
+  leaderboard_account_extrinsic_failed_total_counts_by_pk?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_extrinsic_success_total_counts" */
+  leaderboard_account_extrinsic_success_total_counts: Array<Leaderboard_Account_Extrinsic_Success_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_success_total_counts" */
+  leaderboard_account_extrinsic_success_total_counts_aggregate: Leaderboard_Account_Extrinsic_Success_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_extrinsic_success_total_counts" using primary key columns */
+  leaderboard_account_extrinsic_success_total_counts_by_pk?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_extrinsic_total_counts" */
+  leaderboard_account_extrinsic_total_counts: Array<Leaderboard_Account_Extrinsic_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_total_counts" */
+  leaderboard_account_extrinsic_total_counts_aggregate: Leaderboard_Account_Extrinsic_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_extrinsic_total_counts" using primary key columns */
+  leaderboard_account_extrinsic_total_counts_by_pk?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_remark_counts" */
+  leaderboard_account_remark_counts: Array<Leaderboard_Account_Remark_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_remark_counts" */
+  leaderboard_account_remark_counts_aggregate: Leaderboard_Account_Remark_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_remark_counts" using primary key columns */
+  leaderboard_account_remark_counts_by_pk?: Maybe<Leaderboard_Account_Remark_Counts>;
+  /** fetch data from the table: "leaderboard.account_transaction_fee_paid_total_values" */
+  leaderboard_account_transaction_fee_paid_total_values: Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transaction_fee_paid_total_values" */
+  leaderboard_account_transaction_fee_paid_total_values_aggregate: Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transaction_fee_paid_total_values" using primary key columns */
+  leaderboard_account_transaction_fee_paid_total_values_by_pk?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values>;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_counts" */
+  leaderboard_account_transfer_receiver_total_counts: Array<Leaderboard_Account_Transfer_Receiver_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_receiver_total_counts" */
+  leaderboard_account_transfer_receiver_total_counts_aggregate: Leaderboard_Account_Transfer_Receiver_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_counts" using primary key columns */
+  leaderboard_account_transfer_receiver_total_counts_by_pk?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_values" */
+  leaderboard_account_transfer_receiver_total_values: Array<Leaderboard_Account_Transfer_Receiver_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_receiver_total_values" */
+  leaderboard_account_transfer_receiver_total_values_aggregate: Leaderboard_Account_Transfer_Receiver_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_values" using primary key columns */
+  leaderboard_account_transfer_receiver_total_values_by_pk?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values>;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_counts" */
+  leaderboard_account_transfer_sender_total_counts: Array<Leaderboard_Account_Transfer_Sender_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_sender_total_counts" */
+  leaderboard_account_transfer_sender_total_counts_aggregate: Leaderboard_Account_Transfer_Sender_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_counts" using primary key columns */
+  leaderboard_account_transfer_sender_total_counts_by_pk?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_values" */
+  leaderboard_account_transfer_sender_total_values: Array<Leaderboard_Account_Transfer_Sender_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_sender_total_values" */
+  leaderboard_account_transfer_sender_total_values_aggregate: Leaderboard_Account_Transfer_Sender_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_values" using primary key columns */
+  leaderboard_account_transfer_sender_total_values_by_pk?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values>;
+  /** fetch data from the table: "leaderboard.farmer_block_total_counts" */
+  leaderboard_farmer_block_total_counts: Array<Leaderboard_Farmer_Block_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_block_total_counts" */
+  leaderboard_farmer_block_total_counts_aggregate: Leaderboard_Farmer_Block_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_block_total_counts" using primary key columns */
+  leaderboard_farmer_block_total_counts_by_pk?: Maybe<Leaderboard_Farmer_Block_Total_Counts>;
+  /** fetch data from the table: "leaderboard.farmer_block_total_values" */
+  leaderboard_farmer_block_total_values: Array<Leaderboard_Farmer_Block_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_block_total_values" */
+  leaderboard_farmer_block_total_values_aggregate: Leaderboard_Farmer_Block_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_block_total_values" using primary key columns */
+  leaderboard_farmer_block_total_values_by_pk?: Maybe<Leaderboard_Farmer_Block_Total_Values>;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_counts" */
+  leaderboard_farmer_vote_and_block_total_counts: Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_and_block_total_counts" */
+  leaderboard_farmer_vote_and_block_total_counts_aggregate: Leaderboard_Farmer_Vote_And_Block_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_counts" using primary key columns */
+  leaderboard_farmer_vote_and_block_total_counts_by_pk?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts>;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_values" */
+  leaderboard_farmer_vote_and_block_total_values: Array<Leaderboard_Farmer_Vote_And_Block_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_and_block_total_values" */
+  leaderboard_farmer_vote_and_block_total_values_aggregate: Leaderboard_Farmer_Vote_And_Block_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_values" using primary key columns */
+  leaderboard_farmer_vote_and_block_total_values_by_pk?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values>;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_counts" */
+  leaderboard_farmer_vote_total_counts: Array<Leaderboard_Farmer_Vote_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_total_counts" */
+  leaderboard_farmer_vote_total_counts_aggregate: Leaderboard_Farmer_Vote_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_counts" using primary key columns */
+  leaderboard_farmer_vote_total_counts_by_pk?: Maybe<Leaderboard_Farmer_Vote_Total_Counts>;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_values" */
+  leaderboard_farmer_vote_total_values: Array<Leaderboard_Farmer_Vote_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_total_values" */
+  leaderboard_farmer_vote_total_values_aggregate: Leaderboard_Farmer_Vote_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_values" using primary key columns */
+  leaderboard_farmer_vote_total_values_by_pk?: Maybe<Leaderboard_Farmer_Vote_Total_Values>;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_counts" */
+  leaderboard_nominator_deposits_total_counts: Array<Leaderboard_Nominator_Deposits_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.nominator_deposits_total_counts" */
+  leaderboard_nominator_deposits_total_counts_aggregate: Leaderboard_Nominator_Deposits_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_counts" using primary key columns */
+  leaderboard_nominator_deposits_total_counts_by_pk?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts>;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_values" */
+  leaderboard_nominator_deposits_total_values: Array<Leaderboard_Nominator_Deposits_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.nominator_deposits_total_values" */
+  leaderboard_nominator_deposits_total_values_aggregate: Leaderboard_Nominator_Deposits_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_values" using primary key columns */
+  leaderboard_nominator_deposits_total_values_by_pk?: Maybe<Leaderboard_Nominator_Deposits_Total_Values>;
+  /** fetch data from the table: "leaderboard.nominator_withdrawals_total_counts" */
+  leaderboard_nominator_withdrawals_total_counts: Array<Leaderboard_Nominator_Withdrawals_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.nominator_withdrawals_total_counts" */
+  leaderboard_nominator_withdrawals_total_counts_aggregate: Leaderboard_Nominator_Withdrawals_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.nominator_withdrawals_total_counts" using primary key columns */
+  leaderboard_nominator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts>;
+  /** fetch data from the table: "leaderboard.operator_bundle_total_counts" */
+  leaderboard_operator_bundle_total_counts: Array<Leaderboard_Operator_Bundle_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_bundle_total_counts" */
+  leaderboard_operator_bundle_total_counts_aggregate: Leaderboard_Operator_Bundle_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_bundle_total_counts" using primary key columns */
+  leaderboard_operator_bundle_total_counts_by_pk?: Maybe<Leaderboard_Operator_Bundle_Total_Counts>;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_counts" */
+  leaderboard_operator_deposits_total_counts: Array<Leaderboard_Operator_Deposits_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_deposits_total_counts" */
+  leaderboard_operator_deposits_total_counts_aggregate: Leaderboard_Operator_Deposits_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_counts" using primary key columns */
+  leaderboard_operator_deposits_total_counts_by_pk?: Maybe<Leaderboard_Operator_Deposits_Total_Counts>;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_values" */
+  leaderboard_operator_deposits_total_values: Array<Leaderboard_Operator_Deposits_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_deposits_total_values" */
+  leaderboard_operator_deposits_total_values_aggregate: Leaderboard_Operator_Deposits_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_values" using primary key columns */
+  leaderboard_operator_deposits_total_values_by_pk?: Maybe<Leaderboard_Operator_Deposits_Total_Values>;
+  /** fetch data from the table: "leaderboard.operator_total_rewards_collecteds" */
+  leaderboard_operator_total_rewards_collecteds: Array<Leaderboard_Operator_Total_Rewards_Collecteds>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_total_rewards_collecteds" */
+  leaderboard_operator_total_rewards_collecteds_aggregate: Leaderboard_Operator_Total_Rewards_Collecteds_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_total_rewards_collecteds" using primary key columns */
+  leaderboard_operator_total_rewards_collecteds_by_pk?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds>;
+  /** fetch data from the table: "leaderboard.operator_total_tax_collecteds" */
+  leaderboard_operator_total_tax_collecteds: Array<Leaderboard_Operator_Total_Tax_Collecteds>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_total_tax_collecteds" */
+  leaderboard_operator_total_tax_collecteds_aggregate: Leaderboard_Operator_Total_Tax_Collecteds_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_total_tax_collecteds" using primary key columns */
+  leaderboard_operator_total_tax_collecteds_by_pk?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds>;
+  /** fetch data from the table: "leaderboard.operator_withdrawals_total_counts" */
+  leaderboard_operator_withdrawals_total_counts: Array<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_withdrawals_total_counts" */
+  leaderboard_operator_withdrawals_total_counts_aggregate: Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_withdrawals_total_counts" using primary key columns */
+  leaderboard_operator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts>;
+};
+
+
+export type Query_RootAccounts_AccountsArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Accounts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Accounts_Order_By>>;
+  where?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Accounts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Accounts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Accounts_Order_By>>;
+  where?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Accounts_By_PkArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type Query_RootAccounts_Balance_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Balance_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Balance_Histories_Order_By>>;
+  where?: InputMaybe<Accounts_Balance_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Balance_Histories_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Balance_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Balance_Histories_Order_By>>;
+  where?: InputMaybe<Accounts_Balance_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Balance_Histories_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootAccounts_RewardsArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Rewards_Order_By>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Rewards_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Rewards_Order_By>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Rewards_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootAccounts_TransfersArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Transfers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Transfers_Order_By>>;
+  where?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Transfers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Transfers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Transfers_Order_By>>;
+  where?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+};
+
+
+export type Query_RootAccounts_Transfers_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Blocks_Order_By>>;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Blocks_Order_By>>;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Blocks_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_Event_ModulesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Event_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Event_Modules_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Event_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Event_Modules_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Events_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Events_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_Extrinsic_ModulesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsic_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Extrinsic_Modules_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsic_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Extrinsic_Modules_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_ExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Extrinsics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Extrinsics_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_LogsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Logs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Logs_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_SectionsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Sections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Sections_Order_By>>;
+  where?: InputMaybe<Consensus_Sections_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Sections_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Sections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Sections_Order_By>>;
+  where?: InputMaybe<Consensus_Sections_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Sections_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootDictionary_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Dictionary_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Dictionary_Events_Order_By>>;
+  where?: InputMaybe<Dictionary_Events_Bool_Exp>;
+};
+
+
+export type Query_RootDictionary_Events_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootDictionary_ExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Dictionary_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Dictionary_Extrinsics_Order_By>>;
+  where?: InputMaybe<Dictionary_Extrinsics_Bool_Exp>;
+};
+
+
+export type Query_RootDictionary_Extrinsics_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootDictionary_Spec_VersionsArgs = {
+  distinct_on?: InputMaybe<Array<Dictionary_Spec_Versions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Dictionary_Spec_Versions_Order_By>>;
+  where?: InputMaybe<Dictionary_Spec_Versions_Bool_Exp>;
+};
+
+
+export type Query_RootDictionary_Spec_Versions_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Failed_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Failed_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Failed_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Success_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Success_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Success_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Extrinsic_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Remark_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Remark_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Remark_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Transaction_Fee_Paid_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transaction_Fee_Paid_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transaction_Fee_Paid_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Receiver_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Receiver_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Receiver_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Receiver_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Receiver_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Receiver_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Sender_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Sender_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Sender_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Sender_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Sender_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Account_Transfer_Sender_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Farmer_Block_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Block_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Block_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Farmer_Block_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Block_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Block_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_And_Block_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_And_Block_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_And_Block_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_And_Block_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_And_Block_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_And_Block_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Farmer_Vote_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Nominator_Deposits_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Nominator_Deposits_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Nominator_Deposits_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Nominator_Deposits_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Nominator_Deposits_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Nominator_Deposits_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Nominator_Withdrawals_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Nominator_Withdrawals_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Nominator_Withdrawals_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Operator_Bundle_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Bundle_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Bundle_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Operator_Deposits_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Deposits_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Deposits_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Operator_Deposits_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Deposits_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Deposits_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Operator_Total_Rewards_CollectedsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Total_Rewards_Collecteds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Total_Rewards_Collecteds_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Operator_Total_Tax_CollectedsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Total_Tax_Collecteds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Total_Tax_Collecteds_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootLeaderboard_Operator_Withdrawals_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Withdrawals_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Query_RootLeaderboard_Operator_Withdrawals_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+export type Subscription_Root = {
+  __typename?: 'subscription_root';
+  /** fetch data from the table: "accounts.accounts" */
+  accounts_accounts: Array<Accounts_Accounts>;
+  /** fetch aggregated fields from the table: "accounts.accounts" */
+  accounts_accounts_aggregate: Accounts_Accounts_Aggregate;
+  /** fetch data from the table: "accounts.accounts" using primary key columns */
+  accounts_accounts_by_pk?: Maybe<Accounts_Accounts>;
+  /** fetch data from the table in a streaming manner: "accounts.accounts" */
+  accounts_accounts_stream: Array<Accounts_Accounts>;
+  /** fetch data from the table: "accounts.balance_histories" */
+  accounts_balance_histories: Array<Accounts_Balance_Histories>;
+  /** fetch aggregated fields from the table: "accounts.balance_histories" */
+  accounts_balance_histories_aggregate: Accounts_Balance_Histories_Aggregate;
+  /** fetch data from the table: "accounts.balance_histories" using primary key columns */
+  accounts_balance_histories_by_pk?: Maybe<Accounts_Balance_Histories>;
+  /** fetch data from the table in a streaming manner: "accounts.balance_histories" */
+  accounts_balance_histories_stream: Array<Accounts_Balance_Histories>;
+  /** fetch data from the table: "accounts.rewards" */
+  accounts_rewards: Array<Accounts_Rewards>;
+  /** fetch aggregated fields from the table: "accounts.rewards" */
+  accounts_rewards_aggregate: Accounts_Rewards_Aggregate;
+  /** fetch data from the table: "accounts.rewards" using primary key columns */
+  accounts_rewards_by_pk?: Maybe<Accounts_Rewards>;
+  /** fetch data from the table in a streaming manner: "accounts.rewards" */
+  accounts_rewards_stream: Array<Accounts_Rewards>;
+  /** fetch data from the table: "accounts.transfers" */
+  accounts_transfers: Array<Accounts_Transfers>;
+  /** fetch aggregated fields from the table: "accounts.transfers" */
+  accounts_transfers_aggregate: Accounts_Transfers_Aggregate;
+  /** fetch data from the table: "accounts.transfers" using primary key columns */
+  accounts_transfers_by_pk?: Maybe<Accounts_Transfers>;
+  /** fetch data from the table in a streaming manner: "accounts.transfers" */
+  accounts_transfers_stream: Array<Accounts_Transfers>;
+  /** fetch data from the table: "consensus.blocks" */
+  consensus_blocks: Array<Consensus_Blocks>;
+  /** fetch aggregated fields from the table: "consensus.blocks" */
+  consensus_blocks_aggregate: Consensus_Blocks_Aggregate;
+  /** fetch data from the table: "consensus.blocks" using primary key columns */
+  consensus_blocks_by_pk?: Maybe<Consensus_Blocks>;
+  /** fetch data from the table in a streaming manner: "consensus.blocks" */
+  consensus_blocks_stream: Array<Consensus_Blocks>;
+  /** fetch data from the table: "consensus.event_modules" */
+  consensus_event_modules: Array<Consensus_Event_Modules>;
+  /** fetch aggregated fields from the table: "consensus.event_modules" */
+  consensus_event_modules_aggregate: Consensus_Event_Modules_Aggregate;
+  /** fetch data from the table: "consensus.event_modules" using primary key columns */
+  consensus_event_modules_by_pk?: Maybe<Consensus_Event_Modules>;
+  /** fetch data from the table in a streaming manner: "consensus.event_modules" */
+  consensus_event_modules_stream: Array<Consensus_Event_Modules>;
+  /** fetch data from the table: "consensus.events" */
+  consensus_events: Array<Consensus_Events>;
+  /** fetch aggregated fields from the table: "consensus.events" */
+  consensus_events_aggregate: Consensus_Events_Aggregate;
+  /** fetch data from the table: "consensus.events" using primary key columns */
+  consensus_events_by_pk?: Maybe<Consensus_Events>;
+  /** fetch data from the table in a streaming manner: "consensus.events" */
+  consensus_events_stream: Array<Consensus_Events>;
+  /** fetch data from the table: "consensus.extrinsic_modules" */
+  consensus_extrinsic_modules: Array<Consensus_Extrinsic_Modules>;
+  /** fetch aggregated fields from the table: "consensus.extrinsic_modules" */
+  consensus_extrinsic_modules_aggregate: Consensus_Extrinsic_Modules_Aggregate;
+  /** fetch data from the table: "consensus.extrinsic_modules" using primary key columns */
+  consensus_extrinsic_modules_by_pk?: Maybe<Consensus_Extrinsic_Modules>;
+  /** fetch data from the table in a streaming manner: "consensus.extrinsic_modules" */
+  consensus_extrinsic_modules_stream: Array<Consensus_Extrinsic_Modules>;
+  /** fetch data from the table: "consensus.extrinsics" */
+  consensus_extrinsics: Array<Consensus_Extrinsics>;
+  /** fetch aggregated fields from the table: "consensus.extrinsics" */
+  consensus_extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
+  /** fetch data from the table: "consensus.extrinsics" using primary key columns */
+  consensus_extrinsics_by_pk?: Maybe<Consensus_Extrinsics>;
+  /** fetch data from the table in a streaming manner: "consensus.extrinsics" */
+  consensus_extrinsics_stream: Array<Consensus_Extrinsics>;
+  /** fetch data from the table: "consensus.logs" */
+  consensus_logs: Array<Consensus_Logs>;
+  /** fetch aggregated fields from the table: "consensus.logs" */
+  consensus_logs_aggregate: Consensus_Logs_Aggregate;
+  /** fetch data from the table: "consensus.logs" using primary key columns */
+  consensus_logs_by_pk?: Maybe<Consensus_Logs>;
+  /** fetch data from the table in a streaming manner: "consensus.logs" */
+  consensus_logs_stream: Array<Consensus_Logs>;
+  /** fetch data from the table: "consensus.sections" */
+  consensus_sections: Array<Consensus_Sections>;
+  /** fetch aggregated fields from the table: "consensus.sections" */
+  consensus_sections_aggregate: Consensus_Sections_Aggregate;
+  /** fetch data from the table: "consensus.sections" using primary key columns */
+  consensus_sections_by_pk?: Maybe<Consensus_Sections>;
+  /** fetch data from the table in a streaming manner: "consensus.sections" */
+  consensus_sections_stream: Array<Consensus_Sections>;
+  /** fetch data from the table: "dictionary.events" */
+  dictionary_events: Array<Dictionary_Events>;
+  /** fetch data from the table: "dictionary.events" using primary key columns */
+  dictionary_events_by_pk?: Maybe<Dictionary_Events>;
+  /** fetch data from the table in a streaming manner: "dictionary.events" */
+  dictionary_events_stream: Array<Dictionary_Events>;
+  /** fetch data from the table: "dictionary.extrinsics" */
+  dictionary_extrinsics: Array<Dictionary_Extrinsics>;
+  /** fetch data from the table: "dictionary.extrinsics" using primary key columns */
+  dictionary_extrinsics_by_pk?: Maybe<Dictionary_Extrinsics>;
+  /** fetch data from the table in a streaming manner: "dictionary.extrinsics" */
+  dictionary_extrinsics_stream: Array<Dictionary_Extrinsics>;
+  /** fetch data from the table: "dictionary.spec_versions" */
+  dictionary_spec_versions: Array<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "dictionary.spec_versions" using primary key columns */
+  dictionary_spec_versions_by_pk?: Maybe<Dictionary_Spec_Versions>;
+  /** fetch data from the table in a streaming manner: "dictionary.spec_versions" */
+  dictionary_spec_versions_stream: Array<Dictionary_Spec_Versions>;
+  /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" */
+  leaderboard_account_extrinsic_failed_total_counts: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_failed_total_counts" */
+  leaderboard_account_extrinsic_failed_total_counts_aggregate: Leaderboard_Account_Extrinsic_Failed_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_extrinsic_failed_total_counts" using primary key columns */
+  leaderboard_account_extrinsic_failed_total_counts_by_pk?: Maybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_extrinsic_failed_total_counts" */
+  leaderboard_account_extrinsic_failed_total_counts_stream: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_extrinsic_success_total_counts" */
+  leaderboard_account_extrinsic_success_total_counts: Array<Leaderboard_Account_Extrinsic_Success_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_success_total_counts" */
+  leaderboard_account_extrinsic_success_total_counts_aggregate: Leaderboard_Account_Extrinsic_Success_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_extrinsic_success_total_counts" using primary key columns */
+  leaderboard_account_extrinsic_success_total_counts_by_pk?: Maybe<Leaderboard_Account_Extrinsic_Success_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_extrinsic_success_total_counts" */
+  leaderboard_account_extrinsic_success_total_counts_stream: Array<Leaderboard_Account_Extrinsic_Success_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_extrinsic_total_counts" */
+  leaderboard_account_extrinsic_total_counts: Array<Leaderboard_Account_Extrinsic_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_extrinsic_total_counts" */
+  leaderboard_account_extrinsic_total_counts_aggregate: Leaderboard_Account_Extrinsic_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_extrinsic_total_counts" using primary key columns */
+  leaderboard_account_extrinsic_total_counts_by_pk?: Maybe<Leaderboard_Account_Extrinsic_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_extrinsic_total_counts" */
+  leaderboard_account_extrinsic_total_counts_stream: Array<Leaderboard_Account_Extrinsic_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_remark_counts" */
+  leaderboard_account_remark_counts: Array<Leaderboard_Account_Remark_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_remark_counts" */
+  leaderboard_account_remark_counts_aggregate: Leaderboard_Account_Remark_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_remark_counts" using primary key columns */
+  leaderboard_account_remark_counts_by_pk?: Maybe<Leaderboard_Account_Remark_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_remark_counts" */
+  leaderboard_account_remark_counts_stream: Array<Leaderboard_Account_Remark_Counts>;
+  /** fetch data from the table: "leaderboard.account_transaction_fee_paid_total_values" */
+  leaderboard_account_transaction_fee_paid_total_values: Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transaction_fee_paid_total_values" */
+  leaderboard_account_transaction_fee_paid_total_values_aggregate: Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transaction_fee_paid_total_values" using primary key columns */
+  leaderboard_account_transaction_fee_paid_total_values_by_pk?: Maybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_transaction_fee_paid_total_values" */
+  leaderboard_account_transaction_fee_paid_total_values_stream: Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values>;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_counts" */
+  leaderboard_account_transfer_receiver_total_counts: Array<Leaderboard_Account_Transfer_Receiver_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_receiver_total_counts" */
+  leaderboard_account_transfer_receiver_total_counts_aggregate: Leaderboard_Account_Transfer_Receiver_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_counts" using primary key columns */
+  leaderboard_account_transfer_receiver_total_counts_by_pk?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_transfer_receiver_total_counts" */
+  leaderboard_account_transfer_receiver_total_counts_stream: Array<Leaderboard_Account_Transfer_Receiver_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_values" */
+  leaderboard_account_transfer_receiver_total_values: Array<Leaderboard_Account_Transfer_Receiver_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_receiver_total_values" */
+  leaderboard_account_transfer_receiver_total_values_aggregate: Leaderboard_Account_Transfer_Receiver_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_receiver_total_values" using primary key columns */
+  leaderboard_account_transfer_receiver_total_values_by_pk?: Maybe<Leaderboard_Account_Transfer_Receiver_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_transfer_receiver_total_values" */
+  leaderboard_account_transfer_receiver_total_values_stream: Array<Leaderboard_Account_Transfer_Receiver_Total_Values>;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_counts" */
+  leaderboard_account_transfer_sender_total_counts: Array<Leaderboard_Account_Transfer_Sender_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_sender_total_counts" */
+  leaderboard_account_transfer_sender_total_counts_aggregate: Leaderboard_Account_Transfer_Sender_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_counts" using primary key columns */
+  leaderboard_account_transfer_sender_total_counts_by_pk?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_transfer_sender_total_counts" */
+  leaderboard_account_transfer_sender_total_counts_stream: Array<Leaderboard_Account_Transfer_Sender_Total_Counts>;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_values" */
+  leaderboard_account_transfer_sender_total_values: Array<Leaderboard_Account_Transfer_Sender_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.account_transfer_sender_total_values" */
+  leaderboard_account_transfer_sender_total_values_aggregate: Leaderboard_Account_Transfer_Sender_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.account_transfer_sender_total_values" using primary key columns */
+  leaderboard_account_transfer_sender_total_values_by_pk?: Maybe<Leaderboard_Account_Transfer_Sender_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.account_transfer_sender_total_values" */
+  leaderboard_account_transfer_sender_total_values_stream: Array<Leaderboard_Account_Transfer_Sender_Total_Values>;
+  /** fetch data from the table: "leaderboard.farmer_block_total_counts" */
+  leaderboard_farmer_block_total_counts: Array<Leaderboard_Farmer_Block_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_block_total_counts" */
+  leaderboard_farmer_block_total_counts_aggregate: Leaderboard_Farmer_Block_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_block_total_counts" using primary key columns */
+  leaderboard_farmer_block_total_counts_by_pk?: Maybe<Leaderboard_Farmer_Block_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.farmer_block_total_counts" */
+  leaderboard_farmer_block_total_counts_stream: Array<Leaderboard_Farmer_Block_Total_Counts>;
+  /** fetch data from the table: "leaderboard.farmer_block_total_values" */
+  leaderboard_farmer_block_total_values: Array<Leaderboard_Farmer_Block_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_block_total_values" */
+  leaderboard_farmer_block_total_values_aggregate: Leaderboard_Farmer_Block_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_block_total_values" using primary key columns */
+  leaderboard_farmer_block_total_values_by_pk?: Maybe<Leaderboard_Farmer_Block_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.farmer_block_total_values" */
+  leaderboard_farmer_block_total_values_stream: Array<Leaderboard_Farmer_Block_Total_Values>;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_counts" */
+  leaderboard_farmer_vote_and_block_total_counts: Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_and_block_total_counts" */
+  leaderboard_farmer_vote_and_block_total_counts_aggregate: Leaderboard_Farmer_Vote_And_Block_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_counts" using primary key columns */
+  leaderboard_farmer_vote_and_block_total_counts_by_pk?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.farmer_vote_and_block_total_counts" */
+  leaderboard_farmer_vote_and_block_total_counts_stream: Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts>;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_values" */
+  leaderboard_farmer_vote_and_block_total_values: Array<Leaderboard_Farmer_Vote_And_Block_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_and_block_total_values" */
+  leaderboard_farmer_vote_and_block_total_values_aggregate: Leaderboard_Farmer_Vote_And_Block_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_and_block_total_values" using primary key columns */
+  leaderboard_farmer_vote_and_block_total_values_by_pk?: Maybe<Leaderboard_Farmer_Vote_And_Block_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.farmer_vote_and_block_total_values" */
+  leaderboard_farmer_vote_and_block_total_values_stream: Array<Leaderboard_Farmer_Vote_And_Block_Total_Values>;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_counts" */
+  leaderboard_farmer_vote_total_counts: Array<Leaderboard_Farmer_Vote_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_total_counts" */
+  leaderboard_farmer_vote_total_counts_aggregate: Leaderboard_Farmer_Vote_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_counts" using primary key columns */
+  leaderboard_farmer_vote_total_counts_by_pk?: Maybe<Leaderboard_Farmer_Vote_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.farmer_vote_total_counts" */
+  leaderboard_farmer_vote_total_counts_stream: Array<Leaderboard_Farmer_Vote_Total_Counts>;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_values" */
+  leaderboard_farmer_vote_total_values: Array<Leaderboard_Farmer_Vote_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.farmer_vote_total_values" */
+  leaderboard_farmer_vote_total_values_aggregate: Leaderboard_Farmer_Vote_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.farmer_vote_total_values" using primary key columns */
+  leaderboard_farmer_vote_total_values_by_pk?: Maybe<Leaderboard_Farmer_Vote_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.farmer_vote_total_values" */
+  leaderboard_farmer_vote_total_values_stream: Array<Leaderboard_Farmer_Vote_Total_Values>;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_counts" */
+  leaderboard_nominator_deposits_total_counts: Array<Leaderboard_Nominator_Deposits_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.nominator_deposits_total_counts" */
+  leaderboard_nominator_deposits_total_counts_aggregate: Leaderboard_Nominator_Deposits_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_counts" using primary key columns */
+  leaderboard_nominator_deposits_total_counts_by_pk?: Maybe<Leaderboard_Nominator_Deposits_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.nominator_deposits_total_counts" */
+  leaderboard_nominator_deposits_total_counts_stream: Array<Leaderboard_Nominator_Deposits_Total_Counts>;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_values" */
+  leaderboard_nominator_deposits_total_values: Array<Leaderboard_Nominator_Deposits_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.nominator_deposits_total_values" */
+  leaderboard_nominator_deposits_total_values_aggregate: Leaderboard_Nominator_Deposits_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.nominator_deposits_total_values" using primary key columns */
+  leaderboard_nominator_deposits_total_values_by_pk?: Maybe<Leaderboard_Nominator_Deposits_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.nominator_deposits_total_values" */
+  leaderboard_nominator_deposits_total_values_stream: Array<Leaderboard_Nominator_Deposits_Total_Values>;
+  /** fetch data from the table: "leaderboard.nominator_withdrawals_total_counts" */
+  leaderboard_nominator_withdrawals_total_counts: Array<Leaderboard_Nominator_Withdrawals_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.nominator_withdrawals_total_counts" */
+  leaderboard_nominator_withdrawals_total_counts_aggregate: Leaderboard_Nominator_Withdrawals_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.nominator_withdrawals_total_counts" using primary key columns */
+  leaderboard_nominator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Nominator_Withdrawals_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.nominator_withdrawals_total_counts" */
+  leaderboard_nominator_withdrawals_total_counts_stream: Array<Leaderboard_Nominator_Withdrawals_Total_Counts>;
+  /** fetch data from the table: "leaderboard.operator_bundle_total_counts" */
+  leaderboard_operator_bundle_total_counts: Array<Leaderboard_Operator_Bundle_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_bundle_total_counts" */
+  leaderboard_operator_bundle_total_counts_aggregate: Leaderboard_Operator_Bundle_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_bundle_total_counts" using primary key columns */
+  leaderboard_operator_bundle_total_counts_by_pk?: Maybe<Leaderboard_Operator_Bundle_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.operator_bundle_total_counts" */
+  leaderboard_operator_bundle_total_counts_stream: Array<Leaderboard_Operator_Bundle_Total_Counts>;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_counts" */
+  leaderboard_operator_deposits_total_counts: Array<Leaderboard_Operator_Deposits_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_deposits_total_counts" */
+  leaderboard_operator_deposits_total_counts_aggregate: Leaderboard_Operator_Deposits_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_counts" using primary key columns */
+  leaderboard_operator_deposits_total_counts_by_pk?: Maybe<Leaderboard_Operator_Deposits_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.operator_deposits_total_counts" */
+  leaderboard_operator_deposits_total_counts_stream: Array<Leaderboard_Operator_Deposits_Total_Counts>;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_values" */
+  leaderboard_operator_deposits_total_values: Array<Leaderboard_Operator_Deposits_Total_Values>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_deposits_total_values" */
+  leaderboard_operator_deposits_total_values_aggregate: Leaderboard_Operator_Deposits_Total_Values_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_deposits_total_values" using primary key columns */
+  leaderboard_operator_deposits_total_values_by_pk?: Maybe<Leaderboard_Operator_Deposits_Total_Values>;
+  /** fetch data from the table in a streaming manner: "leaderboard.operator_deposits_total_values" */
+  leaderboard_operator_deposits_total_values_stream: Array<Leaderboard_Operator_Deposits_Total_Values>;
+  /** fetch data from the table: "leaderboard.operator_total_rewards_collecteds" */
+  leaderboard_operator_total_rewards_collecteds: Array<Leaderboard_Operator_Total_Rewards_Collecteds>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_total_rewards_collecteds" */
+  leaderboard_operator_total_rewards_collecteds_aggregate: Leaderboard_Operator_Total_Rewards_Collecteds_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_total_rewards_collecteds" using primary key columns */
+  leaderboard_operator_total_rewards_collecteds_by_pk?: Maybe<Leaderboard_Operator_Total_Rewards_Collecteds>;
+  /** fetch data from the table in a streaming manner: "leaderboard.operator_total_rewards_collecteds" */
+  leaderboard_operator_total_rewards_collecteds_stream: Array<Leaderboard_Operator_Total_Rewards_Collecteds>;
+  /** fetch data from the table: "leaderboard.operator_total_tax_collecteds" */
+  leaderboard_operator_total_tax_collecteds: Array<Leaderboard_Operator_Total_Tax_Collecteds>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_total_tax_collecteds" */
+  leaderboard_operator_total_tax_collecteds_aggregate: Leaderboard_Operator_Total_Tax_Collecteds_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_total_tax_collecteds" using primary key columns */
+  leaderboard_operator_total_tax_collecteds_by_pk?: Maybe<Leaderboard_Operator_Total_Tax_Collecteds>;
+  /** fetch data from the table in a streaming manner: "leaderboard.operator_total_tax_collecteds" */
+  leaderboard_operator_total_tax_collecteds_stream: Array<Leaderboard_Operator_Total_Tax_Collecteds>;
+  /** fetch data from the table: "leaderboard.operator_withdrawals_total_counts" */
+  leaderboard_operator_withdrawals_total_counts: Array<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch aggregated fields from the table: "leaderboard.operator_withdrawals_total_counts" */
+  leaderboard_operator_withdrawals_total_counts_aggregate: Leaderboard_Operator_Withdrawals_Total_Counts_Aggregate;
+  /** fetch data from the table: "leaderboard.operator_withdrawals_total_counts" using primary key columns */
+  leaderboard_operator_withdrawals_total_counts_by_pk?: Maybe<Leaderboard_Operator_Withdrawals_Total_Counts>;
+  /** fetch data from the table in a streaming manner: "leaderboard.operator_withdrawals_total_counts" */
+  leaderboard_operator_withdrawals_total_counts_stream: Array<Leaderboard_Operator_Withdrawals_Total_Counts>;
+};
+
+
+export type Subscription_RootAccounts_AccountsArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Accounts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Accounts_Order_By>>;
+  where?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Accounts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Accounts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Accounts_Order_By>>;
+  where?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Accounts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootAccounts_Accounts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Accounts_Accounts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Accounts_Accounts_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Balance_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Balance_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Balance_Histories_Order_By>>;
+  where?: InputMaybe<Accounts_Balance_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Balance_Histories_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Balance_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Balance_Histories_Order_By>>;
+  where?: InputMaybe<Accounts_Balance_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Balance_Histories_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootAccounts_Balance_Histories_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Accounts_Balance_Histories_Stream_Cursor_Input>>;
+  where?: InputMaybe<Accounts_Balance_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_RewardsArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Rewards_Order_By>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Rewards_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Rewards_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Rewards_Order_By>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Rewards_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootAccounts_Rewards_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Accounts_Rewards_Stream_Cursor_Input>>;
+  where?: InputMaybe<Accounts_Rewards_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_TransfersArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Transfers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Transfers_Order_By>>;
+  where?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Transfers_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Accounts_Transfers_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Accounts_Transfers_Order_By>>;
+  where?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+};
+
+
+export type Subscription_RootAccounts_Transfers_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootAccounts_Transfers_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Accounts_Transfers_Stream_Cursor_Input>>;
+  where?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_BlocksArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Blocks_Order_By>>;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Blocks_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Blocks_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Blocks_Order_By>>;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Blocks_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Blocks_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Blocks_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Event_ModulesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Event_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Event_Modules_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Event_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Event_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Event_Modules_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Event_Modules_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Event_Modules_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Event_Modules_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Events_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Events_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Events_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Events_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Extrinsic_ModulesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsic_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Extrinsic_Modules_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsic_Modules_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsic_Modules_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Extrinsic_Modules_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Extrinsic_Modules_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Extrinsic_Modules_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Extrinsic_Modules_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_ExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Extrinsics_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Extrinsics_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Extrinsics_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Extrinsics_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_LogsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Logs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Logs_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Logs_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Logs_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_SectionsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Sections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Sections_Order_By>>;
+  where?: InputMaybe<Consensus_Sections_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Sections_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Sections_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Sections_Order_By>>;
+  where?: InputMaybe<Consensus_Sections_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Sections_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Sections_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Sections_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Sections_Bool_Exp>;
+};
+
+
+export type Subscription_RootDictionary_EventsArgs = {
+  distinct_on?: InputMaybe<Array<Dictionary_Events_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Dictionary_Events_Order_By>>;
+  where?: InputMaybe<Dictionary_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootDictionary_Events_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootDictionary_Events_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Dictionary_Events_Stream_Cursor_Input>>;
+  where?: InputMaybe<Dictionary_Events_Bool_Exp>;
+};
+
+
+export type Subscription_RootDictionary_ExtrinsicsArgs = {
+  distinct_on?: InputMaybe<Array<Dictionary_Extrinsics_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Dictionary_Extrinsics_Order_By>>;
+  where?: InputMaybe<Dictionary_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootDictionary_Extrinsics_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootDictionary_Extrinsics_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Dictionary_Extrinsics_Stream_Cursor_Input>>;
+  where?: InputMaybe<Dictionary_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootDictionary_Spec_VersionsArgs = {
+  distinct_on?: InputMaybe<Array<Dictionary_Spec_Versions_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Dictionary_Spec_Versions_Order_By>>;
+  where?: InputMaybe<Dictionary_Spec_Versions_Bool_Exp>;
+};
+
+
+export type Subscription_RootDictionary_Spec_Versions_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootDictionary_Spec_Versions_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Dictionary_Spec_Versions_Stream_Cursor_Input>>;
+  where?: InputMaybe<Dictionary_Spec_Versions_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Failed_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Failed_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Failed_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Failed_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Success_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Success_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Success_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Success_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Extrinsic_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Extrinsic_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Remark_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Remark_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Remark_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Remark_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Remark_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Remark_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transaction_Fee_Paid_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transaction_Fee_Paid_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transaction_Fee_Paid_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transaction_Fee_Paid_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Receiver_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Account_Transfer_Sender_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Account_Transfer_Sender_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Block_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Farmer_Block_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_And_Block_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Farmer_Vote_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Farmer_Vote_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Deposits_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Withdrawals_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Withdrawals_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Withdrawals_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Nominator_Withdrawals_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Bundle_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Bundle_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Bundle_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Bundle_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Bundle_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_ValuesArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_Values_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Deposits_Total_Values_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_Values_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Deposits_Total_Values_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Rewards_CollectedsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Rewards_Collecteds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Rewards_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Rewards_Collecteds_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Rewards_Collecteds_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Tax_CollectedsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Tax_Collecteds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Total_Tax_Collecteds_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Tax_Collecteds_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Total_Tax_Collecteds_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Withdrawals_Total_CountsArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Withdrawals_Total_Counts_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Leaderboard_Operator_Withdrawals_Total_Counts_Order_By>>;
+  where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Withdrawals_Total_Counts_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootLeaderboard_Operator_Withdrawals_Total_Counts_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Stream_Cursor_Input>>;
+  where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+};
+
+/** Boolean expression to compare columns of type "timestamp". All fields are combined with logical 'AND'. */
+export type Timestamp_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['timestamp']['input']>;
+  _gt?: InputMaybe<Scalars['timestamp']['input']>;
+  _gte?: InputMaybe<Scalars['timestamp']['input']>;
+  _in?: InputMaybe<Array<Scalars['timestamp']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['timestamp']['input']>;
+  _lte?: InputMaybe<Scalars['timestamp']['input']>;
+  _neq?: InputMaybe<Scalars['timestamp']['input']>;
+  _nin?: InputMaybe<Array<Scalars['timestamp']['input']>>;
 };
 
 export type AccountQueryVariables = Exact<{
@@ -2538,126 +10333,115 @@ export type AccountQueryVariables = Exact<{
 }>;
 
 
-export type AccountQuery = { __typename?: 'Query', accounts: Array<{ __typename?: 'Account', free?: any | null, id: string, reserved?: any | null, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }> }> };
+export type AccountQuery = { __typename?: 'query_root', accounts_accounts: Array<{ __typename?: 'accounts_accounts', free: any, id: string, reserved: any, total?: any | null, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
 
 export type AccountsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type AccountsConnectionQuery = { __typename?: 'Query', accountsConnection: { __typename?: 'AccountsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountEdge', cursor: string, node: { __typename?: 'Account', free?: any | null, id: string, reserved?: any | null, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', id: string, timestamp: any, block: { __typename?: 'Block', height: any, hash: string } }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type AccountsConnectionQuery = { __typename?: 'query_root', accounts_accounts_aggregate: { __typename?: 'accounts_accounts_aggregate', aggregate?: { __typename?: 'accounts_accounts_aggregate_fields', count: number } | null }, accounts_accounts: Array<{ __typename?: 'accounts_accounts', free: any, id: string, reserved: any, total?: any | null, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, timestamp: any, block?: { __typename?: 'consensus_blocks', height: any, hash: string } | null }> }> };
 
 export type AccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
 }>;
 
 
-export type AccountByIdQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', free?: any | null, reserved?: any | null, id: string, total?: any | null, nonce?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, indexInBlock: number, name: string, success: boolean, timestamp: any, tip?: any | null, block: { __typename?: 'Block', id: string, height: any } }> } | null, rewardEvents: Array<{ __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', height: any } | null }> };
-
-export type AccountByIdEvmQueryVariables = Exact<{
-  accountId: Scalars['String']['input'];
-}>;
-
-
-export type AccountByIdEvmQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', free?: any | null, reserved?: any | null, id: string, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, indexInBlock: number, name: string, success: boolean, timestamp: any, tip?: any | null, block: { __typename?: 'Block', id: string, height: any } }> } | null, rewardEvents: Array<{ __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', height: any } | null }> };
+export type AccountByIdQuery = { __typename?: 'query_root', accounts_accounts_by_pk?: { __typename?: 'accounts_accounts', free: any, reserved: any, id: string, total?: any | null, nonce: any, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, index_in_block: number, name: string, success: boolean, timestamp: any, tip: any, block?: { __typename?: 'consensus_blocks', id: string, height: any } | null }> } | null, accounts_rewards: Array<{ __typename?: 'accounts_rewards', id: string, block_height: any, index_in_block: any, reward_type: string, amount: any, timestamp: any }> };
 
 export type OldAccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
 }>;
 
 
-export type OldAccountByIdQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', free?: any | null, reserved?: any | null, id: string, total?: any | null, updatedAt?: any | null, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, indexInBlock: number, name: string, success: boolean, timestamp: any, tip?: any | null, block: { __typename?: 'Block', id: string, height: any } }> } | null };
+export type OldAccountByIdQuery = { __typename?: 'query_root', accounts_accounts_by_pk?: { __typename?: 'accounts_accounts', free: any, reserved: any, id: string, total?: any | null, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, index_in_block: number, name: string, success: boolean, timestamp: any, tip: any, block?: { __typename?: 'consensus_blocks', id: string, height: any } | null }> } | null };
 
 export type LatestRewardsWeekQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
-  gte: Scalars['DateTime']['input'];
+  timestampComparison: Timestamp_Comparison_Exp;
 }>;
 
 
-export type LatestRewardsWeekQuery = { __typename?: 'Query', rewardEvents: Array<{ __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', height: any } | null }> };
+export type LatestRewardsWeekQuery = { __typename?: 'query_root', accounts_rewards: Array<{ __typename?: 'accounts_rewards', id: string, block_height: any, index_in_block: any, reward_type: string, amount: any, timestamp: any }> };
 
 export type RewardsListQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  sortBy: Array<RewardEventOrderByInput> | RewardEventOrderByInput;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sortBy: Array<Accounts_Rewards_Order_By> | Accounts_Rewards_Order_By;
 }>;
 
 
-export type RewardsListQuery = { __typename?: 'Query', rewardEventsConnection: { __typename?: 'RewardEventsConnection', totalCount: number, edges: Array<{ __typename?: 'RewardEventEdge', cursor: string, node: { __typename?: 'RewardEvent', amount?: any | null, id: string, indexInBlock: number, name: string, phase: string, pos?: number | null, timestamp: any, block?: { __typename?: 'Block', hash: string, id: string, height: any } | null, account?: { __typename?: 'Account', id: string, free?: any | null, reserved?: any | null, total?: any | null, updatedAt?: any | null } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type RewardsListQuery = { __typename?: 'query_root', accounts_rewards: Array<{ __typename?: 'accounts_rewards', id: string, block_height: any, index_in_block: any, reward_type: string, amount: any, timestamp: any, block?: { __typename?: 'consensus_blocks', hash: string, id: string, height: any } | null, account?: { __typename?: 'accounts_accounts', id: string, free: any, reserved: any, total?: any | null, updated_at: any } | null }> };
 
 export type ExtrinsicsByAccountIdQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
-  orderBy: Array<ExtrinsicOrderByInput> | ExtrinsicOrderByInput;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+  orderBy: Array<Consensus_Extrinsics_Order_By> | Consensus_Extrinsics_Order_By;
 }>;
 
 
-export type ExtrinsicsByAccountIdQuery = { __typename?: 'Query', extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', cursor: string, node: { __typename?: 'Extrinsic', id: string, hash: string, name: string, success: boolean, indexInBlock: number, block: { __typename?: 'Block', height: any, timestamp: any } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string, hasPreviousPage: boolean, startCursor: string } } };
+export type ExtrinsicsByAccountIdQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, name: string, success: boolean, index_in_block: number, block?: { __typename?: 'consensus_blocks', height: any, timestamp: any } | null }> };
 
 export type AllRewardForAccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
 }>;
 
 
-export type AllRewardForAccountByIdQuery = { __typename?: 'Query', accountRewards: Array<{ __typename?: 'AccountRewards', amount?: any | null, block?: any | null, id: string, operator?: any | null, updatedAt: any, vote?: any | null }> };
+export type AllRewardForAccountByIdQuery = { __typename?: 'query_root', accounts_rewards: Array<{ __typename?: 'accounts_rewards', id: string, block_height: any, index_in_block: any, reward_type: string, amount: any, timestamp: any }> };
+
+export type TransfersByAccountIdQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Accounts_Transfers_Bool_Exp>;
+  orderBy: Array<Accounts_Transfers_Order_By> | Accounts_Transfers_Order_By;
+}>;
+
+
+export type TransfersByAccountIdQuery = { __typename?: 'query_root', accounts_transfers_aggregate: { __typename?: 'accounts_transfers_aggregate', aggregate?: { __typename?: 'accounts_transfers_aggregate_fields', count: number } | null }, accounts_transfers: Array<{ __typename?: 'accounts_transfers', id: string, extrinsic_id: string, event_id: string, from: string, to: string, value: any, fee: any, success: boolean, timestamp: any, date: any, created_at: any }> };
 
 export type BlocksConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Blocks_Order_By> | Consensus_Blocks_Order_By;
 }>;
 
 
-export type BlocksConnectionQuery = { __typename?: 'Query', blocksConnection: { __typename?: 'BlocksConnection', totalCount: number, edges: Array<{ __typename?: 'BlockEdge', cursor: string, node: { __typename?: 'Block', blockchainSize: any, extrinsicsRoot: string, hash: string, height: any, id: string, parentHash: string, spacePledged: any, specId: string, stateRoot: string, timestamp: any, events: Array<{ __typename?: 'Event', id: string }>, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }>, author?: { __typename?: 'Account', id: string } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
-
-export type BlocksConnectionDomainQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type BlocksConnectionDomainQuery = { __typename?: 'Query', blocksConnection: { __typename?: 'BlocksConnection', totalCount: number, edges: Array<{ __typename?: 'BlockEdge', cursor: string, node: { __typename?: 'Block', extrinsicsRoot: string, hash: string, height: any, id: string, parentHash: string, specId: string, stateRoot: string, timestamp: any, events: Array<{ __typename?: 'Event', id: string }>, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type BlocksConnectionQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', blockchain_size: any, extrinsics_root: string, hash: string, height: any, id: string, parent_hash: string, space_pledged: any, spec_id: string, state_root: string, timestamp: any, author_id: string, events: Array<{ __typename?: 'consensus_events', id: string }>, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
 
 export type BlockByIdQueryVariables = Exact<{
-  blockId: Scalars['BigInt']['input'];
+  blockId: Scalars['numeric']['input'];
 }>;
 
 
-export type BlockByIdQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any, hash: string, stateRoot: string, timestamp: any, extrinsicsRoot: string, specId: string, parentHash: string, extrinsicsCount: number, eventsCount: number, logs: Array<{ __typename?: 'Log', kind: string, id: string, block: { __typename?: 'Block', height: any, timestamp: any } }>, author?: { __typename?: 'Account', id: string } | null }> };
-
-export type BlockByIdDomainQueryVariables = Exact<{
-  blockId: Scalars['BigInt']['input'];
-}>;
-
-
-export type BlockByIdDomainQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any, hash: string, stateRoot: string, timestamp: any, extrinsicsRoot: string, specId: string, parentHash: string, extrinsicsCount: number, eventsCount: number, logs: Array<{ __typename?: 'Log', kind: string, id: string, block: { __typename?: 'Block', height: any, timestamp: any } }> }> };
+export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, author_id: string, logs: Array<{ __typename?: 'consensus_logs', kind: string, id: string, block?: { __typename?: 'consensus_blocks', height: any, timestamp: any } | null }> }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['BigInt']['input'];
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
+  blockId: Scalars['numeric']['input'];
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ExtrinsicsByBlockIdQuery = { __typename?: 'Query', extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', cursor: string, node: { __typename?: 'Extrinsic', id: string, hash: string, name: string, success: boolean, indexInBlock: number, block: { __typename?: 'Block', height: any, timestamp: any } } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string, hasPreviousPage: boolean, startCursor: string } } };
+export type ExtrinsicsByBlockIdQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, name: string, success: boolean, index_in_block: number, block?: { __typename?: 'consensus_blocks', height: any, timestamp: any } | null }> };
 
 export type EventsByBlockIdQueryVariables = Exact<{
-  blockId: Scalars['BigInt']['input'];
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
+  blockId: Scalars['numeric']['input'];
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type EventsByBlockIdQuery = { __typename?: 'Query', eventsConnection: { __typename?: 'EventsConnection', totalCount: number, edges: Array<{ __typename?: 'EventEdge', node: { __typename?: 'Event', id: string, name: string, phase: string, indexInBlock: number, block?: { __typename?: 'Block', height: any, id: string } | null, extrinsic?: { __typename?: 'Extrinsic', indexInBlock: number, block: { __typename?: 'Block', height: any, id: string } } | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type EventsByBlockIdQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, name: string, phase: string, index_in_block: any, block?: { __typename?: 'consensus_blocks', height: any, id: string } | null, extrinsic?: { __typename?: 'consensus_extrinsics', index_in_block: number, block?: { __typename?: 'consensus_blocks', height: any, id: string } | null } | null }> };
 
 export type BlocksByHashQueryVariables = Exact<{
   hash: Scalars['String']['input'];
 }>;
 
 
-export type BlocksByHashQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any }> };
+export type BlocksByHashQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any }> };
 
 export type EventsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -2665,144 +10449,326 @@ export type EventsQueryVariables = Exact<{
 }>;
 
 
-export type EventsQuery = { __typename?: 'Query', events: Array<{ __typename?: 'Event', name: string, phase: string, id: string, indexInBlock: number, block?: { __typename?: 'Block', height: any, timestamp: any } | null }> };
+export type EventsQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', name: string, phase: string, id: string, index_in_block: any, block?: { __typename?: 'consensus_blocks', height: any, timestamp: any } | null }> };
 
 export type EventsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  where?: InputMaybe<EventWhereInput>;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Consensus_Events_Bool_Exp>;
 }>;
 
 
-export type EventsConnectionQuery = { __typename?: 'Query', eventsConnection: { __typename?: 'EventsConnection', totalCount: number, edges: Array<{ __typename?: 'EventEdge', cursor: string, node: { __typename?: 'Event', args?: any | null, id: string, indexInBlock: number, name: string, phase: string, timestamp: any, block?: { __typename?: 'Block', id: string, timestamp: any, height: any } | null } }>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor: string, hasPreviousPage: boolean, startCursor: string } }, eventModuleNames: Array<{ __typename?: 'EventModuleName', name: string }> };
+export type EventsConnectionQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', id: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
 }>;
 
 
-export type EventByIdQuery = { __typename?: 'Query', eventById?: { __typename?: 'Event', args?: any | null, id: string, indexInBlock: number, name: string, phase: string, timestamp: any, call?: { __typename?: 'Call', args?: any | null, name: string, success: boolean, timestamp: any, id: string } | null, extrinsic?: { __typename?: 'Extrinsic', args?: any | null, success: boolean, tip?: any | null, fee?: any | null, id: string, signer?: { __typename?: 'Account', id: string } | null } | null, block?: { __typename?: 'Block', height: any, id: string, timestamp: any, specId: string, hash: string } | null } | null };
+export type EventByIdQuery = { __typename?: 'query_root', consensus_events_by_pk?: { __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, extrinsic?: { __typename?: 'consensus_extrinsics', args: string, success: boolean, tip: any, fee: any, id: string, signer: string } | null, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any, spec_id: string, hash: string } | null } | null };
 
 export type ExtrinsicsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  where?: InputMaybe<ExtrinsicWhereInput>;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 }>;
 
 
-export type ExtrinsicsConnectionQuery = { __typename?: 'Query', extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', cursor: string, node: { __typename?: 'Extrinsic', hash: string, indexInBlock: number, id: string, success: boolean, name: string, nonce?: any | null, block: { __typename?: 'Block', id: string, timestamp: any, height: any } } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasPreviousPage: boolean, hasNextPage: boolean, startCursor: string } }, extrinsicModuleNames: Array<{ __typename?: 'ExtrinsicModuleName', name: string }> };
+export type ExtrinsicsConnectionQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, index_in_block: number, id: string, success: boolean, name: string, nonce: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', id: string }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
 }>;
 
 
-export type ExtrinsicsByIdQuery = { __typename?: 'Query', extrinsicById?: { __typename?: 'Extrinsic', indexInBlock: number, id: string, hash: string, signature?: string | null, success: boolean, tip?: any | null, args?: any | null, name: string, block: { __typename?: 'Block', height: any, id: string, timestamp: any }, signer?: { __typename?: 'Account', id: string } | null, events: Array<{ __typename?: 'Event', id: string, indexInBlock: number, phase: string, timestamp: any, name: string, args?: any | null, block?: { __typename?: 'Block', height: any } | null, extrinsic?: { __typename?: 'Extrinsic', id: string, indexInBlock: number, block: { __typename?: 'Block', height: any } } | null }> } | null };
+export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics_by_pk?: { __typename?: 'consensus_extrinsics', index_in_block: number, id: string, hash: string, signature: string, success: boolean, tip: any, args: string, signer: string, name: string, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any } | null, events: Array<{ __typename?: 'consensus_events', id: string, index_in_block: any, phase: string, timestamp: any, name: string, args: string, block?: { __typename?: 'consensus_blocks', height: any } | null, extrinsic?: { __typename?: 'consensus_extrinsics', id: string, index_in_block: number, block?: { __typename?: 'consensus_blocks', height: any } | null } | null }> } | null };
 
 export type ExtrinsicsByHashQueryVariables = Exact<{
   hash: Scalars['String']['input'];
 }>;
 
 
-export type ExtrinsicsByHashQuery = { __typename?: 'Query', extrinsics: Array<{ __typename?: 'Extrinsic', id: string, hash: string, indexInBlock: number, success: boolean, name: string, nonce?: any | null, block: { __typename?: 'Block', id: string, timestamp: any, height: any } }> };
+export type ExtrinsicsByHashQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, index_in_block: number, success: boolean, name: string, nonce: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
 
 export type HomeQueryQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
-  accountTotal: Scalars['BigInt']['input'];
+  accountTotal: Scalars['numeric']['input'];
 }>;
 
 
-export type HomeQueryQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, hash: string, height: any, timestamp: any, stateRoot: string, blockchainSize: any, spacePledged: any, extrinsicsCount: number, eventsCount: number }>, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, success: boolean, indexInBlock: number, timestamp: any, name: string, block: { __typename?: 'Block', id: string, height: any } }>, accountsConnection: { __typename?: 'AccountsConnection', totalCount: number }, extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number } };
-
-export type HomeQueryDomainQueryVariables = Exact<{
-  limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-  accountTotal: Scalars['BigInt']['input'];
-}>;
-
-
-export type HomeQueryDomainQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, hash: string, height: any, timestamp: any, stateRoot: string, extrinsicsCount: number, eventsCount: number }>, extrinsics: Array<{ __typename?: 'Extrinsic', hash: string, id: string, success: boolean, indexInBlock: number, timestamp: any, name: string, block: { __typename?: 'Block', id: string, height: any } }>, accountsConnection: { __typename?: 'AccountsConnection', totalCount: number }, extrinsicsConnection: { __typename?: 'ExtrinsicsConnection', totalCount: number } };
-
-export type AccountsConnectionRewardsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<AccountRewardsOrderByInput> | AccountRewardsOrderByInput;
-  where?: InputMaybe<AccountRewardsWhereInput>;
-}>;
-
-
-export type AccountsConnectionRewardsQuery = { __typename?: 'Query', accountRewardsConnection: { __typename?: 'AccountRewardsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', amount?: any | null, id: string, block?: any | null, operator?: any | null, updatedAt: any, vote?: any | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
-
-export type AccountsNominatorsConnectionRewardsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<AccountRewardsOrderByInput> | AccountRewardsOrderByInput;
-  where?: InputMaybe<AccountRewardsWhereInput>;
-}>;
-
-
-export type AccountsNominatorsConnectionRewardsQuery = { __typename?: 'Query', accountRewardsConnection: { __typename?: 'AccountRewardsConnection', totalCount: number, edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', amount?: any | null, id: string, block?: any | null, operator?: any | null, updatedAt: any, vote?: any | null } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
-
-export type OperatorsConnectionRewardsQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<OperatorRewardsOrderByInput> | OperatorRewardsOrderByInput;
-  where?: InputMaybe<OperatorRewardsWhereInput>;
-}>;
-
-
-export type OperatorsConnectionRewardsQuery = { __typename?: 'Query', operatorRewardsConnection: { __typename?: 'OperatorRewardsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorRewardsEdge', cursor: string, node: { __typename?: 'OperatorRewards', amount?: any | null, id: string, updatedAt: any } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }>, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, name: string, block?: { __typename?: 'consensus_blocks', id: string, height: any } | null }>, accounts_accounts_aggregate: { __typename?: 'accounts_accounts_aggregate', aggregate?: { __typename?: 'accounts_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
 
 export type LogsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  where?: InputMaybe<LogWhereInput>;
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
 }>;
 
 
-export type LogsConnectionQuery = { __typename?: 'Query', logsConnection: { __typename?: 'LogsConnection', totalCount: number, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string }, edges: Array<{ __typename?: 'LogEdge', cursor: string, node: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any } } }> }, logTypesQuery: { __typename?: 'LogNamesResult', result: Array<string> } };
+export type LogsConnectionQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block?: { __typename?: 'consensus_blocks', id: string, height: any, timestamp: any } | null }> };
 
 export type LogByIdQueryVariables = Exact<{
   logId: Scalars['String']['input'];
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'Query', logById?: { __typename?: 'Log', id: string, kind: string, value?: any | null, block: { __typename?: 'Block', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'Event', id: string, args?: any | null, name: string, phase: string, indexInBlock: number, timestamp: any, block?: { __typename?: 'Block', height: any, hash: string } | null }> } } | null };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs_by_pk?: { __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block?: { __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, index_in_block: any, timestamp: any, block?: { __typename?: 'consensus_blocks', height: any, hash: string } | null }> } | null } | null };
 
-export type OperatorsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<OperatorOrderByInput> | OperatorOrderByInput;
-  where?: InputMaybe<OperatorWhereInput>;
+export type AccountTransferSenderTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By> | Leaderboard_Account_Transfer_Sender_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Counts_Bool_Exp>;
 }>;
 
 
-export type OperatorsConnectionQuery = { __typename?: 'Query', lastBlock: Array<{ __typename?: 'Block', height: any }>, operatorsConnection: { __typename?: 'OperatorsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorEdge', node: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null, nominators: Array<{ __typename?: 'Nominator', id: string, shares?: any | null }> } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type AccountTransferSenderTotalCountQuery = { __typename?: 'query_root', leaderboard_account_transfer_sender_total_counts_aggregate: { __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_transfer_sender_total_counts: Array<{ __typename?: 'leaderboard_account_transfer_sender_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
 
-export type OperatorByIdQueryVariables = Exact<{
-  operatorId: Scalars['String']['input'];
+export type AccountTransferSenderTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Transfer_Sender_Total_Values_Order_By> | Leaderboard_Account_Transfer_Sender_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Sender_Total_Values_Bool_Exp>;
 }>;
 
 
-export type OperatorByIdQuery = { __typename?: 'Query', operatorById?: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null, nominators: Array<{ __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string } }> } | null };
+export type AccountTransferSenderTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transfer_sender_total_values_aggregate: { __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transfer_sender_total_values: Array<{ __typename?: 'leaderboard_account_transfer_sender_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
 
-export type NominatorsConnectionQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  after?: InputMaybe<Scalars['String']['input']>;
-  orderBy: Array<NominatorOrderByInput> | NominatorOrderByInput;
-  where?: InputMaybe<NominatorWhereInput>;
+export type AccountTransferReceiverTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By> | Leaderboard_Account_Transfer_Receiver_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Counts_Bool_Exp>;
 }>;
 
 
-export type NominatorsConnectionQuery = { __typename?: 'Query', nominatorsConnection: { __typename?: 'NominatorsConnection', totalCount: number, edges: Array<{ __typename?: 'NominatorEdge', node: { __typename?: 'Nominator', id: string, shares?: any | null, updatedAt?: any | null, account: { __typename?: 'Account', id: string }, operator: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentEpochRewards?: any | null, currentTotalStake?: any | null, minimumNominatorStake?: any | null, nextDomainId?: number | null, nominationTax?: number | null, signingKey: string, status?: string | null, totalShares?: any | null, updatedAt?: any | null } } }>, pageInfo: { __typename?: 'PageInfo', endCursor: string, hasNextPage: boolean, hasPreviousPage: boolean, startCursor: string } } };
+export type AccountTransferReceiverTotalCountQuery = { __typename?: 'query_root', leaderboard_account_transfer_receiver_total_counts_aggregate: { __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_transfer_receiver_total_counts: Array<{ __typename?: 'leaderboard_account_transfer_receiver_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type AccountTransferReceiverTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By> | Leaderboard_Account_Transfer_Receiver_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Transfer_Receiver_Total_Values_Bool_Exp>;
+}>;
+
+
+export type AccountTransferReceiverTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transfer_receiver_total_values_aggregate: { __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transfer_receiver_total_values: Array<{ __typename?: 'leaderboard_account_transfer_receiver_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type AccountRemarkCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Remark_Counts_Order_By> | Leaderboard_Account_Remark_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Remark_Counts_Bool_Exp>;
+}>;
+
+
+export type AccountRemarkCountQuery = { __typename?: 'query_root', leaderboard_account_remark_counts_aggregate: { __typename?: 'leaderboard_account_remark_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_remark_counts_aggregate_fields', count: number } | null }, leaderboard_account_remark_counts: Array<{ __typename?: 'leaderboard_account_remark_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type AccountExtrinsicTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Extrinsic_Total_Counts_Order_By> | Leaderboard_Account_Extrinsic_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type AccountExtrinsicTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type AccountExtrinsicSuccessTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By> | Leaderboard_Account_Extrinsic_Success_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Success_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type AccountExtrinsicSuccessTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_success_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_success_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_success_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type AccountExtrinsicFailedTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By> | Leaderboard_Account_Extrinsic_Failed_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Extrinsic_Failed_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type AccountExtrinsicFailedTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_failed_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_failed_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_failed_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type AccountTransactionFeePaidTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By> | Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Account_Transaction_Fee_Paid_Total_Values_Bool_Exp>;
+}>;
+
+
+export type AccountTransactionFeePaidTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transaction_fee_paid_total_values_aggregate: { __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transaction_fee_paid_total_values: Array<{ __typename?: 'leaderboard_account_transaction_fee_paid_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type FarmerVoteTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Farmer_Vote_Total_Counts_Order_By> | Leaderboard_Farmer_Vote_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type FarmerVoteTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_vote_total_counts_aggregate: { __typename?: 'leaderboard_farmer_vote_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_total_counts: Array<{ __typename?: 'leaderboard_farmer_vote_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type FarmerVoteTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Farmer_Vote_Total_Values_Order_By> | Leaderboard_Farmer_Vote_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_Total_Values_Bool_Exp>;
+}>;
+
+
+export type FarmerVoteTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_vote_total_values_aggregate: { __typename?: 'leaderboard_farmer_vote_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_total_values: Array<{ __typename?: 'leaderboard_farmer_vote_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type FarmerBlockTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Farmer_Block_Total_Counts_Order_By> | Leaderboard_Farmer_Block_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type FarmerBlockTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_block_total_counts_aggregate: { __typename?: 'leaderboard_farmer_block_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_block_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_block_total_counts: Array<{ __typename?: 'leaderboard_farmer_block_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type FarmerBlockTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Farmer_Block_Total_Values_Order_By> | Leaderboard_Farmer_Block_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Farmer_Block_Total_Values_Bool_Exp>;
+}>;
+
+
+export type FarmerBlockTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_block_total_values_aggregate: { __typename?: 'leaderboard_farmer_block_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_block_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_block_total_values: Array<{ __typename?: 'leaderboard_farmer_block_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type OperatorTotalRewardsCollectedQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Operator_Total_Rewards_Collecteds_Order_By> | Leaderboard_Operator_Total_Rewards_Collecteds_Order_By;
+  where?: InputMaybe<Leaderboard_Operator_Total_Rewards_Collecteds_Bool_Exp>;
+}>;
+
+
+export type OperatorTotalRewardsCollectedQuery = { __typename?: 'query_root', leaderboard_operator_total_rewards_collecteds_aggregate: { __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate', aggregate?: { __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate_fields', count: number } | null }, leaderboard_operator_total_rewards_collecteds: Array<{ __typename?: 'leaderboard_operator_total_rewards_collecteds', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type OperatorTotalTaxCollectedQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Operator_Total_Tax_Collecteds_Order_By> | Leaderboard_Operator_Total_Tax_Collecteds_Order_By;
+  where?: InputMaybe<Leaderboard_Operator_Total_Tax_Collecteds_Bool_Exp>;
+}>;
+
+
+export type OperatorTotalTaxCollectedQuery = { __typename?: 'query_root', leaderboard_operator_total_tax_collecteds_aggregate: { __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate', aggregate?: { __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate_fields', count: number } | null }, leaderboard_operator_total_tax_collecteds: Array<{ __typename?: 'leaderboard_operator_total_tax_collecteds', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type OperatorBundleTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Operator_Bundle_Total_Counts_Order_By> | Leaderboard_Operator_Bundle_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Operator_Bundle_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type OperatorBundleTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_bundle_total_counts_aggregate: { __typename?: 'leaderboard_operator_bundle_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_bundle_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_bundle_total_counts: Array<{ __typename?: 'leaderboard_operator_bundle_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type OperatorDepositsTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Operator_Deposits_Total_Counts_Order_By> | Leaderboard_Operator_Deposits_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type OperatorDepositsTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_deposits_total_counts_aggregate: { __typename?: 'leaderboard_operator_deposits_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_deposits_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_deposits_total_counts: Array<{ __typename?: 'leaderboard_operator_deposits_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type OperatorDepositsTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Operator_Deposits_Total_Values_Order_By> | Leaderboard_Operator_Deposits_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Operator_Deposits_Total_Values_Bool_Exp>;
+}>;
+
+
+export type OperatorDepositsTotalValueQuery = { __typename?: 'query_root', leaderboard_operator_deposits_total_values_aggregate: { __typename?: 'leaderboard_operator_deposits_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_operator_deposits_total_values_aggregate_fields', count: number } | null }, leaderboard_operator_deposits_total_values: Array<{ __typename?: 'leaderboard_operator_deposits_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type OperatorWithdrawalsTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Operator_Withdrawals_Total_Counts_Order_By> | Leaderboard_Operator_Withdrawals_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Operator_Withdrawals_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type OperatorWithdrawalsTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_withdrawals_total_counts_aggregate: { __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_withdrawals_total_counts: Array<{ __typename?: 'leaderboard_operator_withdrawals_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type NominatorDepositsTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Nominator_Deposits_Total_Counts_Order_By> | Leaderboard_Nominator_Deposits_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type NominatorDepositsTotalCountQuery = { __typename?: 'query_root', leaderboard_nominator_deposits_total_counts_aggregate: { __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate_fields', count: number } | null }, leaderboard_nominator_deposits_total_counts: Array<{ __typename?: 'leaderboard_nominator_deposits_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type NominatorDepositsTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Nominator_Deposits_Total_Values_Order_By> | Leaderboard_Nominator_Deposits_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Nominator_Deposits_Total_Values_Bool_Exp>;
+}>;
+
+
+export type NominatorDepositsTotalValueQuery = { __typename?: 'query_root', leaderboard_nominator_deposits_total_values_aggregate: { __typename?: 'leaderboard_nominator_deposits_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_deposits_total_values_aggregate_fields', count: number } | null }, leaderboard_nominator_deposits_total_values: Array<{ __typename?: 'leaderboard_nominator_deposits_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type NominatorWithdrawalsTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By> | Leaderboard_Nominator_Withdrawals_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Nominator_Withdrawals_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type NominatorWithdrawalsTotalCountQuery = { __typename?: 'query_root', leaderboard_nominator_withdrawals_total_counts_aggregate: { __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate_fields', count: number } | null }, leaderboard_nominator_withdrawals_total_counts: Array<{ __typename?: 'leaderboard_nominator_withdrawals_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type FarmerVoteAndBlockTotalCountQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By> | Leaderboard_Farmer_Vote_And_Block_Total_Counts_Order_By;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Counts_Bool_Exp>;
+}>;
+
+
+export type FarmerVoteAndBlockTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_vote_and_block_total_counts_aggregate: { __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_and_block_total_counts: Array<{ __typename?: 'leaderboard_farmer_vote_and_block_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+
+export type FarmerVoteAndBlockTotalValueQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By> | Leaderboard_Farmer_Vote_And_Block_Total_Values_Order_By;
+  where?: InputMaybe<Leaderboard_Farmer_Vote_And_Block_Total_Values_Bool_Exp>;
+}>;
+
+
+export type FarmerVoteAndBlockTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_vote_and_block_total_values_aggregate: { __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_and_block_total_values: Array<{ __typename?: 'leaderboard_farmer_vote_and_block_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
 
 export type AccountsTopLeaderboardQueryVariables = Exact<{
   first: Scalars['Int']['input'];
 }>;
 
 
-export type AccountsTopLeaderboardQuery = { __typename?: 'Query', farmers: { __typename?: 'AccountRewardsConnection', edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', id: string } }> }, operators: { __typename?: 'OperatorRewardsConnection', edges: Array<{ __typename?: 'OperatorRewardsEdge', cursor: string, node: { __typename?: 'OperatorRewards', amount?: any | null, id: string } }> }, nominators: { __typename?: 'AccountRewardsConnection', edges: Array<{ __typename?: 'AccountRewardsEdge', cursor: string, node: { __typename?: 'AccountRewards', id: string } }> } };
+export type AccountsTopLeaderboardQuery = { __typename?: 'query_root', farmers: Array<{ __typename?: 'accounts_rewards', id: string }> };
+
+export type PendingTransactionQueryVariables = Exact<{
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+  extrinsics?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type PendingTransactionQuery = { __typename?: 'query_root', accounts_accounts: Array<{ __typename?: 'accounts_accounts', id: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, success: boolean, timestamp: any, name: string, events: Array<{ __typename?: 'consensus_events', name: string }>, block?: { __typename?: 'consensus_blocks', hash: string, height: any, id: string } | null }> }> };
 
 export type ExtrinsicsSummaryQueryVariables = Exact<{
   first: Scalars['Int']['input'];
@@ -2810,79 +10776,16 @@ export type ExtrinsicsSummaryQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsSummaryQuery = { __typename?: 'Query', extrinsics: { __typename?: 'ExtrinsicsConnection', totalCount: number, edges: Array<{ __typename?: 'ExtrinsicEdge', node: { __typename?: 'Extrinsic', id: string, success: boolean, name: string, block: { __typename?: 'Block', id: string, timestamp: any, height: any } } }> } };
-
-export type StakingSummaryQueryVariables = Exact<{
-  first: Scalars['Int']['input'];
-  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-
-export type StakingSummaryQuery = { __typename?: 'Query', operators: { __typename?: 'OperatorsConnection', totalCount: number, edges: Array<{ __typename?: 'OperatorEdge', node: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentTotalStake?: any | null, totalShares?: any | null } }> }, nominators: { __typename?: 'NominatorsConnection', totalCount: number, edges: Array<{ __typename?: 'NominatorEdge', node: { __typename?: 'Nominator', id: string, shares?: any | null, account: { __typename?: 'Account', id: string }, operator: { __typename?: 'Operator', id: string, operatorOwner?: string | null, currentDomainId?: number | null, currentTotalStake?: any | null, totalShares?: any | null } } }> } };
+export type ExtrinsicsSummaryQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, success: boolean, name: string, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
 
 export type CheckRoleQueryVariables = Exact<{
   subspaceAccount: Scalars['String']['input'];
 }>;
 
 
-export type CheckRoleQuery = { __typename?: 'Query', isFarmer: Array<{ __typename?: 'RewardEvent', account?: { __typename?: 'Account', id: string } | null }> };
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'accounts_rewards', account?: { __typename?: 'accounts_accounts', id: string } | null }> };
 
-export type BlocksAndExtrinsicByHashQueryVariables = Exact<{
-  hash: Scalars['String']['input'];
-}>;
+export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BlocksAndExtrinsicByHashQuery = { __typename?: 'Query', blocks: Array<{ __typename?: 'Block', id: string, height: any }>, extrinsics: Array<{ __typename?: 'Extrinsic', id: string }> };
-
-export type GetResultsQueryVariables = Exact<{
-  term: Scalars['String']['input'];
-  blockId: Scalars['BigInt']['input'];
-  isAccount: Scalars['Boolean']['input'];
-  isBlock: Scalars['Boolean']['input'];
-  isExtrinsic: Scalars['Boolean']['input'];
-  isExtrinsicHash: Scalars['Boolean']['input'];
-  isEvent: Scalars['Boolean']['input'];
-}>;
-
-
-export type GetResultsQuery = { __typename?: 'Query', accountById?: { __typename?: 'Account', id: string } | null, blocks?: Array<{ __typename?: 'Block', height: any }>, extrinsicById?: { __typename?: 'Extrinsic', id: string, name: string, indexInBlock: number, timestamp: any, block: { __typename?: 'Block', height: any } } | null, extrinsics?: Array<{ __typename?: 'Extrinsic', id: string }>, eventById?: { __typename?: 'Event', id: string, name: string, indexInBlock: number, timestamp: any, block?: { __typename?: 'Block', height: any } | null } | null };
-
-
-export const AccountDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Account"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accounts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"total_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"StringValue","value":"0","block":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"100"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<AccountQuery, AccountQueryVariables>;
-export const AccountsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"total_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"StringValue","value":"0","block":false}}]}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"300"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsConnectionQuery, AccountsConnectionQueryVariables>;
-export const AccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AccountByIdQuery, AccountByIdQueryVariables>;
-export const AccountByIdEvmDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountByIdEVM"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<AccountByIdEvmQuery, AccountByIdEvmQueryVariables>;
-export const OldAccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OldAccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OldAccountByIdQuery, OldAccountByIdQueryVariables>;
-export const LatestRewardsWeekDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LatestRewardsWeek"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gte"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"DateTime"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"500"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"timestamp_gt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gte"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}}]} as unknown as DocumentNode<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>;
-export const RewardsListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RewardsList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"sortBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RewardEventOrderByInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rewardEventsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"sortBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"pos"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"free"}},{"kind":"Field","name":{"kind":"Name","value":"reserved"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<RewardsListQuery, RewardsListQueryVariables>;
-export const ExtrinsicsByAccountIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsByAccountId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExtrinsicWhereInput"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ExtrinsicOrderByInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByAccountIdQuery, ExtrinsicsByAccountIdQueryVariables>;
-export const AllRewardForAccountByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AllRewardForAccountById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountRewards"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operator"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"vote"}}]}}]}}]} as unknown as DocumentNode<AllRewardForAccountByIdQuery, AllRewardForAccountByIdQueryVariables>;
-export const BlocksConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocksConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blockchainSize"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"spacePledged"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<BlocksConnectionQuery, BlocksConnectionQueryVariables>;
-export const BlocksConnectionDomainDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksConnectionDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocksConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<BlocksConnectionDomainQuery, BlocksConnectionDomainQueryVariables>;
-export const BlockByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlockById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"author"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<BlockByIdQuery, BlockByIdQueryVariables>;
-export const BlockByIdDomainDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlockByIdDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsRoot"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"parentHash"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}},{"kind":"Field","name":{"kind":"Name","value":"logs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<BlockByIdDomainQuery, BlockByIdDomainQueryVariables>;
-export const ExtrinsicsByBlockIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsByBlockId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"indexInBlock_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"block"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables>;
-export const EventsByBlockIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EventsByBlockId"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eventsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"indexInBlock_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"block"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>;
-export const BlocksByHashDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksByHash"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]} as unknown as DocumentNode<BlocksByHashQuery, BlocksByHashQueryVariables>;
-export const EventsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Events"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"block_height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}}]}}]}}]} as unknown as DocumentNode<EventsQuery, EventsQueryVariables>;
-export const EventsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EventsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"EventWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eventsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventModuleNames"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"300"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<EventsConnectionQuery, EventsConnectionQueryVariables>;
-export const EventByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"EventById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"eventId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"eventById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"eventId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"call"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"fee"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"signer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"specId"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}}]}}]}}]} as unknown as DocumentNode<EventByIdQuery, EventByIdQueryVariables>;
-export const ExtrinsicsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ExtrinsicWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicModuleNames"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"300"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsConnectionQuery, ExtrinsicsConnectionQueryVariables>;
-export const ExtrinsicsByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"extrinsicId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsicById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"extrinsicId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"signature"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"tip"}},{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"signer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsic"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables>;
-export const ExtrinsicsByHashDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsByHash"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nonce"}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>;
-export const HomeQueryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"HomeQuery"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"blockchainSize"}},{"kind":"Field","name":{"kind":"Name","value":"spacePledged"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"timestamp_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"signature_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<HomeQueryQuery, HomeQueryQueryVariables>;
-export const HomeQueryDomainDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"HomeQueryDomain"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limit"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"offset"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"stateRoot"}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsCount"}},{"kind":"Field","name":{"kind":"Name","value":"eventsCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limit"}}},{"kind":"Argument","name":{"kind":"Name","value":"offset"},"value":{"kind":"Variable","name":{"kind":"Name","value":"offset"}}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"timestamp_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hash"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"accountsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"total_gt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accountTotal"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"signature_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<HomeQueryDomainQuery, HomeQueryDomainQueryVariables>;
-export const AccountsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AccountRewardsOrderByInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"AccountRewardsWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"operator"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"vote"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsConnectionRewardsQuery, AccountsConnectionRewardsQueryVariables>;
-export const AccountsNominatorsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsNominatorsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AccountRewardsOrderByInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"AccountRewardsWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"block"}},{"kind":"Field","name":{"kind":"Name","value":"operator"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"vote"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<AccountsNominatorsConnectionRewardsQuery, AccountsNominatorsConnectionRewardsQueryVariables>;
-export const OperatorsConnectionRewardsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorsConnectionRewards"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OperatorRewardsOrderByInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"OperatorRewardsWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}}]}}]}}]} as unknown as DocumentNode<OperatorsConnectionRewardsQuery, OperatorsConnectionRewardsQueryVariables>;
-export const LogsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LogsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"LogWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalCount"}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"cursor"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"logTypesQuery"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"result"}}]}}]}}]} as unknown as DocumentNode<LogsConnectionQuery, LogsConnectionQueryVariables>;
-export const LogByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LogById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"logId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"logId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"kind"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"events"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"args"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"phase"}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}},{"kind":"Field","name":{"kind":"Name","value":"hash"}}]}}]}}]}}]}}]}}]} as unknown as DocumentNode<LogByIdQuery, LogByIdQueryVariables>;
-export const OperatorsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"OperatorOrderByInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"OperatorWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"lastBlock"},"name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"height_DESC"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"operatorsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"nominators"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"256"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<OperatorsConnectionQuery, OperatorsConnectionQueryVariables>;
-export const OperatorByIdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"OperatorById"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"operatorId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"operatorById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"operatorId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}},{"kind":"Field","name":{"kind":"Name","value":"nominators"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"300"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<OperatorByIdQuery, OperatorByIdQueryVariables>;
-export const NominatorsConnectionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"NominatorsConnection"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"NominatorOrderByInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"NominatorWhereInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nominatorsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orderBy"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"Variable","name":{"kind":"Name","value":"where"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"operator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentEpochRewards"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"minimumNominatorStake"}},{"kind":"Field","name":{"kind":"Name","value":"nextDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"nominationTax"}},{"kind":"Field","name":{"kind":"Name","value":"signingKey"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}},{"kind":"Field","name":{"kind":"Name","value":"updatedAt"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"endCursor"}},{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"hasPreviousPage"}},{"kind":"Field","name":{"kind":"Name","value":"startCursor"}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<NominatorsConnectionQuery, NominatorsConnectionQueryVariables>;
-export const AccountsTopLeaderboardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AccountsTopLeaderboard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"farmers"},"name":{"kind":"Name","value":"accountRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"amount_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"vote_gt"},"value":{"kind":"IntValue","value":"0"}},{"kind":"ObjectField","name":{"kind":"Name","value":"vote_isNull"},"value":{"kind":"BooleanValue","value":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"OR"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"block_gt"},"value":{"kind":"IntValue","value":"0"}},{"kind":"ObjectField","name":{"kind":"Name","value":"block_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"operators"},"name":{"kind":"Name","value":"operatorRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"amount_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"amount"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"nominators"},"name":{"kind":"Name","value":"accountRewardsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"operator_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"operator_gt"},"value":{"kind":"IntValue","value":"0"}},{"kind":"ObjectField","name":{"kind":"Name","value":"operator_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cursor"}},{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables>;
-export const ExtrinsicsSummaryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ExtrinsicsSummary"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"extrinsics"},"name":{"kind":"Name","value":"extrinsicsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_DESC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"signer"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"success"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>;
-export const StakingSummaryDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"StakingSummary"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"operators"},"name":{"kind":"Name","value":"operatorsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"operatorOwner_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"nominators"},"name":{"kind":"Name","value":"nominatorsConnection"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"EnumValue","value":"id_ASC"}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"operator"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"operatorOwner"}},{"kind":"Field","name":{"kind":"Name","value":"currentDomainId"}},{"kind":"Field","name":{"kind":"Name","value":"currentTotalStake"}},{"kind":"Field","name":{"kind":"Name","value":"totalShares"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"totalCount"}}]}}]}}]} as unknown as DocumentNode<StakingSummaryQuery, StakingSummaryQueryVariables>;
-export const CheckRoleDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CheckRole"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"isFarmer"},"name":{"kind":"Name","value":"rewardEvents"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name_eq"},"value":{"kind":"StringValue","value":"Rewards.VoteReward","block":false}},{"kind":"ObjectField","name":{"kind":"Name","value":"account"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"subspaceAccount"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"account"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<CheckRoleQuery, CheckRoleQueryVariables>;
-export const BlocksAndExtrinsicByHashDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BlocksAndExtrinsicByHash"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"10"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hash"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<BlocksAndExtrinsicByHashQuery, BlocksAndExtrinsicByHashQueryVariables>;
-export const GetResultsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetResults"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"term"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigInt"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isAccount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isBlock"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsic"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsicHash"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isEvent"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accountById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isAccount"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"blocks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"height_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"blockId"}}}]}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isBlock"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsicById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsic"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}},{"kind":"Field","name":{"kind":"Name","value":"extrinsics"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}},{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hash_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}]}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isExtrinsicHash"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}},{"kind":"Field","name":{"kind":"Name","value":"eventById"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"term"}}}],"directives":[{"kind":"Directive","name":{"kind":"Name","value":"include"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"if"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isEvent"}}}]}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"block"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"height"}}]}},{"kind":"Field","name":{"kind":"Name","value":"indexInBlock"}},{"kind":"Field","name":{"kind":"Name","value":"timestamp"}}]}}]}}]} as unknown as DocumentNode<GetResultsQuery, GetResultsQueryVariables>;
+export type LastBlockQuery = { __typename?: 'query_root', lastBlock: Array<{ __typename?: 'consensus_blocks', height: any }> };

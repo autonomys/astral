@@ -15,7 +15,7 @@ import { numberWithCommas } from 'utils/number'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { LeaderboardList } from './LeaderboardList'
-import * as Query from './leaderboard.query'
+import * as Query from './query'
 
 type LeaderboardProps = {
   children: React.ReactNode
