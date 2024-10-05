@@ -1,6 +1,5 @@
 import { ROUTE_EXTRA_FLAG_TYPE, Routes } from 'constants/routes'
-import * as OldGqlT from 'gql/oldSquidTypes'
-import * as StakingQuery from 'gql/types/staking'
+import * as GqlT from 'gql/graphql'
 import { create } from 'zustand'
 
 export type Init = {
@@ -30,44 +29,42 @@ const initialized: Init = { initialized: true }
 
 export interface ExplorerQueryState {
   [Routes.consensus]: {
-    home: QueryState<OldGqlT.HomeQueryQuery>
+    home: QueryState<GqlT.HomeQueryQuery>
 
-    accounts: QueryState<OldGqlT.AccountsConnectionQuery>
-    blocks: QueryState<OldGqlT.BlocksConnectionQuery>
-    extrinsics: QueryState<OldGqlT.ExtrinsicsConnectionQuery>
-    events: QueryState<OldGqlT.EventsConnectionQuery>
-    logs: QueryState<OldGqlT.LogsConnectionQuery>
+    accounts: QueryState<GqlT.AccountsConnectionQuery>
+    blocks: QueryState<GqlT.BlocksConnectionQuery>
+    extrinsics: QueryState<GqlT.ExtrinsicsConnectionQuery>
+    events: QueryState<GqlT.EventsConnectionQuery>
+    logs: QueryState<GqlT.LogsConnectionQuery>
 
-    account: QueryState<OldGqlT.AccountByIdQuery>
-    block: QueryState<OldGqlT.BlockByIdQuery>
-    extrinsic: QueryState<OldGqlT.ExtrinsicsByIdQuery>
-    event: QueryState<OldGqlT.EventByIdQuery>
-    log: QueryState<OldGqlT.LogByIdQuery>
+    account: QueryState<GqlT.AccountByIdQuery>
+    block: QueryState<GqlT.BlockByIdQuery>
+    extrinsic: QueryState<GqlT.ExtrinsicsByIdQuery>
+    event: QueryState<GqlT.EventByIdQuery>
+    log: QueryState<GqlT.LogByIdQuery>
 
-    accountExtrinsic: QueryState<OldGqlT.ExtrinsicsByAccountIdQuery>
-    accountPreviousReward: QueryState<OldGqlT.AllRewardForAccountByIdQuery>
-    accountRewardGraph: QueryState<OldGqlT.LatestRewardsWeekQuery>
-    accountReward: QueryState<OldGqlT.RewardsListQuery>
+    accountExtrinsic: QueryState<GqlT.ExtrinsicsByAccountIdQuery>
+    accountPreviousReward: QueryState<GqlT.AllRewardForAccountByIdQuery>
+    accountRewardGraph: QueryState<GqlT.LatestRewardsWeekQuery>
+    accountReward: QueryState<GqlT.RewardsListQuery>
 
-    blockDetailsExtrinsic: QueryState<OldGqlT.ExtrinsicsByBlockIdQuery>
-    blockDetailsEvent: QueryState<OldGqlT.EventsByBlockIdQuery>
+    blockDetailsExtrinsic: QueryState<GqlT.ExtrinsicsByBlockIdQuery>
+    blockDetailsEvent: QueryState<GqlT.EventsByBlockIdQuery>
   }
   [Routes.staking]: {
-    operators: QueryState<StakingQuery.OperatorsListQuery>
-
-    operator: QueryState<StakingQuery.OperatorByIdQuery>
-    operatorNominators: QueryState<StakingQuery.OperatorNominatorsByIdQuery>
+    // operators: QueryState<GqlT.OperatorsListQuery>
+    //  operator: QueryState<GqlT.OperatorByIdQuery>
+    //  operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
   }
   [Routes.domains]: {
-    domains: QueryState<StakingQuery.DomainsListQuery>
-
-    domain: QueryState<StakingQuery.DomainByIdQuery>
+    //  domains: QueryState<GqlT.DomainsListQuery>
+    //  domain: QueryState<GqlT.DomainByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
-    claim: QueryState<OldGqlT.ExtrinsicsByHashQuery>
-    stakingSummary: QueryState<StakingQuery.StakingSummaryQuery>
-    lastExtrinsics: QueryState<OldGqlT.ExtrinsicsSummaryQuery>
-    leaderboard: QueryState<OldGqlT.AccountsTopLeaderboardQuery>
+    claim: QueryState<GqlT.ExtrinsicsByHashQuery>
+    // stakingSummary: QueryState<GqlT.StakingSummaryQuery>
+    lastExtrinsics: QueryState<GqlT.ExtrinsicsSummaryQuery>
+    leaderboard: QueryState<GqlT.AccountsTopLeaderboardQuery>
   }
 }
 
@@ -123,7 +120,7 @@ const initialState: ExplorerQueryState = {
   },
   walletSidekick: {
     claim: initialized,
-    stakingSummary: initialized,
+    //  stakingSummary: initialized,
     lastExtrinsics: initialized,
     leaderboard: initialized,
   },
