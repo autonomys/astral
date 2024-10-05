@@ -1,4 +1,4 @@
-import { Account, BalanceHistory, Transfer } from "../types";
+import { Account, BalanceHistory, Reward, Transfer } from "../types";
 import { dateEntry } from "./utils";
 
 export async function createOrUpdateAndSaveAccount(
@@ -83,4 +83,32 @@ export async function createAndSaveTransfer(
     await transfer.save();
   }
   return transfer;
+}
+
+export async function createAndSaveReward(
+  blockHeight: bigint,
+  blockHash: string,
+  accountId: string,
+  indexInBlock: bigint,
+  rewardType: string,
+  amount: bigint,
+  timestamp: Date
+): Promise<Reward> {
+  const id =
+    accountId + "-" + blockHeight.toString() + "-" + indexInBlock.toString();
+  let reward = await Reward.get(id);
+  if (!reward) {
+    reward = Reward.create({
+      id,
+      blockHeight,
+      blockHash,
+      accountId,
+      indexInBlock,
+      rewardType,
+      amount,
+      timestamp,
+    });
+    await reward.save();
+  }
+  return reward;
 }
