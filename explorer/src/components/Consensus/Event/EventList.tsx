@@ -74,7 +74,7 @@ export const EventList: FC = () => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const modules = useMemo(
-    () => data && data.consensus_event_modules.map((module) => module.id.split('.')[0]),
+    () => data && data.consensus_event_modules.map((module) => module.method),
     [data],
   )
 

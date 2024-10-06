@@ -21,7 +21,7 @@ export const QUERY_EVENTS = gql`
       }
     }
     consensus_event_modules(limit: 300) {
-      id
+      method
     }
   }
 `

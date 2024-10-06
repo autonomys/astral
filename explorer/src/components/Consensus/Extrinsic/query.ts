@@ -1,27 +1,24 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
-  query ExtrinsicsConnection($limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp) {
+export const QUERY_EXTRINSICS = gql`
+  query Extrinsics($limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp) {
     consensus_extrinsics_aggregate(order_by: { id: desc }, where: $where) {
       aggregate {
         count
       }
     }
     consensus_extrinsics(order_by: { id: desc }, limit: $limit, offset: $offset, where: $where) {
-      hash
-      index_in_block
       id
+      hash
+      block_height
+      index_in_block
       success
-      block {
-        id
-        timestamp
-        height
-      }
       name
       nonce
+      timestamp
     }
     consensus_extrinsic_modules(limit: 300) {
-      id
+      method
     }
   }
 `

@@ -11,12 +11,7 @@ import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import {
-  Extrinsic,
-  ExtrinsicWhereInput,
-  ExtrinsicsConnectionQuery,
-  ExtrinsicsConnectionQueryVariables,
-} from 'gql/graphql'
+import { ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import Link from 'next/link'
@@ -28,9 +23,11 @@ import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { NotFound } from '../../layout/NotFound'
 import { ExtrinsicListFilter } from './ExtrinsicListFilter'
-import { QUERY_EXTRINSIC_LIST_CONNECTION } from './query'
+import { QUERY_EXTRINSICS } from './query'
 
 dayjs.extend(relativeTime)
+
+type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
 
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
@@ -40,24 +37,18 @@ export const ExtrinsicList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const [filters, setFilters] = useState<ExtrinsicWhereInput>({})
+  const [filters, setFilters] = useState<object>({})
 
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
     }),
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
-    ExtrinsicsConnectionQuery,
-    ExtrinsicsConnectionQueryVariables
-  >(
-    QUERY_EXTRINSIC_LIST_CONNECTION,
+  const { loading, setIsVisible } = useSquidQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
+    QUERY_EXTRINSICS,
     {
       variables,
       pollInterval: 6000,
@@ -74,16 +65,13 @@ export const ExtrinsicList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
-  const extrinsics = useMemo(
-    () =>
-      extrinsicsConnection &&
-      extrinsicsConnection.edges.map((extrinsic) => extrinsic.node as Extrinsic),
-    [extrinsicsConnection],
-  )
+  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const totalCount = useMemo(
-    () => extrinsicsConnection && extrinsicsConnection.totalCount,
-    [extrinsicsConnection],
+    () =>
+      data && data.consensus_extrinsics_aggregate.aggregate
+        ? data.consensus_extrinsics_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const pageCount = useMemo(
     () => Math.ceil(Number(totalCount) / pagination.pageSize),
@@ -91,7 +79,7 @@ export const ExtrinsicList: FC = () => {
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const modules = useMemo(
-    () => data && data.extrinsicModuleNames.map((module) => module.name.split('.')[0]),
+    () => data && data.consensus_extrinsic_modules.map((module) => module.method),
     [data],
   )
 
@@ -101,13 +89,13 @@ export const ExtrinsicList: FC = () => {
         accessorKey: 'block',
         header: 'Extrinsic Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-extrinsic-block`}
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            <div>{`${row.original.block.height}-${row.index}`}</div>
+            <div>{`${row.original.block_height}-${row.index}`}</div>
           </Link>
         ),
       },
@@ -115,9 +103,9 @@ export const ExtrinsicList: FC = () => {
         accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-extrinsic-time`}>
-            {dayjs(row.original.block.timestamp).fromNow(true)}
+            {dayjs(row.original.timestamp).fromNow(true)}
           </div>
         ),
       },
@@ -125,7 +113,7 @@ export const ExtrinsicList: FC = () => {
         accessorKey: 'status',
         header: 'Status',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
             key={`${row.index}-home-extrinsic-status`}
@@ -138,7 +126,7 @@ export const ExtrinsicList: FC = () => {
         accessorKey: 'action',
         header: 'Action',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-extrinsic-action`}>
             {row.original.name.split('.')[1].toUpperCase()}
           </div>
@@ -148,7 +136,7 @@ export const ExtrinsicList: FC = () => {
         accessorKey: 'blockhash',
         header: 'Block hash',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-extrinsic-hash}`}>
             <CopyButton value={row.original.hash} message='Hash copied'>
               {shortString(row.original.hash)}
