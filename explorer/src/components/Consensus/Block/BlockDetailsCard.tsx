@@ -11,15 +11,13 @@ import { BlockAuthor } from './BlockAuthor'
 dayjs.extend(relativeTime)
 
 type Props = {
-  block: BlockByIdQuery['consensus_blocks_by_pk']
+  block: NonNullable<BlockByIdQuery['consensus_blocks_by_pk']>
   isDesktop?: boolean
 }
 
 export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
   const { network, section } = useChains()
   const chain = network
-
-  if (!block) return null
 
   return (
     <div className='w-full'>

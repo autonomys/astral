@@ -33,7 +33,7 @@ export const Account: FC = () => {
   const { loading, setIsVisible } = useSquidQuery<AccountByIdQuery, AccountByIdQueryVariables>(
     QUERY_ACCOUNT_BY_ID,
     {
-      variables: { accountId: rawAccountId ?? '' },
+      variables: { accountId: accountId ?? '' },
       skip: !inFocus,
     },
     Routes.consensus,
