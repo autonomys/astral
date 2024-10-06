@@ -2589,6 +2589,113 @@ export type Consensus_Extrinsics_Variance_Order_By = {
   tip?: InputMaybe<Order_By>;
 };
 
+/** columns and relationships of "consensus.log_kinds" */
+export type Consensus_Log_Kinds = {
+  __typename?: 'consensus_log_kinds';
+  id: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  /** An array relationship */
+  logs: Array<Consensus_Logs>;
+  /** An aggregate relationship */
+  logs_aggregate: Consensus_Logs_Aggregate;
+};
+
+
+/** columns and relationships of "consensus.log_kinds" */
+export type Consensus_Log_KindsLogsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+
+/** columns and relationships of "consensus.log_kinds" */
+export type Consensus_Log_KindsLogs_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
+  where?: InputMaybe<Consensus_Logs_Bool_Exp>;
+};
+
+/** aggregated selection of "consensus.log_kinds" */
+export type Consensus_Log_Kinds_Aggregate = {
+  __typename?: 'consensus_log_kinds_aggregate';
+  aggregate?: Maybe<Consensus_Log_Kinds_Aggregate_Fields>;
+  nodes: Array<Consensus_Log_Kinds>;
+};
+
+/** aggregate fields of "consensus.log_kinds" */
+export type Consensus_Log_Kinds_Aggregate_Fields = {
+  __typename?: 'consensus_log_kinds_aggregate_fields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Log_Kinds_Max_Fields>;
+  min?: Maybe<Consensus_Log_Kinds_Min_Fields>;
+};
+
+
+/** aggregate fields of "consensus.log_kinds" */
+export type Consensus_Log_Kinds_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Log_Kinds_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "consensus.log_kinds". All fields are combined with a logical 'AND'. */
+export type Consensus_Log_Kinds_Bool_Exp = {
+  _and?: InputMaybe<Array<Consensus_Log_Kinds_Bool_Exp>>;
+  _not?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
+  _or?: InputMaybe<Array<Consensus_Log_Kinds_Bool_Exp>>;
+  id?: InputMaybe<String_Comparison_Exp>;
+  kind?: InputMaybe<String_Comparison_Exp>;
+  logs?: InputMaybe<Consensus_Logs_Bool_Exp>;
+  logs_aggregate?: InputMaybe<Consensus_Logs_Aggregate_Bool_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Log_Kinds_Max_Fields = {
+  __typename?: 'consensus_log_kinds_max_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  kind?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Log_Kinds_Min_Fields = {
+  __typename?: 'consensus_log_kinds_min_fields';
+  id?: Maybe<Scalars['String']['output']>;
+  kind?: Maybe<Scalars['String']['output']>;
+};
+
+/** Ordering options when selecting data from "consensus.log_kinds". */
+export type Consensus_Log_Kinds_Order_By = {
+  id?: InputMaybe<Order_By>;
+  kind?: InputMaybe<Order_By>;
+  logs_aggregate?: InputMaybe<Consensus_Logs_Aggregate_Order_By>;
+};
+
+/** select columns of table "consensus.log_kinds" */
+export enum Consensus_Log_Kinds_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Kind = 'kind'
+}
+
+/** Streaming cursor of the table "consensus_log_kinds" */
+export type Consensus_Log_Kinds_Stream_Cursor_Input = {
+  /** Stream column input with initial value */
+  initial_value: Consensus_Log_Kinds_Stream_Cursor_Value_Input;
+  /** cursor ordering */
+  ordering?: InputMaybe<Cursor_Ordering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type Consensus_Log_Kinds_Stream_Cursor_Value_Input = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  kind?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** columns and relationships of "consensus.logs" */
 export type Consensus_Logs = {
   __typename?: 'consensus_logs';
@@ -2599,6 +2706,8 @@ export type Consensus_Logs = {
   id: Scalars['String']['output'];
   index_in_block: Scalars['Int']['output'];
   kind: Scalars['String']['output'];
+  /** An object relationship */
+  log_kind?: Maybe<Consensus_Log_Kinds>;
   log_kind_id: Scalars['String']['output'];
   value?: Maybe<Scalars['String']['output']>;
 };
@@ -2683,6 +2792,7 @@ export type Consensus_Logs_Bool_Exp = {
   id?: InputMaybe<String_Comparison_Exp>;
   index_in_block?: InputMaybe<Int_Comparison_Exp>;
   kind?: InputMaybe<String_Comparison_Exp>;
+  log_kind?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
   log_kind_id?: InputMaybe<String_Comparison_Exp>;
   value?: InputMaybe<String_Comparison_Exp>;
 };
@@ -2741,6 +2851,7 @@ export type Consensus_Logs_Order_By = {
   id?: InputMaybe<Order_By>;
   index_in_block?: InputMaybe<Order_By>;
   kind?: InputMaybe<Order_By>;
+  log_kind?: InputMaybe<Consensus_Log_Kinds_Order_By>;
   log_kind_id?: InputMaybe<Order_By>;
   value?: InputMaybe<Order_By>;
 };
@@ -7882,6 +7993,12 @@ export type Query_Root = {
   consensus_extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
   /** fetch data from the table: "consensus.extrinsics" using primary key columns */
   consensus_extrinsics_by_pk?: Maybe<Consensus_Extrinsics>;
+  /** fetch data from the table: "consensus.log_kinds" */
+  consensus_log_kinds: Array<Consensus_Log_Kinds>;
+  /** fetch aggregated fields from the table: "consensus.log_kinds" */
+  consensus_log_kinds_aggregate: Consensus_Log_Kinds_Aggregate;
+  /** fetch data from the table: "consensus.log_kinds" using primary key columns */
+  consensus_log_kinds_by_pk?: Maybe<Consensus_Log_Kinds>;
   /** fetch data from the table: "consensus.logs" */
   consensus_logs: Array<Consensus_Logs>;
   /** fetch aggregated fields from the table: "consensus.logs" */
@@ -8256,6 +8373,29 @@ export type Query_RootConsensus_Extrinsics_AggregateArgs = {
 
 
 export type Query_RootConsensus_Extrinsics_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Query_RootConsensus_Log_KindsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Log_Kinds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Log_Kinds_Order_By>>;
+  where?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Log_Kinds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Log_Kinds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Log_Kinds_Order_By>>;
+  where?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Log_Kinds_By_PkArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -8973,6 +9113,14 @@ export type Subscription_Root = {
   consensus_extrinsics_by_pk?: Maybe<Consensus_Extrinsics>;
   /** fetch data from the table in a streaming manner: "consensus.extrinsics" */
   consensus_extrinsics_stream: Array<Consensus_Extrinsics>;
+  /** fetch data from the table: "consensus.log_kinds" */
+  consensus_log_kinds: Array<Consensus_Log_Kinds>;
+  /** fetch aggregated fields from the table: "consensus.log_kinds" */
+  consensus_log_kinds_aggregate: Consensus_Log_Kinds_Aggregate;
+  /** fetch data from the table: "consensus.log_kinds" using primary key columns */
+  consensus_log_kinds_by_pk?: Maybe<Consensus_Log_Kinds>;
+  /** fetch data from the table in a streaming manner: "consensus.log_kinds" */
+  consensus_log_kinds_stream: Array<Consensus_Log_Kinds>;
   /** fetch data from the table: "consensus.logs" */
   consensus_logs: Array<Consensus_Logs>;
   /** fetch aggregated fields from the table: "consensus.logs" */
@@ -9469,6 +9617,36 @@ export type Subscription_RootConsensus_Extrinsics_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Extrinsics_Stream_Cursor_Input>>;
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Log_KindsArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Log_Kinds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Log_Kinds_Order_By>>;
+  where?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Log_Kinds_AggregateArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Log_Kinds_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Log_Kinds_Order_By>>;
+  where?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Log_Kinds_By_PkArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootConsensus_Log_Kinds_StreamArgs = {
+  batch_size: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<Consensus_Log_Kinds_Stream_Cursor_Input>>;
+  where?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
 };
 
 
@@ -10491,14 +10669,14 @@ export type HomeQueryQueryVariables = Exact<{
 
 export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }>, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, name: string, block?: { __typename?: 'consensus_blocks', id: string, height: any } | null }>, accounts_accounts_aggregate: { __typename?: 'accounts_accounts_aggregate', aggregate?: { __typename?: 'accounts_accounts_aggregate_fields', count: number } | null }, consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } };
 
-export type LogsConnectionQueryVariables = Exact<{
+export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<Consensus_Logs_Bool_Exp>;
 }>;
 
 
-export type LogsConnectionQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block?: { __typename?: 'consensus_blocks', id: string, height: any, timestamp: any } | null }> };
+export type LogsQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> };
 
 export type LogByIdQueryVariables = Exact<{
   logId: Scalars['String']['input'];

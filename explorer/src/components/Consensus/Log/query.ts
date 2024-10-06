@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_LOG_CONNECTION_LIST = gql`
-  query LogsConnection($limit: Int!, $offset: Int, $where: consensus_logs_bool_exp) {
+export const QUERY_LOGS = gql`
+  query Logs($limit: Int!, $offset: Int, $where: consensus_logs_bool_exp) {
     consensus_logs_aggregate(order_by: { id: desc }, where: $where) {
       aggregate {
         count
@@ -11,9 +11,8 @@ export const QUERY_LOG_CONNECTION_LIST = gql`
       id
       kind
       value
+      block_height
       block {
-        id
-        height
         timestamp
       }
     }

@@ -35,7 +35,7 @@ export interface ExplorerQueryState {
     blocks: QueryState<GqlT.BlocksQuery>
     extrinsics: QueryState<GqlT.ExtrinsicsQuery>
     events: QueryState<GqlT.EventsQuery>
-    logs: QueryState<GqlT.LogsConnectionQuery>
+    logs: QueryState<GqlT.LogsQuery>
 
     account: QueryState<GqlT.AccountByIdQuery>
     block: QueryState<GqlT.BlockByIdQuery>
