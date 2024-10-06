@@ -6,11 +6,20 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          account_id: account_id
+          account_id: id
         insertion_order: null
         remote_table:
           name: accounts
           schema: accounts
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
 select_permissions:
   - role: user
     permission:

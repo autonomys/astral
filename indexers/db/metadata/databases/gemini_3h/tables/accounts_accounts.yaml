@@ -6,7 +6,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          account_id: signer
+          id: signer
         insertion_order: null
         remote_table:
           name: extrinsics
@@ -15,7 +15,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          account_id: account_id
+          id: account_id
         insertion_order: null
         remote_table:
           name: rewards
