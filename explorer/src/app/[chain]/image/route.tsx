@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unknown-property */
 import { QUERY_HOME } from 'components/Consensus/Home/query'
-import { HomeQueryQuery } from 'components/gql/graphql'
 import {
   AutonomysSymbol,
   BlockIcon,
@@ -14,6 +13,7 @@ import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { HomeQueryQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -117,7 +117,7 @@ function Screen({
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
-              {numberWithCommas(Number(data.blocks[0].height))}
+              {numberWithCommas(Number(data.consensus_blocks[0].height))}
             </span>
           </div>
         </div>
@@ -143,7 +143,7 @@ function Screen({
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
-              {numberWithCommas(Number(data.extrinsicsConnection.totalCount))}
+              {numberWithCommas(Number(data.consensus_extrinsics_aggregate.aggregate?.count))}
             </span>
           </div>
         </div>
@@ -169,7 +169,7 @@ function Screen({
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
-              {numberWithCommas(Number(data.accountsConnection.totalCount))}
+              {numberWithCommas(Number(data.consensus_extrinsics_aggregate.aggregate?.count))}
             </span>
           </div>
         </div>
@@ -196,7 +196,10 @@ function Screen({
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
               {formatSpacePledged(
-                Number((data.blocks[0] as HomeQueryQuery['blocks'][0])?.spacePledged || 0),
+                Number(
+                  (data.consensus_blocks[0] as HomeQueryQuery['consensus_blocks'][0])
+                    ?.space_pledged || 0,
+                ),
               )}
             </span>
           </div>

@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unknown-property */
 import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
-import { AccountByIdQuery } from 'components/gql/graphql'
 import { DocIcon, WalletIcon } from 'components/icons'
 import { TOKEN } from 'constants/general'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { AccountByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -25,7 +25,7 @@ export async function GET(
   if (!accountId || !chainMatch) notFound()
 
   const {
-    data: { accountById },
+    data: { accounts_accounts_by_pk: accountById },
   }: {
     data: AccountByIdQuery
   } = await fetch(chainMatch.indexer, {
@@ -62,7 +62,7 @@ function Screen({
 }: {
   chainMatch: (typeof indexers)[number]
   accountId: string
-  accountById: AccountByIdQuery['accountById']
+  accountById: AccountByIdQuery['accounts_accounts_by_pk']
 }) {
   dayjs.extend(relativeTime)
 
