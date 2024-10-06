@@ -32,7 +32,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
     data,
   }: {
     data: HomeQueryQuery
-  } = await fetch(chainMatch.squids.old, {
+  } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
