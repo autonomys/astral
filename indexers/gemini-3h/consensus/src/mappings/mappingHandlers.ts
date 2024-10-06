@@ -14,7 +14,7 @@ import {
   calculateSpacePledged,
   getBlockAuthor,
 } from "./helper";
-import { EventHuman, EventPrimitive, ExtrinsicHuman } from "./types";
+import { EventHuman, EventPrimitive, ExtrinsicHuman, LogValue } from "./types";
 import { stringify } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
@@ -66,16 +66,19 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       const logJson = log.toPrimitive();
       const kind = logData ? Object.keys(logData)[0] : "";
       const rawKind = logJson ? Object.keys(logJson)[0] : "";
-      const value = logJson
-        ? stringify(logJson[rawKind as keyof typeof logJson])
-        : "";
+      const _value = logJson ? logJson[rawKind as keyof typeof logJson] : "";
+      const value: LogValue =
+        Array.isArray(_value) && _value.length === 2
+          ? { data: _value[1], engine: _value[0] }
+          : { data: _value };
+
       return createAndSaveLog(
         height,
         blockHash,
         i,
         rawKind,
         kind,
-        value,
+        stringify(value),
         blockTimestamp
       );
     })

@@ -17,3 +17,8 @@ export type EventHuman = EventPrimitive & {
   method: string;
   section: string;
 };
+
+export type LogValue = {
+  data: any;
+  engine?: string;
+};
