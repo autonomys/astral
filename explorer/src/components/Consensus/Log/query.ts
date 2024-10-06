@@ -12,9 +12,7 @@ export const QUERY_LOGS = gql`
       kind
       value
       block_height
-      block {
-        timestamp
-      }
+      timestamp
     }
   }
 `
@@ -26,10 +24,9 @@ export const QUERY_LOG_BY_ID = gql`
       kind
       value
       block_height
+      timestamp
       block {
         id
-        height
-        timestamp
         events(limit: 10, order_by: { id: desc }) {
           id
           args

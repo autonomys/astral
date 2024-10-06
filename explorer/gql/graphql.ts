@@ -2701,6 +2701,7 @@ export type Consensus_Logs = {
   /** An object relationship */
   log_kind?: Maybe<Consensus_Log_Kinds>;
   log_kind_id: Scalars['String']['output'];
+  timestamp: Scalars['timestamp']['output'];
   value?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2786,6 +2787,7 @@ export type Consensus_Logs_Bool_Exp = {
   kind?: InputMaybe<String_Comparison_Exp>;
   log_kind?: InputMaybe<Consensus_Log_Kinds_Bool_Exp>;
   log_kind_id?: InputMaybe<String_Comparison_Exp>;
+  timestamp?: InputMaybe<Timestamp_Comparison_Exp>;
   value?: InputMaybe<String_Comparison_Exp>;
 };
 
@@ -2798,6 +2800,7 @@ export type Consensus_Logs_Max_Fields = {
   index_in_block?: Maybe<Scalars['Int']['output']>;
   kind?: Maybe<Scalars['String']['output']>;
   log_kind_id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
   value?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2809,6 +2812,7 @@ export type Consensus_Logs_Max_Order_By = {
   index_in_block?: InputMaybe<Order_By>;
   kind?: InputMaybe<Order_By>;
   log_kind_id?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
   value?: InputMaybe<Order_By>;
 };
 
@@ -2821,6 +2825,7 @@ export type Consensus_Logs_Min_Fields = {
   index_in_block?: Maybe<Scalars['Int']['output']>;
   kind?: Maybe<Scalars['String']['output']>;
   log_kind_id?: Maybe<Scalars['String']['output']>;
+  timestamp?: Maybe<Scalars['timestamp']['output']>;
   value?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2832,6 +2837,7 @@ export type Consensus_Logs_Min_Order_By = {
   index_in_block?: InputMaybe<Order_By>;
   kind?: InputMaybe<Order_By>;
   log_kind_id?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
   value?: InputMaybe<Order_By>;
 };
 
@@ -2845,6 +2851,7 @@ export type Consensus_Logs_Order_By = {
   kind?: InputMaybe<Order_By>;
   log_kind?: InputMaybe<Consensus_Log_Kinds_Order_By>;
   log_kind_id?: InputMaybe<Order_By>;
+  timestamp?: InputMaybe<Order_By>;
   value?: InputMaybe<Order_By>;
 };
 
@@ -2862,6 +2869,8 @@ export enum Consensus_Logs_Select_Column {
   Kind = 'kind',
   /** column name */
   LogKindId = 'log_kind_id',
+  /** column name */
+  Timestamp = 'timestamp',
   /** column name */
   Value = 'value'
 }
@@ -2921,6 +2930,7 @@ export type Consensus_Logs_Stream_Cursor_Value_Input = {
   index_in_block?: InputMaybe<Scalars['Int']['input']>;
   kind?: InputMaybe<Scalars['String']['input']>;
   log_kind_id?: InputMaybe<Scalars['String']['input']>;
+  timestamp?: InputMaybe<Scalars['timestamp']['input']>;
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -10653,14 +10663,14 @@ export type LogsQueryVariables = Exact<{
 }>;
 
 
-export type LogsQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> };
+export type LogsQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any }> };
 
 export type LogByIdQueryVariables = Exact<{
   logId: Scalars['String']['input'];
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs_by_pk?: { __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, block?: { __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null } | null };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs_by_pk?: { __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null } | null };
 
 export type AccountTransferSenderTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];

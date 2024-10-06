@@ -1,10 +1,11 @@
-import { shortString } from '@/utils/string'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { LogByIdQuery } from 'gql/graphql'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
+import { parseArgs, parseLogValue } from 'utils/indexerParsing'
+import { shortString } from 'utils/string'
 
 dayjs.extend(relativeTime)
 
@@ -13,6 +14,8 @@ type Props = {
 }
 
 export const LogDetailsCard: FC<Props> = ({ log }) => {
+  const value = useMemo(() => parseLogValue(log.value), [log.value])
+
   return (
     <div className='w-full'>
       <div className='flex'>
@@ -29,14 +32,12 @@ export const LogDetailsCard: FC<Props> = ({ log }) => {
             <div className='w-full md:flex-1'>
               <List>
                 <StyledListItem title='Type'>{log.kind}</StyledListItem>
-                <StyledListItem title='Engine'>{log.value?.[0]}</StyledListItem>
-                <StyledListItem title='Data'>
-                  {shortString(log.value?.[1] || '-', 10, 550)}
-                </StyledListItem>
+                <StyledListItem title='Engine'>{value.engine}</StyledListItem>
+                <StyledListItem title='Data'>{shortString(value.data, 10, 550)}</StyledListItem>
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={log.block?.events[0].args} />
+              <Arguments args={parseArgs(log.block?.events[0].args)} />
             </div>
           </div>
         </div>

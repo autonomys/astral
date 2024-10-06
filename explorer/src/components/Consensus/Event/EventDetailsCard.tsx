@@ -1,3 +1,4 @@
+import { parseArgs } from '@/utils/indexerParsing'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
@@ -68,7 +69,7 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={event.args} />
+              <Arguments args={parseArgs(event.args)} />
             </div>
           </div>
         </div>

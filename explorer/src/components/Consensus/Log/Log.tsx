@@ -38,7 +38,6 @@ export const Log: FC = () => {
   }, [consensusEntry])
 
   const log = useMemo(() => data && data.consensus_logs_by_pk, [data])
-  console.log('log', log)
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />

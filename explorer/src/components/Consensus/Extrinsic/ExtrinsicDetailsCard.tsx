@@ -1,4 +1,3 @@
-import { shortString } from '@/utils/string'
 import { Arguments } from 'components/common/Arguments'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
@@ -10,6 +9,8 @@ import { ExtrinsicsByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
+import { parseArgs } from 'utils/indexerParsing'
+import { shortString } from 'utils/string'
 
 dayjs.extend(relativeTime)
 
@@ -72,7 +73,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={extrinsic.args} />
+              <Arguments args={parseArgs(extrinsic.args)} />
             </div>
           </div>
         </div>
