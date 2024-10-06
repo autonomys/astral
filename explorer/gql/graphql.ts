@@ -10628,7 +10628,7 @@ export type ExtrinsicsByIdQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics_by_pk?: { __typename?: 'consensus_extrinsics', index_in_block: number, id: string, hash: string, signature: string, success: boolean, tip: any, args: string, signer: string, name: string, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any } | null, events: Array<{ __typename?: 'consensus_events', id: string, index_in_block: any, phase: string, timestamp: any, name: string, args: string, block?: { __typename?: 'consensus_blocks', height: any } | null, extrinsic?: { __typename?: 'consensus_extrinsics', id: string, index_in_block: number, block?: { __typename?: 'consensus_blocks', height: any } | null } | null }> } | null };
+export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics_by_pk?: { __typename?: 'consensus_extrinsics', id: string, index_in_block: number, hash: string, block_height: any, timestamp: any, signature: string, success: boolean, tip: any, args: string, signer: string, name: string, events: Array<{ __typename?: 'consensus_events', id: string, phase: string, timestamp: any, name: string, args: string, extrinsic_id: string }> } | null };
 
 export type ExtrinsicsByHashQueryVariables = Exact<{
   hash: Scalars['String']['input'];
@@ -10660,7 +10660,7 @@ export type LogByIdQueryVariables = Exact<{
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs_by_pk?: { __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block?: { __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, index_in_block: any, timestamp: any, block?: { __typename?: 'consensus_blocks', height: any, hash: string } | null }> } | null } | null };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs_by_pk?: { __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, block?: { __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null } | null };
 
 export type AccountTransferSenderTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];

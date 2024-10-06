@@ -25,6 +25,7 @@ export const QUERY_LOG_BY_ID = gql`
       id
       kind
       value
+      block_height
       block {
         id
         height
@@ -34,12 +35,9 @@ export const QUERY_LOG_BY_ID = gql`
           args
           name
           phase
-          index_in_block
           timestamp
-          block {
-            height
-            hash
-          }
+          block_height
+          extrinsic_id
         }
       }
     }
