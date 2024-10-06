@@ -7,7 +7,7 @@ import {
   OperatorNominatorsByIdQuery,
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
-} from 'gql/types/staking'
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'

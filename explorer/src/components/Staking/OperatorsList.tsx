@@ -8,11 +8,7 @@ import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
-import {
-  OperatorsListQuery,
-  OperatorsListQueryVariables,
-  Order_By as OrderBy,
-} from 'gql/types/staking'
+import { OperatorsListQuery, OperatorsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
@@ -577,7 +573,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
           if (row.original.status === OperatorStatus.DEREGISTERED)
             excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-          if (row.original.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR) excludeActions.push(OperatorActionType.UnlockNominator)
+          if (row.original.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+            excludeActions.push(OperatorActionType.UnlockNominator)
 
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
@@ -787,16 +784,9 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(
-        apolloClient,
-        QUERY_OPERATOR_LIST,
-        'operator',
-        {
-          orderBy,
-        },
-        ['limit', 'offset'],
-        { clientName: 'staking' },
-      ),
+      downloadFullData(apolloClient, QUERY_OPERATOR_LIST, 'operator', {
+        orderBy,
+      }),
     [apolloClient, orderBy],
   )
 

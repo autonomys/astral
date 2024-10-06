@@ -10528,7 +10528,7 @@ export type RewardsListQueryVariables = Exact<{
 }>;
 
 
-export type RewardsListQuery = { __typename?: 'query_root', accounts_rewards: Array<{ __typename?: 'accounts_rewards', id: string, block_height: any, index_in_block: any, reward_type: string, amount: any, timestamp: any, block?: { __typename?: 'consensus_blocks', hash: string, id: string, height: any } | null, account?: { __typename?: 'accounts_accounts', id: string, free: any, reserved: any, total?: any | null, updated_at: any } | null }> };
+export type RewardsListQuery = { __typename?: 'query_root', accounts_rewards_aggregate: { __typename?: 'accounts_rewards_aggregate', aggregate?: { __typename?: 'accounts_rewards_aggregate_fields', count: number } | null }, accounts_rewards: Array<{ __typename?: 'accounts_rewards', id: string, block_height: any, index_in_block: any, reward_type: string, amount: any, timestamp: any, block?: { __typename?: 'consensus_blocks', hash: string, id: string, height: any } | null, account?: { __typename?: 'accounts_accounts', id: string, free: any, reserved: any, total?: any | null, updated_at: any } | null }> };
 
 export type ExtrinsicsByAccountIdQueryVariables = Exact<{
   limit: Scalars['Int']['input'];

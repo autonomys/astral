@@ -6,7 +6,6 @@ import {
   ApolloLink,
   ApolloProvider,
   InMemoryCache,
-  Operation,
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'

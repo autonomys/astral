@@ -11,8 +11,8 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   AccountTransferSenderTotalCountQuery,
   AccountTransferSenderTotalCountQueryVariables,
-} from 'gql/types/leaderboard'
-import { Order_By as OrderBy } from 'gql/types/staking'
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'

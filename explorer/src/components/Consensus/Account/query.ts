@@ -97,6 +97,11 @@ export const QUERY_REWARDS_LIST = gql`
     $offset: Int
     $sortBy: [accounts_rewards_order_by!]!
   ) {
+    accounts_rewards_aggregate(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }) {
+      aggregate {
+        count
+      }
+    }
     accounts_rewards(
       order_by: $sortBy
       limit: $limit

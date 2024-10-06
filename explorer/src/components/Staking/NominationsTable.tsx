@@ -13,7 +13,7 @@ import {
   NominationsListQuery,
   NominationsListQueryVariables,
   Order_By as OrderBy,
-} from 'gql/types/staking'
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
@@ -215,7 +215,10 @@ export const NominationsTable: FC = () => {
                           OperatorActionType.Nominating,
                           OperatorActionType.Deregister,
                         )
-                      if (nominator.operator?.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+                      if (
+                        nominator.operator?.pending_action !==
+                        OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR
+                      )
                         excludeActions.push(OperatorActionType.UnlockNominator)
 
                       if (!nominator)

@@ -1,10 +1,6 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import {
-  DomainsStatusQuery,
-  DomainsStatusQueryVariables,
-  Order_By as OrderBy,
-} from 'gql/types/staking'
+import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useMemo } from 'react'
@@ -53,11 +49,7 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
             intervalSeconds:
               currentEpochDuration && blockCount
                 ? BigInt(currentEpochDuration) /
-                  BigInt(
-                    blockCount % 100 > 0
-                      ? Math.min(blockCount % 100, 100) * 1000
-                      : 1,
-                  )
+                  BigInt(blockCount % 100 > 0 ? Math.min(blockCount % 100, 100) * 1000 : 1)
                 : null,
           },
           {

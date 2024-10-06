@@ -11,7 +11,7 @@ import {
   GetAllNominatorsQuery,
   GetAllNominatorsQueryVariables,
   NominatorOrderByInput,
-} from 'gql/rewardTypes'
+} from 'gql/graphql'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
