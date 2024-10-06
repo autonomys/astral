@@ -14,7 +14,13 @@ import {
   calculateSpacePledged,
   getBlockAuthor,
 } from "./helper";
-import { EventHuman, EventPrimitive, ExtrinsicHuman, LogValue } from "./types";
+import {
+  EventHuman,
+  EventPrimitive,
+  ExtrinsicHuman,
+  ExtrinsicPrimitive,
+  LogValue,
+} from "./types";
 import { stringify } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
@@ -100,6 +106,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
   } = _call;
 
   const methodToHuman = method.toHuman() as ExtrinsicHuman;
+  const methodToPrimitive = method.toPrimitive() as ExtrinsicPrimitive;
   const eventRecord = events[idx];
 
   const feeEvent = events.find(
@@ -136,7 +143,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     BigInt(nonce.toString()),
     signer.toString(),
     signature.toString(),
-    stringify(methodToHuman.args),
+    stringify(methodToPrimitive.args),
     error,
     BigInt(tip.toString()),
     fee,
@@ -169,7 +176,6 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
       ? eventRecord.phase.asApplyExtrinsic.toNumber()
       : 0
     : 0;
-  const args = extrinsic ? stringify(extrinsic.extrinsic.args) : "";
   const extrinsicId = extrinsic ? number + "-" + extrinsic.idx.toString() : "";
   const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
 
@@ -185,6 +191,6 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     timestamp ? timestamp : new Date(0),
     eventRecord ? eventRecord.phase.type : "",
     pos,
-    args
+    stringify(primitive.data)
   );
 }
