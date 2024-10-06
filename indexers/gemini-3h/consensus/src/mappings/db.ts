@@ -151,7 +151,6 @@ export async function createAndSaveExtrinsic(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
-  callIndex: string,
   section: string,
   method: string,
   success: boolean,

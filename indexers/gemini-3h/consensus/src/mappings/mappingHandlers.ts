@@ -14,27 +14,8 @@ import {
   calculateSpacePledged,
   getBlockAuthor,
 } from "./helper";
+import { EventHuman, EventPrimitive, ExtrinsicHuman } from "./types";
 import { stringify } from "./utils";
-
-type ExtrinsicPrimitive = {
-  callIndex: string;
-  args: any;
-};
-
-type ExtrinsicHuman = ExtrinsicPrimitive & {
-  method: string;
-  section: string;
-};
-
-type EventPrimitive = {
-  index: string;
-  data: any;
-};
-
-type EventHuman = EventPrimitive & {
-  method: string;
-  section: string;
-};
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -115,8 +96,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     events,
   } = _call;
 
-  const extrinsic_human = method.toHuman() as ExtrinsicHuman;
-  const extrinsic_primitive = method.toPrimitive() as ExtrinsicPrimitive;
+  const methodToHuman = method.toHuman() as ExtrinsicHuman;
   const eventRecord = events[idx];
 
   const feeEvent = events.find(
@@ -146,15 +126,14 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     BigInt(number.toString()),
     hash.toString(),
     idx,
-    extrinsic_primitive.callIndex,
-    extrinsic_human.section,
-    extrinsic_human.method,
+    methodToHuman.section,
+    methodToHuman.method,
     success,
     timestamp ? timestamp : new Date(0),
     BigInt(nonce.toString()),
     signer.toString(),
     signature.toString(),
-    stringify(extrinsic_human.args),
+    stringify(methodToHuman.args),
     error,
     BigInt(tip.toString()),
     fee,
@@ -188,9 +167,7 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
       : 0
     : 0;
   const args = extrinsic ? stringify(extrinsic.extrinsic.args) : "";
-  const extrinsicId = extrinsic
-    ? number + "-" + extrinsic.extrinsic.hash.toString()
-    : "";
+  const extrinsicId = extrinsic ? number + "-" + extrinsic.idx.toString() : "";
   const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
 
   await createAndSaveEvent(
