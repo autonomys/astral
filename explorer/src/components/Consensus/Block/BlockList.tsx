@@ -26,7 +26,7 @@ import { QUERY_BLOCKS } from './query'
 
 dayjs.extend(relativeTime)
 
-type Row = BlocksQuery['consensus_blocks'][0]
+type Row = BlocksQuery['consensus_blocks'][number]
 
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()

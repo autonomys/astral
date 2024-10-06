@@ -30,8 +30,8 @@ export const QUERY_BLOCKS = gql`
 `
 
 export const QUERY_BLOCK_BY_ID = gql`
-  query BlockById($blockId: numeric!) {
-    consensus_blocks(limit: 10, where: { height: { _eq: $blockId } }) {
+  query BlockById($blockId: String!) {
+    consensus_blocks_by_pk(id: $blockId) {
       id
       height
       hash
@@ -43,8 +43,8 @@ export const QUERY_BLOCK_BY_ID = gql`
       extrinsics_count
       events_count
       logs(limit: 10, order_by: { block_height: desc }) {
+        block_height
         block {
-          height
           timestamp
         }
         kind
@@ -72,10 +72,8 @@ export const QUERY_BLOCK_EXTRINSICS = gql`
       hash
       name
       success
-      block {
-        height
-        timestamp
-      }
+      block_height
+      timestamp
       index_in_block
     }
   }
@@ -98,17 +96,8 @@ export const QUERY_BLOCK_EVENTS = gql`
       name
       phase
       index_in_block
-      block {
-        height
-        id
-      }
-      extrinsic {
-        index_in_block
-        block {
-          height
-          id
-        }
-      }
+      block_height
+      extrinsic_id
     }
   }
 `

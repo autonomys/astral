@@ -3,7 +3,7 @@ import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Log } from 'gql/graphql'
+import { BlockByIdQuery } from 'gql/graphql'
 import { FC } from 'react'
 import { BlockDetailsEventList } from './BlockDetailsEventList'
 import { BlockDetailsExtrinsicList } from './BlockDetailsExtrinsicList'
@@ -11,8 +11,10 @@ import { BlockDetailsLogList } from './BlockDetailsLogList'
 
 dayjs.extend(relativeTime)
 
+type Logs = NonNullable<BlockByIdQuery['consensus_blocks_by_pk']>['logs']
+
 type Props = {
-  logs: Log[]
+  logs: Logs
   isDesktop?: boolean
   extrinsicsCount?: number
   eventsCount?: number
@@ -48,14 +50,14 @@ export const BlockDetailsTabs: FC<Props> = ({
 }
 
 type LogCardProps = {
-  log: Log
+  log: Logs[number]
 }
 
 const BlockDetailsLogCard: FC<LogCardProps> = ({ log }) => {
   const body = [
     {
       name: 'Block',
-      value: log.block.height,
+      value: log.block_height ?? 'N/A',
     },
     {
       name: 'Type',
