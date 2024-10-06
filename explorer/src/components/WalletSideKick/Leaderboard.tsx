@@ -1,4 +1,3 @@
-import { numberPositionSuffix } from '@/utils/number'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -17,6 +16,7 @@ import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
+import { numberPositionSuffix } from 'utils/number'
 import { QUERY_TOP_LEADERBOARD } from './query'
 
 interface LeaderboardProps {

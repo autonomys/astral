@@ -1,6 +1,5 @@
-import { TOKEN } from '@/constants'
-import { bigNumberToNumber, numberWithCommas } from '@/utils/number'
 import { ResponsiveLine } from '@nivo/line'
+import { TOKEN } from 'constants'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
@@ -11,6 +10,7 @@ import { useTheme } from 'providers/ThemeProvider'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, useQueryStates } from 'states/query'
+import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { QUERY_LAST_WEEK_REWARDS } from './query'
 
 dayjs.extend(relativeTime)

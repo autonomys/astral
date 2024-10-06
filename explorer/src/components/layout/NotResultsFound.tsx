@@ -1,5 +1,5 @@
-import AstronautImage from '@/components/common/ErrorFallback/AstronautImage'
 import { ArrowButton } from 'components/common/ArrowButton'
+import AstronautImage from 'components/common/ErrorFallback/AstronautImage'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 

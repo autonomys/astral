@@ -1,7 +1,7 @@
 'use client'
 
-import { LogoIcon } from '@/components/icons'
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
+import { LogoIcon } from 'components/icons'
 import dayjs from 'dayjs'
 import useChains from 'hooks/useChains'
 import { useRouter } from 'next/navigation'

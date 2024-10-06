@@ -1,11 +1,10 @@
 'use client'
 
-import { capitalizeFirstLetter, shortString } from '@/utils/string'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, TOKEN } from 'constants/'
+import { PAGE_SIZE, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -26,6 +25,7 @@ import {
   numberFormattedString,
   numberWithCommas,
 } from 'utils/number'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'

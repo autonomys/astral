@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-import { FilterIcon } from '@/components/icons/FilterIcon'
 import { BasicDatepicker } from 'components/common/BasicDatepicker'
+import { FilterIcon } from 'components/icons/FilterIcon'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'

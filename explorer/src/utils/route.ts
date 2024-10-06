@@ -1,6 +1,6 @@
-import { Route } from '@/types/app'
 import { NetworkId } from '@autonomys/auto-utils'
 import { ROUTES, Routes } from 'constants/routes'
+import { Route } from 'types/app'
 
 const findRoute = (route: Routes): Route | undefined => ROUTES.find((item) => item.name === route)
 

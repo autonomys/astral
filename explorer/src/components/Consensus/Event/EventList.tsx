@@ -1,6 +1,5 @@
 'use client'
 
-import { countTablePages } from '@/utils/table'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
@@ -20,6 +19,7 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
+import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_EVENTS } from './query'
 

@@ -1,4 +1,3 @@
-import { parseArgs } from '@/utils/indexerParsing'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
@@ -9,6 +8,7 @@ import { EventByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
+import { parseArgs } from 'utils/indexerParsing'
 
 dayjs.extend(relativeTime)
 

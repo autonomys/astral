@@ -1,5 +1,5 @@
-import { MAX_DOWNLOADER_BATCH_SIZE } from '@/constants/general'
 import type { ApolloClient, DocumentNode } from '@apollo/client'
+import { MAX_DOWNLOADER_BATCH_SIZE } from 'constants/general'
 
 export const downloadFullData = async (
   apolloClient: ApolloClient<object>,

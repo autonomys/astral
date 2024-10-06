@@ -1,10 +1,10 @@
 'use client'
 
-import useChains from '@/hooks/useChains'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
 import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import React, { FC, useCallback, useMemo } from 'react'

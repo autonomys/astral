@@ -1,6 +1,5 @@
 'use client'
 
-import { Routes } from '@/constants'
 import {
   ApolloClient,
   ApolloLink,
@@ -11,6 +10,7 @@ import {
 import { RetryLink } from '@apollo/client/link/retry'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
+import { Routes } from 'constants/routes'
 import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 
 export type ChainContextValue = {

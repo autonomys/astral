@@ -1,6 +1,6 @@
-import { EmptyCircleIcon } from '@/components/icons/EmptyCircleIcon'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckCircleIcon, FunnelIcon } from '@heroicons/react/24/outline'
+import { EmptyCircleIcon } from 'components/icons/EmptyCircleIcon'
 import { ExtrinsicWhereInput } from 'gql/graphql'
 import { FC, Fragment, useEffect, useState } from 'react'
 
