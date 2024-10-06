@@ -26,37 +26,23 @@ export const QUERY_EXTRINSICS = gql`
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
     consensus_extrinsics_by_pk(id: $extrinsicId) {
-      index_in_block
       id
+      index_in_block
       hash
+      block_height
+      timestamp
       signature
       success
       tip
       args
-      block {
-        height
-        id
-        timestamp
-      }
       signer
       events(limit: 10) {
         id
-        index_in_block
         phase
-        index_in_block
         timestamp
         name
         args
-        block {
-          height
-        }
-        extrinsic {
-          id
-          index_in_block
-          block {
-            height
-          }
-        }
+        extrinsic_id
       }
       name
     }
