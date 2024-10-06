@@ -27,5 +27,3 @@ const SearchResult: FC = () => {
     </div>
   )
 }
-
-export default SearchResult

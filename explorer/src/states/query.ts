@@ -2,32 +2,32 @@ import { ROUTE_EXTRA_FLAG_TYPE, Routes } from 'constants/routes'
 import * as GqlT from 'gql/graphql'
 import { create } from 'zustand'
 
-export type Init = {
+type Init = {
   initialized: true
 }
 
-export type Loading<T> = {
+type Loading<T> = {
   loading: true
   value?: T | null
   lastValueTimestamp?: number
 }
 
-export type LastValue<T> = {
+type LastValue<T> = {
   value: T
   lastValueTimestamp: number
 }
 
-export type Error<T> = {
+type Error<T> = {
   error: true
   value?: T | null
   lastValueTimestamp?: number
 }
 
-export type QueryState<T> = Init | Loading<T> | LastValue<T> | Error<T>
+type QueryState<T> = Init | Loading<T> | LastValue<T> | Error<T>
 
 const initialized: Init = { initialized: true }
 
-export interface ExplorerQueryState {
+interface ExplorerQueryState {
   [Routes.consensus]: {
     home: QueryState<GqlT.HomeQueryQuery>
 

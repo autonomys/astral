@@ -22,7 +22,7 @@ type LeaderboardProps = {
 }
 const TABLE = 'leaderboard'
 
-export const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
+const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
   const { subspaceAccount } = useWallet()
   const {
     leaderboard: {

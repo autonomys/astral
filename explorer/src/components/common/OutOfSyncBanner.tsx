@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
 import { activate } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { LastBlockQuery } from 'gql/oldSquidTypes'
+import { LastBlockQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -9,7 +9,7 @@ import { LAST_BLOCK } from './query'
 
 const NORMAL_BLOCKS_DIVERGENCE = 120
 
-export const OutOfSyncBanner: FC = () => {
+const OutOfSyncBanner: FC = () => {
   return (
     <div className="container mx-auto mb-4 flex grow justify-center px-5 font-['Montserrat'] md:px-[25px] 2xl:px-0">
       <div className='sticky top-0 z-50 w-full'>

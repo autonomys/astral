@@ -6,7 +6,7 @@ type Props = {
   args: any
 }
 
-export const theme = {
+const theme = {
   base00: 'transparent',
   base01: 'transparent',
   base02: 'transparent',

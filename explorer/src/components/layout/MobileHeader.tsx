@@ -21,13 +21,11 @@ type Props = {
   menuList: MenuItem[]
 }
 
-export const MobileHeader: FC<Props> = ({ isOpen, setIsOpen, menuList }) => {
-  return <Drawer menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
-}
+export const MobileHeader: FC<Props> = ({ isOpen, setIsOpen, menuList }) => (
+  <Drawer menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
+)
 
-export default MobileHeader
-
-export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
+const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
   const { push } = useRouter()
   const { isDark, toggleTheme } = useTheme()
   const { network, section } = useChains()

@@ -30,7 +30,7 @@ type DomainBlockTimeProgressProps = {
   last1kEpochDuration: string | null
 }
 
-export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
+const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
   domain,
   currentEpochDuration,
   blockCount,

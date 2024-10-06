@@ -14,7 +14,7 @@ import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
 
-export type Result = {
+type Result = {
   id: string
   timestamp: string
   action: string
@@ -121,5 +121,3 @@ export const ExtrinsicAndEventResultTable: FC<Props> = ({ results }) => {
     </div>
   )
 }
-
-export default ExtrinsicAndEventResultTable

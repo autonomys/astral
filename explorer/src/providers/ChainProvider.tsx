@@ -34,7 +34,7 @@ interface SelectedChainProps extends Props {
   indexerSet: Indexer
 }
 
-export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
+const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
   const httpLink = createHttpLink({
     uri: () => indexerSet.indexer,
   })

@@ -23,5 +23,3 @@ const NotResultsFound = () => {
     </div>
   )
 }
-
-export default NotResultsFound

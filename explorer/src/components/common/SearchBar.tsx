@@ -14,7 +14,7 @@ export interface FormValues {
   searchType: SearchType
 }
 
-export interface SearchBarProps {
+interface SearchBarProps {
   fixSearchType?: SearchType
 }
 
@@ -138,9 +138,7 @@ export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
   )
 }
 
-export default SearchBar
-
-export const SearchSpinner: FC = () => {
+const SearchSpinner: FC = () => {
   return (
     <div role='status'>
       <svg

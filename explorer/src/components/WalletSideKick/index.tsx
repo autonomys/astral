@@ -33,7 +33,7 @@ type DrawerProps = {
   onClose: () => void
 }
 
-export const PendingTransactionsLabel: FC = () => {
+const PendingTransactionsLabel: FC = () => {
   const { pendingTransactions } = useTransactionsStates()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const count = useMemo(
