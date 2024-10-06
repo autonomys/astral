@@ -110,7 +110,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
         header: { number },
       },
     },
-    extrinsic: { method, hash, nonce, signer, signature, tip, args },
+    extrinsic: { method, hash, nonce, signer, signature, tip },
     success,
     events,
   } = _call;
@@ -154,7 +154,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     BigInt(nonce.toString()),
     signer.toString(),
     signature.toString(),
-    stringify(args),
+    stringify(extrinsic_human.args),
     error,
     BigInt(tip.toString()),
     fee,
