@@ -30,7 +30,6 @@ select_permissions:
         - reserved
         - total
         - updated_at
-        - account_id
         - id
       filter: {}
       allow_aggregations: true

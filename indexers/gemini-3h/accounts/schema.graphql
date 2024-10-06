@@ -4,7 +4,6 @@
 
 type Account @entity {
   id: ID!
-  accountId: String! @index
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!

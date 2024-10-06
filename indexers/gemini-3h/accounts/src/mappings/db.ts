@@ -2,19 +2,17 @@ import { Account, BalanceHistory, Reward, Transfer } from "../types";
 import { dateEntry } from "./utils";
 
 export async function createOrUpdateAndSaveAccount(
-  accountId: string,
+  id: string,
   blockNumber: bigint,
   nonce: bigint,
   free: bigint,
   reserved: bigint,
   total: bigint
 ): Promise<Account> {
-  const id = accountId.toLowerCase();
   let account = await Account.get(id);
   if (!account) {
     account = Account.create({
       id,
-      accountId,
       nonce,
       free,
       reserved,
@@ -39,7 +37,7 @@ export async function createAndSaveBalanceHistory(
   reserved: bigint,
   total: bigint
 ): Promise<BalanceHistory> {
-  const id = accountId.toLowerCase() + "-" + blockNumber.toString();
+  const id = accountId + "-" + blockNumber.toString();
   const balanceHistory = BalanceHistory.create({
     id,
     accountId,
