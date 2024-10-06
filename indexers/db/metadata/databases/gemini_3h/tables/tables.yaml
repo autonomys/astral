@@ -1,5 +1,6 @@
 - "!include accounts_accounts.yaml"
 - "!include accounts_balance_histories.yaml"
+- "!include accounts_rewards.yaml"
 - "!include accounts_transfers.yaml"
 - "!include consensus_blocks.yaml"
 - "!include consensus_event_modules.yaml"
