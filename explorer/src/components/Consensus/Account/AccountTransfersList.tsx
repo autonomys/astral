@@ -14,12 +14,11 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { formatUnits } from 'ethers'
 import {
   Order_By as OrderBy,
-  Transfer,
-  Transfer_Select_Column,
+  Accounts_Transfers_Select_Column as TransferColumn,
   TransfersByAccountIdQuery,
   TransfersByAccountIdQueryVariables,
-  Transfer_Bool_Exp as TransferWhere,
-} from 'gql/types/accounts'
+  Accounts_Transfers_Bool_Exp as TransferWhere,
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -27,11 +26,12 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
 import { formatExtrinsicId, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { QUERY_ACCOUNT_TRANSFERS } from './accounts.query'
+import { QUERY_ACCOUNT_TRANSFERS } from './query'
 
 dayjs.extend(relativeTime)
 
@@ -39,17 +39,12 @@ type Props = {
   accountId: string
 }
 
-type Row = {
-  row: {
-    index: number
-    original: Transfer
-  }
-}
+type Row = TransfersByAccountIdQuery['accounts_transfers'][0]
 
 export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([
-    { id: Transfer_Select_Column.CreatedAt, desc: true },
+    { id: TransferColumn.CreatedAt, desc: true },
   ])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -105,8 +100,14 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     [apolloClient, orderBy, where],
   )
 
-  const transfers = useMemo(() => data && data.transfer, [data])
-  const totalCount = useMemo(() => (data && data.transfer_aggregate.aggregate?.count) || 0, [data])
+  const transfers = useMemo(() => data && data.accounts_transfers, [data])
+  const totalCount = useMemo(
+    () =>
+      data && data.accounts_transfers_aggregate.aggregate
+        ? data.accounts_transfers_aggregate.aggregate.count
+        : 0,
+    [data],
+  )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
     [totalCount, pagination.pageSize],
@@ -118,7 +119,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'created_at',
         header: 'Block',
         enableSorting: true,
-        cell: ({ row }: Row) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`created_at-${row.original.id}`} className='row flex items-center gap-3'>
             <Link
               data-testid={`transfer-created_at-${row.index}`}
@@ -138,7 +139,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'extrinsic_id',
         header: 'Extrinsic',
         enableSorting: true,
-        cell: ({ row }: Row) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`extrinsic_id-${row.original.id}`} className='row flex items-center gap-3'>
             <Link
               data-testid={`transfer-extrinsic_id-${row.index}`}
@@ -158,7 +159,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'direction',
         header: 'Direction',
         enableSorting: false,
-        cell: ({ row }: Row) => (
+        cell: ({ row }: Cell<Row>) => (
           <div
             key={`direction-${row.original.id}`}
             className={`row flex items-center gap-3 text-${row.original.from === accountId ? 'red-500' : 'greenBright'}`}
@@ -171,7 +172,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'from',
         header: 'From',
         enableSorting: true,
-        cell: ({ row }: Row) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`from-${row.original.id}`} className='row flex items-center gap-3'>
             {isLargeLaptop && <AccountIcon address={row.original.from} size={26} />}
             <Link
@@ -188,7 +189,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'to',
         header: 'To',
         enableSorting: true,
-        cell: ({ row }: Row) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`to-${row.original.id}`} className='row flex items-center gap-3'>
             {isLargeLaptop && <AccountIcon address={row.original.to} size={26} />}
             <Link
@@ -205,7 +206,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'value',
         header: 'Amount',
         enableSorting: true,
-        cell: ({ row }) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-value-${row.index}`}>
             <Tooltip text={`${formatUnits(row.original.value)} ${TOKEN.symbol}`}>
               {`${bigNumberToNumber(row.original.value)} ${TOKEN.symbol}`}
@@ -217,7 +218,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'fee',
         header: 'Fee paid',
         enableSorting: true,
-        cell: ({ row }) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-fee-${row.index}`}>
             <Tooltip text={`${formatUnits(row.original.fee)} ${TOKEN.symbol}`}>
               {`${bigNumberToNumber(row.original.fee, 6)} ${TOKEN.symbol}`}
@@ -229,7 +230,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'success',
         header: 'Status',
         enableSorting: true,
-        cell: ({ row }) => (
+        cell: ({ row }: Cell<Row>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
             key={`${row.original.id}-home-extrinsic-status-${row.index}`}
@@ -242,7 +243,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         accessorKey: 'date',
         header: 'Date',
         enableSorting: true,
-        cell: ({ row }) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
             {dayjs(row.original.date).fromNow(true)} ago
           </div>

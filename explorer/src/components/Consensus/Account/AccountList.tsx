@@ -25,7 +25,7 @@ import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../../common/AccountIcon'
 import { QUERY_ACCOUNTS } from './query'
 
-type Row = AccountsQuery['accounts_accounts'][0]
+type Row = AccountsQuery['accounts_accounts'][number]
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()

@@ -1,25 +1,5 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_ACCOUNT_LIST = gql`
-  query Account($limit: Int!, $offset: Int!) {
-    accounts_accounts(
-      limit: $limit
-      offset: $offset
-      order_by: { total: desc }
-      where: { total: { _gt: "0" } }
-    ) {
-      free
-      id
-      reserved
-      total
-      updated_at
-      extrinsics(limit: 100) {
-        id
-      }
-    }
-  }
-`
-
 export const QUERY_ACCOUNTS = gql`
   query Accounts($limit: Int!, $offset: Int) {
     accounts_accounts_aggregate(where: { total: { _gt: "0" } }) {
@@ -33,9 +13,9 @@ export const QUERY_ACCOUNTS = gql`
       limit: $limit
       offset: $offset
     ) {
-      free
-      free
       id
+      free
+      free
       reserved
       total
       updated_at
@@ -54,9 +34,9 @@ export const QUERY_ACCOUNTS = gql`
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
     accounts_accounts_by_pk(id: $accountId) {
+      id
       free
       reserved
-      id
       total
       nonce
       updated_at
@@ -80,37 +60,11 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
     ) {
       id
-      block_height
+      blockHeight: block_height
       index_in_block
-      reward_type
+      rewardType: reward_type
       amount
       timestamp
-    }
-  }
-`
-
-// TODO: when gemini-2 static page PR is merged, remove this query
-export const OLD_QUERY_ACCOUNT_BY_ID = gql`
-  query OldAccountById($accountId: String!) {
-    accounts_accounts_by_pk(id: $accountId) {
-      free
-      reserved
-      id
-      total
-      updated_at
-      extrinsics(limit: 10, order_by: { block_height: desc }) {
-        hash
-        id
-        index_in_block
-        name
-        success
-        timestamp
-        tip
-        block {
-          id
-          height
-        }
-      }
     }
   }
 `
@@ -188,24 +142,9 @@ export const QUERY_ACCOUNT_EXTRINSICS = gql`
       hash
       name
       success
-      block {
-        height
-        timestamp
-      }
-      index_in_block
-    }
-  }
-`
-
-export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
-  query AllRewardForAccountById($accountId: String!) {
-    accounts_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {
-      id
       block_height
-      index_in_block
-      reward_type
-      amount
       timestamp
+      index_in_block
     }
   }
 `
@@ -234,6 +173,19 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
       timestamp
       date
       created_at
+    }
+  }
+`
+
+export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
+  query AllRewardForAccountById($accountId: String!) {
+    accounts_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {
+      id
+      block_height
+      index_in_block
+      reward_type
+      amount
+      timestamp
     }
   }
 `

@@ -6,12 +6,7 @@ import { Spinner } from 'components/common/Spinner'
 import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import {
-  AccountByIdQuery,
-  AccountByIdQueryVariables,
-  RewardEvent,
-  Account as SquidAccount,
-} from 'gql/graphql'
+import { AccountByIdQuery, AccountByIdQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -38,7 +33,7 @@ export const Account: FC = () => {
   const { loading, setIsVisible } = useSquidQuery<AccountByIdQuery, AccountByIdQueryVariables>(
     QUERY_ACCOUNT_BY_ID,
     {
-      variables: { accountId: accountId ?? '' },
+      variables: { accountId: rawAccountId ?? '' },
       skip: !inFocus,
     },
     Routes.consensus,
@@ -53,8 +48,8 @@ export const Account: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const account = useMemo(() => data && (data.accountById as SquidAccount), [data])
-  const rewards = useMemo(() => (data ? (data.rewardEvents as RewardEvent[]) : []), [data])
+  const account = useMemo(() => data && data.accounts_accounts_by_pk, [data])
+  const rewards = useMemo(() => (data ? data.accounts_rewards : []), [data])
 
   useEffect(() => {
     sendGAEvent('event', 'visit_account_page', { value: accountId })
