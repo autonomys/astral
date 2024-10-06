@@ -11,3 +11,12 @@ array_relationships:
         remote_table:
           name: logs
           schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - kind
+      filter: {}
+      allow_aggregations: true
+    comment: ""
