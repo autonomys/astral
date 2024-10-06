@@ -10402,14 +10402,14 @@ export type TransfersByAccountIdQueryVariables = Exact<{
 
 export type TransfersByAccountIdQuery = { __typename?: 'query_root', accounts_transfers_aggregate: { __typename?: 'accounts_transfers_aggregate', aggregate?: { __typename?: 'accounts_transfers_aggregate_fields', count: number } | null }, accounts_transfers: Array<{ __typename?: 'accounts_transfers', id: string, extrinsic_id: string, event_id: string, from: string, to: string, value: any, fee: any, success: boolean, timestamp: any, date: any, created_at: any }> };
 
-export type BlocksConnectionQueryVariables = Exact<{
+export type BlocksQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<Consensus_Blocks_Order_By> | Consensus_Blocks_Order_By;
 }>;
 
 
-export type BlocksConnectionQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', blockchain_size: any, extrinsics_root: string, hash: string, height: any, id: string, parent_hash: string, space_pledged: any, spec_id: string, state_root: string, timestamp: any, author_id: string, events: Array<{ __typename?: 'consensus_events', id: string }>, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
+export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', blockchain_size: any, extrinsics_root: string, hash: string, height: any, id: string, parent_hash: string, space_pledged: any, spec_id: string, state_root: string, timestamp: any, author_id: string, events: Array<{ __typename?: 'consensus_events', id: string }>, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];

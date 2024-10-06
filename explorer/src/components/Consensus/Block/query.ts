@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_BLOCK_LIST_CONNECTION = gql`
-  query BlocksConnection($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!) {
+export const QUERY_BLOCKS = gql`
+  query Blocks($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!) {
     consensus_blocks_aggregate(order_by: $orderBy) {
       aggregate {
         count
