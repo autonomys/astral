@@ -49,7 +49,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   } = _block;
   const height = BigInt(number.toString());
   const blockHash = hash.toString();
-
+  const blockTimestamp = timestamp ? timestamp : new Date(0);
   // Get block author
   const authorId = getBlockAuthor(_block);
 
@@ -66,7 +66,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   await createAndSaveBlock(
     blockHash,
     height,
-    timestamp ? timestamp : new Date(0),
+    blockTimestamp,
     parentHash.toString(),
     specVersion.toString(),
     stateRoot.toString(),
@@ -88,7 +88,15 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       const value = logJson
         ? stringify(logJson[rawKind as keyof typeof logJson])
         : "";
-      return createAndSaveLog(height, blockHash, i, rawKind, kind, value);
+      return createAndSaveLog(
+        height,
+        blockHash,
+        i,
+        rawKind,
+        kind,
+        value,
+        blockTimestamp
+      );
     })
   );
 }
