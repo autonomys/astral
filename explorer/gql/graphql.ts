@@ -10445,20 +10445,12 @@ export type BlocksByHashQuery = { __typename?: 'query_root', consensus_blocks: A
 
 export type EventsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
-  offset: Scalars['Int']['input'];
-}>;
-
-
-export type EventsQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', name: string, phase: string, id: string, index_in_block: any, block?: { __typename?: 'consensus_blocks', height: any, timestamp: any } | null }> };
-
-export type EventsConnectionQueryVariables = Exact<{
-  limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<Consensus_Events_Bool_Exp>;
 }>;
 
 
-export type EventsConnectionQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', id: string }> };
+export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', id: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
