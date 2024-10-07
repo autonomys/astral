@@ -2,6 +2,15 @@ table:
   name: deposits
   schema: staking
 object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: staking
   - name: domain
     using:
       manual_configuration:
