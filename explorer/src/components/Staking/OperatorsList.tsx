@@ -43,9 +43,9 @@ import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_OPERATOR_LIST } from './staking.query'
+import { QUERY_OPERATOR_LIST } from './query'
 
-type Row = OperatorsListQuery['operator'][0] & { nominatorsCount: number }
+type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
 const TABLE = 'operators'
 
 interface OperatorsListProps {
@@ -792,7 +792,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const operatorsList = useMemo(() => {
     if (hasValue(operators))
-      return operators.value.operator.map((o) => {
+      return operators.value.staking_operators.map((o) => {
         return {
           ...o,
           nominatorsCount: o.nominators_aggregate.aggregate?.count || 0,
@@ -802,7 +802,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   }, [operators])
 
   const totalCount = useMemo(
-    () => (hasValue(operators) && operators.value.operator_aggregate.aggregate?.count) || 0,
+    () =>
+      (hasValue(operators) && operators.value.staking_operators_aggregate.aggregate?.count) || 0,
     [operators],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])

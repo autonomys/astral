@@ -17,7 +17,7 @@ import { AccountIcon } from '../common/AccountIcon'
 dayjs.extend(relativeTime)
 
 type Props = {
-  operator: OperatorByIdQuery['operator_by_pk']
+  operator: OperatorByIdQuery['staking_operators_by_pk']
   isDesktop?: boolean
 }
 

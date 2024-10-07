@@ -1,5 +1,5 @@
-import { INTERNAL_ROUTES } from 'constants'
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'

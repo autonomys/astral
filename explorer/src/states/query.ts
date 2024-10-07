@@ -52,9 +52,9 @@ interface ExplorerQueryState {
     blockDetailsEvent: QueryState<GqlT.EventsByBlockIdQuery>
   }
   [Routes.staking]: {
-    // operators: QueryState<GqlT.OperatorsListQuery>
-    //  operator: QueryState<GqlT.OperatorByIdQuery>
-    //  operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
+    operators: QueryState<GqlT.OperatorsListQuery>
+    operator: QueryState<GqlT.OperatorByIdQuery>
+    operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
   }
   [Routes.domains]: {
     domains: QueryState<GqlT.DomainsListQuery>
