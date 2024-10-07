@@ -8,7 +8,7 @@ import { useInView } from 'react-intersection-observer'
 import { capitalizeFirstLetter } from 'utils/string'
 import { formatSeconds } from 'utils/time'
 import { Tooltip } from '../common/Tooltip'
-import { QUERY_DOMAIN_STATUS } from './staking.query'
+import { QUERY_DOMAIN_STATUS } from './query'
 
 interface Stat {
   title: string
@@ -152,7 +152,7 @@ export const DomainBlockTime: FC = () => {
   const cards = useMemo(() => {
     if (loading || error || !data) return []
 
-    return data.domain.map((domain, index) => (
+    return data.staking_domains.map((domain, index) => (
       <DomainBlockTimeProgress
         key={index}
         domain={domain.name}

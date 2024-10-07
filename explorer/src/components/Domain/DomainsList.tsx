@@ -31,9 +31,9 @@ import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
-import { QUERY_DOMAIN_LIST } from './staking.query'
+import { QUERY_DOMAIN_LIST } from './query'
 
-type Row = DomainsListQuery['domain'][0]
+type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
 
 export const DomainsList: FC = () => {
@@ -680,23 +680,19 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(
-        apolloClient,
-        QUERY_DOMAIN_LIST,
-        TABLE,
-        {
-          orderBy,
-        },
-        ['limit', 'offset'],
-        { clientName: 'staking' },
-      ),
+      downloadFullData(apolloClient, QUERY_DOMAIN_LIST, TABLE, {
+        orderBy,
+      }),
     [apolloClient, orderBy],
   )
 
-  const domainsList = useMemo(() => (hasValue(domains) ? domains.value.domain : []), [domains])
+  const domainsList = useMemo(
+    () => (hasValue(domains) ? domains.value.staking_domains : []),
+    [domains],
+  )
 
   const totalCount = useMemo(
-    () => (hasValue(domains) && domains.value.domain_aggregate.aggregate?.count) || 0,
+    () => (hasValue(domains) && domains.value.staking_domains_aggregate.aggregate?.count) || 0,
     [domains],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])

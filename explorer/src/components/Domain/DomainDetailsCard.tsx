@@ -16,7 +16,7 @@ import { AccountIcon } from '../common/AccountIcon'
 dayjs.extend(relativeTime)
 
 type Props = {
-  domain: DomainByIdQuery['domain_by_pk']
+  domain: DomainByIdQuery['staking_domains_by_pk']
   isDesktop?: boolean
 }
 

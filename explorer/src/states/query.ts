@@ -57,8 +57,8 @@ interface ExplorerQueryState {
     //  operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
   }
   [Routes.domains]: {
-    //  domains: QueryState<GqlT.DomainsListQuery>
-    //  domain: QueryState<GqlT.DomainByIdQuery>
+    domains: QueryState<GqlT.DomainsListQuery>
+    domain: QueryState<GqlT.DomainByIdQuery>
   }
   [ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK]: {
     claim: QueryState<GqlT.ExtrinsicsByHashQuery>

@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
-import { QUERY_DOMAIN_STATUS } from './staking.query'
+import { QUERY_DOMAIN_STATUS } from './query'
 
 interface CardData {
   title: string
@@ -44,7 +44,7 @@ export const DomainCards: FC = () => {
   const cards = useMemo<CardData[]>(() => {
     if (loading || error || !data) return []
 
-    return data.domain.map((domain) => ({
+    return data.staking_domains.map((domain) => ({
       title: domain.name,
       description: domain.name === 'nova' ? 'EVM domain' : 'Identity domain',
       href: `/${network}/${domain.name === 'nova' ? Routes.nova : Routes.autoid}`,
