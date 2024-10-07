@@ -8,6 +8,7 @@ import {
   Nominator,
   Withdrawal,
 } from "../types";
+import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
 import * as db from "./db";
 import {
   DepositStatus,
@@ -18,133 +19,8 @@ import {
   OperatorStatus,
   WithdrawalStatus,
 } from "./models";
+import type { ExecutionReceipt, SealedBundleHeader, TBundle } from "./types";
 import { capitalizeFirstLetter, stringify } from "./utils";
-
-export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000);
-
-export interface TBundle {
-  sealedHeader: SealedBundleHeader;
-  extrinsics: Uint8Array[];
-}
-
-export interface SealedBundleHeader {
-  header: BundleHeader;
-  signature: Uint8Array;
-}
-
-export interface BundleHeader {
-  proofOfElection: ProofOfElection;
-  receipt: ExecutionReceipt;
-  estimatedBundleWeight: Weight;
-  bundleExtrinsicsRoot: Uint8Array;
-}
-
-export interface ProofOfElection {
-  domainId: number;
-  slotNumber: bigint;
-  proofOfTime: Uint8Array;
-  vrfSignature: VrfSignature;
-  operatorId: bigint;
-  consensusBlockHash: Uint8Array;
-}
-
-export interface ExecutionReceipt {
-  domainBlockNumber: number;
-  domainBlockHash: Uint8Array;
-  domainBlockExtrinsicRoot: Uint8Array;
-  parentDomainBlockReceiptHash: Uint8Array;
-  consensusBlockNumber: number;
-  consensusBlockHash: Uint8Array;
-  inboxedBundles: InboxedBundle[];
-  finalStateRoot: Uint8Array;
-  executionTrace: Uint8Array[];
-  executionTraceRoot: Uint8Array;
-  blockFees: BlockFees;
-  transfers: Transfers;
-}
-
-export interface VrfSignature {
-  preOutput: Uint8Array;
-  proof: Uint8Array;
-}
-
-export interface Weight {
-  refTime: bigint;
-  proofSize: bigint;
-}
-
-export interface InboxedBundle {
-  bundle: BundleValidity;
-  extrinsicsRoot: Uint8Array;
-}
-
-export interface Transfers {
-  transfersIn: [ChainId, bigint][];
-  transfersOut: [ChainId, bigint][];
-  rejectedTransfersClaimed: [ChainId, bigint][];
-  transfersRejected: [ChainId, bigint][];
-}
-
-export interface BlockFees {
-  consensusStorageFee: bigint;
-  domainExecutionFee: bigint;
-  burnedBalance: bigint;
-}
-
-export type BundleValidity = BundleValidity_Invalid | BundleValidity_Valid;
-
-export interface BundleValidity_Invalid {
-  __kind: "Invalid";
-  value: InvalidBundleType;
-}
-
-export interface BundleValidity_Valid {
-  __kind: "Valid";
-  value: Uint8Array;
-}
-
-export type ChainId = ChainId_Consensus | ChainId_Domain;
-
-export interface ChainId_Consensus {
-  __kind: "Consensus";
-}
-
-export interface ChainId_Domain {
-  __kind: "Domain";
-  value: number;
-}
-
-export type InvalidBundleType =
-  | InvalidBundleType_UndecodableTx
-  | InvalidBundleType_OutOfRangeTx
-  | InvalidBundleType_IllegalTx
-  | InvalidBundleType_InvalidXDM
-  | InvalidBundleType_InherentExtrinsic;
-
-export interface InvalidBundleType_UndecodableTx {
-  __kind: "UndecodableTx";
-  value: number;
-}
-
-export interface InvalidBundleType_OutOfRangeTx {
-  __kind: "OutOfRangeTx";
-  value: number;
-}
-
-export interface InvalidBundleType_IllegalTx {
-  __kind: "IllegalTx";
-  value: number;
-}
-
-export interface InvalidBundleType_InvalidXDM {
-  __kind: "InvalidXDM";
-  value: number;
-}
-
-export interface InvalidBundleType_InherentExtrinsic {
-  __kind: "InherentExtrinsic";
-  value: number;
-}
 
 export async function handleDomainInstantiatedEvent(
   event: SubstrateEvent
@@ -196,7 +72,6 @@ export async function handleRegisterOperatorCall(
   );
   const {
     block: {
-      timestamp,
       block: {
         header: { number },
       },
@@ -207,9 +82,7 @@ export async function handleRegisterOperatorCall(
     },
     events,
   } = extrinsic;
-  logger.info(`args: ${stringify(args)}`);
   const _args = args.map((arg) => arg.toPrimitive());
-  logger.info(`_args: ${stringify(_args)}`);
   const domainId = String(args[0]);
   const amount = BigInt(args[1].toString());
   const { signingKey, minimumNominatorStake, nominationTax } =
