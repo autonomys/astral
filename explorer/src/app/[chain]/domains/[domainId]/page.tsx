@@ -1,9 +1,12 @@
 import { Domain } from 'components/Domain/Domain'
+import { NotFound } from 'components/layout/NotFound'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
+import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { AccountIdPageProps, ChainPageProps } from 'types/app'
+import { isRouteSupportingNetwork } from 'utils/route'
 
 export async function generateMetadata({
   params: { chain, accountId },
@@ -24,8 +27,7 @@ export async function generateMetadata({
   }
 }
 
-const Page: FC = () => {
-  return <Domain />
-}
+const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
+  isRouteSupportingNetwork(chain, Routes.domains) ? <Domain /> : <NotFound />
 
 export default Page

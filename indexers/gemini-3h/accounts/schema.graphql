@@ -4,7 +4,6 @@
 
 type Account @entity {
   id: ID!
-  accountId: String! @index
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
@@ -34,4 +33,15 @@ type Transfer @entity {
   timestamp: BigInt! @index
   date: Date! @index
   createdAt: BigInt! @index
+}
+
+type Reward @entity {
+  id: ID!
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  accountId: String! @index
+  indexInBlock: BigInt!
+  rewardType: String! @index
+  amount: BigInt!
+  timestamp: Date! @index
 }

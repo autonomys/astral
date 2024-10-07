@@ -22,6 +22,7 @@ type Log @entity {
   logKindId: String! @index
   kind: String!
   value: String
+  timestamp: Date! @index
 }
 
 type Extrinsic @entity {

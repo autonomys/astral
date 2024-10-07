@@ -14,27 +14,14 @@ import {
   calculateSpacePledged,
   getBlockAuthor,
 } from "./helper";
+import {
+  EventHuman,
+  EventPrimitive,
+  ExtrinsicHuman,
+  ExtrinsicPrimitive,
+  LogValue,
+} from "./types";
 import { stringify } from "./utils";
-
-type ExtrinsicPrimitive = {
-  callIndex: string;
-  args: any;
-};
-
-type ExtrinsicHuman = ExtrinsicPrimitive & {
-  method: string;
-  section: string;
-};
-
-type EventPrimitive = {
-  index: string;
-  data: any;
-};
-
-type EventHuman = EventPrimitive & {
-  method: string;
-  section: string;
-};
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -49,7 +36,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   } = _block;
   const height = BigInt(number.toString());
   const blockHash = hash.toString();
-
+  const blockTimestamp = timestamp ? timestamp : new Date(0);
   // Get block author
   const authorId = getBlockAuthor(_block);
 
@@ -66,7 +53,7 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   await createAndSaveBlock(
     blockHash,
     height,
-    timestamp ? timestamp : new Date(0),
+    blockTimestamp,
     parentHash.toString(),
     specVersion.toString(),
     stateRoot.toString(),
@@ -85,10 +72,21 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       const logJson = log.toPrimitive();
       const kind = logData ? Object.keys(logData)[0] : "";
       const rawKind = logJson ? Object.keys(logJson)[0] : "";
-      const value = logJson
-        ? stringify(logJson[rawKind as keyof typeof logJson])
-        : "";
-      return createAndSaveLog(height, blockHash, i, rawKind, kind, value);
+      const _value = logJson ? logJson[rawKind as keyof typeof logJson] : "";
+      const value: LogValue =
+        Array.isArray(_value) && _value.length === 2
+          ? { data: _value[1], engine: _value[0] }
+          : { data: _value };
+
+      return createAndSaveLog(
+        height,
+        blockHash,
+        i,
+        rawKind,
+        kind,
+        stringify(value),
+        blockTimestamp
+      );
     })
   );
 }
@@ -102,13 +100,13 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
         header: { number },
       },
     },
-    extrinsic: { method, hash, nonce, signer, signature, tip, args },
+    extrinsic: { method, hash, nonce, signer, signature, tip },
     success,
     events,
   } = _call;
 
-  const extrinsic_human = method.toHuman() as ExtrinsicHuman;
-  const extrinsic_primitive = method.toPrimitive() as ExtrinsicPrimitive;
+  const methodToHuman = method.toHuman() as ExtrinsicHuman;
+  const methodToPrimitive = method.toPrimitive() as ExtrinsicPrimitive;
   const eventRecord = events[idx];
 
   const feeEvent = events.find(
@@ -138,15 +136,14 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     BigInt(number.toString()),
     hash.toString(),
     idx,
-    extrinsic_primitive.callIndex,
-    extrinsic_human.section,
-    extrinsic_human.method,
+    methodToHuman.section,
+    methodToHuman.method,
     success,
     timestamp ? timestamp : new Date(0),
     BigInt(nonce.toString()),
     signer.toString(),
     signature.toString(),
-    stringify(args),
+    stringify(methodToPrimitive.args),
     error,
     BigInt(tip.toString()),
     fee,
@@ -179,10 +176,7 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
       ? eventRecord.phase.asApplyExtrinsic.toNumber()
       : 0
     : 0;
-  const args = extrinsic ? stringify(extrinsic.extrinsic.args) : "";
-  const extrinsicId = extrinsic
-    ? number + "-" + extrinsic.extrinsic.hash.toString()
-    : "";
+  const extrinsicId = extrinsic ? number + "-" + extrinsic.idx.toString() : "";
   const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
 
   await createAndSaveEvent(
@@ -197,6 +191,6 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     timestamp ? timestamp : new Date(0),
     eventRecord ? eventRecord.phase.type : "",
     pos,
-    args
+    stringify(primitive.data)
   );
 }

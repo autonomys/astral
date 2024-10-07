@@ -20,7 +20,7 @@ export const CookieBanner = () => {
           enhance site navigation, analyze site usage, and assist in our marketing efforts.
           <br /> View our{' '}
           <a
-            href={EXTERNAL_ROUTES.subspacePrivacyPolicy}
+            href={EXTERNAL_ROUTES.privacyPolicy}
             target='_blank'
             rel='noreferrer'
             className=' text-primaryAccent '
