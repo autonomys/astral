@@ -14,6 +14,32 @@ export const QUERY_TOP_LEADERBOARD = gql`
     ) {
       id
     }
+    # TODO: change this for operators
+    operators: accounts_rewards(
+      order_by: { amount: desc }
+      limit: $first
+      where: {
+        _or: [
+          { reward_type: { _eq: "Rewards.VoteReward" } }
+          { reward_type: { _eq: "Rewards.BlockReward" } }
+        ]
+      }
+    ) {
+      id
+    }
+    # TODO: change this for nominators
+    nominators: accounts_rewards(
+      order_by: { amount: desc }
+      limit: $first
+      where: {
+        _or: [
+          { reward_type: { _eq: "Rewards.VoteReward" } }
+          { reward_type: { _eq: "Rewards.BlockReward" } }
+        ]
+      }
+    ) {
+      id
+    }
   }
 `
 
@@ -54,11 +80,8 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
       id
       hash
       success
-      block {
-        id
-        timestamp
-        height
-      }
+      timestamp
+      block_height
       name
     }
   }

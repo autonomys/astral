@@ -15858,7 +15858,7 @@ export type AccountsTopLeaderboardQueryVariables = Exact<{
 }>;
 
 
-export type AccountsTopLeaderboardQuery = { __typename?: 'query_root', farmers: Array<{ __typename?: 'accounts_rewards', id: string }> };
+export type AccountsTopLeaderboardQuery = { __typename?: 'query_root', farmers: Array<{ __typename?: 'accounts_rewards', id: string }>, operators: Array<{ __typename?: 'accounts_rewards', id: string }>, nominators: Array<{ __typename?: 'accounts_rewards', id: string }> };
 
 export type PendingTransactionQueryVariables = Exact<{
   subspaceAccount?: InputMaybe<Scalars['String']['input']>;
@@ -15874,7 +15874,7 @@ export type ExtrinsicsSummaryQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsSummaryQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, success: boolean, name: string, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }> };
+export type ExtrinsicsSummaryQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, success: boolean, timestamp: any, block_height: any, name: string }> };
 
 export type CheckRoleQueryVariables = Exact<{
   subspaceAccount: Scalars['String']['input'];

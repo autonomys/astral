@@ -13,7 +13,7 @@ import {
 } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/oldSquidTypes'
+import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -60,9 +60,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
   } = useQueryStates()
 
   const extrinsics = useMemo(
-    () =>
-      hasValue(lastExtrinsics) &&
-      (lastExtrinsics.value.extrinsics.edges as ExtrinsicsSummaryQuery['extrinsics']['edges']),
+    () => hasValue(lastExtrinsics) && lastExtrinsics.value.extrinsics,
     [lastExtrinsics],
   )
 
@@ -104,11 +102,11 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                       href={INTERNAL_ROUTES.extrinsics.id.page(
                         network,
                         Routes.consensus,
-                        extrinsic.node.id,
+                        extrinsic.id,
                       )}
                     >
-                      <Tooltip text={dayjs(extrinsic.node.block.timestamp).toString()}>
-                        {dayjs(extrinsic.node.block.timestamp).fromNow(true)}
+                      <Tooltip text={dayjs(extrinsic.timestamp).toString()}>
+                        {dayjs(extrinsic.timestamp).fromNow(true)}
                       </Tooltip>
                     </Link>
                   }
@@ -120,12 +118,12 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                     href={INTERNAL_ROUTES.extrinsics.id.page(
                       network,
                       Routes.consensus,
-                      extrinsic.node.id,
+                      extrinsic.id,
                     )}
                   >
-                    <Tooltip text={extrinsic.node.name.split('.')[1].toUpperCase()}>
+                    <Tooltip text={extrinsic.name.split('.')[1].toUpperCase()}>
                       <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
-                        {extrinsic.node.name.split('.')[1].toUpperCase()}
+                        {extrinsic.name.split('.')[1].toUpperCase()}
                       </span>
                     </Tooltip>
                   </Link>
@@ -136,16 +134,16 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                     href={INTERNAL_ROUTES.blocks.id.page(
                       network,
                       Routes.consensus,
-                      extrinsic.node.block.height,
+                      extrinsic.block_height,
                     )}
                   >
-                    <Tooltip text={extrinsic.node.block.id}>
+                    <Tooltip text={extrinsic.block_height}>
                       <span className='text-sm font-medium text-grayDarker dark:text-gray-400'>
-                        #{extrinsic.node.block.height}
+                        #{extrinsic.block_height}
                       </span>
                     </Tooltip>
                   </Link>
-                  <StatusIcon status={extrinsic.node.success} />
+                  <StatusIcon status={extrinsic.success} />
                 </StyledListItem>
               ))}
             </List>
