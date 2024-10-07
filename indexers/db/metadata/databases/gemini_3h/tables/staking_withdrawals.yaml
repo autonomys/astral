@@ -1,6 +1,25 @@
 table:
   name: withdrawals
   schema: staking
+object_relationships:
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domains
+          schema: staking
+  - name: operator
+    using:
+      manual_configuration:
+        column_mapping:
+          operator_id: id
+        insertion_order: null
+        remote_table:
+          name: operators
+          schema: staking
 select_permissions:
   - role: user
     permission:

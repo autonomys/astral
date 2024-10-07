@@ -1,6 +1,44 @@
 table:
   name: operators
   schema: staking
+object_relationships:
+  - name: domain
+    using:
+      manual_configuration:
+        column_mapping:
+          domain_id: id
+        insertion_order: null
+        remote_table:
+          name: domains
+          schema: staking
+array_relationships:
+  - name: deposits
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: deposits
+          schema: staking
+  - name: nominators
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: nominators
+          schema: staking
+  - name: withdrawals
+    using:
+      manual_configuration:
+        column_mapping:
+          id: operator_id
+        insertion_order: null
+        remote_table:
+          name: withdrawals
+          schema: staking
 select_permissions:
   - role: user
     permission:
