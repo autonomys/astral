@@ -56,6 +56,9 @@ interface ExplorerQueryState {
     operator: QueryState<GqlT.OperatorByIdQuery>
     operatorNominators: QueryState<GqlT.OperatorNominatorsByIdQuery>
   }
+  [Routes.leaderboard]: {
+    leaderboard: QueryState<GqlT.AccountTransferSenderTotalCountQuery>
+  }
   [Routes.domains]: {
     domains: QueryState<GqlT.DomainsListQuery>
     domain: QueryState<GqlT.DomainByIdQuery>
@@ -112,6 +115,9 @@ const initialState: ExplorerQueryState = {
 
     operator: initialized,
     operatorNominators: initialized,
+  },
+  leaderboard: {
+    leaderboard: initialized,
   },
   domains: {
     domains: initialized,

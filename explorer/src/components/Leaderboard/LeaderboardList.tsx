@@ -44,7 +44,8 @@ type LeaderboardListProps = {
   valueSuffix?: string
   showAccountIcon?: boolean
 }
-type Row = AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count'][0]
+type Row =
+  AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts'][0]
 
 export const LeaderboardList: FC<LeaderboardListProps> = ({
   title,
@@ -273,7 +274,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       listData
         ? (listData[
             table as keyof AccountTransferSenderTotalCountQuery
-          ] as AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count'])
+          ] as AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts'])
         : [],
     [listData, table],
   )
@@ -283,7 +284,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         ? (
             listData[
               (table + '_aggregate') as keyof AccountTransferSenderTotalCountQuery
-            ] as AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count_aggregate']
+            ] as AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts_aggregate']
           )?.aggregate?.count
         : 0,
     [listData, table],
