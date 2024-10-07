@@ -82,3 +82,54 @@ export const QUERY_CHECK_ROLE = gql`
     }
   }
 `
+
+export const QUERY_STAKING_SUMMARY = gql`
+  query StakingSummary($first: Int!, $subspaceAccount: String) {
+    staking_operators(
+      order_by: { id: asc }
+      limit: $first
+      where: { account_id: { _eq: $subspaceAccount } }
+    ) {
+      id
+      account_id
+      domain_id
+      current_total_stake
+      current_total_shares
+    }
+    staking_operators_aggregate(
+      order_by: { id: asc }
+      where: { account_id: { _eq: $subspaceAccount } }
+    ) {
+      aggregate {
+        count
+      }
+    }
+    staking_nominators(
+      order_by: { id: asc }
+      limit: $first
+      where: { account_id: { _eq: $subspaceAccount } }
+    ) {
+      id
+      known_shares
+      known_storage_fee_deposit
+      account {
+        id
+      }
+      operator {
+        id
+        account_id
+        domain_id
+        current_total_stake
+        current_total_shares
+      }
+    }
+    staking_nominators_aggregate(
+      order_by: { id: asc }
+      where: { account_id: { _eq: $subspaceAccount } }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`

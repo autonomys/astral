@@ -9575,6 +9575,8 @@ export type Staking_Accounts_Variance_Fields = {
 /** columns and relationships of "staking.deposits" */
 export type Staking_Deposits = {
   __typename?: 'staking_deposits';
+  /** An object relationship */
+  account?: Maybe<Staking_Accounts>;
   account_id: Scalars['String']['output'];
   amount: Scalars['numeric']['output'];
   created_at: Scalars['numeric']['output'];
@@ -9686,6 +9688,7 @@ export type Staking_Deposits_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Deposits_Bool_Exp>>;
   _not?: InputMaybe<Staking_Deposits_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Deposits_Bool_Exp>>;
+  account?: InputMaybe<Staking_Accounts_Bool_Exp>;
   account_id?: InputMaybe<String_Comparison_Exp>;
   amount?: InputMaybe<Numeric_Comparison_Exp>;
   created_at?: InputMaybe<Numeric_Comparison_Exp>;
@@ -9795,6 +9798,7 @@ export type Staking_Deposits_Min_Order_By = {
 
 /** Ordering options when selecting data from "staking.deposits". */
 export type Staking_Deposits_Order_By = {
+  account?: InputMaybe<Staking_Accounts_Order_By>;
   account_id?: InputMaybe<Order_By>;
   amount?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
@@ -10075,6 +10079,8 @@ export type Staking_Deposits_Variance_Order_By = {
 /** columns and relationships of "staking.domains" */
 export type Staking_Domains = {
   __typename?: 'staking_domains';
+  /** An object relationship */
+  account?: Maybe<Staking_Accounts>;
   account_id: Scalars['String']['output'];
   accumulated_epoch_rewards: Scalars['numeric']['output'];
   accumulated_epoch_shares: Scalars['numeric']['output'];
@@ -10294,6 +10300,7 @@ export type Staking_Domains_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Domains_Bool_Exp>>;
   _not?: InputMaybe<Staking_Domains_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Domains_Bool_Exp>>;
+  account?: InputMaybe<Staking_Accounts_Bool_Exp>;
   account_id?: InputMaybe<String_Comparison_Exp>;
   accumulated_epoch_rewards?: InputMaybe<Numeric_Comparison_Exp>;
   accumulated_epoch_shares?: InputMaybe<Numeric_Comparison_Exp>;
@@ -10445,6 +10452,7 @@ export type Staking_Domains_Min_Fields = {
 
 /** Ordering options when selecting data from "staking.domains". */
 export type Staking_Domains_Order_By = {
+  account?: InputMaybe<Staking_Accounts_Order_By>;
   account_id?: InputMaybe<Order_By>;
   accumulated_epoch_rewards?: InputMaybe<Order_By>;
   accumulated_epoch_shares?: InputMaybe<Order_By>;
@@ -10943,6 +10951,8 @@ export type Staking_Domains_Variance_Fields = {
 /** columns and relationships of "staking.nominators" */
 export type Staking_Nominators = {
   __typename?: 'staking_nominators';
+  /** An object relationship */
+  account?: Maybe<Staking_Accounts>;
   account_id: Scalars['String']['output'];
   accumulated_epoch_shares: Scalars['numeric']['output'];
   accumulated_epoch_stake: Scalars['numeric']['output'];
@@ -11152,6 +11162,7 @@ export type Staking_Nominators_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Nominators_Bool_Exp>>;
   _not?: InputMaybe<Staking_Nominators_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Nominators_Bool_Exp>>;
+  account?: InputMaybe<Staking_Accounts_Bool_Exp>;
   account_id?: InputMaybe<String_Comparison_Exp>;
   accumulated_epoch_shares?: InputMaybe<Numeric_Comparison_Exp>;
   accumulated_epoch_stake?: InputMaybe<Numeric_Comparison_Exp>;
@@ -11331,6 +11342,7 @@ export type Staking_Nominators_Min_Order_By = {
 
 /** Ordering options when selecting data from "staking.nominators". */
 export type Staking_Nominators_Order_By = {
+  account?: InputMaybe<Staking_Accounts_Order_By>;
   account_id?: InputMaybe<Order_By>;
   accumulated_epoch_shares?: InputMaybe<Order_By>;
   accumulated_epoch_stake?: InputMaybe<Order_By>;
@@ -11879,6 +11891,8 @@ export type Staking_Nominators_Variance_Order_By = {
 /** columns and relationships of "staking.operators" */
 export type Staking_Operators = {
   __typename?: 'staking_operators';
+  /** An object relationship */
+  account?: Maybe<Staking_Accounts>;
   account_id: Scalars['String']['output'];
   accumulated_epoch_rewards: Scalars['numeric']['output'];
   accumulated_epoch_shares: Scalars['numeric']['output'];
@@ -12134,6 +12148,7 @@ export type Staking_Operators_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Operators_Bool_Exp>>;
   _not?: InputMaybe<Staking_Operators_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Operators_Bool_Exp>>;
+  account?: InputMaybe<Staking_Accounts_Bool_Exp>;
   account_id?: InputMaybe<String_Comparison_Exp>;
   accumulated_epoch_rewards?: InputMaybe<Numeric_Comparison_Exp>;
   accumulated_epoch_shares?: InputMaybe<Numeric_Comparison_Exp>;
@@ -12368,6 +12383,7 @@ export type Staking_Operators_Min_Order_By = {
 
 /** Ordering options when selecting data from "staking.operators". */
 export type Staking_Operators_Order_By = {
+  account?: InputMaybe<Staking_Accounts_Order_By>;
   account_id?: InputMaybe<Order_By>;
   accumulated_epoch_rewards?: InputMaybe<Order_By>;
   accumulated_epoch_shares?: InputMaybe<Order_By>;
@@ -13096,6 +13112,8 @@ export type Staking_Operators_Variance_Order_By = {
 /** columns and relationships of "staking.withdrawals" */
 export type Staking_Withdrawals = {
   __typename?: 'staking_withdrawals';
+  /** An object relationship */
+  account?: Maybe<Staking_Accounts>;
   account_id: Scalars['String']['output'];
   created_at: Scalars['numeric']['output'];
   /** An object relationship */
@@ -13214,6 +13232,7 @@ export type Staking_Withdrawals_Bool_Exp = {
   _and?: InputMaybe<Array<Staking_Withdrawals_Bool_Exp>>;
   _not?: InputMaybe<Staking_Withdrawals_Bool_Exp>;
   _or?: InputMaybe<Array<Staking_Withdrawals_Bool_Exp>>;
+  account?: InputMaybe<Staking_Accounts_Bool_Exp>;
   account_id?: InputMaybe<String_Comparison_Exp>;
   created_at?: InputMaybe<Numeric_Comparison_Exp>;
   domain?: InputMaybe<Staking_Domains_Bool_Exp>;
@@ -13338,6 +13357,7 @@ export type Staking_Withdrawals_Min_Order_By = {
 
 /** Ordering options when selecting data from "staking.withdrawals". */
 export type Staking_Withdrawals_Order_By = {
+  account?: InputMaybe<Staking_Accounts_Order_By>;
   account_id?: InputMaybe<Order_By>;
   created_at?: InputMaybe<Order_By>;
   domain?: InputMaybe<Staking_Domains_Order_By>;
@@ -15862,6 +15882,14 @@ export type CheckRoleQueryVariables = Exact<{
 
 
 export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'accounts_rewards', account?: { __typename?: 'accounts_accounts', id: string } | null }> };
+
+export type StakingSummaryQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators: Array<{ __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any }>, staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, known_storage_fee_deposit: any, account?: { __typename?: 'staking_accounts', id: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any } | null }>, staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } };
 
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
