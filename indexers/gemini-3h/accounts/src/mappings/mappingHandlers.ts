@@ -1,5 +1,9 @@
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
-import { createAndSaveTransfer, createOrUpdateAndSaveAccount } from "./db";
+import {
+  createAndSaveReward,
+  createAndSaveTransfer,
+  createOrUpdateAndSaveAccount,
+} from "./db";
 import { updateAccountBalance } from "./helper";
 
 export async function handleTransferEvent(
@@ -82,13 +86,18 @@ export async function handleFarmerVoteRewardEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    idx,
     event: {
+      section,
+      method,
       data: [_voter, _reward],
     },
     block: {
       block: {
         header: { number },
+        hash,
       },
+      timestamp,
     },
   } = event;
   const voter = _voter.toString();
@@ -105,19 +114,34 @@ export async function handleFarmerVoteRewardEvent(
     balance.data.reserved,
     balance.data.free + balance.data.reserved
   );
+
+  await createAndSaveReward(
+    blockNumber,
+    hash.toString(),
+    voter,
+    BigInt(idx.toString()),
+    section + "." + method,
+    BigInt(_reward.toString()),
+    timestamp ? timestamp : new Date(0)
+  );
 }
 
 export async function handleFarmerBlockRewardEvent(
   event: SubstrateEvent
 ): Promise<void> {
   const {
+    idx,
     event: {
+      section,
+      method,
       data: [_blockAuthor, _reward],
     },
     block: {
       block: {
         header: { number },
+        hash,
       },
+      timestamp,
     },
   } = event;
   const blockAuthor = _blockAuthor.toString();
@@ -133,5 +157,15 @@ export async function handleFarmerBlockRewardEvent(
     balance.data.free,
     balance.data.reserved,
     balance.data.free + balance.data.reserved
+  );
+
+  await createAndSaveReward(
+    blockNumber,
+    hash.toString(),
+    blockAuthor,
+    BigInt(idx.toString()),
+    section + "." + method,
+    BigInt(_reward.toString()),
+    timestamp ? timestamp : new Date(0)
   );
 }

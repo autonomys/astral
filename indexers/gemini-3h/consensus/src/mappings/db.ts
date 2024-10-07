@@ -53,7 +53,8 @@ export async function createAndSaveLog(
   indexInBlock: number,
   rawKind: string,
   kind: string,
-  value: string
+  value: string,
+  timestamp: Date
 ): Promise<Log> {
   await createAndSaveLogKindIfNotExists(rawKind, kind);
 
@@ -68,6 +69,7 @@ export async function createAndSaveLog(
       logKindId: rawKind,
       kind,
       value,
+      timestamp,
     });
     await log.save();
   }
@@ -149,7 +151,6 @@ export async function createAndSaveExtrinsic(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
-  callIndex: string,
   section: string,
   method: string,
   success: boolean,
