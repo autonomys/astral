@@ -1,5 +1,5 @@
 import { ResponsiveLine } from '@nivo/line'
-import { TOKEN } from 'constants'
+import { TOKEN } from 'constants/general'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
@@ -30,7 +30,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { setIsVisible } = useSquidQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(
     QUERY_LAST_WEEK_REWARDS,
     {
-      variables: { accountId: accountId, gte: lastWeek },
+      variables: { accountId: accountId, timestampComparison: { _gte: lastWeek } },
       skip: !inFocus,
     },
   )
@@ -46,7 +46,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const parsedData = useMemo(
     () =>
       data &&
-      data.rewardEvents
+      data.accounts_rewards
         .map((item) => {
           return {
             x: dayjs(item.timestamp).format('YYYY-MM-DD'),

@@ -1,6 +1,5 @@
 'use client'
 
-import { sendGAEvent } from '@next/third-parties/google'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
@@ -22,7 +21,6 @@ import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { NotFound } from '../../layout/NotFound'
-import { ExtrinsicListFilter } from './ExtrinsicListFilter'
 import { QUERY_EXTRINSICS } from './query'
 
 dayjs.extend(relativeTime)
@@ -37,7 +35,6 @@ export const ExtrinsicList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const [filters, setFilters] = useState<object>({})
 
   const variables = useMemo(
     () => ({
@@ -155,14 +152,6 @@ export const ExtrinsicList: FC = () => {
   }, [data, consensusEntry, loading])
 
   useEffect(() => {
-    try {
-      sendGAEvent('event', 'extrinsic_filter', { value: `filters:${filters.toString()}` })
-    } catch (error) {
-      console.log('Error sending GA event', error)
-    }
-  }, [filters])
-
-  useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
@@ -173,16 +162,7 @@ export const ExtrinsicList: FC = () => {
       </div>
       {modules && (
         <div className='mt-5 flex w-full justify-between'>
-          <ExtrinsicListFilter
-            title={
-              <div className=' font-medium text-grayDark dark:text-white'>
-                Extrinsics {totalLabel}
-              </div>
-            }
-            filters={filters}
-            modules={modules}
-            setFilters={setFilters}
-          />
+          <div className=' font-medium text-grayDark dark:text-white'>Extrinsics {totalLabel}</div>
         </div>
       )}
       <div className='mt-8 flex w-full flex-col sm:mt-0'>

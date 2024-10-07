@@ -19,10 +19,7 @@ export const QUERY_HOME = gql`
       success
       index_in_block
       timestamp
-      block {
-        id
-        height
-      }
+      block_height
       name
     }
     accounts_accounts_aggregate(order_by: { id: asc }, where: { total: { _gt: $accountTotal } }) {
