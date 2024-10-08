@@ -6,12 +6,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import type {
-  Log,
-  LogWhereInput,
-  LogsConnectionQuery,
-  LogsConnectionQueryVariables,
-} from 'gql/graphql'
+import type { LogsQuery, LogsQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -23,8 +18,9 @@ import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
-import { LogListFilter } from './LogListFilter'
-import { QUERY_LOG_CONNECTION_LIST } from './query'
+import { QUERY_LOGS } from './query'
+
+type Row = LogsQuery['consensus_logs'][0]
 
 export const LogList: FC = () => {
   const { ref, inView } = useInView()
@@ -34,25 +30,18 @@ export const LogList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const [filters, setFilters] = useState<LogWhereInput>({})
   const inFocus = useWindowFocus()
 
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
     }),
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
-    LogsConnectionQuery,
-    LogsConnectionQueryVariables
-  >(
-    QUERY_LOG_CONNECTION_LIST,
+  const { loading, setIsVisible } = useSquidQuery<LogsQuery, LogsQueryVariables>(
+    QUERY_LOGS,
     {
       variables,
       skip: !inFocus,
@@ -70,20 +59,18 @@ export const LogList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const logsConnection = useMemo(() => data && data.logsConnection, [data])
-  const logs = useMemo(
-    () => logsConnection && logsConnection.edges.map((log) => log.node as Log),
-    [logsConnection],
-  )
+  const logs = useMemo(() => data && data.consensus_logs, [data])
   const totalCount = useMemo(
-    () => (logsConnection ? logsConnection.totalCount : 0),
-    [logsConnection],
+    () =>
+      data && data.consensus_logs_aggregate.aggregate
+        ? data.consensus_logs_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const totalLabel = useMemo(
     () => (totalCount ? numberWithCommas(Number(totalCount)) : 0),
     [totalCount],
   )
-  const logTypes = useMemo(() => data && data.logTypesQuery.result, [data])
 
   const columns = useMemo(
     () => [
@@ -91,7 +78,7 @@ export const LogList: FC = () => {
         accessorKey: 'id',
         header: 'Log Index',
         enableSorting: false,
-        cell: ({ row }: Cell<Log>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div className='flex w-full' key={`${row.index}-log-index`}>
             <Link
               className='w-full hover:text-primaryAccent'
@@ -105,35 +92,35 @@ export const LogList: FC = () => {
         ),
       },
       {
-        accessorKey: 'block',
+        accessorKey: 'block_height',
         header: 'Block',
         enableSorting: false,
-        cell: ({ row }: Cell<Log>) => (
-          <div key={`${row.index}-block-height`}>{row.original.block.height}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-block-height`}>{row.original.block_height}</div>
         ),
       },
       {
         accessorKey: 'kind',
         header: 'Type',
         enableSorting: false,
-        cell: ({ row }: Cell<Log>) => <div key={`${row.index}-kind`}>{row.original.kind}</div>,
+        cell: ({ row }: Cell<Row>) => <div key={`${row.index}-kind`}>{row.original.kind}</div>,
       },
       {
-        accessorKey: 'engine',
+        accessorKey: 'value',
         header: 'Engine',
         enableSorting: false,
-        cell: ({ row }: Cell<Log>) => (
-          <div key={`${row.index}-engine`}>{row.original.value?.engine}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-engine`}>{row.original.value?.[0]}</div>
         ),
       },
       {
-        accessorKey: 'data',
+        accessorKey: 'value',
         header: 'Data',
         enableSorting: false,
-        cell: ({ row }: Cell<Log>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div
             key={`${row.index}-block-height`}
-          >{`${row.original.value?.data.slice(0, 20)}...`}</div>
+          >{`${row.original.value?.[1].slice(0, 20)}...`}</div>
         ),
       },
     ],
@@ -157,18 +144,7 @@ export const LogList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      {logTypes && (
-        <div className='mt-5 flex w-full justify-between'>
-          <LogListFilter
-            title={
-              <div className=' font-medium text-grayDark dark:text-white'>Logs {totalLabel}</div>
-            }
-            filters={filters}
-            logTypes={logTypes}
-            setFilters={setFilters}
-          />
-        </div>
-      )}
+      <div className=' font-medium text-grayDark dark:text-white'>Logs {totalLabel}</div>
       <div className='mt-5 flex w-full flex-col sm:mt-0'>
         <div className='w-full'>
           <div className='my-6 rounded'>

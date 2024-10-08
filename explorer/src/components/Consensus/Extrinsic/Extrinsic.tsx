@@ -3,11 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import {
-  Extrinsic as ExtrinsicResult,
-  ExtrinsicsByIdQuery,
-  ExtrinsicsByIdQueryVariables,
-} from 'gql/graphql'
+import { ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -48,7 +44,7 @@ export const Extrinsic: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const extrinsic = useMemo(() => data && (data.extrinsicById as ExtrinsicResult), [data])
+  const extrinsic = useMemo(() => data && data.consensus_extrinsics_by_pk, [data])
 
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />

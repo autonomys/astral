@@ -3,7 +3,7 @@
 import copy from 'copy-to-clipboard'
 import { useCallback, useEffect, useState } from 'react'
 
-export interface UseClipboardOptions {
+interface UseClipboardOptions {
   timeout?: number
   format?: string
 }

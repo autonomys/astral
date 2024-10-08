@@ -1,8 +1,8 @@
-import { limitNumberDecimals } from '@/utils/number'
 import { CopyButton } from 'components/common/CopyButton'
 import { Tooltip } from 'components/common/Tooltip'
 import useWallet from 'hooks/useWallet'
 import { FC } from 'react'
+import { limitNumberDecimals } from 'utils/number'
 import { ActionsButtons } from './ActionsButtons'
 
 interface AccountHeaderProps {

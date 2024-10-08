@@ -5,7 +5,7 @@ export type ChildrenPageProps = {
   children: ReactNode
 }
 
-export type PageProps<T> = {
+type PageProps<T> = {
   params: T
 }
 

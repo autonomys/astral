@@ -1,6 +1,6 @@
 'use client'
 
-import { EXTERNAL_ROUTES } from '@/constants'
+import { EXTERNAL_ROUTES } from 'constants/routes'
 import Image from 'next/image'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 

@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/types/staking'
+import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -14,7 +14,7 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
-import { QUERY_OPERATOR_BY_ID } from './staking.query'
+import { QUERY_OPERATOR_BY_ID } from './query'
 
 export const Operator: FC = () => {
   const { ref, inView } = useInView()
@@ -41,7 +41,7 @@ export const Operator: FC = () => {
   } = useQueryStates()
 
   const operatorDetails = useMemo(
-    () => hasValue(operator) && operator.value.operator_by_pk,
+    () => hasValue(operator) && operator.value.staking_operators_by_pk,
     [operator],
   )
 

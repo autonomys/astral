@@ -14,7 +14,7 @@ import { bigIntDeserializer, bigIntSerializer } from 'utils/number'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-export interface ConsensusDefaultState {
+interface ConsensusDefaultState {
   // properties
   ss58Format: number
   tokenDecimals: number

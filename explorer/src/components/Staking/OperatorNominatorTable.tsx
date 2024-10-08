@@ -7,7 +7,7 @@ import {
   OperatorNominatorsByIdQuery,
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
-} from 'gql/types/staking'
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -26,13 +26,13 @@ import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { Spinner } from '../common/Spinner'
-import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './staking.query'
+import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query'
 
 type Props = {
-  operator: OperatorByIdQuery['operator_by_pk']
+  operator: OperatorByIdQuery['staking_operators_by_pk']
 }
 
-type Row = OperatorNominatorsByIdQuery['nominator'][0]
+type Row = OperatorNominatorsByIdQuery['staking_nominators'][0]
 
 export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { ref, inView } = useInView()
@@ -208,14 +208,14 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   } = useQueryStates()
 
   const nominators = useMemo(
-    () => (hasValue(operatorNominators) ? operatorNominators.value.nominator : []),
+    () => (hasValue(operatorNominators) ? operatorNominators.value.staking_nominators : []),
     [operatorNominators],
   )
 
   const totalCount = useMemo(
     () =>
       (hasValue(operatorNominators) &&
-        operatorNominators.value.nominator_aggregate.aggregate?.count) ||
+        operatorNominators.value.staking_nominators_aggregate.aggregate?.count) ||
       0,
     [operatorNominators],
   )

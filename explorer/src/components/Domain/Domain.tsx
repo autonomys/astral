@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { DomainByIdQuery, DomainByIdQueryVariables } from 'gql/types/staking'
+import type { DomainByIdQuery, DomainByIdQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -13,7 +13,7 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorsList } from '../Staking/OperatorsList'
 import { DomainDetailsCard } from './DomainDetailsCard'
-import { QUERY_DOMAIN_BY_ID } from './staking.query'
+import { QUERY_DOMAIN_BY_ID } from './query'
 
 export const Domain: FC = () => {
   const { ref, inView } = useInView()
@@ -39,7 +39,10 @@ export const Domain: FC = () => {
     domains: { domain },
   } = useQueryStates()
 
-  const domainDetails = useMemo(() => hasValue(domain) && domain.value.domain_by_pk, [domain])
+  const domainDetails = useMemo(
+    () => hasValue(domain) && domain.value.staking_domains_by_pk,
+    [domain],
+  )
 
   const noData = useMemo(() => {
     if (isLoading(domain)) return <Spinner isSmall />

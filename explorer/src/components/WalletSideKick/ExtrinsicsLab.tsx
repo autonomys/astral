@@ -7,10 +7,10 @@ import { camelToNormal } from 'utils/string'
 
 export type ExtrinsicModule = SubmittableModuleExtrinsics<'promise'>
 export type ExtrinsicsList = { [key: string]: ExtrinsicModule }
-export type ExtrinsicsMethodFields = { name: string; type: string; typeName: string }
-export type ExtrinsicsMethodArgs = ExtrinsicsMethodFields & { docs: string[] }
+type ExtrinsicsMethodFields = { name: string; type: string; typeName: string }
+type ExtrinsicsMethodArgs = ExtrinsicsMethodFields & { docs: string[] }
 
-export type ExtrinsicsMethod = {
+type ExtrinsicsMethod = {
   name: string
   docs: string[]
   fields: ExtrinsicsMethodFields[]

@@ -1,10 +1,6 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import {
-  DomainsStatusQuery,
-  DomainsStatusQueryVariables,
-  Order_By as OrderBy,
-} from 'gql/types/staking'
+import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useMemo } from 'react'
@@ -12,7 +8,7 @@ import { useInView } from 'react-intersection-observer'
 import { capitalizeFirstLetter } from 'utils/string'
 import { formatSeconds } from 'utils/time'
 import { Tooltip } from '../common/Tooltip'
-import { QUERY_DOMAIN_STATUS } from './staking.query'
+import { QUERY_DOMAIN_STATUS } from './query'
 
 interface Stat {
   title: string
@@ -34,7 +30,7 @@ type DomainBlockTimeProgressProps = {
   last1kEpochDuration: string | null
 }
 
-export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
+const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
   domain,
   currentEpochDuration,
   blockCount,
@@ -53,11 +49,7 @@ export const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
             intervalSeconds:
               currentEpochDuration && blockCount
                 ? BigInt(currentEpochDuration) /
-                  BigInt(
-                    blockCount % 100 > 0
-                      ? Math.min(blockCount % 100, 100) * 1000
-                      : 1,
-                  )
+                  BigInt(blockCount % 100 > 0 ? Math.min(blockCount % 100, 100) * 1000 : 1)
                 : null,
           },
           {
@@ -160,7 +152,7 @@ export const DomainBlockTime: FC = () => {
   const cards = useMemo(() => {
     if (loading || error || !data) return []
 
-    return data.domain.map((domain, index) => (
+    return data.staking_domains.map((domain, index) => (
       <DomainBlockTimeProgress
         key={index}
         domain={domain.name}

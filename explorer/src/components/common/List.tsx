@@ -7,7 +7,7 @@ export const List: FC<Props> = ({ children }) => {
   return <ul className='divide-y divide-gray-200 dark:divide-white/20'>{children}</ul>
 }
 
-export const ListItem: FC<Props> = ({ children }) => {
+const ListItem: FC<Props> = ({ children }) => {
   return <li className='py-3 sm:py-4'>{children}</li>
 }
 

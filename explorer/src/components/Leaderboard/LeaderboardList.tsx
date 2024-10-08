@@ -4,15 +4,15 @@ import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, TOKEN } from 'constants/'
+import { PAGE_SIZE, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   AccountTransferSenderTotalCountQuery,
   AccountTransferSenderTotalCountQueryVariables,
-} from 'gql/types/leaderboard'
-import { Order_By as OrderBy } from 'gql/types/staking'
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -44,7 +44,8 @@ type LeaderboardListProps = {
   valueSuffix?: string
   showAccountIcon?: boolean
 }
-type Row = AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count'][0]
+type Row =
+  AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts'][0]
 
 export const LeaderboardList: FC<LeaderboardListProps> = ({
   title,
@@ -273,7 +274,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       listData
         ? (listData[
             table as keyof AccountTransferSenderTotalCountQuery
-          ] as AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count'])
+          ] as AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts'])
         : [],
     [listData, table],
   )
@@ -283,7 +284,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         ? (
             listData[
               (table + '_aggregate') as keyof AccountTransferSenderTotalCountQuery
-            ] as AccountTransferSenderTotalCountQuery['account_transfer_sender_total_count_aggregate']
+            ] as AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts_aggregate']
           )?.aggregate?.count
         : 0,
     [listData, table],

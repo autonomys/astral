@@ -1,11 +1,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import {
-  DomainsStatusQuery,
-  DomainsStatusQueryVariables,
-  Order_By as OrderBy,
-} from 'gql/types/staking'
+import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -14,7 +10,7 @@ import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter } from 'utils/string'
 import { formatSeconds } from 'utils/time'
-import { QUERY_DOMAIN_STATUS } from './staking.query'
+import { QUERY_DOMAIN_STATUS } from './query'
 
 interface CardData {
   title: string
@@ -65,7 +61,7 @@ export const DomainProgress: FC = () => {
   const cards = useMemo<CardData[]>(() => {
     if (loading || error || !data) return []
 
-    return data.domain.map((domain) => {
+    return data.staking_domains.map((domain) => {
       const progress = Math.min(domain.last_domain_block_number % 100, 100)
       return {
         title: domain.name,

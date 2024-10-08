@@ -1,10 +1,10 @@
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import { TOKEN } from 'constants/'
+import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import type { DomainByIdQuery } from 'gql/types/staking'
+import type { DomainByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
@@ -16,7 +16,7 @@ import { AccountIcon } from '../common/AccountIcon'
 dayjs.extend(relativeTime)
 
 type Props = {
-  domain: DomainByIdQuery['domain_by_pk']
+  domain: DomainByIdQuery['staking_domains_by_pk']
   isDesktop?: boolean
 }
 

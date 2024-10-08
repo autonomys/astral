@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { FC } from 'react'
 
 // common
-import { LogoIcon } from '@/components/icons'
+import { LogoIcon } from 'components/icons'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 
 const Footer: FC = () => {

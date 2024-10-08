@@ -32,6 +32,8 @@ jobs:
           yarn install
           yarn lint:fix
       - name: Build project 🔧
+        env:
+          NEXT_PUBLIC_GEMINI_3H_INDEXERS: ${{ secrets.NEXT_PUBLIC_GEMINI_3H_INDEXERS }}
         run: yarn build
   ts-lint-and-build-health-check:
     runs-on: ubuntu-latest

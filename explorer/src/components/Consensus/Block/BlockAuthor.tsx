@@ -1,7 +1,7 @@
-import { shortString } from '@/utils/string'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import Link from 'next/link'
 import { FC } from 'react'
+import { shortString } from 'utils/string'
 
 type Props = {
   isDesktop: boolean

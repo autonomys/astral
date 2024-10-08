@@ -1,7 +1,7 @@
-import { Block } from '@/types/consensus'
 import useWallet from 'hooks/useWallet'
 import { useCallback, useEffect, useState } from 'react'
 import { useDomainsStates } from 'states/domains'
+import { Block } from 'types/consensus'
 
 export const useDomainsData = () => {
   const { domainsApis } = useWallet()

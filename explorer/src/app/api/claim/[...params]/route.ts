@@ -1,4 +1,3 @@
-import { AuthProvider } from '@/constants'
 import { balance, transfer } from '@autonomys/auto-consensus'
 import {
   activateWallet,
@@ -10,6 +9,7 @@ import {
 } from '@autonomys/auto-utils'
 import { indexers } from 'constants/indexers'
 import { CLAIM_TYPES } from 'constants/routes'
+import { AuthProvider } from 'constants/session'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from 'utils/auth/verifyToken'
 import {

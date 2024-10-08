@@ -1,4 +1,4 @@
-import { DownloadPage } from '@/components/Farming'
+import { DownloadPage } from 'components/Farming'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
 import { Metadata } from 'next'

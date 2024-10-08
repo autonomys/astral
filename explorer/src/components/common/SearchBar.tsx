@@ -1,8 +1,8 @@
-import { SearchType, searchTypes } from '@/constants/general'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
+import { SearchType, searchTypes } from 'constants/general'
 import { Field, Form, Formik } from 'formik'
 import { useSearch } from 'hooks/useSearch'
 import { FC, Fragment, useCallback } from 'react'
@@ -14,7 +14,7 @@ export interface FormValues {
   searchType: SearchType
 }
 
-export interface SearchBarProps {
+interface SearchBarProps {
   fixSearchType?: SearchType
 }
 
@@ -138,9 +138,7 @@ export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
   )
 }
 
-export default SearchBar
-
-export const SearchSpinner: FC = () => {
+const SearchSpinner: FC = () => {
   return (
     <div role='status'>
       <svg

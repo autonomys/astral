@@ -2,16 +2,15 @@
 
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { LogoIcon, WalletIcon } from '@/components/icons'
-import { WalletType } from '@/constants'
-import { formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
+import { LogoIcon, WalletIcon } from 'components/icons'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import {
   ROUTE_EXTRA_FLAGS,
   ROUTE_EXTRA_FLAG_TYPE,
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
 } from 'constants/routes'
+import { WalletType } from 'constants/wallet'
 import dayjs from 'dayjs'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -20,6 +19,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
+import { formatUnitsToNumber } from 'utils/number'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
@@ -33,7 +33,7 @@ type DrawerProps = {
   onClose: () => void
 }
 
-export const PendingTransactionsLabel: FC = () => {
+const PendingTransactionsLabel: FC = () => {
   const { pendingTransactions } = useTransactionsStates()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const count = useMemo(

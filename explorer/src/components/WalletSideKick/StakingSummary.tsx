@@ -1,9 +1,9 @@
-import { BIGINT_ZERO } from '@/constants'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
+import { BIGINT_ZERO } from 'constants/general'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
-import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/types/staking'
+import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -13,7 +13,7 @@ import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { bigNumberToNumber } from 'utils/number'
-import { QUERY_STAKING_SUMMARY } from './staking.query'
+import { QUERY_STAKING_SUMMARY } from './query'
 
 interface StakingSummaryProps {
   subspaceAccount: string
@@ -52,13 +52,15 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
 
   const totalOperatorCount = useMemo(
     () =>
-      (hasValue(stakingSummary) && stakingSummary.value.operator_aggregate.aggregate?.count) || 0,
+      (hasValue(stakingSummary) &&
+        stakingSummary.value.staking_operators_aggregate.aggregate?.count) ||
+      0,
     [stakingSummary],
   )
   const totalOperatorStake = useMemo(
     () =>
       hasValue(stakingSummary)
-        ? stakingSummary.value.nominator
+        ? stakingSummary.value.staking_nominators
             .filter((n) => n.operator?.account_id === subspaceAccount)
             .reduce(
               (acc, nominator) =>
@@ -77,14 +79,16 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
 
   const totalNominatedCount = useMemo(
     () =>
-      (hasValue(stakingSummary) && stakingSummary.value.nominator_aggregate.aggregate?.count) || 0,
+      (hasValue(stakingSummary) &&
+        stakingSummary.value.staking_nominators_aggregate.aggregate?.count) ||
+      0,
     [stakingSummary],
   )
 
   const totalNominatedStake = useMemo(
     () =>
       hasValue(stakingSummary)
-        ? stakingSummary.value.nominator
+        ? stakingSummary.value.staking_nominators
             .filter((n) => n.operator?.account_id !== subspaceAccount)
             .reduce(
               (acc, nominator) =>
