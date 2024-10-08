@@ -1,129 +1,46 @@
-const {
-  connectToDB,
-  queries,
-  entryTypeToTable,
-  stringToUUID,
-} = require("../utils/db");
+const { connectToDB, queries, entryTypeToTable } = require("../utils/db");
 const { LEADERBOARD_ENTRY_TYPE } = require("../constants");
 
 async function leaderboardSortAndRank(job) {
-  const { blockNumber, interval } = job.data;
-  const blockNumberBigInt = BigInt(blockNumber);
-  const intervalBigInt = BigInt(interval);
-
+  const { blockNumber } = job.data;
   const pool = await connectToDB();
 
-  const lastBlockNumber =
-    intervalBigInt > blockNumberBigInt
-      ? BigInt(1)
-      : blockNumberBigInt - intervalBigInt;
-
-  const selectValues = [
-    parseInt(lastBlockNumber.toString()),
-    parseInt(blockNumberBigInt.toString()),
-  ];
+  const result = {
+    blockNumber,
+    updatedTables: [],
+    query: [],
+  };
 
   try {
-    const leaderboardEntries = await pool.query(
-      queries.selectLeaderboardEntryByInterval,
-      selectValues
-    );
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
 
-    if (leaderboardEntries.rowCount === 0) {
-      console.log(
-        "No leaderboard entries found for interval: " +
-          lastBlockNumber +
-          " - " +
-          blockNumber
-      );
-      throw new Error(
-        "No leaderboard entries found for interval: " +
-          lastBlockNumber +
-          " - " +
-          blockNumber
-      );
-    }
-
-    const filteredEntries = {};
-    Object.keys(LEADERBOARD_ENTRY_TYPE).forEach((key) => {
-      const entries = leaderboardEntries.rows.filter(
-        (r) => r.leaderboard === LEADERBOARD_ENTRY_TYPE[key]
-      );
-      if (entries.length > 0) {
-        filteredEntries[key] = entries;
-      }
-    });
-
-    const aggregatedEntries = {};
-    Object.keys(filteredEntries).forEach((key) => {
-      const entries = filteredEntries[key];
-      aggregatedEntries[key] = {};
-      entries.forEach((entry) => {
-        const owner = entry.owner;
-        if (!aggregatedEntries[key][owner]) {
-          aggregatedEntries[key][owner] = {
-            owner: owner,
-            value: BigInt(0),
-            created_at: entry.created_at,
-            timestamp: entry.timestamp,
+      const updateQueries = Object.keys(LEADERBOARD_ENTRY_TYPE).map((key) => {
+        const table = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key]);
+        const rankingQuery = queries.updateLeaderboardRanking(table);
+        return client.query(rankingQuery).then((queryResult) => {
+          result.query.push(rankingQuery);
+          return {
+            table,
+            rowCount: queryResult.rowCount,
           };
-        }
-        aggregatedEntries[key][owner].value += BigInt(entry.value);
-        if (entry.created_at > aggregatedEntries[key][owner].created_at) {
-          aggregatedEntries[key][owner].created_at = entry.created_at;
-        }
+        });
       });
-    });
 
-    for (const key in aggregatedEntries) {
-      const table = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key]);
-      const createOrUpdateQuery = queries.createOrUpdateLeaderboardEntry(table);
+      const updatedTables = await Promise.all(updateQueries);
+      result.updatedTables.push(...updatedTables);
 
-      for (const owner in aggregatedEntries[key]) {
-        const entry = aggregatedEntries[key][owner];
-        const id = stringToUUID(owner);
-        const blockRange = `[${entry.created_at.toString()}, ${entry.created_at.toString()}]`;
-        const values = [
-          owner,
-          entry.value.toString(),
-          entry.timestamp,
-          entry.created_at,
-          id,
-          blockRange,
-        ];
-
-        try {
-          await pool.query(createOrUpdateQuery, values);
-        } catch (err) {
-          console.error(`Error updating leaderboard for ${owner}:`, err);
-          throw new Error(
-            "Failed to update leaderboard entry for " +
-              owner +
-              " on table " +
-              table +
-              ": " +
-              err
-          );
-        }
-      }
-
-      const rankingQuery = queries.updateLeaderboardRanking(table);
-      try {
-        await pool.query(rankingQuery);
-      } catch (err) {
-        console.error(`Error updating ranking for ${table}:`, err);
-        throw new Error(
-          "Failed to update ranking for table " + table + ": " + err
-        );
-      }
+      await client.query("COMMIT");
+    } catch (err) {
+      await client.query("ROLLBACK");
+      console.error("Error updating rankings:", err);
+      throw new Error("Failed to update rankings: " + err);
+    } finally {
+      client.release();
     }
 
-    await pool.query(queries.updateAccountedForStatus, selectValues);
-
-    return {
-      query: leaderboardEntries.query,
-      leaderboardEntries: leaderboardEntries.rowCount,
-    };
+    return result;
   } catch (err) {
     console.error("Error in leaderboardSortAndRank:", err);
     throw new Error("Failed to sort and rank leaderboard: " + err);

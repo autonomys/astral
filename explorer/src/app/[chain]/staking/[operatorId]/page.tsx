@@ -1,9 +1,12 @@
-import { Operator } from '@/components/Staking/Operator'
+import { NotFound } from 'components/layout/NotFound'
+import { Operator } from 'components/Staking/Operator'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
+import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { AccountIdPageProps, ChainPageProps } from 'types/app'
+import { isRouteSupportingNetwork } from 'utils/route'
 
 export async function generateMetadata({
   params: { chain, accountId },
@@ -24,8 +27,7 @@ export async function generateMetadata({
   }
 }
 
-const Page: FC = () => {
-  return <Operator />
-}
+const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
+  isRouteSupportingNetwork(chain, Routes.staking) ? <Operator /> : <NotFound />
 
 export default Page

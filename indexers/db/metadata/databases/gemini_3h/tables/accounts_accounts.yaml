@@ -1,6 +1,25 @@
 table:
   name: accounts
   schema: accounts
+array_relationships:
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          id: signer
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: consensus
+  - name: rewards
+    using:
+      manual_configuration:
+        column_mapping:
+          id: account_id
+        insertion_order: null
+        remote_table:
+          name: rewards
+          schema: accounts
 select_permissions:
   - role: user
     permission:
@@ -11,7 +30,6 @@ select_permissions:
         - reserved
         - total
         - updated_at
-        - account_id
         - id
       filter: {}
       allow_aggregations: true

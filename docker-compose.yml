@@ -63,7 +63,7 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: "startup,http-log,webhook-log,websocket-log,query-log" # Enabled log types
 
       # Security and Authorization
-      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "true" # Enable query allowlisting
+      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "false" # Disable query allowlisting
 
       # Gemini 3H Databases
       HASURA_GRAPHQL_GEMINI_3H_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H}
@@ -198,7 +198,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --disable-historical=true
     healthcheck:
       test:
         [
@@ -238,7 +238,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --disable-historical=true
     healthcheck:
       test:
         [
@@ -278,7 +278,7 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=30
-      - --unfinalized-blocks=true
+      - --disable-historical=true
     healthcheck:
       test:
         [

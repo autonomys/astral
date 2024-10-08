@@ -46,10 +46,21 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 316220,
+      startBlock: 1,
+      // startBlock: 310356, // DomainInstantiated
+      // startBlock: 316224, // RegisterOperator
+      // startBlock: 346630, // domains.DomainEpochCompleted
       mapping: {
         file: "./dist/index.js",
         handlers: [
+          {
+            kind: SubstrateHandlerKind.Event,
+            handler: "handleDomainInstantiatedEvent",
+            filter: {
+              module: "domains",
+              method: "DomainInstantiated",
+            },
+          },
           {
             kind: SubstrateHandlerKind.Call,
             handler: "handleRegisterOperatorCall",
@@ -104,14 +115,6 @@ const project: SubstrateProject = {
             filter: {
               module: "domains",
               method: "UnlockNominator",
-            },
-          },
-          {
-            kind: SubstrateHandlerKind.Event,
-            handler: "handleDomainInstantiatedEvent",
-            filter: {
-              module: "domains",
-              method: "DomainInstantiated",
             },
           },
           {
