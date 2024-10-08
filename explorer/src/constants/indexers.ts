@@ -21,8 +21,6 @@ export const indexers: Indexer[] = [
       accounts: 'https://autonomys-labs.squids.live/accounts-squid/addons/hasura/v1/graphql',
       leaderboard: 'https://autonomys-labs.squids.live/leaderboard-squid/addons/hasura/v1/graphql',
       staking: 'https://autonomys-labs.squids.live/staking-squid/addons/hasura/v1/graphql',
-      testnetRewards:
-        'https://autonomys-labs.squids.live/testnet-rewards-squid/v/v3/addons/hasura/v1/graphql',
     },
   },
   {
