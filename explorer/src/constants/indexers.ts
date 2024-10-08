@@ -6,16 +6,18 @@ export interface Indexer {
   indexer: string
 }
 
+const LOCAL_INDEXER = 'http://localhost:8080/v1/graphql'
+
 export const indexers: Indexer[] = [
   {
     title: 'Gemini 3h',
     network: NetworkId.GEMINI_3H,
-    indexer: 'http://localhost:8080/v1/graphql',
+    indexer: process.env.NEXT_PUBLIC_GEMINI_3H_INDEXERS || LOCAL_INDEXER,
   },
   {
     title: 'Localhost',
     network: NetworkId.LOCALHOST,
-    indexer: 'http://localhost:8080/v1/graphql',
+    indexer: LOCAL_INDEXER,
   },
 ]
 
