@@ -2,6 +2,7 @@
 
 import { sendGAEvent } from '@next/third-parties/google'
 import {
+  AriesStressTestIcon,
   Gemini3hTestnetIcon,
   Gemini3p1TestnetIcon,
   Gemini3p2TestnetIcon,
@@ -22,6 +23,7 @@ type Reward<T = string> = {
 }
 
 type Rewards<T = string> = {
+  aries: Reward<T>
   geminiI: Reward<T>
   geminiIIphase1: Reward<T>
   geminiIIphase2: Reward<T>
@@ -63,6 +65,10 @@ const MAINNET_TOTAL_SUPPLY = 1000000000
 const PERCENTAGE_PRECISION = 6
 const EARNINGS_PRECISION = 6
 const DEFAULT_REWARDS: Rewards = {
+  aries: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
   geminiI: {
     earningsTestnetToken: '0',
     absoluteAllocation: '0',
@@ -112,6 +118,11 @@ export const TestnetRewardsTable: FC = () => {
 
   const campaigns = useMemo(
     () => ({
+      aries: {
+        name: 'aries',
+        testnet: 'Aries Stress Test',
+        icon: <AriesStressTestIcon />,
+      },
       geminiI: {
         name: 'geminiI',
         testnet: 'Gemini 1',
@@ -172,7 +183,7 @@ export const TestnetRewardsTable: FC = () => {
   const cleanCell = (cell: string) => cell.replace(/"/g, '').replace(/,/g, '')
 
   const handleLoad = useCallback(async () => {
-    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-10oct2024.csv')
+    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-10oct2024-2.csv')
     const data = await file.text()
     const rows = data.split('\n').slice(6)
     const rewardsData = rows.map((row) => {
@@ -180,85 +191,93 @@ export const TestnetRewardsTable: FC = () => {
       return {
         address: cleanCell(columns[0]),
         rewards: {
-          geminiI: {
+          aries: {
             earningsTestnetToken: parseFloat(cleanCell(columns[1])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[10])) || 0,
-          },
-          geminiIIphase1: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[2])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[11])) || 0,
           },
-          geminiIIphase2: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[3])) || 0,
+          geminiI: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[2])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[12])) || 0,
           },
-          geminiIIIf: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[4])) || 0,
+          geminiIIphase1: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[3])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[13])) || 0,
           },
-          geminiIIIg: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[5])) || 0,
+          geminiIIphase2: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[4])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[14])) || 0,
           },
-          geminiIIIhPhase1: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[6])) || 0,
+          geminiIIIf: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[5])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[15])) || 0,
           },
-          geminiIIIhPhase2: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[7])) || 0,
+          geminiIIIg: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[6])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[16])) || 0,
           },
-          stakeWarsIPhase1: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[8])) || 0,
+          geminiIIIhPhase1: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[7])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[17])) || 0,
           },
-          stakeWarsIPhase2: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[9])) || 0,
+          geminiIIIhPhase2: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[8])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[18])) || 0,
           },
+          stakeWarsIPhase1: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[9])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[19])) || 0,
+          },
+          stakeWarsIPhase2: {
+            earningsTestnetToken: parseFloat(cleanCell(columns[10])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[20])) || 0,
+          },
         },
-        totalAllocation: parseFloat(cleanCell(columns[19])) || 0,
+        totalAllocation: parseFloat(cleanCell(columns[21])) || 0,
       } as AllRewards
     })
 
     const totalRow = data.split('\n')[1]
     const totalRowColumns = totalRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
     const totals: Rewards = {
-      geminiI: {
+      aries: {
         earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[1])).toString() || '0',
-        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[10])).toString() || '0',
-      },
-      geminiIIphase1: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[2])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[11])).toString() || '0',
       },
-      geminiIIphase2: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[3])).toString() || '0',
+      geminiI: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[2])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[12])).toString() || '0',
       },
-      geminiIIIf: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[4])).toString() || '0',
+      geminiIIphase1: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[3])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[13])).toString() || '0',
       },
-      geminiIIIg: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[5])).toString() || '0',
+      geminiIIphase2: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[4])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[14])).toString() || '0',
       },
-      geminiIIIhPhase1: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[6])).toString() || '0',
+      geminiIIIf: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[5])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[15])).toString() || '0',
       },
-      geminiIIIhPhase2: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[7])).toString() || '0',
+      geminiIIIg: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[6])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[16])).toString() || '0',
       },
-      stakeWarsIPhase1: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[8])).toString() || '0',
+      geminiIIIhPhase1: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[7])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[17])).toString() || '0',
       },
-      stakeWarsIPhase2: {
-        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[9])).toString() || '0',
+      geminiIIIhPhase2: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[8])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[18])).toString() || '0',
+      },
+      stakeWarsIPhase1: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[9])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[19])).toString() || '0',
+      },
+      stakeWarsIPhase2: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[10])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[20])).toString() || '0',
       },
     }
     setAllRewards(rewardsData)
@@ -338,24 +357,20 @@ export const TestnetRewardsTable: FC = () => {
     [rewards, totalRewards],
   )
 
-  const totalUserTestnetRewards = useMemo(() => {
-    return (
-      parseFloat(rewards.geminiI.earningsTestnetToken) +
-      parseFloat(rewards.geminiIIphase1.earningsTestnetToken) +
-      parseFloat(rewards.geminiIIphase2.earningsTestnetToken) +
-      parseFloat(rewards.geminiIIIf.earningsTestnetToken) +
-      parseFloat(rewards.geminiIIIg.earningsTestnetToken)
-    )
-  }, [rewards])
+  const totalUserTestnetRewards = useMemo(
+    () =>
+      Object.keys(rewards).reduce(
+        (total, key) => total + parseFloat(rewards[key as keyof Rewards].earningsTestnetToken),
+        0,
+      ),
+    [rewards],
+  )
 
   const totalTestnetTokenEmissions = useMemo(() => {
-    return (
-      parseFloat(totalRewards.geminiI.earningsTestnetToken) +
-      parseFloat(totalRewards.geminiIIphase1.earningsTestnetToken) +
-      parseFloat(totalRewards.geminiIIphase2.earningsTestnetToken) +
-      parseFloat(totalRewards.geminiIIIf.earningsTestnetToken) +
-      parseFloat(totalRewards.geminiIIIg.earningsTestnetToken)
-    )
+    return Object.keys(totalRewards).reduce((total, key) => {
+      const earnings = totalRewards[key as keyof typeof totalRewards]?.earningsTestnetToken
+      return total + (earnings ? parseFloat(earnings) : 0)
+    }, 0)
   }, [totalRewards])
 
   const totalUserTestnetRewardsPercentage = useMemo(() => {
