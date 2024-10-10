@@ -1,10 +1,12 @@
 'use client'
 
-import { INTERNAL_ROUTES, Routes, WalletType } from '@/constants'
 import { formatAddress } from '@/utils/formatAddress'
 import { shortString } from '@/utils/string'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import { WalletButton } from 'components/WalletButton'
 import AccountListDropdown from 'components/WalletButton/AccountListDropdown'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { WalletType } from 'constants/wallet'
 import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -42,31 +44,40 @@ export const RewardHistory: FC = () => {
         </h2>
         <ul className='mt-2 list-inside list-disc space-y-4 text-gray-700 dark:text-gray-300'>
           {mySubspaceWallets.map((wallet) => (
-            <div key={`${wallet}-account-id`} className='row flex items-center gap-3'>
-              <AccountIcon address={wallet} size={26} theme='beachball' />
-              <Link
-                data-testid={`account-link-${wallet}`}
-                href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, wallet)}
-                className='hover:text-primaryAccent'
+            <div key={`${wallet}-account-id`} className='flex items-center justify-between gap-3'>
+              <div className='flex items-center gap-3'>
+                <AccountIcon address={wallet} size={26} theme='beachball' />
+                <Link
+                  data-testid={`account-link-${wallet}`}
+                  href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, wallet)}
+                  className='hover:text-primaryAccent'
+                >
+                  <div>
+                    {shortString(wallet)}{' '}
+                    {
+                      accounts?.find((account) =>
+                        account.type === WalletType.subspace ||
+                        (account as { type: string }).type === 'sr25519'
+                          ? formatAddress(account.address) === wallet
+                          : account.address === wallet,
+                      )?.name
+                    }
+                  </div>
+                </Link>
+              </div>
+              <button
+                onClick={() => removeSubspaceWallet(wallet)}
+                className='ml-2 text-red-500 hover:text-red-700'
+                aria-label={`Remove ${wallet}`}
               >
-                <div>
-                  {shortString(wallet)}{' '}
-                  {
-                    accounts?.find((account) =>
-                      account.type === WalletType.subspace ||
-                      (account as { type: string }).type === 'sr25519'
-                        ? formatAddress(account.address) === wallet
-                        : account.address === wallet,
-                    )?.name
-                  }
-                </div>
-              </Link>
+                <TrashIcon className='h-5 w-5' />
+              </button>
             </div>
           ))}
         </ul>
       </div>
     ),
-    [accounts, mySubspaceWallets, network],
+    [accounts, mySubspaceWallets, network, removeSubspaceWallet],
   )
 
   return (

@@ -1,6 +1,5 @@
 'use client'
 
-import { numberFormattedString } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
   Gemini3hTestnetIcon,
@@ -14,23 +13,30 @@ import {
 import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useViewStates } from 'states/view'
+import { numberFormattedString } from 'utils/number'
 import { Spinner } from '../common/Spinner'
 
-type Reward = {
-  earningsTestnetToken: string
-  absoluteAllocation: string
+type Reward<T = string> = {
+  earningsTestnetToken: T
+  absoluteAllocation: T
 }
 
-type Rewards = {
-  geminiI: Reward
-  geminiIIphase1: Reward
-  geminiIIphase2: Reward
-  geminiIIIf: Reward
-  geminiIIIg: Reward
-  geminiIIIhPhase1: Reward
-  geminiIIIhPhase2: Reward
-  stakeWarsIPhase1: Reward
-  stakeWarsIPhase2: Reward
+type Rewards<T = string> = {
+  geminiI: Reward<T>
+  geminiIIphase1: Reward<T>
+  geminiIIphase2: Reward<T>
+  geminiIIIf: Reward<T>
+  geminiIIIg: Reward<T>
+  geminiIIIhPhase1: Reward<T>
+  geminiIIIhPhase2: Reward<T>
+  stakeWarsIPhase1: Reward<T>
+  stakeWarsIPhase2: Reward<T>
+}
+
+type AllRewards = {
+  address: string
+  rewards: Rewards<number>
+  totalAllocation: number
 }
 
 const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
@@ -56,55 +62,53 @@ const MAINNET_TOTAL_SUPPLY = 1000000000
 
 const PERCENTAGE_PRECISION = 6
 const EARNINGS_PRECISION = 6
+const DEFAULT_REWARDS: Rewards = {
+  geminiI: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  geminiIIphase1: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  geminiIIphase2: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  geminiIIIf: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  geminiIIIg: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  geminiIIIhPhase1: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  geminiIIIhPhase2: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  stakeWarsIPhase1: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+  stakeWarsIPhase2: {
+    earningsTestnetToken: '0',
+    absoluteAllocation: '0',
+  },
+}
 
 export const TestnetRewardsTable: FC = () => {
   const { subspaceAccount } = useWallet()
   const { mySubspaceWallets } = useViewStates()
   const [isModalOpen, setModalOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-
-  const defaultRewards: Rewards = useMemo(() => {
-    return {
-      geminiI: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      geminiIIphase1: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      geminiIIphase2: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      geminiIIIf: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      geminiIIIg: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      geminiIIIhPhase1: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      geminiIIIhPhase2: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      stakeWarsIPhase1: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-      stakeWarsIPhase2: {
-        earningsTestnetToken: '0',
-        absoluteAllocation: '0',
-      },
-    }
-  }, [])
-  const [rewards, setRewards] = useState<Rewards>(defaultRewards)
-  const [totalRewards, setTotalRewards] = useState<Rewards>(defaultRewards)
+  const [allRewards, setAllRewards] = useState<AllRewards[]>([])
+  const [rewards, setRewards] = useState<Rewards>(DEFAULT_REWARDS)
+  const [totalRewards, setTotalRewards] = useState<Rewards>(DEFAULT_REWARDS)
 
   const campaigns = useMemo(
     () => ({
@@ -214,12 +218,12 @@ export const TestnetRewardsTable: FC = () => {
           },
         },
         totalAllocation: parseFloat(cleanCell(columns[19])) || 0,
-      }
+      } as AllRewards
     })
 
     const totalRow = data.split('\n')[1]
     const totalRowColumns = totalRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-    const totals = {
+    const totals: Rewards = {
       geminiI: {
         earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[1])).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[10])).toString() || '0',
@@ -257,36 +261,36 @@ export const TestnetRewardsTable: FC = () => {
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[18])).toString() || '0',
       },
     }
-
-    return { rewardsData, totals }
+    setAllRewards(rewardsData)
+    setTotalRewards(totals)
   }, [])
 
   const handleSearch = useCallback(async () => {
-    const { rewardsData, totals } = await handleLoad()
-
-    const userRewards = rewardsData.filter((reward) => mySubspaceWallets.includes(reward.address))
-    const mergedRewards: Rewards = userRewards.reduce(
-      (acc, reward) => {
-        Object.keys(reward.rewards).forEach((key) => {
-          const testnetKey = key as keyof Rewards
-          acc[testnetKey].earningsTestnetToken = (
-            parseFloat(acc[testnetKey].earningsTestnetToken) +
-            reward.rewards[testnetKey].earningsTestnetToken
-          ).toString()
-          acc[testnetKey].absoluteAllocation = (
-            parseFloat(acc[testnetKey].absoluteAllocation) +
-            reward.rewards[testnetKey].absoluteAllocation
-          ).toString()
-        })
-        return acc
-      },
-      { ...defaultRewards },
-    )
-
+    const mergedRewards: Rewards = allRewards
+      .filter(
+        (reward) =>
+          mySubspaceWallets.includes(reward.address) || subspaceAccount === reward.address,
+      )
+      .reduce(
+        (acc, reward) => {
+          Object.keys(campaigns).forEach((key) => {
+            const testnetKey = key as keyof Rewards
+            acc[testnetKey].earningsTestnetToken = (
+              parseFloat(acc[testnetKey].earningsTestnetToken) +
+              reward.rewards[testnetKey].earningsTestnetToken
+            ).toString()
+            acc[testnetKey].absoluteAllocation = (
+              parseFloat(acc[testnetKey].absoluteAllocation) +
+              reward.rewards[testnetKey].absoluteAllocation
+            ).toString()
+          })
+          return acc
+        },
+        { ...DEFAULT_REWARDS },
+      )
     setRewards(mergedRewards)
-    setTotalRewards(totals)
     setIsLoaded(true)
-  }, [defaultRewards, handleLoad, mySubspaceWallets])
+  }, [allRewards, campaigns, mySubspaceWallets, subspaceAccount])
 
   const userTestnetRewardsByPhase = useCallback(
     (phase: string) => {
@@ -417,12 +421,15 @@ export const TestnetRewardsTable: FC = () => {
   )
 
   useEffect(() => {
-    handleSearch()
-  }, [handleSearch])
+    handleLoad()
+  }, [handleLoad])
 
   useEffect(() => {
-    sendGAEvent('event', 'check_testnet_rewards', { value: subspaceAccount })
-  }, [subspaceAccount])
+    handleSearch()
+    sendGAEvent('event', 'check_testnet_rewards', {
+      value: subspaceAccount + mySubspaceWallets.join(','),
+    })
+  }, [subspaceAccount, mySubspaceWallets, handleSearch])
 
   return (
     <div className='max-w-8xl mt-8 w-full'>
