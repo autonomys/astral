@@ -310,6 +310,17 @@ export const TestnetRewardsTable: FC = () => {
     [totalRewards],
   )
 
+  const totalMainnetByPhase = useCallback(
+    (phase: string) => {
+      if (totalRewards[phase as keyof Rewards].absoluteAllocation)
+        return numberFormattedString(
+          parseFloat(totalRewards[phase as keyof Rewards].absoluteAllocation),
+        )
+      return '0.00'
+    },
+    [totalRewards],
+  )
+
   const userTestnetRewardsPercentageByPhase = useCallback(
     (phase: string) => {
       if (rewards[phase as keyof Rewards]) {
@@ -480,6 +491,7 @@ export const TestnetRewardsTable: FC = () => {
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       {numberFormattedString(totalMainnetAllocationByPhase(campaign.name))}
+                      <br /> out of {totalMainnetByPhase(campaign.name)} tSSC
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
