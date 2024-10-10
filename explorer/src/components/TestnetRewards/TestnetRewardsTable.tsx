@@ -76,8 +76,6 @@ export const TestnetRewardsTable: FC = () => {
   const [isModalOpen, setModalOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
-  console.log('isLoaded', isLoaded)
-
   const defaultRewards: Rewards = useMemo(() => {
     return {
       geminiI: {
@@ -294,23 +292,13 @@ export const TestnetRewardsTable: FC = () => {
         calculatedTotalTokensPerPhase[testnetKey] += reward.rewards[testnetKey].earningsTestnetToken
       })
     })
-
     setTotalTokensPerPhase(calculatedTotalTokensPerPhase)
 
-    console.log('Total tokens per phase:', calculatedTotalTokensPerPhase)
-
     const userRewards = testnetData.filter((reward) => mySubspaceWallets.includes(reward.address))
-
-    console.log('userRewards', userRewards)
-
     const mergedRewards: Rewards = userRewards.reduce(
       (acc, reward) => {
         Object.keys(reward.rewards).forEach((key) => {
           const testnetKey = key as keyof Rewards
-
-          console.log('testnetKey', testnetKey)
-          console.log('reward.rewards[testnetKey]', reward.rewards[testnetKey])
-
           acc[testnetKey].earningsTestnetToken = (
             parseFloat(acc[testnetKey].earningsTestnetToken) +
             reward.rewards[testnetKey].earningsTestnetToken
@@ -330,8 +318,6 @@ export const TestnetRewardsTable: FC = () => {
       },
       { ...defaultRewards },
     )
-
-    console.log('mergedRewards', mergedRewards)
 
     setRewards(mergedRewards)
     setTotalRewards({
@@ -361,20 +347,9 @@ export const TestnetRewardsTable: FC = () => {
 
   const totalTSSC = useCallback(
     (phase: string) => {
-      switch (phase) {
-        case 'geminiI':
-          return numberFormattedString(totalRewards.geminiI)
-        case 'geminiIIphase1':
-          return numberFormattedString(totalRewards.geminiIIphase1)
-        case 'geminiIIphase2':
-          return numberFormattedString(totalRewards.geminiIIphase2)
-        case 'geminiIIIf':
-          return numberFormattedString(totalRewards.geminiIIIf)
-        case 'geminiIIIg':
-          return numberFormattedString(totalRewards.geminiIIIg)
-        default:
-          return 0
-      }
+      if (totalRewards[phase as keyof TotalRewards])
+        return numberFormattedString(totalRewards[phase as keyof TotalRewards])
+      return '0.00'
     },
     [totalRewards],
   )
@@ -445,11 +420,10 @@ export const TestnetRewardsTable: FC = () => {
   )
 
   const totalMainnetRewards = useMemo(() => {
-    return campaignsList.reduce((acc, campaign) => {
-      console.log('campaign', campaign)
-      console.log('totalMainnetRewardPerTestnet', totalMainnetRewardPerTestnet(campaign.name))
-      return acc + totalMainnetRewardPerTestnet(campaign.name)
-    }, 0)
+    return campaignsList.reduce(
+      (acc, campaign) => acc + totalMainnetRewardPerTestnet(campaign.name),
+      0,
+    )
   }, [campaignsList, totalMainnetRewardPerTestnet])
 
   const totalMainnetRewardsPercentage = useMemo(() => {
