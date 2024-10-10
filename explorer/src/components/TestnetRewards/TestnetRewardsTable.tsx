@@ -420,12 +420,12 @@ export const TestnetRewardsTable: FC = () => {
       ) : (
         <div className='mt-4 rounded-lg bg-white p-4 shadow-md dark:border-none dark:bg-gray-800 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
           <div className='mb-4 mt-4 flex justify-center'>
-            <div className='mx-8 flex w-full max-w-4xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
-              <div className='text-2xl font-semibold'>TOTAL EARNINGS</div>
+            <div className='mx-8 flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
+              <div className='text-2xl font-semibold'>TOTAL ALLOCATION</div>
               <div className='text-4xl font-bold'>
                 {numberFormattedString(totalUserMainnetAllocation)} ATC
               </div>
-              <div className='text-2xl font-semibold'>TESTNETS IN TOTAL</div>
+              <div className='text-2xl font-semibold'>TESTNETS PHASES IN TOTAL</div>
               <div className='text-4xl font-bold'>{testnetsWithRewardsCount}</div>
             </div>
           </div>
