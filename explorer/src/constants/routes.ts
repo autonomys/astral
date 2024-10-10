@@ -9,8 +9,7 @@ export enum Routes {
   domains = 'domains',
   nova = 'nova',
   autoid = 'autoid',
-  // Route deactivated till bugs are fixed and feature is ready
-  // stake = 'stake',
+  testnetRewards = 'testnet-rewards',
 }
 
 export const ROUTES: Route[] = [
@@ -48,11 +47,10 @@ export const ROUTES: Route[] = [
     ],
     networks: [NetworkId.GEMINI_3H],
   },
-  // Route deactivated till bugs are fixed and feature is ready
-  // {
-  //   name: Routes.stake,
-  //   title: 'Stake Wars',
-  // },
+  {
+    name: Routes.testnetRewards,
+    title: 'Testnet Rewards',
+  },
 ]
 
 export const EXTERNAL_ROUTES = {
