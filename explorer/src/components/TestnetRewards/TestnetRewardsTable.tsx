@@ -266,28 +266,27 @@ export const TestnetRewardsTable: FC = () => {
   }, [])
 
   const handleSearch = useCallback(async () => {
-    const mergedRewards: Rewards = allRewards
-      .filter(
-        (reward) =>
-          mySubspaceWallets.includes(reward.address) || subspaceAccount === reward.address,
-      )
-      .reduce(
-        (acc, reward) => {
-          Object.keys(campaigns).forEach((key) => {
-            const testnetKey = key as keyof Rewards
-            acc[testnetKey].earningsTestnetToken = (
-              parseFloat(acc[testnetKey].earningsTestnetToken) +
-              reward.rewards[testnetKey].earningsTestnetToken
-            ).toString()
-            acc[testnetKey].absoluteAllocation = (
-              parseFloat(acc[testnetKey].absoluteAllocation) +
-              reward.rewards[testnetKey].absoluteAllocation
-            ).toString()
-          })
-          return acc
-        },
-        { ...DEFAULT_REWARDS },
-      )
+    const userRewards = allRewards.filter(
+      (reward) => mySubspaceWallets.includes(reward.address) || subspaceAccount === reward.address,
+    )
+
+    const mergedRewards: Rewards = userRewards.reduce(
+      (acc, reward) => {
+        const newAcc = { ...acc }
+        Object.keys(campaigns).forEach((key) => {
+          const testnetKey = key as keyof Rewards
+          const currentEarnings = parseFloat(newAcc[testnetKey].earningsTestnetToken) || 0
+          const rewardEarnings = reward.rewards[testnetKey].earningsTestnetToken || 0
+          newAcc[testnetKey].earningsTestnetToken = (currentEarnings + rewardEarnings).toString()
+
+          const currentAllocation = parseFloat(newAcc[testnetKey].absoluteAllocation) || 0
+          const rewardAllocation = reward.rewards[testnetKey].absoluteAllocation || 0
+          newAcc[testnetKey].absoluteAllocation = (currentAllocation + rewardAllocation).toString()
+        })
+        return newAcc
+      },
+      JSON.parse(JSON.stringify(DEFAULT_REWARDS)),
+    )
     setRewards(mergedRewards)
     setIsLoaded(true)
   }, [allRewards, campaigns, mySubspaceWallets, subspaceAccount])
@@ -425,11 +424,12 @@ export const TestnetRewardsTable: FC = () => {
   }, [handleLoad])
 
   useEffect(() => {
+    setIsLoaded(false)
     handleSearch()
     sendGAEvent('event', 'check_testnet_rewards', {
       value: subspaceAccount + mySubspaceWallets.join(','),
     })
-  }, [subspaceAccount, mySubspaceWallets, handleSearch])
+  }, [subspaceAccount, mySubspaceWallets, handleSearch, setIsLoaded])
 
   return (
     <div className='max-w-8xl mt-8 w-full'>
