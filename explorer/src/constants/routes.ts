@@ -1,3 +1,6 @@
+import { NetworkId } from '@autonomys/auto-utils'
+import { Route } from 'types/app'
+
 export enum Routes {
   consensus = 'consensus',
   farming = 'farming',
@@ -9,7 +12,7 @@ export enum Routes {
   testnetRewards = 'testnet-rewards',
 }
 
-export const ROUTES = [
+export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
     title: 'Consensus Chain',
@@ -21,6 +24,7 @@ export const ROUTES = [
   {
     name: Routes.staking,
     title: 'Staking',
+    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.leaderboard,
@@ -33,12 +37,15 @@ export const ROUTES = [
       {
         name: Routes.nova,
         title: 'Nova',
+        networks: [NetworkId.GEMINI_3H],
       },
       {
         name: Routes.autoid,
         title: 'Auto-ID',
+        networks: [NetworkId.GEMINI_3H],
       },
     ],
+    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.testnetRewards,
@@ -49,7 +56,7 @@ export const ROUTES = [
 export const EXTERNAL_ROUTES = {
   autonomys: 'https://autonomys.xyz/',
   academy: 'https://academy.autonomys.xyz/',
-  subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
+  privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
     'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
@@ -61,7 +68,7 @@ export const EXTERNAL_ROUTES = {
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/autonomys',
-    reddit: 'https://www.reddit.com/r/sub',
+    reddit: 'https://www.reddit.com/r/autonomys',
     medium: 'https://medium.com/subspace-network',
     youtube: 'https://www.youtube.com/@AutonomysNetwork',
     linkedin: 'https://www.linkedin.com/company/autonomys/',

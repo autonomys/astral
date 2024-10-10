@@ -1,8 +1,8 @@
 type Block @entity {
   id: ID!
   height: BigInt! @index
-  timestamp: Date! @index
   hash: String! @index
+  timestamp: Date! @index
   parentHash: String!
   specId: String!
   stateRoot: String!
@@ -16,22 +16,22 @@ type Block @entity {
 
 type Log @entity {
   id: ID!
-  logId: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
   indexInBlock: Int! @index
-  rawKind: String! @index
+  logKindId: String! @index
   kind: String!
   value: String
+  timestamp: Date! @index
 }
 
 type Extrinsic @entity {
   id: ID!
-  extrinsicId: String! @index
-  extrinsicHash: String! @index
+  hash: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
-  moduleId: String! @index
+  extrinsicModuleId: String! @index
+  name: String!
   indexInBlock: Int!
   success: Boolean! @index
   timestamp: Date! @index
@@ -47,12 +47,12 @@ type Extrinsic @entity {
 
 type Event @entity {
   id: ID!
-  eventId: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
   extrinsicId: String! @index
   extrinsicHash: String! @index
-  moduleId: String! @index
+  eventModuleId: String! @index
+  name: String!
   indexInBlock: BigInt!
   timestamp: Date! @index
   phase: String!
@@ -67,16 +67,19 @@ type Section @entity {
 
 type ExtrinsicModule @entity {
   id: ID!
-  moduleId: String! @index
-  index: String! @index
+  sectionId: String! @index
   section: String! @index
   method: String! @index
 }
 
 type EventModule @entity {
   id: ID!
-  moduleId: String! @index
-  index: String! @index
+  sectionId: String! @index
   section: String! @index
   method: String! @index
+}
+
+type LogKind @entity {
+  id: ID!
+  kind: String! @index
 }

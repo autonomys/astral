@@ -1,32 +1,66 @@
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
 import assert from "assert";
 import {
-  Account,
   Bundle,
   BundleAuthor,
   Deposit,
-  DepositStatus,
-  Domain,
   DomainBlock,
-  DomainEpoch,
-  DomainRuntime,
   Nominator,
+  Withdrawal,
+} from "../types";
+import { SHARES_CALCULATION_MULTIPLIER } from "./constants";
+import * as db from "./db";
+import {
+  DepositStatus,
+  DomainRuntime,
   NominatorPendingAction,
   NominatorStatus,
-  Operator,
   OperatorPendingAction,
   OperatorStatus,
-  Reward,
-  Stats,
-  StatsPerAccount,
-  StatsPerDomain,
-  StatsPerNominator,
-  StatsPerOperator,
-  Withdrawal,
   WithdrawalStatus,
-} from "../types";
+} from "./models";
+import type { ExecutionReceipt, SealedBundleHeader, TBundle } from "./types";
+import { capitalizeFirstLetter, stringify } from "./utils";
 
-export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000);
+export async function handleDomainInstantiatedEvent(
+  event: SubstrateEvent
+): Promise<void> {
+  const {
+    extrinsic,
+    event: {
+      data: [_domainId, _completedEpochIndex],
+    },
+  } = event;
+  if (extrinsic) {
+    const _extrinsic = extrinsic.extrinsic.method.args[0].toHuman() as any;
+    const accountId = extrinsic.extrinsic.signer.toString();
+    const domainName = capitalizeFirstLetter(
+      _extrinsic.args.domain_config.domainName
+    );
+    const domainId = _domainId.toString();
+    const completedEpoch = Number(_completedEpochIndex?.toString() ?? 0);
+    const blockNumber = event.block.block.header.number.toNumber();
+
+    const domain = await db.checkAndGetDomain(domainId, BigInt(blockNumber));
+    domain.accountId = accountId;
+    domain.name = domainName;
+    switch (domainName) {
+      case "Nova":
+        domain.runtime = DomainRuntime.EVM;
+        break;
+      case "Auto-id":
+        domain.runtime = DomainRuntime.AUTO_ID;
+        break;
+      default:
+        break;
+    }
+    domain.runtimeInfo = stringify(_extrinsic.args.domain_config);
+    domain.completedEpoch = BigInt(completedEpoch);
+    domain.updatedAt = BigInt(blockNumber);
+
+    await domain.save();
+  }
+}
 
 export async function handleRegisterOperatorCall(
   extrinsic: SubstrateExtrinsic
@@ -36,14 +70,19 @@ export async function handleRegisterOperatorCall(
       extrinsic.extrinsic.method
     } extrinsic found at block ${extrinsic.block.block.header.number.toString()}`
   );
-  const signer = extrinsic.extrinsic.signer.toString();
-  const blockNumber = extrinsic.block.block.header.number.toNumber();
   const {
-    events,
+    block: {
+      block: {
+        header: { number },
+      },
+    },
     extrinsic: {
       method: { args },
+      signer,
     },
+    events,
   } = extrinsic;
+  const _args = args.map((arg) => arg.toPrimitive());
   const domainId = String(args[0]);
   const amount = BigInt(args[1].toString());
   const { signingKey, minimumNominatorStake, nominationTax } =
@@ -68,21 +107,27 @@ export async function handleRegisterOperatorCall(
 
   assert(domainId === domainId_storageFee, "domainId mismatch");
   assert(operatorId === operatorId_storageFee, "operatorId mismatch");
-  assert(signer === nominatorId_storageFee, "signer mismatch");
+  assert(signer.toString() === nominatorId_storageFee, "signer mismatch");
   assert(
     amount_storageFee === (BigInt(amount) * BigInt(20)) / BigInt(100),
     `Storage fee (${amount_storageFee}) should be 20% of the amount (${amount})`
   );
 
-  const domain = await checkAndGetDomain(domainId, blockNumber);
+  const domain = await db.checkAndGetDomain(
+    domainId,
+    BigInt(number.toString())
+  );
   domain.totalDeposits += amount;
-  domain.updatedAt = blockNumber;
+  domain.updatedAt = BigInt(number.toString());
 
-  const account = await checkAndGetAccount(signer, blockNumber);
+  const account = await db.checkAndGetAccount(
+    signer.toString(),
+    number.toNumber()
+  );
   account.totalDeposits += amount;
-  account.updatedAt = blockNumber;
+  account.updatedAt = BigInt(number.toString());
 
-  const operator = await checkAndGetOperator(operatorId, blockNumber);
+  const operator = await db.checkAndGetOperator(operatorId, number.toNumber());
   operator.domainId = domain.id;
   operator.accountId = account.id;
   operator.signingKey = String(signingKey);
@@ -90,25 +135,25 @@ export async function handleRegisterOperatorCall(
   operator.nominationTax = Number(nominationTax);
   operator.totalDeposits += amount;
   operator.pendingAction = OperatorPendingAction.PENDING_REGISTRATION;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(number.toString());
 
-  const nominator = await checkAndGetNominator(
-    signer,
+  const nominator = await db.checkAndGetNominator(
+    signer.toString(),
     domain.id,
     operator.id,
-    blockNumber
+    number.toNumber()
   );
   nominator.totalDeposits += amount;
   nominator.pendingAction = NominatorPendingAction.PENDING_EPOCH_CHANGE;
-  nominator.updatedAt = blockNumber;
+  nominator.updatedAt = BigInt(number.toString());
 
-  const deposit = await checkAndGetDeposit(
-    signer,
+  const deposit = await db.checkAndGetDeposit(
+    signer.toString(),
     domain.id,
     operator.id,
     amount - amount_storageFee,
     amount_storageFee,
-    blockNumber
+    number.toNumber()
   );
   deposit.epochDepositedAt = domain.completedEpoch ?? 0;
   deposit.domainBlockNumberDepositedAt = domain.lastDomainBlockNumber ?? 0;
@@ -148,18 +193,21 @@ export async function handleNominateOperatorCall(
   );
   const totalAmount = amount + storageFeeDeposit;
 
-  const account = await checkAndGetAccount(signer, blockNumber);
-  const operator = await checkAndGetOperator(operatorId, blockNumber);
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
+  const account = await db.checkAndGetAccount(signer, blockNumber);
+  const operator = await db.checkAndGetOperator(operatorId, blockNumber);
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
 
-  const nominator = await checkAndGetNominator(
+  const nominator = await db.checkAndGetNominator(
     signer,
     domain.id,
     operator.id,
     blockNumber
   );
 
-  const deposit = await checkAndGetDeposit(
+  const deposit = await db.checkAndGetDeposit(
     signer,
     domain.id,
     operator.id,
@@ -171,20 +219,20 @@ export async function handleNominateOperatorCall(
   deposit.domainBlockNumberDepositedAt = domain.lastDomainBlockNumber ?? 0;
 
   operator.totalDeposits += totalAmount;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
-  if (nominator.totalDepositsCount === 0) {
+  if (nominator.totalDepositsCount === BigInt(0)) {
     nominator.pendingAction = NominatorPendingAction.PENDING_EPOCH_CHANGE;
   }
   nominator.totalDeposits += totalAmount;
   nominator.totalDepositsCount++;
-  nominator.updatedAt = blockNumber;
+  nominator.updatedAt = BigInt(blockNumber);
 
   domain.totalDeposits += totalAmount;
-  domain.updatedAt = blockNumber;
+  domain.updatedAt = BigInt(blockNumber);
 
   account.totalDeposits += totalAmount;
-  account.updatedAt = blockNumber;
+  account.updatedAt = BigInt(blockNumber);
 
   await Promise.all([
     domain.save(),
@@ -220,14 +268,17 @@ export async function handleDeregisterOperatorCall(
     return;
   }
 
-  const operator = await checkAndGetOperator(operatorId, blockNumber);
+  const operator = await db.checkAndGetOperator(operatorId, blockNumber);
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
   operator.status = OperatorStatus.DEREGISTERED;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-  const account = await checkAndGetAccount(operator.accountId, blockNumber);
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
+  const account = await db.checkAndGetAccount(operator.accountId, blockNumber);
 
   const nominators = await Nominator.getByOperatorId(operator.id);
   const activeNominators =
@@ -242,7 +293,7 @@ export async function handleDeregisterOperatorCall(
       const estimatedAmount =
         (operator.currentSharePrice * n.knownShares) /
         SHARES_CALCULATION_MULTIPLIER;
-      const withdrawal = await checkAndGetWithdrawal(
+      const withdrawal = await db.checkAndGetWithdrawal(
         account.id,
         domain.id,
         operator.id,
@@ -254,7 +305,7 @@ export async function handleDeregisterOperatorCall(
       n.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
       n.totalWithdrawalsCount++;
       n.totalEstimatedWithdrawals += estimatedAmount;
-      n.updatedAt = blockNumber;
+      n.updatedAt = BigInt(blockNumber);
 
       operator.totalEstimatedWithdrawals += estimatedAmount;
       account.totalEstimatedWithdrawals += estimatedAmount;
@@ -273,11 +324,11 @@ export async function handleOperatorSlashedEvent(
   const operatorId = event.event.data[0].toString();
 
   // Query operator details
-  const operator = await checkAndGetOperator(operatorId, blockNumber);
+  const operator = await db.checkAndGetOperator(operatorId, blockNumber);
   operator.currentTotalStake = BigInt(0);
   operator.currentStorageFeeDeposit = BigInt(0);
   operator.status = OperatorStatus.SLASHED;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
   // Fetch nominators associated with the operator
   const nominators = await Nominator.getByOperatorId(operator.id);
@@ -285,7 +336,7 @@ export async function handleOperatorSlashedEvent(
     nominators.forEach(async (nominator) => {
       nominator.status = NominatorStatus.SLASHED;
       nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
-      nominator.updatedAt = blockNumber;
+      nominator.updatedAt = BigInt(blockNumber);
       await nominator.save();
     });
   }
@@ -300,7 +351,7 @@ export async function handleOperatorSlashedEvent(
         withdrawal.status === WithdrawalStatus.READY
       ) {
         withdrawal.status = WithdrawalStatus.SLASHED;
-        withdrawal.updatedAt = blockNumber;
+        withdrawal.updatedAt = BigInt(blockNumber);
         await withdrawal.save();
       }
     });
@@ -322,21 +373,24 @@ export async function handleOperatorTaxCollectedEvent(
   const blockNumber = block.block.header.number.toNumber();
   const taxAmount = BigInt(tax.toString());
 
-  const operator = await checkAndGetOperator(
+  const operator = await db.checkAndGetOperator(
     operatorId.toString(),
     blockNumber
   );
-  const account = await checkAndGetAccount(operator.accountId, blockNumber);
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
+  const account = await db.checkAndGetAccount(operator.accountId, blockNumber);
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
 
   operator.totalTaxCollected += taxAmount;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
   account.totalTaxCollected += taxAmount;
-  account.updatedAt = blockNumber;
+  account.updatedAt = BigInt(blockNumber);
 
   domain.totalTaxCollected += taxAmount;
-  domain.updatedAt = blockNumber;
+  domain.updatedAt = BigInt(blockNumber);
 
   await Promise.all([operator.save(), account.save(), domain.save()]);
 }
@@ -352,19 +406,19 @@ export async function handleOperatorRewardedEvent(
   } = event;
   const amount = BigInt(reward.toString());
 
-  const operator = await checkAndGetOperator(
+  const operator = await db.checkAndGetOperator(
     operatorId.toString(),
     block.block.header.number.toNumber()
   );
-  const domain = await checkAndGetDomain(
+  const domain = await db.checkAndGetDomain(
     operator.domainId,
-    block.block.header.number.toNumber()
+    BigInt(block.block.header.number.toString())
   );
 
   operator.totalRewardsCollected += amount;
   domain.totalRewardsCollected += amount;
 
-  const rewardEvent = await checkAndGetReward(
+  const rewardEvent = await db.checkAndGetReward(
     `${operatorId}-${block.block.header.number.toNumber()}`,
     block.block.header.number.toNumber()
   );
@@ -390,13 +444,16 @@ export async function handleWithdrawStakeCall(
   const blockNumber = extrinsic.block.block.header.number.toNumber();
   const sharesBigInt = BigInt(shares.toString());
 
-  const account = await checkAndGetAccount(address, blockNumber);
-  const operator = await checkAndGetOperator(
+  const account = await db.checkAndGetAccount(address, blockNumber);
+  const operator = await db.checkAndGetOperator(
     operatorId.toString(),
     blockNumber
   );
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-  const nominator = await checkAndGetNominator(
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
+  const nominator = await db.checkAndGetNominator(
     address,
     domain.id,
     operator.id,
@@ -405,7 +462,7 @@ export async function handleWithdrawStakeCall(
 
   const estimatedAmount =
     (operator.currentSharePrice * sharesBigInt) / SHARES_CALCULATION_MULTIPLIER;
-  const withdrawal = await checkAndGetWithdrawal(
+  const withdrawal = await db.checkAndGetWithdrawal(
     account.id,
     domain.id,
     operator.id,
@@ -423,22 +480,22 @@ export async function handleWithdrawStakeCall(
   withdrawal.domainBlockNumberWithdrawalRequestedAt =
     domain.lastDomainBlockNumber ?? 0;
   withdrawal.status = WithdrawalStatus.PENDING_LOCK;
-  withdrawal.createdAt = blockNumber;
-  withdrawal.updatedAt = blockNumber;
+  withdrawal.createdAt = BigInt(blockNumber);
+  withdrawal.updatedAt = BigInt(blockNumber);
 
   nominator.totalWithdrawalsCount++;
   nominator.totalEstimatedWithdrawals += estimatedAmount;
   nominator.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
-  nominator.updatedAt = blockNumber;
+  nominator.updatedAt = BigInt(blockNumber);
 
   operator.totalEstimatedWithdrawals += estimatedAmount;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
   account.totalEstimatedWithdrawals += estimatedAmount;
-  account.updatedAt = blockNumber;
+  account.updatedAt = BigInt(blockNumber);
 
   domain.totalEstimatedWithdrawals += estimatedAmount;
-  domain.updatedAt = blockNumber;
+  domain.updatedAt = BigInt(blockNumber);
 
   await Promise.all([
     withdrawal.save(),
@@ -457,7 +514,7 @@ export async function handleUnlockFundsCall(
   const [operatorId, shares] = extrinsic.extrinsic.method.args;
 
   // Query operator details
-  const operator = await checkAndGetOperator(
+  const operator = await db.checkAndGetOperator(
     operatorId.toString(),
     blockNumber
   );
@@ -468,7 +525,7 @@ export async function handleUnlockFundsCall(
     (operator.currentSharePrice * sharesBigInt) / SHARES_CALCULATION_MULTIPLIER;
 
   // Fetch or create Withdrawal entity
-  const withdrawal = await checkAndGetWithdrawal(
+  const withdrawal = await db.checkAndGetWithdrawal(
     signer,
     operator.domainId,
     operator.id,
@@ -479,13 +536,16 @@ export async function handleUnlockFundsCall(
   withdrawal.shares = sharesBigInt;
   withdrawal.estimatedAmount = estimatedAmount;
   withdrawal.status = WithdrawalStatus.PENDING_LOCK;
-  withdrawal.createdAt = blockNumber;
-  withdrawal.updatedAt = blockNumber;
+  withdrawal.createdAt = BigInt(blockNumber);
+  withdrawal.updatedAt = BigInt(blockNumber);
 
   // Update related entities
-  const account = await checkAndGetAccount(signer, blockNumber);
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-  const nominator = await checkAndGetNominator(
+  const account = await db.checkAndGetAccount(signer, blockNumber);
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
+  const nominator = await db.checkAndGetNominator(
     signer,
     domain.id,
     operator.id,
@@ -495,16 +555,16 @@ export async function handleUnlockFundsCall(
   nominator.totalWithdrawalsCount++;
   nominator.totalEstimatedWithdrawals += estimatedAmount;
   nominator.pendingAction = NominatorPendingAction.PENDING_LOCK_PERIOD;
-  nominator.updatedAt = blockNumber;
+  nominator.updatedAt = BigInt(blockNumber);
 
   operator.totalEstimatedWithdrawals += estimatedAmount;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
   account.totalEstimatedWithdrawals += estimatedAmount;
-  account.updatedAt = blockNumber;
+  account.updatedAt = BigInt(blockNumber);
 
   domain.totalEstimatedWithdrawals += estimatedAmount;
-  domain.updatedAt = blockNumber;
+  domain.updatedAt = BigInt(blockNumber);
 
   // Save all changes
   await Promise.all([
@@ -528,30 +588,6 @@ export async function handleUnlockNominatorCall(
   // Implementation for handleUnlockNominatorCall
 }
 
-export async function handleDomainInstantiatedEvent(
-  event: SubstrateEvent
-): Promise<void> {
-  logger.info(
-    `New ${event.event.section}.${
-      event.event.method
-    } event found at block ${event.block.block.header.number.toString()}`
-  );
-  const {
-    event: {
-      data: [_domainId, _completedEpochIndex],
-    },
-  } = event;
-  const domainId = _domainId.toString();
-  const completedEpoch = Number(_completedEpochIndex?.toString() ?? 0);
-  const blockNumber = event.block.block.header.number.toNumber();
-
-  const domain = await checkAndGetDomain(domainId, blockNumber);
-  domain.completedEpoch = completedEpoch;
-  domain.updatedAt = blockNumber;
-
-  await domain.save();
-}
-
 export async function handleDomainEpochCompletedEvent(
   event: SubstrateEvent
 ): Promise<void> {
@@ -573,15 +609,18 @@ export async function handleDomainEpochCompletedEvent(
 
   // Parse domain details
   const parsedDomain = {
-    domainId: domainEntry.toHuman()?.domainId,
-    ownerAccountId: domainEntry.toHuman()?.ownerAccountId,
+    domainId: domainEntry?.domainId,
+    ownerAccountId: domainEntry?.ownerAccountId,
     // Add other necessary fields
   };
 
   // Fetch or create Domain entity
-  const domain = await checkAndGetDomain(domainId.toString(), blockNumber);
-  domain.completedEpoch = Number(epochIndex);
-  domain.updatedAt = blockNumber;
+  const domain = await db.checkAndGetDomain(
+    domainId.toString(),
+    BigInt(blockNumber)
+  );
+  domain.completedEpoch = BigInt(epochIndex.toString());
+  domain.updatedAt = BigInt(blockNumber);
 
   // Update domain based on fetched data
   if (parsedDomain.ownerAccountId) {
@@ -631,204 +670,267 @@ export async function handleStorageFeeDepositedEvent(
 export async function handleBundleStoredEvent(
   event: SubstrateEvent
 ): Promise<void> {
-  logger.info(
-    `New ${event.event.section}.${
-      event.event.method
-    } event found at block ${event.block.block.header.number.toString()}`
-  );
   const {
     event: {
       data: [domainId, bundleAuthor],
     },
-    block,
+    block: {
+      block: {
+        header: { number, hash },
+      },
+      timestamp,
+    },
     extrinsic,
   } = event;
-  const domainIdNum = Number(domainId);
-  const operatorId = Number(bundleAuthor);
+  const domainIdNum = BigInt(domainId.toString());
+  const operatorId = BigInt(bundleAuthor.toString());
+  if (!extrinsic) return;
 
-  // const sealedHeader = extrinsic.extrinsic.method.args[0].sealedHeader as SealedBundleHeader;
-  // const domain = await checkAndGetDomain(domainId.toString(), block.block.header.number.toNumber());
-  // const operator = await checkAndGetOperator(operatorId.toString(), block.block.header.number.toNumber());
-  // const account = await checkAndGetAccount(operator.accountId, block.block.header.number.toNumber());
+  const _bundle =
+    extrinsic.extrinsic.method.args[0].toPrimitive() as unknown as TBundle;
+  const sealedHeader = _bundle.sealedHeader as SealedBundleHeader;
+  const domain = await db.checkAndGetDomain(
+    domainId.toString(),
+    BigInt(number.toString())
+  );
+  const operator = await db.checkAndGetOperator(
+    operatorId.toString(),
+    number.toNumber()
+  );
+  const account = await db.checkAndGetAccount(
+    operator.accountId,
+    number.toNumber()
+  );
 
-  // const receipt = sealedHeader.header.receipt as ExecutionReceipt;
-  // const { transfers } = receipt;
+  const receipt = sealedHeader.header.receipt as ExecutionReceipt;
+  const { transfers } = receipt;
 
-  // const totalTransfersIn = transfers.transfersIn.reduce(
-  //   (acc, [, amount]) => acc + BigInt(amount),
-  //   BigInt(0)
-  // );
-  // const transfersInCount = transfers.transfersIn.length;
+  const totalTransfersIn = Array.isArray(transfers.transfersIn)
+    ? transfers.transfersIn.reduce(
+        (acc, [, amount]) => acc + BigInt(amount),
+        BigInt(0)
+      )
+    : BigInt(0);
+  const transfersInCount = Array.isArray(transfers.transfersIn)
+    ? transfers.transfersIn.length
+    : 0;
 
-  // const totalTransfersOut = transfers.transfersOut.reduce(
-  //   (acc, [, amount]) => acc + BigInt(amount),
-  //   BigInt(0)
-  // );
-  // const transfersOutCount = transfers.transfersOut.length;
+  const totalTransfersOut = Array.isArray(transfers.transfersOut)
+    ? transfers.transfersOut.reduce(
+        (acc, [, amount]) => acc + BigInt(amount),
+        BigInt(0)
+      )
+    : BigInt(0);
+  const transfersOutCount = Array.isArray(transfers.transfersOut)
+    ? transfers.transfersOut.length
+    : 0;
 
-  // const totalRejectedTransfersClaimed =
-  //   transfers.rejectedTransfersClaimed.reduce(
-  //     (acc, [, amount]) => acc + BigInt(amount),
-  //     BigInt(0)
-  //   );
-  // const rejectedTransfersClaimedCount =
-  //   transfers.rejectedTransfersClaimed.length;
+  const totalRejectedTransfersClaimed = Array.isArray(
+    transfers.rejectedTransfersClaimed
+  )
+    ? transfers.rejectedTransfersClaimed.reduce(
+        (acc, [, amount]) => acc + BigInt(amount),
+        BigInt(0)
+      )
+    : BigInt(0);
+  const rejectedTransfersClaimedCount = Array.isArray(
+    transfers.rejectedTransfersClaimed
+  )
+    ? transfers.rejectedTransfersClaimed.length
+    : 0;
 
-  // const totalTransfersRejected = transfers.transfersRejected.reduce(
-  //   (acc, [, amount]) => acc + BigInt(amount),
-  //   BigInt(0)
-  // );
-  // const transfersRejectedCount = transfers.transfersRejected.length;
+  const totalTransfersRejected = Array.isArray(transfers.transfersRejected)
+    ? transfers.transfersRejected.reduce(
+        (acc, [, amount]) => acc + BigInt(amount),
+        BigInt(0)
+      )
+    : BigInt(0);
+  const transfersRejectedCount = Array.isArray(transfers.transfersRejected)
+    ? transfers.transfersRejected.length
+    : 0;
 
-  // const totalVolume = totalTransfersIn + totalTransfersOut;
+  const totalVolume = totalTransfersIn + totalTransfersOut;
 
-  // const {
-  //   domainBlockNumber,
-  //   domainBlockHash,
-  //   domainBlockExtrinsicRoot,
-  //   consensusBlockNumber,
-  //   consensusBlockHash,
-  //   blockFees,
-  // } = receipt;
+  const {
+    domainBlockNumber,
+    domainBlockHash,
+    domainBlockExtrinsicRoot,
+    consensusBlockNumber,
+    consensusBlockHash,
+    blockFees,
+  } = receipt;
 
-  // const epoch = domain.completedEpoch;
-  // const domainEpoch = await checkAndGetDomainEpoch(`${domainId}-${epoch}`, block.block.header.number.toNumber());
-  // domainEpoch.blockNumberEnd = Number(domainBlockNumber);
-  // domainEpoch.timestampEnd = new Date(block.timestamp);
-  // domainEpoch.consensusBlockNumberEnd = block.block.header.number.toNumber();
-  // domainEpoch.consensusBlockHashEnd = block.block.header.hash.toString();
-  // domainEpoch.blockCount =
-  //   domainEpoch.blockNumberEnd - domainEpoch.blockNumberStart + 1;
-  // domainEpoch.epochDuration = BigInt(
-  //   domainEpoch.timestampEnd.getTime() - domainEpoch.timestampStart.getTime()
-  // );
-  // domainEpoch.updatedAt = block.block.header.number.toNumber();
+  const epoch = domain.completedEpoch;
+  const domainEpoch = await db.checkAndGetDomainEpoch(
+    `${domainId}-${epoch}`,
+    number.toNumber()
+  );
+  domainEpoch.blockNumberEnd = BigInt(domainBlockNumber);
+  domainEpoch.timestampEnd = timestamp ?? new Date(0);
+  domainEpoch.consensusBlockNumberEnd = BigInt(consensusBlockNumber);
+  domainEpoch.consensusBlockHashEnd = hash.toString();
+  domainEpoch.blockCount =
+    domainEpoch.blockNumberEnd - domainEpoch.blockNumberStart + BigInt(1);
+  domainEpoch.epochDuration = BigInt(
+    domainEpoch.timestampEnd.getTime() - domainEpoch.timestampStart.getTime()
+  );
+  domainEpoch.updatedAt = BigInt(number.toNumber());
 
-  // let domainBlock = await checkAndGetDomainBlock(`${domainId}-${domainBlockNumber}`, block.block.header.number.toNumber());
-  // if (!domainBlock) {
-  //   domainBlock = DomainBlock.create({
-  //     id: `${domainId}-${domainBlockNumber}`,
-  //     domainId: domain.id,
-  //     domainEpochId: domainEpoch.id,
-  //     blockNumber: Number(domainBlockNumber),
-  //     blockHash: domainBlockHash,
-  //     extrinsicRoot: domainBlockExtrinsicRoot,
-  //     epoch: domain.completedEpoch,
-  //     consensusBlockNumber: Number(consensusBlockNumber),
-  //     consensusBlockHash,
-  //     timestamp: new Date(block.timestamp),
-  //     createdAt: block.block.header.number.toNumber(),
-  //     updatedAt: block.block.header.number.toNumber(),
-  //   });
-  // }
+  let domainBlock = await db.checkAndGetDomainBlock(
+    `${domainId}-${domainBlockNumber}`,
+    number.toNumber()
+  );
+  if (!domainBlock) {
+    domainBlock = DomainBlock.create({
+      id: `${domainId}-${domainBlockNumber}`,
+      domainId: domain.id,
+      domainEpochId: domainEpoch.id,
+      blockNumber: BigInt(domainBlockNumber),
+      blockHash: domainBlockHash.toString(),
+      extrinsicRoot: domainBlockExtrinsicRoot.toString(),
+      epoch: domain.completedEpoch,
+      consensusBlockNumber: BigInt(consensusBlockNumber),
+      consensusBlockHash: consensusBlockHash.toString(),
+      timestamp: timestamp ?? new Date(0),
+      createdAt: BigInt(number.toString()),
+      updatedAt: BigInt(number.toString()),
+    });
+  }
 
-  // let bundle = await checkAndGetBundle(`${domainId}-${domainBlockHash}-${block.block.header.number.toNumber()}`, block.block.header.number.toNumber());
-  // if (!bundle) {
-  //   bundle = Bundle.create({
-  //     id: `${domainId}-${domainBlockHash}-${block.block.header.number.toNumber()}`,
-  //     domainId: domain.id,
-  //     domainBlockId: domainBlock.id,
-  //     domainEpochId: domainEpoch.id,
-  //     domainBlockNumber: Number(domainBlockNumber),
-  //     domainBlockHash,
-  //     domainBlockExtrinsicRoot,
-  //     epoch: domain.completedEpoch,
-  //     consensusBlockNumber: Number(consensusBlockNumber),
-  //     consensusBlockHash,
-  //     totalTransfersIn,
-  //     transfersInCount,
-  //     totalTransfersOut,
-  //     transfersOutCount,
-  //     totalRejectedTransfersClaimed,
-  //     rejectedTransfersClaimedCount,
-  //     totalTransfersRejected,
-  //     transfersRejectedCount,
-  //     totalVolume,
-  //     consensusStorageFee: BigInt(blockFees.consensusStorageFee),
-  //     domainExecutionFee: BigInt(blockFees.domainExecutionFee),
-  //     burnedBalance: BigInt(blockFees.burnedBalance),
-  //   });
-  // }
+  let bundle = await db.checkAndGetBundle(
+    `${domainId}-${domainBlockHash}-${number.toNumber()}`,
+    number.toNumber()
+  );
+  if (!bundle) {
+    bundle = Bundle.create({
+      id: `${domainId}-${domainBlockHash}-${number.toNumber()}`,
+      domainId: domain.id,
+      domainBlockId: domainBlock.id,
+      domainEpochId: domainEpoch.id,
+      domainBlockNumber: BigInt(domainBlockNumber),
+      domainBlockHash: domainBlockHash.toString(),
+      domainBlockExtrinsicRoot: domainBlockExtrinsicRoot.toString(),
+      epoch: domain.completedEpoch,
+      consensusBlockNumber: BigInt(consensusBlockNumber),
+      consensusBlockHash: consensusBlockHash.toString(),
+      totalTransfersIn,
+      transfersInCount: BigInt(transfersInCount),
+      totalTransfersOut,
+      transfersOutCount: BigInt(transfersOutCount),
+      totalRejectedTransfersClaimed,
+      rejectedTransfersClaimedCount: BigInt(rejectedTransfersClaimedCount),
+      totalTransfersRejected,
+      transfersRejectedCount: BigInt(transfersRejectedCount),
+      totalVolume,
+      consensusStorageFee: BigInt(blockFees.consensusStorageFee),
+      domainExecutionFee: BigInt(blockFees.domainExecutionFee),
+      burnedBalance: BigInt(blockFees.burnedBalance),
+    });
+  }
 
-  // const bundleAuthorEntity = await checkAndGetBundleAuthor(`${domainId}-${account.id}-${operator.id}-${bundle.id}`, block.block.header.number.toNumber());
-  // if (!bundleAuthorEntity) {
-  //   bundleAuthorEntity = BundleAuthor.create({
-  //     id: `${domainId}-${account.id}-${operator.id}-${bundle.id}`,
-  //     domainId: domain.id,
-  //     accountId: account.id,
-  //     operatorId: operator.id,
-  //     bundleId: bundle.id,
-  //     domainBlockId: domainBlock.id,
-  //     domainEpochId: domainEpoch.id,
-  //     epoch: domain.completedEpoch,
-  //   });
-  // }
+  let bundleAuthorEntity = await db.checkAndGetBundleAuthor(
+    `${domainId}-${account.id}-${operator.id}-${bundle.id}`,
+    number.toNumber()
+  );
+  if (!bundleAuthorEntity) {
+    bundleAuthorEntity = BundleAuthor.create({
+      id: `${domainId}-${account.id}-${operator.id}-${bundle.id}`,
+      domainId: domain.id,
+      accountId: account.id,
+      operatorId: operator.id,
+      bundleId: bundle.id,
+      domainBlockId: domainBlock.id,
+      domainEpochId: domainEpoch.id,
+      epoch: domain.completedEpoch,
+    });
+  }
 
-  // domain.lastDomainBlockNumber = Number(domainBlockNumber);
-  // domain.totalTransfersIn += totalTransfersIn;
-  // domain.transfersInCount += transfersInCount;
-  // domain.totalTransfersOut += totalTransfersOut;
-  // domain.transfersOutCount += transfersOutCount;
-  // domain.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
-  // domain.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
-  // domain.totalTransfersRejected += totalTransfersRejected;
-  // domain.transfersRejectedCount += transfersRejectedCount;
-  // domain.totalVolume += totalVolume;
-  // domain.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
-  // domain.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
-  // domain.totalBurnedBalance += BigInt(blockFees.burnedBalance);
-  // domain.bundleCount++;
-  // domain.currentEpochDuration = domainEpoch.epochDuration;
-  // if (epoch > 0) {
-  //   const lastEpoch = await checkAndGetDomainEpoch(`${domainId}-${epoch - 1}`, block.block.header.number.toNumber());
-  //   const lastEpochTimestampEnd = lastEpoch.timestampEnd.getTime();
-  //   domain.lastEpochDuration = lastEpoch.epochDuration;
-  //   if (epoch > 6) {
-  //     domain.last6EpochsDuration = BigInt(
-  //       lastEpochTimestampEnd -
-  //         (await checkAndGetDomainEpoch(`${domainId}-${epoch - 6}`, block.block.header.number.toNumber())).timestampEnd.getTime()
-  //     );
-  //   }
-  //   if (epoch > 144) {
-  //     domain.last144EpochDuration = BigInt(
-  //       lastEpochTimestampEnd -
-  //         (await checkAndGetDomainEpoch(`${domainId}-${epoch - 144}`, block.block.header.number.toNumber())).timestampEnd.getTime()
-  //     );
-  //   }
-  //   if (epoch > 1000) {
-  //     domain.last1kEpochDuration = BigInt(
-  //       lastEpochTimestampEnd -
-  //         (await checkAndGetDomainEpoch(`${domainId}-${epoch - 1000}`, block.block.header.number.toNumber())).timestampEnd.getTime()
-  //     );
-  //   }
-  // }
-  // domain.lastBundleAt = block.block.header.number.toNumber();
-  // domain.updatedAt = block.block.header.number.toNumber();
+  domain.lastDomainBlockNumber = BigInt(domainBlockNumber);
+  domain.totalTransfersIn += totalTransfersIn;
+  domain.transfersInCount += BigInt(transfersInCount);
+  domain.totalTransfersOut += totalTransfersOut;
+  domain.transfersOutCount += BigInt(transfersOutCount);
+  domain.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
+  domain.rejectedTransfersClaimedCount += BigInt(rejectedTransfersClaimedCount);
+  domain.totalTransfersRejected += totalTransfersRejected;
+  domain.transfersRejectedCount += BigInt(transfersRejectedCount);
+  domain.totalVolume += totalVolume;
+  domain.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
+  domain.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
+  domain.totalBurnedBalance += BigInt(blockFees.burnedBalance);
+  domain.bundleCount++;
+  domain.currentEpochDuration = domainEpoch.epochDuration;
 
-  // operator.totalTransfersIn += totalTransfersIn;
-  // operator.transfersInCount += transfersInCount;
-  // operator.totalTransfersOut += totalTransfersOut;
-  // operator.transfersOutCount += transfersOutCount;
-  // operator.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
-  // operator.rejectedTransfersClaimedCount += rejectedTransfersClaimedCount;
-  // operator.totalTransfersRejected += totalTransfersRejected;
-  // operator.transfersRejectedCount += transfersRejectedCount;
-  // operator.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
-  // operator.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
-  // operator.totalBurnedBalance += BigInt(blockFees.burnedBalance);
-  // operator.totalVolume += totalVolume;
-  // operator.bundleCount++;
-  // operator.lastBundleAt = block.block.header.number.toNumber();
-  // operator.updatedAt = block.block.header.number.toNumber();
+  if (epoch > 0) {
+    const lastEpoch = await db.checkAndGetDomainEpoch(
+      `${domainId}-${epoch - BigInt(1)}`,
+      number.toNumber()
+    );
+    const lastEpochTimestampEnd = lastEpoch.timestampEnd.getTime();
+    domain.lastEpochDuration = lastEpoch.epochDuration;
+    if (epoch > 6) {
+      domain.last6EpochsDuration = BigInt(
+        lastEpochTimestampEnd -
+          (
+            await db.checkAndGetDomainEpoch(
+              `${domainId}-${epoch - BigInt(6)}`,
+              number.toNumber()
+            )
+          ).timestampEnd.getTime()
+      );
+    }
+    if (epoch > 144) {
+      domain.last144EpochDuration = BigInt(
+        lastEpochTimestampEnd -
+          (
+            await db.checkAndGetDomainEpoch(
+              `${domainId}-${epoch - BigInt(144)}`,
+              number.toNumber()
+            )
+          ).timestampEnd.getTime()
+      );
+    }
+    if (epoch > 1000) {
+      domain.last1kEpochDuration = BigInt(
+        lastEpochTimestampEnd -
+          (
+            await db.checkAndGetDomainEpoch(
+              `${domainId}-${epoch - BigInt(1000)}`,
+              number.toNumber()
+            )
+          ).timestampEnd.getTime()
+      );
+    }
+  }
+  domain.lastBundleAt = BigInt(number.toString());
+  domain.updatedAt = BigInt(number.toString());
 
-  // await Promise.all([
-  //   domain.save(),
-  //   domainEpoch.save(),
-  //   domainBlock.save(),
-  //   bundle.save(),
-  //   bundleAuthorEntity.save(),
-  //   operator.save(),
-  // ]);
+  operator.totalTransfersIn += totalTransfersIn;
+  operator.transfersInCount += BigInt(transfersInCount);
+  operator.totalTransfersOut += totalTransfersOut;
+  operator.transfersOutCount += BigInt(transfersOutCount);
+  operator.totalRejectedTransfersClaimed += totalRejectedTransfersClaimed;
+  operator.rejectedTransfersClaimedCount += BigInt(
+    rejectedTransfersClaimedCount
+  );
+  operator.totalTransfersRejected += totalTransfersRejected;
+  operator.transfersRejectedCount += BigInt(transfersRejectedCount);
+  operator.totalConsensusStorageFee += BigInt(blockFees.consensusStorageFee);
+  operator.totalDomainExecutionFee += BigInt(blockFees.domainExecutionFee);
+  operator.totalBurnedBalance += BigInt(blockFees.burnedBalance);
+  operator.totalVolume += totalVolume;
+  operator.bundleCount++;
+  operator.lastBundleAt = BigInt(number.toString());
+  operator.updatedAt = BigInt(number.toString());
+
+  await Promise.all([
+    domain.save(),
+    domainEpoch.save(),
+    domainBlock.save(),
+    bundle.save(),
+    bundleAuthorEntity.save(),
+    operator.save(),
+  ]);
 }
 
 export async function handleOperatorUnlockedEvent(
@@ -841,15 +943,18 @@ export async function handleOperatorUnlockedEvent(
     block,
   } = event;
   const blockNumber = block.block.header.number.toNumber();
-  const operator = await checkAndGetOperator(
+  const operator = await db.checkAndGetOperator(
     operatorId.toString(),
     blockNumber
   );
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-  const account = await checkAndGetAccount(operator.accountId, blockNumber);
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
+  const account = await db.checkAndGetAccount(operator.accountId, blockNumber);
 
   operator.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
   const nominators = await Nominator.getByOperatorId(operator.id);
   if (nominators) {
@@ -860,7 +965,7 @@ export async function handleOperatorUnlockedEvent(
       ) {
         n.status = NominatorStatus.PENDING;
         n.pendingAction = NominatorPendingAction.READY_TO_UNLOCK_ALL_FUNDS;
-        n.updatedAt = blockNumber;
+        n.updatedAt = BigInt(blockNumber);
         await n.save();
       }
     });
@@ -871,8 +976,8 @@ export async function handleOperatorUnlockedEvent(
     withdrawals.forEach(async (w) => {
       if (w.status === WithdrawalStatus.PENDING_OPERATOR) {
         w.status = WithdrawalStatus.READY;
-        w.readyAt = blockNumber;
-        w.updatedAt = blockNumber;
+        w.readyAt = BigInt(blockNumber);
+        w.updatedAt = BigInt(blockNumber);
         await w.save();
       }
     });
@@ -893,13 +998,19 @@ export async function handleFundsUnlockedEvent(
   const blockNumber = block.block.header.number.toNumber();
   const amountBigInt = BigInt(amount.toString());
 
-  const operator = await checkAndGetOperator(
+  const operator = await db.checkAndGetOperator(
     operatorId.toString(),
     blockNumber
   );
-  const domain = await checkAndGetDomain(operator.domainId, blockNumber);
-  const account = await checkAndGetAccount(nominatorId.toString(), blockNumber);
-  const nominator = await checkAndGetNominator(
+  const domain = await db.checkAndGetDomain(
+    operator.domainId,
+    BigInt(blockNumber)
+  );
+  const account = await db.checkAndGetAccount(
+    nominatorId.toString(),
+    blockNumber
+  );
+  const nominator = await db.checkAndGetNominator(
     nominatorId.toString(),
     domain.id,
     operator.id,
@@ -915,8 +1026,8 @@ export async function handleFundsUnlockedEvent(
       if (w.status === WithdrawalStatus.PENDING_LOCK) {
         w.status = WithdrawalStatus.WITHDRAW;
         w.unlockedAmount = amountBigInt;
-        w.unlockedAt = blockNumber;
-        w.updatedAt = blockNumber;
+        w.unlockedAt = BigInt(blockNumber);
+        w.updatedAt = BigInt(blockNumber);
         await w.save();
       }
     });
@@ -939,24 +1050,24 @@ export async function handleFundsUnlockedEvent(
           d.status = DepositStatus.PARTIALLY_WITHDRAWN;
           amountToWithdraw = BigInt(0);
         }
-        d.updatedAt = blockNumber;
+        d.updatedAt = BigInt(blockNumber);
         await d.save();
       }
     });
   }
 
   domain.totalWithdrawals += amountBigInt;
-  domain.updatedAt = blockNumber;
+  domain.updatedAt = BigInt(blockNumber);
 
   account.totalWithdrawals += amountBigInt;
-  account.updatedAt = blockNumber;
+  account.updatedAt = BigInt(blockNumber);
 
   operator.totalWithdrawals += amountBigInt;
-  operator.updatedAt = blockNumber;
+  operator.updatedAt = BigInt(blockNumber);
 
   nominator.totalWithdrawals += amountBigInt;
   nominator.pendingAction = NominatorPendingAction.NO_ACTION_REQUIRED;
-  nominator.updatedAt = blockNumber;
+  nominator.updatedAt = BigInt(blockNumber);
 
   await Promise.all([
     domain.save(),
@@ -982,542 +1093,4 @@ export async function handleStorageFeeUnlockedEvent(
   event: SubstrateEvent
 ): Promise<void> {
   // Implementation for handleStorageFeeUnlockedEvent
-}
-
-// Helper for Domain
-export async function checkAndGetDomain(
-  domainId: string,
-  blockNumber: number
-): Promise<Domain> {
-  let domain = await Domain.get(domainId);
-  if (!domain) {
-    domain = Domain.create({
-      id: domainId.toLowerCase(),
-      sortId: Number(0),
-      accountId: "",
-      name: "",
-      runtimeId: 0,
-      runtime: DomainRuntime.EVM,
-      runtimeInfo: "",
-      completedEpoch: 0,
-      lastDomainBlockNumber: 0,
-      totalDeposits: BigInt(0),
-      totalEstimatedWithdrawals: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalTaxCollected: BigInt(0),
-      totalRewardsCollected: BigInt(0),
-      totalTransfersIn: BigInt(0),
-      transfersInCount: 0,
-      totalTransfersOut: BigInt(0),
-      transfersOutCount: 0,
-      totalRejectedTransfersClaimed: BigInt(0),
-      rejectedTransfersClaimedCount: 0,
-      totalTransfersRejected: BigInt(0),
-      transfersRejectedCount: 0,
-      totalVolume: BigInt(0),
-      totalConsensusStorageFee: BigInt(0),
-      totalDomainExecutionFee: BigInt(0),
-      totalBurnedBalance: BigInt(0),
-      currentTotalStake: BigInt(0),
-      currentStorageFeeDeposit: BigInt(0),
-      currentTotalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      accumulatedEpochStake: BigInt(0),
-      accumulatedEpochStorageFeeDeposit: BigInt(0),
-      accumulatedEpochRewards: BigInt(0),
-      accumulatedEpochShares: BigInt(0),
-      bundleCount: 0,
-      currentEpochDuration: BigInt(0),
-      lastEpochDuration: BigInt(0),
-      last6EpochsDuration: BigInt(0),
-      last144EpochDuration: BigInt(0),
-      last1kEpochDuration: BigInt(0),
-      lastBundleAt: 0,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return domain;
-}
-
-// Helper for Account
-export async function checkAndGetAccount(
-  id: string,
-  blockNumber: number
-): Promise<Account> {
-  let account = await Account.get(id.toLowerCase());
-  if (!account) {
-    account = Account.create({
-      id: id.toLowerCase(),
-      totalDeposits: BigInt(0),
-      totalEstimatedWithdrawals: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalTaxCollected: BigInt(0),
-      currentTotalStake: BigInt(0),
-      currentStorageFeeDeposit: BigInt(0),
-      currentTotalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      accumulatedEpochStake: BigInt(0),
-      accumulatedEpochStorageFeeDeposit: BigInt(0),
-      accumulatedEpochShares: BigInt(0),
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return account;
-}
-
-// Helper for Operator
-export async function checkAndGetOperator(
-  operatorId: string,
-  blockNumber: number
-): Promise<Operator> {
-  const id = operatorId.toLowerCase();
-  let operator = await Operator.get(id);
-  if (!operator) {
-    operator = Operator.create({
-      id,
-      sortId: Number(operatorId),
-      accountId: "",
-      domainId: "",
-      signingKey: "",
-      minimumNominatorStake: BigInt(0),
-      nominationTax: 0,
-      currentTotalStake: BigInt(0),
-      currentStorageFeeDeposit: BigInt(0),
-      currentEpochRewards: BigInt(0),
-      currentTotalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      rawStatus: "",
-      totalDeposits: BigInt(0),
-      totalEstimatedWithdrawals: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalTaxCollected: BigInt(0),
-      totalRewardsCollected: BigInt(0),
-      totalTransfersIn: BigInt(0),
-      transfersInCount: 0,
-      totalTransfersOut: BigInt(0),
-      transfersOutCount: 0,
-      totalRejectedTransfersClaimed: BigInt(0),
-      rejectedTransfersClaimedCount: 0,
-      totalTransfersRejected: BigInt(0),
-      transfersRejectedCount: 0,
-      totalVolume: BigInt(0),
-      totalConsensusStorageFee: BigInt(0),
-      totalDomainExecutionFee: BigInt(0),
-      totalBurnedBalance: BigInt(0),
-      accumulatedEpochStake: BigInt(0),
-      accumulatedEpochStorageFeeDeposit: BigInt(0),
-      accumulatedEpochRewards: BigInt(0),
-      accumulatedEpochShares: BigInt(0),
-      activeEpochCount: 0,
-      bundleCount: 0,
-      status: OperatorStatus.PENDING,
-      pendingAction: OperatorPendingAction.NO_ACTION_REQUIRED,
-      lastBundleAt: 0,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return operator;
-}
-
-// Helper for DomainBlock
-export async function checkAndGetDomainBlock(
-  id: string,
-  blockNumber: number
-): Promise<DomainBlock> {
-  let domainBlock = await DomainBlock.get(id.toLowerCase());
-  if (!domainBlock) {
-    domainBlock = DomainBlock.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      domainEpochId: "",
-      blockNumber: 0,
-      blockHash: "",
-      extrinsicRoot: "",
-      epoch: 0,
-      consensusBlockNumber: 0,
-      consensusBlockHash: "",
-      timestamp: new Date(),
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return domainBlock;
-}
-
-// Helper for DomainEpoch
-export async function checkAndGetDomainEpoch(
-  id: string,
-  blockNumber: number
-): Promise<DomainEpoch> {
-  let domainEpoch = await DomainEpoch.get(id.toLowerCase());
-  if (!domainEpoch) {
-    domainEpoch = DomainEpoch.create({
-      id: id.toLowerCase(),
-      epoch: 0,
-      domainId: "",
-      blockNumberStart: 0,
-      blockNumberEnd: 0,
-      blockCount: 0,
-      timestampStart: new Date(),
-      timestampEnd: new Date(),
-      epochDuration: BigInt(0),
-      consensusBlockNumberStart: 0,
-      consensusBlockNumberEnd: 0,
-      consensusBlockHashStart: "",
-      consensusBlockHashEnd: "",
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return domainEpoch;
-}
-
-// Helper for Bundle
-export async function checkAndGetBundle(
-  id: string,
-  blockNumber: number
-): Promise<Bundle> {
-  let bundle = await Bundle.get(id.toLowerCase());
-  if (!bundle) {
-    bundle = Bundle.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      domainBlockId: "",
-      domainEpochId: "",
-      domainBlockNumber: 0,
-      domainBlockHash: "",
-      domainBlockExtrinsicRoot: "",
-      epoch: 0,
-      consensusBlockNumber: 0,
-      consensusBlockHash: "",
-      totalTransfersIn: BigInt(0),
-      transfersInCount: 0,
-      totalTransfersOut: BigInt(0),
-      transfersOutCount: 0,
-      totalRejectedTransfersClaimed: BigInt(0),
-      rejectedTransfersClaimedCount: 0,
-      totalTransfersRejected: BigInt(0),
-      transfersRejectedCount: 0,
-      totalVolume: BigInt(0),
-      consensusStorageFee: BigInt(0),
-      domainExecutionFee: BigInt(0),
-      burnedBalance: BigInt(0),
-    });
-  }
-  return bundle;
-}
-
-// Helper for BundleAuthor
-export async function checkAndGetBundleAuthor(
-  id: string,
-  blockNumber: number
-): Promise<BundleAuthor> {
-  let bundleAuthor = await BundleAuthor.get(id.toLowerCase());
-  if (!bundleAuthor) {
-    bundleAuthor = BundleAuthor.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      accountId: "",
-      operatorId: "",
-      bundleId: "",
-      domainBlockId: "",
-      domainEpochId: "",
-      epoch: 0,
-    });
-  }
-  return bundleAuthor;
-}
-
-// Helper for Nominator
-export async function checkAndGetNominator(
-  accountId: string,
-  domainId: string,
-  operatorId: string,
-  blockNumber: number
-): Promise<Nominator> {
-  const id = `${operatorId}-${accountId}`.toLowerCase();
-  let nominator = await Nominator.get(id);
-  if (!nominator) {
-    nominator = Nominator.create({
-      id,
-      accountId,
-      domainId,
-      operatorId,
-      knownShares: BigInt(0),
-      knownStorageFeeDeposit: BigInt(0),
-      pendingAmount: BigInt(0),
-      pendingStorageFeeDeposit: BigInt(0),
-      pendingEffectiveDomainEpoch: 0,
-      totalWithdrawalAmounts: BigInt(0),
-      totalStorageFeeRefund: BigInt(0),
-      unlockAtConfirmedDomainBlockNumber: [],
-      pendingShares: BigInt(0),
-      pendingStorageFeeRefund: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalEstimatedWithdrawals: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalDepositsCount: 0,
-      totalWithdrawalsCount: 0,
-      currentTotalStake: BigInt(0),
-      currentStorageFeeDeposit: BigInt(0),
-      currentTotalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      accumulatedEpochStake: BigInt(0),
-      accumulatedEpochStorageFeeDeposit: BigInt(0),
-      accumulatedEpochShares: BigInt(0),
-      activeEpochCount: 0,
-      status: NominatorStatus.PENDING,
-      pendingAction: NominatorPendingAction.NO_ACTION_REQUIRED,
-      createdAt: blockNumber,
-      updatedAt: blockNumber,
-    });
-  }
-  return nominator;
-}
-
-// Helper for Deposit
-export async function checkAndGetDeposit(
-  accountId: string,
-  domainId: string,
-  operatorId: string,
-  amount: bigint,
-  storageFeeDeposit: bigint,
-  blockNumber: number
-): Promise<Deposit> {
-  const id = `${operatorId}-${accountId}-${blockNumber}`.toLowerCase();
-  const nominatorId = `${operatorId}-${accountId}`.toLowerCase();
-  const totalAmount = amount + storageFeeDeposit;
-  let deposit = await Deposit.get(id);
-  if (!deposit) {
-    deposit = Deposit.create({
-      id,
-      accountId,
-      domainId,
-      operatorId,
-      nominatorId,
-      amount,
-      storageFeeDeposit,
-      totalAmount,
-      totalWithdrawn: BigInt(0),
-      status: DepositStatus.PENDING,
-      timestamp: new Date(),
-      extrinsicHash: "",
-      epochDepositedAt: 0,
-      domainBlockNumberDepositedAt: 0,
-      createdAt: blockNumber,
-      stakedAt: 0,
-      updatedAt: blockNumber,
-    });
-  }
-  return deposit;
-}
-
-// Helper for Withdrawal
-export async function checkAndGetWithdrawal(
-  accountId: string,
-  domainId: string,
-  operatorId: string,
-  nominatorId: string,
-  blockNumber: number
-): Promise<Withdrawal> {
-  const id = `${operatorId}-${accountId}-${blockNumber}`.toLowerCase();
-  let withdrawal = await Withdrawal.get(id);
-  if (!withdrawal) {
-    withdrawal = Withdrawal.create({
-      id,
-      accountId,
-      domainId,
-      operatorId,
-      nominatorId,
-      shares: BigInt(0),
-      estimatedAmount: BigInt(0),
-      unlockedAmount: BigInt(0),
-      unlockedStorageFee: BigInt(0),
-      totalAmount: BigInt(0),
-      status: WithdrawalStatus.PENDING_LOCK,
-      timestamp: new Date(),
-      withdrawExtrinsicHash: "",
-      unlockExtrinsicHash: "",
-      epochWithdrawalRequestedAt: 0,
-      domainBlockNumberWithdrawalRequestedAt: 0,
-      createdAt: blockNumber,
-      readyAt: 0,
-      unlockedAt: 0,
-      updatedAt: blockNumber,
-    });
-  }
-  return withdrawal;
-}
-
-// Helper for Reward
-export async function checkAndGetReward(
-  id: string,
-  blockNumber: number
-): Promise<Reward> {
-  let reward = await Reward.get(id.toLowerCase());
-  if (!reward) {
-    reward = Reward.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      operatorId: "",
-      amount: BigInt(0),
-      timestamp: new Date(),
-      blockNumber: 0,
-      extrinsicHash: "",
-    });
-  }
-  return reward;
-}
-
-// Helper for Stats
-export async function checkAndGetStats(
-  id: string,
-  blockNumber: number
-): Promise<Stats> {
-  let stats = await Stats.get(id.toLowerCase());
-  if (!stats) {
-    stats = Stats.create({
-      id: id.toLowerCase(),
-      blockNumber: 0,
-      totalStaked: BigInt(0),
-      totalTaxCollected: BigInt(0),
-      totalRewardsCollected: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      allTimeHighStaked: BigInt(0),
-      allTimeHighSharePrice: BigInt(0),
-      domainsCount: 0,
-      operatorsCount: 0,
-      activeOperatorsCount: 0,
-      slashedOperatorsCount: 0,
-      nominatorsCount: 0,
-      depositsCount: 0,
-      withdrawalsCount: 0,
-      timestamp: new Date(),
-    });
-  }
-  return stats;
-}
-
-// Helper for StatsPerDomain
-export async function checkAndGetStatsPerDomain(
-  id: string,
-  blockNumber: number
-): Promise<StatsPerDomain> {
-  let statsPerDomain = await StatsPerDomain.get(id.toLowerCase());
-  if (!statsPerDomain) {
-    statsPerDomain = StatsPerDomain.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      blockNumber: 0,
-      totalStaked: BigInt(0),
-      totalTaxCollected: BigInt(0),
-      totalRewardsCollected: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      allTimeHighStaked: BigInt(0),
-      allTimeHighSharePrice: BigInt(0),
-      operatorsCount: 0,
-      activeOperatorsCount: 0,
-      slashedOperatorsCount: 0,
-      nominatorsCount: 0,
-      depositsCount: 0,
-      withdrawalsCount: 0,
-      timestamp: new Date(),
-    });
-  }
-  return statsPerDomain;
-}
-
-// Helper for StatsPerOperator
-export async function checkAndGetStatsPerOperator(
-  id: string,
-  blockNumber: number
-): Promise<StatsPerOperator> {
-  let statsPerOperator = await StatsPerOperator.get(id.toLowerCase());
-  if (!statsPerOperator) {
-    statsPerOperator = StatsPerOperator.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      operatorId: "",
-      blockNumber: 0,
-      totalStaked: BigInt(0),
-      totalTaxCollected: BigInt(0),
-      totalRewardsCollected: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      allTimeHighStaked: BigInt(0),
-      allTimeHighSharePrice: BigInt(0),
-      nominatorsCount: 0,
-      depositsCount: 0,
-      withdrawalsCount: 0,
-      timestamp: new Date(),
-    });
-  }
-  return statsPerOperator;
-}
-
-// Helper for StatsPerNominator
-export async function checkAndGetStatsPerNominator(
-  id: string,
-  blockNumber: number
-): Promise<StatsPerNominator> {
-  let statsPerNominator = await StatsPerNominator.get(id.toLowerCase());
-  if (!statsPerNominator) {
-    statsPerNominator = StatsPerNominator.create({
-      id: id.toLowerCase(),
-      domainId: "",
-      operatorId: "",
-      nominatorId: "",
-      blockNumber: 0,
-      totalStaked: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      allTimeHighStaked: BigInt(0),
-      allTimeHighSharePrice: BigInt(0),
-      depositsCount: 0,
-      withdrawalsCount: 0,
-      timestamp: new Date(),
-    });
-  }
-  return statsPerNominator;
-}
-
-// Helper for StatsPerAccount
-export async function checkAndGetStatsPerAccount(
-  id: string,
-  blockNumber: number
-): Promise<StatsPerAccount> {
-  let statsPerAccount = await StatsPerAccount.get(id.toLowerCase());
-  if (!statsPerAccount) {
-    statsPerAccount = StatsPerAccount.create({
-      id: id.toLowerCase(),
-      accountId: "",
-      blockNumber: 0,
-      totalStaked: BigInt(0),
-      totalDeposits: BigInt(0),
-      totalWithdrawals: BigInt(0),
-      totalShares: BigInt(0),
-      currentSharePrice: BigInt(0),
-      allTimeHighStaked: BigInt(0),
-      allTimeHighSharePrice: BigInt(0),
-      operatorsCount: 0,
-      nominatorsCount: 0,
-      depositsCount: 0,
-      withdrawalsCount: 0,
-      timestamp: new Date(),
-    });
-  }
-  return statsPerAccount;
 }

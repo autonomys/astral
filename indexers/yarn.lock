@@ -7,17 +7,17 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.1.tgz#63430d04bd8c5e74f8d7d049338f1cd9d4f02069"
   integrity sha512-96Z2IP3mYmF1Xg2cDm8f1gWGf/HUVedQ3FMifV4kG/PQ4yEP51xDtRAEfhVNt5f/uzpNkZHwWQuUcu6D6K+Ekw==
 
-"@autonomys/auto-consensus@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.5.0.tgz#df9811f25631cffabdc5eb451805c478a6d5ca29"
-  integrity sha512-VjsemtBi86bCBBzqd8biYFfiw6k3W4LaxzTNr1CCY2uwkihj+PW9MEnA+3bgNzGJ76a0tv4BWP3GGaTNe8OXVg==
+"@autonomys/auto-consensus@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.6.1.tgz#4f755c756d6765a3ee441a7a5334c7c6b9479202"
+  integrity sha512-xbuWc+jWpqAPDD3ouPdueLjFnFA++3D6K7Mi+khQPxV63K6q2Yk8SaoHsYt1O8DFVuiZAHdHMn5HskpJvDTjaQ==
   dependencies:
-    "@autonomys/auto-utils" "^0.5.0"
+    "@autonomys/auto-utils" "^0.6.1"
 
-"@autonomys/auto-utils@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.5.0.tgz#0f5d173a66daa4ae0a9c25f7e27c6fd52c1f2ab0"
-  integrity sha512-nU/VsBQcUY4xpyIQ1vA6rFJtPApmOKaKtlcYp4Z/XW/LdPgUKuZUCmWSBTFUZus+sDa4zRvzMIUhrj2JZfG3gg==
+"@autonomys/auto-utils@^0.6.1":
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.6.1.tgz#90f95dcd5b26b1d7667b8b96c663bd1188758d72"
+  integrity sha512-giZiGNhREMvxeTeyhxLZcI+IupRYI/F1lnkzWeFCSALYhgJ8mmEVaXuqPwE0oKV8sogVmTcVWILpVnubfOT88A==
   dependencies:
     "@polkadot/api" "^11.2.1"
     "@polkadot/extension-dapp" "^0.47.5"
@@ -2414,7 +2414,7 @@ axios@^0.28.0:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
-axios@^1.6.0, axios@^1.7.4, axios@^1.7.7:
+axios@^1.6.0, axios@^1.7.4:
   version "1.7.7"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.7.tgz#2f554296f9892a72ac8d8e4c5b79c14a91d0a47f"
   integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
@@ -4192,11 +4192,6 @@ http-proxy-agent@^7.0.0:
   dependencies:
     agent-base "^7.1.0"
     debug "^4.3.4"
-
-http@^0.0.1-security:
-  version "0.0.1-security"
-  resolved "https://registry.yarnpkg.com/http/-/http-0.0.1-security.tgz#3aac09129d12dc2747bbce4157afde20ad1f7995"
-  integrity sha512-RnDvP10Ty9FxqOtPZuxtebw1j4L/WiqNMDtuc1YMH1XQm5TgDRaR1G9u8upL6KD1bXHSp9eSXo/ED+8Q7FAr+g==
 
 https-proxy-agent@^7.0.1:
   version "7.0.5"

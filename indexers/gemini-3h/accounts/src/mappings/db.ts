@@ -1,29 +1,32 @@
-import { Account, BalanceHistory, Transfer } from "../types";
+import { Account, BalanceHistory, Reward, Transfer } from "../types";
 import { dateEntry } from "./utils";
 
-export async function createAndSaveAccountIfNotExists(
-  accountId: string,
+export async function createOrUpdateAndSaveAccount(
+  id: string,
   blockNumber: bigint,
   nonce: bigint,
   free: bigint,
   reserved: bigint,
   total: bigint
 ): Promise<Account> {
-  const id = accountId.toLowerCase();
-  const accounts = await Account.getByAccountId(id);
-  let account = accounts ? accounts[0] : undefined;
+  let account = await Account.get(id);
   if (!account) {
     account = Account.create({
       id,
-      accountId: id,
       nonce,
       free,
       reserved,
       total,
       ...dateEntry(blockNumber),
     });
-    await account.save();
+  } else {
+    account.nonce = nonce;
+    account.free = free;
+    account.reserved = reserved;
+    account.total = total;
+    account.updatedAt = blockNumber;
   }
+  await account.save();
   return account;
 }
 
@@ -34,10 +37,10 @@ export async function createAndSaveBalanceHistory(
   reserved: bigint,
   total: bigint
 ): Promise<BalanceHistory> {
-  const id = accountId.toLowerCase() + "-" + blockNumber.toString();
+  const id = accountId + "-" + blockNumber.toString();
   const balanceHistory = BalanceHistory.create({
     id,
-    accountId: accountId.toLowerCase(),
+    accountId,
     free,
     reserved,
     total,
@@ -59,9 +62,8 @@ export async function createAndSaveTransfer(
   timestamp: bigint,
   date: Date
 ): Promise<Transfer> {
-  const id = blockNumber + "-" + extrinsicId.toLowerCase();
-  const transfers = await Transfer.getByExtrinsicId(id);
-  let transfer = transfers ? transfers[0] : undefined;
+  const id = extrinsicId + "-" + eventId;
+  let transfer = await Transfer.get(id);
   if (!transfer) {
     transfer = Transfer.create({
       id,
@@ -79,4 +81,32 @@ export async function createAndSaveTransfer(
     await transfer.save();
   }
   return transfer;
+}
+
+export async function createAndSaveReward(
+  blockHeight: bigint,
+  blockHash: string,
+  accountId: string,
+  indexInBlock: bigint,
+  rewardType: string,
+  amount: bigint,
+  timestamp: Date
+): Promise<Reward> {
+  const id =
+    accountId + "-" + blockHeight.toString() + "-" + indexInBlock.toString();
+  let reward = await Reward.get(id);
+  if (!reward) {
+    reward = Reward.create({
+      id,
+      blockHeight,
+      blockHash,
+      accountId,
+      indexInBlock,
+      rewardType,
+      amount,
+      timestamp,
+    });
+    await reward.save();
+  }
+  return reward;
 }

@@ -1,27 +1,22 @@
 table:
-  name: event_modules
-  schema: gemini_3h_consensus
+  name: log_kinds
+  schema: consensus
 array_relationships:
-  - name: events
+  - name: logs
     using:
       manual_configuration:
         column_mapping:
-          module_id: module_id
+          id: log_kind_id
         insertion_order: null
         remote_table:
-          name: events
-          schema: gemini_3h_consensus
+          name: logs
+          schema: consensus
 select_permissions:
   - role: user
     permission:
       columns:
-        - _block_range
         - id
-        - index
-        - method
-        - module_id
-        - section
-        - _id
+        - kind
       filter: {}
       allow_aggregations: true
     comment: ""

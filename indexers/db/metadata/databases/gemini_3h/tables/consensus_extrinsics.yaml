@@ -1,12 +1,40 @@
 table:
   name: extrinsics
   schema: consensus
+object_relationships:
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
+  - name: module
+    using:
+      manual_configuration:
+        column_mapping:
+          extrinsic_module_id: section_id
+        insertion_order: null
+        remote_table:
+          name: extrinsic_modules
+          schema: consensus
+array_relationships:
+  - name: events
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: block_height
+        insertion_order: null
+        remote_table:
+          name: events
+          schema: consensus
 select_permissions:
   - role: user
     permission:
       columns:
         - success
-        - _block_range
         - index_in_block
         - pos
         - block_height
@@ -16,14 +44,13 @@ select_permissions:
         - args
         - block_hash
         - error
-        - extrinsic_hash
-        - extrinsic_id
+        - hash
         - id
-        - module_id
+        - extrinsic_module_id
+        - name
         - signature
         - signer
         - timestamp
-        - _id
       filter: {}
       allow_aggregations: true
     comment: ""
