@@ -18,7 +18,6 @@ import { Spinner } from '../common/Spinner'
 
 type Reward = {
   earningsTestnetToken: string
-  proportionalAllocation: string
   absoluteAllocation: string
 }
 
@@ -32,18 +31,6 @@ type Rewards = {
   geminiIIIhPhase2: Reward
   stakeWarsIPhase1: Reward
   stakeWarsIPhase2: Reward
-}
-
-type TotalRewards = {
-  geminiI: number
-  geminiIIphase1: number
-  geminiIIphase2: number
-  geminiIIIf: number
-  geminiIIIg: number
-  geminiIIIhPhase1: number
-  geminiIIIhPhase2: number
-  stakeWarsIPhase1: number
-  stakeWarsIPhase2: number
 }
 
 const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
@@ -80,75 +67,44 @@ export const TestnetRewardsTable: FC = () => {
     return {
       geminiI: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       geminiIIphase1: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       geminiIIphase2: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       geminiIIIf: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       geminiIIIg: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       geminiIIIhPhase1: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       geminiIIIhPhase2: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       stakeWarsIPhase1: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
       stakeWarsIPhase2: {
         earningsTestnetToken: '0',
-        proportionalAllocation: '0',
         absoluteAllocation: '0',
       },
     }
   }, [])
-  const defaultTotalRewards: TotalRewards = {
-    geminiI: 0,
-    geminiIIphase1: 0,
-    geminiIIphase2: 0,
-    geminiIIIf: 0,
-    geminiIIIg: 0,
-    geminiIIIhPhase1: 0,
-    geminiIIIhPhase2: 0,
-    stakeWarsIPhase1: 0,
-    stakeWarsIPhase2: 0,
-  }
-  const [previousRewards, setRewards] = useState<Rewards>(defaultRewards)
-  const [totalRewards, setTotalRewards] = useState<TotalRewards>(defaultTotalRewards)
-  const [totalTokensPerPhase, setTotalTokensPerPhase] = useState<TotalRewards>({
-    geminiI: 0,
-    geminiIIphase1: 0,
-    geminiIIphase2: 0,
-    geminiIIIf: 0,
-    geminiIIIg: 0,
-    geminiIIIhPhase1: 0,
-    geminiIIIhPhase2: 0,
-    stakeWarsIPhase1: 0,
-    stakeWarsIPhase2: 0,
-  })
+  const [rewards, setRewards] = useState<Rewards>(defaultRewards)
+  const [totalRewards, setTotalRewards] = useState<Rewards>(defaultRewards)
 
   const campaigns = useMemo(
     () => ({
@@ -157,62 +113,53 @@ export const TestnetRewardsTable: FC = () => {
         testnet: 'Gemini 1',
         icon: <GeminiITestnetIcon />,
         dateRange: '11.06.2022 - 27.06.2022',
-        portionOfMainnet: 0.5,
       },
       geminiIIphase1: {
         name: 'geminiIIphase1',
         testnet: 'Gemini 2 Phase 1',
         icon: <GeminiIIp1TestnetIcon />,
         dateRange: '20.09.2022 - 25.10.2022',
-        portionOfMainnet: 0.05,
       },
       geminiIIphase2: {
         name: 'geminiIIphase2',
         testnet: 'Gemini 2 Phase 2',
         icon: <GeminiIIp2TestnetIcon />,
-        portionOfMainnet: 0.5,
       },
       geminiIIIf: {
         name: 'geminiIIIf',
         testnet: 'Gemini 3f',
         icon: <Gemini3p1TestnetIcon />,
         dateRange: '06.09.2023 - 02.11.2023',
-        portionOfMainnet: 0.81,
       },
       geminiIIIg: {
         name: 'geminiIIIg',
         testnet: 'Gemini 3g',
         icon: <Gemini3p2TestnetIcon />,
         dateRange: '02.11.2023 - 10.01.2024',
-        portionOfMainnet: 1.39,
       },
       stakeWarsIPhase1: {
         name: 'stakeWarsIPhase1',
         testnet: 'Stake Wars I Phase 1',
         icon: <StakeWarsIIcon />,
         dateRange: '22.11.2023 - 12.06.2023',
-        portionOfMainnet: 0.6,
       },
       stakeWarsIPhase2: {
         name: 'stakeWarsIPhase2',
         testnet: 'Stake Wars I Phase 2',
         icon: <StakeWarsIIcon />,
         dateRange: '12.06.2023 - 10.01.2024',
-        portionOfMainnet: 0.6,
       },
       geminiIIIhPhase1: {
         name: 'geminiIIIhPhase1',
         testnet: 'Gemini 3h Phase 1',
         icon: <Gemini3hTestnetIcon />,
         dateRange: '10.01.2024 - 25.07.2024',
-        portionOfMainnet: 4.71,
       },
       geminiIIIhPhase2: {
         name: 'geminiIIIhPhase2',
         testnet: 'Gemini 3h Phase 2',
         icon: <Gemini3hTestnetIcon />,
         dateRange: '10.01.2024 - 25.07.2024',
-        portionOfMainnet: 4.71,
       },
     }),
     [],
@@ -221,80 +168,103 @@ export const TestnetRewardsTable: FC = () => {
   const cleanCell = (cell: string) => cell.replace(/"/g, '').replace(/,/g, '')
 
   const handleLoad = useCallback(async () => {
-    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations.csv')
+    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-10oct2024.csv')
     const data = await file.text()
-    const rows = data.split('\n').slice(1)
-    return rows.map((row) => {
+    const rows = data.split('\n').slice(6)
+    const rewardsData = rows.map((row) => {
       const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
       return {
         address: cleanCell(columns[0]),
         rewards: {
           geminiI: {
             earningsTestnetToken: parseFloat(cleanCell(columns[1])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[37])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[10])) || 0,
           },
           geminiIIphase1: {
             earningsTestnetToken: parseFloat(cleanCell(columns[2])) || 0,
-            absoluteAllocation: 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[11])) || 0,
           },
           geminiIIphase2: {
             earningsTestnetToken: parseFloat(cleanCell(columns[3])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[38])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[12])) || 0,
           },
           geminiIIIf: {
             earningsTestnetToken: parseFloat(cleanCell(columns[4])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[40])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[13])) || 0,
           },
           geminiIIIg: {
             earningsTestnetToken: parseFloat(cleanCell(columns[5])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[41])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[14])) || 0,
           },
           geminiIIIhPhase1: {
             earningsTestnetToken: parseFloat(cleanCell(columns[6])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[42])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[15])) || 0,
           },
           geminiIIIhPhase2: {
             earningsTestnetToken: parseFloat(cleanCell(columns[7])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[43])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[16])) || 0,
           },
           stakeWarsIPhase1: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[9])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[44])) || 0,
+            earningsTestnetToken: parseFloat(cleanCell(columns[8])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[17])) || 0,
           },
           stakeWarsIPhase2: {
-            earningsTestnetToken: parseFloat(cleanCell(columns[10])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[45])) || 0,
+            earningsTestnetToken: parseFloat(cleanCell(columns[9])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[18])) || 0,
           },
         },
-        totalAllocation: parseFloat(cleanCell(columns[46])) || 0,
+        totalAllocation: parseFloat(cleanCell(columns[19])) || 0,
       }
     })
+
+    const totalRow = data.split('\n')[1]
+    const totalRowColumns = totalRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+    const totals = {
+      geminiI: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[1])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[10])).toString() || '0',
+      },
+      geminiIIphase1: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[2])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[11])).toString() || '0',
+      },
+      geminiIIphase2: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[3])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[12])).toString() || '0',
+      },
+      geminiIIIf: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[4])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[13])).toString() || '0',
+      },
+      geminiIIIg: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[5])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[14])).toString() || '0',
+      },
+      geminiIIIhPhase1: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[6])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[15])).toString() || '0',
+      },
+      geminiIIIhPhase2: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[7])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[16])).toString() || '0',
+      },
+      stakeWarsIPhase1: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[8])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[17])).toString() || '0',
+      },
+      stakeWarsIPhase2: {
+        earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[9])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[18])).toString() || '0',
+      },
+    }
+
+    return { rewardsData, totals }
   }, [])
 
   const handleSearch = useCallback(async () => {
-    const testnetData = await handleLoad()
+    const { rewardsData, totals } = await handleLoad()
 
-    const calculatedTotalTokensPerPhase: TotalRewards = {
-      geminiI: 0,
-      geminiIIphase1: 0,
-      geminiIIphase2: 0,
-      geminiIIIf: 0,
-      geminiIIIg: 0,
-      geminiIIIhPhase1: 0,
-      geminiIIIhPhase2: 0,
-      stakeWarsIPhase1: 0,
-      stakeWarsIPhase2: 0,
-    }
-
-    testnetData.forEach((reward) => {
-      Object.keys(reward.rewards).forEach((key) => {
-        const testnetKey = key as keyof TotalRewards
-        calculatedTotalTokensPerPhase[testnetKey] += reward.rewards[testnetKey].earningsTestnetToken
-      })
-    })
-    setTotalTokensPerPhase(calculatedTotalTokensPerPhase)
-
-    const userRewards = testnetData.filter((reward) => mySubspaceWallets.includes(reward.address))
+    const userRewards = rewardsData.filter((reward) => mySubspaceWallets.includes(reward.address))
     const mergedRewards: Rewards = userRewards.reduce(
       (acc, reward) => {
         Object.keys(reward.rewards).forEach((key) => {
@@ -302,12 +272,6 @@ export const TestnetRewardsTable: FC = () => {
           acc[testnetKey].earningsTestnetToken = (
             parseFloat(acc[testnetKey].earningsTestnetToken) +
             reward.rewards[testnetKey].earningsTestnetToken
-          ).toString()
-
-          acc[testnetKey].proportionalAllocation = (
-            (parseFloat(acc[testnetKey].absoluteAllocation) +
-              reward.rewards[testnetKey].absoluteAllocation) /
-            MAINNET_TOTAL_SUPPLY
           ).toString()
           acc[testnetKey].absoluteAllocation = (
             parseFloat(acc[testnetKey].absoluteAllocation) +
@@ -320,124 +284,116 @@ export const TestnetRewardsTable: FC = () => {
     )
 
     setRewards(mergedRewards)
-    setTotalRewards({
-      geminiI: parseFloat(mergedRewards.geminiI.absoluteAllocation),
-      geminiIIphase1: parseFloat(mergedRewards.geminiIIphase1.absoluteAllocation),
-      geminiIIphase2: parseFloat(mergedRewards.geminiIIphase2.absoluteAllocation),
-      geminiIIIf: parseFloat(mergedRewards.geminiIIIf.absoluteAllocation),
-      geminiIIIg: parseFloat(mergedRewards.geminiIIIg.absoluteAllocation),
-      geminiIIIhPhase1: parseFloat(mergedRewards.geminiIIIhPhase1.absoluteAllocation),
-      geminiIIIhPhase2: parseFloat(mergedRewards.geminiIIIhPhase2.absoluteAllocation),
-      stakeWarsIPhase1: parseFloat(mergedRewards.stakeWarsIPhase1.absoluteAllocation),
-      stakeWarsIPhase2: parseFloat(mergedRewards.stakeWarsIPhase2.absoluteAllocation),
-    })
+    setTotalRewards(totals)
     setIsLoaded(true)
   }, [defaultRewards, handleLoad, mySubspaceWallets])
 
-  const rewardsByPhase = useCallback(
+  const userTestnetRewardsByPhase = useCallback(
     (phase: string) => {
-      if (previousRewards[phase as keyof Rewards])
-        return parseFloat(previousRewards[phase as keyof Rewards].earningsTestnetToken).toFixed(
+      if (rewards[phase as keyof Rewards])
+        return parseFloat(rewards[phase as keyof Rewards].earningsTestnetToken).toFixed(
           EARNINGS_PRECISION,
         )
       return '0.00'
     },
-    [previousRewards],
+    [rewards],
   )
 
-  const totalTSSC = useCallback(
+  const totalTestnetByPhase = useCallback(
     (phase: string) => {
-      if (totalRewards[phase as keyof TotalRewards])
-        return numberFormattedString(totalRewards[phase as keyof TotalRewards])
+      if (totalRewards[phase as keyof Rewards].earningsTestnetToken)
+        return numberFormattedString(
+          parseFloat(totalRewards[phase as keyof Rewards].earningsTestnetToken),
+        )
       return '0.00'
     },
     [totalRewards],
   )
 
-  const rewardsPercentageByPhase = useCallback(
+  const userTestnetRewardsPercentageByPhase = useCallback(
     (phase: string) => {
-      if (previousRewards[phase as keyof Rewards]) {
-        const totalTokens = totalTokensPerPhase[phase as keyof TotalRewards]
-        const userTotalReward = parseFloat(
-          previousRewards[phase as keyof Rewards].absoluteAllocation,
-        )
+      if (rewards[phase as keyof Rewards]) {
+        const totalTokens = parseFloat(totalRewards[phase as keyof Rewards].earningsTestnetToken)
+        const userTotalReward = parseFloat(rewards[phase as keyof Rewards].earningsTestnetToken)
         return totalTokens > 0
           ? ((userTotalReward / totalTokens) * 100).toFixed(PERCENTAGE_PRECISION) + '%'
           : '0.00%'
       }
       return '0.00%'
     },
-    [previousRewards, totalTokensPerPhase],
+    [rewards, totalRewards],
   )
 
-  const totalEarningsTSSC = useMemo(() => {
+  const totalUserTestnetRewards = useMemo(() => {
     return (
-      parseFloat(previousRewards.geminiI.earningsTestnetToken) +
-      parseFloat(previousRewards.geminiIIphase1.earningsTestnetToken) +
-      parseFloat(previousRewards.geminiIIphase2.earningsTestnetToken) +
-      parseFloat(previousRewards.geminiIIIf.earningsTestnetToken) +
-      parseFloat(previousRewards.geminiIIIg.earningsTestnetToken)
+      parseFloat(rewards.geminiI.earningsTestnetToken) +
+      parseFloat(rewards.geminiIIphase1.earningsTestnetToken) +
+      parseFloat(rewards.geminiIIphase2.earningsTestnetToken) +
+      parseFloat(rewards.geminiIIIf.earningsTestnetToken) +
+      parseFloat(rewards.geminiIIIg.earningsTestnetToken)
     )
-  }, [previousRewards])
+  }, [rewards])
 
   const totalTestnetTokenEmissions = useMemo(() => {
     return (
-      totalRewards.geminiI +
-      totalRewards.geminiIIphase1 +
-      totalRewards.geminiIIphase2 +
-      totalRewards.geminiIIIf +
-      totalRewards.geminiIIIg
+      parseFloat(totalRewards.geminiI.earningsTestnetToken) +
+      parseFloat(totalRewards.geminiIIphase1.earningsTestnetToken) +
+      parseFloat(totalRewards.geminiIIphase2.earningsTestnetToken) +
+      parseFloat(totalRewards.geminiIIIf.earningsTestnetToken) +
+      parseFloat(totalRewards.geminiIIIg.earningsTestnetToken)
     )
   }, [totalRewards])
 
-  const totalEarningsTSSCPercentage = useMemo(() => {
-    return (totalEarningsTSSC / totalTestnetTokenEmissions).toFixed(PERCENTAGE_PRECISION) + '%'
-  }, [totalEarningsTSSC, totalTestnetTokenEmissions])
+  const totalUserTestnetRewardsPercentage = useMemo(() => {
+    return (
+      (totalUserTestnetRewards / totalTestnetTokenEmissions).toFixed(PERCENTAGE_PRECISION) + '%'
+    )
+  }, [totalUserTestnetRewards, totalTestnetTokenEmissions])
 
   const campaignsList = useMemo(() => Object.values(campaigns), [campaigns])
 
-  const totalMainnetRewardPerTestnet = useCallback(
+  const totalMainnetAllocationByPhase = useCallback(
     (testnet: string) => {
       const campaign = campaigns[testnet as keyof typeof campaigns]
-      const totalReward = totalRewards[testnet as keyof TotalRewards]
+      const reward = rewards[testnet as keyof Rewards]
 
-      if (!campaign || totalReward === undefined) return 0
-      return totalReward
+      if (!campaign || reward === undefined) return 0
+      return parseFloat(reward.absoluteAllocation)
     },
-    [campaigns, totalRewards],
+    [campaigns, rewards],
   )
 
-  const totalMainnetRewardPercentagePerTestnet = useCallback(
+  const totalMainnetPercentageAllocationByPhase = useCallback(
     (testnet: string) => {
-      const reward = previousRewards[testnet as keyof Rewards]
+      const reward = rewards[testnet as keyof Rewards]
       if (!reward) return '0.00%'
       const userTotalReward = parseFloat(reward.absoluteAllocation)
       if (!userTotalReward) return '0.00%'
       const total = userTotalReward / MAINNET_TOTAL_SUPPLY
       return (total * 100).toFixed(PERCENTAGE_PRECISION) + '%'
     },
-    [previousRewards],
+    [rewards],
   )
 
-  const totalMainnetRewards = useMemo(() => {
+  const totalUserMainnetAllocation = useMemo(() => {
     return campaignsList.reduce(
-      (acc, campaign) => acc + totalMainnetRewardPerTestnet(campaign.name),
+      (acc, campaign) => acc + totalMainnetAllocationByPhase(campaign.name),
       0,
     )
-  }, [campaignsList, totalMainnetRewardPerTestnet])
+  }, [campaignsList, totalMainnetAllocationByPhase])
 
   const totalMainnetRewardsPercentage = useMemo(() => {
     return (
       campaignsList
         .reduce((acc, campaign) => {
           const percentage = parseFloat(
-            totalMainnetRewardPercentagePerTestnet(campaign.name).replace('%', ''),
+            totalMainnetPercentageAllocationByPhase(campaign.name).replace('%', ''),
           )
           return acc + percentage
         }, 0)
         .toFixed(PERCENTAGE_PRECISION) + '%'
     )
-  }, [campaignsList, totalMainnetRewardPercentagePerTestnet])
+  }, [campaignsList, totalMainnetPercentageAllocationByPhase])
 
   const countTestnetsWithRewards = useCallback((rewards: Rewards): number => {
     return Object.values(rewards).filter((reward) => parseFloat(reward.earningsTestnetToken) > 0)
@@ -445,8 +401,8 @@ export const TestnetRewardsTable: FC = () => {
   }, [])
 
   const testnetsWithRewardsCount = useMemo(
-    () => countTestnetsWithRewards(previousRewards),
-    [previousRewards, countTestnetsWithRewards],
+    () => countTestnetsWithRewards(rewards),
+    [rewards, countTestnetsWithRewards],
   )
 
   useEffect(() => {
@@ -467,7 +423,7 @@ export const TestnetRewardsTable: FC = () => {
             <div className='mx-8 flex w-full max-w-4xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
               <div className='text-2xl font-semibold'>TOTAL EARNINGS</div>
               <div className='text-4xl font-bold'>
-                {numberFormattedString(totalMainnetRewards)} ATC
+                {numberFormattedString(totalUserMainnetAllocation)} ATC
               </div>
               <div className='text-2xl font-semibold'>TESTNETS IN TOTAL</div>
               <div className='text-4xl font-bold'>{testnetsWithRewardsCount}</div>
@@ -507,21 +463,23 @@ export const TestnetRewardsTable: FC = () => {
                       </div>
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
-                      <span className='font-bold'>{rewardsPercentageByPhase(campaign.name)}</span>
-                      <br />
-                    </td>
-                    <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
-                      <span className='font-bold'>{rewardsByPhase(campaign.name)}</span>
-                      <br /> out of {totalTSSC(campaign.name)} tSSC
-                    </td>
-                    <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>
-                        {totalMainnetRewardPercentagePerTestnet(campaign.name)}
+                        {userTestnetRewardsPercentageByPhase(campaign.name)}
                       </span>
                       <br />
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
-                      {numberFormattedString(totalMainnetRewardPerTestnet(campaign.name))}
+                      <span className='font-bold'>{userTestnetRewardsByPhase(campaign.name)}</span>
+                      <br /> out of {totalTestnetByPhase(campaign.name)} tSSC
+                    </td>
+                    <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                      <span className='font-bold'>
+                        {totalMainnetPercentageAllocationByPhase(campaign.name)}
+                      </span>
+                      <br />
+                    </td>
+                    <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
+                      {numberFormattedString(totalMainnetAllocationByPhase(campaign.name))}
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -536,16 +494,16 @@ export const TestnetRewardsTable: FC = () => {
                 TOTAL EARNINGS
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {totalEarningsTSSCPercentage}
+                {totalUserTestnetRewardsPercentage}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {totalEarningsTSSC.toFixed(EARNINGS_PRECISION)} tSSC
+                {totalUserTestnetRewards.toFixed(EARNINGS_PRECISION)} tSSC
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
                 {totalMainnetRewardsPercentage}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {numberFormattedString(totalMainnetRewards)} ATC
+                {numberFormattedString(totalUserMainnetAllocation)} ATC
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'></div>
               <div className='text-sm text-gray-500 dark:text-gray-300'></div>
