@@ -1,6 +1,6 @@
 {
   "name": "db",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "repository": {
@@ -15,11 +15,11 @@
     "url": "https://github.com/autonomys/astral/issues"
   },
   "scripts": {
-    "console": "hasura console --endpoint http://localhost:$HASURA_GRAPHQL_PORT --admin-secret $HASURA_GRAPHQL_ADMIN_SECRET",
-    "metadata": "hasura metadata apply --skip-update-check --endpoint http://localhost:$HASURA_GRAPHQL_PORT --admin-secret $HASURA_GRAPHQL_ADMIN_SECRET",
+    "console": "hasura console",
+    "metadata": "hasura metadata apply --skip-update-check",
     "start": "yarn metadata && yarn console"
   },
   "devDependencies": {
-    "hasura-cli": "^2.36.2"
+    "hasura-cli": "2.36.2"
   }
 }

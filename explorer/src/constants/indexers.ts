@@ -8,7 +8,6 @@ export interface Indexer {
     accounts?: string
     leaderboard?: string
     staking?: string
-    testnetRewards?: string
   }
 }
 

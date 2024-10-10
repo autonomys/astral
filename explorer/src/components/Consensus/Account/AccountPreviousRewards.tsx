@@ -154,7 +154,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
       (reward) => reward.address.subspaceFormat === formatAddress(accountId),
     )
 
-    if (userRewards[0] && (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0))
+    if (userRewards.length > 0 || userRewardsGeminiIIIf.length > 0)
       setRewards({ ...userRewards[0].rewards, ...userRewardsGeminiIIIf[0].rewards })
   }, [accountId])
 
@@ -197,11 +197,11 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
         case 'gemini3f':
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
-          return 'waiting for data'
-        case 'gemini3h':
           return formatUnitsToNumber(
             (BigInt(rewards.vote ?? 0) - BigInt(rewards.block ?? 0)).toString(),
           ).toFixed(2)
+        case 'gemini3h':
+          return 'n/a'
         default:
           return '0.00'
       }

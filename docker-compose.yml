@@ -196,6 +196,7 @@ services:
       - -f=/gemini-3h/consensus
       - --db-schema=consensus
       - --workers=4
+      - --unsafe
       - --batch-size=30
       - --disable-historical=true
     healthcheck:
