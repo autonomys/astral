@@ -17,8 +17,8 @@ export const TestnetRewardsPage: FC = () => {
   return (
     <div className='flex min-h-screen w-full flex-col items-center space-y-4 p-4'>
       <RewardHistory />
-      <FAQ />
       {subspaceAccount && <TestnetRewardsTable />}
+      <FAQ />
     </div>
   )
 }
