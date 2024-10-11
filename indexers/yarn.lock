@@ -7,17 +7,17 @@
   resolved "https://registry.yarnpkg.com/@adraffy/ens-normalize/-/ens-normalize-1.10.1.tgz#63430d04bd8c5e74f8d7d049338f1cd9d4f02069"
   integrity sha512-96Z2IP3mYmF1Xg2cDm8f1gWGf/HUVedQ3FMifV4kG/PQ4yEP51xDtRAEfhVNt5f/uzpNkZHwWQuUcu6D6K+Ekw==
 
-"@autonomys/auto-consensus@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.6.1.tgz#4f755c756d6765a3ee441a7a5334c7c6b9479202"
-  integrity sha512-xbuWc+jWpqAPDD3ouPdueLjFnFA++3D6K7Mi+khQPxV63K6q2Yk8SaoHsYt1O8DFVuiZAHdHMn5HskpJvDTjaQ==
+"@autonomys/auto-consensus@^0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.6.5.tgz#c1b711eddaeb6f113faf4723a0c14938e4776fb2"
+  integrity sha512-JptAs7eA0fLrh+A6/A1EDUToM5rMYEg06wCIUq8s4IWkVnhPzlD0kcen1bxVxrM8rAvmfoIlKA39gx1T1htqQA==
   dependencies:
-    "@autonomys/auto-utils" "^0.6.1"
+    "@autonomys/auto-utils" "^0.6.5"
 
-"@autonomys/auto-utils@^0.6.1":
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.6.1.tgz#90f95dcd5b26b1d7667b8b96c663bd1188758d72"
-  integrity sha512-giZiGNhREMvxeTeyhxLZcI+IupRYI/F1lnkzWeFCSALYhgJ8mmEVaXuqPwE0oKV8sogVmTcVWILpVnubfOT88A==
+"@autonomys/auto-utils@^0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.6.5.tgz#72964058ad4649c24922f6f76e422315ce08efda"
+  integrity sha512-0aEnANGOfyY0NdTrGzumj59VOpBN75Cnti3MTrem9A/717gkyuuoZXERQnlnbvPphzHoe3KYj/q3P0iCwQ3ESw==
   dependencies:
     "@polkadot/api" "^11.2.1"
     "@polkadot/extension-dapp" "^0.47.5"
