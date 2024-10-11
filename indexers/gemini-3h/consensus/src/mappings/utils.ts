@@ -52,13 +52,8 @@ export const solutionRangeToSectors = (solutionRange: bigint): bigint => {
   return sectors / solutionRange;
 };
 
-export const calcSpacePledged = (solutionRange: bigint): bigint => {
-  logger.info(`calcSpacePledged.solutionRange ${solutionRange.toString()}`);
-  const sectors = solutionRangeToSectors(solutionRange);
-  logger.info(`calcSpacePledged.sectors ${sectors.toString()}`);
-
-  return sectors * MAX_PIECES_IN_SECTOR * PIECE_SIZE;
-};
+export const calcSpacePledged = (solutionRange: bigint): bigint =>
+  solutionRangeToSectors(solutionRange) * MAX_PIECES_IN_SECTOR * PIECE_SIZE;
 
 export const calcHistorySize = (segmentsCount: number): bigint => {
   const PIECES_IN_SEGMENT = BigInt(256);
