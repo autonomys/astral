@@ -22,6 +22,11 @@ type Reward<T = string> = {
   absoluteAllocation: T
 }
 
+type DateRange = {
+  start: Date
+  end: Date
+}
+
 type Rewards<T = string> = {
   aries: Reward<T>
   geminiI: Reward<T>
@@ -39,6 +44,13 @@ type AllRewards = {
   address: string
   rewards: Rewards<number>
   totalAllocation: number
+}
+
+type Campaign = {
+  name: string
+  testnet: string
+  icon: React.ReactNode
+  dateRange?: DateRange
 }
 
 const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
@@ -63,7 +75,6 @@ const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }
 const MAINNET_TOTAL_SUPPLY = 1000000000
 
 const PERCENTAGE_PRECISION = 6
-const EARNINGS_PRECISION = 6
 const DEFAULT_REWARDS: Rewards = {
   aries: {
     earningsTestnetToken: '0',
@@ -107,6 +118,12 @@ const DEFAULT_REWARDS: Rewards = {
   },
 }
 
+const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+}
+
 export const TestnetRewardsTable: FC = () => {
   const { subspaceAccount } = useWallet()
   const { mySubspaceWallets } = useViewStates()
@@ -116,7 +133,7 @@ export const TestnetRewardsTable: FC = () => {
   const [rewards, setRewards] = useState<Rewards>(DEFAULT_REWARDS)
   const [totalRewards, setTotalRewards] = useState<Rewards>(DEFAULT_REWARDS)
 
-  const campaigns = useMemo(
+  const campaigns: Record<string, Campaign> = useMemo(
     () => ({
       aries: {
         name: 'aries',
@@ -127,13 +144,13 @@ export const TestnetRewardsTable: FC = () => {
         name: 'geminiI',
         testnet: 'Gemini 1',
         icon: <GeminiITestnetIcon />,
-        dateRange: '11.06.2022 - 27.06.2022',
+        dateRange: { start: new Date('2022-06-11'), end: new Date('2022-06-27') },
       },
       geminiIIphase1: {
         name: 'geminiIIphase1',
         testnet: 'Gemini 2 Phase 1',
         icon: <GeminiIIp1TestnetIcon />,
-        dateRange: '20.09.2022 - 25.10.2022',
+        dateRange: { start: new Date('2022-09-20'), end: new Date('2022-10-25') },
       },
       geminiIIphase2: {
         name: 'geminiIIphase2',
@@ -144,37 +161,37 @@ export const TestnetRewardsTable: FC = () => {
         name: 'geminiIIIf',
         testnet: 'Gemini 3f',
         icon: <Gemini3p1TestnetIcon />,
-        dateRange: '06.09.2023 - 02.11.2023',
+        dateRange: { start: new Date('2023-09-06'), end: new Date('2023-11-02') },
       },
       geminiIIIg: {
         name: 'geminiIIIg',
         testnet: 'Gemini 3g',
         icon: <Gemini3p2TestnetIcon />,
-        dateRange: '02.11.2023 - 10.01.2024',
+        dateRange: { start: new Date('2023-11-02'), end: new Date('2024-01-10') },
       },
       stakeWarsIPhase1: {
         name: 'stakeWarsIPhase1',
         testnet: 'Stake Wars I Phase 1',
         icon: <StakeWarsIIcon />,
-        dateRange: '22.11.2023 - 12.06.2023',
+        dateRange: { start: new Date('2023-11-22'), end: new Date('2024-06-12') },
       },
       stakeWarsIPhase2: {
         name: 'stakeWarsIPhase2',
         testnet: 'Stake Wars I Phase 2',
         icon: <StakeWarsIIcon />,
-        dateRange: '12.06.2023 - 10.01.2024',
+        dateRange: { start: new Date('2024-06-12'), end: new Date('2024-01-10') },
       },
       geminiIIIhPhase1: {
         name: 'geminiIIIhPhase1',
         testnet: 'Gemini 3h Phase 1',
         icon: <Gemini3hTestnetIcon />,
-        dateRange: '10.01.2024 - 25.07.2024',
+        dateRange: { start: new Date('2024-01-10'), end: new Date('2024-07-25') },
       },
       geminiIIIhPhase2: {
         name: 'geminiIIIhPhase2',
         testnet: 'Gemini 3h Phase 2',
         icon: <Gemini3hTestnetIcon />,
-        dateRange: '10.01.2024 - 25.07.2024',
+        dateRange: { start: new Date('2024-01-10'), end: new Date('2024-07-25') },
       },
     }),
     [],
@@ -313,8 +330,8 @@ export const TestnetRewardsTable: FC = () => {
   const userTestnetRewardsByPhase = useCallback(
     (phase: string) => {
       if (rewards[phase as keyof Rewards])
-        return parseFloat(rewards[phase as keyof Rewards].earningsTestnetToken).toFixed(
-          EARNINGS_PRECISION,
+        return numberFormattedString(
+          parseFloat(rewards[phase as keyof Rewards].earningsTestnetToken),
         )
       return '0.00'
     },
@@ -516,8 +533,9 @@ export const TestnetRewardsTable: FC = () => {
                       <br /> out of {totalMainnetByPhase(campaign.name)} tSSC
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
-                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                      {(campaign as any).dateRange ? (campaign as any).dateRange : 'N/A'}
+                      {campaign.dateRange
+                        ? `${campaign.dateRange.start.toLocaleDateString(undefined, DATE_OPTIONS)} - ${campaign.dateRange.end.toLocaleDateString(undefined, DATE_OPTIONS)}`
+                        : 'N/A'}
                     </td>
                   </tr>
                 ))}
@@ -531,7 +549,7 @@ export const TestnetRewardsTable: FC = () => {
                 {totalUserTestnetRewardsPercentage}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {totalUserTestnetRewards.toFixed(EARNINGS_PRECISION)} tSSC
+                {numberFormattedString(totalUserTestnetRewards)} tSSC
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
                 {totalMainnetRewardsPercentage}
