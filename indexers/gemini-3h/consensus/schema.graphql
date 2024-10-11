@@ -1,5 +1,6 @@
 type Block @entity {
   id: ID!
+  sortId: String! @index
   height: BigInt! @index
   hash: String! @index
   timestamp: Date! @index
@@ -16,6 +17,7 @@ type Block @entity {
 
 type Log @entity {
   id: ID!
+  sortId: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
   indexInBlock: Int! @index
@@ -27,6 +29,7 @@ type Log @entity {
 
 type Extrinsic @entity {
   id: ID!
+  sortId: String! @index
   hash: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
@@ -47,6 +50,7 @@ type Extrinsic @entity {
 
 type Event @entity {
   id: ID!
+  sortId: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
   extrinsicId: String! @index

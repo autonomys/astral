@@ -8,7 +8,7 @@ import {
   LogKind,
   Section,
 } from "../types";
-import { capitalizeFirstLetter, moduleId, moduleName } from "./utils";
+import { capitalizeFirstLetter, moduleId, moduleName, sortId } from "./utils";
 
 export async function createAndSaveBlock(
   hash: string,
@@ -29,6 +29,7 @@ export async function createAndSaveBlock(
   if (!block) {
     block = Block.create({
       id,
+      sortId: sortId(height),
       height,
       hash,
       timestamp,
@@ -63,6 +64,7 @@ export async function createAndSaveLog(
   if (!log) {
     log = Log.create({
       id,
+      sortId: sortId(blockHeight, BigInt(indexInBlock)),
       blockHeight,
       blockHash,
       indexInBlock,
@@ -171,6 +173,7 @@ export async function createAndSaveExtrinsic(
   const extrinsicId = `${blockHeight}-${indexInBlock}`;
   const extrinsic = Extrinsic.create({
     id: extrinsicId,
+    sortId: sortId(blockHeight, BigInt(indexInBlock)),
     hash,
     blockHeight,
     blockHash,
@@ -213,6 +216,7 @@ export async function createAndSaveEvent(
   const id = `${blockHeight}-${indexInBlock.toString()}`;
   const event = Event.create({
     id,
+    sortId: sortId(blockHeight, BigInt(indexInBlock)),
     blockHeight,
     blockHash,
     extrinsicId,
