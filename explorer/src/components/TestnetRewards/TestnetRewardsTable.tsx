@@ -200,7 +200,7 @@ export const TestnetRewardsTable: FC = () => {
   const cleanCell = (cell: string) => cell.replace(/"/g, '').replace(/,/g, '')
 
   const handleLoad = useCallback(async () => {
-    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-11oct2024.csv')
+    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-12oct2024.csv')
     const data = await file.text()
     const rows = data.split('\n').slice(6)
     const rewardsData = rows.map((row) => {
