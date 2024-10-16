@@ -496,7 +496,8 @@ export const TestnetRewardsTable: FC = () => {
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>{userTestnetRewardsByPhase(campaign.name)}</span>
-                      <br /> out of {totalTestnetByPhase(campaign.name)} tSSC
+                      <br /> out of {totalTestnetByPhase(campaign.name)}{' '}
+                      {campaign.name === 'aries' ? 'eligible addresses' : 'tSSC'}
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>
