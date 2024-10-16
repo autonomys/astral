@@ -1,13 +1,13 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 
 export const FAQ: FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
-
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index)
-  }
+  const toggleFAQ = useCallback(
+    (index: number) => setOpenIndex(openIndex === index ? null : index),
+    [openIndex],
+  )
 
   return (
     <div className='mt-8 w-full max-w-xl'>
