@@ -358,12 +358,12 @@ export const TestnetRewardsTable: FC = () => {
   )
 
   const totalUserTestnetRewards = useMemo(
-    () => Number(userTestnetRewardsByPhase('total')),
+    () => parseFloat(cleanCell(userTestnetRewardsByPhase('total'))),
     [userTestnetRewardsByPhase],
   )
 
   const totalTestnetTokenEmissions = useMemo(
-    () => Number(cleanCell(totalTestnetByPhase('total'))),
+    () => parseFloat(cleanCell(totalTestnetByPhase('total'))),
     [totalTestnetByPhase],
   )
 
