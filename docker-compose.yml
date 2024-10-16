@@ -1,10 +1,47 @@
 version: "3.9"
 
 volumes:
+  node-data: {}
   postgres_db: {}
   redis_db: {}
 
 services:
+  # Subspace Node
+  node:
+    image: ghcr.io/autonomys/node:gemini-3h-2024-oct-10
+    platform: linux/amd64
+    volumes:
+      - node-data:/var/subspace:rw
+    ports:
+      - "0.0.0.0:30333:30333/tcp"
+      - "0.0.0.0:30433:30433/tcp"
+    restart: unless-stopped
+    command:
+      [
+        "run",
+        "--chain",
+        "gemini-3h",
+        "--base-path",
+        "/var/subspace",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30333",
+        "--dsn-listen-on",
+        "/ip4/0.0.0.0/tcp/30433",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "unsafe",
+        "--rpc-listen-on",
+        "0.0.0.0:9944",
+        "--farmer",
+        "--name",
+        "astral",
+      ]
+    healthcheck:
+      timeout: 5s
+      interval: 30s
+      retries: 60
+
   # Postgres Database
   postgres:
     image: postgres:16-alpine
@@ -85,6 +122,8 @@ services:
     build:
       context: ./indexers/dictionary/autonomys-gemini-3h
     depends_on:
+      "node":
+        condition: service_healthy
       "postgres":
         condition: service_healthy
     restart: unless-stopped
