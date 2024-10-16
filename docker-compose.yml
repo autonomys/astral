@@ -1,35 +1,419 @@
-version: "3"
+version: "3.9"
+
+volumes:
+  node-data: {}
+  postgres_db: {}
+  redis_db: {}
 
 services:
-  db:
-    container_name: explorer-db
-    image: postgres:14
-    environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
+  # Subspace Node
+  node:
+    image: ghcr.io/autonomys/node:gemini-3h-2024-oct-10
+    platform: linux/amd64
     volumes:
-      - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - node-data:/var/subspace:rw
+    ports:
+      - "0.0.0.0:30333:30333/tcp"
+      - "0.0.0.0:30433:30433/tcp"
+    restart: unless-stopped
+    command:
+      [
+        "run",
+        "--chain",
+        "gemini-3h",
+        "--base-path",
+        "/var/subspace",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30333",
+        "--dsn-listen-on",
+        "/ip4/0.0.0.0/tcp/30433",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "unsafe",
+        "--rpc-listen-on",
+        "0.0.0.0:9944",
+        "--farmer",
+        "--name",
+        "astral",
+      ]
+    healthcheck:
+      timeout: 5s
+      interval: 30s
+      retries: 60
 
-  graphql-engine:
-    container_name: explorer-graphql
+  # Postgres Database
+  postgres:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+      - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    restart: unless-stopped
+    hostname: postgres
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_MAX_CONNECTIONS: 500
+    ports:
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Hasura GraphQL Engine
+  hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
-      - "db"
-    restart: always
+      - "postgres"
+    volumes:
+      - ./indexers/db/migrations:/hasura-migrations
+      - ./indexers/db/metadata:/hasura-metadata
+    restart: unless-stopped
     environment:
-      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_CONSENSUS}
-      HASURA_GRAPHQL_CONSENSUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_CONSENSUS}
-      HASURA_GRAPHQL_LEADERBOARD_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_LEADERBOARD}
-      HASURA_GRAPHQL_STAKING_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_STAKING}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
-      HASURA_GRAPHQL_DEV_MODE: "true"
-      # HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
-      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
-      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user
+      # Essential Environment Variables
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_DATABASE}
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_DATABASE} # Main database connection
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET} # Admin access secret
+      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET} # JWT authentication secret
+
+      # Console and Development Mode
+      HASURA_GRAPHQL_ENABLE_CONSOLE: ${HASURA_GRAPHQL_ENABLE_CONSOLE} # Disable console in production
+      HASURA_GRAPHQL_DEV_MODE: "true" # Disable development mode features
+
+      # Role and CORS Settings
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: user # Default role for unauthenticated users
+      HASURA_GRAPHQL_CORS_DOMAIN: ${HASURA_GRAPHQL_CORS_DOMAIN} # Allowed domains for CORS
       HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "true"
+
+      # Performance and Connection Settings
+      HASURA_GRAPHQL_MAX_CONNECTIONS: 100 # Maximum number of database connections
+      HASURA_GRAPHQL_STRIPES: 2 # Number of connection pool stripes
+      HASURA_GRAPHQL_CONNECTIONS_PER_STRIPE: 50 # Connections per stripe
+      HASURA_GRAPHQL_IDLE_TIMEOUT: 180 # Idle connection timeout in seconds
+      HASURA_GRAPHQL_TIMEOUT: 60 # Request timeout in seconds
+
+      # Logging Settings
+      HASURA_GRAPHQL_LOG_LEVEL: "warn" # Log verbosity level
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: "startup,http-log,webhook-log,websocket-log,query-log" # Enabled log types
+
+      # Security and Authorization
+      HASURA_GRAPHQL_ENABLE_ALLOWLIST: "false" # Disable query allowlisting
+
+      # Gemini 3H Databases
+      HASURA_GRAPHQL_GEMINI_3H_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H}
+      # Gemini 3G Database
+      HASURA_GRAPHQL_GEMINI_3G_TESTNET_REWARDS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3G_TESTNET_REWARDS}
+
+      # Hasura Migrations and Metadata
+      HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
+      HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
     ports:
-      - "8080:8080"
+      - "${HASURA_GRAPHQL_PORT}:8080"
     command:
       - graphql-engine
       - serve
+
+  # Gemini 3H Dictionary
+  gemini_3h_dictionary_subquery_node:
+    profiles: [dictionary, gemini_3h, gemini_3h_dictionary]
+    build:
+      context: ./indexers/dictionary/autonomys-gemini-3h
+    depends_on:
+      "node":
+        condition: service_healthy
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/dictionary/autonomys-gemini-3h:/dictionary
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3h_dictionary_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    command:
+      - -f=/dictionary
+      - --disable-historical=true
+
+  gemini_3h_dictionary_graphql_engine:
+    profiles: [dictionary, gemini_3h, gemini_3h_dictionary]
+    image: onfinality/subql-query:latest
+    ports:
+      - "${GEMINI_3H_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
+    depends_on:
+      - "postgres"
+      - "gemini_3h_dictionary_subquery_node"
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    command:
+      - --name=dictionary
+      - --playground
+
+  # Gemini 3H Subquery Nodes
+  gemini_3h_accounts_subquery_node:
+    profiles: [gemini_3h, gemini_3h_accounts]
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/gemini-3h/accounts:/gemini-3h/accounts
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/gemini-3h/accounts
+      - --db-schema=accounts
+      - --workers=4
+      - --unsafe
+      - --batch-size=30
+      - --disable-historical=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3h_accounts_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  gemini_3h_consensus_subquery_node:
+    profiles: [gemini_3h, gemini_3h_consensus]
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/gemini-3h/consensus:/gemini-3h/consensus
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/gemini-3h/consensus
+      - --db-schema=consensus
+      - --workers=4
+      - --unsafe
+      - --batch-size=30
+      - --disable-historical=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3h_consensus_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  gemini_3h_leaderboard_subquery_node:
+    profiles: [gemini_3h, gemini_3h_leaderboard]
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/gemini-3h/leaderboard:/gemini-3h/leaderboard
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/gemini-3h/leaderboard
+      - --db-schema=leaderboard
+      - --workers=4
+      - --unsafe
+      - --batch-size=30
+      - --disable-historical=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3h_leaderboard_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  gemini_3h_staking_subquery_node:
+    profiles: [gemini_3h, gemini_3h_staking]
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "gemini_3h_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
+      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3H}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/gemini-3h/staking:/gemini-3h/staking
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/gemini-3h/staking
+      - --db-schema=staking
+      - --workers=4
+      - --unsafe
+      - --batch-size=30
+      - --disable-historical=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3h_staking_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  gemini_3g_testnet_rewards_subquery_node:
+    profiles: [gemini_3g, gemini_3g_testnet_rewards]
+    image: subquerynetwork/subql-node-substrate:latest
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3G_RPC}
+      CHAIN_ID: ${GEMINI_3G_CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_GEMINI_3G_TESTNET_REWARDS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/gemini-3g/testnet-rewards:/gemini-3g/testnet-rewards
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/gemini-3g/testnet-rewards
+      - --db-schema=${DB_GEMINI_3G_TESTNET_REWARDS}
+      - --workers=4
+      - --unsafe
+      - --batch-size=30
+      - --unfinalized-blocks=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3g_testnet_rewards_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  # Redis
+  redis:
+    profiles: [task]
+    image: redis:latest
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_db:/data
+    hostname: redis
+    command: ["redis-server", "--bind", "0.0.0.0", "--port", "6379"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "redis-cli -h localhost -p 6379 ping | grep PONG || exit 1",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Express + BullMQ
+  taskboard:
+    profiles: [task]
+    build:
+      context: ./indexers/taskboard
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./indexers/taskboard:/app
+    hostname: taskboard
+    restart: unless-stopped
+    ports:
+      - "${BULL_PORT}:3000"
+    environment:
+      BULL_USERNAME: ${BULL_USERNAME}
+      BULL_PASSWORD: ${BULL_PASSWORD}
+      BULL_PORT: ${BULL_PORT}
+
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
+
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+
+      DB_GEMINI_3H: ${DB_GEMINI_3H}

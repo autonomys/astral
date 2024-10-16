@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  postgres:
+    volumes:
+      - type: bind
+        source: /home/ubuntu/postgresql/conf/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        read_only: true
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  hasura:
+    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_dictionary_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_dictionary_graphql_engine:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_accounts_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_consensus_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_leaderboard_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3h_staking_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  gemini_3g_testnet_rewards_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  redis:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taskboard:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"

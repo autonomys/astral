@@ -1,0 +1,13 @@
+table:
+  name: events
+  schema: dictionary
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - block_height
+        - event
+        - id
+        - module
+      filter: {}
+    comment: ""

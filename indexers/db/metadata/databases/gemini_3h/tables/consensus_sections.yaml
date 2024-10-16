@@ -1,0 +1,31 @@
+table:
+  name: sections
+  schema: consensus
+array_relationships:
+  - name: event_modules
+    using:
+      manual_configuration:
+        column_mapping:
+          id: section_id
+        insertion_order: null
+        remote_table:
+          name: event_modules
+          schema: consensus
+  - name: extrinsic_modules
+    using:
+      manual_configuration:
+        column_mapping:
+          id: section_id
+        insertion_order: null
+        remote_table:
+          name: extrinsic_modules
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - id
+        - section
+      filter: {}
+      allow_aggregations: true
+    comment: ""

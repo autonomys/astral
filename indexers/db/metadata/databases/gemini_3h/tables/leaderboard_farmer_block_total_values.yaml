@@ -1,0 +1,16 @@
+table:
+  name: farmer_block_total_values
+  schema: leaderboard
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - rank
+        - updated_at
+        - value
+        - id
+        - last_contribution_at
+      filter: {}
+      allow_aggregations: true
+    comment: ""
