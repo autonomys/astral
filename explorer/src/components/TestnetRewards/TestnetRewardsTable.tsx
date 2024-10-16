@@ -44,6 +44,7 @@ type Campaign = {
   testnet: string
   icon: React.ReactNode
   dateRange?: DateRange
+  label?: string
 }
 
 const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
@@ -95,6 +96,7 @@ const DEFAULT_REWARDS: Rewards = {
   },
 }
 
+const DATE_LOCALES = 'en-CA'
 const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'numeric',
@@ -117,6 +119,7 @@ export const TestnetRewardsTable: FC = () => {
         name: 'aries',
         testnet: 'Aries Stress Test',
         icon: <AriesStressTestIcon />,
+        label: 'eligible addresses',
       },
       geminiI: {
         name: 'geminiI',
@@ -135,6 +138,7 @@ export const TestnetRewardsTable: FC = () => {
         testnet: 'Gemini 3',
         icon: <Gemini3TestnetIcon />,
         dateRange: { start: new Date('2023-09-06'), end: new Date('2024-07-25') },
+        label: 'block and vote rewards',
       },
       stakeWarsI: {
         name: 'stakeWarsI',
@@ -498,7 +502,7 @@ export const TestnetRewardsTable: FC = () => {
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>{userTestnetRewardsByPhase(campaign.name)}</span>
                       <br /> out of {totalTestnetByPhase(campaign.name)}{' '}
-                      {campaign.name === 'aries' ? 'eligible addresses' : 'tSSC'}
+                      {campaign.label ? campaign.label : 'tSSC'}
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>
@@ -512,7 +516,7 @@ export const TestnetRewardsTable: FC = () => {
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       {campaign.dateRange
-                        ? `${campaign.dateRange.start.toLocaleDateString(undefined, DATE_OPTIONS)} - ${campaign.dateRange.end.toLocaleDateString(undefined, DATE_OPTIONS)}`
+                        ? `${campaign.dateRange.start.toLocaleDateString(DATE_LOCALES, DATE_OPTIONS)} - ${campaign.dateRange.end.toLocaleDateString(DATE_LOCALES, DATE_OPTIONS)}`
                         : 'N/A'}
                     </td>
                   </tr>
