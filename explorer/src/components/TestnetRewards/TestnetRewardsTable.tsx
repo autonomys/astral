@@ -44,6 +44,7 @@ type Campaign = {
   testnet: string
   icon: React.ReactNode
   dateRange?: DateRange
+  label?: string
 }
 
 const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
@@ -66,7 +67,7 @@ const Modal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }
 }
 
 const MAINNET_TOTAL_SUPPLY = 1000000000
-
+const MAINNET_TOKEN_SYMBOL = 'AI3'
 const PERCENTAGE_PRECISION = 6
 const DEFAULT_REWARDS: Rewards = {
   aries: {
@@ -95,6 +96,7 @@ const DEFAULT_REWARDS: Rewards = {
   },
 }
 
+const DATE_LOCALES = 'en-CA'
 const DATE_OPTIONS: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'numeric',
@@ -117,6 +119,7 @@ export const TestnetRewardsTable: FC = () => {
         name: 'aries',
         testnet: 'Aries Stress Test',
         icon: <AriesStressTestIcon />,
+        label: 'eligible addresses',
       },
       geminiI: {
         name: 'geminiI',
@@ -135,6 +138,7 @@ export const TestnetRewardsTable: FC = () => {
         testnet: 'Gemini 3',
         icon: <Gemini3TestnetIcon />,
         dateRange: { start: new Date('2023-09-06'), end: new Date('2024-07-25') },
+        label: 'block and vote rewards',
       },
       stakeWarsI: {
         name: 'stakeWarsI',
@@ -450,7 +454,7 @@ export const TestnetRewardsTable: FC = () => {
             <div className='mx-8 flex w-full max-w-6xl items-center justify-between rounded-full border border-blue-600 bg-blue-50 p-8 text-blue-600'>
               <div className='text-2xl font-semibold'>TOTAL ALLOCATION</div>
               <div className='text-4xl font-bold'>
-                {numberFormattedString(totalUserMainnetAllocation)} ATC
+                {numberFormattedString(totalUserMainnetAllocation)} {MAINNET_TOKEN_SYMBOL}
               </div>
               <div className='text-2xl font-semibold'>TESTNETS PHASES IN TOTAL</div>
               <div className='text-4xl font-bold'>{testnetsWithRewardsCount}</div>
@@ -470,10 +474,10 @@ export const TestnetRewardsTable: FC = () => {
                     EARNINGS, tSSC
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
-                    EARNINGS, % ATC
+                    EARNINGS, % {MAINNET_TOKEN_SYMBOL}
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
-                    EARNINGS, ATC
+                    EARNINGS, {MAINNET_TOKEN_SYMBOL}
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
                     Date Range
@@ -498,7 +502,7 @@ export const TestnetRewardsTable: FC = () => {
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>{userTestnetRewardsByPhase(campaign.name)}</span>
                       <br /> out of {totalTestnetByPhase(campaign.name)}{' '}
-                      {campaign.name === 'aries' ? 'eligible addresses' : 'tSSC'}
+                      {campaign.label ? campaign.label : 'tSSC'}
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>
@@ -508,11 +512,11 @@ export const TestnetRewardsTable: FC = () => {
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       {numberFormattedString(totalMainnetAllocationByPhase(campaign.name))}
-                      <br /> out of {totalMainnetByPhase(campaign.name)} tSSC
+                      <br /> out of {totalMainnetByPhase(campaign.name)} {MAINNET_TOKEN_SYMBOL}
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       {campaign.dateRange
-                        ? `${campaign.dateRange.start.toLocaleDateString(undefined, DATE_OPTIONS)} - ${campaign.dateRange.end.toLocaleDateString(undefined, DATE_OPTIONS)}`
+                        ? `${campaign.dateRange.start.toLocaleDateString(DATE_LOCALES, DATE_OPTIONS)} - ${campaign.dateRange.end.toLocaleDateString(DATE_LOCALES, DATE_OPTIONS)}`
                         : 'N/A'}
                     </td>
                   </tr>
@@ -533,7 +537,7 @@ export const TestnetRewardsTable: FC = () => {
                 {totalMainnetRewardsPercentage}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {numberFormattedString(totalUserMainnetAllocation)} ATC
+                {numberFormattedString(totalUserMainnetAllocation)} {MAINNET_TOKEN_SYMBOL}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'></div>
               <div className='text-sm text-gray-500 dark:text-gray-300'></div>
