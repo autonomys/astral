@@ -157,7 +157,7 @@ export const TestnetRewardsTable: FC = () => {
   }
 
   const handleLoad = useCallback(async () => {
-    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-15oct2024.csv')
+    const file = await fetch('/data/testnet/astralTestnetRewardsMainnetAllocations-16oct2024.csv')
     const data = await file.text()
     const rows = data.split('\n').slice(6)
     const rewardsData = rows.map((row) => {
@@ -167,46 +167,52 @@ export const TestnetRewardsTable: FC = () => {
         rewards: {
           aries: {
             earningsTestnetToken: parseFloat(cleanCell(columns[1])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[36])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[38])) || 0,
           },
           geminiI: {
             earningsTestnetToken: parseFloat(cleanCell(columns[2])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[37])) || 0,
+            absoluteAllocation: parseFloat(cleanCell(columns[39])) || 0,
           },
           geminiII: {
             earningsTestnetToken:
               parseFloat(cleanCell(columns[3])) + parseFloat(cleanCell(columns[4])) || 0,
             absoluteAllocation:
-              parseFloat(cleanCell(columns[38])) + parseFloat(cleanCell(columns[39])) || 0,
+              parseFloat(cleanCell(columns[40])) + parseFloat(cleanCell(columns[41])) || 0,
           },
           geminiIII: {
             earningsTestnetToken:
-              parseFloat(cleanCell(columns[5])) +
-                parseFloat(cleanCell(columns[6])) +
-                parseFloat(cleanCell(columns[7])) +
-                parseFloat(cleanCell(columns[8])) || 0,
-            absoluteAllocation:
-              parseFloat(cleanCell(columns[40])) + parseFloat(cleanCell(columns[41])) || 0,
-          },
-          stakeWarsI: {
-            earningsTestnetToken:
-              parseFloat(cleanCell(columns[10])) + parseFloat(cleanCell(columns[11])) || 0,
+              parseFloat(cleanCell(columns[7])) +
+                parseFloat(cleanCell(columns[8])) +
+                parseFloat(cleanCell(columns[9])) +
+                parseFloat(cleanCell(columns[10])) || 0,
             absoluteAllocation:
               parseFloat(cleanCell(columns[42])) + parseFloat(cleanCell(columns[43])) || 0,
           },
+          stakeWarsI: {
+            earningsTestnetToken:
+              parseFloat(cleanCell(columns[12])) + parseFloat(cleanCell(columns[13])) || 0,
+            absoluteAllocation:
+              parseFloat(cleanCell(columns[44])) + parseFloat(cleanCell(columns[45])) || 0,
+          },
           total: {
             earningsTestnetToken:
+              // aries
               parseFloat(cleanCell(columns[1])) +
+                // geminiI
                 parseFloat(cleanCell(columns[2])) +
+                // geminiII
                 parseFloat(cleanCell(columns[3])) +
                 parseFloat(cleanCell(columns[4])) +
-                parseFloat(cleanCell(columns[5])) +
-                parseFloat(cleanCell(columns[6])) +
+                // geminiIII
                 parseFloat(cleanCell(columns[7])) +
                 parseFloat(cleanCell(columns[8])) +
+                parseFloat(cleanCell(columns[9])) +
                 parseFloat(cleanCell(columns[10])) +
-                parseFloat(cleanCell(columns[11])) || 0,
-            absoluteAllocation: parseFloat(cleanCell(columns[45])) || 0,
+                // stakeWarsI
+                parseFloat(cleanCell(columns[12])) +
+                parseFloat(cleanCell(columns[13])) || 0,
+            // total mainnet allocation
+            absoluteAllocation: parseFloat(cleanCell(columns[47])) || 0,
           },
         },
       } as AllRewards
@@ -217,11 +223,11 @@ export const TestnetRewardsTable: FC = () => {
     const totals: Rewards = {
       aries: {
         earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[1])).toString() || '0',
-        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[36])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[38])).toString() || '0',
       },
       geminiI: {
         earningsTestnetToken: parseFloat(cleanCell(totalRowColumns[2])).toString() || '0',
-        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[37])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[39])).toString() || '0',
       },
       geminiII: {
         earningsTestnetToken:
@@ -230,51 +236,55 @@ export const TestnetRewardsTable: FC = () => {
           ).toString() || '0',
         absoluteAllocation:
           (
-            parseFloat(cleanCell(totalRowColumns[38])) + parseFloat(cleanCell(totalRowColumns[39]))
+            parseFloat(cleanCell(totalRowColumns[40])) + parseFloat(cleanCell(totalRowColumns[41]))
           ).toString() || '0',
       },
       geminiIII: {
         earningsTestnetToken:
           (
-            parseFloat(cleanCell(totalRowColumns[5])) +
-            parseFloat(cleanCell(totalRowColumns[6])) +
             parseFloat(cleanCell(totalRowColumns[7])) +
-            parseFloat(cleanCell(totalRowColumns[8]))
-          ).toString() || '0',
-        absoluteAllocation:
-          (
-            parseFloat(cleanCell(totalRowColumns[40])) + parseFloat(cleanCell(totalRowColumns[41]))
-          ).toString() || '0',
-      },
-      stakeWarsI: {
-        earningsTestnetToken:
-          (
-            parseFloat(cleanCell(totalRowColumns[10])) + parseFloat(cleanCell(totalRowColumns[11]))
+            parseFloat(cleanCell(totalRowColumns[8])) +
+            parseFloat(cleanCell(totalRowColumns[9])) +
+            parseFloat(cleanCell(totalRowColumns[10]))
           ).toString() || '0',
         absoluteAllocation:
           (
             parseFloat(cleanCell(totalRowColumns[42])) + parseFloat(cleanCell(totalRowColumns[43]))
           ).toString() || '0',
       },
-      total: {
+      stakeWarsI: {
         earningsTestnetToken:
           (
+            parseFloat(cleanCell(totalRowColumns[12])) + parseFloat(cleanCell(totalRowColumns[13]))
+          ).toString() || '0',
+        absoluteAllocation:
+          (
+            parseFloat(cleanCell(totalRowColumns[44])) + parseFloat(cleanCell(totalRowColumns[45]))
+          ).toString() || '0',
+      },
+      total: {
+        earningsTestnetToken:
+          // aries
+          (
             parseFloat(cleanCell(totalRowColumns[1])) +
+            // geminiI
             parseFloat(cleanCell(totalRowColumns[2])) +
+            // geminiII
             parseFloat(cleanCell(totalRowColumns[3])) +
             parseFloat(cleanCell(totalRowColumns[4])) +
-            parseFloat(cleanCell(totalRowColumns[5])) +
-            parseFloat(cleanCell(totalRowColumns[6])) +
+            // geminiIII
             parseFloat(cleanCell(totalRowColumns[7])) +
             parseFloat(cleanCell(totalRowColumns[8])) +
+            parseFloat(cleanCell(totalRowColumns[9])) +
             parseFloat(cleanCell(totalRowColumns[10])) +
-            parseFloat(cleanCell(totalRowColumns[11]))
+            // stakeWarsI
+            parseFloat(cleanCell(totalRowColumns[12])) +
+            parseFloat(cleanCell(totalRowColumns[13]))
           ).toString() || '0',
-        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[45])).toString() || '0',
+        absoluteAllocation: parseFloat(cleanCell(totalRowColumns[47])).toString() || '0',
       },
     }
     setAllRewards(rewardsData)
-    console.log('totals', totals)
     setTotalRewards(totals)
     setIsLoaded(true)
   }, [])
