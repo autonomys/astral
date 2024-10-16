@@ -2,139 +2,29 @@
 # Add the `@index` or `@index(unique: true)` annotation after any non-key field
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
-type Account @entity {
-  id: ID!
-  accountId: ID!
-  totalCampaignsParticipated: BigInt!
-  totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: BigInt!
-  totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: BigInt!
-  rank: BigInt! @index
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Campaign @entity {
-  id: ID!
-  campaignId: ID!
-  name: String!
-  totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: BigInt!
-  totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type TotalEarnings @entity {
-  id: ID!
-  totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: BigInt!
-  totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: BigInt!
-  totalSupplyATCToken: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type AccountPerCampaign @entity {
-  id: ID!
-  accountId: String! @index
-  campaignId: String! @index
-  totalEarningsAmountTestnetToken: BigInt!
-  totalEarningsPercentageTestnetToken: BigInt!
-  totalEarningsAmountATCToken: BigInt!
-  totalEarningsPercentageATCToken: BigInt!
-  rank: BigInt! @index
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Reward @entity {
-  id: ID!
-  campaignId: String! @index
-  accountId: String! @index
-  amount: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Verification @entity {
-  id: ID!
-  accountIds: [String!]!
-  totalAmount: BigInt!
-  totalPercentage: BigInt!
-  totalCampaignsParticipated: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Domain @entity {
-  id: ID!
-  domainId: String! @index
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
 type Operator @entity {
   id: ID!
   operatorId: String! @index
   domainId: String! @index
   accountId: String! @index
-  createdAt: Int!
-  updatedAt: Int!
-}
-
-type OperatorState @entity {
-  id: ID!
-  operatorId: String! @index
-  currentTotalShares: BigInt!
-  currentTotalStake: BigInt!
+  totalRewards: BigInt!
+  totalAmount: BigInt!
+  totalShares: BigInt!
+  currentNominators: [String!]!
+  toUpdate: Boolean!
   createdAt: Int!
   updatedAt: Int!
 }
 
 type Nominator @entity {
   id: ID!
-  nominatorId: String! @index
-  accountId: String! @index
-  domainId: String! @index
   operatorId: String! @index
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type NominatorDepositState @entity {
-  id: ID!
   accountId: String! @index
-  operatorId: String! @index
-  nominatorId: String! @index
+  amount: BigInt!
+  totalReward: BigInt!
   shares: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Deposit @entity {
-  id: ID!
-  accountId: String! @index
-  domainId: String! @index
-  operatorId: String! @index
-  nominatorId: String! @index
-  amount: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
-}
-
-type Withdrawal @entity {
-  id: ID!
-  accountId: String! @index
-  domainId: String! @index
-  operatorId: String! @index
-  nominatorId: String! @index
-  amount: BigInt!
-  createdAt: Int! @index
-  updatedAt: Int! @index
+  createdAt: Int!
+  updatedAt: Int!
 }
 
 type OperatorReward @entity {
@@ -149,15 +39,10 @@ type NominatorReward @entity {
   id: ID!
   operatorId: String! @index
   nominatorId: String! @index
-  operatorReward: BigInt!
-  operatorCurrentTotalShares: BigInt!
-  nominatorCurrentShares: BigInt!
-  amount: BigInt!
+  operatorShares: BigInt!
+  nominatorShares: BigInt!
+  operatorTotalReward: BigInt!
+  nominatorTotalReward: BigInt!
   createdAt: Int! @index
   updatedAt: Int! @index
-}
-
-type StaticData @entity {
-  id: ID!
-  added: Boolean!
 }
