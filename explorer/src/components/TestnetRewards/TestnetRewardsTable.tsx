@@ -186,7 +186,7 @@ export const TestnetRewardsTable: FC = () => {
           },
           stakeWarsI: {
             earningsTestnetToken:
-              parseFloat(cleanCell(columns[9])) + parseFloat(cleanCell(columns[10])) || 0,
+              parseFloat(cleanCell(columns[10])) + parseFloat(cleanCell(columns[11])) || 0,
             absoluteAllocation:
               parseFloat(cleanCell(columns[42])) + parseFloat(cleanCell(columns[43])) || 0,
           },
@@ -200,8 +200,8 @@ export const TestnetRewardsTable: FC = () => {
                 parseFloat(cleanCell(columns[6])) +
                 parseFloat(cleanCell(columns[7])) +
                 parseFloat(cleanCell(columns[8])) +
-                parseFloat(cleanCell(columns[9])) +
-                parseFloat(cleanCell(columns[10])) || 0,
+                parseFloat(cleanCell(columns[10])) +
+                parseFloat(cleanCell(columns[11])) || 0,
             absoluteAllocation: parseFloat(cleanCell(columns[45])) || 0,
           },
         },
@@ -245,7 +245,7 @@ export const TestnetRewardsTable: FC = () => {
       stakeWarsI: {
         earningsTestnetToken:
           (
-            parseFloat(cleanCell(totalRowColumns[9])) + parseFloat(cleanCell(totalRowColumns[10]))
+            parseFloat(cleanCell(totalRowColumns[10])) + parseFloat(cleanCell(totalRowColumns[11]))
           ).toString() || '0',
         absoluteAllocation:
           (
@@ -263,13 +263,14 @@ export const TestnetRewardsTable: FC = () => {
             parseFloat(cleanCell(totalRowColumns[6])) +
             parseFloat(cleanCell(totalRowColumns[7])) +
             parseFloat(cleanCell(totalRowColumns[8])) +
-            parseFloat(cleanCell(totalRowColumns[9])) +
-            parseFloat(cleanCell(totalRowColumns[10]))
+            parseFloat(cleanCell(totalRowColumns[10])) +
+            parseFloat(cleanCell(totalRowColumns[11]))
           ).toString() || '0',
         absoluteAllocation: parseFloat(cleanCell(totalRowColumns[45])).toString() || '0',
       },
     }
     setAllRewards(rewardsData)
+    console.log('totals', totals)
     setTotalRewards(totals)
     setIsLoaded(true)
   }, [])
