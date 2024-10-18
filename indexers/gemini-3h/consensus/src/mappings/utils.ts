@@ -5,10 +5,15 @@ export const stringify = (value: any) =>
     typeof value === "bigint" ? value.toString() : value
   );
 
-export const dateEntry = (blockNumber: number | bigint) => ({
-  createdAt: blockNumber,
-  updatedAt: blockNumber,
-});
+export const dateEntry = (blockNumber: number | bigint) => {
+  if (typeof blockNumber === "number") {
+    blockNumber = BigInt(blockNumber);
+  }
+  return {
+    createdAt: blockNumber,
+    updatedAt: blockNumber,
+  };
+};
 
 export const getBlockNumberFromBlock = (block: SubstrateBlock): number => {
   try {
