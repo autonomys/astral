@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from "@autonomys/auto-utils";
 import {
   Account,
   BalanceHistory,
@@ -12,13 +13,7 @@ import {
   Section,
   Transfer,
 } from "../types";
-import {
-  capitalizeFirstLetter,
-  dateEntry,
-  moduleId,
-  moduleName,
-  sortId,
-} from "./utils";
+import { dateEntry, moduleId, moduleName, sortId } from "./utils";
 
 // Core Consensus DB Functions
 

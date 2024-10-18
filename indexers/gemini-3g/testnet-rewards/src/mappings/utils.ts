@@ -4,11 +4,6 @@ import {
   SubstrateExtrinsic,
 } from "@subql/types";
 
-export const stringify = (value: any) =>
-  JSON.stringify(value, (_, value) =>
-    typeof value === "bigint" ? value.toString() : value
-  );
-
 export const dateEntry = (blockNumber: number) => ({
   createdAt: blockNumber,
   updatedAt: blockNumber,

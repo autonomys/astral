@@ -35,12 +35,8 @@ export const getBlockAuthor = (block: SubstrateBlock): string => {
   return DEFAULT_ACCOUNT_ID;
 };
 
-export const calculateSpacePledged = async (): Promise<bigint> => {
-  const totalSpacePledged = await spacePledge(api as unknown as Api);
-  return typeof totalSpacePledged === "number"
-    ? BigInt(totalSpacePledged)
-    : totalSpacePledged;
-};
+export const calculateSpacePledged = async (): Promise<bigint> =>
+  await spacePledge(api as unknown as Api);
 
 export const calculateBlockchainSize = async (): Promise<bigint> => {
   const segmentCommitment =
