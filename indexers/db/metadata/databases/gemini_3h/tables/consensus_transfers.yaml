@@ -1,6 +1,6 @@
 table:
   name: transfers
-  schema: accounts
+  schema: consensus
 select_permissions:
   - role: user
     permission:
