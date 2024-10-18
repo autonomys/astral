@@ -8,7 +8,7 @@ import { ActionsInRed, OperatorAction, OperatorActionType } from './ActionsModal
 export type ActionsDropdownRow = {
   original: {
     id: string
-    totalShares: bigint
+    current_total_shares: bigint
   }
 }
 
@@ -48,17 +48,19 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
         handleAction({
           type: val,
           operatorId: parseInt(row.original.id),
-          maxShares: nominatorMaxShares ? nominatorMaxShares : BigInt(row.original.totalShares),
+          maxShares: nominatorMaxShares
+            ? nominatorMaxShares
+            : BigInt(row.original.current_total_shares),
         })
       }
     >
       <div className='relative'>
-        <Listbox.Button className='relative w-full cursor-default rounded-full bg-purpleAccent from-pinkAccent to-purpleDeepAccent py-[10px] pl-3 pr-16 text-left font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
+        <Listbox.Button className='bg-primaryAccent from-primaryAccent relative w-full cursor-default rounded-full to-purpleUndertone py-[10px] pl-3 pr-16 text-left font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
           <div className='flex items-center justify-center'>
             <span className='ml-2 w-28 text-center text-sm'>Actions</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
-                className='size-5 text-white ui-open:rotate-180 dark:text-purpleAccent'
+                className='dark:text-primaryAccent size-5 text-white ui-open:rotate-180'
                 aria-hidden='true'
               />
             </span>
@@ -70,7 +72,7 @@ export const ActionsDropdown: FC<ActionsDropdownProps> = ({
           leaveFrom='opacity-100'
           leaveTo='opacity-0'
         >
-          <Listbox.Options className='absolute z-40 mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
+          <Listbox.Options className='absolute sticky z-50 mt-1 max-h-60 w-auto overflow-auto rounded-xl bg-white py-2 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-blueAccent dark:text-white sm:text-sm md:w-full'>
             {actionsAvailable.map((actionType, index) => (
               <Listbox.Option
                 key={index}

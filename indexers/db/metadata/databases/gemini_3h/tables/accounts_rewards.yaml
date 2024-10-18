@@ -1,0 +1,37 @@
+table:
+  name: rewards
+  schema: accounts
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: accounts
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - amount
+        - block_height
+        - index_in_block
+        - account_id
+        - block_hash
+        - id
+        - reward_type
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""

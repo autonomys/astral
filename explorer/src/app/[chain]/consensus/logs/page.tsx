@@ -1,4 +1,4 @@
-import { LogList } from 'components/Log/LogList'
+import { LogList } from 'components/Consensus/Log/LogList'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'

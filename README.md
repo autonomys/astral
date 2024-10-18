@@ -106,6 +106,38 @@ You can also find the instructions for setting up the Squid backend and Health c
 
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Multi-Network Indexers Setup
+
+To set up the multi-network indexers, follow these steps:
+
+1. **Navigate to the indexers directory:**
+
+   ```bash
+   cd indexers
+   ```
+
+2. **Install the dependencies:**
+
+   ```bash
+   yarn
+   ```
+
+3. **Build the indexers:**
+
+   ```bash
+   yarn build
+   ```
+
+4. **Start the PostgreSQL database with multiple tables, Hasura, and various Subquery nodes using Docker Compose:**
+
+   From the root directory, run:
+
+   ```bash
+   docker compose up
+   ```
+
+This command will initialize a PostgreSQL database configured with multiple tables, launch the Hasura GraphQL engine, and start multiple Subquery nodes to index all networks. This setup provides all the necessary data for different sections of the explorer, ensuring a comprehensive indexing solution for the application.
+
 ## Contributing
 
 We welcome contributions to this project. If you are interested in enhancing the features of the app or fixing bugs, please follow these steps:

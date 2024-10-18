@@ -1,3 +1,6 @@
+import { NetworkId } from '@autonomys/auto-utils'
+import { Route } from 'types/app'
+
 export enum Routes {
   consensus = 'consensus',
   farming = 'farming',
@@ -6,11 +9,10 @@ export enum Routes {
   domains = 'domains',
   nova = 'nova',
   autoid = 'autoid',
-  // Route deactivated till bugs are fixed and feature is ready
-  // stake = 'stake',
+  testnetRewards = 'testnet-rewards',
 }
 
-export const ROUTES = [
+export const ROUTES: Route[] = [
   {
     name: Routes.consensus,
     title: 'Consensus Chain',
@@ -22,6 +24,7 @@ export const ROUTES = [
   {
     name: Routes.staking,
     title: 'Staking',
+    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.leaderboard,
@@ -34,24 +37,26 @@ export const ROUTES = [
       {
         name: Routes.nova,
         title: 'Nova',
+        networks: [NetworkId.GEMINI_3H],
       },
       {
         name: Routes.autoid,
         title: 'Auto-ID',
+        networks: [NetworkId.GEMINI_3H],
       },
     ],
+    networks: [NetworkId.GEMINI_3H],
   },
-  // Route deactivated till bugs are fixed and feature is ready
-  // {
-  //   name: Routes.stake,
-  //   title: 'Stake Wars',
-  // },
+  {
+    name: Routes.testnetRewards,
+    title: 'Testnet Rewards',
+  },
 ]
 
 export const EXTERNAL_ROUTES = {
   autonomys: 'https://autonomys.xyz/',
   academy: 'https://academy.autonomys.xyz/',
-  subspacePrivacyPolicy: 'https://subspace.network/gdpr-privacy-statement',
+  privacyPolicy: 'https://www.autonomys.xyz/privacy-policy',
   forum: 'https://forum.autonomys.xyz/',
   gemini2guide:
     'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
@@ -63,7 +68,7 @@ export const EXTERNAL_ROUTES = {
     discord: 'https://discord.gg/subspace-network',
     telegram: 'https://t.me/subspace_network',
     github: 'https://github.com/autonomys',
-    reddit: 'https://www.reddit.com/r/sub',
+    reddit: 'https://www.reddit.com/r/autonomys',
     medium: 'https://medium.com/subspace-network',
     youtube: 'https://www.youtube.com/@AutonomysNetwork',
     linkedin: 'https://www.linkedin.com/company/autonomys/',
@@ -131,6 +136,17 @@ export const INTERNAL_ROUTES = {
     },
     list: 'list',
     register: 'register',
+    nominations: 'nominations',
+  },
+  domains: {
+    id: {
+      path: ':domainId',
+      page: (chain: string, domain: string, domainId: string): string =>
+        `/${chain}/${domain}/${domainId}`,
+    },
+    list: 'list',
+    nova: Routes.nova,
+    autoid: Routes.autoid,
   },
   search: {
     result: {
@@ -141,6 +157,7 @@ export const INTERNAL_ROUTES = {
     empty: (chain: string, domain: string): string => `/${chain}/${domain}/search/no-result-found`,
   },
   leaderboard: {
+    accounts: 'accounts',
     farmers: 'farmers',
     operators: 'operators',
     nominators: 'nominators',

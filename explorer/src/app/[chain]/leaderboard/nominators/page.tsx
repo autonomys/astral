@@ -1,4 +1,4 @@
-import { NominatorRewardsList } from 'components/Leaderboard/NominatorRewardsList'
+import { NominatorLeaderboard } from 'components/Leaderboard/index'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
@@ -22,5 +22,5 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
 }
 
 export default async function Page() {
-  return <NominatorRewardsList />
+  return <NominatorLeaderboard />
 }

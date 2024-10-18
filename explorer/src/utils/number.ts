@@ -24,13 +24,22 @@ export const formatUnits = (value: string): string => {
 export const floatToStringWithDecimals = (value: number, decimals = 4): string =>
   BigInt(value * 10 ** decimals).toString()
 
-export const bigNumberToNumber = (bigNumber: string | bigint, precision = 4): number => {
-  if (typeof bigNumber === 'bigint') bigNumber = bigNumber.toString()
+export const bigNumberToNumber = (bigNumber: string | bigint | number, precision = 4): number => {
+  if (!bigNumber) return 0
+  if (typeof bigNumber !== 'string') bigNumber = bigNumber.toString()
 
   const number = formatUnits(bigNumber)
 
   return limitNumberDecimals(number, precision)
 }
+
+export const numberFormattedString = (number: number): string =>
+  new Intl.NumberFormat('en-US').format(number)
+
+export const bigNumberToFormattedString = (
+  bigNumber: string | bigint | number,
+  precision = 4,
+): string => numberFormattedString(bigNumberToNumber(bigNumber, precision))
 
 export const bigNumberToString = (bigNumber: string, precision = 4): string => {
   const number = formatUnits(bigNumber)

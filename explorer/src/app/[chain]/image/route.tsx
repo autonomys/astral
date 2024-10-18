@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_HOME } from 'components/Home/query'
+import { QUERY_HOME } from 'components/Consensus/Home/query'
 import { HomeQueryQuery } from 'components/gql/graphql'
 import {
   AutonomysSymbol,

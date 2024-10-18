@@ -1,6 +1,7 @@
 import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { List, StyledListItem } from 'components/common/List'
 import { StyledButton } from 'components/common/StyledButton'
+import { QUERY_EXTRINSIC_BY_HASH } from 'components/Consensus/Extrinsic/query'
 import { TOKEN } from 'constants/general'
 import { ROUTE_API, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
 import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
@@ -11,7 +12,6 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, useQueryStates } from 'states/query'
-import { QUERY_EXTRINSIC_BY_HASH } from '../../Extrinsic/query'
 
 export const ClaimStakingToken: FC = () => {
   const { inView, ref } = useInView()

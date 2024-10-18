@@ -22,15 +22,19 @@ export const LeaderboardHeader: FC = () => {
   const menuList = useMemo(
     () => [
       {
-        title: 'Farmers Leaderboard',
+        title: 'Top Farmers',
         link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.farmers}`,
       },
       {
-        title: 'Operators Leaderboard',
+        title: 'Top Accounts',
+        link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.accounts}`,
+      },
+      {
+        title: 'Top Operators',
         link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.operators}`,
       },
       {
-        title: 'Nominators Leaderboard',
+        title: 'Top Nominators',
         link: `/${network}/${Routes.leaderboard}/${INTERNAL_ROUTES.leaderboard.nominators}`,
       },
     ],
@@ -59,7 +63,7 @@ export const LeaderboardHeader: FC = () => {
                   key={index}
                   className={
                     isCurrentPath || isInitialPath
-                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-purpleAccent'
+                      ? 'block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                       : 'bg-none text-[13px] font-semibold leading-4 text-grayDark dark:text-white'
                   }
                   href={item.link}

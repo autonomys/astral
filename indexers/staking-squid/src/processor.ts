@@ -53,15 +53,19 @@ export const processor = new SubstrateBatchProcessor()
       events.domains.operatorNominated.name,
       // deposit and stake
       events.domains.withdrewStake.name,
-      events.domains.operatorUnlocked.name,
-      events.domains.fundsUnlocked.name,
       events.domains.storageFeeDeposited.name,
       // bundle
       events.domains.bundleStored.name,
+      // unlock
+      events.domains.operatorUnlocked.name,
+      events.domains.fundsUnlocked.name,
+      events.domains.nominatedStakedUnlocked.name,
+      events.domains.nominatorUnlocked.name,
+      events.domains.storageFeeUnlocked.name,
       // rewards and slashing
       events.domains.operatorRewarded.name,
       events.domains.operatorSlashed.name,
-      // fees
+      // tax
       events.domains.operatorTaxCollected.name,
     ],
     call: true,

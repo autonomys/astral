@@ -1,0 +1,89 @@
+type Block @entity {
+  id: ID!
+  sortId: String! @index
+  height: BigInt! @index
+  hash: String! @index
+  timestamp: Date! @index
+  parentHash: String!
+  specId: String!
+  stateRoot: String!
+  extrinsicsRoot: String!
+  spacePledged: BigInt!
+  blockchainSize: BigInt!
+  extrinsicsCount: Int!
+  eventsCount: Int!
+  authorId: String! @index
+}
+
+type Log @entity {
+  id: ID!
+  sortId: String! @index
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  indexInBlock: Int! @index
+  logKindId: String! @index
+  kind: String!
+  value: String
+  timestamp: Date! @index
+}
+
+type Extrinsic @entity {
+  id: ID!
+  sortId: String! @index
+  hash: String! @index
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  extrinsicModuleId: String! @index
+  name: String!
+  indexInBlock: Int!
+  success: Boolean! @index
+  timestamp: Date! @index
+  nonce: BigInt!
+  signer: String! @index
+  signature: String! @index
+  args: String!
+  error: String!
+  tip: BigInt!
+  fee: BigInt!
+  pos: Int!
+}
+
+type Event @entity {
+  id: ID!
+  sortId: String! @index
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  extrinsicId: String! @index
+  extrinsicHash: String! @index
+  eventModuleId: String! @index
+  name: String!
+  indexInBlock: BigInt!
+  timestamp: Date! @index
+  phase: String!
+  pos: Int!
+  args: String!
+}
+
+type Section @entity {
+  id: ID!
+  section: String! @index
+}
+
+type ExtrinsicModule @entity {
+  id: ID!
+  sectionId: String! @index
+  section: String! @index
+  method: String! @index
+}
+
+type EventModule @entity {
+  id: ID!
+  sectionId: String! @index
+  section: String! @index
+  method: String! @index
+}
+
+type LogKind @entity {
+  id: ID!
+  kind: String! @index
+}

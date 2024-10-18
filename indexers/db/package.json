@@ -1,0 +1,25 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/autonomys/astral"
+  },
+  "author": {
+    "name": "Autonomys",
+    "url": "https://www.autonomys.xyz"
+  },
+  "bugs": {
+    "url": "https://github.com/autonomys/astral/issues"
+  },
+  "scripts": {
+    "console": "hasura console",
+    "metadata": "hasura metadata apply --skip-update-check",
+    "start": "yarn metadata && yarn console"
+  },
+  "devDependencies": {
+    "hasura-cli": "2.36.2"
+  }
+}

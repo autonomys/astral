@@ -1,0 +1,47 @@
+# To improve query performance, we strongly suggest adding indexes to any field that you plan to filter or sort by
+# Add the `@index` or `@index(unique: true)` annotation after any non-key field
+# https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
+
+type Account @entity {
+  id: ID!
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: BigInt! @index
+  updatedAt: BigInt! @index
+}
+
+type BalanceHistory @entity {
+  id: ID!
+  accountId: String! @index
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: BigInt! @index
+}
+
+type Transfer @entity {
+  id: ID!
+  extrinsicId: String! @index
+  eventId: String! @index
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  fee: BigInt!
+  success: Boolean!
+  timestamp: BigInt! @index
+  date: Date! @index
+  createdAt: BigInt! @index
+}
+
+type Reward @entity {
+  id: ID!
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  accountId: String! @index
+  indexInBlock: BigInt!
+  rewardType: String! @index
+  amount: BigInt!
+  timestamp: Date! @index
+}

@@ -39,7 +39,7 @@ export const HeaderChainDropdown: FC = () => {
             </span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2'>
               <ChevronDownIcon
-                className='size-5 text-gray-400 ui-open:rotate-180 dark:text-purpleAccent'
+                className='size-5 text-gray-400 ui-open:rotate-180 dark:text-primaryAccent'
                 aria-hidden='true'
               />
             </span>

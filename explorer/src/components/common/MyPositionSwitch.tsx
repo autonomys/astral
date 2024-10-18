@@ -1,10 +1,16 @@
 import React, { FC, useCallback, useMemo } from 'react'
 import { useViewStates } from 'states/view'
 
-export const MyPositionSwitch: FC = () => {
+type MyPositionSwitchProps = {
+  labels?: [string, string]
+}
+
+export const MyPositionSwitch: FC<MyPositionSwitchProps> = ({
+  labels = ['My nominations', 'All operators'],
+}) => {
   const { myPositionOnly, setMyPositionOnly } = useViewStates()
 
-  const label = useMemo(() => (myPositionOnly ? 'Staked only' : 'All operators'), [myPositionOnly])
+  const label = useMemo(() => (myPositionOnly ? labels[0] : labels[1]), [labels, myPositionOnly])
   const onChange = useCallback(
     () => setMyPositionOnly(!myPositionOnly),
     [myPositionOnly, setMyPositionOnly],
@@ -14,19 +20,23 @@ export const MyPositionSwitch: FC = () => {
     <div className='w-full'>
       <button
         onClick={onChange}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') onChange()
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onChange()
+          }
         }}
         className={`${
-          myPositionOnly ? 'bg-purpleAccent' : 'bg-transparent'
-        } border-color-grayDarker dark:border-color-white relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-2`}
+          myPositionOnly ? 'bg-primaryAccent' : 'bg-transparent'
+        } relative inline-flex h-8 w-16 cursor-pointer items-center rounded-full border-2 border-grayDarker dark:border-white`}
         role='switch'
         aria-checked={myPositionOnly}
+        tabIndex={0}
       >
         <span
           className={`${
-            myPositionOnly ? 'translate-x-6' : 'translate-x-1'
-          } inline-block h-4 w-4 transform rounded-full bg-white transition-transform dark:bg-purpleSoft`}
+            myPositionOnly ? 'translate-x-10' : 'translate-x-1'
+          } inline-block h-4 w-4 transform rounded-full bg-grayDark transition-transform dark:bg-purpleLight`}
         />
         <span className='sr-only'>{label}</span>
       </button>

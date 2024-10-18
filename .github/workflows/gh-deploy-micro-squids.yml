@@ -3,7 +3,7 @@ name: Deploy Docker Compose for Micro Squids on main
 on:
   push:
     branches:
-      - main
+      - production
     paths:
       - "indexers/general-squid/**"
       - "indexers/rewards-squid/**"
@@ -22,6 +22,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set Hasura secret
+        id: set_secret
+        run: echo "hasura_secret=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}" >> $GITHUB_OUTPUT
+
       - name: Install SSH key
         uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
         with:
@@ -38,6 +42,7 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
           ssh ${SSH_USER}@${{ secrets.SQUID_HOST }} "
+
             if [ ! -d ${DEPLOY_PATH} ]; then
               git clone https://github.com/autonomys/astral.git ${DEPLOY_PATH}
             else
@@ -45,6 +50,15 @@ jobs:
               git pull
             fi
             git checkout ${BRANCH_NAME}
+
+            # Securely update the .env file
+            if [ ! -f .env ]; then
+              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' > .env
+            else
+              sed -i '/^HASURA_GRAPHQL_ADMIN_SECRET=/d' .env
+              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' >> .env
+            fi
+
             docker-compose -f docker-compose-all-squids.yml pull
             docker-compose -f docker-compose-all-squids.yml up -d
           "

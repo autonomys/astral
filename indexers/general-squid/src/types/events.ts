@@ -1,8 +1,0 @@
-export * as system from './system/events'
-export * as subspace from './subspace/events'
-export * as rewards from './rewards/events'
-export * as balances from './balances/events'
-export * as transactionFees from './transaction-fees/events'
-export * as utility from './utility/events'
-export * as domains from './domains/events'
-export * as messenger from './messenger/events'

@@ -1,0 +1,21 @@
+table:
+  name: campaigns
+  schema: gemini_3g_testnet_rewards
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - updated_at
+        - total_earnings_amount_a_t_c_token
+        - total_earnings_amount_testnet_token
+        - total_earnings_percentage_a_t_c_token
+        - total_earnings_percentage_testnet_token
+        - campaign_id
+        - id
+        - name
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

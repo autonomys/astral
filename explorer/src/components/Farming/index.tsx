@@ -16,6 +16,7 @@ interface ReleaseData {
 export const DownloadPage: FC = () => {
   const [userOS, setUserOS] = useState<string | null>(null)
   const [releaseAssets, setReleaseAssets] = useState<ReleaseAsset[]>([])
+  const [isToSChecked, setIsToSChecked] = useState<boolean>(false)
 
   useEffect(() => {
     const getOS = () => {
@@ -47,6 +48,7 @@ export const DownloadPage: FC = () => {
 
   const getDownloadLink = useCallback(
     (os: string) => {
+      if (!isToSChecked) return '#'
       switch (os) {
         case 'Windows':
           return releaseAssets.find((asset) => asset.name.endsWith('.msi'))?.browser_download_url
@@ -58,7 +60,7 @@ export const DownloadPage: FC = () => {
           return '#'
       }
     },
-    [releaseAssets],
+    [isToSChecked, releaseAssets],
   )
 
   const getAssetName = useCallback(
@@ -78,8 +80,6 @@ export const DownloadPage: FC = () => {
   )
 
   const renderDownloadSection = useMemo(() => {
-    const downloadLink = getDownloadLink(userOS || '')
-
     switch (userOS) {
       case 'Windows':
         return (
@@ -92,10 +92,6 @@ export const DownloadPage: FC = () => {
               <li>RAM: 8 GB</li>
               <li>Disk Space: 100 GB</li>
             </ul>
-            <a href={downloadLink} className='btn-download mt-4'>
-              Download
-              <div className='text-sm'>Windows</div>
-            </a>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
               <li>Download the installer from the link above.</li>
@@ -115,10 +111,6 @@ export const DownloadPage: FC = () => {
               <li>RAM: 4 GB</li>
               <li>Disk Space: 500 MB</li>
             </ul>
-            <a href={downloadLink} className='btn-download mt-4'>
-              Download
-              <div className='text-sm'>macOS</div>
-            </a>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
               <li>Download the DMG file from the link above.</li>
@@ -138,10 +130,6 @@ export const DownloadPage: FC = () => {
               <li>RAM: 4 GB</li>
               <li>Disk Space: 500 MB</li>
             </ul>
-            <a href={downloadLink} className='btn-download mt-4'>
-              Download
-              <div className='text-sm'>Linux</div>
-            </a>
             <h3 className='mt-6 text-xl font-semibold'>Installation Instructions:</h3>
             <ol className='list-inside list-decimal text-left'>
               <li>Download the tar.gz file from the link above.</li>
@@ -154,28 +142,46 @@ export const DownloadPage: FC = () => {
       default:
         return <p className='text-center'>Sorry, your operating system is not supported.</p>
     }
-  }, [getDownloadLink, userOS])
+  }, [userOS])
 
   const downloadButton = useMemo(
     () => (
       <div className='mb-2 flex items-center justify-center text-center'>
         <a href={getDownloadLink(userOS || '')} className='row btn-download'>
-          <button className='relative mb-2 w-full cursor-pointer rounded-full bg-purpleAccent from-pinkAccent to-purpleDeepAccent py-[10px] pl-3 pr-16 text-left font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
+          <button className='relative mb-2 w-full cursor-pointer rounded-full bg-primaryAccent from-primaryAccent to-purpleUndertone py-[10px] pl-3 pr-16 text-center font-["Montserrat"] text-white shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 dark:bg-gradient-to-r dark:text-white sm:text-sm md:pr-10'>
             Download Space Acres
           </button>
+          <div className='mt-4 text-left'>
+            <label className='flex items-center'>
+              <input
+                type='checkbox'
+                checked={isToSChecked}
+                onChange={(e) => setIsToSChecked(e.target.checked)}
+              />
+              <span className='ml-2'>
+                I have read and agree to the{' '}
+                <a
+                  href='https://www.autonomys.xyz/terms-of-use'
+                  className='text-blue-500 underline'
+                >
+                  Terms of Service
+                </a>
+              </span>
+            </label>
+          </div>
           <div className='text-sm text-gray-900 dark:text-white'>
             {getAssetName(userOS || '')} for {userOS}
           </div>
         </a>
       </div>
     ),
-    [getDownloadLink, getAssetName, userOS],
+    [getDownloadLink, userOS, isToSChecked, getAssetName],
   )
 
   return (
     <div className='flex w-full flex-col items-center space-y-4'>
       <div className='w-full max-w-4xl'>
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
           <div className='mb-10 flex flex-col items-center justify-center'>
             <h1 className='mb-8 mt-6 text-center text-4xl font-bold text-gray-900 dark:text-white'>
               Put your unused disk space to work and contribute to the Network
@@ -200,7 +206,7 @@ export const DownloadPage: FC = () => {
           </h3>
         </div>
 
-        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientTwilight dark:via-gradientDusk dark:to-gradientSunset sm:p-6'>
+        <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white px-3 py-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
           <div className='flow-root  text-gray-900 dark:text-white'>
             <div className='mx-auto mb-4 w-3/4'>{renderDownloadSection}</div>
             <div className='mt-8'>{renderDownloadSection && downloadButton}</div>
