@@ -1,5 +1,0 @@
-node_modules
-dist
-# ignore folder with generated code
-src/model
-src/types
