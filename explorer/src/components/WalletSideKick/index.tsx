@@ -203,7 +203,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
                   tokenSymbol={tokenSymbol}
                 />
                 <PendingTransactions subspaceAccount={subspaceAccount} />
-                <GetDiscordRoles subspaceAccount={subspaceAccount} />
+                <GetDiscordRoles />
                 <StakingSummary subspaceAccount={subspaceAccount} tokenSymbol={tokenSymbol} />
                 <LastExtrinsics subspaceAccount={subspaceAccount} />
                 <Leaderboard subspaceAccount={subspaceAccount} />

@@ -1,47 +1,19 @@
-// import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
 import { Modal } from 'components/common/Modal'
-import { CheckMarkIcon } from 'components/icons/CheckMarkIcon'
-import { EXTERNAL_ROUTES } from 'constants/routes' // , ROUTE_API, ROUTE_EXTRA_FLAG_TYPE
-// import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
-// import useChains from 'hooks/useChains'
-// import { useSquidQuery } from 'hooks/useSquidQuery'
-import useWallet from 'hooks/useWallet'
-// import { useWindowFocus } from 'hooks/useWindowFocus'
-import { signIn, useSession } from 'next-auth/react'
+import { EXTERNAL_ROUTES } from 'constants/routes'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { FC, useCallback, useState } from 'react' // , useEffect
-import toast from 'react-hot-toast'
-import { useInView } from 'react-intersection-observer'
-// import { hasValue, useQueryStates } from 'states/query'
-// import { QUERY_EXTRINSIC_BY_HASH } from '../Extrinsic/query'
-
-interface StakingSummaryProps {
-  subspaceAccount: string
-}
-
-interface StyledButtonProps {
-  children: React.ReactNode
-  className?: string
-  isDisabled?: boolean
-  onClick?: () => void
-}
+import { FC, useMemo, useState } from 'react'
+// import { ClaimStakingToken } from './Actions/ClaimStakingToken'
+import { ConnectDiscord } from './Actions/ConnectDiscord'
+import { JoinDiscord } from './Actions/JoinDiscord'
+import { VerifyWalletOwnership } from './Actions/VerifyWalletOwnership'
 
 type ExplainerProps = {
   isOpen: boolean
   onClose: () => void
 }
-
-const StyledButton: FC<StyledButtonProps> = ({ children, className, isDisabled, onClick }) => (
-  <button
-    className={`w-[100px] rounded-xl border border-primaryAccent bg-transparent px-4 shadow-lg ${className}`}
-    disabled={isDisabled}
-    onClick={onClick}
-  >
-    {children}
-  </button>
-)
 
 const Explainer: FC<ExplainerProps> = ({ isOpen, onClose }) => {
   return (
@@ -87,198 +59,46 @@ const ExplainerLinkAndModal: FC = () => {
   )
 }
 
-export const GetDiscordRoles: FC<StakingSummaryProps> = ({ subspaceAccount }) => {
-  const { ref } = useInView() // , inView
+export const GetDiscordRoles: FC = () => {
   const { data: session } = useSession()
-  // const { network } = useChains()
-  const { actingAccount, injector } = useWallet()
-  // const [claimIsPending, setClaimIsPending] = useState(false)
-  // const [claimIsFinalized, setClaimIsFinalized] = useState(false)
-  // const [claimError, setClaimError] = useState<string | null>(null)
-  // const [claimHash, setClaimHash] = useState<string | null>(null)
-  // const inFocus = useWindowFocus()
 
-  // const { setIsVisible } = useSquidQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
-  //   QUERY_EXTRINSIC_BY_HASH,
-  //   {
-  //     variables: { hash: claimHash ?? '' },
-  //     skip: !inFocus || claimHash === null || claimIsFinalized,
-  //     pollInterval: 6000,
-  //   },
-  //   ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
-  //   'claim',
-  // )
-
-  // const {
-  //   walletSidekick: { claim },
-  // } = useQueryStates()
-
-  const handleWalletOwnership = useCallback(async () => {
-    try {
-      if (!actingAccount || !injector) throw new Error('No wallet connected')
-      if (!injector.signer.signRaw) throw new Error('No signer')
-      if (!subspaceAccount) throw new Error('No subspace account')
-
-      // Prepare and sign the message
-      const message = `I am the owner of ${subspaceAccount}`
-      const signature = await injector.signer.signRaw({
-        address: actingAccount.address,
-        type: 'bytes',
-        data: message,
-      })
-      if (!signature) throw new Error('No signature')
-
-      // Sign-in using the message&signature
-      await signIn('subspace', {
-        account: subspaceAccount,
-        message,
-        signature: signature.signature,
-        redirect: false,
-      })
-      toast.success('You verified the ownership of your wallet!', { position: 'bottom-center' })
-    } catch (error) {
-      const reason = 'There was an error while signing the message'
-      toast.error(reason, { position: 'bottom-center' })
-      console.error('Error', error)
-    }
-  }, [actingAccount, injector, subspaceAccount])
-
-  const handleConnectDiscord = useCallback(
-    async () => await signIn('discord', { redirect: false }),
-    [],
+  const hasAnyRoles = useMemo(
+    () =>
+      session?.user?.discord?.vcs &&
+      Object.values(session.user.discord.vcs).some((role) => role === true),
+    [session],
   )
 
-  // const handleClaimOperatorDisbursement = useCallback(async () => {
-  //   setClaimError(null)
-  //   if (!actingAccount || !injector) throw new Error('No wallet connected')
-  //   if (!injector.signer.signRaw) throw new Error('No signer')
-  //   if (!subspaceAccount) throw new Error('No subspace account')
-
-  //   // Prepare and sign the message
-  //   const message = `I am the owner of ${subspaceAccount} and I claim the operator disbursement`
-  //   const signature = await injector.signer.signRaw({
-  //     address: actingAccount.address,
-  //     type: 'bytes',
-  //     data: message,
-  //   })
-  //   if (!signature) throw new Error('No signature')
-  //   const claim = await fetch(ROUTE_API.claim.operatorDisbursement(network), {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       address: actingAccount.address,
-  //       message,
-  //       signature: signature.signature,
-  //     }),
-  //   }).then((res) => res.json())
-  //   if (claim.hash) {
-  //     setClaimIsPending(true)
-  //     setClaimHash(claim.hash)
-  //   } else if (claim.error) setClaimError(claim.error)
-  // }, [actingAccount, injector, network, subspaceAccount])
-
-  // useEffect(() => {
-  //   if (hasValue(claim) && claim.value.extrinsics && claim.value.extrinsics.length > 0)
-  //     setClaimIsFinalized(true)
-  // }, [claim])
-
-  // useEffect(() => {
-  //   setIsVisible(inView)
-  // }, [inView, setIsVisible])
-
-  if (session?.user?.discord?.vcs.roles.farmer)
+  if (hasAnyRoles)
     return (
       <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
         <Accordion title='Your verified roles on Discord'>
           <List>
-            <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
+            {session?.user?.discord?.vcs.roles.farmer && (
+              <StyledListItem title='You are a Verified Farmer on Discord'>🌾</StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.operator && (
+              <StyledListItem title='You are a Verified Nominator on Discord'>🌐</StyledListItem>
+            )}
+            {session?.user?.discord?.vcs.roles.nominator && (
+              <StyledListItem title='You are a Verified Operator on Discord'>🤝</StyledListItem>
+            )}
+            <VerifyWalletOwnership />
+            <ConnectDiscord />
           </List>
-          {/* <List>
-            <StyledListItem
-              title={
-                <>
-                  <p>
-                    <b>Run an operator node</b> in Stake Wars 2,
-                  </p>
-                  <p>
-                    {' '}
-                    claim <b>100 {TOKEN.symbol}</b> to cover the operator stake.
-                  </p>
-                </>
-              }
-            >
-              {claimIsFinalized ? (
-                <>
-                  <p className='text-sm text-gray-500'>
-                    Claimed <CheckCircleIcon className='size-5' stroke='green' />
-                  </p>
-                </>
-              ) : (
-                <>
-                  {claimIsPending ? (
-                    <p className='text-sm text-gray-500'>
-                      Pending <ClockIcon className='size-5' stroke='orange' />
-                    </p>
-                  ) : (
-                    <StyledButton
-                      className={`ml-2 ${claimError !== null && 'cursor-not-allowed'}`}
-                      isDisabled={claimError !== null}
-                      onClick={handleClaimOperatorDisbursement}
-                    >
-                      Claim
-                    </StyledButton>
-                  )}
-                </>
-              )}
-            </StyledListItem>
-            {claimError && <p className='text-sm text-red-500'>{claimError}</p>}
-          </List> */}
+          {/* <ClaimStakingToken /> */}
         </Accordion>
         <ExplainerLinkAndModal />
       </div>
     )
 
   return (
-    <div
-      className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'
-      ref={ref}
-    >
+    <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
       <Accordion title='Get verified roles on Discord'>
         <List>
-          <StyledListItem title='Verify the ownership of your wallet'>
-            {session?.user?.subspace?.signature ? (
-              <>
-                <CheckMarkIcon />
-                <StyledButton className='ml-2' onClick={handleWalletOwnership}>
-                  Refresh
-                </StyledButton>
-              </>
-            ) : (
-              <StyledButton onClick={handleWalletOwnership}>Sign</StyledButton>
-            )}
-          </StyledListItem>
-          {!session?.user?.discord?.vcs.member && (
-            <StyledListItem title='Join our Discord server'>
-              <Link href={process.env.NEXT_PUBLIC_DISCORD_INVITE_URL ?? ''} target='_blank'>
-                <StyledButton>Join</StyledButton>
-              </Link>
-            </StyledListItem>
-          )}
-
-          {session?.user?.subspace && (
-            <StyledListItem title='Connect your Discord account!'>
-              {session?.user?.discord?.vcs.member ? (
-                <>
-                  <CheckMarkIcon />
-                  <StyledButton className='ml-2' onClick={handleConnectDiscord}>
-                    Refresh
-                  </StyledButton>
-                </>
-              ) : (
-                <StyledButton onClick={handleConnectDiscord}>Connect</StyledButton>
-              )}
-            </StyledListItem>
-          )}
+          <VerifyWalletOwnership />
+          <JoinDiscord />
+          <ConnectDiscord />
         </List>
       </Accordion>
       <ExplainerLinkAndModal />
