@@ -131,7 +131,7 @@ export const TestnetRewardsTable: FC = () => {
         name: 'geminiII',
         testnet: 'Gemini 2',
         icon: <GeminiIITestnetIcon />,
-        dateRange: { start: new Date('2022-09-20'), end: new Date('2023-09-06') },
+        dateRange: { start: new Date('2022-09-20'), end: new Date('2022-10-25') },
       },
       geminiIII: {
         name: 'geminiIII',
