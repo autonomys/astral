@@ -1,3 +1,4 @@
+import { stringify } from "@autonomys/auto-utils";
 import {
   SubstrateBlock,
   SubstrateEvent,
@@ -15,13 +16,18 @@ import {
   getBlockAuthor,
 } from "./helper";
 import {
+  handleExtrinsic,
+  handleFarmerBlockRewardEvent,
+  handleFarmerVoteRewardEvent,
+  handleTransferEvent,
+} from "./mappingAccountHandlers";
+import {
   EventHuman,
   EventPrimitive,
   ExtrinsicHuman,
   ExtrinsicPrimitive,
   LogValue,
 } from "./types";
-import { stringify } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -149,6 +155,8 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     fee,
     pos
   );
+
+  return await handleExtrinsic(_call);
 }
 
 export async function handleEvent(_event: SubstrateEvent): Promise<void> {
@@ -193,4 +201,15 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     pos,
     stringify(primitive.data)
   );
+
+  switch (`${event.section}.${event.method}`) {
+    case "balances.Transfer":
+      return await handleTransferEvent(_event);
+    case "rewards.VoteReward":
+      return await handleFarmerVoteRewardEvent(_event);
+    case "rewards.BlockReward":
+      return await handleFarmerBlockRewardEvent(_event);
+    default:
+      break;
+  }
 }
