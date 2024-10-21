@@ -8,6 +8,7 @@ import path from "path";
 // Load the appropriate .env file
 const dotenvPath = path.resolve(__dirname, `../../../.env`);
 dotenv.config({ path: dotenvPath });
+console.log("endpoint", process.env.GEMINI_3H_RPC);
 
 // Can expand the Datasource processor types via the genreic param
 const project: SubstrateProject = {
