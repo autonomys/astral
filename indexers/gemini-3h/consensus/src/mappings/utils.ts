@@ -1,9 +1,5 @@
+import { capitalizeFirstLetter } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
-
-export const stringify = (value: any) =>
-  JSON.stringify(value, (_, value) =>
-    typeof value === "bigint" ? value.toString() : value
-  );
 
 export const dateEntry = (blockNumber: number | bigint) => {
   if (typeof blockNumber === "number") {
@@ -36,9 +32,6 @@ export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
 
   return { data: value };
 };
-
-export const capitalizeFirstLetter = (str: string) =>
-  str.charAt(0).toUpperCase() + str.slice(1);
 
 export const moduleId = (section: string, method: string) =>
   `${section}.${method}`;

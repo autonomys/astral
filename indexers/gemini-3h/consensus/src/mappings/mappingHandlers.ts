@@ -1,3 +1,4 @@
+import { stringify } from "@autonomys/auto-utils";
 import {
   SubstrateBlock,
   SubstrateEvent,
@@ -27,7 +28,6 @@ import {
   ExtrinsicPrimitive,
   LogValue,
 } from "./types";
-import { stringify } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
