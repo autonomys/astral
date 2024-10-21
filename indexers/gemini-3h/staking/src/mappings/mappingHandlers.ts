@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter, stringify } from "@autonomys/auto-utils";
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
 import assert from "assert";
 import {
@@ -20,7 +21,6 @@ import {
   WithdrawalStatus,
 } from "./models";
 import type { ExecutionReceipt, SealedBundleHeader, TBundle } from "./types";
-import { capitalizeFirstLetter, stringify } from "./utils";
 
 export async function handleDomainInstantiatedEvent(
   event: SubstrateEvent
