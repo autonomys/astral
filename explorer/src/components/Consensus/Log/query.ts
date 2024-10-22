@@ -2,12 +2,12 @@ import { gql } from '@apollo/client'
 
 export const QUERY_LOGS = gql`
   query Logs($limit: Int!, $offset: Int, $where: consensus_logs_bool_exp) {
-    consensus_logs_aggregate(order_by: { id: desc }, where: $where) {
+    consensus_logs_aggregate(order_by: { sort_id: desc }, where: $where) {
       aggregate {
         count
       }
     }
-    consensus_logs(order_by: { id: desc }, limit: $limit, offset: $offset, where: $where) {
+    consensus_logs(order_by: { sort_id: desc }, limit: $limit, offset: $offset, where: $where) {
       id
       kind
       value
@@ -27,7 +27,7 @@ export const QUERY_LOG_BY_ID = gql`
       timestamp
       block {
         id
-        events(limit: 10, order_by: { id: desc }) {
+        events(limit: 10, order_by: { sort_id: desc }) {
           id
           args
           name
