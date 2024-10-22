@@ -46,7 +46,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const parsedData = useMemo(
     () =>
       data &&
-      data.accounts_rewards
+      data.consensus_rewards
         .map((item) => {
           return {
             x: dayjs(item.timestamp).format('YYYY-MM-DD'),

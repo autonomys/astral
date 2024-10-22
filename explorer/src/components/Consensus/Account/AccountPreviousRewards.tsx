@@ -83,9 +83,9 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const rewards = useMemo(
     () =>
       rewardsData &&
-      rewardsData.accounts_rewards &&
-      rewardsData.accounts_rewards.length === 1 &&
-      rewardsData.accounts_rewards[0],
+      rewardsData.consensus_rewards &&
+      rewardsData.consensus_rewards.length === 1 &&
+      rewardsData.consensus_rewards[0],
     [rewardsData],
   )
   */

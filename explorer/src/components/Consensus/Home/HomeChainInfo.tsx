@@ -18,7 +18,7 @@ export const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   )
   const historySize = formatSpacePledged(historySizeVal)
   const rewardAddresses = numberWithCommas(
-    Number(data.accounts_accounts_aggregate?.aggregate?.count),
+    Number(data.consensus_accounts_aggregate?.aggregate?.count),
   )
   const signedExtrinsics = numberWithCommas(
     Number(data.consensus_extrinsics_aggregate?.aggregate?.count),

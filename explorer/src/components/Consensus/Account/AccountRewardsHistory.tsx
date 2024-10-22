@@ -11,7 +11,7 @@ dayjs.extend(relativeTime)
 
 type Props = {
   isDesktop?: boolean
-  rewards: AccountByIdQuery['accounts_rewards']
+  rewards: AccountByIdQuery['consensus_rewards']
 }
 
 export const AccountRewardsHistory: FC<Props> = ({ isDesktop = false, rewards }) => {

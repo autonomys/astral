@@ -5,7 +5,7 @@ import { FC } from 'react'
 import { bigNumberToNumber } from 'utils/number'
 
 type Props = {
-  account: AccountByIdQuery['accounts_accounts_by_pk']
+  account: AccountByIdQuery['consensus_accounts_by_pk']
 }
 
 export const AccountBalancePieChart: FC<Props> = ({ account }) => {

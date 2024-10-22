@@ -48,8 +48,8 @@ export const Account: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const account = useMemo(() => data && data.accounts_accounts_by_pk, [data])
-  const rewards = useMemo(() => (data ? data.accounts_rewards : []), [data])
+  const account = useMemo(() => data && data.consensus_accounts_by_pk, [data])
+  const rewards = useMemo(() => (data ? data.consensus_rewards : []), [data])
 
   useEffect(() => {
     sendGAEvent('event', 'visit_account_page', { value: accountId })

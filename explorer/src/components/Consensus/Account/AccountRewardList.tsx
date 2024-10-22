@@ -37,7 +37,7 @@ import { QUERY_REWARDS_LIST } from './query'
 
 dayjs.extend(relativeTime)
 
-type Row = RewardsListQuery['accounts_rewards'][number]
+type Row = RewardsListQuery['consensus_rewards'][number]
 
 export const AccountRewardList: FC = () => {
   const { ref, inView } = useInView()
@@ -84,18 +84,18 @@ export const AccountRewardList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const rewards = useMemo(() => data && data.accounts_rewards, [data])
+  const rewards = useMemo(() => data && data.consensus_rewards, [data])
   const totalCount = useMemo(
     () =>
-      data && data.accounts_rewards_aggregate.aggregate
-        ? data.accounts_rewards_aggregate.aggregate.count
+      data && data.consensus_rewards_aggregate.aggregate
+        ? data.consensus_rewards_aggregate.aggregate.count
         : 0,
     [data],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const account = useMemo(
-    () => rewards && (rewards[0].account as AccountByIdQuery['accounts_accounts_by_pk']),
+    () => rewards && (rewards[0].account as AccountByIdQuery['consensus_accounts_by_pk']),
     [rewards],
   )
   const convertedAddress = useMemo(() => (account ? formatAddress(account.id) : ''), [account])

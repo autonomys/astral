@@ -6,7 +6,7 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { AccountBalancePieChart } from './AccountBalancePieChart'
 
 type Props = {
-  account: AccountByIdQuery['accounts_accounts_by_pk']
+  account: AccountByIdQuery['consensus_accounts_by_pk']
   isDesktop?: boolean
 }
 

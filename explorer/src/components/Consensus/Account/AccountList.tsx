@@ -25,7 +25,7 @@ import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../../common/AccountIcon'
 import { QUERY_ACCOUNTS } from './query'
 
-type Row = AccountsQuery['accounts_accounts'][number]
+type Row = AccountsQuery['consensus_accounts'][number]
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
@@ -65,11 +65,11 @@ export const AccountList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const accounts = useMemo(() => data && data.accounts_accounts, [data])
+  const accounts = useMemo(() => data && data.consensus_accounts, [data])
   const totalCount = useMemo(
     () =>
-      data && data.accounts_accounts_aggregate.aggregate
-        ? data.accounts_accounts_aggregate.aggregate.count
+      data && data.consensus_accounts_aggregate.aggregate
+        ? data.consensus_accounts_aggregate.aggregate.count
         : 0,
     [data],
   )
@@ -143,7 +143,7 @@ export const AccountList: FC = () => {
 
   const apolloClient = useApolloClient()
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_ACCOUNTS, 'accounts_accounts'),
+    () => downloadFullData(apolloClient, QUERY_ACCOUNTS, 'consensus_accounts'),
     [apolloClient],
   )
 

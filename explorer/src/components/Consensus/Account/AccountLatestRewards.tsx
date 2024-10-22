@@ -14,7 +14,7 @@ dayjs.extend(relativeTime)
 
 interface AccountLatestRewardsProps {
   isDesktop: boolean
-  rewards: AccountByIdQuery['accounts_rewards']
+  rewards: AccountByIdQuery['consensus_rewards']
 }
 
 export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {

@@ -76,7 +76,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
 
   const timeNowPlus2min = new Date(new Date().getTime() + 2 * 60000).getTime() // 2 minutes from now
   const moveIfPending = useCallback(
-    (extrinsics: PendingTransactionQuery['accounts_accounts'][0]['extrinsics']) => {
+    (extrinsics: PendingTransactionQuery['consensus_accounts'][0]['extrinsics']) => {
       const extrinsicsHash = extrinsics.map((e) => e.hash.toLowerCase())
       if (!transactions || transactions.length === 0) return
       try {
@@ -105,8 +105,8 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
   }, [inView, setIsVisible])
 
   useEffect(() => {
-    if (data && data.accounts_accounts[0] && data.accounts_accounts[0].extrinsics)
-      moveIfPending(data.accounts_accounts[0].extrinsics)
+    if (data && data.consensus_accounts[0] && data.consensus_accounts[0].extrinsics)
+      moveIfPending(data.consensus_accounts[0].extrinsics)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 

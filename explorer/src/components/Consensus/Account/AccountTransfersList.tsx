@@ -14,10 +14,10 @@ import relativeTime from 'dayjs/plugin/relativeTime'
 import { formatUnits } from 'ethers'
 import {
   Order_By as OrderBy,
-  Accounts_Transfers_Select_Column as TransferColumn,
+  Consensus_Transfers_Select_Column as TransferColumn,
   TransfersByAccountIdQuery,
   TransfersByAccountIdQueryVariables,
-  Accounts_Transfers_Bool_Exp as TransferWhere,
+  Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -39,7 +39,7 @@ type Props = {
   accountId: string
 }
 
-type Row = TransfersByAccountIdQuery['accounts_transfers'][0]
+type Row = TransfersByAccountIdQuery['consensus_transfers'][0]
 
 export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
@@ -100,11 +100,11 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     [apolloClient, orderBy, where],
   )
 
-  const transfers = useMemo(() => data && data.accounts_transfers, [data])
+  const transfers = useMemo(() => data && data.consensus_transfers, [data])
   const totalCount = useMemo(
     () =>
-      data && data.accounts_transfers_aggregate.aggregate
-        ? data.accounts_transfers_aggregate.aggregate.count
+      data && data.consensus_transfers_aggregate.aggregate
+        ? data.consensus_transfers_aggregate.aggregate.count
         : 0,
     [data],
   )
