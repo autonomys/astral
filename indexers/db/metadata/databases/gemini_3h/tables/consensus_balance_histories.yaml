@@ -1,6 +1,6 @@
 table:
   name: balance_histories
-  schema: accounts
+  schema: consensus
 select_permissions:
   - role: user
     permission:
