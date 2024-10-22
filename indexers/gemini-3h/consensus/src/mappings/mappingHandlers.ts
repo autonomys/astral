@@ -1,3 +1,5 @@
+import { blockchainSize, spacePledge } from "@autonomys/auto-consensus";
+import type { ApiAtBlockHash } from "@autonomys/auto-utils";
 import { stringify } from "@autonomys/auto-utils";
 import {
   SubstrateBlock,
@@ -10,11 +12,7 @@ import {
   createAndSaveExtrinsic,
   createAndSaveLog,
 } from "./db";
-import {
-  calculateBlockchainSize,
-  calculateSpacePledged,
-  getBlockAuthor,
-} from "./helper";
+import { getBlockAuthor } from "./helper";
 import {
   handleExtrinsic,
   handleFarmerBlockRewardEvent,
@@ -47,9 +45,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const authorId = getBlockAuthor(_block);
 
   // Calculate space pledged and blockchain size concurrently
-  const [spacePledged, blockchainSize] = await Promise.all([
-    calculateSpacePledged(),
-    calculateBlockchainSize(),
+  const [_spacePledged, _blockchainSize] = await Promise.all([
+    spacePledge(api as unknown as ApiAtBlockHash),
+    blockchainSize(api as unknown as ApiAtBlockHash),
   ]);
 
   const eventsCount = events.length;
@@ -64,8 +62,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     specVersion.toString(),
     stateRoot.toString(),
     extrinsicsRoot.toString(),
-    spacePledged,
-    blockchainSize,
+    _spacePledged,
+    _blockchainSize,
     extrinsicsCount,
     eventsCount,
     authorId
