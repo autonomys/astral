@@ -30,6 +30,7 @@ select_permissions:
         - index_in_block
         - kind
         - log_kind_id
+        - sort_id
         - timestamp
         - value
       filter: {}
