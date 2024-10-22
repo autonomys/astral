@@ -1,5 +1,5 @@
+import { stringify } from "@autonomys/auto-utils";
 import { request } from "http";
-import { stringify } from "./utils";
 
 export const sortAndRankLeaderboard = async (blockNumber: bigint) => {
   const postData = stringify({

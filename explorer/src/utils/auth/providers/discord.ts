@@ -5,9 +5,14 @@ import type { DiscordProfile } from 'next-auth/providers/discord'
 import DiscordProvider from 'next-auth/providers/discord'
 import { findUserByID, saveUser, updateUser } from 'utils/fauna'
 import {
+  getUserRoles,
   giveDiscordFarmerRole,
+  giveDiscordNominatorRole,
+  giveDiscordOperatorRole,
   verifyDiscordFarmerRole,
   verifyDiscordGuildMember,
+  verifyDiscordNominatorRole,
+  verifyDiscordOperatorRole,
 } from '../vcs/discord'
 import { verifyToken } from '../verifyToken'
 
@@ -31,8 +36,12 @@ export const Discord = () => {
         const did = 'did:openid:discord:' + profile.id
 
         const member = await verifyDiscordGuildMember(token.access_token)
-        let farmer = await verifyDiscordFarmerRole(token.access_token)
+        const roles = await getUserRoles(token.access_token)
+        let farmer = await verifyDiscordFarmerRole(roles)
+        let operator = await verifyDiscordOperatorRole(roles)
+        let nominator = await verifyDiscordNominatorRole(roles)
 
+        let newRolesAdded = false
         const savedUser = await findUserByID(did)
         // Exit if the Discord ID does not match (prevent a user to link multiple Discord accounts to the same account)
         if (savedUser && savedUser[0].data.discord?.id !== profile.id)
@@ -40,7 +49,21 @@ export const Discord = () => {
 
         if (session.subspace?.vcs.farmer && !farmer) {
           await giveDiscordFarmerRole(profile.id)
-          farmer = await verifyDiscordFarmerRole(token.access_token)
+          newRolesAdded = true
+        }
+        if (session.subspace?.vcs.operator && !operator) {
+          await giveDiscordOperatorRole(profile.id)
+          newRolesAdded = true
+        }
+        if (session.subspace?.vcs.nominator && !nominator) {
+          await giveDiscordNominatorRole(profile.id)
+          newRolesAdded = true
+        }
+        if (newRolesAdded) {
+          const newRoles = await getUserRoles(token.access_token)
+          farmer = await verifyDiscordFarmerRole(newRoles)
+          operator = await verifyDiscordOperatorRole(newRoles)
+          nominator = await verifyDiscordNominatorRole(newRoles)
         }
 
         const user: User = {
@@ -54,9 +77,8 @@ export const Discord = () => {
               member,
               roles: {
                 farmer,
-                // To-Do: Implement more role VCs
-                operator: false,
-                nominator: false,
+                operator,
+                nominator,
               },
             },
           },

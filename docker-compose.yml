@@ -1,10 +1,66 @@
 version: "3.9"
 
 volumes:
+  node-data: {}
   postgres_db: {}
   redis_db: {}
 
 services:
+  # Caddy Reverse Proxy with CORS enabled
+  caddy:
+    ulimits:
+      nofile:
+        soft: 65536 # Soft limit for open files (WebSocket connections count)
+        hard: 65536 # Hard limit for open files
+    image: caddy:latest
+    ports:
+      - "8000:80" # Map port 8080 on the host to port 80 in Caddy
+    volumes:
+      - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
+    depends_on:
+      - node
+    restart: unless-stopped
+
+  # Subspace Node
+  node:
+    image: ghcr.io/autonomys/node:gemini-3h-2024-oct-10
+    platform: linux/amd64
+    volumes:
+      - node-data:/var/subspace:rw
+    ports:
+      - "0.0.0.0:30333:30333/tcp"
+      - "0.0.0.0:30433:30433/tcp"
+    restart: unless-stopped
+    command:
+      [
+        "run",
+        "--chain",
+        "gemini-3h",
+        "--base-path",
+        "/var/subspace",
+        "--listen-on",
+        "/ip4/0.0.0.0/tcp/30333",
+        "--dsn-listen-on",
+        "/ip4/0.0.0.0/tcp/30433",
+        "--rpc-cors",
+        "all",
+        "--rpc-methods",
+        "unsafe",
+        "--rpc-listen-on",
+        "0.0.0.0:9944",
+        "--rpc-max-subscriptions-per-connection",
+        "10000",
+        "--rpc-max-connections",
+        "10000000",
+        "--farmer",
+        "--name",
+        "astral",
+      ]
+    healthcheck:
+      timeout: 5s
+      interval: 30s
+      retries: 60
+
   # Postgres Database
   postgres:
     image: postgres:16-alpine
@@ -85,6 +141,8 @@ services:
     build:
       context: ./indexers/dictionary/autonomys-gemini-3h
     depends_on:
+      "node":
+        condition: service_healthy
       "postgres":
         condition: service_healthy
     restart: unless-stopped
@@ -131,49 +189,11 @@ services:
       - --playground
 
   # Gemini 3H Subquery Nodes
-  gemini_3h_accounts_subquery_node:
-    profiles: [gemini_3h, gemini_3h_accounts]
-    image: subquerynetwork/subql-node-substrate:latest
-    depends_on:
-      "postgres":
-        condition: service_healthy
-      "gemini_3h_dictionary_subquery_node":
-        condition: service_healthy
-    restart: unless-stopped
-    environment:
-      ENDPOINT: ${GEMINI_3H_RPC}
-      CHAIN_ID: ${GEMINI_3H_CHAIN_ID}
-      DICTIONARY: http://gemini_3h_dictionary_subquery_node:3000
-      DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
-      DB_DATABASE: ${DB_GEMINI_3H}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
-    volumes:
-      - ./indexers/gemini-3h/accounts:/gemini-3h/accounts
-    command:
-      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
-      - -f=/gemini-3h/accounts
-      - --db-schema=accounts
-      - --workers=4
-      - --unsafe
-      - --batch-size=30
-      - --disable-historical=true
-    healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://gemini_3h_accounts_subquery_node:3000/ready",
-        ]
-      interval: 3s
-      timeout: 5s
-      retries: 10
-
   gemini_3h_consensus_subquery_node:
     profiles: [gemini_3h, gemini_3h_consensus]
     image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3001:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -195,9 +215,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/consensus
       - --db-schema=consensus
-      - --workers=4
+      - --workers=2
       - --unsafe
-      - --batch-size=30
+      - --batch-size=15
       - --disable-historical=true
     healthcheck:
       test:
@@ -214,6 +234,8 @@ services:
   gemini_3h_leaderboard_subquery_node:
     profiles: [gemini_3h, gemini_3h_leaderboard]
     image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3002:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -235,9 +257,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/leaderboard
       - --db-schema=leaderboard
-      - --workers=4
+      - --workers=1
       - --unsafe
-      - --batch-size=30
+      - --batch-size=15
       - --disable-historical=true
     healthcheck:
       test:
@@ -254,6 +276,8 @@ services:
   gemini_3h_staking_subquery_node:
     profiles: [gemini_3h, gemini_3h_staking]
     image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3003:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -275,9 +299,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/staking
       - --db-schema=staking
-      - --workers=4
+      - --workers=1
       - --unsafe
-      - --batch-size=30
+      - --batch-size=15
       - --disable-historical=true
     healthcheck:
       test:
@@ -294,6 +318,8 @@ services:
   gemini_3g_testnet_rewards_subquery_node:
     profiles: [gemini_3g, gemini_3g_testnet_rewards]
     image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3004:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -312,10 +338,10 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3g/testnet-rewards
       - --db-schema=${DB_GEMINI_3G_TESTNET_REWARDS}
-      - --workers=4
+      - --workers=1
       - --unsafe
-      - --batch-size=30
-      - --unfinalized-blocks=true
+      - --batch-size=15
+      - --disable-historical=true
     healthcheck:
       test:
         [

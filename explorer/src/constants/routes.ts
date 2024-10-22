@@ -9,6 +9,7 @@ export enum Routes {
   domains = 'domains',
   nova = 'nova',
   autoid = 'autoid',
+  testnetRewards = 'testnet-rewards',
 }
 
 export const ROUTES: Route[] = [
@@ -45,6 +46,10 @@ export const ROUTES: Route[] = [
       },
     ],
     networks: [NetworkId.GEMINI_3H],
+  },
+  {
+    name: Routes.testnetRewards,
+    title: 'Testnet Rewards',
   },
 ]
 

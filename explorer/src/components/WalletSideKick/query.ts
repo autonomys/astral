@@ -87,7 +87,7 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
   }
 `
 
-export const QUERY_CHECK_ROLE = gql`
+export const QUERY_CHECK_ROLES = gql`
   query CheckRole($subspaceAccount: String!) {
     isFarmer: accounts_rewards(
       where: {
@@ -102,6 +102,20 @@ export const QUERY_CHECK_ROLE = gql`
       account {
         id
       }
+    }
+    operator: operatorsConnection(
+      first: 1
+      where: { operatorOwner_eq: $subspaceAccount }
+      orderBy: id_ASC
+    ) {
+      totalCount
+    }
+    nominator: nominatorsConnection(
+      first: 1
+      where: { account: { id_eq: $subspaceAccount } }
+      orderBy: id_ASC
+    ) {
+      totalCount
     }
   }
 `

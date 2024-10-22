@@ -1,0 +1,16 @@
+table:
+  name: balance_histories
+  schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - created_at
+        - free
+        - reserved
+        - total
+        - account_id
+        - id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

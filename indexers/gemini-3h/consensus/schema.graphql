@@ -1,5 +1,8 @@
+# Core Consensus Entities
+
 type Block @entity {
   id: ID!
+  sortId: String! @index
   height: BigInt! @index
   hash: String! @index
   timestamp: Date! @index
@@ -16,6 +19,7 @@ type Block @entity {
 
 type Log @entity {
   id: ID!
+  sortId: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
   indexInBlock: Int! @index
@@ -27,6 +31,7 @@ type Log @entity {
 
 type Extrinsic @entity {
   id: ID!
+  sortId: String! @index
   hash: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
@@ -47,6 +52,7 @@ type Extrinsic @entity {
 
 type Event @entity {
   id: ID!
+  sortId: String! @index
   blockHeight: BigInt! @index
   blockHash: String! @index
   extrinsicId: String! @index
@@ -82,4 +88,50 @@ type EventModule @entity {
 type LogKind @entity {
   id: ID!
   kind: String! @index
+}
+
+# Accounts Entities
+
+type Account @entity {
+  id: ID!
+  nonce: BigInt!
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: BigInt! @index
+  updatedAt: BigInt! @index
+}
+
+type BalanceHistory @entity {
+  id: ID!
+  accountId: String! @index
+  free: BigInt!
+  reserved: BigInt!
+  total: BigInt @index
+  createdAt: BigInt! @index
+}
+
+type Transfer @entity {
+  id: ID!
+  extrinsicId: String! @index
+  eventId: String! @index
+  from: String! @index
+  to: String! @index
+  value: BigInt!
+  fee: BigInt!
+  success: Boolean!
+  timestamp: BigInt! @index
+  date: Date! @index
+  createdAt: BigInt! @index
+}
+
+type Reward @entity {
+  id: ID!
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  accountId: String! @index
+  indexInBlock: BigInt!
+  rewardType: String! @index
+  amount: BigInt!
+  timestamp: Date! @index
 }
