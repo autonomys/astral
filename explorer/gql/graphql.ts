@@ -15853,6 +15853,44 @@ export type DomainsLastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type DomainsLastBlockQuery = { __typename?: 'query_root', staking_domains: Array<{ __typename?: 'staking_domains', id: string, last_domain_block_number: any, completed_epoch: any }> };
 
+export type AccountsTopLeaderboardQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+}>;
+
+
+export type AccountsTopLeaderboardQuery = { __typename?: 'query_root', farmers: Array<{ __typename?: 'consensus_rewards', id: string }>, operators: Array<{ __typename?: 'consensus_rewards', id: string }>, nominators: Array<{ __typename?: 'consensus_rewards', id: string }> };
+
+export type PendingTransactionQueryVariables = Exact<{
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+  extrinsics?: InputMaybe<Array<Scalars['String']['input']> | Scalars['String']['input']>;
+}>;
+
+
+export type PendingTransactionQuery = { __typename?: 'query_root', consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, success: boolean, timestamp: any, name: string, events: Array<{ __typename?: 'consensus_events', name: string }>, block?: { __typename?: 'consensus_blocks', hash: string, height: any, id: string } | null }> }> };
+
+export type ExtrinsicsSummaryQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type ExtrinsicsSummaryQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, success: boolean, timestamp: any, block_height: any, name: string }> };
+
+export type CheckRoleQueryVariables = Exact<{
+  subspaceAccount: Scalars['String']['input'];
+}>;
+
+
+export type CheckRoleQuery = { __typename?: 'query_root', isFarmer: Array<{ __typename?: 'consensus_rewards', account?: { __typename?: 'consensus_accounts', id: string } | null }> };
+
+export type StakingSummaryQueryVariables = Exact<{
+  first: Scalars['Int']['input'];
+  subspaceAccount?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type StakingSummaryQuery = { __typename?: 'query_root', staking_operators: Array<{ __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any }>, staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_nominators: Array<{ __typename?: 'staking_nominators', id: string, known_shares: any, known_storage_fee_deposit: any, account?: { __typename?: 'staking_accounts', id: string } | null, operator?: { __typename?: 'staking_operators', id: string, account_id: string, domain_id: string, current_total_stake: any, current_total_shares: any } | null }>, staking_nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } };
+
 export type LastBlockQueryVariables = Exact<{ [key: string]: never; }>;
 
 

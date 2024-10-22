@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_TOP_LEADERBOARD = gql`
   query AccountsTopLeaderboard($first: Int!) {
-    farmers: accounts_rewards(
+    farmers: consensus_rewards(
       order_by: { amount: desc }
       limit: $first
       where: {
@@ -15,7 +15,7 @@ export const QUERY_TOP_LEADERBOARD = gql`
       id
     }
     # TODO: change this for operators
-    operators: accounts_rewards(
+    operators: consensus_rewards(
       order_by: { amount: desc }
       limit: $first
       where: {
@@ -28,7 +28,7 @@ export const QUERY_TOP_LEADERBOARD = gql`
       id
     }
     # TODO: change this for nominators
-    nominators: accounts_rewards(
+    nominators: consensus_rewards(
       order_by: { amount: desc }
       limit: $first
       where: {
@@ -45,7 +45,7 @@ export const QUERY_TOP_LEADERBOARD = gql`
 
 export const QUERY_PENDING_TX = gql`
   query PendingTransaction($subspaceAccount: String, $extrinsics: [String!]) {
-    accounts_accounts(where: { id: { _eq: $subspaceAccount } }) {
+    consensus_accounts(where: { id: { _eq: $subspaceAccount } }) {
       id
       extrinsics(where: { hash: { _in: $extrinsics } }) {
         hash
@@ -89,7 +89,7 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
 
 export const QUERY_CHECK_ROLES = gql`
   query CheckRole($subspaceAccount: String!) {
-    isFarmer: accounts_rewards(
+    isFarmer: consensus_rewards(
       where: {
         _or: [
           { reward_type: { _eq: "Rewards.VoteReward" } }
@@ -103,20 +103,21 @@ export const QUERY_CHECK_ROLES = gql`
         id
       }
     }
-    operator: operatorsConnection(
-      first: 1
-      where: { operatorOwner_eq: $subspaceAccount }
-      orderBy: id_ASC
-    ) {
-      totalCount
-    }
-    nominator: nominatorsConnection(
-      first: 1
-      where: { account: { id_eq: $subspaceAccount } }
-      orderBy: id_ASC
-    ) {
-      totalCount
-    }
+    # TODO: fix this
+    #  operator: consensus_rewards(
+    #    first: 1
+    #    where: { operatorOwner_eq: $subspaceAccount }
+    #    orderBy: id_ASC
+    #  ) {
+    #    totalCount
+    #  }
+    #  nominator: consensus_rewards(
+    #    first: 1
+    #    where: { account: { id_eq: $subspaceAccount } }
+    #    orderBy: id_ASC
+    #  ) {
+    #    totalCount
+    #  }
   }
 `
 

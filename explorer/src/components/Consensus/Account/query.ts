@@ -2,12 +2,12 @@ import { gql } from '@apollo/client'
 
 export const QUERY_ACCOUNTS = gql`
   query Accounts($limit: Int!, $offset: Int) {
-    accounts_accounts_aggregate(where: { total: { _gt: "0" } }) {
+    consensus_accounts_aggregate(where: { total: { _gt: "0" } }) {
       aggregate {
         count
       }
     }
-    accounts_accounts(
+    consensus_accounts(
       order_by: { total: desc }
       where: { total: { _gt: "0" } }
       limit: $limit
@@ -33,7 +33,7 @@ export const QUERY_ACCOUNTS = gql`
 
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
-    accounts_accounts_by_pk(id: $accountId) {
+    consensus_accounts_by_pk(id: $accountId) {
       id
       free
       reserved
@@ -54,7 +54,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
         }
       }
     }
-    accounts_rewards(
+    consensus_rewards(
       limit: 10
       order_by: { block_height: desc }
       where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
@@ -71,7 +71,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
 
 export const QUERY_LAST_WEEK_REWARDS = gql`
   query LatestRewardsWeek($accountId: String!, $timestampComparison: timestamp_comparison_exp!) {
-    accounts_rewards(
+    consensus_rewards(
       limit: 500
       order_by: { block_height: desc }
       where: {
@@ -95,14 +95,14 @@ export const QUERY_REWARDS_LIST = gql`
     $accountId: String!
     $limit: Int!
     $offset: Int
-    $sortBy: [accounts_rewards_order_by!]!
+    $sortBy: [consensus_rewards_order_by!]!
   ) {
-    accounts_rewards_aggregate(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }) {
+    consensus_rewards_aggregate(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }) {
       aggregate {
         count
       }
     }
-    accounts_rewards(
+    consensus_rewards(
       order_by: $sortBy
       limit: $limit
       offset: $offset
@@ -158,15 +158,15 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
   query TransfersByAccountId(
     $limit: Int!
     $offset: Int
-    $where: accounts_transfers_bool_exp
-    $orderBy: [accounts_transfers_order_by!]!
+    $where: consensus_transfers_bool_exp
+    $orderBy: [consensus_transfers_order_by!]!
   ) {
-    accounts_transfers_aggregate(order_by: $orderBy, where: $where) {
+    consensus_transfers_aggregate(order_by: $orderBy, where: $where) {
       aggregate {
         count
       }
     }
-    accounts_transfers(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    consensus_transfers(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       extrinsic_id
       event_id
@@ -184,7 +184,7 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
 
 export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
   query AllRewardForAccountById($accountId: String!) {
-    accounts_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {
+    consensus_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {
       id
       block_height
       index_in_block

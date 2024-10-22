@@ -22,7 +22,7 @@ export const QUERY_HOME = gql`
       block_height
       name
     }
-    accounts_accounts_aggregate(order_by: { id: asc }, where: { total: { _gt: $accountTotal } }) {
+    consensus_accounts_aggregate(order_by: { id: asc }, where: { total: { _gt: $accountTotal } }) {
       aggregate {
         count
       }
