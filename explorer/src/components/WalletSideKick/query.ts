@@ -85,15 +85,73 @@ export const QUERY_EXTRINSIC_SUMMARY = gql`
   }
 `
 
-export const QUERY_CHECK_ROLE = gql`
+export const QUERY_STAKING_SUMMARY = gql`
+  query StakingSummary($first: Int!, $subspaceAccount: String) {
+    operators: operatorsConnection(
+      orderBy: id_ASC
+      first: $first
+      where: { operatorOwner_eq: $subspaceAccount }
+    ) {
+      edges {
+        node {
+          id
+          operatorOwner
+          currentDomainId
+          currentTotalStake
+          totalShares
+        }
+      }
+      totalCount
+    }
+    nominators: nominatorsConnection(
+      orderBy: id_ASC
+      first: $first
+      where: { account: { id_eq: $subspaceAccount } }
+    ) {
+      edges {
+        node {
+          id
+          shares
+          account {
+            id
+          }
+          operator {
+            id
+            operatorOwner
+            currentDomainId
+            currentTotalStake
+            totalShares
+          }
+        }
+      }
+      totalCount
+    }
+  }
+`
+
+export const QUERY_CHECK_ROLES = gql`
   query CheckRole($subspaceAccount: String!) {
-    isFarmer: rewardEvents(
+    farmer: rewardEvents(
       where: { name_eq: "Rewards.VoteReward", account: { id_eq: $subspaceAccount } }
       limit: 1
     ) {
       account {
         id
       }
+    }
+    operator: operatorsConnection(
+      first: 1
+      where: { operatorOwner_eq: $subspaceAccount }
+      orderBy: id_ASC
+    ) {
+      totalCount
+    }
+    nominator: nominatorsConnection(
+      first: 1
+      where: { account: { id_eq: $subspaceAccount } }
+      orderBy: id_ASC
+    ) {
+      totalCount
     }
   }
 `
