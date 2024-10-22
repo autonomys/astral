@@ -1,3 +1,6 @@
+import { blockchainSize, spacePledge } from "@autonomys/auto-consensus";
+import type { ApiAtBlockHash } from "@autonomys/auto-utils";
+import { stringify } from "@autonomys/auto-utils";
 import {
   SubstrateBlock,
   SubstrateEvent,
@@ -9,11 +12,13 @@ import {
   createAndSaveExtrinsic,
   createAndSaveLog,
 } from "./db";
+import { getBlockAuthor } from "./helper";
 import {
-  calculateBlockchainSize,
-  calculateSpacePledged,
-  getBlockAuthor,
-} from "./helper";
+  handleExtrinsic,
+  handleFarmerBlockRewardEvent,
+  handleFarmerVoteRewardEvent,
+  handleTransferEvent,
+} from "./mappingAccountHandlers";
 import {
   EventHuman,
   EventPrimitive,
@@ -21,7 +26,6 @@ import {
   ExtrinsicPrimitive,
   LogValue,
 } from "./types";
-import { stringify } from "./utils";
 
 export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const {
@@ -41,9 +45,9 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
   const authorId = getBlockAuthor(_block);
 
   // Calculate space pledged and blockchain size concurrently
-  const [spacePledged, blockchainSize] = await Promise.all([
-    calculateSpacePledged(),
-    calculateBlockchainSize(),
+  const [_spacePledged, _blockchainSize] = await Promise.all([
+    spacePledge(api as unknown as ApiAtBlockHash),
+    blockchainSize(api as unknown as ApiAtBlockHash),
   ]);
 
   const eventsCount = events.length;
@@ -58,8 +62,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     specVersion.toString(),
     stateRoot.toString(),
     extrinsicsRoot.toString(),
-    spacePledged,
-    blockchainSize,
+    _spacePledged,
+    _blockchainSize,
     extrinsicsCount,
     eventsCount,
     authorId
@@ -149,6 +153,8 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     fee,
     pos
   );
+
+  return await handleExtrinsic(_call);
 }
 
 export async function handleEvent(_event: SubstrateEvent): Promise<void> {
@@ -193,4 +199,15 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     pos,
     stringify(primitive.data)
   );
+
+  switch (`${event.section}.${event.method}`) {
+    case "balances.Transfer":
+      return await handleTransferEvent(_event);
+    case "rewards.VoteReward":
+      return await handleFarmerVoteRewardEvent(_event);
+    case "rewards.BlockReward":
+      return await handleFarmerBlockRewardEvent(_event);
+    default:
+      break;
+  }
 }

@@ -32,7 +32,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@autonomys/auto-consensus": "^0.6.5",
+    "@autonomys/auto-consensus": "^0.6.8",
     "@polkadot/api": "^12",
     "@subql/cli": "latest",
     "@subql/common-substrate": "latest",
