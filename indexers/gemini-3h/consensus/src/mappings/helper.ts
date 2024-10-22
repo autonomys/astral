@@ -1,12 +1,9 @@
-import { account, spacePledge } from "@autonomys/auto-consensus";
-import type { Api } from "@autonomys/auto-utils";
+import { account } from "@autonomys/auto-consensus";
 import { SubstrateBlock } from "@subql/types";
 import { createAndSaveBalanceHistory } from "./db";
 import { decodeLog } from "./utils";
 
 const DEFAULT_ACCOUNT_ID = "0x00";
-
-const PIECE_SIZE = BigInt(1048576);
 
 // Core Consensus Helper Functions
 
@@ -33,18 +30,6 @@ export const getBlockAuthor = (block: SubstrateBlock): string => {
     }
   }
   return DEFAULT_ACCOUNT_ID;
-};
-
-export const calculateSpacePledged = async (): Promise<bigint> =>
-  await spacePledge(api as unknown as Api);
-
-export const calculateBlockchainSize = async (): Promise<bigint> => {
-  const segmentCommitment =
-    await api.query.subspace.segmentCommitment.entries();
-  const segmentsCount = BigInt(segmentCommitment.length);
-
-  const blockchainSize = PIECE_SIZE * BigInt(256) * segmentsCount;
-  return blockchainSize;
 };
 
 // Accounts Helper Functions
