@@ -2,7 +2,6 @@
 
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
-import { ACCOUNT_MIN_VAL } from 'constants/account'
 import { Routes } from 'constants/routes'
 import type { HomeQueryQuery, HomeQueryQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'

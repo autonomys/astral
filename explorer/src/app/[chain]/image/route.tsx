@@ -8,7 +8,6 @@ import {
   PieChartIcon,
   WalletIcon,
 } from 'components/icons'
-import { ACCOUNT_MIN_VAL } from 'constants/account'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import dayjs from 'dayjs'
@@ -39,7 +38,7 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
     },
     body: JSON.stringify({
       query: QUERY_HOME['loc']?.source.body,
-      variables: { limit: 3, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
+      variables: { limit: 3, offset: 0 },
     }),
   }).then((res) => res.json())
 
