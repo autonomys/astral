@@ -1,4 +1,0 @@
-ts: true
-coverage: false
-check-coverage: false
-test-regex: \.test\.ts$
