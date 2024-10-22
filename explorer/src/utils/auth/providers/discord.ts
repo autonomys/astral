@@ -1,4 +1,4 @@
-import { AuthProvider } from 'constants/session'
+import { AuthProvider, DEFAULT_GITHUB_TOKEN } from 'constants/session'
 import type { TokenSet } from 'next-auth'
 import { User } from 'next-auth'
 import type { DiscordProfile } from 'next-auth/providers/discord'
@@ -82,6 +82,7 @@ export const Discord = () => {
               },
             },
           },
+          github: session.github || DEFAULT_GITHUB_TOKEN,
         }
 
         if (!savedUser || savedUser.length === 0) {

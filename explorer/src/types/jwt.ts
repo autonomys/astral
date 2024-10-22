@@ -24,3 +24,8 @@ export type DiscordToken = {
     }
   }
 }
+
+export type GitHubToken = {
+  id: string
+  username: string
+}

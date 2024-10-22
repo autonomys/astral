@@ -1,5 +1,5 @@
-import { cryptoWaitReady, signatureVerify } from '@autonomys/auto-utils'
-import { AuthProvider, DEFAULT_DISCORD_TOKEN } from 'constants/session'
+import { cryptoWaitReady, signatureVerify } from '@polkadot/util-crypto'
+import { AuthProvider, DEFAULT_DISCORD_TOKEN, DEFAULT_GITHUB_TOKEN } from 'constants/session'
 import { User } from 'next-auth'
 import type { Provider } from 'next-auth/providers'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -55,6 +55,7 @@ export const Subspace = () => {
             },
           },
           discord: DEFAULT_DISCORD_TOKEN,
+          github: DEFAULT_GITHUB_TOKEN,
         }
 
         if (!savedUser || savedUser.length === 0) {
