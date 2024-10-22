@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_EVENTS = gql`
   query Events($limit: Int!, $offset: Int, $where: consensus_events_bool_exp) {
-    consensus_events_aggregate(order_by: { sort_id: desc }, where: $where) {
+    consensus_events_aggregate(where: $where) {
       aggregate {
         count
       }

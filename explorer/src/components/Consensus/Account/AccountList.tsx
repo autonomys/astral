@@ -109,7 +109,9 @@ export const AccountList: FC = () => {
         header: 'Extrinsics',
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-extrinsic`}>{row.original.extrinsics.length}</div>
+          <div key={`${row.index}-account-extrinsic`}>
+            {row.original.extrinsics_aggregate.aggregate?.count}
+          </div>
         ),
       },
       {

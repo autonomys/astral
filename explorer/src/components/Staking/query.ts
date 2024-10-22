@@ -7,7 +7,7 @@ export const QUERY_NOMINATIONS_LIST = gql`
     $orderBy: [staking_nominators_order_by!]!
     $where: staking_nominators_bool_exp
   ) {
-    staking_nominators_aggregate(order_by: $orderBy, where: $where) {
+    staking_nominators_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -80,7 +80,7 @@ export const QUERY_OPERATOR_LIST = gql`
     $orderBy: [staking_operators_order_by!]!
     $where: staking_operators_bool_exp
   ) {
-    staking_operators_aggregate(order_by: $orderBy, where: $where) {
+    staking_operators_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -205,7 +205,7 @@ export const QUERY_OPERATOR_NOMINATORS_BY_ID = gql`
     $orderBy: [staking_nominators_order_by!]!
     $where: staking_nominators_bool_exp
   ) {
-    staking_nominators_aggregate(order_by: $orderBy, where: $where) {
+    staking_nominators_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -226,7 +226,7 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
     $orderBy: [staking_nominators_order_by!]!
     $where: staking_nominators_bool_exp
   ) {
-    staking_nominators_aggregate(order_by: $orderBy, where: $where) {
+    staking_nominators_aggregate(where: $where) {
       aggregate {
         count
       }

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_EXTRINSICS = gql`
   query Extrinsics($limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp) {
-    consensus_extrinsics_aggregate(order_by: { sort_id: desc }, where: $where) {
+    consensus_extrinsics_aggregate(where: $where) {
       aggregate {
         count
       }

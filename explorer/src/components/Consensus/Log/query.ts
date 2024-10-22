@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const QUERY_LOGS = gql`
   query Logs($limit: Int!, $offset: Int, $where: consensus_logs_bool_exp) {
-    consensus_logs_aggregate(order_by: { sort_id: desc }, where: $where) {
+    consensus_logs_aggregate(where: $where) {
       aggregate {
         count
       }

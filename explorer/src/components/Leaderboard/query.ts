@@ -7,7 +7,7 @@ export const QUERY_ACCOUNT_TRANSFER_SENDER_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_account_transfer_sender_total_counts_order_by!]!
     $where: leaderboard_account_transfer_sender_total_counts_bool_exp
   ) {
-    leaderboard_account_transfer_sender_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_account_transfer_sender_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -35,7 +35,7 @@ export const QUERY_ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE = gql`
     $orderBy: [leaderboard_account_transfer_sender_total_values_order_by!]!
     $where: leaderboard_account_transfer_sender_total_values_bool_exp
   ) {
-    leaderboard_account_transfer_sender_total_values_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_account_transfer_sender_total_values_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -125,7 +125,7 @@ export const QUERY_ACCOUNT_REMARK_COUNT = gql`
     $orderBy: [leaderboard_account_remark_counts_order_by!]!
     $where: leaderboard_account_remark_counts_bool_exp
   ) {
-    leaderboard_account_remark_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_account_remark_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -153,7 +153,7 @@ export const QUERY_ACCOUNT_EXTRINSIC_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_account_extrinsic_total_counts_order_by!]!
     $where: leaderboard_account_extrinsic_total_counts_bool_exp
   ) {
-    leaderboard_account_extrinsic_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_account_extrinsic_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -212,7 +212,7 @@ export const QUERY_ACCOUNT_EXTRINSIC_FAILED_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_account_extrinsic_failed_total_counts_order_by!]!
     $where: leaderboard_account_extrinsic_failed_total_counts_bool_exp
   ) {
-    leaderboard_account_extrinsic_failed_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_account_extrinsic_failed_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -271,7 +271,7 @@ export const QUERY_FARMER_VOTE_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_farmer_vote_total_counts_order_by!]!
     $where: leaderboard_farmer_vote_total_counts_bool_exp
   ) {
-    leaderboard_farmer_vote_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_farmer_vote_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -299,7 +299,7 @@ export const QUERY_FARMER_VOTE_TOTAL_VALUE = gql`
     $orderBy: [leaderboard_farmer_vote_total_values_order_by!]!
     $where: leaderboard_farmer_vote_total_values_bool_exp
   ) {
-    leaderboard_farmer_vote_total_values_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_farmer_vote_total_values_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -327,7 +327,7 @@ export const QUERY_FARMER_BLOCK_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_farmer_block_total_counts_order_by!]!
     $where: leaderboard_farmer_block_total_counts_bool_exp
   ) {
-    leaderboard_farmer_block_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_farmer_block_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -355,7 +355,7 @@ export const QUERY_FARMER_BLOCK_TOTAL_VALUE = gql`
     $orderBy: [leaderboard_farmer_block_total_values_order_by!]!
     $where: leaderboard_farmer_block_total_values_bool_exp
   ) {
-    leaderboard_farmer_block_total_values_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_farmer_block_total_values_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -383,7 +383,7 @@ export const QUERY_OPERATOR_TOTAL_REWARDS_COLLECTED = gql`
     $orderBy: [leaderboard_operator_total_rewards_collecteds_order_by!]!
     $where: leaderboard_operator_total_rewards_collecteds_bool_exp
   ) {
-    leaderboard_operator_total_rewards_collecteds_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_operator_total_rewards_collecteds_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -411,7 +411,7 @@ export const QUERY_OPERATOR_TOTAL_TAX_COLLECTED = gql`
     $orderBy: [leaderboard_operator_total_tax_collecteds_order_by!]!
     $where: leaderboard_operator_total_tax_collecteds_bool_exp
   ) {
-    leaderboard_operator_total_tax_collecteds_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_operator_total_tax_collecteds_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -439,7 +439,7 @@ export const QUERY_OPERATOR_BUNDLE_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_operator_bundle_total_counts_order_by!]!
     $where: leaderboard_operator_bundle_total_counts_bool_exp
   ) {
-    leaderboard_operator_bundle_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_operator_bundle_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -467,7 +467,7 @@ export const QUERY_OPERATOR_DEPOSITS_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_operator_deposits_total_counts_order_by!]!
     $where: leaderboard_operator_deposits_total_counts_bool_exp
   ) {
-    leaderboard_operator_deposits_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_operator_deposits_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -495,7 +495,7 @@ export const QUERY_OPERATOR_DEPOSITS_TOTAL_VALUE = gql`
     $orderBy: [leaderboard_operator_deposits_total_values_order_by!]!
     $where: leaderboard_operator_deposits_total_values_bool_exp
   ) {
-    leaderboard_operator_deposits_total_values_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_operator_deposits_total_values_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -523,7 +523,7 @@ export const QUERY_OPERATOR_WITHDRAWALS_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_operator_withdrawals_total_counts_order_by!]!
     $where: leaderboard_operator_withdrawals_total_counts_bool_exp
   ) {
-    leaderboard_operator_withdrawals_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_operator_withdrawals_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -551,7 +551,7 @@ export const QUERY_NOMINATOR_DEPOSITS_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_nominator_deposits_total_counts_order_by!]!
     $where: leaderboard_nominator_deposits_total_counts_bool_exp
   ) {
-    leaderboard_nominator_deposits_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_nominator_deposits_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -579,7 +579,7 @@ export const QUERY_NOMINATOR_DEPOSITS_TOTAL_VALUE = gql`
     $orderBy: [leaderboard_nominator_deposits_total_values_order_by!]!
     $where: leaderboard_nominator_deposits_total_values_bool_exp
   ) {
-    leaderboard_nominator_deposits_total_values_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_nominator_deposits_total_values_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -607,7 +607,7 @@ export const QUERY_NOMINATOR_WITHDRAWALS_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_nominator_withdrawals_total_counts_order_by!]!
     $where: leaderboard_nominator_withdrawals_total_counts_bool_exp
   ) {
-    leaderboard_nominator_withdrawals_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_nominator_withdrawals_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -635,7 +635,7 @@ export const QUERY_FARMER_VOTE_AND_BLOCK_TOTAL_COUNT = gql`
     $orderBy: [leaderboard_farmer_vote_and_block_total_counts_order_by!]!
     $where: leaderboard_farmer_vote_and_block_total_counts_bool_exp
   ) {
-    leaderboard_farmer_vote_and_block_total_counts_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_farmer_vote_and_block_total_counts_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -663,7 +663,7 @@ export const QUERY_FARMER_VOTE_AND_BLOCK_TOTAL_VALUE = gql`
     $orderBy: [leaderboard_farmer_vote_and_block_total_values_order_by!]!
     $where: leaderboard_farmer_vote_and_block_total_values_bool_exp
   ) {
-    leaderboard_farmer_vote_and_block_total_values_aggregate(order_by: $orderBy, where: $where) {
+    leaderboard_farmer_vote_and_block_total_values_aggregate(where: $where) {
       aggregate {
         count
       }

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_HOME = gql`
-  query HomeQuery($limit: Int!, $offset: Int!, $accountTotal: numeric!) {
-    consensus_blocks(limit: $limit, offset: $offset, order_by: { height: desc }) {
+  query HomeQuery($limit: Int!, $offset: Int!) {
+    consensus_blocks(limit: $limit, offset: $offset, order_by: { sort_id: desc }) {
       id
       hash
       height
@@ -22,15 +22,12 @@ export const QUERY_HOME = gql`
       block_height
       name
     }
-    consensus_accounts_aggregate(order_by: { id: asc }, where: { total: { _gt: $accountTotal } }) {
+    consensus_accounts_aggregate {
       aggregate {
         count
       }
     }
-    consensus_extrinsics_aggregate(
-      order_by: { id: asc }
-      where: { signature: { _is_null: false } }
-    ) {
+    consensus_extrinsics_aggregate {
       aggregate {
         count
       }

@@ -19,13 +19,10 @@ export const QUERY_ACCOUNTS = gql`
       reserved
       total
       updated_at
-      extrinsics(limit: 300, order_by: { block_height: desc }) {
-        id
-        block {
-          height
-          hash
+      extrinsics_aggregate {
+        aggregate {
+          count
         }
-        timestamp
       }
     }
   }
@@ -161,7 +158,7 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
     $where: consensus_transfers_bool_exp
     $orderBy: [consensus_transfers_order_by!]!
   ) {
-    consensus_transfers_aggregate(order_by: $orderBy, where: $where) {
+    consensus_transfers_aggregate(where: $where) {
       aggregate {
         count
       }

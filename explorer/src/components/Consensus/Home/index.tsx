@@ -24,7 +24,7 @@ export const Home: FC = () => {
   const { loading, setIsVisible } = useSquidQuery<HomeQueryQuery, HomeQueryQueryVariables>(
     QUERY_HOME,
     {
-      variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
+      variables: { limit: PAGE_SIZE, offset: 0 },
       pollInterval: 6000,
     },
     Routes.consensus,

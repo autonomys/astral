@@ -7,7 +7,7 @@ export const QUERY_DOMAIN_LIST = gql`
     $orderBy: [staking_domains_order_by!]!
     $where: staking_domains_bool_exp
   ) {
-    staking_domains_aggregate(order_by: $orderBy, where: $where) {
+    staking_domains_aggregate(where: $where) {
       aggregate {
         count
       }
