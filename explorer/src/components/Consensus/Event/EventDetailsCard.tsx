@@ -62,10 +62,7 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                   )}
                 </StyledListItem>
                 <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
-                {/* <StyledListItem title='Call'>
-                  {event.call?.name.split('.')[1].toUpperCase()}
-                </StyledListItem>
-              */}
+                <StyledListItem title='Call'>{event.name.split('.')[1]}</StyledListItem>
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
