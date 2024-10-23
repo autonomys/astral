@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "workspaces": [
+    "taurus/*",
     "gemini-3h/*",
     "gemini-3g/*",
     "db",
@@ -14,7 +15,7 @@
     "postinstall": "git submodule update --init --recursive",
     "build-dictionary": "cd dictionary/autonomys-gemini-3h && yarn && yarn codegen && yarn build && cd -",
     "docker:dev:up": "docker compose -p dev-astral-indexers -f ../docker-compose.yml --profile dictionary --profile task --profile gemini_3h up --remove-orphans",
-    "docker:prod:up": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml --profile dictionary --profile task --profile gemini_3h --profile gemini_3g up --remove-orphans -d",
+    "docker:prod:up": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml --profile dictionary --profile task --profile gemini_3h up --remove-orphans -d",
     "docker:dev:down": "docker compose -p dev-astral-indexers -f ../docker-compose.yml down",
     "docker:prod:down": "docker compose -p prod-astral-indexers -f ../docker-compose.yml -f ../docker-compose.prod.yml down",
     "dev": "yarn build-dictionary && lerna run codegen && lerna run build && yarn docker:dev:up",

@@ -1,0 +1,223 @@
+# To improve query performance, we strongly suggest adding indexes to any field that you plan to filter or sort by
+# Add the `@index` or `@index(unique: true)` annotation after any non-key field
+# https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
+
+# account
+type AccountTransferSenderTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransferSenderTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransferReceiverTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransferReceiverTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountRemarkCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountExtrinsicTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountExtrinsicSuccessTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountExtrinsicFailedTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type AccountTransactionFeePaidTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+# farmer
+type FarmerVoteTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerVoteTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerBlockTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerBlockTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerVoteAndBlockTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type FarmerVoteAndBlockTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+# operator
+type OperatorTotalRewardsCollected @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorTotalTaxCollected @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorBundleTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorDepositsTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorDepositsTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type OperatorWithdrawalsTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+# nominator/account
+type NominatorDepositsTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type NominatorDepositsTotalValue @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
+
+type NominatorWithdrawalsTotalCount @entity {
+  id: ID!
+  rank: Int! @index
+  value: BigInt! @index
+  lastContributionAt: Date!
+  createdAt: Int! @index
+  updatedAt: Int! @index
+}
