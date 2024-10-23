@@ -48,7 +48,7 @@ const defaultRewards = {
 export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const { ref } = useInView()
   const [previousRewards, setRewards] = useState(defaultRewards)
-  const { accountId } = useParams<AccountIdParam>()ç
+  const { accountId } = useParams<AccountIdParam>()
 
   const handleSearch = useCallback(async () => {
     const file = await fetch('/data/rewards.csv')
