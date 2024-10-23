@@ -34,23 +34,24 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - success
-        - index_in_block
-        - pos
-        - block_height
-        - fee
-        - nonce
-        - tip
         - args
         - block_hash
+        - block_height
         - error
+        - extrinsic_module_id
+        - fee
         - hash
         - id
-        - extrinsic_module_id
+        - index_in_block
         - name
+        - nonce
+        - pos
         - signature
         - signer
+        - sort_id
+        - success
         - timestamp
+        - tip
       filter: {}
       allow_aggregations: true
     comment: ""
