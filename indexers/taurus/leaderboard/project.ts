@@ -8,7 +8,6 @@ import path from "path";
 // Load the appropriate .env file
 const dotenvPath = path.resolve(__dirname, `../../../.env`);
 dotenv.config({ path: dotenvPath });
-console.log("endpoint", process.env.GEMINI_3H_RPC);
 
 // Can expand the Datasource processor types via the genreic param
 const project: SubstrateProject = {
@@ -41,7 +40,7 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.TAURUS_RPC!?.split(",") as string[] | string,
-    dictionary: process.env.DICTIONARY!,
+    dictionary: process.env.TAURUS_DICTIONARY_URL!,
   },
   dataSources: [
     {
