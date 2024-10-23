@@ -43,6 +43,18 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
+  taurus_consensus_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_leaderboard_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
   gemini_3h_consensus_subquery_node:
     logging:
       driver: loki
