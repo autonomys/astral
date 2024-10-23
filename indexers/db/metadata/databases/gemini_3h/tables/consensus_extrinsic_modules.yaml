@@ -28,6 +28,7 @@ select_permissions:
         - id
         - method
         - section
+        - section_id
       filter: {}
       allow_aggregations: true
     comment: ""

@@ -33,17 +33,18 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - pos
-        - block_height
-        - index_in_block
         - args
         - block_hash
+        - block_height
+        - event_module_id
         - extrinsic_hash
         - extrinsic_id
         - id
-        - event_module_id
+        - index_in_block
         - name
         - phase
+        - pos
+        - sort_id
         - timestamp
       filter: {}
       allow_aggregations: true
