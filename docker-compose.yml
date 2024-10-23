@@ -121,6 +121,8 @@ services:
       # Security and Authorization
       HASURA_GRAPHQL_ENABLE_ALLOWLIST: "false" # Disable query allowlisting
 
+      # Taurus Database
+      HASURA_GRAPHQL_TAURUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_TAURUS}
       # Gemini 3H Databases
       HASURA_GRAPHQL_GEMINI_3H_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H}
       # Gemini 3G Database
@@ -134,6 +136,59 @@ services:
     command:
       - graphql-engine
       - serve
+
+  # Taurus Dictionary
+  taurus_dictionary_subquery_node:
+    profiles: [dictionary, taurus, taurus_dictionary]
+    build:
+      context: ./indexers/dictionary/autonomys-taurus
+    depends_on:
+      "node":
+        condition: service_healthy
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/dictionary/autonomys-taurus:/dictionary
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://taurus_dictionary_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    command:
+      - -f=/dictionary
+      - --disable-historical=true
+
+  taurus_dictionary_graphql_engine:
+    profiles: [dictionary, taurus, taurus_dictionary]
+    image: onfinality/subql-query:latest
+    ports:
+      - "${TAURUS_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
+    depends_on:
+      - "postgres"
+      - "taurus_dictionary_subquery_node"
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    command:
+      - --name=dictionary
+      - --playground
 
   # Gemini 3H Dictionary
   gemini_3h_dictionary_subquery_node:
