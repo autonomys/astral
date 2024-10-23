@@ -141,7 +141,7 @@ services:
 
   # Taurus Dictionary
   taurus_dictionary_subquery_node:
-    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
+    profiles: [dictionary, taurus, taurus_dictionary]
     build:
       context: ./indexers/dictionary/autonomys-taurus
     depends_on:
@@ -172,7 +172,7 @@ services:
       - --disable-historical=true
 
   taurus_dictionary_graphql_engine:
-    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
+    profiles: [dictionary, taurus, taurus_dictionary]
     image: onfinality/subql-query:latest
     ports:
       - "${TAURUS_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
@@ -192,7 +192,7 @@ services:
 
   # Gemini 3H Dictionary
   gemini_3h_dictionary_subquery_node:
-    profiles: [dictionary, gemini_3h, gemini_3h_dictionary]
+    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
     build:
       context: ./indexers/dictionary/autonomys-gemini-3h
     depends_on:
@@ -225,7 +225,7 @@ services:
       - --disable-historical=true
 
   gemini_3h_dictionary_graphql_engine:
-    profiles: [dictionary, gemini_3h, gemini_3h_dictionary]
+    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
     image: onfinality/subql-query:latest
     ports:
       - "${GEMINI_3H_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
