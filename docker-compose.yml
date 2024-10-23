@@ -326,6 +326,43 @@ services:
       timeout: 5s
       retries: 10
 
+  taurus_staking_subquery_node:
+    profiles: [taurus, taurus_staking]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3003:3000"
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "taurus_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: ${TAURUS_CHAIN_ID}
+      DICTIONARY: http://taurus_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/taurus/staking:/taurus/staking
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/taurus/staking
+      - --db-schema=staking
+      - --workers=1
+      - --unsafe
+      - --batch-size=15
+      - --disable-historical=true
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://taurus_staking_subquery_node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
   # Gemini 3H Subquery Nodes
   gemini_3h_consensus_subquery_node:
     profiles: [gemini_3h, gemini_3h_consensus]
