@@ -4,15 +4,15 @@ export const QUERY_NOMINATIONS_LIST = gql`
   query NominationsList(
     $limit: Int!
     $offset: Int
-    $orderBy: [nominator_order_by!]!
-    $where: nominator_bool_exp
+    $orderBy: [staking_nominators_order_by!]!
+    $where: staking_nominators_bool_exp
   ) {
-    nominator_aggregate(order_by: $orderBy, where: $where) {
+    staking_nominators_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    nominator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       account_id
       domain_id
@@ -77,15 +77,15 @@ export const QUERY_OPERATOR_LIST = gql`
   query OperatorsList(
     $limit: Int!
     $offset: Int
-    $orderBy: [operator_order_by!]!
-    $where: operator_bool_exp
+    $orderBy: [staking_operators_order_by!]!
+    $where: staking_operators_bool_exp
   ) {
-    operator_aggregate(order_by: $orderBy, where: $where) {
+    staking_operators_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    operator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    staking_operators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       sort_id
       account_id
@@ -152,7 +152,7 @@ export const QUERY_OPERATOR_LIST = gql`
 
 export const QUERY_OPERATOR_BY_ID = gql`
   query OperatorById($operatorId: String!) {
-    operator_by_pk(id: $operatorId) {
+    staking_operators_by_pk(id: $operatorId) {
       id
       account_id
       domain_id
@@ -202,15 +202,15 @@ export const QUERY_OPERATOR_NOMINATORS_BY_ID = gql`
   query OperatorNominatorsById(
     $limit: Int!
     $offset: Int
-    $orderBy: [nominator_order_by!]!
-    $where: nominator_bool_exp
+    $orderBy: [staking_nominators_order_by!]!
+    $where: staking_nominators_bool_exp
   ) {
-    nominator_aggregate(order_by: $orderBy, where: $where) {
+    staking_nominators_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    nominator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       known_shares
       account_id
@@ -223,15 +223,15 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
   query NominatorsConnection(
     $limit: Int!
     $offset: Int
-    $orderBy: [nominator_order_by!]!
-    $where: nominator_bool_exp
+    $orderBy: [staking_nominators_order_by!]!
+    $where: staking_nominators_bool_exp
   ) {
-    nominator_aggregate(order_by: $orderBy, where: $where) {
+    staking_nominators_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    nominator(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    staking_nominators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       known_shares
       account_id
@@ -259,7 +259,7 @@ export const QUERY_NOMINATOR_CONNECTION_LIST = gql`
 
 export const QUERY_DOMAIN_LAST_BLOCK = gql`
   query DomainsLastBlock {
-    domain {
+    staking_domains {
       id
       last_domain_block_number
       completed_epoch

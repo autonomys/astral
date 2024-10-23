@@ -1,4 +1,3 @@
-import { numberPositionSuffix } from '@/utils/number'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -17,6 +16,7 @@ import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
+import { numberPositionSuffix } from 'utils/number'
 import { QUERY_TOP_LEADERBOARD } from './query'
 
 interface LeaderboardProps {
@@ -56,25 +56,26 @@ export const useLeaderboard = (subspaceAccount: string) => {
   const data = useMemo(() => hasValue(leaderboard) && leaderboard.value, [leaderboard])
   const error = useMemo(() => isError(leaderboard), [leaderboard])
 
+  // TODO: change this for the right logic
   const topFarmers = useMemo(() => {
     if (!data || !data.farmers) return 0
-    const account = data.farmers.edges.find((edge) => edge.node.id === subspaceAccount)
+    const account = data.farmers.find((edge) => edge.id === subspaceAccount)
     if (!account) return 0
-    return parseInt(account.cursor)
+    return parseInt(account.id)
   }, [data, subspaceAccount])
 
   const topOperators = useMemo(() => {
     if (!data || !data.operators) return 0
-    const account = data.operators.edges.find((edge) => edge.node.id === subspaceAccount)
+    const account = data.operators.find((edge) => edge.id === subspaceAccount)
     if (!account) return 0
-    return parseInt(account.cursor)
+    return parseInt(account.id)
   }, [data, subspaceAccount])
 
   const topNominators = useMemo(() => {
     if (!data || !data.nominators) return 0
-    const account = data.nominators.edges.find((edge) => edge.node.id === subspaceAccount)
+    const account = data.nominators.find((edge) => edge.id === subspaceAccount)
     if (!account) return 0
-    return parseInt(account.cursor)
+    return parseInt(account.id)
   }, [data, subspaceAccount])
 
   const hasTopPositions = useMemo(

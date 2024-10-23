@@ -3,7 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import type { LogByIdQuery, LogByIdQueryVariables, Log as SquidLog } from 'gql/graphql'
+import type { LogByIdQuery, LogByIdQueryVariables } from 'gql/graphql'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -37,8 +37,7 @@ export const Log: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const log = useMemo(() => data && (data.logById as SquidLog), [data])
-
+  const log = useMemo(() => data && data.consensus_logs_by_pk, [data])
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
     if (!data) return <NotFound />
@@ -55,7 +54,7 @@ export const Log: FC = () => {
         {!loading && log ? (
           <>
             <LogDetailsCard log={log} />
-            <LogDetailsTab events={log.block.events} />
+            <LogDetailsTab events={log.block?.events ?? []} />
           </>
         ) : (
           noData

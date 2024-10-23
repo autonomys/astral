@@ -1,35 +1,37 @@
 'use client'
 
-import { shortString } from '@/utils/string'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Extrinsic, HomeQueryDomainQuery, HomeQueryQuery } from 'gql/graphql'
+import { HomeQueryQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
+import { shortString } from 'utils/string'
 
 dayjs.extend(relativeTime)
 
 interface HomeExtrinsicListProps {
-  data: HomeQueryQuery | HomeQueryDomainQuery
+  data: HomeQueryQuery
 }
+
+type Row = HomeQueryQuery['consensus_extrinsics'][number]
 
 export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
   const { network, section } = useChains()
 
-  const extrinsics = useMemo(() => data.extrinsics as Extrinsic[], [data.extrinsics])
+  const extrinsics = useMemo(() => data.consensus_extrinsics, [data.consensus_extrinsics])
 
   const columns = useMemo(
     () => [
       {
         accessorKey: 'hash',
         header: 'Hash',
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             className='hover:text-primaryAccent'
             key={`${row.index}-home-extrinsic-hash`}
@@ -42,14 +44,14 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
       {
         accessorKey: 'block',
         header: 'Block',
-        cell: ({ row }: Cell<Extrinsic>) => (
-          <div key={`${row.index}-home-extrinsic-block`}>{row.original.block.height}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-home-extrinsic-block`}>{row.original.block_height}</div>
         ),
       },
       {
         accessorKey: 'name',
         header: 'Call',
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-home-extrinsic-action`}>
             {row.original.name.split('.')[1].toUpperCase()}
           </div>
@@ -58,7 +60,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
       {
         accessorKey: 'timestamp',
         header: 'Time',
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-home-extrinsic-time`}>
             {dayjs(row.original.timestamp).fromNow(true)} ago
           </div>
@@ -67,7 +69,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
       {
         accessorKey: 'name',
         header: 'Status',
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div
             className='flex items-center justify-center'
             key={`${row.index}-home-extrinsic-status`}

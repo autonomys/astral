@@ -1,6 +1,6 @@
 import { PaginationState, SortingState } from '@tanstack/react-table'
 
-export type Row<T> = {
+type Row<T> = {
   index: number
   original: T
 }

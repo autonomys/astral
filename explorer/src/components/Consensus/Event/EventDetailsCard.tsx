@@ -1,20 +1,19 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { EventByIdQuery } from 'gql/graphql'
-import Link from 'next/link'
-import { FC } from 'react'
-
-// common
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES } from 'constants/routes'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { EventByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
+import Link from 'next/link'
+import { FC } from 'react'
+import { parseArgs } from 'utils/indexerParsing'
 
 dayjs.extend(relativeTime)
 
 type Props = {
-  event: EventByIdQuery['eventById']
+  event: EventByIdQuery['consensus_events_by_pk']
 }
 
 export const EventDetailsCard: FC<Props> = ({ event }) => {
@@ -63,13 +62,11 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
                   )}
                 </StyledListItem>
                 <StyledListItem title='Module'>{event.name.split('.')[0]}</StyledListItem>
-                <StyledListItem title='Call'>
-                  {event.call?.name.split('.')[1].toUpperCase()}
-                </StyledListItem>
+                <StyledListItem title='Call'>{event.name.split('.')[1]}</StyledListItem>
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={event.args} />
+              <Arguments args={parseArgs(event.args)} />
             </div>
           </div>
         </div>

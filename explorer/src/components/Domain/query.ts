@@ -4,15 +4,15 @@ export const QUERY_DOMAIN_LIST = gql`
   query DomainsList(
     $limit: Int!
     $offset: Int
-    $orderBy: [domain_order_by!]!
-    $where: domain_bool_exp
+    $orderBy: [staking_domains_order_by!]!
+    $where: staking_domains_bool_exp
   ) {
-    domain_aggregate(order_by: $orderBy, where: $where) {
+    staking_domains_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    domain(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    staking_domains(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       sort_id
       name
@@ -74,10 +74,10 @@ export const QUERY_DOMAIN_STATUS = gql`
   query DomainsStatus(
     $limit: Int!
     $offset: Int
-    $orderBy: [domain_order_by!]!
-    $where: domain_bool_exp
+    $orderBy: [staking_domains_order_by!]!
+    $where: staking_domains_bool_exp
   ) {
-    domain(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+    staking_domains(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
       name
       last_domain_block_number
@@ -93,7 +93,7 @@ export const QUERY_DOMAIN_STATUS = gql`
 
 export const QUERY_DOMAIN_BY_ID = gql`
   query DomainById($domainId: String!) {
-    domain_by_pk(id: $domainId) {
+    staking_domains_by_pk(id: $domainId) {
       id
       sort_id
       name

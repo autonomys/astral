@@ -1,5 +1,5 @@
-import { useTheme } from '@/providers/ThemeProvider'
 import Lottie from 'lottie-react'
+import { useTheme } from 'providers/ThemeProvider'
 import { FC } from 'react'
 import loaderDark from './Loader_Dark.json'
 import loaderLight from './Loader_Light.json'

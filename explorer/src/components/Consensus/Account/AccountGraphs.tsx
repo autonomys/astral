@@ -1,7 +1,7 @@
 import { Tab } from 'components/common/Tabs'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Account } from 'gql/graphql'
+import { AccountByIdQuery } from 'gql/graphql'
 import { FC } from 'react'
 import { AccountBalanceStats } from './AccountBalanceStats'
 import { AccountGraphTabs } from './AccountGraphTabs'
@@ -9,7 +9,7 @@ import { AccountGraphTabs } from './AccountGraphTabs'
 dayjs.extend(relativeTime)
 
 type Props = {
-  account: Account | undefined
+  account: AccountByIdQuery['consensus_accounts_by_pk']
   isDesktop?: boolean
 }
 

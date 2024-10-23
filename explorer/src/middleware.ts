@@ -1,6 +1,6 @@
-import { Routes } from '@/constants/routes'
 import { NetworkId } from '@autonomys/auto-utils'
 import { defaultIndexer } from 'constants/indexers'
+import { Routes } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {

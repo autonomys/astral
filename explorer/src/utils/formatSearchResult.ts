@@ -1,6 +1,5 @@
-import { Event, Extrinsic } from 'gql/graphql'
-
-export const formatSearchResult = (event: Event, extrinsic: Extrinsic) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const formatSearchResult = (event: any, extrinsic: any) => {
   const formattedExtrinsic = {
     id: extrinsic.id,
     blockHeight: extrinsic.block?.height,
