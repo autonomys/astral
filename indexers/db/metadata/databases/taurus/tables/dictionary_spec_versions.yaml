@@ -1,0 +1,11 @@
+table:
+  name: spec_versions
+  schema: dictionary
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - block_height
+        - id
+      filter: {}
+    comment: ""

@@ -1,0 +1,52 @@
+table:
+  name: blocks
+  schema: consensus
+array_relationships:
+  - name: events
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: events
+          schema: consensus
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: consensus
+  - name: logs
+    using:
+      manual_configuration:
+        column_mapping:
+          height: block_height
+        insertion_order: null
+        remote_table:
+          name: logs
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - author_id
+        - blockchain_size
+        - events_count
+        - extrinsics_count
+        - extrinsics_root
+        - hash
+        - height
+        - id
+        - parent_hash
+        - sort_id
+        - space_pledged
+        - spec_id
+        - state_root
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""

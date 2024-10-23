@@ -1,0 +1,51 @@
+table:
+  name: events
+  schema: consensus
+object_relationships:
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
+  - name: extrinsic
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: block_height
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: consensus
+  - name: module
+    using:
+      manual_configuration:
+        column_mapping:
+          event_module_id: section_id
+        insertion_order: null
+        remote_table:
+          name: event_modules
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - args
+        - block_hash
+        - block_height
+        - event_module_id
+        - extrinsic_hash
+        - extrinsic_id
+        - id
+        - index_in_block
+        - name
+        - phase
+        - pos
+        - sort_id
+        - timestamp
+      filter: {}
+      allow_aggregations: true
+    comment: ""
