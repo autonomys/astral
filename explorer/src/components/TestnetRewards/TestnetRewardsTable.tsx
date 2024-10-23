@@ -137,7 +137,7 @@ export const TestnetRewardsTable: FC = () => {
         name: 'geminiIII',
         testnet: 'Gemini 3',
         icon: <Gemini3TestnetIcon />,
-        dateRange: { start: new Date('2023-09-06'), end: new Date('2024-07-25') },
+        dateRange: { start: new Date('2023-09-06'), end: new Date('2024-09-09') },
         label: 'block and vote rewards',
       },
       stakeWarsI: {
