@@ -46,7 +46,7 @@ export const DomainCards: FC = () => {
 
     return data.staking_domains.map((domain) => ({
       title: domain.name,
-      description: domain.name === 'nova' ? 'EVM domain' : 'Identity domain',
+      description: domain.name === 'Nova' ? 'EVM domain' : 'Identity domain',
       href: `/${network}/${domain.name === 'nova' ? Routes.nova : Routes.autoid}`,
       icon: domain.name === 'nova' ? <BlockIcon /> : <DocIcon />,
       darkBgClass:
