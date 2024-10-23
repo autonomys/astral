@@ -106,10 +106,16 @@ const DomainBlockTimeProgress: FC<DomainBlockTimeProgressProps> = ({
                   text={
                     <div className='flex w-full flex-col gap-1'>
                       <span className='block text-xs'>
-                        1 block = {formatSeconds(intervalSeconds ?? 0)}
+                        1 block ={' '}
+                        {intervalSeconds && intervalSeconds > 1
+                          ? formatSeconds(intervalSeconds ?? 0)
+                          : 'N/A'}
                       </span>
                       <span className='block text-xs'>
-                        1 epoch = {formatSeconds(BigInt(intervalSeconds ?? 0) * BigInt(100))}
+                        1 epoch ={' '}
+                        {intervalSeconds && intervalSeconds > 1
+                          ? formatSeconds(BigInt(intervalSeconds ?? 0) * BigInt(100))
+                          : 'N/A'}
                       </span>
                       <span className='block text-xs'>1 epoch = 100 blocks</span>
                     </div>
