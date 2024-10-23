@@ -250,7 +250,7 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
-      "gemini_3h_dictionary_subquery_node":
+      "taurus_dictionary_subquery_node":
         condition: service_healthy
     restart: unless-stopped
     environment:
