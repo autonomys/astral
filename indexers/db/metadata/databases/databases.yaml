@@ -12,15 +12,6 @@
         retries: 1
       use_prepared_statements: true
   tables: "!include default/tables/tables.yaml"
-- name: gemini_3h
-  kind: postgres
-  configuration:
-    connection_info:
-      database_url:
-        from_env: HASURA_GRAPHQL_GEMINI_3H_DATABASE_URL
-      isolation_level: read-committed
-      use_prepared_statements: false
-  tables: "!include gemini_3h/tables/tables.yaml"
 - name: taurus
   kind: postgres
   configuration:
