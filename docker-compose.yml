@@ -143,8 +143,6 @@ services:
     build:
       context: ./indexers/dictionary/autonomys-taurus
     depends_on:
-      "node":
-        condition: service_healthy
       "postgres":
         condition: service_healthy
     restart: unless-stopped
