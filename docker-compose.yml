@@ -8,6 +8,7 @@ volumes:
 services:
   # Caddy Reverse Proxy with CORS enabled
   caddy:
+    profiles: [gemini_3h]
     ulimits:
       nofile:
         soft: 65536 # Soft limit for open files (WebSocket connections count)
@@ -23,6 +24,7 @@ services:
 
   # Subspace Node
   node:
+    profiles: [gemini_3h]
     image: ghcr.io/autonomys/node:gemini-3h-2024-oct-10
     platform: linux/amd64
     volumes:
@@ -139,7 +141,7 @@ services:
 
   # Taurus Dictionary
   taurus_dictionary_subquery_node:
-    profiles: [dictionary, taurus, taurus_dictionary]
+    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
     build:
       context: ./indexers/dictionary/autonomys-taurus
     depends_on:
@@ -170,7 +172,7 @@ services:
       - --disable-historical=true
 
   taurus_dictionary_graphql_engine:
-    profiles: [dictionary, taurus, taurus_dictionary]
+    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
     image: onfinality/subql-query:latest
     ports:
       - "${TAURUS_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
