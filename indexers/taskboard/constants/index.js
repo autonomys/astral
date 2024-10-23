@@ -1,4 +1,4 @@
-const NETWORKS = ["gemini-3h"];
+const NETWORKS = ["taurus", "gemini-3h"];
 const QUEUES = [
   {
     name: "leaderboardSortAndRank",
