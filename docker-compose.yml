@@ -28,8 +28,8 @@ services:
     volumes:
       - node-data:/var/subspace:rw
     ports:
-      - "0.0.0.0:30333:30333/tcp"
-      - "0.0.0.0:30433:30433/tcp"
+      - "30333:30333/tcp"
+      - "30433:30433/tcp"
     restart: unless-stopped
     command:
       [
@@ -49,9 +49,9 @@ services:
         "--rpc-listen-on",
         "0.0.0.0:9944",
         "--rpc-max-subscriptions-per-connection",
-        "10000",
+        "1000",
         "--rpc-max-connections",
-        "10000000",
+        "20000",
         "--farmer",
         "--name",
         "astral",
@@ -215,9 +215,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/consensus
       - --db-schema=consensus
-      - --workers=2
+      - --workers=4
       - --unsafe
-      - --batch-size=15
+      - --batch-size=250
       - --disable-historical=true
     healthcheck:
       test:
