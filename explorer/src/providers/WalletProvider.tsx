@@ -1,6 +1,12 @@
 'use client'
 
-import { activate, ApiPromise, createConnection, DomainId, networks } from '@autonomys/auto-utils'
+import {
+  activate,
+  ApiPromise,
+  createConnection,
+  DomainRuntime,
+  networks,
+} from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { InjectedExtension } from '@polkadot/extension-inject/types'
 import { getWalletBySource } from '@subwallet/wallet-connect/dotsama/wallets'
@@ -69,8 +75,10 @@ export const WalletProvider: FC<Props> = ({ children }) => {
       const network = networks.find((network) => network.id === chain)
       if (!network) return
 
-      const novaRpc = network.domains.find((domain) => domain.id === DomainId.NOVA)?.rpcUrls[0]
-      const autoIdRpc = network.domains.find((domain) => domain.id === DomainId.AUTO_ID)?.rpcUrls[0]
+      const novaRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.NOVA)
+        ?.rpcUrls[0]
+      const autoIdRpc = network.domains.find((domain) => domain.runtime === DomainRuntime.AUTO_ID)
+        ?.rpcUrls[0]
       if (!novaRpc || !autoIdRpc) return
 
       const domainsRpcs = network.domains.map((domain) =>
