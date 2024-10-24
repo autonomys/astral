@@ -6,7 +6,7 @@ export interface Indexer {
   indexer: string
 }
 
-const LOCAL_INDEXER = 'https://subql.green.gemini-3h.subspace.network/v1/graphql'
+const LOCAL_INDEXER = 'https://localhost:8080/v1/graphql'
 
 export const indexers: Indexer[] = [
   {
