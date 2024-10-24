@@ -12,6 +12,22 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
+  agent:
+    container_name: newrelic-infra
+    image: newrelic/infrastructure:latest
+    cap_add:
+      - SYS_PTRACE
+    network_mode: bridge
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      NRIA_LICENSE_KEY: "${NR_API_KEY}"
+      NRIA_DISPLAY_NAME: "${NR_AGENT_IDENTIFIER}"
+    restart: unless-stopped
+
   hasura:
     image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     logging:
