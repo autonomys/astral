@@ -19,6 +19,18 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
+  taurus_dictionary_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_dictionary_graphql_engine:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
   gemini_3h_dictionary_subquery_node:
     logging:
       driver: loki
