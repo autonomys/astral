@@ -152,6 +152,25 @@ type Transfer @entity {
   createdAt: BigInt! @index
 }
 
+type AccountRewards @entity {
+  id: ID!
+  accountId: String! @index
+  # Sum of all rewards
+  totalRewardsValue: BigInt
+  totalRewardsCounts: BigInt
+  # Rewards for block authoring
+  blockRewardsValue: BigInt
+  blockRewardsCounts: BigInt
+  # Rewards for block voting
+  voteRewardsValue: BigInt
+  voteRewardsCounts: BigInt
+  # Estimated Rewards for staking (portioned Operator rewards (estimation since the true calculation is only available at withdrawal))
+  estimatedStakingRewardsValue: BigInt
+  estimatedStakingRewardsCounts: BigInt
+  createdAt: BigInt! @index
+  updatedAt: BigInt!
+}
+
 type Reward @entity {
   id: ID!
   blockHeight: BigInt! @index

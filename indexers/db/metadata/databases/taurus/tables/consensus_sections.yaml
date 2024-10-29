@@ -26,6 +26,7 @@ select_permissions:
       columns:
         - id
         - section
+        - section_id
       filter: {}
       allow_aggregations: true
     comment: ""
