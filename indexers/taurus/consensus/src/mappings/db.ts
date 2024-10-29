@@ -1,19 +1,14 @@
 import { capitalizeFirstLetter } from "@autonomys/auto-utils";
 import {
-  Account,
-  BalanceHistory,
+  AccountHistory,
   Block,
   Event,
-  EventModule,
   Extrinsic,
-  ExtrinsicModule,
   Log,
-  LogKind,
   Reward,
-  Section,
   Transfer,
 } from "../types";
-import { dateEntry, moduleId, moduleName, sortId } from "./utils";
+import { dateEntry, getSortId, moduleId, moduleName } from "./utils";
 
 // Core Consensus DB Functions
 
@@ -32,26 +27,24 @@ export async function createAndSaveBlock(
   authorId: string
 ): Promise<Block> {
   const id = height.toString();
-  let block = await Block.get(id);
-  if (!block) {
-    block = Block.create({
-      id,
-      sortId: sortId(height),
-      height,
-      hash,
-      timestamp,
-      parentHash,
-      specId,
-      stateRoot,
-      extrinsicsRoot,
-      spacePledged,
-      blockchainSize,
-      extrinsicsCount,
-      eventsCount,
-      authorId,
-    });
-    await block.save();
-  }
+  const sortId = getSortId(height);
+  const block = Block.create({
+    id,
+    sortId,
+    height,
+    hash,
+    timestamp,
+    parentHash,
+    specId,
+    stateRoot,
+    extrinsicsRoot,
+    spacePledged,
+    blockchainSize,
+    extrinsicsCount,
+    eventsCount,
+    authorId,
+  });
+  await block.save();
   return block;
 }
 
@@ -64,95 +57,25 @@ export async function createAndSaveLog(
   value: string,
   timestamp: Date
 ): Promise<Log> {
-  await createAndSaveLogKindIfNotExists(rawKind, kind);
-
   const id = `${blockHeight}-${indexInBlock}`;
-  let log = await Log.get(id);
-  if (!log) {
-    log = Log.create({
-      id,
-      sortId: sortId(blockHeight, BigInt(indexInBlock)),
-      blockHeight,
-      blockHash,
-      indexInBlock,
-      logKindId: rawKind,
-      kind,
-      value,
-      timestamp,
-    });
-    await log.save();
-  }
+  const sortId = getSortId(blockHeight, BigInt(indexInBlock));
+  const log = Log.create({
+    id,
+    sortId,
+    blockHeight,
+    blockHash,
+    indexInBlock,
+    logKindId: rawKind,
+    kind,
+    value,
+    timestamp,
+  });
+  await log.save();
   return log;
 }
 
 export async function saveLog(logs: Log[]): Promise<void> {
   await Promise.all(logs.map((log) => log.save()));
-}
-
-export async function createAndSaveSectionIfNotExists(
-  section: string
-): Promise<Section> {
-  const id = section;
-  let sectionObj = await Section.get(id);
-  if (!sectionObj) {
-    sectionObj = Section.create({
-      id,
-      section: capitalizeFirstLetter(section),
-    });
-    await sectionObj.save();
-  }
-  return sectionObj;
-}
-
-export async function createAndSaveExtrinsicModuleNameIfNotExists(
-  section: string,
-  method: string
-): Promise<ExtrinsicModule> {
-  const id = moduleId(section, method);
-  let module = await ExtrinsicModule.get(id);
-  if (!module) {
-    module = ExtrinsicModule.create({
-      id,
-      sectionId: section,
-      section: capitalizeFirstLetter(section),
-      method,
-    });
-    await module.save();
-  }
-  return module;
-}
-
-export async function createAndSaveEventModuleNameIfNotExists(
-  section: string,
-  method: string
-): Promise<EventModule> {
-  const id = moduleId(section, method);
-  let module = await EventModule.get(id);
-  if (!module) {
-    module = EventModule.create({
-      id,
-      sectionId: section,
-      section: capitalizeFirstLetter(section),
-      method,
-    });
-    await module.save();
-  }
-  return module;
-}
-
-export async function createAndSaveLogKindIfNotExists(
-  rawKind: string,
-  kind: string
-): Promise<LogKind> {
-  let logKind = await LogKind.get(rawKind);
-  if (!logKind) {
-    logKind = LogKind.create({
-      id: rawKind,
-      kind,
-    });
-    await logKind.save();
-  }
-  return logKind;
 }
 
 export async function createAndSaveExtrinsic(
@@ -173,14 +96,11 @@ export async function createAndSaveExtrinsic(
   fee: bigint,
   pos: number
 ): Promise<Extrinsic> {
-  await createAndSaveSectionIfNotExists(section);
-  await createAndSaveExtrinsicModuleNameIfNotExists(section, method);
-
-  // Create extrinsic
   const extrinsicId = `${blockHeight}-${indexInBlock}`;
+  const sortId = getSortId(blockHeight, BigInt(indexInBlock));
   const extrinsic = Extrinsic.create({
     id: extrinsicId,
-    sortId: sortId(blockHeight, BigInt(indexInBlock)),
+    sortId,
     hash,
     blockHeight,
     blockHash,
@@ -216,14 +136,11 @@ export async function createAndSaveEvent(
   pos: number,
   args: string
 ): Promise<Event> {
-  await createAndSaveSectionIfNotExists(section);
-  await createAndSaveEventModuleNameIfNotExists(section, method);
-
-  // Create event
   const id = `${blockHeight}-${indexInBlock.toString()}`;
+  const sortId = getSortId(blockHeight, BigInt(indexInBlock));
   const event = Event.create({
     id,
-    sortId: sortId(blockHeight, BigInt(indexInBlock)),
+    sortId,
     blockHeight,
     blockHash,
     extrinsicId,
@@ -242,53 +159,25 @@ export async function createAndSaveEvent(
 
 // Accounts DB Functions
 
-export async function createOrUpdateAndSaveAccount(
+export async function createAndSaveAccountHistory(
   id: string,
   blockNumber: bigint,
   nonce: bigint,
   free: bigint,
   reserved: bigint,
   total: bigint
-): Promise<Account> {
-  let account = await Account.get(id);
-  if (!account) {
-    account = Account.create({
-      id,
-      nonce,
-      free,
-      reserved,
-      total,
-      ...dateEntry(blockNumber),
-    });
-  } else {
-    account.nonce = nonce;
-    account.free = free;
-    account.reserved = reserved;
-    account.total = total;
-    account.updatedAt = blockNumber;
-  }
-  await account.save();
-  return account;
-}
-
-export async function createAndSaveBalanceHistory(
-  accountId: string,
-  blockNumber: bigint,
-  free: bigint,
-  reserved: bigint,
-  total: bigint
-): Promise<BalanceHistory> {
-  const id = accountId + "-" + blockNumber.toString();
-  const balanceHistory = BalanceHistory.create({
+): Promise<AccountHistory> {
+  const accountHistory = AccountHistory.create({
     id,
-    accountId,
+    accountId: id,
+    nonce,
     free,
     reserved,
     total,
-    createdAt: blockNumber,
+    ...dateEntry(blockNumber),
   });
-  await balanceHistory.save();
-  return balanceHistory;
+  await accountHistory.save();
+  return accountHistory;
 }
 
 export async function createAndSaveTransfer(
@@ -304,23 +193,20 @@ export async function createAndSaveTransfer(
   date: Date
 ): Promise<Transfer> {
   const id = extrinsicId + "-" + eventId;
-  let transfer = await Transfer.get(id);
-  if (!transfer) {
-    transfer = Transfer.create({
-      id,
-      extrinsicId,
-      eventId,
-      from,
-      to,
-      value,
-      fee,
-      success,
-      timestamp,
-      date,
-      createdAt: blockNumber,
-    });
-    await transfer.save();
-  }
+  const transfer = Transfer.create({
+    id,
+    extrinsicId,
+    eventId,
+    from,
+    to,
+    value,
+    fee,
+    success,
+    timestamp,
+    date,
+    createdAt: blockNumber,
+  });
+  await transfer.save();
   return transfer;
 }
 
@@ -335,19 +221,16 @@ export async function createAndSaveReward(
 ): Promise<Reward> {
   const id =
     accountId + "-" + blockHeight.toString() + "-" + indexInBlock.toString();
-  let reward = await Reward.get(id);
-  if (!reward) {
-    reward = Reward.create({
-      id,
-      blockHeight,
-      blockHash,
-      accountId,
-      indexInBlock,
-      rewardType,
-      amount,
-      timestamp,
-    });
-    await reward.save();
-  }
+  const reward = Reward.create({
+    id,
+    blockHeight,
+    blockHash,
+    accountId,
+    indexInBlock,
+    rewardType,
+    amount,
+    timestamp,
+  });
+  await reward.save();
   return reward;
 }

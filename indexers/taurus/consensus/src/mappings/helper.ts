@@ -1,6 +1,5 @@
 import { account } from "@autonomys/auto-consensus";
 import { SubstrateBlock } from "@subql/types";
-import { createAndSaveBalanceHistory } from "./db";
 import { decodeLog } from "./utils";
 
 const DEFAULT_ACCOUNT_ID = "0x00";
@@ -34,20 +33,12 @@ export const getBlockAuthor = (block: SubstrateBlock): string => {
 
 // Accounts Helper Functions
 
-export const updateAccountBalance = async (
+export const getAccountBalance = async (
   accountId: string,
   blockNumber: bigint
 ) => {
   const _account = await account(api as any, accountId);
   const { free, reserved } = _account.data;
-
-  await createAndSaveBalanceHistory(
-    accountId,
-    blockNumber,
-    free,
-    reserved,
-    free + reserved
-  );
 
   return _account;
 };
