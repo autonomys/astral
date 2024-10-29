@@ -1,0 +1,17 @@
+table:
+  name: account_histories
+  schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - account_id
+        - created_at
+        - free
+        - id
+        - nonce
+        - reserved
+        - total
+        - updated_at
+      filter: {}
+    comment: ""
