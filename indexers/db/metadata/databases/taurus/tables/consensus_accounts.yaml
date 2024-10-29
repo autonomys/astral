@@ -24,13 +24,14 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - account_id
         - created_at
         - free
+        - id
         - nonce
         - reserved
         - total
         - updated_at
-        - id
       filter: {}
       allow_aggregations: true
     comment: ""
