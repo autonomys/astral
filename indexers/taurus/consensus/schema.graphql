@@ -68,11 +68,13 @@ type Event @entity {
 
 type Section @entity {
   id: ID!
+  sectionId: String! @index
   section: String! @index
 }
 
 type ExtrinsicModule @entity {
   id: ID!
+  moduleId: String! @index
   sectionId: String! @index
   section: String! @index
   method: String! @index
@@ -80,6 +82,7 @@ type ExtrinsicModule @entity {
 
 type EventModule @entity {
   id: ID!
+  moduleId: String! @index
   sectionId: String! @index
   section: String! @index
   method: String! @index
@@ -87,13 +90,15 @@ type EventModule @entity {
 
 type LogKind @entity {
   id: ID!
+  kindId: String! @index
   kind: String! @index
 }
 
 # Accounts Entities
 
-type Account @entity {
+type AccountHistory @entity {
   id: ID!
+  accountId: String! @index
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
@@ -102,13 +107,35 @@ type Account @entity {
   updatedAt: BigInt! @index
 }
 
-type BalanceHistory @entity {
+type Account @entity {
   id: ID!
   accountId: String! @index
+  nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
   total: BigInt @index
   createdAt: BigInt! @index
+  updatedAt: BigInt! @index
+}
+
+type AccountProfile @entity {
+  id: ID!
+  accountId: String! @index
+  name: String! @index
+  description: String!
+  icon: String!
+  banner: String!
+  website: String!
+  websiteVerified: Boolean!
+  email: String!
+  emailVerified: Boolean!
+  discord: String!
+  github: String!
+  twitter: String!
+  proofMessage: String!
+  proofSignature: String!
+  createdAt: BigInt! @index
+  updatedAt: BigInt! @index
 }
 
 type Transfer @entity {

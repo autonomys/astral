@@ -1,10 +1,10 @@
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
 import {
+  createAndSaveAccountHistory,
   createAndSaveReward,
   createAndSaveTransfer,
-  createOrUpdateAndSaveAccount,
 } from "./db";
-import { updateAccountBalance } from "./helper";
+import { getAccountBalance } from "./helper";
 
 export async function handleTransferEvent(
   event: SubstrateEvent
@@ -20,11 +20,11 @@ export async function handleTransferEvent(
   const to = _to.toString();
   const amount = BigInt(_amount.toString());
 
-  const fromBalance = await updateAccountBalance(from, blockNumber);
-  const toBalance = await updateAccountBalance(to, blockNumber);
+  const fromBalance = await getAccountBalance(from, blockNumber);
+  const toBalance = await getAccountBalance(to, blockNumber);
 
   // create or update and save accounts
-  await createOrUpdateAndSaveAccount(
+  await createAndSaveAccountHistory(
     from,
     blockNumber,
     BigInt(fromBalance.nonce.toString()),
@@ -32,7 +32,7 @@ export async function handleTransferEvent(
     fromBalance.data.reserved,
     fromBalance.data.free + fromBalance.data.reserved
   );
-  await createOrUpdateAndSaveAccount(
+  await createAndSaveAccountHistory(
     to,
     blockNumber,
     BigInt(toBalance.nonce.toString()),
@@ -69,10 +69,10 @@ export async function handleExtrinsic(
   const blockNumber = BigInt(number.toString());
   const address = signer.toString();
 
-  const balance = await updateAccountBalance(address, blockNumber);
+  const balance = await getAccountBalance(address, blockNumber);
 
   // create or update and save accounts
-  await createOrUpdateAndSaveAccount(
+  await createAndSaveAccountHistory(
     address,
     blockNumber,
     BigInt(balance.nonce.toString()),
@@ -103,10 +103,10 @@ export async function handleFarmerVoteRewardEvent(
   const voter = _voter.toString();
   const blockNumber = BigInt(number.toString());
 
-  const balance = await updateAccountBalance(voter, blockNumber);
+  const balance = await getAccountBalance(voter, blockNumber);
 
   // create or update and save accounts
-  await createOrUpdateAndSaveAccount(
+  await createAndSaveAccountHistory(
     voter,
     blockNumber,
     BigInt(balance.nonce.toString()),
@@ -147,10 +147,10 @@ export async function handleFarmerBlockRewardEvent(
   const blockAuthor = _blockAuthor.toString();
   const blockNumber = BigInt(number.toString());
 
-  const balance = await updateAccountBalance(blockAuthor, blockNumber);
+  const balance = await getAccountBalance(blockAuthor, blockNumber);
 
   // create or update and save accounts
-  await createOrUpdateAndSaveAccount(
+  await createAndSaveAccountHistory(
     blockAuthor,
     blockNumber,
     BigInt(balance.nonce.toString()),
