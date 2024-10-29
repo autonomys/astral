@@ -8,7 +8,6 @@ volumes:
 services:
   # Caddy Reverse Proxy with CORS enabled
   caddy:
-#    profiles: [taurus]
     ulimits:
       nofile:
         soft: 65536 # Soft limit for open files (WebSocket connections count)
@@ -24,7 +23,6 @@ services:
 
   # Subspace Node
   node:
-#    profiles: [taurus]
     image: ghcr.io/autonomys/node:taurus-candidate
     platform: linux/amd64
     volumes:
@@ -273,7 +271,8 @@ services:
       - --workers=4
       - --unsafe
       - --batch-size=250
-      - --disable-historical=true
+      - --unfinalized-blocks=true
+      - --disable-historical=false
     healthcheck:
       test:
         [
