@@ -1,5 +1,7 @@
+- "!include consensus_account_histories.yaml"
+- "!include consensus_account_profiles.yaml"
+- "!include consensus_account_rewards.yaml"
 - "!include consensus_accounts.yaml"
-- "!include consensus_balance_histories.yaml"
 - "!include consensus_blocks.yaml"
 - "!include consensus_event_modules.yaml"
 - "!include consensus_events.yaml"

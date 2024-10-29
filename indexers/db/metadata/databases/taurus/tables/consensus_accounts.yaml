@@ -1,6 +1,16 @@
 table:
   name: accounts
   schema: consensus
+object_relationships:
+  - name: profile
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: account_id
+        insertion_order: null
+        remote_table:
+          name: account_profiles
+          schema: consensus
 array_relationships:
   - name: extrinsics
     using:
@@ -24,13 +34,14 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - account_id
         - created_at
         - free
+        - id
         - nonce
         - reserved
         - total
         - updated_at
-        - id
       filter: {}
       allow_aggregations: true
     comment: ""

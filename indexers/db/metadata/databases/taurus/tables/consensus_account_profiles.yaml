@@ -1,0 +1,36 @@
+table:
+  name: account_profiles
+  schema: consensus
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: account_id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - account_id
+        - banner
+        - created_at
+        - description
+        - discord
+        - email
+        - email_verified
+        - github
+        - icon
+        - id
+        - name
+        - proof_message
+        - proof_signature
+        - twitter
+        - updated_at
+        - website
+        - website_verified
+      filter: {}
+    comment: ""

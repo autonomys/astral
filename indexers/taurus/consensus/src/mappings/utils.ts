@@ -39,7 +39,10 @@ export const moduleId = (section: string, method: string) =>
 export const moduleName = (section: string, method: string) =>
   `${capitalizeFirstLetter(section)}.${capitalizeFirstLetter(method)}`;
 
-export const sortId = (blockHeight: bigint, indexInBlock?: bigint): string => {
+export const getSortId = (
+  blockHeight: bigint,
+  indexInBlock?: bigint
+): string => {
   const totalLength = 32;
   const str1 = blockHeight.toString().padStart(totalLength, "0");
 

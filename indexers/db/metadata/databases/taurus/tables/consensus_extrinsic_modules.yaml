@@ -27,6 +27,7 @@ select_permissions:
       columns:
         - id
         - method
+        - module_id
         - section
         - section_id
       filter: {}
