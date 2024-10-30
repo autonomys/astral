@@ -30,7 +30,7 @@ export const QUERY_EXTRINSICS = gql`
 
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
-    consensus_extrinsics_by_pk(id: $extrinsicId) {
+    consensus_extrinsics(where: { id: { _eq: $extrinsicId } }) {
       id
       index_in_block
       hash

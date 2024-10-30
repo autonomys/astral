@@ -346,198 +346,6 @@ export type Consensus_Accounts_Variance_Fields = {
   updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
-/** columns and relationships of "consensus.balance_histories" */
-export type Consensus_Balance_Histories = {
-  __typename?: 'consensus_balance_histories';
-  account_id: Scalars['String']['output'];
-  created_at: Scalars['numeric']['output'];
-  free: Scalars['numeric']['output'];
-  id: Scalars['String']['output'];
-  reserved: Scalars['numeric']['output'];
-  total?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregated selection of "consensus.balance_histories" */
-export type Consensus_Balance_Histories_Aggregate = {
-  __typename?: 'consensus_balance_histories_aggregate';
-  aggregate?: Maybe<Consensus_Balance_Histories_Aggregate_Fields>;
-  nodes: Array<Consensus_Balance_Histories>;
-};
-
-/** aggregate fields of "consensus.balance_histories" */
-export type Consensus_Balance_Histories_Aggregate_Fields = {
-  __typename?: 'consensus_balance_histories_aggregate_fields';
-  avg?: Maybe<Consensus_Balance_Histories_Avg_Fields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<Consensus_Balance_Histories_Max_Fields>;
-  min?: Maybe<Consensus_Balance_Histories_Min_Fields>;
-  stddev?: Maybe<Consensus_Balance_Histories_Stddev_Fields>;
-  stddev_pop?: Maybe<Consensus_Balance_Histories_Stddev_Pop_Fields>;
-  stddev_samp?: Maybe<Consensus_Balance_Histories_Stddev_Samp_Fields>;
-  sum?: Maybe<Consensus_Balance_Histories_Sum_Fields>;
-  var_pop?: Maybe<Consensus_Balance_Histories_Var_Pop_Fields>;
-  var_samp?: Maybe<Consensus_Balance_Histories_Var_Samp_Fields>;
-  variance?: Maybe<Consensus_Balance_Histories_Variance_Fields>;
-};
-
-
-/** aggregate fields of "consensus.balance_histories" */
-export type Consensus_Balance_Histories_Aggregate_FieldsCountArgs = {
-  columns?: InputMaybe<Array<Consensus_Balance_Histories_Select_Column>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** aggregate avg on columns */
-export type Consensus_Balance_Histories_Avg_Fields = {
-  __typename?: 'consensus_balance_histories_avg_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Boolean expression to filter rows from the table "consensus.balance_histories". All fields are combined with a logical 'AND'. */
-export type Consensus_Balance_Histories_Bool_Exp = {
-  _and?: InputMaybe<Array<Consensus_Balance_Histories_Bool_Exp>>;
-  _not?: InputMaybe<Consensus_Balance_Histories_Bool_Exp>;
-  _or?: InputMaybe<Array<Consensus_Balance_Histories_Bool_Exp>>;
-  account_id?: InputMaybe<String_Comparison_Exp>;
-  created_at?: InputMaybe<Numeric_Comparison_Exp>;
-  free?: InputMaybe<Numeric_Comparison_Exp>;
-  id?: InputMaybe<String_Comparison_Exp>;
-  reserved?: InputMaybe<Numeric_Comparison_Exp>;
-  total?: InputMaybe<Numeric_Comparison_Exp>;
-};
-
-/** aggregate max on columns */
-export type Consensus_Balance_Histories_Max_Fields = {
-  __typename?: 'consensus_balance_histories_max_fields';
-  account_id?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['numeric']['output']>;
-  free?: Maybe<Scalars['numeric']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  reserved?: Maybe<Scalars['numeric']['output']>;
-  total?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate min on columns */
-export type Consensus_Balance_Histories_Min_Fields = {
-  __typename?: 'consensus_balance_histories_min_fields';
-  account_id?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['numeric']['output']>;
-  free?: Maybe<Scalars['numeric']['output']>;
-  id?: Maybe<Scalars['String']['output']>;
-  reserved?: Maybe<Scalars['numeric']['output']>;
-  total?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** Ordering options when selecting data from "consensus.balance_histories". */
-export type Consensus_Balance_Histories_Order_By = {
-  account_id?: InputMaybe<Order_By>;
-  created_at?: InputMaybe<Order_By>;
-  free?: InputMaybe<Order_By>;
-  id?: InputMaybe<Order_By>;
-  reserved?: InputMaybe<Order_By>;
-  total?: InputMaybe<Order_By>;
-};
-
-/** select columns of table "consensus.balance_histories" */
-export enum Consensus_Balance_Histories_Select_Column {
-  /** column name */
-  AccountId = 'account_id',
-  /** column name */
-  CreatedAt = 'created_at',
-  /** column name */
-  Free = 'free',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Reserved = 'reserved',
-  /** column name */
-  Total = 'total'
-}
-
-/** aggregate stddev on columns */
-export type Consensus_Balance_Histories_Stddev_Fields = {
-  __typename?: 'consensus_balance_histories_stddev_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_pop on columns */
-export type Consensus_Balance_Histories_Stddev_Pop_Fields = {
-  __typename?: 'consensus_balance_histories_stddev_pop_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate stddev_samp on columns */
-export type Consensus_Balance_Histories_Stddev_Samp_Fields = {
-  __typename?: 'consensus_balance_histories_stddev_samp_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
-/** Streaming cursor of the table "consensus_balance_histories" */
-export type Consensus_Balance_Histories_Stream_Cursor_Input = {
-  /** Stream column input with initial value */
-  initial_value: Consensus_Balance_Histories_Stream_Cursor_Value_Input;
-  /** cursor ordering */
-  ordering?: InputMaybe<Cursor_Ordering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type Consensus_Balance_Histories_Stream_Cursor_Value_Input = {
-  account_id?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['numeric']['input']>;
-  free?: InputMaybe<Scalars['numeric']['input']>;
-  id?: InputMaybe<Scalars['String']['input']>;
-  reserved?: InputMaybe<Scalars['numeric']['input']>;
-  total?: InputMaybe<Scalars['numeric']['input']>;
-};
-
-/** aggregate sum on columns */
-export type Consensus_Balance_Histories_Sum_Fields = {
-  __typename?: 'consensus_balance_histories_sum_fields';
-  created_at?: Maybe<Scalars['numeric']['output']>;
-  free?: Maybe<Scalars['numeric']['output']>;
-  reserved?: Maybe<Scalars['numeric']['output']>;
-  total?: Maybe<Scalars['numeric']['output']>;
-};
-
-/** aggregate var_pop on columns */
-export type Consensus_Balance_Histories_Var_Pop_Fields = {
-  __typename?: 'consensus_balance_histories_var_pop_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate var_samp on columns */
-export type Consensus_Balance_Histories_Var_Samp_Fields = {
-  __typename?: 'consensus_balance_histories_var_samp_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
-/** aggregate variance on columns */
-export type Consensus_Balance_Histories_Variance_Fields = {
-  __typename?: 'consensus_balance_histories_variance_fields';
-  created_at?: Maybe<Scalars['Float']['output']>;
-  free?: Maybe<Scalars['Float']['output']>;
-  reserved?: Maybe<Scalars['Float']['output']>;
-  total?: Maybe<Scalars['Float']['output']>;
-};
-
 /** columns and relationships of "consensus.blocks" */
 export type Consensus_Blocks = {
   __typename?: 'consensus_blocks';
@@ -8032,74 +7840,46 @@ export type Query_Root = {
   consensus_accounts: Array<Consensus_Accounts>;
   /** fetch aggregated fields from the table: "consensus.accounts" */
   consensus_accounts_aggregate: Consensus_Accounts_Aggregate;
-  /** fetch data from the table: "consensus.accounts" using primary key columns */
-  consensus_accounts_by_pk?: Maybe<Consensus_Accounts>;
-  /** fetch data from the table: "consensus.balance_histories" */
-  consensus_balance_histories: Array<Consensus_Balance_Histories>;
-  /** fetch aggregated fields from the table: "consensus.balance_histories" */
-  consensus_balance_histories_aggregate: Consensus_Balance_Histories_Aggregate;
-  /** fetch data from the table: "consensus.balance_histories" using primary key columns */
-  consensus_balance_histories_by_pk?: Maybe<Consensus_Balance_Histories>;
   /** fetch data from the table: "consensus.blocks" */
   consensus_blocks: Array<Consensus_Blocks>;
   /** fetch aggregated fields from the table: "consensus.blocks" */
   consensus_blocks_aggregate: Consensus_Blocks_Aggregate;
-  /** fetch data from the table: "consensus.blocks" using primary key columns */
-  consensus_blocks_by_pk?: Maybe<Consensus_Blocks>;
   /** fetch data from the table: "consensus.event_modules" */
   consensus_event_modules: Array<Consensus_Event_Modules>;
   /** fetch aggregated fields from the table: "consensus.event_modules" */
   consensus_event_modules_aggregate: Consensus_Event_Modules_Aggregate;
-  /** fetch data from the table: "consensus.event_modules" using primary key columns */
-  consensus_event_modules_by_pk?: Maybe<Consensus_Event_Modules>;
   /** fetch data from the table: "consensus.events" */
   consensus_events: Array<Consensus_Events>;
   /** fetch aggregated fields from the table: "consensus.events" */
   consensus_events_aggregate: Consensus_Events_Aggregate;
-  /** fetch data from the table: "consensus.events" using primary key columns */
-  consensus_events_by_pk?: Maybe<Consensus_Events>;
   /** fetch data from the table: "consensus.extrinsic_modules" */
   consensus_extrinsic_modules: Array<Consensus_Extrinsic_Modules>;
   /** fetch aggregated fields from the table: "consensus.extrinsic_modules" */
   consensus_extrinsic_modules_aggregate: Consensus_Extrinsic_Modules_Aggregate;
-  /** fetch data from the table: "consensus.extrinsic_modules" using primary key columns */
-  consensus_extrinsic_modules_by_pk?: Maybe<Consensus_Extrinsic_Modules>;
   /** fetch data from the table: "consensus.extrinsics" */
   consensus_extrinsics: Array<Consensus_Extrinsics>;
   /** fetch aggregated fields from the table: "consensus.extrinsics" */
   consensus_extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
-  /** fetch data from the table: "consensus.extrinsics" using primary key columns */
-  consensus_extrinsics_by_pk?: Maybe<Consensus_Extrinsics>;
   /** fetch data from the table: "consensus.log_kinds" */
   consensus_log_kinds: Array<Consensus_Log_Kinds>;
   /** fetch aggregated fields from the table: "consensus.log_kinds" */
   consensus_log_kinds_aggregate: Consensus_Log_Kinds_Aggregate;
-  /** fetch data from the table: "consensus.log_kinds" using primary key columns */
-  consensus_log_kinds_by_pk?: Maybe<Consensus_Log_Kinds>;
   /** fetch data from the table: "consensus.logs" */
   consensus_logs: Array<Consensus_Logs>;
   /** fetch aggregated fields from the table: "consensus.logs" */
   consensus_logs_aggregate: Consensus_Logs_Aggregate;
-  /** fetch data from the table: "consensus.logs" using primary key columns */
-  consensus_logs_by_pk?: Maybe<Consensus_Logs>;
   /** fetch data from the table: "consensus.rewards" */
   consensus_rewards: Array<Consensus_Rewards>;
   /** fetch aggregated fields from the table: "consensus.rewards" */
   consensus_rewards_aggregate: Consensus_Rewards_Aggregate;
-  /** fetch data from the table: "consensus.rewards" using primary key columns */
-  consensus_rewards_by_pk?: Maybe<Consensus_Rewards>;
   /** fetch data from the table: "consensus.sections" */
   consensus_sections: Array<Consensus_Sections>;
   /** fetch aggregated fields from the table: "consensus.sections" */
   consensus_sections_aggregate: Consensus_Sections_Aggregate;
-  /** fetch data from the table: "consensus.sections" using primary key columns */
-  consensus_sections_by_pk?: Maybe<Consensus_Sections>;
   /** fetch data from the table: "consensus.transfers" */
   consensus_transfers: Array<Consensus_Transfers>;
   /** fetch aggregated fields from the table: "consensus.transfers" */
   consensus_transfers_aggregate: Consensus_Transfers_Aggregate;
-  /** fetch data from the table: "consensus.transfers" using primary key columns */
-  consensus_transfers_by_pk?: Maybe<Consensus_Transfers>;
   /** fetch data from the table: "dictionary.events" */
   dictionary_events: Array<Dictionary_Events>;
   /** fetch data from the table: "dictionary.events" using primary key columns */
@@ -8313,34 +8093,6 @@ export type Query_RootConsensus_Accounts_AggregateArgs = {
 };
 
 
-export type Query_RootConsensus_Accounts_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type Query_RootConsensus_Balance_HistoriesArgs = {
-  distinct_on?: InputMaybe<Array<Consensus_Balance_Histories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Consensus_Balance_Histories_Order_By>>;
-  where?: InputMaybe<Consensus_Balance_Histories_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Balance_Histories_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Consensus_Balance_Histories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Consensus_Balance_Histories_Order_By>>;
-  where?: InputMaybe<Consensus_Balance_Histories_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Balance_Histories_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Query_RootConsensus_BlocksArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Blocks_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8356,11 +8108,6 @@ export type Query_RootConsensus_Blocks_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Blocks_Order_By>>;
   where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Blocks_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -8382,11 +8129,6 @@ export type Query_RootConsensus_Event_Modules_AggregateArgs = {
 };
 
 
-export type Query_RootConsensus_Event_Modules_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Query_RootConsensus_EventsArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Events_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8402,11 +8144,6 @@ export type Query_RootConsensus_Events_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
   where?: InputMaybe<Consensus_Events_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Events_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -8428,11 +8165,6 @@ export type Query_RootConsensus_Extrinsic_Modules_AggregateArgs = {
 };
 
 
-export type Query_RootConsensus_Extrinsic_Modules_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Query_RootConsensus_ExtrinsicsArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Extrinsics_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8448,11 +8180,6 @@ export type Query_RootConsensus_Extrinsics_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Extrinsics_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -8474,11 +8201,6 @@ export type Query_RootConsensus_Log_Kinds_AggregateArgs = {
 };
 
 
-export type Query_RootConsensus_Log_Kinds_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Query_RootConsensus_LogsArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Logs_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8494,11 +8216,6 @@ export type Query_RootConsensus_Logs_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
   where?: InputMaybe<Consensus_Logs_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Logs_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -8520,11 +8237,6 @@ export type Query_RootConsensus_Rewards_AggregateArgs = {
 };
 
 
-export type Query_RootConsensus_Rewards_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Query_RootConsensus_SectionsArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Sections_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8543,11 +8255,6 @@ export type Query_RootConsensus_Sections_AggregateArgs = {
 };
 
 
-export type Query_RootConsensus_Sections_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Query_RootConsensus_TransfersArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Transfers_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -8563,11 +8270,6 @@ export type Query_RootConsensus_Transfers_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Transfers_Order_By>>;
   where?: InputMaybe<Consensus_Transfers_Bool_Exp>;
-};
-
-
-export type Query_RootConsensus_Transfers_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -13739,96 +13441,66 @@ export type Subscription_Root = {
   consensus_accounts: Array<Consensus_Accounts>;
   /** fetch aggregated fields from the table: "consensus.accounts" */
   consensus_accounts_aggregate: Consensus_Accounts_Aggregate;
-  /** fetch data from the table: "consensus.accounts" using primary key columns */
-  consensus_accounts_by_pk?: Maybe<Consensus_Accounts>;
   /** fetch data from the table in a streaming manner: "consensus.accounts" */
   consensus_accounts_stream: Array<Consensus_Accounts>;
-  /** fetch data from the table: "consensus.balance_histories" */
-  consensus_balance_histories: Array<Consensus_Balance_Histories>;
-  /** fetch aggregated fields from the table: "consensus.balance_histories" */
-  consensus_balance_histories_aggregate: Consensus_Balance_Histories_Aggregate;
-  /** fetch data from the table: "consensus.balance_histories" using primary key columns */
-  consensus_balance_histories_by_pk?: Maybe<Consensus_Balance_Histories>;
-  /** fetch data from the table in a streaming manner: "consensus.balance_histories" */
-  consensus_balance_histories_stream: Array<Consensus_Balance_Histories>;
   /** fetch data from the table: "consensus.blocks" */
   consensus_blocks: Array<Consensus_Blocks>;
   /** fetch aggregated fields from the table: "consensus.blocks" */
   consensus_blocks_aggregate: Consensus_Blocks_Aggregate;
-  /** fetch data from the table: "consensus.blocks" using primary key columns */
-  consensus_blocks_by_pk?: Maybe<Consensus_Blocks>;
   /** fetch data from the table in a streaming manner: "consensus.blocks" */
   consensus_blocks_stream: Array<Consensus_Blocks>;
   /** fetch data from the table: "consensus.event_modules" */
   consensus_event_modules: Array<Consensus_Event_Modules>;
   /** fetch aggregated fields from the table: "consensus.event_modules" */
   consensus_event_modules_aggregate: Consensus_Event_Modules_Aggregate;
-  /** fetch data from the table: "consensus.event_modules" using primary key columns */
-  consensus_event_modules_by_pk?: Maybe<Consensus_Event_Modules>;
   /** fetch data from the table in a streaming manner: "consensus.event_modules" */
   consensus_event_modules_stream: Array<Consensus_Event_Modules>;
   /** fetch data from the table: "consensus.events" */
   consensus_events: Array<Consensus_Events>;
   /** fetch aggregated fields from the table: "consensus.events" */
   consensus_events_aggregate: Consensus_Events_Aggregate;
-  /** fetch data from the table: "consensus.events" using primary key columns */
-  consensus_events_by_pk?: Maybe<Consensus_Events>;
   /** fetch data from the table in a streaming manner: "consensus.events" */
   consensus_events_stream: Array<Consensus_Events>;
   /** fetch data from the table: "consensus.extrinsic_modules" */
   consensus_extrinsic_modules: Array<Consensus_Extrinsic_Modules>;
   /** fetch aggregated fields from the table: "consensus.extrinsic_modules" */
   consensus_extrinsic_modules_aggregate: Consensus_Extrinsic_Modules_Aggregate;
-  /** fetch data from the table: "consensus.extrinsic_modules" using primary key columns */
-  consensus_extrinsic_modules_by_pk?: Maybe<Consensus_Extrinsic_Modules>;
   /** fetch data from the table in a streaming manner: "consensus.extrinsic_modules" */
   consensus_extrinsic_modules_stream: Array<Consensus_Extrinsic_Modules>;
   /** fetch data from the table: "consensus.extrinsics" */
   consensus_extrinsics: Array<Consensus_Extrinsics>;
   /** fetch aggregated fields from the table: "consensus.extrinsics" */
   consensus_extrinsics_aggregate: Consensus_Extrinsics_Aggregate;
-  /** fetch data from the table: "consensus.extrinsics" using primary key columns */
-  consensus_extrinsics_by_pk?: Maybe<Consensus_Extrinsics>;
   /** fetch data from the table in a streaming manner: "consensus.extrinsics" */
   consensus_extrinsics_stream: Array<Consensus_Extrinsics>;
   /** fetch data from the table: "consensus.log_kinds" */
   consensus_log_kinds: Array<Consensus_Log_Kinds>;
   /** fetch aggregated fields from the table: "consensus.log_kinds" */
   consensus_log_kinds_aggregate: Consensus_Log_Kinds_Aggregate;
-  /** fetch data from the table: "consensus.log_kinds" using primary key columns */
-  consensus_log_kinds_by_pk?: Maybe<Consensus_Log_Kinds>;
   /** fetch data from the table in a streaming manner: "consensus.log_kinds" */
   consensus_log_kinds_stream: Array<Consensus_Log_Kinds>;
   /** fetch data from the table: "consensus.logs" */
   consensus_logs: Array<Consensus_Logs>;
   /** fetch aggregated fields from the table: "consensus.logs" */
   consensus_logs_aggregate: Consensus_Logs_Aggregate;
-  /** fetch data from the table: "consensus.logs" using primary key columns */
-  consensus_logs_by_pk?: Maybe<Consensus_Logs>;
   /** fetch data from the table in a streaming manner: "consensus.logs" */
   consensus_logs_stream: Array<Consensus_Logs>;
   /** fetch data from the table: "consensus.rewards" */
   consensus_rewards: Array<Consensus_Rewards>;
   /** fetch aggregated fields from the table: "consensus.rewards" */
   consensus_rewards_aggregate: Consensus_Rewards_Aggregate;
-  /** fetch data from the table: "consensus.rewards" using primary key columns */
-  consensus_rewards_by_pk?: Maybe<Consensus_Rewards>;
   /** fetch data from the table in a streaming manner: "consensus.rewards" */
   consensus_rewards_stream: Array<Consensus_Rewards>;
   /** fetch data from the table: "consensus.sections" */
   consensus_sections: Array<Consensus_Sections>;
   /** fetch aggregated fields from the table: "consensus.sections" */
   consensus_sections_aggregate: Consensus_Sections_Aggregate;
-  /** fetch data from the table: "consensus.sections" using primary key columns */
-  consensus_sections_by_pk?: Maybe<Consensus_Sections>;
   /** fetch data from the table in a streaming manner: "consensus.sections" */
   consensus_sections_stream: Array<Consensus_Sections>;
   /** fetch data from the table: "consensus.transfers" */
   consensus_transfers: Array<Consensus_Transfers>;
   /** fetch aggregated fields from the table: "consensus.transfers" */
   consensus_transfers_aggregate: Consensus_Transfers_Aggregate;
-  /** fetch data from the table: "consensus.transfers" using primary key columns */
-  consensus_transfers_by_pk?: Maybe<Consensus_Transfers>;
   /** fetch data from the table in a streaming manner: "consensus.transfers" */
   consensus_transfers_stream: Array<Consensus_Transfers>;
   /** fetch data from the table: "dictionary.events" */
@@ -14110,45 +13782,10 @@ export type Subscription_RootConsensus_Accounts_AggregateArgs = {
 };
 
 
-export type Subscription_RootConsensus_Accounts_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Subscription_RootConsensus_Accounts_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Accounts_Stream_Cursor_Input>>;
   where?: InputMaybe<Consensus_Accounts_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Balance_HistoriesArgs = {
-  distinct_on?: InputMaybe<Array<Consensus_Balance_Histories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Consensus_Balance_Histories_Order_By>>;
-  where?: InputMaybe<Consensus_Balance_Histories_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Balance_Histories_AggregateArgs = {
-  distinct_on?: InputMaybe<Array<Consensus_Balance_Histories_Select_Column>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  order_by?: InputMaybe<Array<Consensus_Balance_Histories_Order_By>>;
-  where?: InputMaybe<Consensus_Balance_Histories_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Balance_Histories_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type Subscription_RootConsensus_Balance_Histories_StreamArgs = {
-  batch_size: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<Consensus_Balance_Histories_Stream_Cursor_Input>>;
-  where?: InputMaybe<Consensus_Balance_Histories_Bool_Exp>;
 };
 
 
@@ -14167,11 +13804,6 @@ export type Subscription_RootConsensus_Blocks_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Blocks_Order_By>>;
   where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Blocks_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -14200,11 +13832,6 @@ export type Subscription_RootConsensus_Event_Modules_AggregateArgs = {
 };
 
 
-export type Subscription_RootConsensus_Event_Modules_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Subscription_RootConsensus_Event_Modules_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Event_Modules_Stream_Cursor_Input>>;
@@ -14227,11 +13854,6 @@ export type Subscription_RootConsensus_Events_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Events_Order_By>>;
   where?: InputMaybe<Consensus_Events_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Events_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -14260,11 +13882,6 @@ export type Subscription_RootConsensus_Extrinsic_Modules_AggregateArgs = {
 };
 
 
-export type Subscription_RootConsensus_Extrinsic_Modules_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Subscription_RootConsensus_Extrinsic_Modules_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Extrinsic_Modules_Stream_Cursor_Input>>;
@@ -14287,11 +13904,6 @@ export type Subscription_RootConsensus_Extrinsics_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Extrinsics_Order_By>>;
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Extrinsics_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -14320,11 +13932,6 @@ export type Subscription_RootConsensus_Log_Kinds_AggregateArgs = {
 };
 
 
-export type Subscription_RootConsensus_Log_Kinds_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Subscription_RootConsensus_Log_Kinds_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Log_Kinds_Stream_Cursor_Input>>;
@@ -14347,11 +13954,6 @@ export type Subscription_RootConsensus_Logs_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Logs_Order_By>>;
   where?: InputMaybe<Consensus_Logs_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Logs_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -14380,11 +13982,6 @@ export type Subscription_RootConsensus_Rewards_AggregateArgs = {
 };
 
 
-export type Subscription_RootConsensus_Rewards_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Subscription_RootConsensus_Rewards_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Rewards_Stream_Cursor_Input>>;
@@ -14410,11 +14007,6 @@ export type Subscription_RootConsensus_Sections_AggregateArgs = {
 };
 
 
-export type Subscription_RootConsensus_Sections_By_PkArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type Subscription_RootConsensus_Sections_StreamArgs = {
   batch_size: Scalars['Int']['input'];
   cursor: Array<InputMaybe<Consensus_Sections_Stream_Cursor_Input>>;
@@ -14437,11 +14029,6 @@ export type Subscription_RootConsensus_Transfers_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Consensus_Transfers_Order_By>>;
   where?: InputMaybe<Consensus_Transfers_Bool_Exp>;
-};
-
-
-export type Subscription_RootConsensus_Transfers_By_PkArgs = {
-  id: Scalars['String']['input'];
 };
 
 
@@ -15440,7 +15027,7 @@ export type AccountByIdQueryVariables = Exact<{
 }>;
 
 
-export type AccountByIdQuery = { __typename?: 'query_root', consensus_accounts_by_pk?: { __typename?: 'consensus_accounts', id: string, free: any, reserved: any, total?: any | null, nonce: any, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, index_in_block: number, name: string, success: boolean, timestamp: any, tip: any, block?: { __typename?: 'consensus_blocks', id: string, height: any } | null }> } | null, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, index_in_block: any, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
+export type AccountByIdQuery = { __typename?: 'query_root', consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, free: any, reserved: any, total?: any | null, nonce: any, updated_at: any, extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, index_in_block: number, name: string, success: boolean, timestamp: any, tip: any, block?: { __typename?: 'consensus_blocks', id: string, height: any } | null }> }>, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, index_in_block: any, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
 
 export type LatestRewardsWeekQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
@@ -15497,11 +15084,11 @@ export type BlocksQueryVariables = Exact<{
 export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', blockchain_size: any, extrinsics_root: string, hash: string, height: any, id: string, parent_hash: string, space_pledged: any, spec_id: string, state_root: string, timestamp: any, author_id: string, events: Array<{ __typename?: 'consensus_events', id: string }>, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
 
 export type BlockByIdQueryVariables = Exact<{
-  blockId: Scalars['String']['input'];
+  blockId: Scalars['numeric']['input'];
 }>;
 
 
-export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks_by_pk?: { __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, author_id: string, logs: Array<{ __typename?: 'consensus_logs', block_height: any, kind: string, id: string, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> } | null };
+export type BlockByIdQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, state_root: string, timestamp: any, extrinsics_root: string, spec_id: string, parent_hash: string, extrinsics_count: number, events_count: number, author_id: string, logs: Array<{ __typename?: 'consensus_logs', block_height: any, kind: string, id: string, block?: { __typename?: 'consensus_blocks', timestamp: any } | null }> }> };
 
 export type ExtrinsicsByBlockIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -15542,7 +15129,7 @@ export type EventByIdQueryVariables = Exact<{
 }>;
 
 
-export type EventByIdQuery = { __typename?: 'query_root', consensus_events_by_pk?: { __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, extrinsic?: { __typename?: 'consensus_extrinsics', args: string, success: boolean, tip: any, fee: any, id: string, signer: string } | null, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any, spec_id: string, hash: string } | null } | null };
+export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Array<{ __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, extrinsic?: { __typename?: 'consensus_extrinsics', args: string, success: boolean, tip: any, fee: any, id: string, signer: string } | null, block?: { __typename?: 'consensus_blocks', height: any, id: string, timestamp: any, spec_id: string, hash: string } | null }> };
 
 export type ExtrinsicsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -15558,7 +15145,7 @@ export type ExtrinsicsByIdQueryVariables = Exact<{
 }>;
 
 
-export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics_by_pk?: { __typename?: 'consensus_extrinsics', id: string, index_in_block: number, hash: string, block_height: any, timestamp: any, signature: string, success: boolean, tip: any, args: string, signer: string, name: string, events: Array<{ __typename?: 'consensus_events', id: string, phase: string, timestamp: any, name: string, args: string, extrinsic_id: string }> } | null };
+export type ExtrinsicsByIdQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, index_in_block: number, hash: string, block_height: any, timestamp: any, signature: string, success: boolean, tip: any, args: string, signer: string, name: string, events: Array<{ __typename?: 'consensus_events', id: string, phase: string, timestamp: any, name: string, args: string, extrinsic_id: string }> }> };
 
 export type ExtrinsicsByHashQueryVariables = Exact<{
   hash: Scalars['String']['input'];
@@ -15589,7 +15176,7 @@ export type LogByIdQueryVariables = Exact<{
 }>;
 
 
-export type LogByIdQuery = { __typename?: 'query_root', consensus_logs_by_pk?: { __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null } | null };
+export type LogByIdQuery = { __typename?: 'query_root', consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, events: Array<{ __typename?: 'consensus_events', id: string, args: string, name: string, phase: string, timestamp: any, block_height: any, extrinsic_id: string }> } | null }> };
 
 export type DomainsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];

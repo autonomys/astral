@@ -19,7 +19,7 @@ export const QUERY_LOGS = gql`
 
 export const QUERY_LOG_BY_ID = gql`
   query LogById($logId: String!) {
-    consensus_logs_by_pk(id: $logId) {
+    consensus_logs(where: { id: { _eq: $logId } }) {
       id
       kind
       value

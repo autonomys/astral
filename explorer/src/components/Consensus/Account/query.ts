@@ -30,7 +30,7 @@ export const QUERY_ACCOUNTS = gql`
 
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
-    consensus_accounts_by_pk(id: $accountId) {
+    consensus_accounts(where: { id: { _eq: $accountId } }) {
       id
       free
       reserved
