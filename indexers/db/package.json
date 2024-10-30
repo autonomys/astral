@@ -17,7 +17,8 @@
   "scripts": {
     "console": "hasura console",
     "metadata": "hasura metadata apply --skip-update-check",
-    "start": "yarn metadata && yarn console"
+    "migrate": "hasura migrate apply",
+    "start": "yarn metadata && yarn migrate && yarn console"
   },
   "devDependencies": {
     "hasura-cli": "2.36.2"
