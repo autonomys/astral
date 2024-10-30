@@ -169,7 +169,6 @@ export async function createAndSaveAccountHistory(
 ): Promise<AccountHistory> {
   const accountHistory = AccountHistory.create({
     id,
-    accountId: id,
     nonce,
     free,
     reserved,

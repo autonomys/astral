@@ -68,13 +68,11 @@ type Event @entity {
 
 type Section @entity {
   id: ID!
-  sectionId: String! @index
   section: String! @index
 }
 
 type ExtrinsicModule @entity {
   id: ID!
-  moduleId: String! @index
   sectionId: String! @index
   section: String! @index
   method: String! @index
@@ -82,7 +80,6 @@ type ExtrinsicModule @entity {
 
 type EventModule @entity {
   id: ID!
-  moduleId: String! @index
   sectionId: String! @index
   section: String! @index
   method: String! @index
@@ -90,7 +87,6 @@ type EventModule @entity {
 
 type LogKind @entity {
   id: ID!
-  kindId: String! @index
   kind: String! @index
 }
 
@@ -98,7 +94,6 @@ type LogKind @entity {
 
 type AccountHistory @entity {
   id: ID!
-  accountId: String! @index
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
@@ -109,7 +104,6 @@ type AccountHistory @entity {
 
 type Account @entity {
   id: ID!
-  accountId: String! @index
   nonce: BigInt!
   free: BigInt!
   reserved: BigInt!
@@ -120,7 +114,6 @@ type Account @entity {
 
 type AccountProfile @entity {
   id: ID!
-  accountId: String! @index
   name: String! @index
   description: String!
   icon: String!
@@ -154,7 +147,6 @@ type Transfer @entity {
 
 type AccountRewards @entity {
   id: ID!
-  accountId: String! @index
   # Sum of all rewards
   totalRewardsValue: BigInt
   totalRewardsCounts: BigInt
