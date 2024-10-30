@@ -6,7 +6,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: log_kind_id
+          id: id
         insertion_order: null
         remote_table:
           name: logs
@@ -17,7 +17,6 @@ select_permissions:
       columns:
         - id
         - kind
-        - kind_id
       filter: {}
       allow_aggregations: true
     comment: ""

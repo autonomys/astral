@@ -6,7 +6,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          account_id: account_id
+          id: id
         insertion_order: null
         remote_table:
           name: account_profiles
@@ -25,7 +25,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: account_id
+          id: id
         insertion_order: null
         remote_table:
           name: rewards
@@ -34,7 +34,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - account_id
         - created_at
         - free
         - id

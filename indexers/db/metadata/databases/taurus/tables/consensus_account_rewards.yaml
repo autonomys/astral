@@ -6,7 +6,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          account_id: account_id
+          id: id
         insertion_order: null
         remote_table:
           name: accounts
@@ -15,7 +15,6 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - account_id
         - block_rewards_counts
         - block_rewards_value
         - created_at
