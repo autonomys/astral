@@ -7,7 +7,7 @@ import { FC } from 'react'
 import { LogDetailsEventList } from './LogDetailsEventList'
 
 type Props = {
-  events: NonNullable<NonNullable<LogByIdQuery['consensus_logs_by_pk']>['block']>['events']
+  events: NonNullable<NonNullable<LogByIdQuery['consensus_logs'][number]>['block']>['events']
 }
 
 export const LogDetailsTab: FC<Props> = ({ events }) => {

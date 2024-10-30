@@ -3,7 +3,7 @@ import { FC } from 'react'
 import { MobileCard } from './MobileCard'
 
 type EventCardProps = {
-  event: NonNullable<NonNullable<LogByIdQuery['consensus_logs_by_pk']>['block']>['events'][number]
+  event: NonNullable<NonNullable<LogByIdQuery['consensus_logs'][number]>['block']>['events'][number]
   id: string
 }
 

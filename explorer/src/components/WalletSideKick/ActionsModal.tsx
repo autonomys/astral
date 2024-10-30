@@ -1,5 +1,5 @@
 import { remark, transfer } from '@autonomys/auto-consensus'
-import { Hash, SignerResult } from '@autonomys/auto-utils'
+import { SignerResult } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
@@ -62,7 +62,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)
   const [signature, setSignature] = useState<SignerResult | undefined>(undefined)
-  const [hash, setHash] = useState<Hash | undefined>(undefined)
+  const [hash, setHash] = useState<string | undefined>(undefined)
   const [extrinsicsList, setExtrinsicsList] = useState<ExtrinsicsList>({})
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null)
@@ -210,7 +210,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           error: setFormError,
         })
         if (hash) {
-          setHash(hash)
+          setHash(hash.toString())
           toast.success('The transaction was sent successfully', { position: 'bottom-center' })
           sendGAEvent({
             event: 'walletSideKick_action_sendToken',
@@ -274,7 +274,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
           error: setFormError,
         })
         if (hash) {
-          setHash(hash)
+          setHash(hash.toString())
           toast.success('The remark was sent', { position: 'bottom-center' })
           sendGAEvent({
             event: 'walletSideKick_action_sendRemark',
@@ -303,13 +303,14 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         )
         const hash = await sendAndSaveTx({
           call: `${selectedCategory}.${selectedMethod}`,
+          // @ts-expect-error TODO: fix this
           tx,
           signer: injector.signer,
           nonce: typeof values.nonce === 'string' ? parseInt(values.nonce) : values.nonce,
           error: setFormError,
         })
         if (hash) {
-          setHash(hash)
+          setHash(hash.toString())
           toast.success('The extrinsic was sent', { position: 'bottom-center' })
           sendGAEvent({
             event: 'walletSideKick_action_customExtrinsic',

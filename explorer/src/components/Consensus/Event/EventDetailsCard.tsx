@@ -13,7 +13,7 @@ import { parseArgs } from 'utils/indexerParsing'
 dayjs.extend(relativeTime)
 
 type Props = {
-  event: EventByIdQuery['consensus_events_by_pk']
+  event: EventByIdQuery['consensus_events'][number]
 }
 
 export const EventDetailsCard: FC<Props> = ({ event }) => {

@@ -28,7 +28,7 @@ export const QUERY_EVENTS = gql`
 
 export const QUERY_EVENT_BY_ID = gql`
   query EventById($eventId: String!) {
-    consensus_events_by_pk(id: $eventId) {
+    consensus_events(where: { id: { _eq: $eventId } }) {
       args
       id
       index_in_block

@@ -1,4 +1,4 @@
-import { NetworkId } from '@autonomys/auto-utils'
+import { NetworkId, NetworkName } from '@autonomys/auto-utils'
 
 export interface Indexer {
   title: string
@@ -6,16 +6,16 @@ export interface Indexer {
   indexer: string
 }
 
-const LOCAL_INDEXER = 'https://localhost:8080/v1/graphql'
+const LOCAL_INDEXER = 'https://subql.green.gemini-3h.subspace.network/v1/graphql'
 
 export const indexers: Indexer[] = [
   {
-    title: 'Gemini 3h',
-    network: NetworkId.GEMINI_3H,
-    indexer: process.env.NEXT_PUBLIC_GEMINI_3H_INDEXERS || LOCAL_INDEXER,
+    title: NetworkName.TAURUS,
+    network: NetworkId.TAURUS,
+    indexer: process.env.NEXT_PUBLIC_TAURUS_INDEXERS || LOCAL_INDEXER,
   },
   {
-    title: 'Localhost',
+    title: NetworkName.LOCALHOST,
     network: NetworkId.LOCALHOST,
     indexer: LOCAL_INDEXER,
   },
@@ -24,4 +24,4 @@ export const indexers: Indexer[] = [
 export const networks = new Set(indexers.map((chain) => chain.network))
 
 export const defaultIndexer =
-  indexers.find((indexer) => indexer.network === NetworkId.GEMINI_3H) || indexers[0]
+  indexers.find((indexer) => indexer.network === NetworkId.TAURUS) || indexers[0]

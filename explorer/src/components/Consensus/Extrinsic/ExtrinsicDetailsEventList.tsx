@@ -16,10 +16,10 @@ import { countTablePages } from 'utils/table'
 dayjs.extend(relativeTime)
 
 type Props = {
-  events: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics_by_pk']>['events']
+  events: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>['events']
 }
 
-type Row = NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics_by_pk']>['events'][number]
+type Row = NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>['events'][number]
 
 export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
   const { network, section } = useChains()

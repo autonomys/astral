@@ -11,7 +11,7 @@ import { BlockAuthor } from './BlockAuthor'
 dayjs.extend(relativeTime)
 
 type Props = {
-  block: NonNullable<BlockByIdQuery['consensus_blocks_by_pk']>
+  block: NonNullable<BlockByIdQuery['consensus_blocks'][number]>
   isDesktop?: boolean
 }
 

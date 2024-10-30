@@ -44,7 +44,7 @@ export const Extrinsic: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const extrinsic = useMemo(() => data && data.consensus_extrinsics_by_pk, [data])
+  const extrinsic = useMemo(() => data && data.consensus_extrinsics[0], [data])
 
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />

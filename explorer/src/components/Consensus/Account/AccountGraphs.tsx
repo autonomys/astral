@@ -9,7 +9,7 @@ import { AccountGraphTabs } from './AccountGraphTabs'
 dayjs.extend(relativeTime)
 
 type Props = {
-  account: AccountByIdQuery['consensus_accounts_by_pk']
+  account: AccountByIdQuery['consensus_accounts'][number] | undefined
   isDesktop?: boolean
 }
 
