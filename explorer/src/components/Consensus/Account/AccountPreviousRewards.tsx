@@ -1,22 +1,11 @@
 import { TOKEN } from 'constants/general'
-import { Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import {
-  AccountRewards,
-  AllRewardForAccountByIdQuery,
-  AllRewardForAccountByIdQueryVariables,
-} from 'gql/graphql'
-import { useSquidQuery } from 'hooks/useSquidQuery'
-import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, useQueryStates } from 'states/query'
 import { AccountIdParam } from 'types/app'
 import { formatAddress } from 'utils//formatAddress'
-import { formatUnitsToNumber } from 'utils/number'
-import { QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID } from './query'
 
 dayjs.extend(relativeTime)
 
@@ -57,40 +46,9 @@ const defaultRewards = {
 }
 
 export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
-  const { ref, inView } = useInView()
+  const { ref } = useInView()
   const [previousRewards, setRewards] = useState(defaultRewards)
-
   const { accountId } = useParams<AccountIdParam>()
-  const inFocus = useWindowFocus()
-
-  const { setIsVisible } = useSquidQuery<
-    AllRewardForAccountByIdQuery,
-    AllRewardForAccountByIdQueryVariables
-  >(
-    QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID,
-    {
-      variables: { accountId: formatAddress(accountId) ?? '' },
-      skip: !inFocus,
-    },
-    Routes.consensus,
-    'accountPreviousReward',
-  )
-
-  const {
-    consensus: { accountPreviousReward: consensusEntry },
-  } = useQueryStates()
-
-  const rewardsData = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
-
-  const rewards = useMemo(
-    () =>
-      rewardsData && rewardsData.accountRewards && rewardsData.accountRewards.length === 1
-        ? (rewardsData.accountRewards[0] as AccountRewards)
-        : ({} as AccountRewards),
-    [rewardsData],
-  )
 
   const handleSearch = useCallback(async () => {
     const file = await fetch('/data/rewards.csv')
@@ -197,16 +155,14 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
         case 'gemini3f':
           return parseFloat(previousRewards.geminiIII.IIIf.earnings).toFixed(2)
         case 'gemini3g':
-          return formatUnitsToNumber(
-            (BigInt(rewards.vote ?? 0) - BigInt(rewards.block ?? 0)).toString(),
-          ).toFixed(2)
+          return 'n/a'
         case 'gemini3h':
           return 'n/a'
         default:
           return '0.00'
       }
     },
-    [previousRewards, rewards],
+    [previousRewards],
   )
 
   const rewardsPercentageByPhase = useCallback(
@@ -235,10 +191,6 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   useEffect(() => {
     handleSearch()
   }, [handleSearch])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div

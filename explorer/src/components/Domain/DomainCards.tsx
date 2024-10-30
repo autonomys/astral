@@ -1,20 +1,16 @@
-import { BlockIcon, DocIcon } from '@/components/icons'
-import { useSquidQuery } from '@/hooks/useSquidQuery'
-import { numberWithCommas } from '@/utils/number'
 import { Spinner } from 'components/common/Spinner'
+import { BlockIcon, DocIcon } from 'components/icons'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import {
-  DomainsStatusQuery,
-  DomainsStatusQueryVariables,
-  Order_By as OrderBy,
-} from 'gql/types/staking'
+import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
+import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { QUERY_DOMAIN_STATUS } from './staking.query'
+import { numberWithCommas } from 'utils/number'
+import { QUERY_DOMAIN_STATUS } from './query'
 
 interface CardData {
   title: string
@@ -48,9 +44,9 @@ export const DomainCards: FC = () => {
   const cards = useMemo<CardData[]>(() => {
     if (loading || error || !data) return []
 
-    return data.domain.map((domain) => ({
+    return data.staking_domains.map((domain) => ({
       title: domain.name,
-      description: domain.name === 'nova' ? 'EVM domain' : 'Identity domain',
+      description: domain.name === 'Nova' ? 'EVM domain' : 'Identity domain',
       href: `/${network}/${domain.name === 'nova' ? Routes.nova : Routes.autoid}`,
       icon: domain.name === 'nova' ? <BlockIcon /> : <DocIcon />,
       darkBgClass:

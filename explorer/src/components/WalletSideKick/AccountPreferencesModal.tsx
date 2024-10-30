@@ -1,6 +1,6 @@
-import { INTERNAL_ROUTES, Routes } from '@/constants'
 import { isAddress } from '@autonomys/auto-utils'
 import { Modal } from 'components/common/Modal'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import useChains from 'hooks/useChains'

@@ -1,37 +1,27 @@
-import { NetworkId } from '@autonomys/auto-utils'
+import { NetworkId, NetworkName } from '@autonomys/auto-utils'
 
 export interface Indexer {
   title: string
   network: NetworkId
-  squids: {
-    old: string
-    accounts?: string
-    leaderboard?: string
-    staking?: string
-  }
+  indexer: string
 }
+
+const LOCAL_INDEXER = 'https://subql.green.gemini-3h.subspace.network/v1/graphql'
 
 export const indexers: Indexer[] = [
   {
-    title: 'Gemini 3h',
-    network: NetworkId.GEMINI_3H,
-    squids: {
-      old: 'https://squid.gemini-3h.subspace.network/graphql',
-      accounts: 'https://autonomys-labs.squids.live/accounts-squid/addons/hasura/v1/graphql',
-      leaderboard: 'https://autonomys-labs.squids.live/leaderboard-squid/addons/hasura/v1/graphql',
-      staking: 'https://autonomys-labs.squids.live/staking-squid/addons/hasura/v1/graphql',
-    },
+    title: NetworkName.TAURUS,
+    network: NetworkId.TAURUS,
+    indexer: process.env.NEXT_PUBLIC_TAURUS_INDEXERS || LOCAL_INDEXER,
   },
   {
-    title: 'Localhost',
+    title: NetworkName.LOCALHOST,
     network: NetworkId.LOCALHOST,
-    squids: {
-      old: 'http://localhost:4349/graphql',
-    },
+    indexer: LOCAL_INDEXER,
   },
 ]
 
 export const networks = new Set(indexers.map((chain) => chain.network))
 
 export const defaultIndexer =
-  indexers.find((indexer) => indexer.network === NetworkId.GEMINI_3H) || indexers[0]
+  indexers.find((indexer) => indexer.network === NetworkId.TAURUS) || indexers[0]

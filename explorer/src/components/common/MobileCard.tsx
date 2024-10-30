@@ -7,7 +7,7 @@ type Props = {
   children?: ReactNode
 }
 
-export type Row = {
+type Row = {
   name: string
   value: string | number | ReactNode
 }

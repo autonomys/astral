@@ -1,8 +1,6 @@
 const { Pool } = require("pg");
 
-const connectToDB = async (
-  database = process.env.DB_GEMINI_3H || "gemini_3h"
-) => {
+const connectToDB = async (database = process.env.DB_TAURUS || "taurus") => {
   const dbConfig = {
     user: process.env.DB_USER || "postgres",
     host: process.env.DB_HOST || "localhost",

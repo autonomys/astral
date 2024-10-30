@@ -3,13 +3,7 @@
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
-import {
-  BlockByIdDomainQuery,
-  BlockByIdDomainQueryVariables,
-  BlockByIdQuery,
-  BlockByIdQueryVariables,
-  Block as BlockResult,
-} from 'gql/graphql'
+import { BlockByIdQuery, BlockByIdQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -28,13 +22,10 @@ export const Block: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const inFocus = useWindowFocus()
 
-  const { loading, setIsVisible } = useSquidQuery<
-    BlockByIdDomainQuery | BlockByIdQuery,
-    BlockByIdDomainQueryVariables | BlockByIdQueryVariables
-  >(
+  const { loading, setIsVisible } = useSquidQuery<BlockByIdQuery, BlockByIdQueryVariables>(
     QUERY_BLOCK_BY_ID,
     {
-      variables: { blockId: Number(blockId) },
+      variables: { blockId: blockId ?? '0' },
       skip: !inFocus,
     },
     Routes.consensus,
@@ -49,7 +40,7 @@ export const Block: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const block = useMemo(() => data && (data.blocks[0] as BlockResult), [data])
+  const block = useMemo(() => data && data.consensus_blocks[0], [data])
 
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
@@ -69,8 +60,8 @@ export const Block: FC = () => {
             <BlockDetailsCard block={block} isDesktop={isDesktop} />
             <BlockDetailsTabs
               logs={block.logs}
-              extrinsicsCount={block.extrinsicsCount}
-              eventsCount={block.eventsCount}
+              extrinsicsCount={block.extrinsics_count}
+              eventsCount={block.events_count}
               isDesktop={isDesktop}
             />
           </>

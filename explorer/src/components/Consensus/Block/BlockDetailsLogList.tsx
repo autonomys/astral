@@ -6,7 +6,7 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import { Log } from 'gql/graphql'
+import { BlockByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
@@ -14,6 +14,8 @@ import type { Cell } from 'types/table'
 import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
+
+type Log = NonNullable<BlockByIdQuery['consensus_blocks'][number]>['logs'][number]
 
 type Props = {
   logs: Log[]
@@ -48,7 +50,7 @@ export const BlockDetailsLogList: FC<Props> = ({ logs }) => {
         header: 'Block',
         enableSorting: false,
         cell: ({ row }: Cell<Log>) => (
-          <div key={`${row.index}-block-log-block`}>{row.original.block.height}</div>
+          <div key={`${row.index}-block-log-block`}>{row.original.block_height}</div>
         ),
       },
       {

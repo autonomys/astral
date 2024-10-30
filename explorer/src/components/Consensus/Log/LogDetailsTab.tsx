@@ -1,13 +1,13 @@
 import { EventCard } from 'components/common/EventCard'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
-import { Event } from 'gql/graphql'
+import { LogByIdQuery } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { FC } from 'react'
 import { LogDetailsEventList } from './LogDetailsEventList'
 
 type Props = {
-  events: Event[]
+  events: NonNullable<NonNullable<LogByIdQuery['consensus_logs'][number]>['block']>['events']
 }
 
 export const LogDetailsTab: FC<Props> = ({ events }) => {

@@ -13,7 +13,19 @@ services:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   hasura:
-    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
+    image: hasura/graphql-engine:v2.40.0
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_dictionary_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_dictionary_graphql_engine:
     logging:
       driver: loki
       options:
@@ -26,6 +38,24 @@ services:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   gemini_3h_dictionary_graphql_engine:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_consensus_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_leaderboard_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taurus_staking_subquery_node:
     logging:
       driver: loki
       options:

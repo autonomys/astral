@@ -1,10 +1,4 @@
-import {
-  ArchivedHistoryIcon,
-  BlockIcon,
-  DocIcon,
-  PieChartIcon,
-  WalletIcon,
-} from '@/components/icons'
+import { ArchivedHistoryIcon, BlockIcon, DocIcon, PieChartIcon, WalletIcon } from 'components/icons'
 import { Routes } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import { FC, useMemo } from 'react'

@@ -1,6 +1,6 @@
-import { exportToExcel } from '@/utils/exportToExcel'
 import { sendGAEvent } from '@next/third-parties/google'
 import { useCallback } from 'react'
+import { exportToExcel } from 'utils/exportToExcel'
 
 type Props<T extends object> = {
   data: T[]

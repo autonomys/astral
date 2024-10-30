@@ -9,8 +9,9 @@ import toast from 'react-hot-toast'
 import { useTransactionsStates } from 'states/transactions'
 import { logError, logTx } from 'utils/log'
 
-export interface SendAndSaveTx {
+interface SendAndSaveTx {
   call: string
+  // @ts-expect-error TODO: fix this
   tx: SubmittableExtrinsic<'promise', ISubmittableResult>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signer: Signer | any

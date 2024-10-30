@@ -1,84 +1,60 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_EVENT_LIST = gql`
-  query Events($limit: Int!, $offset: Int!) {
-    events(limit: $limit, offset: $offset, orderBy: block_height_DESC) {
+export const QUERY_EVENTS = gql`
+  query Events($limit: Int!, $offset: Int, $where: consensus_events_bool_exp) {
+    consensus_events_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    consensus_events(order_by: { sort_id: desc }, limit: $limit, offset: $offset, where: $where) {
+      args
+      id
+      index_in_block
       name
       phase
-      id
+      timestamp
       block {
-        height
+        id
         timestamp
+        height
       }
-      indexInBlock
     }
-  }
-`
-
-export const QUERY_EVENT_CONNECTION_LIST = gql`
-  query EventsConnection($first: Int!, $after: String, $where: EventWhereInput) {
-    eventsConnection(orderBy: id_DESC, first: $first, after: $after, where: $where) {
-      edges {
-        cursor
-        node {
-          args
-          id
-          indexInBlock
-          name
-          phase
-          timestamp
-          block {
-            id
-            timestamp
-            height
-          }
-        }
-      }
-      pageInfo {
-        hasNextPage
-        endCursor
-        hasPreviousPage
-        startCursor
-      }
-      totalCount
-    }
-    eventModuleNames(limit: 300) {
-      name
+    consensus_event_modules(limit: 300) {
+      method
     }
   }
 `
 
 export const QUERY_EVENT_BY_ID = gql`
   query EventById($eventId: String!) {
-    eventById(id: $eventId) {
+    consensus_events(where: { id: { _eq: $eventId } }) {
       args
       id
-      indexInBlock
+      index_in_block
       name
       phase
       timestamp
-      call {
-        args
-        name
-        success
-        timestamp
-        id
-      }
+      #  call {
+      #    args
+      #    name
+      #    success
+      #    timestamp
+      #    id
+      #  }
       extrinsic {
         args
         success
         tip
         fee
         id
-        signer {
-          id
-        }
+        signer
       }
       block {
         height
         id
         timestamp
-        specId
+        spec_id
         hash
       }
     }

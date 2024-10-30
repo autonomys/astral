@@ -1,6 +1,5 @@
 'use client'
 
-/* eslint-disable camelcase */
 import { useApolloClient } from '@apollo/client'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
@@ -11,9 +10,8 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import {
-  Account,
-  RewardEvent,
-  RewardEventOrderByInput,
+  AccountByIdQuery,
+  Order_By as OrderBy,
   RewardsListQuery,
   RewardsListQueryVariables,
 } from 'gql/graphql'
@@ -31,7 +29,6 @@ import type { Cell } from 'types/table'
 import { formatAddress } from 'utils//formatAddress'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
@@ -39,6 +36,8 @@ import { AccountDetailsCard } from './AccountDetailsCard'
 import { QUERY_REWARDS_LIST } from './query'
 
 dayjs.extend(relativeTime)
+
+type Row = RewardsListQuery['consensus_rewards'][number]
 
 export const AccountRewardList: FC = () => {
   const { ref, inView } = useInView()
@@ -53,18 +52,13 @@ export const AccountRewardList: FC = () => {
   const { accountId } = useParams<AccountIdParam>()
   const inFocus = useWindowFocus()
 
-  const sortBy = useMemo(
-    () => sort(sorting, RewardEventOrderByInput.BlockHeightDesc) as RewardEventOrderByInput,
-    [sorting],
-  )
+  // eslint-disable-next-line camelcase
+  const sortBy = useMemo(() => ({ block_height: OrderBy.Desc }), [])
 
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       sortBy,
       accountId: accountId ?? '',
     }),
@@ -90,20 +84,20 @@ export const AccountRewardList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const rewardEventsConnection = useMemo(() => data && data.rewardEventsConnection, [data])
-  const rewards = useMemo(
-    () =>
-      rewardEventsConnection &&
-      rewardEventsConnection.edges.map((reward) => reward.node as RewardEvent),
-    [rewardEventsConnection],
-  )
+  const rewards = useMemo(() => data && data.consensus_rewards, [data])
   const totalCount = useMemo(
-    () => rewardEventsConnection && rewardEventsConnection.totalCount,
-    [rewardEventsConnection],
+    () =>
+      data && data.consensus_rewards_aggregate.aggregate
+        ? data.consensus_rewards_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
-  const account = useMemo(() => rewards && (rewards[0].account as Account), [rewards])
+  const account = useMemo(
+    () => rewards && (rewards[0].account as AccountByIdQuery['consensus_accounts'][number]),
+    [rewards],
+  )
   const convertedAddress = useMemo(() => (account ? formatAddress(account.id) : ''), [account])
 
   const columns = useMemo(
@@ -112,7 +106,7 @@ export const AccountRewardList: FC = () => {
         accessorKey: 'block.height',
         header: 'Block Number',
         enableSorting: true,
-        cell: ({ row }: Cell<RewardEvent>) => {
+        cell: ({ row }: Cell<Row>) => {
           return (
             <Link
               key={`${row.original.id}-account-index`}
@@ -128,7 +122,7 @@ export const AccountRewardList: FC = () => {
         accessorKey: 'block.hash',
         header: 'Block Hash',
         enableSorting: true,
-        cell: ({ row }: Cell<RewardEvent>) => {
+        cell: ({ row }: Cell<Row>) => {
           return (
             <div key={`${row.original.id}-account-id`} className='row flex items-center gap-3'>
               <div>
@@ -144,7 +138,7 @@ export const AccountRewardList: FC = () => {
         accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: true,
-        cell: ({ row }: Cell<RewardEvent>) => {
+        cell: ({ row }: Cell<Row>) => {
           const blockDate = dayjs(row.original.timestamp).fromNow(true)
 
           return <div key={`${row.original.id}-block-time`}>{blockDate}</div>
@@ -154,8 +148,8 @@ export const AccountRewardList: FC = () => {
         accessorKey: 'name',
         header: 'Type',
         enableSorting: true,
-        cell: ({ row }: Cell<RewardEvent>) => {
-          const type = row.original.name
+        cell: ({ row }: Cell<Row>) => {
+          const type = row.original.reward_type
             .split('.')[1]
             .split(/(?=[A-Z])/)
             .join(' ')
@@ -166,7 +160,7 @@ export const AccountRewardList: FC = () => {
         accessorKey: 'amount',
         header: 'Amount',
         enableSorting: true,
-        cell: ({ row }: Cell<RewardEvent>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-account-balance`}>
             {row.original.amount ? bigNumberToNumber(row.original.amount) : 0} {TOKEN.symbol}
           </div>

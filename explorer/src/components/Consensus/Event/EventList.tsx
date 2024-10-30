@@ -1,6 +1,5 @@
 'use client'
 
-import { countTablePages } from '@/utils/table'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
@@ -10,12 +9,7 @@ import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import {
-  Event,
-  EventWhereInput,
-  EventsConnectionQuery,
-  EventsConnectionQueryVariables,
-} from 'gql/graphql'
+import { EventsQuery, EventsQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -25,11 +19,13 @@ import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
+import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
-import { EventListFilter } from './EventListFilter'
-import { QUERY_EVENT_CONNECTION_LIST } from './query'
+import { QUERY_EVENTS } from './query'
 
 dayjs.extend(relativeTime)
+
+type Row = EventsQuery['consensus_events'][0]
 
 export const EventList: FC = () => {
   const { ref, inView } = useInView()
@@ -40,24 +36,17 @@ export const EventList: FC = () => {
     pageIndex: 0,
   })
   const inFocus = useWindowFocus()
-  const [filters, setFilters] = useState<EventWhereInput>({})
 
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
     }),
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
-    EventsConnectionQuery,
-    EventsConnectionQueryVariables
-  >(
-    QUERY_EVENT_CONNECTION_LIST,
+  const { loading, setIsVisible } = useSquidQuery<EventsQuery, EventsQueryVariables>(
+    QUERY_EVENTS,
     {
       variables,
       skip: !inFocus,
@@ -75,18 +64,17 @@ export const EventList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
-  const events = useMemo(
-    () => eventsConnection && eventsConnection.edges.map((event) => event.node as Event),
-    [eventsConnection],
-  )
+  const events = useMemo(() => data && data.consensus_events, [data])
   const totalCount = useMemo(
-    () => (eventsConnection ? eventsConnection.totalCount : 0),
-    [eventsConnection],
+    () =>
+      data && data.consensus_events_aggregate.aggregate
+        ? data.consensus_events_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const modules = useMemo(
-    () => data && data.eventModuleNames.map((module) => module.name.split('.')[0]),
+    () => data && data.consensus_event_modules.map((module) => module.method),
     [data],
   )
 
@@ -96,7 +84,7 @@ export const EventList: FC = () => {
         accessorKey: 'id',
         header: 'Event Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
             <Link
               className='w-full hover:text-primaryAccent'
@@ -117,7 +105,7 @@ export const EventList: FC = () => {
         accessorKey: 'block.height',
         header: 'Block',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-event-block`}
             className='hover:text-primaryAccent'
@@ -131,7 +119,7 @@ export const EventList: FC = () => {
         accessorKey: 'action',
         header: 'Action',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-event-action`}>
             {row.original.name
               .split('.')[1]
@@ -144,7 +132,7 @@ export const EventList: FC = () => {
         accessorKey: 'type',
         header: 'Type',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-event-phase`}>
             {row.original.phase.split(/(?=[A-Z])/).join(' ')}
           </div>
@@ -154,7 +142,7 @@ export const EventList: FC = () => {
         accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => dayjs(row.original.block?.timestamp).fromNow(true),
+        cell: ({ row }: Cell<Row>) => dayjs(row.original.block?.timestamp).fromNow(true),
       },
     ],
     [network, section],
@@ -182,14 +170,7 @@ export const EventList: FC = () => {
       </div>
       {modules && (
         <div className='mt-5 flex w-full justify-between'>
-          <EventListFilter
-            title={
-              <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
-            }
-            filters={filters}
-            modules={modules}
-            setFilters={setFilters}
-          />
+          <div className=' font-medium text-grayDark dark:text-white'>Events {totalLabel}</div>
         </div>
       )}
       <div className='mt-5 flex w-full flex-col sm:mt-0'>

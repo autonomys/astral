@@ -31,5 +31,3 @@ export const HomeInfoCard: FC<Props> = ({
     </div>
   )
 }
-
-export default HomeInfoCard

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client'
 
 export const LAST_BLOCK = gql`
   query LastBlock {
-    lastBlock: blocks(limit: 1, orderBy: height_DESC) {
+    lastBlock: consensus_blocks(limit: 1, order_by: { sort_id: desc }) {
       height
     }
   }

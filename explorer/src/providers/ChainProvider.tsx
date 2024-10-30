@@ -1,17 +1,16 @@
 'use client'
 
-import { Routes } from '@/constants'
 import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
   InMemoryCache,
-  Operation,
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
+import { Routes } from 'constants/routes'
 import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 
 export type ChainContextValue = {
@@ -35,18 +34,9 @@ interface SelectedChainProps extends Props {
   indexerSet: Indexer
 }
 
-export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
+const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
   const httpLink = createHttpLink({
-    uri: ({ getContext }: Operation) => {
-      const { clientName } = getContext()
-
-      if (clientName === 'accounts' && indexerSet.squids.accounts) return indexerSet.squids.accounts
-      if (clientName === 'leaderboard' && indexerSet.squids.leaderboard)
-        return indexerSet.squids.leaderboard
-      if (clientName === 'staking' && indexerSet.squids.staking) return indexerSet.squids.staking
-
-      return indexerSet.squids.old
-    },
+    uri: () => indexerSet.indexer,
   })
 
   const client = useMemo(

@@ -1,4 +1,3 @@
-import { PAGE_SIZE_OPTIONS } from '@/constants/general'
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -6,6 +5,7 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/20/solid'
 import { Table } from '@tanstack/react-table'
+import { PAGE_SIZE_OPTIONS } from 'constants/general'
 import { DebouncedInput } from './DebouncedInput'
 import { ExportButton } from './ExportButton'
 import { LazyExportButton } from './LazyExportButton'

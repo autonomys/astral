@@ -69,7 +69,11 @@ export const ClaimStakingToken: FC = () => {
   }, [actingAccount, injector, network, subspaceAccount])
 
   useEffect(() => {
-    if (hasValue(claim) && claim.value.extrinsics && claim.value.extrinsics.length > 0)
+    if (
+      hasValue(claim) &&
+      claim.value.consensus_extrinsics &&
+      claim.value.consensus_extrinsics.length > 0
+    )
       setClaimIsFinalized(true)
   }, [claim])
 

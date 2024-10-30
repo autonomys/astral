@@ -17,6 +17,10 @@
       "path": "../indexers"
     },
     {
+      "name": "indexer - Taurus",
+      "path": "../indexers/taurus"
+    },
+    {
       "name": "indexer - Gemini 3H",
       "path": "../indexers/gemini-3h"
     },

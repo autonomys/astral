@@ -1,22 +1,21 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { Extrinsic } from 'gql/graphql'
-import Link from 'next/link'
-import { FC } from 'react'
-
-// common
-import { shortString } from '@/utils/string'
 import { Arguments } from 'components/common/Arguments'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import { ExtrinsicsByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
+import Link from 'next/link'
+import { FC } from 'react'
+import { parseArgs } from 'utils/indexerParsing'
+import { shortString } from 'utils/string'
 
 dayjs.extend(relativeTime)
 
 type Props = {
-  extrinsic: Extrinsic
+  extrinsic: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>
   isDesktop?: boolean
 }
 
@@ -31,11 +30,11 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
         <div className='mb-4 w-full rounded-[20px] border border-slate-100 bg-white p-4 shadow dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo sm:p-6'>
           <div className='mb-10 flex items-center justify-between'>
             <h3 className='text-sm font-medium text-grayDarker dark:text-white  md:text-2xl'>
-              Extrinsic #{extrinsic.block.height}-{extrinsic.indexInBlock}
+              Extrinsic #{extrinsic.id}
             </h3>
             <div className='flex items-center justify-center gap-2 rounded-full bg-grayDarker px-5 py-3'>
               <div className=' block text-xs font-semibold leading-normal text-white'>
-                #{extrinsic.block.height}
+                #{extrinsic.block_height}
               </div>
               <StatusIcon status={extrinsic.success} />
             </div>
@@ -44,17 +43,17 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
             <div className='w-full md:flex-1'>
               <List>
                 <StyledListItem title='Timestamp'>
-                  {dayjs(extrinsic.block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
+                  {dayjs(extrinsic.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
                 </StyledListItem>
                 <StyledListItem title='Block Number'>
                   <Link
-                    href={INTERNAL_ROUTES.blocks.id.page(network, section, extrinsic.block.height)}
+                    href={INTERNAL_ROUTES.blocks.id.page(network, section, extrinsic.block_height)}
                   >
-                    <div> {extrinsic.block.height}</div>
+                    <div> {extrinsic.block_height}</div>
                   </Link>
                 </StyledListItem>
                 <StyledListItem title='Block Time'>
-                  {dayjs(extrinsic.block.timestamp).fromNow(true)}
+                  {dayjs(extrinsic.timestamp).fromNow(true)}
                 </StyledListItem>
                 <StyledListItem title='Hash'>
                   <CopyButton value={extrinsic.hash} message='Hash copied'>
@@ -64,7 +63,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                 <StyledListItem title='Module'>{module}</StyledListItem>
                 <StyledListItem title='Call'>{call}</StyledListItem>
                 <StyledListItem title='Sender'>
-                  {isDesktop ? extrinsic.signer?.id : shortString(extrinsic.signer?.id || '')}
+                  {isDesktop ? extrinsic.signer : shortString(extrinsic.signer)}
                 </StyledListItem>
                 <StyledListItem title='Signature'>
                   {isDesktop
@@ -74,7 +73,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
               </List>
             </div>
             <div className='mb-4 w-full break-all rounded-lg border border-purpleLight bg-purpleLight p-4 shadow dark:border-none dark:bg-white/10 sm:max-w-xs sm:p-6 lg:max-w-md'>
-              <Arguments args={extrinsic.args} />
+              <Arguments args={parseArgs(extrinsic.args)} />
             </div>
           </div>
         </div>

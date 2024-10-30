@@ -5,7 +5,8 @@ import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { Accordion } from 'components/common/Accordion'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, INTERNAL_ROUTES, Routes, TOKEN } from 'constants/'
+import { BIGINT_ZERO, TOKEN } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -13,7 +14,7 @@ import {
   NominationsListQuery,
   NominationsListQueryVariables,
   Order_By as OrderBy,
-} from 'gql/types/staking'
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
@@ -26,7 +27,7 @@ import { capitalizeFirstLetter } from 'utils/string'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_NOMINATIONS_LIST } from './staking.query'
+import { QUERY_NOMINATIONS_LIST } from './query'
 
 dayjs.extend(relativeTime)
 
@@ -91,8 +92,11 @@ export const NominationsTable: FC = () => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
-  const nominatorsList = useMemo(() => data?.nominator || [], [data])
-  const totalCount = useMemo(() => (data && data.nominator_aggregate.aggregate?.count) || 0, [data])
+  const nominatorsList = useMemo(() => data?.staking_nominators || [], [data])
+  const totalCount = useMemo(
+    () => (data && data.staking_nominators_aggregate.aggregate?.count) || 0,
+    [data],
+  )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const depositColumns = [
@@ -215,7 +219,10 @@ export const NominationsTable: FC = () => {
                           OperatorActionType.Nominating,
                           OperatorActionType.Deregister,
                         )
-                      if (nominator.operator?.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+                      if (
+                        nominator.operator?.pending_action !==
+                        OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR
+                      )
                         excludeActions.push(OperatorActionType.UnlockNominator)
 
                       if (!nominator)

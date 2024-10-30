@@ -1,13 +1,12 @@
 'use client'
 
-import { capitalizeFirstLetter, shortString } from '@/utils/string'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, TOKEN } from 'constants/'
+import { PAGE_SIZE, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/types/staking'
+import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
@@ -26,14 +25,15 @@ import {
   numberFormattedString,
   numberWithCommas,
 } from 'utils/number'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
-import { QUERY_DOMAIN_LIST } from './staking.query'
+import { QUERY_DOMAIN_LIST } from './query'
 
-type Row = DomainsListQuery['domain'][0]
+type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
 
 export const DomainsList: FC = () => {
@@ -680,23 +680,19 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(
-        apolloClient,
-        QUERY_DOMAIN_LIST,
-        TABLE,
-        {
-          orderBy,
-        },
-        ['limit', 'offset'],
-        { clientName: 'staking' },
-      ),
+      downloadFullData(apolloClient, QUERY_DOMAIN_LIST, TABLE, {
+        orderBy,
+      }),
     [apolloClient, orderBy],
   )
 
-  const domainsList = useMemo(() => (hasValue(domains) ? domains.value.domain : []), [domains])
+  const domainsList = useMemo(
+    () => (hasValue(domains) ? domains.value.staking_domains : []),
+    [domains],
+  )
 
   const totalCount = useMemo(
-    () => (hasValue(domains) && domains.value.domain_aggregate.aggregate?.count) || 0,
+    () => (hasValue(domains) && domains.value.staking_domains_aggregate.aggregate?.count) || 0,
     [domains],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])

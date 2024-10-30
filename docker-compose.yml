@@ -23,21 +23,23 @@ services:
 
   # Subspace Node
   node:
-    image: ghcr.io/autonomys/node:gemini-3h-2024-oct-10
+    image: ghcr.io/autonomys/node:taurus-candidate
     platform: linux/amd64
     volumes:
       - node-data:/var/subspace:rw
     ports:
-      - "0.0.0.0:30333:30333/tcp"
-      - "0.0.0.0:30433:30433/tcp"
+      - "30333:30333/tcp"
+      - "30433:30433/tcp"
     restart: unless-stopped
     command:
       [
         "run",
         "--chain",
-        "gemini-3h",
+        "taurus",
         "--base-path",
         "/var/subspace",
+        "--pot-external-entropy",
+        "00000000000000000000661e88ab45dc3b61daec5ccf3cc83532153589b133b9",
         "--listen-on",
         "/ip4/0.0.0.0/tcp/30333",
         "--dsn-listen-on",
@@ -49,9 +51,9 @@ services:
         "--rpc-listen-on",
         "0.0.0.0:9944",
         "--rpc-max-subscriptions-per-connection",
-        "10000",
+        "1000",
         "--rpc-max-connections",
-        "10000000",
+        "20000",
         "--farmer",
         "--name",
         "astral",
@@ -121,6 +123,8 @@ services:
       # Security and Authorization
       HASURA_GRAPHQL_ENABLE_ALLOWLIST: "false" # Disable query allowlisting
 
+      # Taurus Database
+      HASURA_GRAPHQL_TAURUS_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_TAURUS}
       # Gemini 3H Databases
       HASURA_GRAPHQL_GEMINI_3H_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_GEMINI_3H}
       # Gemini 3G Database
@@ -135,9 +139,60 @@ services:
       - graphql-engine
       - serve
 
+  # Taurus Dictionary
+  taurus_dictionary_subquery_node:
+    profiles: [dictionary, taurus, taurus_dictionary]
+    build:
+      context: ./indexers/dictionary/autonomys-taurus
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/dictionary/autonomys-taurus:/dictionary
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://taurus_dictionary_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+    command:
+      - -f=/dictionary
+      - --disable-historical=true
+
+  taurus_dictionary_graphql_engine:
+    profiles: [dictionary, taurus, taurus_dictionary]
+    image: onfinality/subql-query:latest
+    ports:
+      - "${TAURUS_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
+    depends_on:
+      - "postgres"
+      - "taurus_dictionary_subquery_node"
+    restart: unless-stopped
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    command:
+      - --name=dictionary
+      - --playground
+
   # Gemini 3H Dictionary
   gemini_3h_dictionary_subquery_node:
-    profiles: [dictionary, gemini_3h, gemini_3h_dictionary]
+    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
     build:
       context: ./indexers/dictionary/autonomys-gemini-3h
     depends_on:
@@ -170,7 +225,7 @@ services:
       - --disable-historical=true
 
   gemini_3h_dictionary_graphql_engine:
-    profiles: [dictionary, gemini_3h, gemini_3h_dictionary]
+    profiles: [gemini_3h, gemini_3h_dictionary] # dictionary,
     image: onfinality/subql-query:latest
     ports:
       - "${GEMINI_3H_DICTIONARY_SUBQUERY_NODE_PORT}:3000"
@@ -187,6 +242,129 @@ services:
     command:
       - --name=dictionary
       - --playground
+
+  # Taurus Subquery Nodes
+  taurus_consensus_subquery_node:
+    profiles: [taurus, taurus_consensus]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3001:3000"
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "taurus_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${TAURUS_RPC}
+      CHAIN_ID: ${TAURUS_CHAIN_ID}
+      DICTIONARY: http://taurus_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/taurus/consensus:/taurus/consensus
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/taurus/consensus
+      - --db-schema=consensus
+      - --workers=4
+      - --unsafe
+      - --batch-size=250
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://taurus_consensus_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  taurus_leaderboard_subquery_node:
+    profiles: [taurus, taurus_leaderboard]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3002:3000"
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "taurus_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${TAURUS_RPC}
+      CHAIN_ID: ${TAURUS_CHAIN_ID}
+      DICTIONARY: http://taurus_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/taurus/leaderboard:/taurus/leaderboard
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/taurus/leaderboard
+      - --db-schema=leaderboard
+      - --workers=1
+      - --unsafe
+      - --batch-size=15
+      - --disable-historical=true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "-f",
+          "http://gemini_3h_leaderboard_subquery_node:3000/ready",
+        ]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  taurus_staking_subquery_node:
+    profiles: [taurus, taurus_staking]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3003:3000"
+    depends_on:
+      "postgres":
+        condition: service_healthy
+      "taurus_dictionary_subquery_node":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${GEMINI_3H_RPC}
+      CHAIN_ID: ${TAURUS_CHAIN_ID}
+      DICTIONARY: http://taurus_dictionary_subquery_node:3000
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_TAURUS}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+    volumes:
+      - ./indexers/taurus/staking:/taurus/staking
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/taurus/staking
+      - --db-schema=staking
+      - --workers=1
+      - --unsafe
+      - --batch-size=15
+      - --disable-historical=true
+    healthcheck:
+      test:
+        ["CMD", "curl", "-f", "http://taurus_staking_subquery_node:3000/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
 
   # Gemini 3H Subquery Nodes
   gemini_3h_consensus_subquery_node:
@@ -215,9 +393,9 @@ services:
       - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
       - -f=/gemini-3h/consensus
       - --db-schema=consensus
-      - --workers=2
+      - --workers=4
       - --unsafe
-      - --batch-size=15
+      - --batch-size=250
       - --disable-historical=true
     healthcheck:
       test:

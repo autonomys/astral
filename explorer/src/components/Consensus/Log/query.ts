@@ -1,56 +1,40 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_LOG_CONNECTION_LIST = gql`
-  query LogsConnection($first: Int!, $after: String, $where: LogWhereInput) {
-    logsConnection(orderBy: id_DESC, first: $first, after: $after, where: $where) {
-      totalCount
-      pageInfo {
-        endCursor
-        hasNextPage
-        hasPreviousPage
-        startCursor
-      }
-      edges {
-        node {
-          id
-          kind
-          value
-          block {
-            id
-            height
-            timestamp
-          }
-        }
-        cursor
+export const QUERY_LOGS = gql`
+  query Logs($limit: Int!, $offset: Int, $where: consensus_logs_bool_exp) {
+    consensus_logs_aggregate(where: $where) {
+      aggregate {
+        count
       }
     }
-    logTypesQuery {
-      result
+    consensus_logs(order_by: { sort_id: desc }, limit: $limit, offset: $offset, where: $where) {
+      id
+      kind
+      value
+      block_height
+      timestamp
     }
   }
 `
 
 export const QUERY_LOG_BY_ID = gql`
   query LogById($logId: String!) {
-    logById(id: $logId) {
+    consensus_logs(where: { id: { _eq: $logId } }) {
       id
       kind
       value
+      block_height
+      timestamp
       block {
         id
-        height
-        timestamp
-        events(limit: 10, orderBy: id_DESC) {
+        events(limit: 10, order_by: { sort_id: desc }) {
           id
           args
           name
           phase
-          indexInBlock
           timestamp
-          block {
-            height
-            hash
-          }
+          block_height
+          extrinsic_id
         }
       }
     }

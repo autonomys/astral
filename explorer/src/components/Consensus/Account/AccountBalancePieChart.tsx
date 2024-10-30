@@ -1,11 +1,11 @@
 import { ResponsivePie } from '@nivo/pie'
-import { Account } from 'gql/graphql'
+import { AccountByIdQuery } from 'gql/graphql'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC } from 'react'
 import { bigNumberToNumber } from 'utils/number'
 
 type Props = {
-  account: Account | undefined
+  account: AccountByIdQuery['consensus_accounts'][number] | undefined
 }
 
 export const AccountBalancePieChart: FC<Props> = ({ account }) => {

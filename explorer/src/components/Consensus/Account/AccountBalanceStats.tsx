@@ -1,12 +1,12 @@
 import { StatItem } from 'components/common/StatItem'
 import { TOKEN } from 'constants/general'
-import { Account } from 'gql/graphql'
+import { AccountByIdQuery } from 'gql/graphql'
 import { FC } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { AccountBalancePieChart } from './AccountBalancePieChart'
 
 type Props = {
-  account: Account | undefined
+  account: AccountByIdQuery['consensus_accounts'][number] | undefined
   isDesktop?: boolean
 }
 

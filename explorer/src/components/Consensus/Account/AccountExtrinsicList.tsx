@@ -9,10 +9,9 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import {
-  Extrinsic,
-  ExtrinsicOrderByInput,
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
+  Order_By as OrderBy,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -21,8 +20,8 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { sort } from 'utils/sort'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { QUERY_ACCOUNT_EXTRINSICS } from './query'
@@ -31,12 +30,7 @@ type Props = {
   accountId: string
 }
 
-type Row = {
-  row: {
-    index: number
-    original: Extrinsic
-  }
-}
+type Row = ExtrinsicsByAccountIdQuery['consensus_extrinsics'][0]
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
@@ -50,28 +44,20 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
-  const orderBy = useMemo(
-    () => sort(sorting, ExtrinsicOrderByInput.BlockHeightDesc) as ExtrinsicOrderByInput,
-    [sorting],
-  )
+  // eslint-disable-next-line camelcase
+  const orderBy = useMemo(() => ({ block_height: OrderBy.Desc }), [])
 
   const where = useMemo(
     () => ({
-      signer: {
-        /* eslint-disable camelcase */
-        id_eq: accountId,
-      },
+      signer: { _eq: accountId },
     }),
     [accountId],
   )
 
   const variables = useMemo(() => {
     return {
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       where,
     }
@@ -108,16 +94,13 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [apolloClient, orderBy, where],
   )
 
-  const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
-  const extrinsics = useMemo(
-    () =>
-      extrinsicsConnection &&
-      extrinsicsConnection.edges.map((extrinsic) => extrinsic.node as Extrinsic),
-    [extrinsicsConnection],
-  )
+  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const totalCount = useMemo(
-    () => extrinsicsConnection && extrinsicsConnection.totalCount,
-    [extrinsicsConnection],
+    () =>
+      data && data.consensus_extrinsics_aggregate.aggregate
+        ? data.consensus_extrinsics_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
@@ -130,13 +113,13 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         accessorKey: 'block.height',
         header: 'Extrinsic Id',
         enableSorting: true,
-        cell: ({ row }: Row) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
-            key={`${row.original.id}-extrinsic-block-${row.original.indexInBlock}`}
+            key={`${row.original.id}-extrinsic-block-${row.original.index_in_block}`}
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            <div>{`${row.original.block.height}-${row.original.indexInBlock}`}</div>
+            <div>{`${row.original.block_height}-${row.original.index_in_block}`}</div>
           </Link>
         ),
       },
@@ -146,7 +129,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }) => (
           <div key={`${row.original.id}-extrinsic-time-${row.index}`}>
-            {dayjs(row.original.block.timestamp).fromNow(true)}
+            {dayjs(row.original.timestamp).fromNow(true)}
           </div>
         ),
       },

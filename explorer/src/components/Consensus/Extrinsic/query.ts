@@ -1,74 +1,53 @@
 import { gql } from '@apollo/client'
 
-export const QUERY_EXTRINSIC_LIST_CONNECTION = gql`
-  query ExtrinsicsConnection($first: Int!, $after: String, $where: ExtrinsicWhereInput) {
-    extrinsicsConnection(orderBy: id_DESC, first: $first, after: $after, where: $where) {
-      edges {
-        cursor
-        node {
-          hash
-          indexInBlock
-          id
-          success
-          block {
-            id
-            timestamp
-            height
-          }
-          name
-          nonce
-        }
+export const QUERY_EXTRINSICS = gql`
+  query Extrinsics($limit: Int!, $offset: Int, $where: consensus_extrinsics_bool_exp) {
+    consensus_extrinsics_aggregate(where: $where) {
+      aggregate {
+        count
       }
-      pageInfo {
-        endCursor
-        hasPreviousPage
-        hasNextPage
-        startCursor
-      }
-      totalCount
     }
-    extrinsicModuleNames(limit: 300) {
+    consensus_extrinsics(
+      order_by: { sort_id: desc }
+      limit: $limit
+      offset: $offset
+      where: $where
+    ) {
+      id
+      hash
+      block_height
+      index_in_block
+      success
       name
+      nonce
+      timestamp
+    }
+    consensus_extrinsic_modules(limit: 300) {
+      method
     }
   }
 `
 
 export const QUERY_EXTRINSIC_BY_ID = gql`
   query ExtrinsicsById($extrinsicId: String!) {
-    extrinsicById(id: $extrinsicId) {
-      indexInBlock
+    consensus_extrinsics(where: { id: { _eq: $extrinsicId } }) {
       id
+      index_in_block
       hash
+      block_height
+      timestamp
       signature
       success
       tip
       args
-      block {
-        height
-        id
-        timestamp
-      }
-      signer {
-        id
-      }
+      signer
       events(limit: 10) {
         id
-        indexInBlock
         phase
-        indexInBlock
         timestamp
         name
         args
-        block {
-          height
-        }
-        extrinsic {
-          id
-          indexInBlock
-          block {
-            height
-          }
-        }
+        extrinsic_id
       }
       name
     }
@@ -77,10 +56,10 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
 
 export const QUERY_EXTRINSIC_BY_HASH = gql`
   query ExtrinsicsByHash($hash: String!) {
-    extrinsics(limit: 10, where: { hash_eq: $hash }) {
+    consensus_extrinsics(limit: 10, where: { hash: { _eq: $hash } }) {
       id
       hash
-      indexInBlock
+      index_in_block
       success
       block {
         id

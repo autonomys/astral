@@ -1,3 +1,8 @@
+CREATE DATABASE taurus;
+
+\c taurus
+CREATE EXTENSION IF NOT EXISTS btree_gist;
+
 CREATE DATABASE gemini_3h;
 
 \c gemini_3h
