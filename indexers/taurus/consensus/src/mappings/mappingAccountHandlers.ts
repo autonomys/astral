@@ -20,8 +20,8 @@ export async function handleTransferEvent(
   const to = _to.toString();
   const amount = BigInt(_amount.toString());
 
-  const fromBalance = await getAccountBalance(from, blockNumber);
-  const toBalance = await getAccountBalance(to, blockNumber);
+  const fromBalance = await getAccountBalance(from);
+  const toBalance = await getAccountBalance(to);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(
@@ -69,7 +69,7 @@ export async function handleExtrinsic(
   const blockNumber = BigInt(number.toString());
   const address = signer.toString();
 
-  const balance = await getAccountBalance(address, blockNumber);
+  const balance = await getAccountBalance(address);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(
@@ -103,7 +103,7 @@ export async function handleFarmerVoteRewardEvent(
   const voter = _voter.toString();
   const blockNumber = BigInt(number.toString());
 
-  const balance = await getAccountBalance(voter, blockNumber);
+  const balance = await getAccountBalance(voter);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(
@@ -147,7 +147,7 @@ export async function handleFarmerBlockRewardEvent(
   const blockAuthor = _blockAuthor.toString();
   const blockNumber = BigInt(number.toString());
 
-  const balance = await getAccountBalance(blockAuthor, blockNumber);
+  const balance = await getAccountBalance(blockAuthor);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(

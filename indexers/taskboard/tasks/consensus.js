@@ -44,9 +44,9 @@ async function consensusUniqueRowsMapping(job) {
         INSERT INTO consensus_sections (id)
         SELECT DISTINCT section 
         FROM (
-          SELECT section FROM extrinsics WHERE block_number <= $1
+          SELECT section FROM extrinsics WHERE block_number = $1
           UNION
-          SELECT section FROM events WHERE block_number <= $1
+          SELECT section FROM events WHERE block_number = $1
         ) combined_sections
         ON CONFLICT (id) DO NOTHING
         RETURNING *`;
@@ -59,7 +59,7 @@ async function consensusUniqueRowsMapping(job) {
           section,
           name as method
         FROM extrinsics 
-        WHERE block_number <= $1
+        WHERE block_number = $1
         ON CONFLICT (id) DO NOTHING
         RETURNING *`;
 
@@ -71,7 +71,7 @@ async function consensusUniqueRowsMapping(job) {
           section,
           name as method
         FROM events 
-        WHERE block_number <= $1
+        WHERE block_number = $1
         ON CONFLICT (id) DO NOTHING
         RETURNING *`;
 
@@ -80,7 +80,7 @@ async function consensusUniqueRowsMapping(job) {
         INSERT INTO consensus_log_kinds (id)
         SELECT DISTINCT kind 
         FROM logs 
-        WHERE block_number <= $1
+        WHERE block_number = $1
         ON CONFLICT (id) DO NOTHING
         RETURNING *`;
 
@@ -95,7 +95,7 @@ async function consensusUniqueRowsMapping(job) {
           total,
           created_at
         FROM accounts_history
-        WHERE created_at <= $1
+        WHERE created_at = $1
         ON CONFLICT (id) 
         DO UPDATE SET
           nonce = EXCLUDED.nonce,

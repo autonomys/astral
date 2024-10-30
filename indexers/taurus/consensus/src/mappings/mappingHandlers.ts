@@ -12,7 +12,7 @@ import {
   createAndSaveExtrinsic,
   createAndSaveLog,
 } from "./db";
-import { getBlockAuthor } from "./helper";
+import { consensusUniqueRowsMapping, getBlockAuthor } from "./helper";
 import {
   handleExtrinsic,
   handleFarmerBlockRewardEvent,
@@ -92,6 +92,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       );
     })
   );
+
+  await consensusUniqueRowsMapping(height);
 }
 
 export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
