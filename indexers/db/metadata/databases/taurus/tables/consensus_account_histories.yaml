@@ -15,12 +15,14 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - _block_range
         - created_at
         - free
-        - id
         - nonce
         - reserved
         - total
         - updated_at
+        - id
+        - _id
       filter: {}
     comment: ""

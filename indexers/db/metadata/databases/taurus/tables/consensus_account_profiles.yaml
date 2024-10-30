@@ -15,12 +15,15 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - banner
+        - email_verified
+        - website_verified
+        - _block_range
         - created_at
+        - updated_at
+        - banner
         - description
         - discord
         - email
-        - email_verified
         - github
         - icon
         - id
@@ -28,8 +31,7 @@ select_permissions:
         - proof_message
         - proof_signature
         - twitter
-        - updated_at
         - website
-        - website_verified
+        - _id
       filter: {}
     comment: ""

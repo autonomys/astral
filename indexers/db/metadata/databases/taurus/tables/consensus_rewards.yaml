@@ -24,6 +24,7 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - _block_range
         - amount
         - block_height
         - index_in_block
@@ -32,6 +33,7 @@ select_permissions:
         - id
         - reward_type
         - timestamp
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

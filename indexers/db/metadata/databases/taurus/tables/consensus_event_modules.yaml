@@ -6,7 +6,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          section_id: id
+          id: id
         insertion_order: null
         remote_table:
           name: sections
@@ -16,7 +16,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: event_module_id
+          id: module
         insertion_order: null
         remote_table:
           name: events
@@ -25,10 +25,11 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - _block_range
         - id
         - method
         - section
-        - section_id
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

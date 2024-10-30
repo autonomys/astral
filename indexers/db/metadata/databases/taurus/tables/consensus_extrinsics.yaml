@@ -11,11 +11,11 @@ object_relationships:
         remote_table:
           name: blocks
           schema: consensus
-  - name: module
+  - name: extrinsic_module
     using:
       manual_configuration:
         column_mapping:
-          extrinsic_module_id: section_id
+          module: id
         insertion_order: null
         remote_table:
           name: extrinsic_modules
@@ -34,24 +34,27 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - success
+        - _block_range
+        - index_in_block
+        - pos
+        - block_height
+        - fee
+        - nonce
+        - tip
         - args
         - block_hash
-        - block_height
         - error
-        - extrinsic_module_id
-        - fee
         - hash
         - id
-        - index_in_block
+        - module
         - name
-        - nonce
-        - pos
+        - section
         - signature
         - signer
         - sort_id
-        - success
         - timestamp
-        - tip
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

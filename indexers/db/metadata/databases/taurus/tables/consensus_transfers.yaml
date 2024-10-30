@@ -5,17 +5,19 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - success
+        - _block_range
+        - _id
         - created_at
-        - fee
-        - timestamp
-        - value
+        - date
         - event_id
         - extrinsic_id
+        - fee
         - from
         - id
+        - success
+        - timestamp
         - to
-        - date
+        - value
       filter: {}
       allow_aggregations: true
     comment: ""
