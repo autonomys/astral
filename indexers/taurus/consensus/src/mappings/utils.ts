@@ -33,9 +33,6 @@ export const decodeLog = (value: null | Uint8Array | Uint8Array[]) => {
   return { data: value };
 };
 
-export const moduleId = (section: string, method: string) =>
-  `${section}.${method}`;
-
 export const moduleName = (section: string, method: string) =>
   `${capitalizeFirstLetter(section)}.${capitalizeFirstLetter(method)}`;
 

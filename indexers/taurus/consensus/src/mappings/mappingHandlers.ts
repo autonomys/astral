@@ -86,7 +86,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height,
         blockHash,
         i,
-        rawKind,
         kind,
         stringify(value),
         blockTimestamp
@@ -191,7 +190,6 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     BigInt(idx),
     extrinsicId,
     extrinsicHash,
-    primitive.index,
     human.section,
     human.method,
     timestamp ? timestamp : new Date(0),
