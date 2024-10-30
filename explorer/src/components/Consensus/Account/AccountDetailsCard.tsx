@@ -10,7 +10,7 @@ import { shortString } from 'utils/string'
 import { AccountIcon } from '../../common/AccountIcon'
 
 type Props = {
-  account: AccountByIdQuery['consensus_accounts_by_pk'] | undefined
+  account: AccountByIdQuery['consensus_accounts'][number] | undefined
   accountAddress: string
   isDesktop?: boolean
 }

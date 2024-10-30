@@ -10,7 +10,7 @@ import { shortString } from 'utils/string'
 dayjs.extend(relativeTime)
 
 type Props = {
-  log: NonNullable<LogByIdQuery['consensus_logs_by_pk']>
+  log: NonNullable<LogByIdQuery['consensus_logs'][number]>
 }
 
 export const LogDetailsCard: FC<Props> = ({ log }) => {

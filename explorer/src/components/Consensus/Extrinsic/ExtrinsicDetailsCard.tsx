@@ -15,7 +15,7 @@ import { shortString } from 'utils/string'
 dayjs.extend(relativeTime)
 
 type Props = {
-  extrinsic: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics_by_pk']>
+  extrinsic: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>
   isDesktop?: boolean
 }
 

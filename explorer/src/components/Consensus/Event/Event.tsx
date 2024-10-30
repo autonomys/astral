@@ -36,7 +36,7 @@ export const Event: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const event = useMemo(() => data && data.consensus_events_by_pk, [data])
+  const event = useMemo(() => data && data.consensus_events[0], [data])
 
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />

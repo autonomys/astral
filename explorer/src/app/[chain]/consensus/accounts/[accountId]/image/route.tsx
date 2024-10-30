@@ -25,7 +25,7 @@ export async function GET(
   if (!accountId || !chainMatch) notFound()
 
   const {
-    data: { consensus_accounts_by_pk: accountById },
+    data: { consensus_accounts: accountById },
   }: {
     data: AccountByIdQuery
   } = await fetch(chainMatch.indexer, {
@@ -43,7 +43,7 @@ export async function GET(
 
   try {
     return new ImageResponse(
-      <Screen chainMatch={chainMatch} accountId={accountId} accountById={accountById} />,
+      <Screen chainMatch={chainMatch} accountId={accountId} accountById={accountById[0]} />,
       {
         width: 1200,
         height: 630,
@@ -62,7 +62,7 @@ function Screen({
 }: {
   chainMatch: (typeof indexers)[number]
   accountId: string
-  accountById: AccountByIdQuery['consensus_accounts_by_pk']
+  accountById: AccountByIdQuery['consensus_accounts'][number]
 }) {
   dayjs.extend(relativeTime)
 

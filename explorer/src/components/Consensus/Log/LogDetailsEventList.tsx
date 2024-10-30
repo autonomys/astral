@@ -16,10 +16,12 @@ import { countTablePages } from 'utils/table'
 dayjs.extend(relativeTime)
 
 type Props = {
-  events: NonNullable<NonNullable<LogByIdQuery['consensus_logs_by_pk']>['block']>['events']
+  events: NonNullable<NonNullable<LogByIdQuery['consensus_logs'][number]>['block']>['events']
 }
 
-type Row = NonNullable<NonNullable<LogByIdQuery['consensus_logs_by_pk']>['block']>['events'][number]
+type Row = NonNullable<
+  NonNullable<LogByIdQuery['consensus_logs'][number]>['block']
+>['events'][number]
 
 export const LogDetailsEventList: FC<Props> = ({ events }) => {
   const { network, section } = useChains()

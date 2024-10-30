@@ -11,7 +11,7 @@ import { BlockDetailsLogList } from './BlockDetailsLogList'
 
 dayjs.extend(relativeTime)
 
-type Logs = NonNullable<BlockByIdQuery['consensus_blocks_by_pk']>['logs']
+type Logs = NonNullable<BlockByIdQuery['consensus_blocks'][number]>['logs']
 
 type Props = {
   logs: Logs

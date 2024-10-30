@@ -15,7 +15,7 @@ import { countTablePages } from 'utils/table'
 
 dayjs.extend(relativeTime)
 
-type Log = NonNullable<BlockByIdQuery['consensus_blocks_by_pk']>['logs'][number]
+type Log = NonNullable<BlockByIdQuery['consensus_blocks'][number]>['logs'][number]
 
 type Props = {
   logs: Log[]

@@ -40,7 +40,7 @@ export const Block: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const block = useMemo(() => data && data.consensus_blocks_by_pk, [data])
+  const block = useMemo(() => data && data.consensus_blocks[0], [data])
 
   const noData = useMemo(() => {
     if (loading || isLoading(consensusEntry)) return <Spinner isSmall />

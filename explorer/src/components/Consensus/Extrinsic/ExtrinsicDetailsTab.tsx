@@ -5,7 +5,7 @@ import { FC } from 'react'
 import { ExtrinsicDetailsEventList } from './ExtrinsicDetailsEventList'
 
 type Props = {
-  events: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics_by_pk']>['events']
+  events: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>['events']
   isDesktop?: boolean
 }
 
