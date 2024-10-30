@@ -16,7 +16,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: module
+          method: module
         insertion_order: null
         remote_table:
           name: events
