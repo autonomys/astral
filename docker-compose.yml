@@ -4,6 +4,8 @@ volumes:
   node-data: {}
   postgres_db: {}
   redis_db: {}
+  caddy_config: {}
+  caddy_data: {}
 
 services:
   # Caddy Reverse Proxy with CORS enabled
@@ -14,16 +16,22 @@ services:
         hard: 65536 # Hard limit for open files
     image: caddy:latest
     ports:
-      - "8000:80" # Map port 8080 on the host to port 80 in Caddy
+      - "80:80" # Map port 80 on the host to port 80 in Caddy
+      - "443:443" # Map port 443 for HTTPS
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
+      - caddy_data:/data # Volume for Let's Encrypt certificates
+      - caddy_config:/config
+
+    environment:
+      - DOMAIN=subql.taurus.subspace.network
     depends_on:
       - node
     restart: unless-stopped
 
   # Subspace Node
   node:
-    image: ghcr.io/autonomys/node:taurus-candidate
+    image: ghcr.io/autonomys/node:${DOCKER_TAG}
     platform: linux/amd64
     volumes:
       - node-data:/var/subspace:rw

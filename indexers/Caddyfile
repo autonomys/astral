@@ -1,35 +1,67 @@
-:80 {
-  # Reverse proxy for HTTP traffic to node at port 9944
-  reverse_proxy node:9944 {
-    transport http {
-      # Buffer sizes
-      read_buffer 64KB               # Size of the read buffer, large enough to handle incoming data
-      write_buffer 64KB              # Size of the write buffer, optimal for throughput
-
-      # Timeouts
-      dial_timeout 10s               # Maximum time to establish a connection to the backend
-      dial_fallback_delay 300ms      # Delay between fallback attempts if dialing fails
-      response_header_timeout 30s    # Maximum time to wait for a response header from the backend
-      expect_continue_timeout 1s     # Time to wait for a client to send the request body after "100 Continue"
-
-      # Keep-alive settings (optimize for long-lived connections)
-      keepalive 90s                  # Keep connections alive for 60 seconds
-      keepalive_interval 30s         # Interval to send keep-alive pings, optimal for high traffic
-      keepalive_idle_conns 2000      # Maximum number of idle keep-alive connections
-      keepalive_idle_conns_per_host 500  # Limit per backend host, reduce for more aggressive recycling
-
-      # Compression and HTTP versions
-      compression off                # Disable compression to reduce CPU load for high traffic
-      versions h2c h1                # Enable HTTP/2 (h2c) and HTTP/1.1 (h1), for backward compatibility
-
-      # Connection limits
-      max_conns_per_host 150000      # Maximum number of connections per backend host
+{
+    admin off  # Disable admin API for security
+    auto_https off  # Disable automatic HTTPS since we're handling it explicitly
+    servers {
+        protocols h1 h2c  # Enable HTTP/1.1 and H2C protocols
+        max_header_size 16384  # 16KB max header size
+        client_max_body_size 10MB  # Limit request body size
     }
-  }
-
-  # CORS Headers
-  header Access-Control-Allow-Origin "*"
-  header Access-Control-Allow-Methods "GET, POST, OPTIONS"
-  header Access-Control-Allow-Headers "Content-Type"
 }
 
+:80, :443 {
+    # Reverse proxy for HTTP traffic to node at port 9944
+    reverse_proxy node:9944 {
+        transport http {
+            # Buffer sizes
+            read_buffer 64KB
+            write_buffer 64KB
+
+            # Timeouts
+            dial_timeout 10s
+            dial_fallback_delay 300ms
+            response_header_timeout 30s
+            expect_continue_timeout 1s
+
+            # Keep-alive settings
+            keepalive 90s
+            keepalive_interval 30s
+            keepalive_idle_conns 2000
+            keepalive_idle_conns_per_host 500
+
+            # Compression and HTTP versions
+            compression off
+            versions h2c h1
+
+            # Connection limits
+            max_conns_per_host 150000
+        }
+
+        # Health checks
+        health_uri /health
+        health_interval 30s
+        health_timeout 5s
+        health_status 200
+    }
+
+    # CORS Headers
+    header {
+        Access-Control-Allow-Origin "*"
+        Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Access-Control-Allow-Headers "Content-Type"
+        # Add security headers
+        Strict-Transport-Security "max-age=31536000;"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        defer  # Process headers after proxied response
+    }
+
+    # Logging configuration
+    log {
+        output file /data/access.log {
+            roll_size 10MB
+            roll_keep 10
+        }
+        format console
+        level INFO
+    }
+}
