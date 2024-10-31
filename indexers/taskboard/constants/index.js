@@ -1,6 +1,11 @@
 const NETWORKS = ["taurus"];
 const QUEUES = [
   {
+    name: "consensusUniqueRowsMapping",
+    title: "Consensus Unique Rows Mapping",
+    enabled: true,
+  },
+  {
     name: "leaderboardSortAndRank",
     title: "Leaderboard Sort and Rank",
     enabled: true,

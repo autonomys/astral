@@ -1,6 +1,13 @@
 table:
   name: blocks
   schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 array_relationships:
   - name: events
     using:
@@ -33,20 +40,22 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - author_id
-        - blockchain_size
+        - _block_range
         - events_count
         - extrinsics_count
+        - blockchain_size
+        - height
+        - space_pledged
+        - author_id
         - extrinsics_root
         - hash
-        - height
         - id
         - parent_hash
         - sort_id
-        - space_pledged
         - spec_id
         - state_root
         - timestamp
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

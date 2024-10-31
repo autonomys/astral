@@ -1,6 +1,13 @@
 table:
   name: events
   schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 object_relationships:
   - name: block
     using:
@@ -11,6 +18,15 @@ object_relationships:
         remote_table:
           name: blocks
           schema: consensus
+  - name: event_module
+    using:
+      manual_configuration:
+        column_mapping:
+          module: id
+        insertion_order: null
+        remote_table:
+          name: event_modules
+          schema: consensus
   - name: extrinsic
     using:
       manual_configuration:
@@ -20,32 +36,26 @@ object_relationships:
         remote_table:
           name: extrinsics
           schema: consensus
-  - name: module
-    using:
-      manual_configuration:
-        column_mapping:
-          event_module_id: section_id
-        insertion_order: null
-        remote_table:
-          name: event_modules
-          schema: consensus
 select_permissions:
   - role: user
     permission:
       columns:
+        - _block_range
+        - pos
+        - block_height
+        - index_in_block
         - args
         - block_hash
-        - block_height
-        - event_module_id
         - extrinsic_hash
         - extrinsic_id
         - id
-        - index_in_block
+        - module
         - name
         - phase
-        - pos
+        - section
         - sort_id
         - timestamp
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

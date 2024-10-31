@@ -12,7 +12,7 @@ import {
   createAndSaveExtrinsic,
   createAndSaveLog,
 } from "./db";
-import { getBlockAuthor } from "./helper";
+import { consensusUniqueRowsMapping, getBlockAuthor } from "./helper";
 import {
   handleExtrinsic,
   handleFarmerBlockRewardEvent,
@@ -86,13 +86,14 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
         height,
         blockHash,
         i,
-        rawKind,
         kind,
         stringify(value),
         blockTimestamp
       );
     })
   );
+
+  await consensusUniqueRowsMapping(height);
 }
 
 export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
@@ -191,7 +192,6 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     BigInt(idx),
     extrinsicId,
     extrinsicHash,
-    primitive.index,
     human.section,
     human.method,
     timestamp ? timestamp : new Date(0),

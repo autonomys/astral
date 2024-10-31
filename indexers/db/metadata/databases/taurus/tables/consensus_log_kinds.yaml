@@ -1,12 +1,19 @@
 table:
   name: log_kinds
   schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 array_relationships:
   - name: logs
     using:
       manual_configuration:
         column_mapping:
-          id: log_kind_id
+          id: id
         insertion_order: null
         remote_table:
           name: logs
@@ -15,9 +22,9 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - _block_range
         - id
-        - kind
-        - kind_id
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

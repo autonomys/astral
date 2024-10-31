@@ -1,12 +1,19 @@
 table:
   name: event_modules
   schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 object_relationships:
   - name: module_section
     using:
       manual_configuration:
         column_mapping:
-          section_id: id
+          id: id
         insertion_order: null
         remote_table:
           name: sections
@@ -16,7 +23,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          id: event_module_id
+          method: module
         insertion_order: null
         remote_table:
           name: events
@@ -25,11 +32,11 @@ select_permissions:
   - role: user
     permission:
       columns:
+        - _block_range
         - id
         - method
-        - module_id
         - section
-        - section_id
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""

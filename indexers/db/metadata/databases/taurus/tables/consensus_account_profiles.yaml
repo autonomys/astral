@@ -1,12 +1,19 @@
 table:
   name: account_profiles
   schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 object_relationships:
   - name: account
     using:
       manual_configuration:
         column_mapping:
-          account_id: account_id
+          id: id
         insertion_order: null
         remote_table:
           name: accounts
@@ -15,13 +22,15 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - account_id
-        - banner
+        - email_verified
+        - website_verified
+        - _block_range
         - created_at
+        - updated_at
+        - banner
         - description
         - discord
         - email
-        - email_verified
         - github
         - icon
         - id
@@ -29,8 +38,7 @@ select_permissions:
         - proof_message
         - proof_signature
         - twitter
-        - updated_at
         - website
-        - website_verified
+        - _id
       filter: {}
     comment: ""

@@ -1,4 +1,3 @@
-import { capitalizeFirstLetter } from "@autonomys/auto-utils";
 import {
   AccountHistory,
   Block,
@@ -8,7 +7,7 @@ import {
   Reward,
   Transfer,
 } from "../types";
-import { dateEntry, getSortId, moduleId, moduleName } from "./utils";
+import { dateEntry, getSortId, moduleName } from "./utils";
 
 // Core Consensus DB Functions
 
@@ -52,7 +51,6 @@ export async function createAndSaveLog(
   blockHeight: bigint,
   blockHash: string,
   indexInBlock: number,
-  rawKind: string,
   kind: string,
   value: string,
   timestamp: Date
@@ -65,7 +63,6 @@ export async function createAndSaveLog(
     blockHeight,
     blockHash,
     indexInBlock,
-    logKindId: rawKind,
     kind,
     value,
     timestamp,
@@ -84,7 +81,7 @@ export async function createAndSaveExtrinsic(
   blockHash: string,
   indexInBlock: number,
   section: string,
-  method: string,
+  module: string,
   success: boolean,
   timestamp: Date,
   nonce: bigint,
@@ -105,8 +102,9 @@ export async function createAndSaveExtrinsic(
     blockHeight,
     blockHash,
     indexInBlock,
-    extrinsicModuleId: moduleId(section, method),
-    name: moduleName(section, method),
+    section,
+    module,
+    name: moduleName(section, module),
     success,
     timestamp,
     nonce,
@@ -128,9 +126,8 @@ export async function createAndSaveEvent(
   indexInBlock: bigint,
   extrinsicId: string,
   extrinsicHash: string,
-  callIndex: string,
   section: string,
-  method: string,
+  module: string,
   timestamp: Date,
   phase: string,
   pos: number,
@@ -146,8 +143,9 @@ export async function createAndSaveEvent(
     extrinsicId,
     extrinsicHash,
     indexInBlock,
-    eventModuleId: moduleId(section, method),
-    name: moduleName(section, method),
+    section,
+    module,
+    name: moduleName(section, module),
     timestamp,
     phase,
     pos,
@@ -169,7 +167,6 @@ export async function createAndSaveAccountHistory(
 ): Promise<AccountHistory> {
   const accountHistory = AccountHistory.create({
     id,
-    accountId: id,
     nonce,
     free,
     reserved,

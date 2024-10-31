@@ -1,6 +1,13 @@
 table:
   name: logs
   schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 object_relationships:
   - name: block
     using:
@@ -15,7 +22,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          log_kind_id: id
+          kind: id
         insertion_order: null
         remote_table:
           name: log_kinds
@@ -24,15 +31,16 @@ select_permissions:
   - role: user
     permission:
       columns:
-        - block_hash
-        - block_height
-        - id
+        - _block_range
         - index_in_block
+        - block_height
+        - block_hash
+        - id
         - kind
-        - log_kind_id
         - sort_id
-        - timestamp
         - value
+        - timestamp
+        - _id
       filter: {}
       allow_aggregations: true
     comment: ""
