@@ -1,5 +1,5 @@
-import { account } from "@autonomys/auto-consensus";
-import { stringify } from "@autonomys/auto-utils";
+import { account, blockNumber } from "@autonomys/auto-consensus";
+import { ApiPromise, stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
 import { request } from "http";
 import { decodeLog } from "./utils";
@@ -68,4 +68,21 @@ export const consensusUniqueRowsMapping = async (blockNumber: bigint) => {
   });
   req.write(postData);
   req.end();
+};
+
+export const preventIndexingTooCloseToTheHeadOfTheChain = async (
+  indexingBlockHeight: number | bigint
+) => {
+  if (!unsafeApi) throw new Error("Unsafe API not found");
+  if (
+    typeof indexingBlockHeight !== "number" &&
+    typeof indexingBlockHeight !== "bigint"
+  )
+    throw new Error("Indexing block height must be a number or bigint");
+  if (typeof indexingBlockHeight === "number")
+    indexingBlockHeight = BigInt(indexingBlockHeight);
+
+  const targetHeight = await blockNumber(unsafeApi as unknown as ApiPromise);
+  if (indexingBlockHeight > BigInt(targetHeight - 100))
+    throw new Error("Indexing too close to the head of the chain, skipping...");
 };
