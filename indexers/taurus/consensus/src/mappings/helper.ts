@@ -83,6 +83,6 @@ export const preventIndexingTooCloseToTheHeadOfTheChain = async (
     indexingBlockHeight = BigInt(indexingBlockHeight);
 
   const targetHeight = await blockNumber(unsafeApi as unknown as ApiPromise);
-  if (indexingBlockHeight < BigInt(targetHeight - 100))
+  if (indexingBlockHeight > BigInt(targetHeight - 100))
     throw new Error("Indexing too close to the head of the chain, skipping...");
 };
