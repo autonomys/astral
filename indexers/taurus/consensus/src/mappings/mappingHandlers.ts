@@ -12,7 +12,11 @@ import {
   createAndSaveExtrinsic,
   createAndSaveLog,
 } from "./db";
-import { consensusUniqueRowsMapping, getBlockAuthor } from "./helper";
+import {
+  consensusUniqueRowsMapping,
+  getBlockAuthor,
+  preventIndexingTooCloseToTheHeadOfTheChain,
+} from "./helper";
 import {
   handleExtrinsic,
   handleFarmerBlockRewardEvent,
@@ -39,6 +43,8 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
     events,
   } = _block;
   const height = BigInt(number.toString());
+  await preventIndexingTooCloseToTheHeadOfTheChain(height);
+
   const blockHash = hash.toString();
   const blockTimestamp = timestamp ? timestamp : new Date(0);
   // Get block author
@@ -109,6 +115,8 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     success,
     events,
   } = _call;
+  const height = BigInt(number.toString());
+  await preventIndexingTooCloseToTheHeadOfTheChain(height);
 
   const methodToHuman = method.toHuman() as ExtrinsicHuman;
   const methodToPrimitive = method.toPrimitive() as ExtrinsicPrimitive;
@@ -138,7 +146,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
 
   await createAndSaveExtrinsic(
     hash.toString(),
-    BigInt(number.toString()),
+    height,
     hash.toString(),
     idx,
     methodToHuman.section,
@@ -171,6 +179,8 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     extrinsic,
     event,
   } = _event;
+  const height = BigInt(number.toString());
+  await preventIndexingTooCloseToTheHeadOfTheChain(height);
 
   const primitive = event.toPrimitive() as EventPrimitive;
   const human = event.toHuman() as EventHuman;
@@ -187,7 +197,7 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
   const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
 
   await createAndSaveEvent(
-    BigInt(number.toString()),
+    height,
     hash.toString(),
     BigInt(idx),
     extrinsicId,
