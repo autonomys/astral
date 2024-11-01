@@ -4,7 +4,7 @@ services:
   postgres:
     volumes:
       - type: bind
-        source: /home/ubuntu/postgresql/conf/postgresql.conf
+        source: /home/ubuntu/subql/postgresql/conf/postgresql.conf
         target: /etc/postgresql/postgresql.conf
         read_only: true
     logging:
