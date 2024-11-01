@@ -4,7 +4,6 @@
     servers {
         protocols h1 h2c  # Enable HTTP/1.1 and H2C protocols
         max_header_size 16384  # 16KB max header size
-        client_max_body_size 10MB  # Limit request body size
     }
 }
 
