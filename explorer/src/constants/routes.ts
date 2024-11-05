@@ -29,6 +29,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
+    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.domains,
