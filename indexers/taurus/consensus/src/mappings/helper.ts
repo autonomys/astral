@@ -5,6 +5,7 @@ import { request } from "http";
 import { decodeLog } from "./utils";
 
 const DEFAULT_ACCOUNT_ID = "0x00";
+const DEFAULT_CHAIN_HEAD_OFFSET = 10;
 
 // Core Consensus Helper Functions
 
@@ -83,6 +84,7 @@ export const preventIndexingTooCloseToTheHeadOfTheChain = async (
     indexingBlockHeight = BigInt(indexingBlockHeight);
 
   const targetHeight = await blockNumber(unsafeApi as unknown as ApiPromise);
-  if (indexingBlockHeight > BigInt(targetHeight - 100))
+
+  if (indexingBlockHeight > BigInt(targetHeight - DEFAULT_CHAIN_HEAD_OFFSET))
     throw new Error("Indexing too close to the head of the chain, skipping...");
 };
