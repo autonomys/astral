@@ -1,10 +1,9 @@
 /* eslint-disable react/no-unknown-property */
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
 import { DocIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { AccountByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
@@ -74,8 +73,6 @@ function Screen({
   accountById: AccountByIdQuery['consensus_accounts'][number]
   tokenSymbol: string
 }) {
-  dayjs.extend(relativeTime)
-
   const account = {
     total: accountById?.total ?? '0',
     free: accountById?.free ?? '0',
@@ -188,7 +185,7 @@ function Screen({
                   }}
                   tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
                 >
-                  {dayjs(lastExtrinsic.timestamp).fromNow(true) + ' ago'}
+                  {utcToLocalRelativeTime(lastExtrinsic.timestamp)}
                 </span>
               </div>
             ) : (

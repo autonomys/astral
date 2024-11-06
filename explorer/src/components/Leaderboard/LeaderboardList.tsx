@@ -1,13 +1,12 @@
 'use client'
 
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   AccountTransferSenderTotalCountQuery,
   AccountTransferSenderTotalCountQueryVariables,
@@ -30,8 +29,6 @@ import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
-
-dayjs.extend(relativeTime)
 
 type LeaderboardListProps = {
   title: string
@@ -128,7 +125,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`last_contribution_at-${row.original.id}`}>
-            {dayjs(row.original.last_contribution_at).fromNow(true) + ' ago'}
+            {utcToLocalRelativeTime(row.original.last_contribution_at)}
           </div>
         ),
       })

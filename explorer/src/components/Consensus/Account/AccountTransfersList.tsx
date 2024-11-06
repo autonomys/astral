@@ -9,8 +9,6 @@ import { Tooltip } from 'components/common/Tooltip'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { formatUnits } from 'ethers'
 import {
   Order_By as OrderBy,
@@ -32,8 +30,6 @@ import { bigNumberToNumber } from 'utils/number'
 import { formatExtrinsicId, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { QUERY_ACCOUNT_TRANSFERS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   accountId: string
@@ -245,7 +241,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-created_at-${row.index}`}>
-            {dayjs(row.original.date).fromNow(true)} ago
+            {row.original.timestamp(row.original.date)}
           </div>
         ),
       },

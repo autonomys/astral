@@ -1,8 +1,8 @@
 'use client'
 
+import { currentYear } from '@/utils/time'
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
 import { LogoIcon } from 'components/icons'
-import dayjs from 'dayjs'
 import useChains from 'hooks/useChains'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
@@ -107,7 +107,7 @@ const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
           <div className='flex'>
             <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
               <p className='text-gray text-center text-sm sm:text-left'>
-                © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                © {currentYear()} Subspace Labs, Inc. All Rights Reserved
               </p>
             </div>
           </div>
