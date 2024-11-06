@@ -1,5 +1,6 @@
 'use client'
 
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
@@ -7,8 +8,6 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { BlocksQuery, BlocksQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -23,8 +22,6 @@ import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { BlockAuthor } from './BlockAuthor'
 import { QUERY_BLOCKS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Row = BlocksQuery['consensus_blocks'][number]
 
@@ -101,7 +98,9 @@ export const BlockList: FC = () => {
         header: 'Time',
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-time`}>{dayjs(row.original.timestamp).fromNow(true)}</div>
+          <div key={`${row.index}-block-time`}>
+            {utcToLocalRelativeTime(row.original.timestamp)}
+          </div>
         ),
       },
       {

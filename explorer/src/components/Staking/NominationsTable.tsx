@@ -1,5 +1,6 @@
 'use client'
 
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { Accordion } from 'components/common/Accordion'
@@ -8,8 +9,6 @@ import { Spinner } from 'components/common/Spinner'
 import { BIGINT_ZERO, TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   NominationsListQuery,
   NominationsListQueryVariables,
@@ -28,8 +27,6 @@ import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
 import { QUERY_NOMINATIONS_LIST } from './query'
-
-dayjs.extend(relativeTime)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const columnHelper = createColumnHelper<any>()
@@ -109,7 +106,7 @@ export const NominationsTable: FC = () => {
       header: 'Storage Fee',
     }),
     columnHelper.accessor('timestamp', {
-      cell: (info) => dayjs(info.getValue()).fromNow(),
+      cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
     }),
     columnHelper.accessor('created_at', {

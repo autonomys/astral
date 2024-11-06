@@ -1,5 +1,6 @@
 'use client'
 
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -11,8 +12,6 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
   Routes,
 } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -27,8 +26,6 @@ import { QUERY_EXTRINSIC_SUMMARY } from './query'
 interface LastExtrinsicsProps {
   subspaceAccount: string
 }
-
-dayjs.extend(relativeTime)
 
 export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
@@ -105,8 +102,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                         extrinsic.id,
                       )}
                     >
-                      <Tooltip text={dayjs(extrinsic.timestamp).toString()}>
-                        {dayjs(extrinsic.timestamp).fromNow(true)}
+                      <Tooltip text={extrinsic.timestamp}>
+                        {utcToLocalRelativeTime(extrinsic.timestamp)}
                       </Tooltip>
                     </Link>
                   }

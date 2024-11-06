@@ -4,16 +4,12 @@ import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { LogByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
 import { countTablePages } from 'utils/table'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   events: NonNullable<NonNullable<LogByIdQuery['consensus_logs'][number]>['block']>['events']

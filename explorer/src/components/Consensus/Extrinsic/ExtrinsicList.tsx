@@ -1,5 +1,6 @@
 'use client'
 
+import { utcToLocalRelativeTime } from '@/utils/time'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
@@ -8,8 +9,6 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -22,8 +21,6 @@ import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_EXTRINSICS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
 
@@ -102,7 +99,7 @@ export const ExtrinsicList: FC = () => {
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-extrinsic-time`}>
-            {dayjs(row.original.timestamp).fromNow(true)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },
