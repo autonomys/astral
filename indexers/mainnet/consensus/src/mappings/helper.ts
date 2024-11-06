@@ -41,7 +41,7 @@ export const getAccountBalance = async (accountId: string) =>
 
 export const consensusUniqueRowsMapping = async (blockNumber: bigint) => {
   const postData = stringify({
-    queueName: "taurus",
+    queueName: "mainnet",
     taskName: "consensusUniqueRowsMapping",
     data: {
       blockNumber: blockNumber.toString(),

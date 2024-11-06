@@ -3,7 +3,7 @@ import { request } from "http";
 
 export const sortAndRankLeaderboard = async (blockNumber: bigint) => {
   const postData = stringify({
-    queueName: "taurus",
+    queueName: "mainnet",
     taskName: "leaderboardSortAndRank",
     data: {
       blockNumber: blockNumber.toString(),
