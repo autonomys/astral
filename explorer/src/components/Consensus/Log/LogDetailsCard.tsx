@@ -1,13 +1,9 @@
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { LogByIdQuery } from 'gql/graphql'
 import { FC, useMemo } from 'react'
 import { parseArgs, parseLogValue } from 'utils/indexerParsing'
 import { shortString } from 'utils/string'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   log: NonNullable<LogByIdQuery['consensus_logs'][number]>

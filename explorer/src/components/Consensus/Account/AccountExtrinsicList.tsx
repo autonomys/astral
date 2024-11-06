@@ -7,7 +7,6 @@ import { StatusIcon } from 'components/common/StatusIcon'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
 import {
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
@@ -24,6 +23,7 @@ import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { QUERY_ACCOUNT_EXTRINSICS } from './query'
 
 type Props = {
@@ -129,7 +129,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }) => (
           <div key={`${row.original.id}-extrinsic-time-${row.index}`}>
-            {dayjs(row.original.timestamp).fromNow(true)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

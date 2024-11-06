@@ -3,15 +3,12 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { HomeQueryQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
-
-dayjs.extend(relativeTime)
+import { utcToLocalRelativeTime } from 'utils/time'
 
 interface HomeBlockListProps {
   data: HomeQueryQuery
@@ -58,7 +55,7 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
         header: 'Time',
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-home-block-timestamp`}>
-            {dayjs(row.original.timestamp).fromNow(true)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

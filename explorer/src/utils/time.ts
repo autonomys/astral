@@ -1,3 +1,10 @@
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(relativeTime)
+dayjs.extend(utc)
+
 export const formatSeconds = (seconds: number | bigint): string => {
   if (typeof seconds === 'number' && seconds < 0) {
     throw new Error('Seconds cannot be negative')
@@ -27,3 +34,11 @@ export const formatSeconds = (seconds: number | bigint): string => {
       .trim() || '0s'
   )
 }
+
+export const utcToLocalRelativeTime = (timestamp: string): string =>
+  dayjs.utc(timestamp).local().fromNow(true) + ' ago'
+
+export const utcToLocalTime = (timestamp: string): string =>
+  dayjs.utc(timestamp).local().format('DD MMM YYYY | HH:mm:ss(Z)')
+
+export const currentYear = (): number => dayjs().year()

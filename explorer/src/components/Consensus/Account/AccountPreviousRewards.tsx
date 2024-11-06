@@ -1,13 +1,9 @@
 import { TOKEN } from 'constants/general'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { AccountIdParam } from 'types/app'
 import { formatAddress } from 'utils//formatAddress'
-
-dayjs.extend(relativeTime)
 
 interface AccountPreviousRewardsProps {
   isDesktop: boolean

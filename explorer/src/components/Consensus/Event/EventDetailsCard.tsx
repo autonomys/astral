@@ -1,16 +1,13 @@
+import { utcToLocalRelativeTime, utcToLocalTime } from '@/utils/time'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { EventByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
 import { parseArgs } from 'utils/indexerParsing'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   event: EventByIdQuery['consensus_events'][number]
@@ -40,11 +37,9 @@ export const EventDetailsCard: FC<Props> = ({ event }) => {
           <div className='flex w-full flex-col gap-5 md:flex-row'>
             <div className='w-full md:flex-1'>
               <List>
-                <StyledListItem title='Timestamp'>
-                  {dayjs(event.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
-                </StyledListItem>
+                <StyledListItem title='Timestamp'>{utcToLocalTime(event.timestamp)}</StyledListItem>
                 <StyledListItem title='Block Time'>
-                  {dayjs(event.timestamp).fromNow(true)}
+                  {utcToLocalRelativeTime(event.timestamp)}
                 </StyledListItem>
                 <StyledListItem title='Extrinsic'>
                   {event.extrinsic ? (

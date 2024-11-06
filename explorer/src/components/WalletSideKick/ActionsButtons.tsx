@@ -1,3 +1,5 @@
+import useChains from '@/hooks/useChains'
+import { NetworkId } from '@autonomys/auto-utils'
 import {
   AdjustmentsVerticalIcon,
   LockClosedIcon,
@@ -18,6 +20,7 @@ interface ActionsButtonsProps {
 
 export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
   const { subspaceAccount } = useWallet()
+  const { network } = useChains()
   const [isOpen, setIsOpen] = useState(false)
   const [action, setAction] = useState<WalletAction>(WalletAction.None)
 
@@ -40,14 +43,17 @@ export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
 
   return (
     <div className='flex items-center justify-center gap-3'>
-      <Tooltip text={`Send ${tokenSymbol}`}>
-        <button
-          onClick={onSendToken}
-          className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
-        >
-          <PaperAirplaneIcon className='w-8 text-white' />
-        </button>
-      </Tooltip>
+      {/* TODO: Remove this once Mainnet is supporting tokens transfer */}
+      {network === NetworkId.TAURUS && (
+        <Tooltip text={`Send ${tokenSymbol}`}>
+          <button
+            onClick={onSendToken}
+            className='m-2 flex cursor-default items-center justify-center rounded-full bg-primaryAccent p-2'
+          >
+            <PaperAirplaneIcon className='w-8 text-white' />
+          </button>
+        </Tooltip>
+      )}
       <Tooltip text={`Receive ${tokenSymbol}`}>
         <button
           onClick={onReceiveToken}
