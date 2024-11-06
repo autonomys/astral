@@ -30,7 +30,7 @@ const project: SubstrateProject = {
   },
   network: {
     /* The genesis hash of the network (hash of block 0) */
-    chainId: process.env.TAURUS_CHAIN_ID!,
+    chainId: process.env.CHAIN_ID!,
     /**
      * These endpoint(s) should be public non-pruned archive node
      * We recommend providing more than one endpoint for improved reliability, performance, and uptime
@@ -39,8 +39,8 @@ const project: SubstrateProject = {
      * If you use a rate limited endpoint, adjust the --batch-size and --workers parameters
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
-    endpoint: process.env.TAURUS_RPC!?.split(",") as string[] | string,
-    dictionary: process.env.TAURUS_DICTIONARY_URL!,
+    endpoint: process.env.RPC_URLS!?.split(",") as string[] | string,
+    dictionary: process.env.DICTIONARY_URL!,
   },
   dataSources: [
     {
