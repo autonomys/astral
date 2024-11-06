@@ -1,4 +1,4 @@
-import useChains from '@/hooks/useChains'
+import useChains from 'hooks/useChains'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
