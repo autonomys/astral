@@ -145,7 +145,7 @@ export const NominationsTable: FC = () => {
       header: 'Unlocked Total Amount',
     }),
     columnHelper.accessor('timestamp', {
-      cell: (info) => dayjs(info.getValue()).fromNow(),
+      cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
     }),
     columnHelper.accessor('created_at', {
