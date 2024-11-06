@@ -1,10 +1,10 @@
-import { utcToLocalRelativeTime, utcToLocalTime } from '@/utils/time'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { BlockByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { FC } from 'react'
 import { shortString } from 'utils/string'
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { BlockAuthor } from './BlockAuthor'
 
 type Props = {

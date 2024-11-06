@@ -1,6 +1,5 @@
 'use client'
 
-import { utcToLocalRelativeTime } from '@/utils/time'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
@@ -19,6 +18,7 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_EXTRINSICS } from './query'
 

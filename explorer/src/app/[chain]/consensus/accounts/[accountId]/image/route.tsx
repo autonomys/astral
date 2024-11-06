@@ -1,8 +1,6 @@
 /* eslint-disable react/no-unknown-property */
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
 import { DocIcon, WalletIcon } from 'components/icons'
-import { TOKEN } from 'constants/general'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { AccountByIdQuery } from 'gql/graphql'
@@ -10,7 +8,9 @@ import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { AccountIdPageProps, ChainPageProps } from 'types/app'
+import { getTokenSymbol } from 'utils/network'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { utcToLocalRelativeTime } from 'utils/time'
 
 // export const runtime = 'edge'
 export async function GET(
@@ -20,6 +20,7 @@ export async function GET(
   if (!chain) notFound()
 
   const chainMatch = indexers.find((c) => c.network === chain)
+  const tokenSymbol = getTokenSymbol(chain)
 
   if (!accountId || !chainMatch) notFound()
 
@@ -42,7 +43,14 @@ export async function GET(
 
   try {
     return new ImageResponse(
-      <Screen chainMatch={chainMatch} accountId={accountId} accountById={accountById[0]} />,
+      (
+        <Screen
+          chainMatch={chainMatch}
+          accountId={accountId}
+          accountById={accountById[0]}
+          tokenSymbol={tokenSymbol}
+        />
+      ),
       {
         width: 1200,
         height: 630,
@@ -58,10 +66,12 @@ function Screen({
   chainMatch,
   accountId,
   accountById,
+  tokenSymbol,
 }: {
   chainMatch: (typeof indexers)[number]
   accountId: string
   accountById: AccountByIdQuery['consensus_accounts'][number]
+  tokenSymbol: string
 }) {
   const account = {
     total: accountById?.total ?? '0',
@@ -123,7 +133,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total {numberWithCommas(bigNumberToNumber(account.total))} ({TOKEN.symbol})
+              Total {numberWithCommas(bigNumberToNumber(account.total))} ({tokenSymbol})
             </span>
             <span
               style={{
@@ -131,7 +141,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} ({TOKEN.symbol})
+              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} ({tokenSymbol})
             </span>
             <span
               style={{
@@ -139,7 +149,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Free {numberWithCommas(bigNumberToNumber(account.free))} ({TOKEN.symbol})
+              Free {numberWithCommas(bigNumberToNumber(account.free))} ({tokenSymbol})
             </span>
           </div>
         </div>

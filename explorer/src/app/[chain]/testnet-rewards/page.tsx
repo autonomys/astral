@@ -1,4 +1,4 @@
-import { TestnetRewardsPage } from '@/components/TestnetRewards'
+import { TestnetRewardsPage } from 'components/TestnetRewards'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
 import { Metadata } from 'next'

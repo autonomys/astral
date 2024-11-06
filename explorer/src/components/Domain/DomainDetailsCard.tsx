@@ -1,6 +1,5 @@
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import type { DomainByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -17,7 +16,7 @@ type Props = {
 }
 
 export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   if (!domain) return null
@@ -93,28 +92,28 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
               </Link>
             </StyledListItem>
             <StyledListItem title='Current total stake'>
-              {bigNumberToFormattedString(domain.current_total_stake)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.current_total_stake)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Current storage fee deposits'>
-              {bigNumberToFormattedString(domain.current_storage_fee_deposit)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.current_storage_fee_deposit)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total deposits'>
-              {bigNumberToFormattedString(domain.total_deposits)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_deposits)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total rewards collected'>
-              {bigNumberToFormattedString(domain.total_rewards_collected)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_rewards_collected)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total consensus storage fee'>
-              {bigNumberToFormattedString(domain.total_consensus_storage_fee)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_consensus_storage_fee)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total domain execution fee'>
-              {bigNumberToFormattedString(domain.total_domain_execution_fee)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_domain_execution_fee)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total burned balance'>
-              {bigNumberToFormattedString(domain.total_burned_balance)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_burned_balance)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total tax collected'>
-              {bigNumberToFormattedString(domain.total_tax_collected)} {TOKEN.symbol}
+              {bigNumberToFormattedString(domain.total_tax_collected)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Operators count'>
               {bigNumberToFormattedString(domain.operators_aggregate.aggregate?.count ?? '0')}
