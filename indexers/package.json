@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "workspaces": [
+    "mainnet/*",
     "taurus/*",
     "gemini-3h/*",
     "gemini-3g/*",
