@@ -39,13 +39,13 @@ export const searchTypes: SearchType[] = [
   { id: 5, name: 'Event', unavailable: false },
 ]
 
-export const SUBSPACE_ACC_PREFIX = 2254
+export const SUBSPACE_ACC_PREFIX = 6094
 
 export const BIGINT_ZERO = BigInt(0)
 
 export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000)
 
 export const TOKEN = {
-  symbol: 'tSSC',
+  symbol: 'tAI3',
   decimals: 18,
 }
