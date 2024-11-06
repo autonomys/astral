@@ -1,4 +1,4 @@
-# Testnet Taurus Indexer
+# Mainnet Indexer
 
 ## Overview
 

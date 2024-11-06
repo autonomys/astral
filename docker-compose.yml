@@ -143,7 +143,7 @@ services:
   dictionary_subquery_node:
     profiles: [dictionary, indexers]
     build:
-      context: ./indexers/dictionary/autonomys-${NETWORK_ID}
+      context: ./indexers/dictionary/${DICTIONARY_DIRECTORY}
     depends_on:
       "postgres":
         condition: service_healthy
@@ -155,7 +155,7 @@ services:
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
     volumes:
-      - ./indexers/dictionary/autonomys-${NETWORK_ID}:/dictionary
+      - ./indexers/dictionary/${DICTIONARY_DIRECTORY}:/dictionary
     healthcheck:
       test:
         [
@@ -361,5 +361,3 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
-
-      DB_GEMINI_3H: ${DB_GEMINI_3H}

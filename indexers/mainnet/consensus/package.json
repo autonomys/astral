@@ -1,7 +1,7 @@
 {
-  "name": "gemini_3h_consensus",
+  "name": "consensus",
   "version": "1.0.0",
-  "description": "Autonomys Gemini 3H Testnet - Consensus",
+  "description": "Autonomys Network - Consensus",
   "main": "dist/index.js",
   "scripts": {
     "build": "subql codegen && subql build",

@@ -1,7 +1,7 @@
 {
-  "name": "gemini_3h_consensus",
+  "name": "leaderboard",
   "version": "1.0.0",
-  "description": "Autonomys Gemini 3H Testnet - Consensus",
+  "description": "Autonomys Network - Leaderboard",
   "main": "dist/index.js",
   "scripts": {
     "build": "subql codegen && subql build",
@@ -31,17 +31,14 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@autonomys/auto-consensus": "^1.0.1",
-    "@autonomys/auto-utils": "^1.0.1",
     "@polkadot/api": "^12",
-    "@polkadot/types": "^14.1.1",
     "@subql/cli": "latest",
-    "@subql/common-substrate": "latest",
     "@subql/testing": "latest",
     "@subql/types": "latest",
-    "dotenv": "latest",
+    "typescript": "^5.2.2",
+    "@subql/common-substrate": "latest",
     "@types/node": "latest",
-    "typescript": "^5.2.2"
+    "dotenv": "latest"
   },
   "resolutions": {
     "ipfs-unixfs": "6.0.6"

@@ -1,4 +1,4 @@
-# Gemini 3H Indexer
+# Testnet Gemini-3H Indexer
 
 ## Overview
 
@@ -13,7 +13,6 @@ The Gemini 3H Indexer is a powerful tool designed to index and manage blockchain
 
 ## Directory Structure
 
-- `accounts/`: Contains modules and scripts for account management.
 - `consensus/`: Includes files related to consensus mechanisms.
 - `leaderboard/`: Manages leaderboard data and display.
 - `staking/`: Handles staking operations and reward calculations.
@@ -25,19 +24,19 @@ To get started with the Gemini 3H Indexer, follow these steps:
 1. **Clone the repository**:
 
    ```sh
-   git clone https://github.com/your-repo/gemini-3h.git
-   cd gemini-3h
+   git clone https://github.com/autonomys/astral.git
+   cd indexers
    ```
 
 2. **Install dependencies**:
 
    ```sh
-   npm install
+   yarn install
    ```
 
 3. **Run the indexer**:
    ```sh
-   npm start
+   yarn dev
    ```
 
 ## Usage
@@ -47,12 +46,7 @@ Detailed usage instructions for each module can be found in their respective dir
 - **Start the indexer**:
 
   ```sh
-  npm start
-  ```
-
-- **Run tests**:
-  ```sh
-  npm test
+  yarn dev
   ```
 
 ## Contributing
