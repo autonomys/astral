@@ -1,6 +1,5 @@
 'use client'
 
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -21,6 +20,7 @@ import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
 interface LastExtrinsicsProps {

@@ -7,7 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { Tooltip } from 'components/common/Tooltip'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE, TOKEN } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { formatUnits } from 'ethers'
 import {
@@ -47,7 +47,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     pageIndex: 0,
   })
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
@@ -204,8 +204,8 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-value-${row.index}`}>
-            <Tooltip text={`${formatUnits(row.original.value)} ${TOKEN.symbol}`}>
-              {`${bigNumberToNumber(row.original.value)} ${TOKEN.symbol}`}
+            <Tooltip text={`${formatUnits(row.original.value)} ${tokenSymbol}`}>
+              {`${bigNumberToNumber(row.original.value)} ${tokenSymbol}`}
             </Tooltip>
           </div>
         ),
@@ -216,8 +216,8 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-fee-${row.index}`}>
-            <Tooltip text={`${formatUnits(row.original.fee)} ${TOKEN.symbol}`}>
-              {`${bigNumberToNumber(row.original.fee, 6)} ${TOKEN.symbol}`}
+            <Tooltip text={`${formatUnits(row.original.fee)} ${tokenSymbol}`}>
+              {`${bigNumberToNumber(row.original.fee, 6)} ${tokenSymbol}`}
             </Tooltip>
           </div>
         ),
@@ -246,7 +246,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         ),
       },
     ],
-    [accountId, isLargeLaptop, network],
+    [accountId, isLargeLaptop, network, tokenSymbol],
   )
 
   const noData = useMemo(() => {

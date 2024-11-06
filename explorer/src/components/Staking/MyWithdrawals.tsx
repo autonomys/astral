@@ -1,4 +1,4 @@
-import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
+import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
@@ -40,7 +40,7 @@ type MyUnlockedWithdrawal = {
 
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
-  const { section, network } = useChains()
+  const { section, network, tokenSymbol } = useChains()
   const { withdrawals } = useConsensusStates()
 
   const myUnlockedWithdrawals = useMemo(() => {
@@ -64,11 +64,11 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
               sortValue: w.operatorId,
             },
             totalWithdrawalAmount: {
-              value: `${bigNumberToFormattedString(w.totalWithdrawalAmount.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(w.totalWithdrawalAmount.toString())} ${tokenSymbol}`,
               sortValue: w.totalWithdrawalAmount,
             },
             totalStorageFeeRefund: {
-              value: `${bigNumberToFormattedString(totalStorageFeeRefund.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(totalStorageFeeRefund.toString())} ${tokenSymbol}`,
               sortValue: totalStorageFeeRefund,
             },
             unlockAtConfirmedDomainBlockNumber: {
@@ -78,14 +78,14 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
             total: {
               value: `${bigNumberToFormattedString(
                 (w.totalWithdrawalAmount + totalStorageFeeRefund).toString(),
-              )} ${TOKEN.symbol}`,
+              )} ${tokenSymbol}`,
               sortValue: w.totalWithdrawalAmount + totalStorageFeeRefund,
             },
           })
         })
       })
     return myUnlockedWithdrawals
-  }, [withdrawals, subspaceAccount])
+  }, [withdrawals, subspaceAccount, tokenSymbol])
 
   const myUnlockedWithdrawalsList = useMemo(
     () =>
@@ -182,7 +182,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
 
 export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
-  const { section, network } = useChains()
+  const { section, network, tokenSymbol } = useChains()
   const { operators, withdrawals } = useConsensusStates()
 
   const myPendingWithdrawals = useMemo(
@@ -212,17 +212,17 @@ export const MyPendingWithdrawals: FC = () => {
               sortValue: w.operatorId,
             },
             shares: {
-              value: `${sharesWithdrawAmount} ${TOKEN.symbol}`,
+              value: `${sharesWithdrawAmount} ${tokenSymbol}`,
               tooltip: `Shares: ${w.withdrawalInShares.shares.toString()} - Share value: ${sharesValue} - Total: ${sharesWithdrawAmount}`,
               sortValue: w.withdrawalInShares.shares,
             },
             storageFeeRefund: {
-              value: `${storageFeeWithdrawAmount} ${TOKEN.symbol}`,
+              value: `${storageFeeWithdrawAmount} ${tokenSymbol}`,
               tooltip: `Storage Fee Refund: ${w.withdrawalInShares.storageFeeRefund.toString()} - Share value: ${sharesValue} - Total: ${storageFeeWithdrawAmount}`,
               sortValue: w.withdrawalInShares.storageFeeRefund,
             },
             total: {
-              value: `${bigNumberToFormattedString(total.toString())} ${TOKEN.symbol}`,
+              value: `${bigNumberToFormattedString(total.toString())} ${tokenSymbol}`,
               sortValue: total,
             },
             unlockAtConfirmedDomainBlockNumber: {
@@ -231,7 +231,7 @@ export const MyPendingWithdrawals: FC = () => {
             },
           }
         }),
-    [withdrawals, subspaceAccount, operators],
+    [withdrawals, subspaceAccount, operators, tokenSymbol],
   )
 
   const myPendingWithdrawalsList = useMemo(

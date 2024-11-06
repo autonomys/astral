@@ -1,6 +1,6 @@
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
@@ -39,7 +39,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -99,7 +99,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
                   ),
                 ),
               )}{' '}
-              {TOKEN.symbol}
+              {tokenSymbol}
             </div>
           )
         },
@@ -153,20 +153,30 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
             <div>
               {deposit && deposit.shares > BIGINT_ZERO && (
                 <>
-                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${TOKEN.symbol}`}
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${tokenSymbol}`}
                   <br />
                 </>
               )}
               {deposit &&
                 deposit.pending !== null &&
                 deposit.pending.amount > BIGINT_ZERO &&
-                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${TOKEN.symbol}`}
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${tokenSymbol}`}
             </div>
           )
         },
       })
     return cols
-  }, [deposits, isLargeLaptop, op, operator, operatorId, network, subspaceAccount, useRpcData])
+  }, [
+    deposits,
+    isLargeLaptop,
+    op,
+    operator,
+    operatorId,
+    network,
+    subspaceAccount,
+    useRpcData,
+    tokenSymbol,
+  ])
 
   const orderBy = useMemo(
     () =>

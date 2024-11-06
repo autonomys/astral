@@ -5,7 +5,6 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
 import { Modal } from 'components/common/Modal'
 import { Tooltip } from 'components/common/Tooltip'
-import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   AMOUNT_TO_SUBTRACT_FROM_MAX_AMOUNT,
@@ -509,7 +508,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
                       {`Amount to ${
                         WalletAction[action] === WalletAction.SendToken ? 'send' : 'withdraw'
                       }`}{' '}
-                      ({TOKEN.symbol})
+                      ({tokenSymbol})
                     </span>
                     <FieldArray
                       name='dischargeNorms'
@@ -898,6 +897,7 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
     selectedMethod,
     resetCategory,
     resetMethod,
+    tokenSymbol,
   ])
 
   useEffect(() => {

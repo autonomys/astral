@@ -1,12 +1,12 @@
 'use client'
 
-import { currentYear } from '@/utils/time'
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
 import { LogoIcon } from 'components/icons'
 import useChains from 'hooks/useChains'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, ReactNode } from 'react'
+import { currentYear } from 'utils/time'
 import { HeaderBackground } from './HeaderBackground'
 
 type MenuItem = {

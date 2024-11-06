@@ -1,6 +1,5 @@
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import type { OperatorByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -18,7 +17,7 @@ type Props = {
 }
 
 export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   if (!operator) return null
@@ -65,7 +64,7 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Minimum Stake'>
-              {bigNumberToFormattedString(operator.minimum_nominator_stake)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.minimum_nominator_stake)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Nominator Tax'>{operator.nomination_tax} %</StyledListItem>
             <StyledListItem title='Bundle count'>{operator.bundle_count}</StyledListItem>
@@ -82,31 +81,31 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
               </Link>
             </StyledListItem>
             <StyledListItem title='Current total stake'>
-              {bigNumberToFormattedString(operator.current_total_stake)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.current_total_stake)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Current storage fee deposits'>
-              {bigNumberToFormattedString(operator.current_storage_fee_deposit)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.current_storage_fee_deposit)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total staked'>
               {bigNumberToFormattedString(
                 BigInt(operator.current_total_stake) + BigInt(operator.current_storage_fee_deposit),
               )}{' '}
-              {TOKEN.symbol}
+              {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total rewards collected'>
-              {bigNumberToFormattedString(operator.total_rewards_collected)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.total_rewards_collected)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total consensus storage fee'>
-              {bigNumberToFormattedString(operator.total_consensus_storage_fee)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.total_consensus_storage_fee)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total domain execution fee'>
-              {bigNumberToFormattedString(operator.total_domain_execution_fee)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.total_domain_execution_fee)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total burned balance'>
-              {bigNumberToFormattedString(operator.total_burned_balance)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.total_burned_balance)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Total tax collected'>
-              {bigNumberToFormattedString(operator.total_tax_collected)} {TOKEN.symbol}
+              {bigNumberToFormattedString(operator.total_tax_collected)} {tokenSymbol}
             </StyledListItem>
             <StyledListItem title='Nominators count'>
               {bigNumberToFormattedString(operator.nominators_aggregate.aggregate?.count ?? '0')}

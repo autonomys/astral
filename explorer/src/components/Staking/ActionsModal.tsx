@@ -9,7 +9,6 @@ import {
 } from '@autonomys/auto-consensus'
 import { sendGAEvent } from '@next/third-parties/google'
 import { Modal } from 'components/common/Modal'
-import { TOKEN } from 'constants/general'
 import { WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
 import { useTxHelper } from 'hooks/useTxHelper'
@@ -329,7 +328,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
                         ? 'stake'
                         : 'withdraw'
                     }`}{' '}
-                    ({TOKEN.symbol})
+                    ({tokenSymbol})
                   </span>
                   <FieldArray
                     name='dischargeNorms'
@@ -539,6 +538,7 @@ export const ActionsModal: FC<Props> = ({ isOpen, action, onClose }) => {
     handleUnlockNominator,
     handleAddFunds,
     handleWithdraw,
+    tokenSymbol,
     maxAmountToAdd,
     actingAccount,
     sliderValue,
