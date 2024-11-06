@@ -1,19 +1,16 @@
 'use client'
 
+import { utcToLocalRelativeTime } from '@/utils/time'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { HomeQueryQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { shortString } from 'utils/string'
-
-dayjs.extend(relativeTime)
 
 interface HomeExtrinsicListProps {
   data: HomeQueryQuery
@@ -62,7 +59,7 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
         header: 'Time',
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-home-extrinsic-time`}>
-            {dayjs(row.original.timestamp).fromNow(true)} ago
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

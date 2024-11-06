@@ -2,6 +2,7 @@
 
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
+import { currentYear } from '@/utils/time'
 import { sendGAEvent } from '@next/third-parties/google'
 import { LogoIcon, WalletIcon } from 'components/icons'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
@@ -11,7 +12,6 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
 } from 'constants/routes'
 import { WalletType } from 'constants/wallet'
-import dayjs from 'dayjs'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
@@ -212,7 +212,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
             <div className='flex'>
               <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
                 <p className='text-gray text-center text-sm sm:text-left'>
-                  © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                  © {currentYear()} Subspace Labs, Inc. All Rights Reserved
                 </p>
               </div>
             </div>
