@@ -1,11 +1,5 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { FC, ReactElement } from 'react'
-
-// common
 import { Tabs } from './Tabs'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   children: ReactElement[] | ReactElement

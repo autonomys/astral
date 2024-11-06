@@ -2,8 +2,6 @@ import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import type { DomainByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -12,8 +10,6 @@ import { FC } from 'react'
 import { bigNumberToFormattedString } from 'utils/number'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   domain: DomainByIdQuery['staking_domains_by_pk']

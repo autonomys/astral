@@ -1,15 +1,11 @@
 import { MobileCard } from 'components/common/MobileCard'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { BlockByIdQuery } from 'gql/graphql'
 import { FC } from 'react'
 import { BlockDetailsEventList } from './BlockDetailsEventList'
 import { BlockDetailsExtrinsicList } from './BlockDetailsExtrinsicList'
 import { BlockDetailsLogList } from './BlockDetailsLogList'
-
-dayjs.extend(relativeTime)
 
 type Logs = NonNullable<BlockByIdQuery['consensus_blocks'][number]>['logs']
 

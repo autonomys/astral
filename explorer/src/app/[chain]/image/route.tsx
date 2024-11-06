@@ -10,8 +10,6 @@ import {
 } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { HomeQueryQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
@@ -62,8 +60,6 @@ function Screen({
   chainMatch: (typeof indexers)[number]
   data: HomeQueryQuery
 }) {
-  dayjs.extend(relativeTime)
-
   return (
     <div
       tw='relative w-full h-full flex flex-col items-center justify-between'
