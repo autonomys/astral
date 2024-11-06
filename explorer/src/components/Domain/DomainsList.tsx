@@ -1,13 +1,12 @@
 'use client'
 
-import { capitalizeFirstLetter, shortString } from '@/utils/string'
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, TOKEN } from 'constants/'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/types/staking'
+import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
@@ -26,14 +25,15 @@ import {
   numberFormattedString,
   numberWithCommas,
 } from 'utils/number'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
-import { QUERY_DOMAIN_LIST } from './staking.query'
+import { QUERY_DOMAIN_LIST } from './query'
 
-type Row = DomainsListQuery['domain'][0]
+type Row = DomainsListQuery['staking_domains'][0]
 const TABLE = 'domains'
 
 export const DomainsList: FC = () => {
@@ -47,7 +47,7 @@ export const DomainsList: FC = () => {
   useConsensusData()
   const inFocus = useWindowFocus()
 
-  const { network, section } = useChains()
+  const { network, section, tokenSymbol, tokenDecimals } = useChains()
   const apolloClient = useApolloClient()
 
   const {
@@ -192,7 +192,7 @@ export const DomainsList: FC = () => {
         header: 'Total deposits',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_estimated_withdrawals'))
@@ -201,7 +201,7 @@ export const DomainsList: FC = () => {
         header: 'Total Estimated Withdrawals',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_withdrawals'))
@@ -210,7 +210,7 @@ export const DomainsList: FC = () => {
         header: 'Total Withdrawals',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_tax_collected'))
@@ -219,7 +219,7 @@ export const DomainsList: FC = () => {
         header: 'Total Tax Collected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_rewards_collected'))
@@ -228,7 +228,7 @@ export const DomainsList: FC = () => {
         header: 'Rewards collected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_transfers_in'))
@@ -237,7 +237,7 @@ export const DomainsList: FC = () => {
         header: 'Total Transfers In',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('transfers_in_count'))
@@ -255,7 +255,7 @@ export const DomainsList: FC = () => {
         header: 'Total Transfers Out',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('transfers_out_count'))
@@ -273,7 +273,7 @@ export const DomainsList: FC = () => {
         header: 'Total Rejected Transfers Claimed',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('rejected_transfers_claimed_count'))
@@ -291,7 +291,7 @@ export const DomainsList: FC = () => {
         header: 'Total Transfers Rejected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('transfers_rejected_count'))
@@ -309,7 +309,7 @@ export const DomainsList: FC = () => {
         header: 'Total Volume',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_consensus_storage_fee'))
@@ -318,7 +318,7 @@ export const DomainsList: FC = () => {
         header: 'Consensus storage fee',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_domain_execution_fee'))
@@ -327,7 +327,7 @@ export const DomainsList: FC = () => {
         header: 'Domain execution fee',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_burned_balance'))
@@ -336,7 +336,7 @@ export const DomainsList: FC = () => {
         header: 'Total Burned Balance',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('current_total_stake'))
@@ -349,16 +349,15 @@ export const DomainsList: FC = () => {
             text={
               <span>
                 Current total stake: {bigNumberToFormattedString(row.original.current_total_stake)}
-                {TOKEN.symbol}
+                {tokenSymbol}
                 <br />
                 Storage fee deposit:{' '}
-                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)}{' '}
-                {TOKEN.symbol}
+                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)} {tokenSymbol}
               </span>
             }
             direction='bottom'
           >
-            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_total_stake) + BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
+            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_total_stake) + BigInt(row.original.current_storage_fee_deposit))} ${tokenSymbol}`}</div>
           </Tooltip>
         ),
       })
@@ -372,16 +371,15 @@ export const DomainsList: FC = () => {
             text={
               <span>
                 Storage fee deposit:{' '}
-                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)}{' '}
-                {TOKEN.symbol}
+                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)} {tokenSymbol}
                 <br />
                 Current total stake: {bigNumberToFormattedString(row.original.current_total_stake)}
-                {TOKEN.symbol}
+                {tokenSymbol}
               </span>
             }
             direction='bottom'
           >
-            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_storage_fee_deposit))} ${TOKEN.symbol}`}</div>
+            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_storage_fee_deposit))} ${tokenSymbol}`}</div>
           </Tooltip>
         ),
       })
@@ -487,7 +485,7 @@ export const DomainsList: FC = () => {
         header: 'Current Share Price',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${TOKEN.symbol}`}</div>
+          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('accumulated_epoch_rewards'))
@@ -554,7 +552,7 @@ export const DomainsList: FC = () => {
         ),
       })
     return cols
-  }, [selectedColumns, network, section])
+  }, [selectedColumns, network, section, tokenSymbol])
 
   const orderBy = useMemo(
     () =>
@@ -586,12 +584,12 @@ export const DomainsList: FC = () => {
       conditions['current_total_stake'] = {}
       if (filters.totalStakeMin) {
         conditions.current_total_stake._gte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.totalStakeMax) {
         conditions.current_total_stake._lte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
@@ -601,12 +599,12 @@ export const DomainsList: FC = () => {
       conditions['total_deposits'] = {}
       if (filters.totalDepositsMin) {
         conditions.total_deposits._gte = BigInt(
-          Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalDepositsMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.totalDepositsMax) {
         conditions.total_deposits._lte = BigInt(
-          Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalDepositsMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
@@ -616,12 +614,12 @@ export const DomainsList: FC = () => {
       conditions['total_rewards_collected'] = {}
       if (filters.totalRewardsCollectedMin) {
         conditions.total_rewards_collected._gte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.totalRewardsCollectedMax) {
         conditions.total_rewards_collected._lte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
@@ -650,7 +648,7 @@ export const DomainsList: FC = () => {
     }
 
     return conditions
-  }, [filters, availableColumns])
+  }, [availableColumns, filters, tokenDecimals])
 
   const variables: DomainsListQueryVariables = useMemo(
     () => ({
@@ -680,23 +678,19 @@ export const DomainsList: FC = () => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(
-        apolloClient,
-        QUERY_DOMAIN_LIST,
-        TABLE,
-        {
-          orderBy,
-        },
-        ['limit', 'offset'],
-        { clientName: 'staking' },
-      ),
+      downloadFullData(apolloClient, QUERY_DOMAIN_LIST, TABLE, {
+        orderBy,
+      }),
     [apolloClient, orderBy],
   )
 
-  const domainsList = useMemo(() => (hasValue(domains) ? domains.value.domain : []), [domains])
+  const domainsList = useMemo(
+    () => (hasValue(domains) ? domains.value.staking_domains : []),
+    [domains],
+  )
 
   const totalCount = useMemo(
-    () => (hasValue(domains) && domains.value.domain_aggregate.aggregate?.count) || 0,
+    () => (hasValue(domains) && domains.value.staking_domains_aggregate.aggregate?.count) || 0,
     [domains],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])

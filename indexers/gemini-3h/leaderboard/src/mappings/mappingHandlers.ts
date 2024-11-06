@@ -310,10 +310,19 @@ export async function handleOperatorNominatedEvent(
     event: {
       data: [_operatorId, _nominatorId, _amount],
     },
+    extrinsic,
   } = event;
+  const method = extrinsic?.extrinsic.method.toPrimitive() as {
+    args: {
+      operator_id: number;
+      amount: string;
+    };
+  };
   const operatorId = _operatorId.toString();
   const nominatorId = _nominatorId.toString();
-  const amount = BigInt(_amount.toString());
+  const amount = _amount
+    ? BigInt(_amount.toString())
+    : BigInt(method.args.amount);
   const blockNumber = event.block.block.header.number.toNumber();
   const timestamp = event.block.timestamp ?? new Date(0);
 

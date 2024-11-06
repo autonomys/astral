@@ -6,9 +6,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { Event, EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
+import { EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -23,7 +21,7 @@ import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EVENTS } from './query'
 
-dayjs.extend(relativeTime)
+type Row = EventsByBlockIdQuery['consensus_events'][number]
 
 export const BlockDetailsEventList: FC = () => {
   const { ref, inView } = useInView()
@@ -41,11 +39,8 @@ export const BlockDetailsEventList: FC = () => {
 
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
       blockId: Number(blockId),
     }),
@@ -60,11 +55,7 @@ export const BlockDetailsEventList: FC = () => {
     skip: !inFocus,
   })
 
-  const eventsConnection = useMemo(() => data && data.eventsConnection, [data])
-  const events = useMemo(
-    () => eventsConnection && (eventsConnection.edges.map((event) => event.node) as Event[]),
-    [eventsConnection],
-  )
+  const events = useMemo(() => data && data.consensus_events, [data])
 
   const columns = useMemo(
     () => [
@@ -72,34 +63,30 @@ export const BlockDetailsEventList: FC = () => {
         accessorKey: 'id',
         header: 'Event Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div className='flex w-full gap-1' key={`${row.index}-block-event-id`}>
             <Link
               className='w-full hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
-              {`${row.original.block?.height}-${row.index}`}
+              {`${row.original.block_height}-${row.index}`}
             </Link>
           </div>
         ),
       },
       {
-        accessorKey: 'extrinsic',
+        accessorKey: 'extrinsic_id',
         header: 'Extrinsics  Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
-          <div key={`${row.index}-block-event-extrinsic`}>
-            {row.original.extrinsic
-              ? `${row.original.extrinsic.block.height}-${row.original.extrinsic.indexInBlock}`
-              : '-'}
-          </div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-block-event-extrinsic_id`}>{row.original.extrinsic_id}</div>
         ),
       },
       {
         accessorKey: 'name',
         header: 'Action',
         enableSorting: true,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-event-action`}>{row.original.name.split('.')[1]}</div>
         ),
       },
@@ -107,7 +94,7 @@ export const BlockDetailsEventList: FC = () => {
         accessorKey: 'phase',
         header: 'Type',
         enableSorting: true,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-event-phase`}>{row.original.phase}</div>
         ),
       },

@@ -21,7 +21,7 @@ export const WalletButton: React.FC = () => {
         onClick={onClick}
         className={`h-10 ${
           isDesktop ? 'w-36' : 'w-10 p-2'
-        } from-primaryAccent to-purpleUndertone rounded-full bg-gradient-to-r font-medium text-white`}
+        } rounded-full bg-gradient-to-r from-primaryAccent to-purpleUndertone font-medium text-white`}
       >
         {isDesktop ? 'Connect Wallet' : <WalletIcon className='size-6' />}
       </button>

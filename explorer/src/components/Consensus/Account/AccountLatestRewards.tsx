@@ -1,8 +1,5 @@
-import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { RewardEvent } from 'gql/graphql'
+import { AccountByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -10,15 +7,13 @@ import { FC } from 'react'
 import { AccountIdParam } from 'types/app'
 import { bigNumberToNumber } from 'utils/number'
 
-dayjs.extend(relativeTime)
-
 interface AccountLatestRewardsProps {
   isDesktop: boolean
-  rewards: RewardEvent[]
+  rewards: AccountByIdQuery['consensus_rewards']
 }
 
 export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
-  const { network, section } = useChains()
+  const { network, section, tokenSymbol } = useChains()
   const { accountId } = useParams<AccountIdParam>()
   const { push } = useRouter()
 
@@ -38,7 +33,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
         </div>
         <div className='w-full'>
           <ol className='relative w-full border-l border-purpleLight dark:border-purpleLighterAccent'>
-            {rewards.map(({ id, name, block, amount }, index) => (
+            {rewards.map(({ id, rewardType, blockHeight, amount }, index) => (
               <li
                 key={`${id}-account-rewards-block`}
                 className={`flex w-full justify-between ${
@@ -57,20 +52,20 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                     <Link
                       key={`${id}-account-index`}
                       className='hover:text-primaryAccent'
-                      href={INTERNAL_ROUTES.blocks.id.page(network, section, block?.height)}
+                      href={INTERNAL_ROUTES.blocks.id.page(network, section, blockHeight)}
                     >
-                      {block?.height}
+                      {blockHeight}
                     </Link>
                   </div>
                 </div>
                 <div className='-mt-1 w-full flex-1 grow text-center text-[13px] font-normal text-grayDark dark:text-white'>
-                  {name
+                  {rewardType
                     .split('.')[1]
                     .split(/(?=[A-Z])/)
                     .join(' ')}
                 </div>
                 <div className='-mt-1 w-full flex-1 grow text-end text-[13px] font-normal text-grayDark dark:text-white'>
-                  {bigNumberToNumber(amount)} {TOKEN.symbol}
+                  {bigNumberToNumber(amount)} {tokenSymbol}
                 </div>
               </li>
             ))}

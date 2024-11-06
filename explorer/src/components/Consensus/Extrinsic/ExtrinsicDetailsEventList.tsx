@@ -4,20 +4,18 @@ import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { Event } from 'gql/graphql'
+import { ExtrinsicsByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
 import { countTablePages } from 'utils/table'
 
-dayjs.extend(relativeTime)
-
 type Props = {
-  events: Event[]
+  events: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>['events']
 }
+
+type Row = NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>['events'][number]
 
 export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
   const { network, section } = useChains()
@@ -33,13 +31,13 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
         accessorKey: 'id',
         header: 'Event Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-extrinsic-event-id`}
             className='w-full hover:text-primaryAccent'
             href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
           >
-            <div>{`${row.original.block?.height}-${row.index}`}</div>
+            <div>{row.original.id}</div>
           </Link>
         ),
       },
@@ -47,17 +45,15 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
         accessorKey: 'extrinsic',
         header: 'Extrinsic Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
-          <div
-            key={`${row.index}-extrinsic-event-extrinsic`}
-          >{`${row.original.block?.height}-${row.original.extrinsic?.indexInBlock}`}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-extrinsic-event-extrinsic`}>{row.original.extrinsic_id}</div>
         ),
       },
       {
         accessorKey: 'action',
         header: 'Action',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-extrinsic-event-action`}>{row.original.name.split('.')[1]}</div>
         ),
       },
@@ -65,7 +61,7 @@ export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
         accessorKey: 'phase',
         header: 'Type',
         enableSorting: false,
-        cell: ({ row }: Cell<Event>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-extrinsic-event-phase`}>{row.original.phase}</div>
         ),
       },

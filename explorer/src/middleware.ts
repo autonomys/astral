@@ -1,6 +1,6 @@
-import { Routes } from '@/constants/routes'
 import { NetworkId } from '@autonomys/auto-utils'
 import { defaultIndexer } from 'constants/indexers'
+import { Routes } from 'constants/routes'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(req: NextRequest) {
@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   // }
 
   const {
-    nextUrl: { search },
+    nextUrl: { pathname, search },
   } = req
   const urlSearchParams = new URLSearchParams(search)
   const params = Object.fromEntries(urlSearchParams.entries())
@@ -24,9 +24,15 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(
       new URL(`/${defaultIndexer.network}/${Routes.consensus}/${urlParams}`, req.url),
     )
-  } else if (
-    Object.values(NetworkId).includes(req.nextUrl.pathname.replace('/', '') as NetworkId)
-  ) {
+  }
+
+  if (Object.values(Routes).find((route) => `/${route}` === pathname)) {
+    return NextResponse.redirect(
+      new URL(`/${defaultIndexer.network}${pathname}${urlParams}`, req.url),
+    )
+  }
+
+  if (Object.values(NetworkId).includes(req.nextUrl.pathname.replace('/', '') as NetworkId)) {
     return NextResponse.redirect(
       new URL(`/${defaultIndexer.network}/${Routes.consensus}/${urlParams}`, req.url),
     )

@@ -1,7 +1,7 @@
 'use client'
 
-import { LogoIcon } from '@/components/icons'
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
+import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'

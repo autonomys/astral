@@ -16,7 +16,7 @@ function usePrefersDarkMode() {
   return value
 }
 
-export default function useTheme() {
+export function useTheme() {
   const prefersDarkMode = usePrefersDarkMode()
   const [isEnabled, setIsEnabled] = useSafeLocalStorage('dark-mode', undefined)
 

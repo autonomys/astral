@@ -3,31 +3,30 @@
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { Block, HomeQueryQuery } from 'gql/graphql'
+import { HomeQueryQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
-
-dayjs.extend(relativeTime)
+import { utcToLocalRelativeTime } from 'utils/time'
 
 interface HomeBlockListProps {
   data: HomeQueryQuery
 }
 
+type Row = HomeQueryQuery['consensus_blocks'][number]
+
 export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
   const { network, section } = useChains()
 
-  const blocks = useMemo(() => data.blocks as Block[], [data.blocks])
+  const blocks = useMemo(() => data.consensus_blocks, [data.consensus_blocks])
 
   const columns = useMemo(
     () => [
       {
         accessorKey: 'height',
         header: 'Height',
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             className='flex gap-2 hover:text-primaryAccent'
             key={`${row.index}-home-block-height`}
@@ -40,23 +39,23 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
       {
         accessorKey: 'extrinsicsCount',
         header: 'Extrinsics',
-        cell: ({ row }: Cell<Block>) => (
-          <div key={`${row.index}-home-block-extrinsicsCount`}>{row.original.extrinsicsCount}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-home-block-extrinsicsCount`}>{row.original.extrinsics_count}</div>
         ),
       },
       {
         accessorKey: 'eventsCount',
         header: 'Events',
-        cell: ({ row }: Cell<Block>) => (
-          <div key={`${row.index}-home-block-eventsCount`}>{row.original.eventsCount}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-home-block-eventsCount`}>{row.original.events_count}</div>
         ),
       },
       {
         accessorKey: 'timestamp',
         header: 'Time',
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-home-block-timestamp`}>
-            {dayjs(row.original.timestamp).fromNow(true)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

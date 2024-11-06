@@ -1,9 +1,8 @@
 'use client'
 
-import { Routes } from '@/constants'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
-import { ACCOUNT_MIN_VAL } from 'constants/account'
+import { Routes } from 'constants/routes'
 import type { HomeQueryQuery, HomeQueryQueryVariables } from 'gql/graphql'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -24,7 +23,7 @@ export const Home: FC = () => {
   const { loading, setIsVisible } = useSquidQuery<HomeQueryQuery, HomeQueryQueryVariables>(
     QUERY_HOME,
     {
-      variables: { limit: PAGE_SIZE, offset: 0, accountTotal: ACCOUNT_MIN_VAL },
+      variables: { limit: PAGE_SIZE, offset: 0 },
       pollInterval: 6000,
     },
     Routes.consensus,
@@ -68,5 +67,3 @@ export const Home: FC = () => {
     </div>
   )
 }
-
-export default Home

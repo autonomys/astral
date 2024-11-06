@@ -7,7 +7,6 @@ import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/
 import { sendGAEvent } from '@next/third-parties/google'
 import { WalletIcon } from 'components/icons'
 import { PreferredExtensionModal } from 'components/layout/PreferredExtensionModal'
-import { TOKEN } from 'constants/general'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { Field, Form, Formik, FormikErrors, FormikState } from 'formik'
 import { useConsensusData } from 'hooks/useConsensusData'
@@ -602,7 +601,7 @@ export const RegisterOperators = () => {
 
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Amount to Stake ({TOKEN.symbol})
+                              Amount to Stake ({tokenSymbol})
                             </span>
                             <Field
                               name='amountToStake'
@@ -654,7 +653,7 @@ export const RegisterOperators = () => {
                           </div>
                           <div className='p-4'>
                             <span className='text-base font-medium text-grayDarker dark:text-white'>
-                              Minimum Nominator Stake ({TOKEN.symbol})
+                              Minimum Nominator Stake ({tokenSymbol})
                             </span>
                             <Field
                               name='minimumNominatorStake'

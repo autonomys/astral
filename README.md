@@ -1,6 +1,8 @@
-![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
+# Astral Block Explorer
 
-# Astral
+![Autonomys Banner](https://github.com/autonomys/astral/blob/main/.github/images/autonomys-banner.webp)
+
+![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
 
 - [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
 - [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid

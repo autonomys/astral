@@ -5,15 +5,14 @@ import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { Accordion } from 'components/common/Accordion'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, INTERNAL_ROUTES, Routes, TOKEN } from 'constants/'
+import { BIGINT_ZERO } from 'constants/general'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   NominationsListQuery,
   NominationsListQueryVariables,
   Order_By as OrderBy,
-} from 'gql/types/staking'
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
@@ -23,12 +22,11 @@ import { useInView } from 'react-intersection-observer'
 import { useViewStates } from 'states/view'
 import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter } from 'utils/string'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_NOMINATIONS_LIST } from './staking.query'
-
-dayjs.extend(relativeTime)
+import { QUERY_NOMINATIONS_LIST } from './query'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const columnHelper = createColumnHelper<any>()
@@ -37,7 +35,7 @@ export const NominationsTable: FC = () => {
   const { ref, inView } = useInView()
   const { subspaceAccount } = useWallet()
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
   const { myPositionOnly } = useViewStates()
 
@@ -91,21 +89,24 @@ export const NominationsTable: FC = () => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
-  const nominatorsList = useMemo(() => data?.nominator || [], [data])
-  const totalCount = useMemo(() => (data && data.nominator_aggregate.aggregate?.count) || 0, [data])
+  const nominatorsList = useMemo(() => data?.staking_nominators || [], [data])
+  const totalCount = useMemo(
+    () => (data && data.staking_nominators_aggregate.aggregate?.count) || 0,
+    [data],
+  )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const depositColumns = [
     columnHelper.accessor('amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Amount',
     }),
     columnHelper.accessor('storage_fee_deposit', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Storage Fee',
     }),
     columnHelper.accessor('timestamp', {
-      cell: (info) => dayjs(info.getValue()).fromNow(),
+      cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
     }),
     columnHelper.accessor('created_at', {
@@ -129,22 +130,22 @@ export const NominationsTable: FC = () => {
 
   const withdrawalColumns = [
     columnHelper.accessor('shares', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Shares',
     }),
 
     columnHelper.accessor('estimated_amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Estimated Amount',
     }),
     columnHelper.accessor('unlocked_amount', {
       cell: (info) => (
-        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.unlocked_storage_fee)} ${TOKEN.symbol}`}</div>
+        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.unlocked_storage_fee)} ${tokenSymbol}`}</div>
       ),
       header: 'Unlocked Total Amount',
     }),
     columnHelper.accessor('timestamp', {
-      cell: (info) => dayjs(info.getValue()).fromNow(),
+      cell: (info) => utcToLocalRelativeTime(info.getValue()),
       header: 'Time',
     }),
     columnHelper.accessor('created_at', {
@@ -215,7 +216,10 @@ export const NominationsTable: FC = () => {
                           OperatorActionType.Nominating,
                           OperatorActionType.Deregister,
                         )
-                      if (nominator.operator?.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+                      if (
+                        nominator.operator?.pending_action !==
+                        OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR
+                      )
                         excludeActions.push(OperatorActionType.UnlockNominator)
 
                       if (!nominator)
@@ -293,21 +297,21 @@ export const NominationsTable: FC = () => {
                         <h5 className='mb-2 font-medium'>Deposits</h5>
                         <div>
                           <strong>Total Deposits:</strong>{' '}
-                          {bigNumberToFormattedString(nominator.total_deposits)} {TOKEN.symbol}
+                          {bigNumberToFormattedString(nominator.total_deposits)} {tokenSymbol}
                         </div>
                         <div>
                           <strong>Known Storage Fee Deposit:</strong>{' '}
                           {bigNumberToFormattedString(nominator.known_storage_fee_deposit)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                         <div>
                           <strong>Pending Amount:</strong>{' '}
-                          {bigNumberToFormattedString(nominator.pending_amount)} {TOKEN.symbol}
+                          {bigNumberToFormattedString(nominator.pending_amount)} {tokenSymbol}
                         </div>
                         <div>
                           <strong>Pending Storage Fee Deposit:</strong>{' '}
                           {bigNumberToFormattedString(nominator.pending_storage_fee_deposit)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                       </div>
                       <div className='mt-4 w-full sm:mt-0 sm:w-1/2 sm:pl-2'>
@@ -319,21 +323,21 @@ export const NominationsTable: FC = () => {
                         <div>
                           <strong>Total Withdrawal Amounts:</strong>{' '}
                           {bigNumberToFormattedString(nominator.total_withdrawal_amounts)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                         <div>
                           <strong>Total Storage Fee Refund:</strong>{' '}
                           {bigNumberToFormattedString(nominator.total_storage_fee_refund)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                         <div>
                           <strong>Estimated Withdrawal:</strong>{' '}
-                          {bigNumberToFormattedString(nominator.pending_shares)} {TOKEN.symbol}
+                          {bigNumberToFormattedString(nominator.pending_shares)} {tokenSymbol}
                         </div>
                         <div>
                           <strong>Pending Storage Fee Refund:</strong>{' '}
                           {bigNumberToFormattedString(nominator.pending_storage_fee_refund)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                       </div>
                     </div>

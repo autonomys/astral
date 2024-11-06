@@ -1,9 +1,9 @@
 'use client'
 
-import { searchTypes } from '@/constants/general'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { AutonomysSymbol } from 'components/icons/AutonomysSymbol'
+import { searchTypes } from 'constants/general'
 import { FC, Fragment, useState } from 'react'
 
 export const Dropdown: FC = () => {

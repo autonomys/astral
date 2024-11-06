@@ -1,13 +1,13 @@
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
-import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/general'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
   OperatorNominatorsByIdQuery,
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
-} from 'gql/types/staking'
+} from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -26,20 +26,20 @@ import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { Spinner } from '../common/Spinner'
-import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './staking.query'
+import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query'
 
 type Props = {
-  operator: OperatorByIdQuery['operator_by_pk']
+  operator: OperatorByIdQuery['staking_operators_by_pk']
 }
 
-type Row = OperatorNominatorsByIdQuery['nominator'][0]
+type Row = OperatorNominatorsByIdQuery['staking_nominators'][0]
 
 export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { ref, inView } = useInView()
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -99,7 +99,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
                   ),
                 ),
               )}{' '}
-              {TOKEN.symbol}
+              {tokenSymbol}
             </div>
           )
         },
@@ -153,20 +153,30 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
             <div>
               {deposit && deposit.shares > BIGINT_ZERO && (
                 <>
-                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${TOKEN.symbol}`}
+                  {`Staked: ${bigNumberToNumber((deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER)} ${tokenSymbol}`}
                   <br />
                 </>
               )}
               {deposit &&
                 deposit.pending !== null &&
                 deposit.pending.amount > BIGINT_ZERO &&
-                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${TOKEN.symbol}`}
+                `Pending: ${bigNumberToNumber(deposit.pending.amount + deposit.pending.storageFeeDeposit)} ${tokenSymbol}`}
             </div>
           )
         },
       })
     return cols
-  }, [deposits, isLargeLaptop, op, operator, operatorId, network, subspaceAccount, useRpcData])
+  }, [
+    deposits,
+    isLargeLaptop,
+    op,
+    operator,
+    operatorId,
+    network,
+    subspaceAccount,
+    useRpcData,
+    tokenSymbol,
+  ])
 
   const orderBy = useMemo(
     () =>
@@ -208,14 +218,14 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   } = useQueryStates()
 
   const nominators = useMemo(
-    () => (hasValue(operatorNominators) ? operatorNominators.value.nominator : []),
+    () => (hasValue(operatorNominators) ? operatorNominators.value.staking_nominators : []),
     [operatorNominators],
   )
 
   const totalCount = useMemo(
     () =>
       (hasValue(operatorNominators) &&
-        operatorNominators.value.nominator_aggregate.aggregate?.count) ||
+        operatorNominators.value.staking_nominators_aggregate.aggregate?.count) ||
       0,
     [operatorNominators],
   )

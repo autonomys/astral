@@ -1,6 +1,6 @@
-import { exportToExcel } from '@/utils/exportToExcel'
 import { sendGAEvent } from '@next/third-parties/google'
 import { FC, useCallback, useState } from 'react'
+import { exportToExcel } from 'utils/exportToExcel'
 
 type Props = {
   query: () => Promise<unknown[]>

@@ -1,5 +1,3 @@
-import { TOKEN } from 'constants/general'
-
 interface SlackBlock {
   type: string
   text: {
@@ -91,7 +89,7 @@ export const walletBalanceLowSlackMessage = async (balance: string, wallet: stri
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: `The wallet balance has ${balance} ${TOKEN.symbol}, please refill the wallet. \`${wallet}\``,
+        text: `The wallet balance has ${balance} token, please refill the wallet. \`${wallet}\``,
       },
     },
   ]

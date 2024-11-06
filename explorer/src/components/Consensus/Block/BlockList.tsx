@@ -7,14 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import {
-  Block,
-  BlockOrderByInput,
-  BlocksConnectionQuery,
-  BlocksConnectionQueryVariables,
-} from 'gql/graphql'
+import { BlocksQuery, BlocksQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -26,10 +19,11 @@ import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { BlockAuthor } from './BlockAuthor'
-import { QUERY_BLOCK_LIST_CONNECTION } from './query'
+import { QUERY_BLOCKS } from './query'
 
-dayjs.extend(relativeTime)
+type Row = BlocksQuery['consensus_blocks'][number]
 
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
@@ -41,24 +35,18 @@ export const BlockList: FC = () => {
   })
   const inFocus = useWindowFocus()
 
-  const orderBy = useMemo(() => BlockOrderByInput.HeightDesc, [])
+  const orderBy = useMemo(() => ({ height: OrderBy.Desc }), [])
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
       orderBy,
     }),
     [pagination.pageSize, pagination.pageIndex, orderBy],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
-    BlocksConnectionQuery,
-    BlocksConnectionQueryVariables
-  >(
-    QUERY_BLOCK_LIST_CONNECTION,
+  const { loading, setIsVisible } = useSquidQuery<BlocksQuery, BlocksQueryVariables>(
+    QUERY_BLOCKS,
     {
       variables,
       skip: !inFocus,
@@ -76,14 +64,13 @@ export const BlockList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const blocksConnection = useMemo(() => data && data.blocksConnection, [data])
-  const blocks = useMemo(
-    () => blocksConnection && blocksConnection.edges.map((block) => block.node as Block),
-    [blocksConnection],
-  )
+  const blocks = useMemo(() => data && data.consensus_blocks, [data])
   const totalCount = useMemo(
-    () => (blocksConnection ? blocksConnection.totalCount : 0),
-    [blocksConnection],
+    () =>
+      data && data.consensus_blocks_aggregate.aggregate
+        ? data.consensus_blocks_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
@@ -95,7 +82,7 @@ export const BlockList: FC = () => {
         accessorKey: 'height',
         header: 'Block number',
         enableSorting: false,
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-block-height`}
             data-testid={`block-link-${row.index}`}
@@ -110,15 +97,17 @@ export const BlockList: FC = () => {
         accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: false,
-        cell: ({ row }: Cell<Block>) => (
-          <div key={`${row.index}-block-time`}>{dayjs(row.original.timestamp).fromNow(true)}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-block-time`}>
+            {utcToLocalRelativeTime(row.original.timestamp)}
+          </div>
         ),
       },
       {
         accessorKey: 'extrinsics',
         header: 'Extrinsics',
         enableSorting: false,
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-time`}>{row.original.extrinsics?.length}</div>
         ),
       },
@@ -126,7 +115,7 @@ export const BlockList: FC = () => {
         accessorKey: 'Events',
         header: 'Events',
         enableSorting: false,
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-time`}>{row.original.events?.length}</div>
         ),
       },
@@ -134,7 +123,7 @@ export const BlockList: FC = () => {
         accessorKey: 'hash',
         header: 'Block hash',
         enableSorting: false,
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-hash`}>
             <CopyButton
               data-testid={`testCopy-${row.index}`}
@@ -150,13 +139,13 @@ export const BlockList: FC = () => {
         accessorKey: 'author',
         header: 'Block Author',
         enableSorting: false,
-        cell: ({ row }: Cell<Block>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-author`}>
-            <CopyButton value={row.original.author?.id || 'Unkown'} message='Author account copied'>
+            <CopyButton value={row.original.author_id || 'Unkown'} message='Author account copied'>
               <BlockAuthor
                 domain={section}
                 chain={chain}
-                author={row.original.author?.id}
+                author={row.original.author_id}
                 isDesktop={false}
               />
             </CopyButton>

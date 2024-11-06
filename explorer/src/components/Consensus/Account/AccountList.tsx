@@ -8,11 +8,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import type {
-  Account,
-  AccountsConnectionQuery,
-  AccountsConnectionQueryVariables,
-} from 'gql/graphql'
+import type { AccountsQuery, AccountsQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -27,7 +23,9 @@ import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { AccountIcon } from '../../common/AccountIcon'
-import { QUERY_ACCOUNT_CONNECTION_LIST } from './query'
+import { QUERY_ACCOUNTS } from './query'
+
+type Row = AccountsQuery['consensus_accounts'][number]
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
@@ -42,20 +40,14 @@ export const AccountList: FC = () => {
 
   const variables = useMemo(
     () => ({
-      first: pagination.pageSize,
-      after:
-        pagination.pageIndex > 0
-          ? (pagination.pageIndex * pagination.pageSize).toString()
-          : undefined,
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
     }),
     [pagination.pageSize, pagination.pageIndex],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
-    AccountsConnectionQuery,
-    AccountsConnectionQueryVariables
-  >(
-    QUERY_ACCOUNT_CONNECTION_LIST,
+  const { loading, setIsVisible } = useSquidQuery<AccountsQuery, AccountsQueryVariables>(
+    QUERY_ACCOUNTS,
     {
       variables,
       skip: !inFocus,
@@ -73,14 +65,13 @@ export const AccountList: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const accountsConnection = useMemo(() => data && data.accountsConnection, [data])
-  const accounts = useMemo(
-    () => data && data.accountsConnection.edges.map((account) => account.node as Account),
-    [data],
-  )
+  const accounts = useMemo(() => data && data.consensus_accounts, [data])
   const totalCount = useMemo(
-    () => (accountsConnection ? accountsConnection.totalCount : 0),
-    [accountsConnection],
+    () =>
+      data && data.consensus_accounts_aggregate.aggregate
+        ? data.consensus_accounts_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
@@ -90,7 +81,7 @@ export const AccountList: FC = () => {
         accessorKey: 'id',
         header: 'Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Account>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-account-index`}>
             {pagination.pageIndex * pagination.pageSize + row.index + 1}
           </div>
@@ -100,7 +91,7 @@ export const AccountList: FC = () => {
         accessorKey: 'account',
         header: 'Account',
         enableSorting: false,
-        cell: ({ row }: Cell<Account>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-account-id`} className='row flex items-center gap-3'>
             <AccountIcon address={row.original.id} size={26} theme='beachball' />
             <Link
@@ -117,15 +108,17 @@ export const AccountList: FC = () => {
         accessorKey: 'extrinsics',
         header: 'Extrinsics',
         enableSorting: false,
-        cell: ({ row }: Cell<Account>) => (
-          <div key={`${row.index}-account-extrinsic`}>{row.original.extrinsics.length}</div>
+        cell: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-account-extrinsic`}>
+            {row.original.extrinsics_aggregate.aggregate?.count}
+          </div>
         ),
       },
       {
         accessorKey: 'reserved',
         header: 'Locked (tSSC)',
         enableSorting: false,
-        cell: ({ row }: Cell<Account>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-account-locked`}>
             {row.original.reserved ? numberWithCommas(bigNumberToNumber(row.original.reserved)) : 0}
           </div>
@@ -135,7 +128,7 @@ export const AccountList: FC = () => {
         accessorKey: 'free',
         header: 'Balance (tSSC)',
         enableSorting: false,
-        cell: ({ row }: Cell<Account>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-account-locked`}>
             {row.original.free ? numberWithCommas(bigNumberToNumber(row.original.free)) : 0}
           </div>
@@ -152,7 +145,7 @@ export const AccountList: FC = () => {
 
   const apolloClient = useApolloClient()
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_ACCOUNT_CONNECTION_LIST, 'accountsConnection'),
+    () => downloadFullData(apolloClient, QUERY_ACCOUNTS, 'consensus_accounts'),
     [apolloClient],
   )
 

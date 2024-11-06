@@ -5,14 +5,10 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER, TOKEN } from 'constants/'
+import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
-import {
-  OperatorsListQuery,
-  OperatorsListQueryVariables,
-  Order_By as OrderBy,
-} from 'gql/types/staking'
+import { OperatorsListQuery, OperatorsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
@@ -47,9 +43,9 @@ import { DomainProgress } from '../Domain/DomainProgress'
 import { NotFound } from '../layout/NotFound'
 import { ActionsDropdown, ActionsDropdownRow } from './ActionsDropdown'
 import { ActionsModal, OperatorAction, OperatorActionType } from './ActionsModal'
-import { QUERY_OPERATOR_LIST } from './staking.query'
+import { QUERY_OPERATOR_LIST } from './query'
 
-type Row = OperatorsListQuery['operator'][0] & { nominatorsCount: number }
+type Row = OperatorsListQuery['staking_operators'][0] & { nominatorsCount: number }
 const TABLE = 'operators'
 
 interface OperatorsListProps {
@@ -63,6 +59,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const { network, tokenSymbol, tokenDecimals } = useChains()
   const { subspaceAccount } = useWallet()
   const { operators: rpcOperators, domainRegistry, deposits } = useConsensusStates()
   useConsensusData()
@@ -118,7 +115,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     setAction({ type: OperatorActionType.None, operatorId: null, maxShares: null })
   }, [])
 
-  const { network } = useChains()
   const apolloClient = useApolloClient()
 
   const columns = useMemo(() => {
@@ -204,7 +200,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.current_total_stake)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.current_total_stake)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('current_total_shares'))
@@ -222,7 +218,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Current Share Price',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${TOKEN.symbol}`}</div>
+          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_deposits'))
@@ -231,7 +227,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Deposits',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_estimated_withdrawals'))
@@ -240,7 +236,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Estimated Withdrawals',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_withdrawals'))
@@ -249,7 +245,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Withdrawals',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_tax_collected'))
@@ -258,7 +254,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Tax Collected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_rewards_collected'))
@@ -267,7 +263,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Rewards Collected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_transfers_in'))
@@ -276,7 +272,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer In',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('transfers_in_count'))
@@ -294,7 +290,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer Out',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('transfers_out_count'))
@@ -312,7 +308,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer Rejected Claimed',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('rejected_transfers_claimed_count'))
@@ -330,7 +326,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Transfer Rejected',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('transfers_rejected_count'))
@@ -348,7 +344,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total volume',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_consensus_storage_fee'))
@@ -357,7 +353,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Consensus Storage Fee',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_domain_execution_fee'))
@@ -366,7 +362,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Domain Execution Fee',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('total_burned_balance'))
@@ -375,7 +371,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Total Burned Balance',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('accumulated_epoch_shares'))
@@ -504,7 +500,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
         header: 'Min. Stake',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.minimum_nominator_stake)} ${TOKEN.symbol}`}</div>
+          <div>{`${bigNumberToFormattedString(row.original.minimum_nominator_stake)} ${tokenSymbol}`}</div>
         ),
       })
     if (selectedColumns.includes('nomination_tax'))
@@ -546,16 +542,16 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             : BIGINT_ZERO
           let tooltip = ''
           if (pendingAmount > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${TOKEN.symbol}`
+            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${tokenSymbol}`
           if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
           if (depositShares > BIGINT_ZERO)
             tooltip += `Staked: ${bigNumberToNumber(
               (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
-            )} ${TOKEN.symbol}`
+            )} ${tokenSymbol}`
           return (
             <div>
               <Tooltip text={tooltip} direction='bottom'>
-                {bigNumberToFormattedString(total)} {TOKEN.symbol}
+                {bigNumberToFormattedString(total)} {tokenSymbol}
               </Tooltip>
             </div>
           )
@@ -577,7 +573,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
           if (row.original.status === OperatorStatus.DEREGISTERED)
             excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-          if (row.original.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR) excludeActions.push(OperatorActionType.UnlockNominator)
+          if (row.original.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+            excludeActions.push(OperatorActionType.UnlockNominator)
 
           if (!nominator)
             excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
@@ -606,6 +603,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     rpcOperators,
     action,
     handleAction,
+    tokenSymbol,
   ])
 
   const orderBy = useMemo(
@@ -652,12 +650,12 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       conditions['current_total_stake'] = {}
       if (filters.totalStakeMin) {
         conditions.current_total_stake._gte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalStakeMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.totalStakeMax) {
         conditions.current_total_stake._lte = BigInt(
-          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalStakeMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
@@ -678,12 +676,12 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       conditions['minimum_nominator_stake'] = {}
       if (filters.minimumNominatorStakeMin) {
         conditions.minimum_nominator_stake._gte = BigInt(
-          Math.floor(parseFloat(filters.minimumNominatorStakeMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.minimumNominatorStakeMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.minimumNominatorStakeMax) {
         conditions.minimum_nominator_stake._lte = BigInt(
-          Math.floor(parseFloat(filters.minimumNominatorStakeMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.minimumNominatorStakeMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
@@ -693,12 +691,12 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       conditions['total_rewards_collected'] = {}
       if (filters.totalRewardsCollectedMin) {
         conditions.total_rewards_collected._gte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalRewardsCollectedMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.totalRewardsCollectedMax) {
         conditions.total_rewards_collected._lte = BigInt(
-          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.totalRewardsCollectedMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
@@ -757,7 +755,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     }
 
     return conditions
-  }, [domainId, subspaceAccount, myPositionOnly, availableColumns, filters])
+  }, [domainId, subspaceAccount, myPositionOnly, availableColumns, filters, tokenDecimals])
 
   const variables: OperatorsListQueryVariables = useMemo(
     () => ({
@@ -787,22 +785,15 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(
-        apolloClient,
-        QUERY_OPERATOR_LIST,
-        'operator',
-        {
-          orderBy,
-        },
-        ['limit', 'offset'],
-        { clientName: 'staking' },
-      ),
+      downloadFullData(apolloClient, QUERY_OPERATOR_LIST, 'operator', {
+        orderBy,
+      }),
     [apolloClient, orderBy],
   )
 
   const operatorsList = useMemo(() => {
     if (hasValue(operators))
-      return operators.value.operator.map((o) => {
+      return operators.value.staking_operators.map((o) => {
         return {
           ...o,
           nominatorsCount: o.nominators_aggregate.aggregate?.count || 0,
@@ -812,7 +803,8 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   }, [operators])
 
   const totalCount = useMemo(
-    () => (hasValue(operators) && operators.value.operator_aggregate.aggregate?.count) || 0,
+    () =>
+      (hasValue(operators) && operators.value.staking_operators_aggregate.aggregate?.count) || 0,
     [operators],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])

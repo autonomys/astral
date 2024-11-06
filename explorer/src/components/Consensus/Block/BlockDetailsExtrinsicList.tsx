@@ -6,9 +6,7 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import { Extrinsic, ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
+import { ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -19,14 +17,15 @@ import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   isDesktop?: boolean
 }
+
+type Row = ExtrinsicsByBlockIdQuery['consensus_extrinsics'][number]
 
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { ref, inView } = useInView()
@@ -39,22 +38,16 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   })
   const inFocus = useWindowFocus()
 
-  const first = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
+  const limit = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
   const { data, loading, setIsVisible } = useSquidQuery<
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
   >(QUERY_BLOCK_EXTRINSICS, {
-    variables: { blockId: Number(blockId), first },
+    variables: { blockId: Number(blockId), limit },
     skip: !inFocus,
   })
 
-  const extrinsicsConnection = useMemo(() => data && data.extrinsicsConnection, [data])
-  const extrinsics = useMemo(
-    () =>
-      extrinsicsConnection &&
-      extrinsicsConnection.edges.map((extrinsic) => extrinsic.node as Extrinsic),
-    [extrinsicsConnection],
-  )
+  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
 
   const columns = useMemo(
     () => [
@@ -62,13 +55,13 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         accessorKey: 'block',
         header: 'Extrinsic Id',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-block-extrinsic-id`}
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            {`${row.original.block.height}-${row.index}`}
+            {`${row.original.block_height}-${row.index}`}
           </Link>
         ),
       },
@@ -76,7 +69,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         accessorKey: 'hash',
         header: 'Block hash',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-extrinsic-hash`}>{shortString(row.original.hash)}</div>
         ),
       },
@@ -84,7 +77,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         accessorKey: 'name',
         header: 'Action',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-extrinsic-action`}>
             {row.original.name.split('.')[1].toUpperCase()}
           </div>
@@ -94,9 +87,9 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         accessorKey: 'block.timestamp',
         header: 'Time',
         enableSorting: true,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-extrinsic-action`}>
-            {dayjs(row.original.block.timestamp).fromNow(true)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },
@@ -104,7 +97,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         accessorKey: 'success',
         header: 'Status',
         enableSorting: false,
-        cell: ({ row }: Cell<Extrinsic>) => (
+        cell: ({ row }: Cell<Row>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
             key={`${row.index}-home-extrinsic-status`}
