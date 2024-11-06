@@ -1,5 +1,4 @@
 /* eslint-disable react/no-unknown-property */
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
 import { DocIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
@@ -11,6 +10,7 @@ import { NextRequest } from 'next/server'
 import { AccountIdPageProps, ChainPageProps } from 'types/app'
 import { getTokenSymbol } from 'utils/network'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { utcToLocalRelativeTime } from 'utils/time'
 
 // export const runtime = 'edge'
 export async function GET(

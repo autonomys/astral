@@ -1,6 +1,5 @@
 'use client'
 
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
@@ -27,6 +26,7 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 

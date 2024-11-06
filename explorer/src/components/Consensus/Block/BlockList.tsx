@@ -1,6 +1,5 @@
 'use client'
 
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
@@ -20,6 +19,7 @@ import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { BlockAuthor } from './BlockAuthor'
 import { QUERY_BLOCKS } from './query'
 

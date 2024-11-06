@@ -1,4 +1,3 @@
-import { utcToLocalRelativeTime, utcToLocalTime } from '@/utils/time'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
@@ -8,6 +7,7 @@ import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
 import { parseArgs } from 'utils/indexerParsing'
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
 type Props = {
   event: EventByIdQuery['consensus_events'][number]

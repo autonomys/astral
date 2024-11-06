@@ -1,4 +1,3 @@
-import { utcToLocalRelativeTime, utcToLocalTime } from '@/utils/time'
 import { Arguments } from 'components/common/Arguments'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
@@ -10,6 +9,7 @@ import Link from 'next/link'
 import { FC } from 'react'
 import { parseArgs } from 'utils/indexerParsing'
 import { shortString } from 'utils/string'
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
 type Props = {
   extrinsic: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>

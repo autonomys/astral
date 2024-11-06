@@ -1,6 +1,5 @@
 'use client'
 
-import { utcToLocalRelativeTime } from '@/utils/time'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -18,6 +17,7 @@ import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
 

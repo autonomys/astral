@@ -2,7 +2,6 @@
 
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { currentYear } from '@/utils/time'
 import { sendGAEvent } from '@next/third-parties/google'
 import { LogoIcon, WalletIcon } from 'components/icons'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
@@ -20,6 +19,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
 import { formatUnitsToNumber } from 'utils/number'
+import { currentYear } from 'utils/time'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
