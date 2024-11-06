@@ -5,7 +5,7 @@ import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, TOKEN } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -41,7 +41,7 @@ type Row = RewardsListQuery['consensus_rewards'][number]
 
 export const AccountRewardList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useChains()
+  const { network, section, tokenSymbol } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -162,12 +162,12 @@ export const AccountRewardList: FC = () => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.original.id}-account-balance`}>
-            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0} {TOKEN.symbol}
+            {row.original.amount ? bigNumberToNumber(row.original.amount) : 0} {tokenSymbol}
           </div>
         ),
       },
     ],
-    [network, section, isLargeLaptop],
+    [network, section, isLargeLaptop, tokenSymbol],
   )
 
   const pageCount = useMemo(

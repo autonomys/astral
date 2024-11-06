@@ -12,11 +12,14 @@ import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
 import { Routes } from 'constants/routes'
 import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
+import { getTokenDecimals, getTokenSymbol } from 'utils/network'
 
 export type ChainContextValue = {
   indexerSet: Indexer
   network: NetworkId
   section: Routes
+  tokenSymbol: string
+  tokenDecimals: number
   setIndexerSet: (children: Indexer) => void
   setSection: (section: Routes) => void
 }
@@ -68,6 +71,8 @@ export const ChainProvider: FC<Props> = ({ children }) => {
         indexerSet,
         network: indexerSet.network,
         section,
+        tokenSymbol: getTokenSymbol(indexerSet.network),
+        tokenDecimals: getTokenDecimals(indexerSet.network),
         setIndexerSet,
         setSection,
       }}

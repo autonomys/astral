@@ -1,9 +1,9 @@
 import { ResponsiveLine } from '@nivo/line'
-import { TOKEN } from 'constants/general'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import { LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables } from 'gql/graphql'
+import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
@@ -24,6 +24,7 @@ type Props = {
 export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { ref, inView } = useInView()
   const { isDark } = useTheme()
+  const { tokenSymbol } = useChains()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
   const inFocus = useWindowFocus()
 
@@ -88,9 +89,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
         <div className='text-[26px] font-medium text-gray-900 dark:text-white'>
           {total ? numberWithCommas(bigNumberToNumber(total)) : 0}
         </div>
-        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>
-          {TOKEN.symbol}
-        </div>
+        <div className='text-[13px] font-semibold text-gray-900 dark:text-white'>{tokenSymbol}</div>
       </div>
       <div className='h-80 w-3/4 md:h-96 md:w-full'>
         {parsedData.length > 0 ? (

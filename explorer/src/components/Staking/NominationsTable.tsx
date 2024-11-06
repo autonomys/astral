@@ -5,7 +5,7 @@ import { SortingState, createColumnHelper } from '@tanstack/react-table'
 import { Accordion } from 'components/common/Accordion'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { BIGINT_ZERO, TOKEN } from 'constants/general'
+import { BIGINT_ZERO } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
 import dayjs from 'dayjs'
@@ -38,7 +38,7 @@ export const NominationsTable: FC = () => {
   const { ref, inView } = useInView()
   const { subspaceAccount } = useWallet()
   const [isOpen, setIsOpen] = useState<boolean>(false)
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
   const { myPositionOnly } = useViewStates()
 
@@ -101,11 +101,11 @@ export const NominationsTable: FC = () => {
 
   const depositColumns = [
     columnHelper.accessor('amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Amount',
     }),
     columnHelper.accessor('storage_fee_deposit', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Storage Fee',
     }),
     columnHelper.accessor('timestamp', {
@@ -133,17 +133,17 @@ export const NominationsTable: FC = () => {
 
   const withdrawalColumns = [
     columnHelper.accessor('shares', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Shares',
     }),
 
     columnHelper.accessor('estimated_amount', {
-      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${TOKEN.symbol}`,
+      cell: (info) => `${bigNumberToFormattedString(info.getValue())} ${tokenSymbol}`,
       header: 'Estimated Amount',
     }),
     columnHelper.accessor('unlocked_amount', {
       cell: (info) => (
-        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.unlocked_storage_fee)} ${TOKEN.symbol}`}</div>
+        <div>{`${bigNumberToFormattedString(info.getValue() + info.row.original.unlocked_storage_fee)} ${tokenSymbol}`}</div>
       ),
       header: 'Unlocked Total Amount',
     }),
@@ -300,21 +300,21 @@ export const NominationsTable: FC = () => {
                         <h5 className='mb-2 font-medium'>Deposits</h5>
                         <div>
                           <strong>Total Deposits:</strong>{' '}
-                          {bigNumberToFormattedString(nominator.total_deposits)} {TOKEN.symbol}
+                          {bigNumberToFormattedString(nominator.total_deposits)} {tokenSymbol}
                         </div>
                         <div>
                           <strong>Known Storage Fee Deposit:</strong>{' '}
                           {bigNumberToFormattedString(nominator.known_storage_fee_deposit)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                         <div>
                           <strong>Pending Amount:</strong>{' '}
-                          {bigNumberToFormattedString(nominator.pending_amount)} {TOKEN.symbol}
+                          {bigNumberToFormattedString(nominator.pending_amount)} {tokenSymbol}
                         </div>
                         <div>
                           <strong>Pending Storage Fee Deposit:</strong>{' '}
                           {bigNumberToFormattedString(nominator.pending_storage_fee_deposit)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                       </div>
                       <div className='mt-4 w-full sm:mt-0 sm:w-1/2 sm:pl-2'>
@@ -326,21 +326,21 @@ export const NominationsTable: FC = () => {
                         <div>
                           <strong>Total Withdrawal Amounts:</strong>{' '}
                           {bigNumberToFormattedString(nominator.total_withdrawal_amounts)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                         <div>
                           <strong>Total Storage Fee Refund:</strong>{' '}
                           {bigNumberToFormattedString(nominator.total_storage_fee_refund)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                         <div>
                           <strong>Estimated Withdrawal:</strong>{' '}
-                          {bigNumberToFormattedString(nominator.pending_shares)} {TOKEN.symbol}
+                          {bigNumberToFormattedString(nominator.pending_shares)} {tokenSymbol}
                         </div>
                         <div>
                           <strong>Pending Storage Fee Refund:</strong>{' '}
                           {bigNumberToFormattedString(nominator.pending_storage_fee_refund)}{' '}
-                          {TOKEN.symbol}
+                          {tokenSymbol}
                         </div>
                       </div>
                     </div>

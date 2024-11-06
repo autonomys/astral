@@ -1,4 +1,4 @@
-import { TOKEN } from 'constants/general'
+import useChains from '@/hooks/useChains'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { useParams } from 'next/navigation'
@@ -49,6 +49,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
   const { ref } = useInView()
   const [previousRewards, setRewards] = useState(defaultRewards)
   const { accountId } = useParams<AccountIdParam>()
+  const { tokenSymbol } = useChains()
 
   const handleSearch = useCallback(async () => {
     const file = await fetch('/data/rewards.csv')
@@ -203,7 +204,7 @@ export const AccountPreviousRewards: FC<AccountPreviousRewardsProps> = () => {
             Testnet
           </div>
           <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
-            Localized {TOKEN.symbol}
+            Localized {tokenSymbol}
           </div>
           <div className='col-span-1 text-[13px] font-normal text-purpleShade dark:text-white/75'>
             Mainnet allocation %

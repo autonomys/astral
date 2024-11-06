@@ -2,7 +2,6 @@
 
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
-import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -121,7 +120,7 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
 
 export const AccountLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
 
   return (
     <Leaderboard>
@@ -142,7 +141,7 @@ export const AccountLeaderboard: FC = () => {
             table='leaderboard_account_transfer_sender_total_values'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total sent'
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Transfer Receiver Count'>
@@ -161,7 +160,7 @@ export const AccountLeaderboard: FC = () => {
             table='leaderboard_account_transfer_receiver_total_values'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total received'
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Remark Count'>
@@ -207,7 +206,7 @@ export const AccountLeaderboard: FC = () => {
             table='leaderboard_account_transaction_fee_paid_total_values'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total fee paid'
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
       </PageTabs>
@@ -217,7 +216,7 @@ export const AccountLeaderboard: FC = () => {
 
 export const FarmerLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
 
   return (
     <Leaderboard>
@@ -240,7 +239,7 @@ export const FarmerLeaderboard: FC = () => {
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total reward'
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Vote Count'>
@@ -261,7 +260,7 @@ export const FarmerLeaderboard: FC = () => {
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total reward'
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Block Count'>
@@ -282,7 +281,7 @@ export const FarmerLeaderboard: FC = () => {
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total reward'
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
       </PageTabs>
@@ -292,7 +291,7 @@ export const FarmerLeaderboard: FC = () => {
 
 export const OperatorLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
 
   return (
     <Leaderboard>
@@ -305,7 +304,7 @@ export const OperatorLeaderboard: FC = () => {
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Tax Collected'>
@@ -316,7 +315,7 @@ export const OperatorLeaderboard: FC = () => {
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Bundle Count'>
@@ -348,7 +347,7 @@ export const OperatorLeaderboard: FC = () => {
             table='leaderboard_operator_deposits_total_values'
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
             showAccountIcon={false}
           />
         </Tab>
@@ -370,7 +369,7 @@ export const OperatorLeaderboard: FC = () => {
 
 export const NominatorLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
 
   return (
     <Leaderboard>
@@ -392,7 +391,7 @@ export const NominatorLeaderboard: FC = () => {
             table='leaderboard_nominator_deposits_total_values'
             idLabel='Nominator'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
-            valueSuffix={TOKEN.symbol}
+            valueSuffix={tokenSymbol}
           />
         </Tab>
         <Tab title='Withdrawals Count'>

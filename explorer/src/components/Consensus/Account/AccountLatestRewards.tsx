@@ -1,4 +1,3 @@
-import { TOKEN } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -18,7 +17,7 @@ interface AccountLatestRewardsProps {
 }
 
 export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
-  const { network, section } = useChains()
+  const { network, section, tokenSymbol } = useChains()
   const { accountId } = useParams<AccountIdParam>()
   const { push } = useRouter()
 
@@ -70,7 +69,7 @@ export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards })
                     .join(' ')}
                 </div>
                 <div className='-mt-1 w-full flex-1 grow text-end text-[13px] font-normal text-grayDark dark:text-white'>
-                  {bigNumberToNumber(amount)} {TOKEN.symbol}
+                  {bigNumberToNumber(amount)} {tokenSymbol}
                 </div>
               </li>
             ))}
