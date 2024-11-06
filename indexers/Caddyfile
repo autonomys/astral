@@ -8,6 +8,22 @@
 }
 
 :80, :443 {
+    # Match WebSocket requests
+    @websockets {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+
+    # Reverse proxy for WebSocket traffic explicitly over HTTP/1.1
+    reverse_proxy @websockets node:9944 {
+        transport http {
+            versions h1  # Force HTTP/1.1 only for WebSocket traffic
+        }
+        # Headers for WebSocket support
+        header_up Connection "Upgrade"
+        header_up Upgrade "websocket"
+    }
+
     # Reverse proxy for HTTP traffic to node at port 9944
     reverse_proxy node:9944 {
         transport http {
