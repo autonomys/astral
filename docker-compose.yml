@@ -17,7 +17,7 @@ services:
     image: caddy:latest
     ports:
     - "80:9944"    # Map external 80 to Caddy's 9944 for Node/RPC
-    - "443:9945"   # Map external 443 to Caddy's 9945 for HTTPS
+    - "443:9944"   # Map external 443 to Caddy's 9945 for HTTPS
     - "8081:8080"  # Map external 8081 to Caddy's 8080 for Hasura
     - "3011:3001"  # Map external 3011 to Caddy's 3001 for Consensus
     - "3012:3002"  # Map external 3012 to Caddy's 3002 for Leaderboard
