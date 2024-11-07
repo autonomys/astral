@@ -1,15 +1,15 @@
-name: Deploy Docker Compose for Micro Squids on main
+name: Deploy Docker Compose for subquery indexers on main
 
 on:
   push:
     branches:
-      - production
+      - main
     paths:
       - "indexers/**"
 env:
   DOCKER_HOST: ssh://${{ secrets.SSH_USER }}@${{ secrets.SUBQL_HOST }}
   DEPLOY_PATH: /home/${{ secrets.SSH_USER }}/astral
-  BRANCH_NAME: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref }}
+  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
   deploy:
@@ -21,10 +21,10 @@ jobs:
 
       - name: Set Hasura secret
         id: set_secret
-        run: echo "hasura_secret=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}" >> $GITHUB_OUTPUT
+        run: echo "hasura_secret=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}" >> $GITHUB_ENV
 
       - name: Install SSH key
-        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
 
@@ -36,6 +36,7 @@ jobs:
         env:
           SSH_USER: ${{ secrets.SSH_USER }}
           HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}
+          HASURA_GRAPHQL_JWT_SECRET: ${{ secrets.HASURA_GRAPHQL_JWT_SECRET }}
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H ${{ secrets.SUBQL_HOST }} >> ~/.ssh/known_hosts
@@ -51,13 +52,13 @@ jobs:
 
             # Securely update the .env file
             if [ ! -f .env ]; then
-              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' > .env
-              echo 'HASURA_GRAPHQL_JWT_SECRET=${var.hasura_graphql_jwt_secret}' >> .env
+              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}' > .env
+              echo 'HASURA_GRAPHQL_JWT_SECRET=${{ secrets.HASURA_GRAPHQL_JWT_SECRET }}' >> .env
             else
               sed -i '/^HASURA_GRAPHQL_ADMIN_SECRET=/d' .env
-              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' >> .env
+              echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}' >> .env
               sed -i '/^HASURA_GRAPHQL_JWT_SECRET=/d' .env
-              echo 'HASURA_GRAPHQL_JWT_SECRET=${{ steps.set_secret.outputs.hasura_jwt_secret }}' >> .env
+              echo 'HASURA_GRAPHQL_JWT_SECRET=${{ secrets.HASURA_GRAPHQL_JWT_SECRET }}' >> .env
             fi
 
             export $(grep -v '^#' /home/${{ secrets.SSH_USER }}/astral/.env | xargs)
