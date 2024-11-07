@@ -35,67 +35,31 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  taurus_dictionary_subquery_node:
+  dictionary_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  taurus_dictionary_graphql_engine:
+  dictionary_graphql_engine:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_dictionary_subquery_node:
+  consensus_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_dictionary_graphql_engine:
+  leaderboard_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  taurus_consensus_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  taurus_leaderboard_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  taurus_staking_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3h_consensus_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3h_leaderboard_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3h_staking_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3g_testnet_rewards_subquery_node:
+  staking_subquery_node:
     logging:
       driver: loki
       options:

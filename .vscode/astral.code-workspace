@@ -17,6 +17,10 @@
       "path": "../indexers"
     },
     {
+      "name": "indexer - Mainnet",
+      "path": "../indexers/mainnet"
+    },
+    {
       "name": "indexer - Taurus",
       "path": "../indexers/taurus"
     },
