@@ -5,10 +5,10 @@ on:
     branches:
       - production
     paths:
-      - "indexers/squid-blockexplorer/**"
+      - "indexers/**"
 env:
-  DOCKER_HOST: ssh://${{ secrets.SSH_USER }}@${{ secrets.SQUID_HOST }}
-  DEPLOY_PATH: /home/ubuntu/squids/astral
+  DOCKER_HOST: ssh://${{ secrets.SSH_USER }}@${{ secrets.SUBQL_HOST }}
+  DEPLOY_PATH: /home/${{ secrets.SSH_USER }}/astral
   BRANCH_NAME: ${{ github.ref == 'refs/heads/main' && 'main' || github.ref }}
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
 
       - name: Add SSH host key fingerprint
         run: |
-          ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.SUBQL_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy with Docker Compose
         env:
@@ -38,8 +38,8 @@ jobs:
           HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET }}
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.SQUID_HOST }} >> ~/.ssh/known_hosts
-          ssh ${SSH_USER}@${{ secrets.SQUID_HOST }} "
+          ssh-keyscan -H ${{ secrets.SUBQL_HOST }} >> ~/.ssh/known_hosts
+          ssh ${SSH_USER}@${{ secrets.SUBQL_HOST }} "
 
             if [ ! -d ${DEPLOY_PATH} ]; then
               git clone https://github.com/autonomys/astral.git ${DEPLOY_PATH}
@@ -52,13 +52,21 @@ jobs:
             # Securely update the .env file
             if [ ! -f .env ]; then
               echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' > .env
+              echo 'HASURA_GRAPHQL_JWT_SECRET=${var.hasura_graphql_jwt_secret}' >> .env
             else
               sed -i '/^HASURA_GRAPHQL_ADMIN_SECRET=/d' .env
               echo 'HASURA_GRAPHQL_ADMIN_SECRET=${{ steps.set_secret.outputs.hasura_secret }}' >> .env
+              sed -i '/^HASURA_GRAPHQL_JWT_SECRET=/d' .env
+              echo 'HASURA_GRAPHQL_JWT_SECRET=${{ steps.set_secret.outputs.hasura_jwt_secret }}' >> .env
             fi
 
-            docker-compose -f docker-compose-all-squids.yml pull
-            docker-compose -f docker-compose-all-squids.yml up -d
+            export $(grep -v '^#' /home/${{ secrets.SSH_USER }}/astral/.env | xargs)
+            cd /home/${{ secrets.SSH_USER }}/astral/indexers
+            yarn build-dictionary
+            npx lerna run codegen
+            npx lerna run build
+            sudo docker compose -p prod-astral-indexers -f /home/${{ secrets.SSH_USER }}/astral/docker-compose.yml -f /home/${{ secrets.SSH_USER }}/astral/docker-compose.prod.yml --profile dictionary --profile task --profile taurus up -d --remove-orphans
+            echo 'Installation Complete'
           "
 
       - name: Notify on failure
