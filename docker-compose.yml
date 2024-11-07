@@ -16,8 +16,12 @@ services:
         hard: 65536 # Hard limit for open files
     image: caddy:latest
     ports:
-      - "80:80" # Map port 80 on the host to port 80 in Caddy
-      - "443:443" # Map port 443 for HTTPS
+    - "80:9944"    # Map external 80 to Caddy's 9944 for Node/RPC
+    - "443:9944"   # Map external 443 to Caddy's 9945 for HTTPS
+    - "8081:8080"  # Map external 8081 to Caddy's 8080 for Hasura
+    - "3011:3001"  # Map external 3011 to Caddy's 3001 for Consensus
+    - "3012:3002"  # Map external 3012 to Caddy's 3002 for Leaderboard
+    - "3013:3003"  # Map external 3013 to Caddy's 3003 for Staking
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
@@ -65,6 +69,8 @@ services:
         "--farmer",
         "--name",
         "astral",
+        "--sync",
+        "full",
       ]
     healthcheck:
       timeout: 5s
@@ -157,13 +163,7 @@ services:
     volumes:
       - ./indexers/dictionary/${DICTIONARY_DIRECTORY}:/dictionary
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://dictionary_subquery_node:3000/ready",
-        ]
+      test: ["CMD", "curl", "-f", "http://dictionary_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -223,13 +223,7 @@ services:
       - --unfinalized-blocks=true
       - --disable-historical=false
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://consensus_subquery_node:3000/ready",
-        ]
+      test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -265,13 +259,7 @@ services:
       - --batch-size=15
       - --disable-historical=true
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://leaderboard_subquery_node:3000/ready",
-        ]
+      test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -307,8 +295,7 @@ services:
       - --batch-size=15
       - --disable-historical=true
     healthcheck:
-      test:
-        ["CMD", "curl", "-f", "http://staking_subquery_node:3000/ready"]
+      test: ["CMD", "curl", "-f", "http://staking_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
