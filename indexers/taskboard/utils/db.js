@@ -1,10 +1,10 @@
 const { Pool } = require("pg");
 
-const connectToDB = async (database = process.env.DB_TAURUS || "taurus") => {
+const connectToDB = async () => {
   const dbConfig = {
     user: process.env.DB_USER || "postgres",
     host: process.env.DB_HOST || "localhost",
-    database,
+    database: process.env.DB_DATABASE || "postgres",
     password: process.env.DB_PASSWORD || "postgres",
     port: process.env.DB_PORT || 5432,
   };

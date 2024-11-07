@@ -40,6 +40,7 @@ export const searchTypes: SearchType[] = [
 ]
 
 export const SUBSPACE_ACC_PREFIX = 6094
+export const SUBSPACE_ACC_PREFIX_TESTNET = 2254
 
 export const BIGINT_ZERO = BigInt(0)
 

@@ -1,4 +1,4 @@
-const NETWORKS = ["taurus"];
+const NETWORKS = ["mainnet", "taurus"];
 const QUEUES = [
   {
     name: "consensusUniqueRowsMapping",
