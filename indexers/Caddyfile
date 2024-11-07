@@ -91,6 +91,7 @@
 
 # Hasura endpoint
 :8080 {
+    import auth
     # Match WebSocket requests
     @websockets {
         header Connection *Upgrade*
@@ -108,7 +109,7 @@
     }
 
     # Reverse proxy for HTTP traffic to hasura at port 8080
-    reverse_proxy node:8080 {
+    reverse_proxy hasura:8080 {
         transport http {
             # Buffer sizes
             read_buffer 64KB
@@ -160,6 +161,7 @@
 
 # Subql Consensus Health endpoint
 :3001 {
+    import auth
     # Match WebSocket requests
     @websockets {
         header Connection *Upgrade*
@@ -235,6 +237,7 @@
 
 # Subql Leaderboard Health endpoint
 :3002 {
+    import auth
     # Match WebSocket requests
     @websockets {
         header Connection *Upgrade*
@@ -310,6 +313,7 @@
 
 # Subql Staking Health endpoint
 :3003 {
+    import auth
     # Match WebSocket requests
     @websockets {
         header Connection *Upgrade*
