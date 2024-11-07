@@ -1,5 +1,7 @@
 'use client'
 
+import { SUBSPACE_ACC_PREFIX_TESTNET } from '@/constants/general'
+import { formatAddress } from '@/utils/formatAddress'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
   AriesStressTestIcon,
@@ -112,6 +114,14 @@ export const TestnetRewardsTable: FC = () => {
   const [allRewards, setAllRewards] = useState<AllRewards[]>([])
   const [rewards, setRewards] = useState<Rewards>(DEFAULT_REWARDS)
   const [totalRewards, setTotalRewards] = useState<Rewards>(DEFAULT_REWARDS)
+
+  const stFormattedAndMergedAddresses = useMemo(() => {
+    const addresses = mySubspaceWallets.map((wallet) =>
+      formatAddress(wallet, SUBSPACE_ACC_PREFIX_TESTNET),
+    )
+    if (subspaceAccount) addresses.push(formatAddress(subspaceAccount, SUBSPACE_ACC_PREFIX_TESTNET))
+    return addresses
+  }, [mySubspaceWallets, subspaceAccount])
 
   const campaigns: Record<string, Campaign> = useMemo(
     () => ({
@@ -291,8 +301,8 @@ export const TestnetRewardsTable: FC = () => {
 
   const handleAggregated = useCallback(async () => {
     if (!isLoaded) return
-    const userRewards = allRewards.filter(
-      (reward) => mySubspaceWallets.includes(reward.address) || subspaceAccount === reward.address,
+    const userRewards = allRewards.filter((reward) =>
+      stFormattedAndMergedAddresses.includes(reward.address),
     )
 
     const mergedRewards: Rewards = userRewards.reduce(
@@ -323,7 +333,7 @@ export const TestnetRewardsTable: FC = () => {
     )
     setRewards(mergedRewards)
     setIsAggregated(true)
-  }, [allRewards, campaigns, isLoaded, mySubspaceWallets, subspaceAccount])
+  }, [allRewards, campaigns, isLoaded, stFormattedAndMergedAddresses])
 
   const userTestnetRewardsByPhase = useCallback(
     (phase: string) => {
