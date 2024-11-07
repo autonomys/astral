@@ -65,6 +65,8 @@ services:
         "--farmer",
         "--name",
         "astral",
+        "--sync",
+        "full",
       ]
     healthcheck:
       timeout: 5s
@@ -157,13 +159,7 @@ services:
     volumes:
       - ./indexers/dictionary/${DICTIONARY_DIRECTORY}:/dictionary
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://dictionary_subquery_node:3000/ready",
-        ]
+      test: ["CMD", "curl", "-f", "http://dictionary_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -223,13 +219,7 @@ services:
       - --unfinalized-blocks=true
       - --disable-historical=false
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://consensus_subquery_node:3000/ready",
-        ]
+      test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -265,13 +255,7 @@ services:
       - --batch-size=15
       - --disable-historical=true
     healthcheck:
-      test:
-        [
-          "CMD",
-          "curl",
-          "-f",
-          "http://leaderboard_subquery_node:3000/ready",
-        ]
+      test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -307,8 +291,7 @@ services:
       - --batch-size=15
       - --disable-historical=true
     healthcheck:
-      test:
-        ["CMD", "curl", "-f", "http://staking_subquery_node:3000/ready"]
+      test: ["CMD", "curl", "-f", "http://staking_subquery_node:3000/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
