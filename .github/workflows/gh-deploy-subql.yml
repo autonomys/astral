@@ -1,4 +1,4 @@
-name: Deploy Docker Compose for subquery indexers on main
+name: Deploy Subql Green (staging)
 
 on:
   push:
@@ -81,6 +81,6 @@ jobs:
           author_name: Deployment failed
           mention: here
           if_mention: failure,cancelled
-          job_name: Deploy Docker Compose for Micro Squids on staging
+          job_name: Deploy Subql Green (staging)
           channel: alerts
           icon_emoji: ":github:"
