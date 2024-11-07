@@ -7,6 +7,14 @@
     }
 }
 
+# Define basic auth
+(auth) {
+    basicauth {
+        # You can generate BCrypt hash using: caddy hash-password
+        admin $2a$14$A4H4GYb/HkbXKJXaib4.HObVwlGt0W.8WUihFg5U2KpTa8eODDvqK
+    }
+}
+
 :80, :443 {
     # Match WebSocket requests
     @websockets {
