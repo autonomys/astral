@@ -16,12 +16,12 @@ services:
         hard: 65536 # Hard limit for open files
     image: caddy:latest
     ports:
-    - "80:9944"    # Map external 80 to Caddy's 9944 for Node/RPC
-    - "443:9944"   # Map external 443 to Caddy's 9945 for HTTPS
-    - "8081:8080"  # Map external 8081 to Caddy's 8080 for Hasura
-    - "3011:3001"  # Map external 3011 to Caddy's 3001 for Consensus
-    - "3012:3002"  # Map external 3012 to Caddy's 3002 for Leaderboard
-    - "3013:3003"  # Map external 3013 to Caddy's 3003 for Staking
+      - "80:9944" # Map external 80 to Caddy's 9944 for Node/RPC
+      - "443:9944" # Map external 443 to Caddy's 9945 for HTTPS
+      - "8081:8080" # Map external 8081 to Caddy's 8080 for Hasura
+      - "3011:3001" # Map external 3011 to Caddy's 3001 for Consensus
+      - "3012:3002" # Map external 3012 to Caddy's 3002 for Leaderboard
+      - "3013:3003" # Map external 3013 to Caddy's 3003 for Staking
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
@@ -102,7 +102,8 @@ services:
   hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
-      - "postgres"
+      postgres:
+        condition: service_healthy
     volumes:
       - ./indexers/db/migrations:/hasura-migrations
       - ./indexers/db/metadata:/hasura-metadata
@@ -177,8 +178,10 @@ services:
     ports:
       - "${DICTIONARY_SUBQUERY_NODE_PORT}:3000"
     depends_on:
-      - "postgres"
-      - "dictionary_subquery_node"
+      "postgres":
+        condition: service_healthy
+      "dictionary_subquery_node":
+        condition: service_healthy
     restart: unless-stopped
     environment:
       DB_USER: ${DB_USER}
@@ -195,7 +198,7 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3001:3000"
+      - "3004:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -327,6 +330,8 @@ services:
     build:
       context: ./indexers/taskboard
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
