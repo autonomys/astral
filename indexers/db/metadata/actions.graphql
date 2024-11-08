@@ -1,0 +1,21 @@
+type Mutation {
+  updateAccount(
+    args: AddTaskUpdateAccountInput!
+  ): UpdateAccountOutput
+}
+
+input UpdateAccountInput {
+  networkId: String!
+  accountId: String!
+}
+
+input AddTaskUpdateAccountInput {
+  queueName: String!
+  data: UpdateAccountInput!
+  jobId: String!
+}
+
+type UpdateAccountOutput {
+  blockNumber: String!
+}
+
