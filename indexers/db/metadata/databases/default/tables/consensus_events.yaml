@@ -27,7 +27,6 @@ object_relationships:
         remote_table:
           name: event_modules
           schema: consensus
-array_relationships:
   - name: extrinsic
     using:
       manual_configuration:
