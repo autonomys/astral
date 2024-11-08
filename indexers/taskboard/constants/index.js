@@ -11,9 +11,9 @@ const QUEUES = [
     enabled: true,
   },
   {
-    name: "stackingUpdateOperator",
-    title: "Stacking Update Operator",
-    enabled: false,
+    name: "updateAccount",
+    title: "Update Account",
+    enabled: true,
   },
 ];
 
