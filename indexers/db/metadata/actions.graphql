@@ -16,7 +16,6 @@ input UpdateAccountInput {
 }
 
 input AddTaskUpdateAccountInput {
-  queueName: String!
   data: UpdateAccountInput!
   jobId: String!
 }
@@ -30,7 +29,6 @@ input SlackNotificationInput {
 }
 
 input AddTaskSlackNotificationInput {
-  queueName: String!
   data: SlackNotificationInput!
   jobId: String!
 }

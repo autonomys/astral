@@ -2,9 +2,10 @@ import { createBullBoard } from "@bull-board/api";
 import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
 import { ExpressAdapter } from "@bull-board/express";
 import bodyParser from "body-parser";
-import { ensureLoggedIn } from "connect-ensure-login";
+import RedisStore from "connect-redis";
 import express, { Express } from "express";
 import session from "express-session";
+import Redis from "ioredis";
 import passport from "passport";
 import LocalStrategy from "passport-local";
 import {
@@ -12,15 +13,28 @@ import {
   GARBAGE_COLLECTION_INTERVAL,
   JOB_RETENTION_HOURS,
   QUEUES,
+  ROUTES,
   TASKS_QUEUES,
 } from "./constants";
+import {
+  dashboardController,
+  indexController,
+  loginController,
+} from "./controllers/login";
 import { tasks } from "./tasks";
 import {
   cleanOldJobs,
   createQueueMQ,
   setupBullMQProcessor,
 } from "./utils/bull";
-import { checkRedisConnection } from "./utils/store";
+import { log, returnError } from "./utils/helper";
+import { checkRedisConnection, connection } from "./utils/store";
+
+declare module "express-session" {
+  interface SessionData {
+    authenticated: boolean;
+  }
+}
 
 passport.use(
   "api",
@@ -30,9 +44,8 @@ passport.use(
       if (
         username === process.env.BULL_USERNAME &&
         password === process.env.BULL_PASSWORD
-      ) {
+      )
         return cb(null, { user: "bull-board" });
-      }
       return cb(null, false);
     }
   )
@@ -44,15 +57,31 @@ passport.deserializeUser((user, cb) => cb(null, user));
 const run = async () => {
   await checkRedisConnection();
   const app: Express = express();
+  const RedisClient = new Redis(connection);
+
+  const tasksQueues = {};
+  const serverAdapters = {};
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET || "keyboard cat",
+      resave: false,
+      saveUninitialized: false,
+      store: new RedisStore({ client: RedisClient }),
+    })
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(bodyParser.json());
 
   app.set("views", `${__dirname}/views`);
   app.set("view engine", "ejs");
 
-  app.get("/", (req, res) => {
-    res.render("index", { queues: QUEUES });
-  });
-  const tasksQueues = {};
-  const serverAdapters = {};
+  app.get(ROUTES.LOGIN, indexController);
+  app.get(ROUTES.DASHBOARD, dashboardController);
+
+  app.post(ROUTES.POST_LOGIN, loginController);
 
   for (const queue of QUEUES) {
     const activeTasksQueues = TASKS_QUEUES.filter(
@@ -63,9 +92,7 @@ const run = async () => {
       const queueName = `${queue} - ${tasksQueue.title}`;
       const _queue = createQueueMQ(queueName);
       const task = tasks[tasksQueue.name];
-      if (task) {
-        await setupBullMQProcessor(_queue.name, task);
-      }
+      if (task) await setupBullMQProcessor(_queue.name, task);
       if (!tasksQueues[queue]) {
         tasksQueues[queue] = {};
       }
@@ -82,101 +109,55 @@ const run = async () => {
     });
 
     serverAdapter.setBasePath(`/${queue}`);
-    app.use(`/${queue}`, serverAdapter.getRouter());
+
+    app.use(`/${queue}`, (req, res) => {
+      if (req.session.authenticated) serverAdapter.getRouter()(req, res);
+      else res.redirect(ROUTES.LOGIN);
+    });
     serverAdapters[queue] = serverAdapter;
   }
 
-  for (const queue of QUEUES) {
-    const activeTasksQueues = TASKS_QUEUES.filter(
-      (q) => q.queue === queue && q.enabled
-    );
-
-    app.use(
-      `/${queue}/add`,
-      // @ts-ignore express types
-      async (req: any, res: Response<any, Record<string, any>, number>) => {
-        const opts = req.query.opts || {};
-        const jobId = req.query.jobId;
-
-        if (!jobId) {
-          return res.status(400).json({ error: "jobId is required" });
-        }
-
-        const tasksQueue = tasksQueues[queue][activeTasksQueues[0].name];
-        const existingJob = await tasksQueue.getJob(jobId);
-
-        if (
-          existingJob &&
-          !existingJob.isCompleted() &&
-          !existingJob.isFailed()
-        ) {
-          return res.status(400).json({ error: "Job is already in progress" });
-        }
-
-        await tasksQueue.add(
-          `Add ${queue}`,
-          { title: req.query.title },
-          { ...opts, jobId }
-        );
-
-        res.json({ ok: true });
-      }
-    );
-  }
-
-  app.use(bodyParser.json());
-
-  // @ts-ignore express types
-  app.post("/add-task", async (req, res) => {
+  app.post(ROUTES.POST_ADD_TASK, async (req, res) => {
+    log("req.body: ", req.body);
     let { queueName, taskName, data, opts, jobId } = req.body;
     if (req.body.action) {
-      taskName = req.body.action.name;
-      ({ queueName, data, opts, jobId } = req.body.input.args);
+      const matchingTask = TASKS_QUEUES.find(
+        (t) => t.name === req.body.action.name
+      );
+      if (!matchingTask) returnError(res, "Invalid task name");
+      taskName = matchingTask.name;
+      queueName = matchingTask.queue;
+      ({ data, opts, jobId } = req.body.input.args);
     }
     console.log("jobId: ", jobId);
 
-    if (!jobId) {
-      console.log("jobId is required");
-      return res.status(400).json({ error: "jobId is required" });
-    }
+    if (!jobId) returnError(res, "jobId is required");
 
     try {
       const tasksQueue = tasksQueues[queueName];
-      if (!tasksQueue)
-        return res.status(400).json({ error: "Invalid queue name" });
+      if (!tasksQueue) returnError(res, "Invalid queue name");
 
       const existingTaskQueue = tasksQueue[taskName];
-      if (!existingTaskQueue) {
-        console.log("Invalid task name");
-        return res.status(400).json({ error: "Invalid task name" });
-      }
+      if (!existingTaskQueue) returnError(res, "Invalid task name");
       const existingJob = await existingTaskQueue.getJob(jobId);
 
-      if (
-        existingJob &&
-        !existingJob.isCompleted() &&
-        !existingJob.isFailed()
-      ) {
-        console.log("Job is already in progress");
-        return res.status(400).json({ error: "Job is already in progress" });
-      }
+      if (existingJob && !existingJob.isCompleted() && !existingJob.isFailed())
+        returnError(res, "Job is already in progress");
 
       const job = await existingTaskQueue.add(taskName, data, {
         ...opts,
         jobId,
       });
-      if (!job) {
-        console.log("Failed to create task");
-        return res.status(500).json({ error: "Failed to create task" });
-      }
-      res.json({
+      if (!job) returnError(res, "Failed to create task", 500);
+
+      res.send({
         ok: true,
         message: `Task added to ${queueName}`,
         jobId: job.id,
       });
     } catch (error) {
-      console.log("Error adding task:", error);
-      res.status(500).json({ error: error.message });
+      log("Error adding task:", error);
+      returnError(res, error.message, 500);
     }
   });
 
@@ -190,17 +171,7 @@ const run = async () => {
   }, GARBAGE_COLLECTION_INTERVAL);
 
   app.listen(process.env.BULL_PORT || 3020, () => {
-    console.log(`Running on ${process.env.BULL_PORT}...`);
-    QUEUES.forEach((queue) => {
-      console.log(
-        `For the UI of ${queue}, open http://localhost:${process.env.BULL_PORT}/${queue}`
-      );
-    });
-    console.log("Make sure Redis is running on port 6379 by default");
-    console.log("To populate the queue, run:");
-    console.log(
-      "To add a task to the queue, send a POST request to /<queue>/add-task with JSON body:"
-    );
+    console.log(`Running on port ${process.env.BULL_PORT}...`);
   });
 };
 

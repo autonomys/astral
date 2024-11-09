@@ -28,6 +28,18 @@ export const TASKS_QUEUES = [
   },
 ];
 
+export enum ROUTES {
+  LOGIN = "/",
+  DASHBOARD = "/dashboard",
+
+  POST_LOGIN = "/login",
+  POST_ADD_TASK = "/add-task",
+}
+export enum VIEWS {
+  LOGIN = "login",
+  DASHBOARD = "index",
+}
+
 export const JOB_RETENTION_HOURS = 24;
 export const GARBAGE_COLLECTION_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
 

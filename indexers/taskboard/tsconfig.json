@@ -5,7 +5,11 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "commonjs",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "ts-node": {
+    "files": true
+  }
 }
