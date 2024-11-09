@@ -16,7 +16,9 @@ interface NotificationResult extends JobData {
   slackMessage?: string;
 }
 
-async function slackNotification(job: Job): Promise<NotificationResult> {
+export const slackNotification = async (
+  job: Job
+): Promise<NotificationResult> => {
   const { title, path, message, logData, messageId } = job.data;
   let result: NotificationResult = {
     title,
@@ -75,6 +77,4 @@ async function slackNotification(job: Job): Promise<NotificationResult> {
     console.error("Error in slackNotification:", err);
     throw new Error(`Failed to send slack notification: ${err}`);
   }
-}
-
-export { Job, JobData, NotificationResult, slackNotification };
+};

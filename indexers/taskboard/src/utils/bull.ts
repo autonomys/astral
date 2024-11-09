@@ -6,13 +6,13 @@ interface Task {
   concurrency: number;
 }
 
-const createQueueMQ = (name: string): QueueMQ =>
+export const createQueueMQ = (name: string): QueueMQ =>
   new QueueMQ(name, { connection });
 
-async function setupBullMQProcessor(
+export const setupBullMQProcessor = async (
   queueName: string,
   task: Task
-): Promise<void> {
+): Promise<void> => {
   new Worker(queueName, task.handler, {
     connection,
     concurrency: task.concurrency,
@@ -23,9 +23,12 @@ async function setupBullMQProcessor(
     .on("failed", (job: Job, err: Error) => {
       console.error(`Job ${job.id} has failed with error ${err.message}`);
     });
-}
+};
 
-async function cleanOldJobs(queue: QueueMQ, hours: number): Promise<void> {
+export const cleanOldJobs = async (
+  queue: QueueMQ,
+  hours: number
+): Promise<void> => {
   const threshold = Date.now() - hours * 60 * 60 * 1000;
   const jobs = await queue.getJobs(["completed", "failed"]);
   for (const job of jobs) {
@@ -34,6 +37,4 @@ async function cleanOldJobs(queue: QueueMQ, hours: number): Promise<void> {
       console.log(`Removed job ${job.id} from queue ${queue.name}`);
     }
   }
-}
-
-export { cleanOldJobs, createQueueMQ, setupBullMQProcessor, Task };
+};

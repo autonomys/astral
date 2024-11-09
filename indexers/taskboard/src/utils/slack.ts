@@ -19,7 +19,7 @@ interface SlackPayload {
   ts?: string;
 }
 
-const sendSlackMessage = async (
+export const sendSlackMessage = async (
   message: string,
   blocks: any[],
   messageIdToEdit?: string
@@ -62,5 +62,3 @@ const sendSlackMessage = async (
     return undefined;
   }
 };
-
-export { sendSlackMessage };

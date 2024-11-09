@@ -1,6 +1,6 @@
 const NETWORK = process.env.NETWORK_ID || "mainnet";
-
-export const QUEUES = [NETWORK, "slack"];
+const SLACK = "slack";
+export const QUEUES = [NETWORK, SLACK];
 export const TASKS_QUEUES = [
   {
     queue: NETWORK,
@@ -21,7 +21,7 @@ export const TASKS_QUEUES = [
     enabled: true,
   },
   {
-    queue: "slack",
+    queue: SLACK,
     name: "slackNotification",
     title: "Slack Notification",
     enabled: true,

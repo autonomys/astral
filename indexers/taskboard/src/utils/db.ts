@@ -1,6 +1,6 @@
 import { Pool, PoolConfig } from "pg";
 
-const connectToDB = async (): Promise<Pool> => {
+export const connectToDB = async (): Promise<Pool> => {
   const dbConfig: PoolConfig = {
     user: process.env.DB_USER || "postgres",
     host: process.env.DB_HOST || "localhost",
@@ -13,7 +13,7 @@ const connectToDB = async (): Promise<Pool> => {
   return pool;
 };
 
-const entryTypeToTable = (entryType: string): string =>
+export const entryTypeToTable = (entryType: string): string =>
   entryType
     .replace(/([A-Z])/g, "_$1")
     .toLowerCase()
@@ -131,7 +131,7 @@ interface Queries {
   consensusUpsertAccountQuery: string;
 }
 
-const queries: Queries = {
+export const queries: Queries = {
   consensusSectionsQuery,
   consensusExtrinsicModulesQuery,
   consensusEventModulesQuery,
@@ -140,5 +140,3 @@ const queries: Queries = {
   updateLeaderboardRanking,
   consensusUpsertAccountQuery,
 };
-
-export { connectToDB, entryTypeToTable, queries };

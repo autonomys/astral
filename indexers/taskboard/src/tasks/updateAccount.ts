@@ -4,35 +4,25 @@ import { ApiPromise } from "@polkadot/api";
 import { Pool, PoolClient } from "pg";
 import { connectToDB, queries } from "../utils/db";
 
-interface JobData {
-  networkId: string;
-  accountId: string;
-}
-
 interface Job {
-  data: JobData;
-}
-
-interface AccountState {
-  nonce: number;
   data: {
-    free: string;
-    reserved: string;
+    networkId: string;
+    accountId: string;
   };
 }
 
 interface UpdateResult {
   blockNumber: typeof blockNumber;
   updatedTables: string[];
-  query: any[];
+  accountResult: any[];
 }
 
-async function updateAccount(job: Job): Promise<UpdateResult> {
+export const updateAccount = async (job: Job): Promise<UpdateResult> => {
   const { networkId, accountId } = job.data;
   const result: UpdateResult = {
     blockNumber,
     updatedTables: [],
-    query: [],
+    accountResult: [],
   };
 
   try {
@@ -43,6 +33,7 @@ async function updateAccount(job: Job): Promise<UpdateResult> {
       account(api, accountId),
       blockNumber(api),
     ]);
+    result.accountResult.push(accountState);
 
     const client: PoolClient = await pool.connect();
     try {
@@ -76,6 +67,4 @@ async function updateAccount(job: Job): Promise<UpdateResult> {
     console.error("Error in updateAccountBalance:", err);
     throw new Error(`Failed to update account balance: ${err}`);
   }
-}
-
-export { AccountState, Job, JobData, updateAccount, UpdateResult };
+};

@@ -19,7 +19,9 @@ interface LeaderboardResult {
   query: string[];
 }
 
-async function leaderboardSortAndRank(job: Job): Promise<LeaderboardResult> {
+export const leaderboardSortAndRank = async (
+  job: Job
+): Promise<LeaderboardResult> => {
   const { blockNumber } = job.data;
   const pool: Pool = await connectToDB();
 
@@ -63,6 +65,4 @@ async function leaderboardSortAndRank(job: Job): Promise<LeaderboardResult> {
     console.error("Error in leaderboardSortAndRank:", err);
     throw new Error(`Failed to sort and rank leaderboard: ${err}`);
   }
-}
-
-export { Job, LeaderboardResult, leaderboardSortAndRank, UpdatedTable };
+};

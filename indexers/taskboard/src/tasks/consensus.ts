@@ -12,9 +12,9 @@ interface JobData {
   blockNumber: number;
 }
 
-async function consensusUniqueRowsMapping(
+export const consensusUniqueRowsMapping = async (
   job: Job<JobData>
-): Promise<ConsensusResult> {
+): Promise<ConsensusResult> => {
   const { blockNumber } = job.data;
   const pool: Pool = await connectToDB();
 
@@ -83,6 +83,4 @@ async function consensusUniqueRowsMapping(
     console.error("Error in consensus:", err);
     throw new Error(`Failed to update consensus tables: ${err}`);
   }
-}
-
-export { ConsensusResult, consensusUniqueRowsMapping, JobData };
+};

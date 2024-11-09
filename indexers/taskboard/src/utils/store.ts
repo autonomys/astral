@@ -6,7 +6,7 @@ interface RedisConnection {
   retryStrategy: (times: number) => number;
 }
 
-const connection: RedisConnection = {
+export const connection: RedisConnection = {
   port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
   host: process.env.REDIS_HOST ?? "localhost",
   retryStrategy: (times: number): number => {
@@ -16,7 +16,7 @@ const connection: RedisConnection = {
   },
 };
 
-async function checkRedisConnection(): Promise<void> {
+export const checkRedisConnection = async (): Promise<void> => {
   const redis = new Redis(connection);
   return new Promise<void>((resolve, reject) => {
     redis.on("ready", () => {
@@ -31,6 +31,4 @@ async function checkRedisConnection(): Promise<void> {
       reject(err);
     });
   });
-}
-
-export { checkRedisConnection, connection };
+};
