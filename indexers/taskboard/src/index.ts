@@ -155,7 +155,7 @@ const run = async () => {
       queueName = matchingTask.queue;
       taskName = matchingTask.name;
       jobId = `${queueName}:${taskName}:hasura:${requestId}`;
-      ({ data, opts } = req.body.input.args);
+      data = req.body.input.args;
     }
 
     console.log("jobId: ", jobId);

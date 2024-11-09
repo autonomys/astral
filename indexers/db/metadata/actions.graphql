@@ -1,23 +1,14 @@
 type Mutation {
-  slackNotification(
-    args: AddTaskSlackNotificationInput!
-  ): SlackNotificationOutput
+  slackNotification(args: SlackNotificationInput!): SlackNotificationOutput
 }
 
 type Mutation {
-  updateAccount(
-    args: AddTaskUpdateAccountInput!
-  ): UpdateAccountOutput
+  updateAccount(args: UpdateAccountInput!): UpdateAccountOutput
 }
 
 input UpdateAccountInput {
   networkId: String!
   accountId: String!
-}
-
-input AddTaskUpdateAccountInput {
-  data: UpdateAccountInput!
-  jobId: String
 }
 
 input SlackNotificationInput {
@@ -28,11 +19,6 @@ input SlackNotificationInput {
   messageId: String
 }
 
-input AddTaskSlackNotificationInput {
-  data: SlackNotificationInput!
-  jobId: String
-}
-
 type UpdateAccountOutput {
   blockNumber: String!
 }
@@ -40,4 +26,3 @@ type UpdateAccountOutput {
 type SlackNotificationOutput {
   title: String!
 }
-
