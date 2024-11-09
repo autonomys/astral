@@ -10,8 +10,8 @@ const { ensureLoggedIn } = require("connect-ensure-login");
 const tasks = require("./tasks");
 const { checkRedisConnection } = require("./utils/store");
 const {
-  NETWORKS,
   QUEUES,
+  TASKS_QUEUES,
   JOB_RETENTION_HOURS,
   GARBAGE_COLLECTION_INTERVAL,
   BULL_BOARD_OPTIONS,
@@ -43,41 +43,50 @@ const run = async () => {
   app.set("views", `${__dirname}/views`);
   app.set("view engine", "ejs");
 
-  const activeQueues = QUEUES.filter((q) => q.enabled);
-
-  const queues = {};
+  app.get("/", (req, res) => {
+    res.render("index", { queues: QUEUES });
+  });
+  const tasksQueues = {};
   const serverAdapters = {};
 
-  for (const network of NETWORKS) {
-    for (const queue of activeQueues) {
-      const queueName = `${network} - ${queue.title}`;
+  for (const queue of QUEUES) {
+    const activeTasksQueues = TASKS_QUEUES.filter(
+      (q) => q.queue === queue && q.enabled
+    );
+
+    for (const tasksQueue of activeTasksQueues) {
+      const queueName = `${queue} - ${tasksQueue.title}`;
       const _queue = createQueueMQ(queueName);
-      const task = tasks[queue.name];
+      const task = tasks[tasksQueue.name];
       if (task) {
         await setupBullMQProcessor(_queue.name, task);
       }
-      if (!queues[network]) {
-        queues[network] = {};
+      if (!tasksQueues[queue]) {
+        tasksQueues[queue] = {};
       }
-      queues[network][queue.name] = _queue;
+      tasksQueues[queue][tasksQueue.name] = _queue;
     }
 
     const serverAdapter = new ExpressAdapter();
     createBullBoard({
-      queues: activeQueues.map(
-        (queue) => new BullMQAdapter(queues[network][queue.name])
+      queues: activeTasksQueues.map(
+        (q) => new BullMQAdapter(tasksQueues[queue][q.name])
       ),
       serverAdapter,
       options: BULL_BOARD_OPTIONS,
     });
 
-    serverAdapter.setBasePath(`/${network}`);
-    app.use(`/${network}`, serverAdapter.getRouter());
-    serverAdapters[network] = serverAdapter;
+    serverAdapter.setBasePath(`/${queue}`);
+    app.use(`/${queue}`, serverAdapter.getRouter());
+    serverAdapters[queue] = serverAdapter;
   }
 
-  for (const network of NETWORKS) {
-    app.use(`/${network}/add`, async (req, res) => {
+  for (const queue of QUEUES) {
+    const activeTasksQueues = TASKS_QUEUES.filter(
+      (q) => q.queue === queue && q.enabled
+    );
+
+    app.use(`/${queue}/add`, async (req, res) => {
       const opts = req.query.opts || {};
       const jobId = req.query.jobId;
 
@@ -85,8 +94,8 @@ const run = async () => {
         return res.status(400).json({ error: "jobId is required" });
       }
 
-      const queue = queues[network][activeQueues[0].name];
-      const existingJob = await queue.getJob(jobId);
+      const tasksQueue = tasksQueues[queue][activeTasksQueues[0].name];
+      const existingJob = await tasksQueue.getJob(jobId);
 
       if (
         existingJob &&
@@ -96,8 +105,8 @@ const run = async () => {
         return res.status(400).json({ error: "Job is already in progress" });
       }
 
-      await queue.add(
-        `Add ${network}`,
+      await tasksQueue.add(
+        `Add ${queue}`,
         { title: req.query.title },
         { ...opts, jobId }
       );
@@ -121,10 +130,11 @@ const run = async () => {
     }
 
     try {
-      const queue = queues[queueName];
-      if (!queue) return res.status(400).json({ error: "Invalid queue name" });
+      const tasksQueue = tasksQueues[queueName];
+      if (!tasksQueue)
+        return res.status(400).json({ error: "Invalid queue name" });
 
-      const existingTaskQueue = queue[taskName];
+      const existingTaskQueue = tasksQueue[taskName];
       if (!existingTaskQueue) {
         console.log("Invalid task name");
         return res.status(400).json({ error: "Invalid task name" });
@@ -161,24 +171,24 @@ const run = async () => {
 
   // Schedule garbage collection to run every hour
   setInterval(async () => {
-    for (const network in queues) {
-      for (const queueName in queues[network]) {
-        await cleanOldJobs(queues[network][queueName], JOB_RETENTION_HOURS);
+    for (const queue in queues) {
+      for (const queueName in queues[queue]) {
+        await cleanOldJobs(queues[queue][queueName], JOB_RETENTION_HOURS);
       }
     }
   }, GARBAGE_COLLECTION_INTERVAL);
 
   app.listen(process.env.BULL_PORT || 3020, () => {
     console.log(`Running on ${process.env.BULL_PORT}...`);
-    NETWORKS.forEach((network) => {
+    QUEUES.forEach((queue) => {
       console.log(
-        `For the UI of ${network}, open http://localhost:${process.env.BULL_PORT}/${network}`
+        `For the UI of ${queue}, open http://localhost:${process.env.BULL_PORT}/${queue}`
       );
     });
     console.log("Make sure Redis is running on port 6379 by default");
     console.log("To populate the queue, run:");
     console.log(
-      "To add a task to the queue, send a POST request to /<network>/add-task with JSON body:"
+      "To add a task to the queue, send a POST request to /<queue>/add-task with JSON body:"
     );
   });
 };
