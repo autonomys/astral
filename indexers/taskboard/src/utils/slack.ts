@@ -1,11 +1,36 @@
-const sendSlackMessage = async (message, blocks, messageIdToEdit) => {
+interface SlackResponse {
+  ok: boolean;
+  error?: string;
+  ts?: string;
+}
+
+interface SlackBlock {
+  type: string;
+  text: {
+    type: string;
+    text: string;
+  };
+}
+
+interface SlackPayload {
+  channel: string;
+  text: string;
+  blocks: SlackBlock[];
+  ts?: string;
+}
+
+const sendSlackMessage = async (
+  message: string,
+  blocks: any[],
+  messageIdToEdit?: string
+): Promise<string | undefined> => {
   const token = process.env.SLACK_TOKEN;
   const conversationId = process.env.SLACK_CONVERSATION_ID || "";
   const url = messageIdToEdit
     ? "https://slack.com/api/chat.update"
     : "https://slack.com/api/chat.postMessage";
 
-  const payload = {
+  let payload: SlackPayload = {
     channel: conversationId,
     text: message,
     blocks: blocks,
@@ -25,16 +50,17 @@ const sendSlackMessage = async (message, blocks, messageIdToEdit) => {
       body: JSON.stringify(payload),
     });
 
-    const data = await response.json();
+    const data = (await response.json()) as SlackResponse;
 
     if (!data.ok) {
       throw new Error(data.error);
     }
 
-    return data.ts || undefined;
+    return data.ts;
   } catch (e) {
     console.error("Error sending slack message", e);
+    return undefined;
   }
 };
 
-module.exports = { sendSlackMessage };
+export { sendSlackMessage };

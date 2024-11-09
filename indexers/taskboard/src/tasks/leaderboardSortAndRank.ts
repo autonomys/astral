@@ -1,18 +1,36 @@
-const { connectToDB, queries, entryTypeToTable } = require("../utils/db");
-const { LEADERBOARD_ENTRY_TYPE } = require("../constants");
+import { Pool, PoolClient } from "pg";
+import { LEADERBOARD_ENTRY_TYPE } from "../constants";
+import { connectToDB, entryTypeToTable, queries } from "../utils/db";
 
-async function leaderboardSortAndRank(job) {
+interface Job {
+  data: {
+    blockNumber: number;
+  };
+}
+
+interface UpdatedTable {
+  table: string;
+  rowCount: number;
+}
+
+interface LeaderboardResult {
+  blockNumber: number;
+  updatedTables: UpdatedTable[];
+  query: string[];
+}
+
+async function leaderboardSortAndRank(job: Job): Promise<LeaderboardResult> {
   const { blockNumber } = job.data;
-  const pool = await connectToDB();
+  const pool: Pool = await connectToDB();
 
-  const result = {
+  const result: LeaderboardResult = {
     blockNumber,
     updatedTables: [],
     query: [],
   };
 
   try {
-    const client = await pool.connect();
+    const client: PoolClient = await pool.connect();
     try {
       await client.query("BEGIN");
 
@@ -35,7 +53,7 @@ async function leaderboardSortAndRank(job) {
     } catch (err) {
       await client.query("ROLLBACK");
       console.error("Error updating rankings:", err);
-      throw new Error("Failed to update rankings: " + err);
+      throw new Error(`Failed to update rankings: ${err}`);
     } finally {
       client.release();
     }
@@ -43,10 +61,8 @@ async function leaderboardSortAndRank(job) {
     return result;
   } catch (err) {
     console.error("Error in leaderboardSortAndRank:", err);
-    throw new Error("Failed to sort and rank leaderboard: " + err);
+    throw new Error(`Failed to sort and rank leaderboard: ${err}`);
   }
 }
 
-module.exports = {
-  leaderboardSortAndRank,
-};
+export { Job, LeaderboardResult, leaderboardSortAndRank, UpdatedTable };

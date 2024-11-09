@@ -1,7 +1,7 @@
 const NETWORK = process.env.NETWORK_ID || "mainnet";
 
-const QUEUES = [NETWORK, "slack"];
-const TASKS_QUEUES = [
+export const QUEUES = [NETWORK, "slack"];
+export const TASKS_QUEUES = [
   {
     queue: NETWORK,
     name: "consensusUniqueRowsMapping",
@@ -28,10 +28,10 @@ const TASKS_QUEUES = [
   },
 ];
 
-const JOB_RETENTION_HOURS = 24;
-const GARBAGE_COLLECTION_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+export const JOB_RETENTION_HOURS = 24;
+export const GARBAGE_COLLECTION_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
 
-const BULL_BOARD_OPTIONS = {
+export const BULL_BOARD_OPTIONS = {
   uiConfig: {
     boardTitle: "Indexers Tasks",
     boardLogo: {
@@ -40,7 +40,7 @@ const BULL_BOARD_OPTIONS = {
   },
 };
 
-const LEADERBOARD_ENTRY_TYPE = {
+export const LEADERBOARD_ENTRY_TYPE = {
   ACCOUNT_TRANSFER_SENDER_TOTAL_COUNT: "AccountTransferSenderTotalCount",
   ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE: "AccountTransferSenderTotalValue",
   ACCOUNT_TRANSFER_RECEIVER_TOTAL_COUNT: "AccountTransferReceiverTotalCount",
@@ -66,13 +66,4 @@ const LEADERBOARD_ENTRY_TYPE = {
   NOMINATOR_DEPOSITS_TOTAL_COUNT: "NominatorDepositsTotalCount",
   NOMINATOR_DEPOSITS_TOTAL_VALUE: "NominatorDepositsTotalValue",
   NOMINATOR_WITHDRAWALS_TOTAL_COUNT: "NominatorWithdrawalsTotalCount",
-};
-
-module.exports = {
-  QUEUES,
-  TASKS_QUEUES,
-  JOB_RETENTION_HOURS,
-  GARBAGE_COLLECTION_INTERVAL,
-  BULL_BOARD_OPTIONS,
-  LEADERBOARD_ENTRY_TYPE,
 };

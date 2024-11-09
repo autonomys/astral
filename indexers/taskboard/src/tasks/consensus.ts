@@ -1,17 +1,31 @@
-const { connectToDB, queries } = require("../utils/db");
+import { Job } from "bull";
+import { Pool, PoolClient } from "pg";
+import { connectToDB, queries } from "../utils/db";
 
-async function consensusUniqueRowsMapping(job) {
+interface ConsensusResult {
+  blockNumber: number;
+  updatedTables: string[];
+  query: string[];
+}
+
+interface JobData {
+  blockNumber: number;
+}
+
+async function consensusUniqueRowsMapping(
+  job: Job<JobData>
+): Promise<ConsensusResult> {
   const { blockNumber } = job.data;
-  const pool = await connectToDB();
+  const pool: Pool = await connectToDB();
 
-  const result = {
+  const result: ConsensusResult = {
     blockNumber,
     updatedTables: [],
     query: [],
   };
 
   try {
-    const client = await pool.connect();
+    const client: PoolClient = await pool.connect();
 
     // To-Do: Implement the logic to update the consensus tables
     // Tables:
@@ -59,7 +73,7 @@ async function consensusUniqueRowsMapping(job) {
     } catch (err) {
       await client.query("ROLLBACK");
       console.error("Error updating consensus tables:", err);
-      throw new Error("Failed to update consensus tables: " + err);
+      throw new Error(`Failed to update consensus tables: ${err}`);
     } finally {
       client.release();
     }
@@ -67,10 +81,8 @@ async function consensusUniqueRowsMapping(job) {
     return result;
   } catch (err) {
     console.error("Error in consensus:", err);
-    throw new Error("Failed to update consensus tables: " + err);
+    throw new Error(`Failed to update consensus tables: ${err}`);
   }
 }
 
-module.exports = {
-  consensusUniqueRowsMapping,
-};
+export { ConsensusResult, consensusUniqueRowsMapping, JobData };

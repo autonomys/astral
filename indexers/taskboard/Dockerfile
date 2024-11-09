@@ -35,4 +35,4 @@ RUN yarn install
 EXPOSE 3000
 
 # Command to run the app
-CMD ["yarn", "start"]
+CMD yarn build && yarn start

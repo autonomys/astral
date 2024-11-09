@@ -1,8 +1,24 @@
-const { sendSlackMessage } = require("../utils/slack");
+import { sendSlackMessage } from "../utils/slack";
 
-async function slackNotification(job) {
+interface JobData {
+  title: string;
+  path?: string;
+  message?: string;
+  logData?: any;
+  messageId?: string;
+}
+
+interface Job {
+  data: JobData;
+}
+
+interface NotificationResult extends JobData {
+  slackMessage?: string;
+}
+
+async function slackNotification(job: Job): Promise<NotificationResult> {
   const { title, path, message, logData, messageId } = job.data;
-  let result = {
+  let result: NotificationResult = {
     title,
     path,
     message,
@@ -52,16 +68,13 @@ async function slackNotification(job) {
     }
 
     const slackMessage = await sendSlackMessage(title, blocks, messageId);
-
     result.slackMessage = slackMessage;
 
     return result;
   } catch (err) {
     console.error("Error in slackNotification:", err);
-    throw new Error("Failed to send slack notification: " + err);
+    throw new Error(`Failed to send slack notification: ${err}`);
   }
 }
 
-module.exports = {
-  slackNotification,
-};
+export { Job, JobData, NotificationResult, slackNotification };

@@ -1,37 +1,41 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const session = require("express-session");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const { createBullBoard } = require("@bull-board/api");
-const { BullMQAdapter } = require("@bull-board/api/bullMQAdapter");
-const { ExpressAdapter } = require("@bull-board/express");
-const { ensureLoggedIn } = require("connect-ensure-login");
-const tasks = require("./tasks");
-const { checkRedisConnection } = require("./utils/store");
-const {
+import { createBullBoard } from "@bull-board/api";
+import { BullMQAdapter } from "@bull-board/api/bullMQAdapter";
+import { ExpressAdapter } from "@bull-board/express";
+import bodyParser from "body-parser";
+import { ensureLoggedIn } from "connect-ensure-login";
+import express, { Express } from "express";
+import session from "express-session";
+import passport from "passport";
+import LocalStrategy from "passport-local";
+import {
+  BULL_BOARD_OPTIONS,
+  GARBAGE_COLLECTION_INTERVAL,
+  JOB_RETENTION_HOURS,
   QUEUES,
   TASKS_QUEUES,
-  JOB_RETENTION_HOURS,
-  GARBAGE_COLLECTION_INTERVAL,
-  BULL_BOARD_OPTIONS,
-} = require("./constants");
-const {
+} from "./constants";
+import { tasks } from "./tasks";
+import {
+  cleanOldJobs,
   createQueueMQ,
   setupBullMQProcessor,
-  cleanOldJobs,
-} = require("./utils/bull");
+} from "./utils/bull";
+import { checkRedisConnection } from "./utils/store";
 
 passport.use(
-  new LocalStrategy((username, password, cb) => {
-    if (
-      username === process.env.BULL_USERNAME &&
-      password === process.env.BULL_PASSWORD
-    ) {
-      return cb(null, { user: "bull-board" });
+  "api",
+  new LocalStrategy.Strategy(
+    { usernameField: "username", passwordField: "password" },
+    (username, password, cb) => {
+      if (
+        username === process.env.BULL_USERNAME &&
+        password === process.env.BULL_PASSWORD
+      ) {
+        return cb(null, { user: "bull-board" });
+      }
+      return cb(null, false);
     }
-    return cb(null, false);
-  })
+  )
 );
 
 passport.serializeUser((user, cb) => cb(null, user));
@@ -39,7 +43,8 @@ passport.deserializeUser((user, cb) => cb(null, user));
 
 const run = async () => {
   await checkRedisConnection();
-  const app = express();
+  const app: Express = express();
+
   app.set("views", `${__dirname}/views`);
   app.set("view engine", "ejs");
 
@@ -86,36 +91,42 @@ const run = async () => {
       (q) => q.queue === queue && q.enabled
     );
 
-    app.use(`/${queue}/add`, async (req, res) => {
-      const opts = req.query.opts || {};
-      const jobId = req.query.jobId;
+    app.use(
+      `/${queue}/add`,
+      // @ts-ignore express types
+      async (req: any, res: Response<any, Record<string, any>, number>) => {
+        const opts = req.query.opts || {};
+        const jobId = req.query.jobId;
 
-      if (!jobId) {
-        return res.status(400).json({ error: "jobId is required" });
+        if (!jobId) {
+          return res.status(400).json({ error: "jobId is required" });
+        }
+
+        const tasksQueue = tasksQueues[queue][activeTasksQueues[0].name];
+        const existingJob = await tasksQueue.getJob(jobId);
+
+        if (
+          existingJob &&
+          !existingJob.isCompleted() &&
+          !existingJob.isFailed()
+        ) {
+          return res.status(400).json({ error: "Job is already in progress" });
+        }
+
+        await tasksQueue.add(
+          `Add ${queue}`,
+          { title: req.query.title },
+          { ...opts, jobId }
+        );
+
+        res.json({ ok: true });
       }
-
-      const tasksQueue = tasksQueues[queue][activeTasksQueues[0].name];
-      const existingJob = await tasksQueue.getJob(jobId);
-
-      if (
-        existingJob &&
-        !existingJob.isCompleted() &&
-        !existingJob.isFailed()
-      ) {
-        return res.status(400).json({ error: "Job is already in progress" });
-      }
-
-      await tasksQueue.add(
-        `Add ${queue}`,
-        { title: req.query.title },
-        { ...opts, jobId }
-      );
-
-      res.json({ ok: true });
-    });
+    );
   }
 
   app.use(bodyParser.json());
+
+  // @ts-ignore express types
   app.post("/add-task", async (req, res) => {
     let { queueName, taskName, data, opts, jobId } = req.body;
     if (req.body.action) {
@@ -171,9 +182,9 @@ const run = async () => {
 
   // Schedule garbage collection to run every hour
   setInterval(async () => {
-    for (const queue in queues) {
-      for (const queueName in queues[queue]) {
-        await cleanOldJobs(queues[queue][queueName], JOB_RETENTION_HOURS);
+    for (const queue in tasksQueues) {
+      for (const queueName in tasksQueues[queue]) {
+        await cleanOldJobs(tasksQueues[queue][queueName], JOB_RETENTION_HOURS);
       }
     }
   }, GARBAGE_COLLECTION_INTERVAL);
