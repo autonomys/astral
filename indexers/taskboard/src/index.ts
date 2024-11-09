@@ -36,6 +36,8 @@ declare module "express-session" {
   }
 }
 
+const SESSION_SECRET = process.env.BULL_SESSION_SECRET || "keyboard cat";
+
 passport.use(
   "api",
   new LocalStrategy.Strategy(
@@ -64,7 +66,7 @@ const run = async () => {
 
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || "keyboard cat",
+      secret: SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       store: new RedisStore({ client: RedisClient }),
@@ -118,19 +120,31 @@ const run = async () => {
   }
 
   app.post(ROUTES.POST_ADD_TASK, async (req, res) => {
+    log("req.headers: ", req.headers);
     log("req.body: ", req.body);
     let { queueName, taskName, data, opts, jobId } = req.body;
+
+    // Handle Hasura action
     if (req.body.action) {
+      if (req.headers.taskboard_session_secret !== SESSION_SECRET)
+        returnError(res, "Invalid session secret");
+      const requestId = req.headers["x-request-id"];
+      if (!requestId) returnError(res, "Request ID is required");
+
+      log("Hasura action: ", req.body.action);
       const matchingTask = TASKS_QUEUES.find(
         (t) => t.name === req.body.action.name
       );
       if (!matchingTask) returnError(res, "Invalid task name");
-      taskName = matchingTask.name;
-      queueName = matchingTask.queue;
-      ({ data, opts, jobId } = req.body.input.args);
-    }
-    console.log("jobId: ", jobId);
 
+      // Infer queue, task name and jobId from action request
+      queueName = matchingTask.queue;
+      taskName = matchingTask.name;
+      jobId = `${queueName}:${taskName}:hasura:${requestId}`;
+      ({ data, opts } = req.body.input.args);
+    }
+
+    console.log("jobId: ", jobId);
     if (!jobId) returnError(res, "jobId is required");
 
     try {

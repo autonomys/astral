@@ -17,7 +17,7 @@ input UpdateAccountInput {
 
 input AddTaskUpdateAccountInput {
   data: UpdateAccountInput!
-  jobId: String!
+  jobId: String
 }
 
 input SlackNotificationInput {
@@ -30,7 +30,7 @@ input SlackNotificationInput {
 
 input AddTaskSlackNotificationInput {
   data: SlackNotificationInput!
-  jobId: String!
+  jobId: String
 }
 
 type UpdateAccountOutput {
