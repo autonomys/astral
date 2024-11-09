@@ -1,5 +1,5 @@
 import { account, blockNumber } from "@autonomys/auto-consensus";
-import { activate } from "@autonomys/auto-utils";
+import { activate, stringify } from "@autonomys/auto-utils";
 import { ApiPromise } from "@polkadot/api";
 import { Pool, PoolClient } from "pg";
 import { connectToDB, queries } from "../utils/db";
@@ -33,7 +33,7 @@ export const updateAccount = async (job: Job): Promise<UpdateResult> => {
       account(api, accountId),
       blockNumber(api),
     ]);
-    result.accountResult.push(accountState);
+    result.accountResult.push(stringify({ accountId, accountState }));
 
     const client: PoolClient = await pool.connect();
     try {

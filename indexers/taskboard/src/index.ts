@@ -15,12 +15,8 @@ import {
   QUEUES,
   ROUTES,
   TASKS_QUEUES,
+  VIEWS,
 } from "./constants";
-import {
-  dashboardController,
-  indexController,
-  loginController,
-} from "./controllers/login";
 import { tasks } from "./tasks";
 import {
   cleanOldJobs,
@@ -80,10 +76,29 @@ const run = async () => {
   app.set("views", `${__dirname}/views`);
   app.set("view engine", "ejs");
 
-  app.get(ROUTES.LOGIN, indexController);
-  app.get(ROUTES.DASHBOARD, dashboardController);
+  app.get(ROUTES.LOGIN, (req, res) => {
+    res.render("login", { invalid: false });
+  });
+  app.get(ROUTES.DASHBOARD, (req, res) => {
+    if (req.session.authenticated)
+      res.render(VIEWS.DASHBOARD, { queues: QUEUES });
+    else res.redirect(ROUTES.LOGIN);
+  });
 
-  app.post(ROUTES.POST_LOGIN, loginController);
+  app.post(
+    ROUTES.POST_LOGIN,
+    express.urlencoded({ extended: true }),
+    (req, res) => {
+      const { username, password } = req.body;
+      if (
+        username === process.env.BULL_USERNAME &&
+        password === process.env.BULL_PASSWORD
+      ) {
+        req.session.authenticated = true;
+        res.redirect(ROUTES.DASHBOARD);
+      } else res.render(VIEWS.LOGIN, { invalid: true });
+    }
+  );
 
   for (const queue of QUEUES) {
     const activeTasksQueues = TASKS_QUEUES.filter(
@@ -120,7 +135,6 @@ const run = async () => {
   }
 
   app.post(ROUTES.POST_ADD_TASK, async (req, res) => {
-    log("req.headers: ", req.headers);
     log("req.body: ", req.body);
     let { queueName, taskName, data, opts, jobId } = req.body;
 
