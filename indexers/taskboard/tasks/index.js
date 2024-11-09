@@ -1,6 +1,7 @@
 const { leaderboardSortAndRank } = require("./leaderboardSortAndRank");
 const { consensusUniqueRowsMapping } = require("./consensus");
 const { updateAccount } = require("./updateAccount");
+const { slackNotification } = require("./slackNotification");
 
 const tasks = {
   consensusUniqueRowsMapping: {
@@ -13,6 +14,10 @@ const tasks = {
   },
   updateAccount: {
     handler: updateAccount,
+    concurrency: 1,
+  },
+  slackNotification: {
+    handler: slackNotification,
     concurrency: 1,
   },
 };

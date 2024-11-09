@@ -1,18 +1,29 @@
-const NETWORKS = ["mainnet", "taurus"];
-const QUEUES = [
+const NETWORK = process.env.NETWORK_ID || "mainnet";
+
+const QUEUES = [NETWORK, "slack"];
+const TASKS_QUEUES = [
   {
+    queue: NETWORK,
     name: "consensusUniqueRowsMapping",
     title: "Consensus Unique Rows Mapping",
     enabled: true,
   },
   {
+    queue: NETWORK,
     name: "leaderboardSortAndRank",
     title: "Leaderboard Sort and Rank",
     enabled: true,
   },
   {
+    queue: NETWORK,
     name: "updateAccount",
     title: "Update Account",
+    enabled: true,
+  },
+  {
+    queue: "slack",
+    name: "slackNotification",
+    title: "Slack Notification",
     enabled: true,
   },
 ];
@@ -58,8 +69,8 @@ const LEADERBOARD_ENTRY_TYPE = {
 };
 
 module.exports = {
-  NETWORKS,
   QUEUES,
+  TASKS_QUEUES,
   JOB_RETENTION_HOURS,
   GARBAGE_COLLECTION_INTERVAL,
   BULL_BOARD_OPTIONS,
