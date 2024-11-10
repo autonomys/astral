@@ -1,5 +1,6 @@
 const { leaderboardSortAndRank } = require("./leaderboardSortAndRank");
 const { consensusUniqueRowsMapping } = require("./consensus");
+const { updateAccount } = require("./updateAccount");
 
 const tasks = {
   consensusUniqueRowsMapping: {
@@ -8,6 +9,10 @@ const tasks = {
   },
   leaderboardSortAndRank: {
     handler: leaderboardSortAndRank,
+    concurrency: 1,
+  },
+  updateAccount: {
+    handler: updateAccount,
     concurrency: 1,
   },
 };

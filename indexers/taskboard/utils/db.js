@@ -110,6 +110,18 @@ FROM ranked_entries r
 WHERE t.id = r.id;
 `;
 
+const consensusUpsertAccountQuery = `
+  INSERT INTO consensus.accounts (id, _id, nonce, free, reserved, total, created_at, updated_at, _block_range)
+  VALUES ($1, gen_random_uuid(), $2, $3, $4, $5, $6, $6, int8range($7::int8, $7::int8))
+  ON CONFLICT (id) 
+  DO UPDATE SET
+    nonce = $2,
+    free = $3,
+    reserved = $4,
+    total = $5,
+    updated_at = $6
+  RETURNING *`;
+
 const queries = {
   consensusSectionsQuery,
   consensusExtrinsicModulesQuery,
@@ -117,6 +129,7 @@ const queries = {
   consensusLogKindsQuery,
   consensusAccountsQuery,
   updateLeaderboardRanking,
+  consensusUpsertAccountQuery,
 };
 
 module.exports = { connectToDB, entryTypeToTable, queries };

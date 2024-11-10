@@ -108,7 +108,11 @@ const run = async () => {
 
   app.use(bodyParser.json());
   app.post("/add-task", async (req, res) => {
-    const { queueName, taskName, data, opts, jobId } = req.body;
+    let { queueName, taskName, data, opts, jobId } = req.body;
+    if (req.body.action) {
+      taskName = req.body.action.name;
+      ({ queueName, data, opts, jobId } = req.body.input.args);
+    }
     console.log("jobId: ", jobId);
 
     if (!jobId) {
@@ -164,7 +168,7 @@ const run = async () => {
     }
   }, GARBAGE_COLLECTION_INTERVAL);
 
-  app.listen(3000, () => {
+  app.listen(process.env.BULL_PORT || 3020, () => {
     console.log(`Running on ${process.env.BULL_PORT}...`);
     NETWORKS.forEach((network) => {
       console.log(
