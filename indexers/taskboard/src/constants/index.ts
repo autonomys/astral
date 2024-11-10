@@ -1,26 +1,49 @@
-const NETWORKS = ["mainnet", "taurus"];
-const QUEUES = [
+const NETWORK = process.env.NETWORK_ID || "mainnet";
+const SLACK = "slack";
+export const QUEUES = [NETWORK, SLACK];
+export const TASKS_QUEUES = [
   {
+    queue: NETWORK,
     name: "consensusUniqueRowsMapping",
     title: "Consensus Unique Rows Mapping",
     enabled: true,
   },
   {
+    queue: NETWORK,
     name: "leaderboardSortAndRank",
     title: "Leaderboard Sort and Rank",
     enabled: true,
   },
   {
+    queue: NETWORK,
     name: "updateAccount",
     title: "Update Account",
     enabled: true,
   },
+  {
+    queue: SLACK,
+    name: "slackNotification",
+    title: "Slack Notification",
+    enabled: true,
+  },
 ];
 
-const JOB_RETENTION_HOURS = 24;
-const GARBAGE_COLLECTION_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+export enum ROUTES {
+  LOGIN = "/",
+  DASHBOARD = "/dashboard",
 
-const BULL_BOARD_OPTIONS = {
+  POST_LOGIN = "/login",
+  POST_ADD_TASK = "/add-task",
+}
+export enum VIEWS {
+  LOGIN = "login",
+  DASHBOARD = "index",
+}
+
+export const JOB_RETENTION_HOURS = 24;
+export const GARBAGE_COLLECTION_INTERVAL = 60 * 60 * 1000; // 1 hour in milliseconds
+
+export const BULL_BOARD_OPTIONS = {
   uiConfig: {
     boardTitle: "Indexers Tasks",
     boardLogo: {
@@ -29,7 +52,7 @@ const BULL_BOARD_OPTIONS = {
   },
 };
 
-const LEADERBOARD_ENTRY_TYPE = {
+export const LEADERBOARD_ENTRY_TYPE = {
   ACCOUNT_TRANSFER_SENDER_TOTAL_COUNT: "AccountTransferSenderTotalCount",
   ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE: "AccountTransferSenderTotalValue",
   ACCOUNT_TRANSFER_RECEIVER_TOTAL_COUNT: "AccountTransferReceiverTotalCount",
@@ -55,13 +78,4 @@ const LEADERBOARD_ENTRY_TYPE = {
   NOMINATOR_DEPOSITS_TOTAL_COUNT: "NominatorDepositsTotalCount",
   NOMINATOR_DEPOSITS_TOTAL_VALUE: "NominatorDepositsTotalValue",
   NOMINATOR_WITHDRAWALS_TOTAL_COUNT: "NominatorWithdrawalsTotalCount",
-};
-
-module.exports = {
-  NETWORKS,
-  QUEUES,
-  JOB_RETENTION_HOURS,
-  GARBAGE_COLLECTION_INTERVAL,
-  BULL_BOARD_OPTIONS,
-  LEADERBOARD_ENTRY_TYPE,
 };

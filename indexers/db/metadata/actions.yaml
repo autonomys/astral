@@ -1,15 +1,32 @@
 actions:
+  - name: slackNotification
+    definition:
+      kind: asynchronous
+      handler: "{{HASURA_GRAPHQL_ACTION_TASK_BOARD}}/add-task"
+      forward_client_headers: true
+      headers:
+        - name: taskboard_session_secret
+          value: "{{HASURA_GRAPHQL_ACTION_TASK_BOARD_SESSION_SECRET}}"
+    permissions:
+      - role: astral-api
+    comment: Send a slack notification
   - name: updateAccount
     definition:
       kind: asynchronous
-      handler: '{{HASURA_GRAPHQL_ACTION_TASK_BOARD}}/add-task'
+      handler: "{{HASURA_GRAPHQL_ACTION_TASK_BOARD}}/add-task"
       forward_client_headers: true
+      headers:
+        - name: taskboard_session_secret
+          value: "{{HASURA_GRAPHQL_ACTION_TASK_BOARD_SESSION_SECRET}}"
+    permissions:
+      - role: astral-api
     comment: Update account in db (will add the account if it was not indexed before)
 custom_types:
   enums: []
   input_objects:
     - name: UpdateAccountInput
-    - name: AddTaskUpdateAccountInput
+    - name: SlackNotificationInput
   objects:
     - name: UpdateAccountOutput
+    - name: SlackNotificationOutput
   scalars: []
