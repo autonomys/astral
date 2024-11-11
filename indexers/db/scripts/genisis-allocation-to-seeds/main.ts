@@ -1,4 +1,4 @@
-import { NAMESPACE_DNS, v5 } from "jsr:@std/uuid";
+import { NAMESPACE_DNS, v1, v5 } from "jsr:@std/uuid";
 
 // Load the JSON data
 const response = await fetch(
@@ -21,19 +21,7 @@ const accountHistoriesFile = await Deno.open("seeds/account_histories.sql", {
   truncate: true,
 });
 
-// Prepare the SQL COPY command
-await accountsFile.write(
-  new TextEncoder().encode(
-    "COPY consensus.accounts (id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) FROM stdin;\n"
-  )
-);
-await accountHistoriesFile.write(
-  new TextEncoder().encode(
-    "COPY consensus.account_histories (id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) FROM stdin;\n"
-  )
-);
-
-// Iterate over each entry in the JSON data
+// Iterate over each entry in the JSON data and generate the insert sql
 for (const entry of data) {
   const accountId = entry[0];
   const freeBalance = (
@@ -43,25 +31,21 @@ for (const entry of data) {
   const totalBalance = freeBalance;
   const createdAt = 0;
   const updatedAt = 0;
-  const _id = await v5.generate(NAMESPACE_DNS, accountId);
+  const uniqueNamespace = await v1.generate();
+  const _id = await v5.generate(uniqueNamespace, accountId);
   const _blockRange = "[0,)";
 
-  // Write the SQL row to the file
   await accountsFile.write(
     new TextEncoder().encode(
-      `${accountId}\t0\t${freeBalance}\t${reservedBalance}\t${totalBalance}\t${createdAt}\t${updatedAt}\t${_id}\t${_blockRange}\n`
+      `INSERT INTO consensus.accounts (id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${updatedAt}, '${_id}', '${_blockRange}');\n`
     )
   );
   await accountHistoriesFile.write(
     new TextEncoder().encode(
-      `${accountId}\t0\t${freeBalance}\t${reservedBalance}\t${totalBalance}\t${createdAt}\t${updatedAt}\t${_id}\t${_blockRange}\n`
+      `INSERT INTO consensus.account_histories (id, nonce, free, reserved, total, created_at, updated_at, _id, _block_range) VALUES ('${accountId}', 0, ${freeBalance}, ${reservedBalance}, ${totalBalance}, ${createdAt}, ${updatedAt}, '${_id}', '${_blockRange}');\n`
     )
   );
 }
-
-// End the SQL COPY command
-await accountsFile.write(new TextEncoder().encode("\\.\n"));
-await accountHistoriesFile.write(new TextEncoder().encode("\\.\n"));
 
 // Close the file
 accountsFile.close();
