@@ -32,6 +32,7 @@
     "console:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run console",
     "metadata:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run metadata",
     "migrate:dev": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run migrate",
+    "apply-seeds:mainnet": "export $(grep -v '^#' ../.env | xargs) && export $(grep -v '^#' ../.env.dev | xargs) && lerna run apply-seeds:mainnet",
     "prepack": "lerna run prepack",
     "bootstrap": "lerna run bootstrap",
     "graph": "nx graph"
