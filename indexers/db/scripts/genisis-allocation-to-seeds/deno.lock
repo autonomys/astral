@@ -1,0 +1,28 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/bytes@^1.0.2": "1.0.3",
+    "jsr:@std/crypto@^1.0.3": "1.0.3",
+    "jsr:@std/uuid@*": "1.0.4"
+  },
+  "jsr": {
+    "@std/bytes@1.0.3": {
+      "integrity": "e5d5b9e685966314e4edb4be60dfc4bd7624a075bfd4ec8109252b4320f76452"
+    },
+    "@std/crypto@1.0.3": {
+      "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
+    },
+    "@std/uuid@1.0.4": {
+      "integrity": "f4233149cc8b4753cc3763fd83a7c4101699491f55c7be78dc7b30281946d7a0",
+      "dependencies": [
+        "jsr:@std/bytes",
+        "jsr:@std/crypto"
+      ]
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/uuid@^1.0.4"
+    ]
+  }
+}
