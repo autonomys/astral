@@ -7,5 +7,5 @@ This script will take the genesis allocation JSON and convert it to seeds. The s
 ## Usage
 
 ```bash
-deno run --allow-net --allow-write ./main.ts
+deno run --allow-net --allow-write --allow-read --allow-env ./main.ts
 ```

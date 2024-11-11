@@ -1,4 +1,5 @@
 import { NAMESPACE_DNS, v1, v5 } from "jsr:@std/uuid";
+import { decode, Keyring } from "npm:@autonomys/auto-utils";
 
 // Load the JSON data
 const response = await fetch(
@@ -23,7 +24,8 @@ const accountHistoriesFile = await Deno.open("seeds/account_histories.sql", {
 
 // Iterate over each entry in the JSON data and generate the insert sql
 for (const entry of data) {
-  const accountId = entry[0];
+  const keyring = new Keyring({ type: "sr25519", ss58Format: 42 });
+  const accountId = keyring.encodeAddress(entry[0], 6094);
   const freeBalance = (
     BigInt(entry[1]) * BigInt(1000000000000000000)
   ).toString(); // Convert to 10^18 units
