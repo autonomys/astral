@@ -77,11 +77,10 @@
 
 <div class="login-page">
   <div class="form">
-    <form class="login-form" method="post" action="/ui/login">
+    <form class="login-form" method="POST" action="/login">
       <input type="text" name="username" placeholder="Username" />
       <input type="password" name="password" placeholder="Password" />
       <button>Login</button>
-      <p class="message">Username: bull, Password: board</p>
       <% if (invalid) { %>
       <p class="message error">Invalid username or password.</p>
       <% } %>

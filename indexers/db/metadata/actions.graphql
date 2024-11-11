@@ -1,0 +1,28 @@
+type Mutation {
+  slackNotification(args: SlackNotificationInput!): SlackNotificationOutput
+}
+
+type Mutation {
+  updateAccount(args: UpdateAccountInput!): UpdateAccountOutput
+}
+
+input UpdateAccountInput {
+  networkId: String!
+  accountId: String!
+}
+
+input SlackNotificationInput {
+  title: String!
+  path: String
+  message: String
+  logData: String
+  messageId: String
+}
+
+type UpdateAccountOutput {
+  blockNumber: String!
+}
+
+type SlackNotificationOutput {
+  title: String!
+}

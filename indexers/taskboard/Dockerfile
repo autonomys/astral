@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM node:18-alpine
 
 # Switch to root user to install packages
 USER root
@@ -32,7 +32,7 @@ USER node
 RUN yarn install
 
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE ${BULL_PORT}
 
 # Command to run the app
-CMD ["yarn", "start"]
+CMD yarn start

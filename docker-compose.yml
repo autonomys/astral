@@ -16,12 +16,12 @@ services:
         hard: 65536 # Hard limit for open files
     image: caddy:latest
     ports:
-    - "80:9944"    # Map external 80 to Caddy's 9944 for Node/RPC
-    - "443:9944"   # Map external 443 to Caddy's 9945 for HTTPS
-    - "8081:8080"  # Map external 8081 to Caddy's 8080 for Hasura
-    - "3011:3001"  # Map external 3011 to Caddy's 3001 for Consensus
-    - "3012:3002"  # Map external 3012 to Caddy's 3002 for Leaderboard
-    - "3013:3003"  # Map external 3013 to Caddy's 3003 for Staking
+      - "80:9944" # Map external 80 to Caddy's 9944 for Node/RPC
+      - "443:9944" # Map external 443 to Caddy's 9945 for HTTPS
+      - "8081:8080" # Map external 8081 to Caddy's 8080 for Hasura
+      - "3011:3001" # Map external 3011 to Caddy's 3001 for Consensus
+      - "3012:3002" # Map external 3012 to Caddy's 3002 for Leaderboard
+      - "3013:3003" # Map external 3013 to Caddy's 3003 for Staking
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
@@ -140,6 +140,10 @@ services:
       # Hasura Migrations and Metadata
       HASURA_GRAPHQL_MIGRATIONS_DIR: /hasura-migrations
       HASURA_GRAPHQL_METADATA_DIR: /hasura-metadata
+
+      # Task Board Action Endpoint
+      HASURA_GRAPHQL_ACTION_TASK_BOARD: http://taskboard:${BULL_PORT}
+      HASURA_GRAPHQL_ACTION_TASK_BOARD_SESSION_SECRET: ${BULL_SESSION_SECRET}
     ports:
       - "${HASURA_GRAPHQL_PORT}:8080"
     command:
@@ -334,11 +338,12 @@ services:
     hostname: taskboard
     restart: unless-stopped
     ports:
-      - "${BULL_PORT}:3000"
+      - "${BULL_PORT}:${BULL_PORT}"
     environment:
       BULL_USERNAME: ${BULL_USERNAME}
       BULL_PASSWORD: ${BULL_PASSWORD}
       BULL_PORT: ${BULL_PORT}
+      BULL_SESSION_SECRET: ${BULL_SESSION_SECRET}
 
       REDIS_HOST: redis
       REDIS_PORT: ${REDIS_PORT}
@@ -348,3 +353,9 @@ services:
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
+
+      NETWORK_ID: ${NETWORK_ID}
+      LOG_LEVEL: ${LOG_LEVEL}
+
+      SLACK_TOKEN: ${SLACK_TOKEN}
+      SLACK_CONVERSATION_ID: ${SLACK_CONVERSATION_ID}
