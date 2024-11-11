@@ -32,7 +32,7 @@ array_relationships:
     using:
       manual_configuration:
         column_mapping:
-          block_height: block_height
+          id: extrinsic_id
         insertion_order: null
         remote_table:
           name: events

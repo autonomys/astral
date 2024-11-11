@@ -1,30 +1,34 @@
-const Redis = require("ioredis");
+import Redis from "ioredis";
 
-const connection = {
-  port: process.env.REDIS_PORT ?? 6379,
+interface RedisConnection {
+  port: number;
+  host: string;
+  retryStrategy: (times: number) => number;
+}
+
+export const connection: RedisConnection = {
+  port: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
   host: process.env.REDIS_HOST ?? "localhost",
-  retryStrategy: (times) => {
+  retryStrategy: (times: number): number => {
     const delay = Math.min(times * 50, 2000);
     console.log(`Retrying Redis connection in ${delay}ms...`);
     return delay;
   },
 };
 
-async function checkRedisConnection() {
+export const checkRedisConnection = async (): Promise<void> => {
   const redis = new Redis(connection);
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     redis.on("ready", () => {
       console.log("Connected to Redis successfully!");
       redis.disconnect();
       resolve();
     });
 
-    redis.on("error", (err) => {
+    redis.on("error", (err: Error) => {
       console.error("Redis connection error:", err);
       redis.disconnect();
       reject(err);
     });
   });
-}
-
-module.exports = { connection, checkRedisConnection };
+};

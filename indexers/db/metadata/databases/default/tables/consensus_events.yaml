@@ -31,7 +31,7 @@ object_relationships:
     using:
       manual_configuration:
         column_mapping:
-          block_height: block_height
+          extrinsic_id: id
         insertion_order: null
         remote_table:
           name: extrinsics
