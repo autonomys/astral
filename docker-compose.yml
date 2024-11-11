@@ -102,7 +102,8 @@ services:
   hasura:
     image: hasura/graphql-engine:v2.40.0
     depends_on:
-      - "postgres"
+      postgres:
+        condition: service_healthy
     volumes:
       - ./indexers/db/migrations:/hasura-migrations
       - ./indexers/db/metadata:/hasura-metadata
@@ -181,8 +182,10 @@ services:
     ports:
       - "${DICTIONARY_SUBQUERY_NODE_PORT}:3000"
     depends_on:
-      - "postgres"
-      - "dictionary_subquery_node"
+      "postgres":
+        condition: service_healthy
+      "dictionary_subquery_node":
+        condition: service_healthy
     restart: unless-stopped
     environment:
       DB_USER: ${DB_USER}
@@ -199,7 +202,7 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3001:3000"
+      - "3004:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -331,6 +334,8 @@ services:
     build:
       context: ./indexers/taskboard
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     volumes:
