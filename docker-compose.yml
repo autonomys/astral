@@ -36,7 +36,6 @@ services:
   # Subspace Node
   node:
     image: ghcr.io/autonomys/node:${NODE_DOCKER_TAG}
-    platform: linux/amd64
     volumes:
       - node-data:/var/subspace:rw
     ports:
