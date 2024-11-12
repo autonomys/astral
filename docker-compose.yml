@@ -41,8 +41,6 @@ services:
         "${NETWORK_ID}",
         "--base-path",
         "/var/subspace",
-        "--pot-external-entropy",
-        "00000000000000000000661e88ab45dc3b61daec5ccf3cc83532153589b133b9",
         "--listen-on",
         "/ip4/0.0.0.0/tcp/30333",
         "--dsn-listen-on",
