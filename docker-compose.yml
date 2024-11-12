@@ -16,19 +16,11 @@ services:
         hard: 65536 # Hard limit for open files
     image: caddy:latest
     ports:
-      - "80:9944" # Map external 80 to Caddy's 9944 for Node/RPC
-      - "443:9944" # Map external 443 to Caddy's 9945 for HTTPS
-      - "8081:8080" # Map external 8081 to Caddy's 8080 for Hasura
-      - "3011:3001" # Map external 3011 to Caddy's 3001 for Consensus
-      - "3012:3002" # Map external 3012 to Caddy's 3002 for Leaderboard
-      - "3013:3003" # Map external 3013 to Caddy's 3003 for Staking
+      - "8000:9944" # Map external 8000
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
       - caddy_config:/config
-
-    environment:
-      - DOMAIN=subql.${NETWORK_ID}.subspace.network
     depends_on:
       - node
     restart: unless-stopped
@@ -200,8 +192,8 @@ services:
   consensus_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
-    ports:
-      - "3004:3000"
+    expose:
+      - "3001"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -237,8 +229,8 @@ services:
   leaderboard_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
-    ports:
-      - "3002:3000"
+    expose:
+      - "3002"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -273,8 +265,8 @@ services:
   staking_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
-    ports:
-      - "3003:3000"
+    expose:
+      - "3003"
     depends_on:
       "postgres":
         condition: service_healthy
