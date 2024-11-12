@@ -23,8 +23,6 @@ services:
       - caddy_config:/config
     depends_on:
       - node
-      - hasura
-      - postgres
     restart: unless-stopped
 
   # Subspace Node
