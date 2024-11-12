@@ -190,8 +190,8 @@ services:
   consensus_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
-    expose:
-      - "3001"
+    ports:
+      - "3001:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -227,8 +227,8 @@ services:
   leaderboard_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
-    expose:
-      - "3002"
+    ports:
+      - "3002:3000"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -263,8 +263,8 @@ services:
   staking_subquery_node:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
-    expose:
-      - "3003"
+    ports:
+      - "3003:3000"
     depends_on:
       "postgres":
         condition: service_healthy
