@@ -18,6 +18,9 @@ ALTER SCHEMA consensus OWNER TO postgres;
 CREATE SCHEMA dictionary;
 ALTER SCHEMA dictionary OWNER TO postgres;
 
+CREATE SCHEMA leaderboard;
+ALTER SCHEMA leaderboard OWNER TO postgres;
+
 CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
 COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiST';
 
@@ -48,6 +51,18 @@ CREATE FUNCTION dictionary.schema_notification() RETURNS trigger
   $$;
 ALTER FUNCTION dictionary.schema_notification() OWNER TO postgres;
 
+CREATE FUNCTION leaderboard.schema_notification() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  BEGIN
+    PERFORM pg_notify(
+            '0x51141d2e27d3dfd7',
+            'schema_updated');
+    RETURN NULL;
+  END;
+  $$;
+ALTER FUNCTION leaderboard.schema_notification() OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -59,6 +74,14 @@ CREATE TABLE consensus._metadata (
     "updatedAt" timestamp with time zone NOT NULL
 );
 ALTER TABLE consensus._metadata OWNER TO postgres;
+
+CREATE TABLE leaderboard._metadata (
+    key character varying(255) NOT NULL,
+    value jsonb,
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL
+);
+ALTER TABLE leaderboard._metadata OWNER TO postgres;
 
 CREATE TABLE consensus.account_histories (
     id text NOT NULL,
@@ -300,6 +323,246 @@ CREATE TABLE dictionary.spec_versions (
 );
 ALTER TABLE dictionary.spec_versions OWNER TO postgres;
 
+CREATE TABLE leaderboard.account_extrinsic_failed_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_extrinsic_failed_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_extrinsic_success_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_extrinsic_success_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_extrinsic_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_extrinsic_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_remark_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_remark_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_transaction_fee_paid_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_transaction_fee_paid_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_transfer_receiver_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_transfer_receiver_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_transfer_receiver_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_transfer_receiver_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_transfer_sender_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_transfer_sender_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.account_transfer_sender_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.account_transfer_sender_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.farmer_block_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.farmer_block_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.farmer_block_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.farmer_block_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.farmer_vote_and_block_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.farmer_vote_and_block_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.farmer_vote_and_block_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.farmer_vote_and_block_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.farmer_vote_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.farmer_vote_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.farmer_vote_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.farmer_vote_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.nominator_deposits_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.nominator_deposits_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.nominator_deposits_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.nominator_deposits_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.nominator_withdrawals_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.nominator_withdrawals_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_bundle_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.operator_bundle_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_deposits_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.operator_deposits_total_counts OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_deposits_total_values (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.operator_deposits_total_values OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_total_rewards_collecteds (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.operator_total_rewards_collecteds OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_total_tax_collecteds (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.operator_total_tax_collecteds OWNER TO postgres;
+
+CREATE TABLE leaderboard.operator_withdrawals_total_counts (
+    id text NOT NULL,
+    rank integer NOT NULL,
+    value numeric NOT NULL,
+    last_contribution_at timestamp without time zone NOT NULL,
+    created_at integer NOT NULL,
+    updated_at integer NOT NULL
+);
+ALTER TABLE leaderboard.operator_withdrawals_total_counts OWNER TO postgres;
+
 ALTER TABLE ONLY consensus._metadata
     ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
 
@@ -378,6 +641,82 @@ ALTER TABLE ONLY dictionary.extrinsics
 ALTER TABLE ONLY dictionary.spec_versions
     ADD CONSTRAINT spec_versions_pkey PRIMARY KEY (id);
 
+
+ALTER TABLE ONLY leaderboard._metadata
+    ADD CONSTRAINT _metadata_pkey PRIMARY KEY (key);
+
+ALTER TABLE ONLY leaderboard.account_extrinsic_failed_total_counts
+    ADD CONSTRAINT account_extrinsic_failed_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_extrinsic_success_total_counts
+    ADD CONSTRAINT account_extrinsic_success_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_extrinsic_total_counts
+    ADD CONSTRAINT account_extrinsic_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_remark_counts
+    ADD CONSTRAINT account_remark_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_transaction_fee_paid_total_values
+    ADD CONSTRAINT account_transaction_fee_paid_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_transfer_receiver_total_counts
+    ADD CONSTRAINT account_transfer_receiver_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_transfer_receiver_total_values
+    ADD CONSTRAINT account_transfer_receiver_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_transfer_sender_total_counts
+    ADD CONSTRAINT account_transfer_sender_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.account_transfer_sender_total_values
+    ADD CONSTRAINT account_transfer_sender_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.farmer_block_total_counts
+    ADD CONSTRAINT farmer_block_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.farmer_block_total_values
+    ADD CONSTRAINT farmer_block_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.farmer_vote_and_block_total_counts
+    ADD CONSTRAINT farmer_vote_and_block_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.farmer_vote_and_block_total_values
+    ADD CONSTRAINT farmer_vote_and_block_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.farmer_vote_total_counts
+    ADD CONSTRAINT farmer_vote_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.farmer_vote_total_values
+    ADD CONSTRAINT farmer_vote_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.nominator_deposits_total_counts
+    ADD CONSTRAINT nominator_deposits_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.nominator_deposits_total_values
+    ADD CONSTRAINT nominator_deposits_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.nominator_withdrawals_total_counts
+    ADD CONSTRAINT nominator_withdrawals_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_bundle_total_counts
+    ADD CONSTRAINT operator_bundle_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_deposits_total_counts
+    ADD CONSTRAINT operator_deposits_total_counts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_deposits_total_values
+    ADD CONSTRAINT operator_deposits_total_values_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_total_rewards_collecteds
+    ADD CONSTRAINT operator_total_rewards_collecteds_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_total_tax_collecteds
+    ADD CONSTRAINT operator_total_tax_collecteds_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY leaderboard.operator_withdrawals_total_counts
+    ADD CONSTRAINT operator_withdrawals_total_counts_pkey PRIMARY KEY (id);
+
 CREATE INDEX "0x08aa840e441d13bb" ON consensus.blocks USING gist (height, _block_range);
 CREATE INDEX "0x09a98aa53fa2c2e3" ON consensus.logs USING btree (id);
 CREATE INDEX "0x0aabe4e2902c545f" ON consensus.account_rewards USING gist (created_at, _block_range);
@@ -453,3 +792,100 @@ CREATE INDEX "0x57c58da22539b57d" ON dictionary.extrinsics USING btree (block_he
 CREATE INDEX "0x5b57ecd94445ad2e" ON dictionary.extrinsics USING btree (call);
 CREATE INDEX "0x62b8f3181611d490" ON dictionary.events USING btree (module);
 CREATE INDEX "0xc0c9768d1987b60f" ON dictionary.events USING btree (block_height);
+
+CREATE INDEX "0x0237b4bb45c8cd3d" ON leaderboard.farmer_vote_and_block_total_values USING btree (created_at);
+CREATE INDEX "0x03f87f972ff639fb" ON leaderboard.nominator_deposits_total_counts USING btree (rank);
+CREATE INDEX "0x04c74d64a2ca170d" ON leaderboard.operator_deposits_total_values USING btree (created_at);
+CREATE INDEX "0x0a50f1f460ef26ea" ON leaderboard.farmer_vote_and_block_total_counts USING btree (created_at);
+CREATE INDEX "0x0a89134e4a3de20e" ON leaderboard.account_transfer_receiver_total_values USING btree (updated_at);
+CREATE INDEX "0x109ef24a7bb98d30" ON leaderboard.operator_withdrawals_total_counts USING btree (rank);
+CREATE INDEX "0x15178b2615ecb334" ON leaderboard.farmer_vote_total_counts USING btree (value);
+CREATE INDEX "0x1dc9d229fc046a77" ON leaderboard.farmer_block_total_counts USING btree (value);
+CREATE INDEX "0x1ed6c532b99ee178" ON leaderboard.nominator_deposits_total_values USING btree (rank);
+CREATE INDEX "0x203a197257ce12a5" ON leaderboard.farmer_vote_total_counts USING btree (rank);
+CREATE INDEX "0x21d9f76ed37bd96e" ON leaderboard.account_transfer_receiver_total_counts USING btree (created_at);
+CREATE INDEX "0x2543cf3b9ae14ab8" ON leaderboard.operator_deposits_total_counts USING btree (created_at);
+CREATE INDEX "0x25d59bd5befefa21" ON leaderboard.farmer_vote_and_block_total_values USING btree (updated_at);
+CREATE INDEX "0x261402fc9f454bf4" ON leaderboard.nominator_deposits_total_values USING btree (updated_at);
+CREATE INDEX "0x274bfb55e0692363" ON leaderboard.account_transfer_sender_total_counts USING btree (updated_at);
+CREATE INDEX "0x2e81c6470104e40a" ON leaderboard.account_transfer_receiver_total_counts USING btree (updated_at);
+CREATE INDEX "0x36fad076b7b609c8" ON leaderboard.operator_total_tax_collecteds USING btree (rank);
+CREATE INDEX "0x3bb471ec1101b66a" ON leaderboard.account_transfer_receiver_total_values USING btree (created_at);
+CREATE INDEX "0x3c8d59be33cc30fd" ON leaderboard.account_transaction_fee_paid_total_values USING btree (value);
+CREATE INDEX "0x3fb3bf4c3648e89f" ON leaderboard.operator_bundle_total_counts USING btree (value);
+CREATE INDEX "0x414cf5a248371b9e" ON leaderboard.operator_total_rewards_collecteds USING btree (value);
+CREATE INDEX "0x45b6baa60f76afe5" ON leaderboard.farmer_block_total_counts USING btree (rank);
+CREATE INDEX "0x45db7717e810fbed" ON leaderboard.account_extrinsic_failed_total_counts USING btree (created_at);
+CREATE INDEX "0x48833908a7574703" ON leaderboard.account_transfer_sender_total_counts USING btree (created_at);
+CREATE INDEX "0x5162c85596c9338e" ON leaderboard.operator_deposits_total_values USING btree (value);
+CREATE INDEX "0x52d6270f1cc3c4dd" ON leaderboard.operator_bundle_total_counts USING btree (rank);
+CREATE INDEX "0x547b123af6dcd32a" ON leaderboard.account_extrinsic_total_counts USING btree (updated_at);
+CREATE INDEX "0x5738b9b369347bf1" ON leaderboard.account_remark_counts USING btree (created_at);
+CREATE INDEX "0x5b1a07a2eacad81c" ON leaderboard.operator_bundle_total_counts USING btree (updated_at);
+CREATE INDEX "0x5bd3b2299db13775" ON leaderboard.farmer_vote_and_block_total_counts USING btree (updated_at);
+CREATE INDEX "0x5cfd74ecb2e7596e" ON leaderboard.nominator_withdrawals_total_counts USING btree (created_at);
+CREATE INDEX "0x6446d391095803fe" ON leaderboard.account_transfer_receiver_total_values USING btree (rank);
+CREATE INDEX "0x648d3308d6c4914f" ON leaderboard.operator_deposits_total_counts USING btree (value);
+CREATE INDEX "0x6625bd986dfdd912" ON leaderboard.farmer_vote_total_values USING btree (rank);
+CREATE INDEX "0x67610203489d7569" ON leaderboard.operator_total_tax_collecteds USING btree (created_at);
+CREATE INDEX "0x67876d73c8d1484a" ON leaderboard.nominator_deposits_total_values USING btree (created_at);
+CREATE INDEX "0x6e3c8d300e206644" ON leaderboard.account_transfer_sender_total_values USING btree (value);
+CREATE INDEX "0x6e7ba35bab79dae5" ON leaderboard.account_remark_counts USING btree (value);
+CREATE INDEX "0x6effab7bf55318c0" ON leaderboard.farmer_block_total_values USING btree (created_at);
+CREATE INDEX "0x73606d69a16a51ed" ON leaderboard.farmer_vote_and_block_total_counts USING btree (rank);
+CREATE INDEX "0x74444c6cbb827fed" ON leaderboard.account_extrinsic_failed_total_counts USING btree (rank);
+CREATE INDEX "0x77f1b742d319402c" ON leaderboard.account_transaction_fee_paid_total_values USING btree (created_at);
+CREATE INDEX "0x7c0e839f35282376" ON leaderboard.farmer_block_total_counts USING btree (created_at);
+CREATE INDEX "0x7c584a4083105781" ON leaderboard.farmer_block_total_values USING btree (value);
+CREATE INDEX "0x7cdbfa16661f71ee" ON leaderboard.nominator_withdrawals_total_counts USING btree (value);
+CREATE INDEX "0x7ef3b9aa555b5a05" ON leaderboard.account_transfer_receiver_total_values USING btree (value);
+CREATE INDEX "0x82f033a6c175eddd" ON leaderboard.farmer_vote_and_block_total_values USING btree (value);
+CREATE INDEX "0x82fe14c738066801" ON leaderboard.account_transfer_sender_total_values USING btree (created_at);
+CREATE INDEX "0x84d750e3c36ee4ab" ON leaderboard.operator_total_tax_collecteds USING btree (updated_at);
+CREATE INDEX "0x87379ebd9abb3c9f" ON leaderboard.account_extrinsic_total_counts USING btree (created_at);
+CREATE INDEX "0x8ba1fd011d0120e6" ON leaderboard.account_remark_counts USING btree (updated_at);
+CREATE INDEX "0x901aff3934f41bd9" ON leaderboard.farmer_vote_total_counts USING btree (updated_at);
+CREATE INDEX "0x958866172e237c5c" ON leaderboard.operator_total_rewards_collecteds USING btree (updated_at);
+CREATE INDEX "0x97d32cd19e3802db" ON leaderboard.farmer_block_total_values USING btree (rank);
+CREATE INDEX "0x99d0f21c8605c41c" ON leaderboard.account_transfer_sender_total_counts USING btree (value);
+CREATE INDEX "0x9fc7939319b88d37" ON leaderboard.nominator_deposits_total_counts USING btree (value);
+CREATE INDEX "0xa035d5be2ef2e7ff" ON leaderboard.nominator_deposits_total_values USING btree (value);
+CREATE INDEX "0xa0371f05d6ab705d" ON leaderboard.farmer_vote_total_values USING btree (created_at);
+CREATE INDEX "0xa03f24a9dfd38cdc" ON leaderboard.farmer_vote_total_values USING btree (value);
+CREATE INDEX "0xa6e9645812acf3c5" ON leaderboard.operator_withdrawals_total_counts USING btree (updated_at);
+CREATE INDEX "0xab244f4097d5b7de" ON leaderboard.account_transfer_receiver_total_counts USING btree (value);
+CREATE INDEX "0xab389403bd29540d" ON leaderboard.operator_total_rewards_collecteds USING btree (rank);
+CREATE INDEX "0xac1bf85d692ba008" ON leaderboard.account_transfer_sender_total_values USING btree (rank);
+CREATE INDEX "0xac5a3d6fd52e2eba" ON leaderboard.farmer_vote_and_block_total_values USING btree (rank);
+CREATE INDEX "0xb65383ff3975f7d0" ON leaderboard.nominator_withdrawals_total_counts USING btree (rank);
+CREATE INDEX "0xb8c311b80e4878cf" ON leaderboard.operator_total_tax_collecteds USING btree (value);
+CREATE INDEX "0xb9c1f66664e1525c" ON leaderboard.account_extrinsic_success_total_counts USING btree (rank);
+CREATE INDEX "0xba6d7a768cf0f48a" ON leaderboard.account_extrinsic_success_total_counts USING btree (value);
+CREATE INDEX "0xbb772bc16a6f55fa" ON leaderboard.account_extrinsic_total_counts USING btree (rank);
+CREATE INDEX "0xc2d78cc1bc2d4d1d" ON leaderboard.operator_bundle_total_counts USING btree (created_at);
+CREATE INDEX "0xc62ca597010fa42d" ON leaderboard.operator_deposits_total_counts USING btree (rank);
+CREATE INDEX "0xc777a0fed62b8863" ON leaderboard.account_extrinsic_success_total_counts USING btree (updated_at);
+CREATE INDEX "0xc859dbf1a9895777" ON leaderboard.nominator_deposits_total_counts USING btree (created_at);
+CREATE INDEX "0xc88f7e95a1a80085" ON leaderboard.farmer_vote_and_block_total_counts USING btree (value);
+CREATE INDEX "0xc9ad4369f9204059" ON leaderboard.account_extrinsic_success_total_counts USING btree (created_at);
+CREATE INDEX "0xcb0aa6b763df69f6" ON leaderboard.operator_deposits_total_values USING btree (updated_at);
+CREATE INDEX "0xd1ed11b719eccd00" ON leaderboard.farmer_vote_total_values USING btree (updated_at);
+CREATE INDEX "0xd2beaf5abcec6d67" ON leaderboard.operator_deposits_total_values USING btree (rank);
+CREATE INDEX "0xd74476f68a157f82" ON leaderboard.account_transaction_fee_paid_total_values USING btree (rank);
+CREATE INDEX "0xd8e7a933c1384413" ON leaderboard.account_extrinsic_failed_total_counts USING btree (value);
+CREATE INDEX "0xdb955231fab08930" ON leaderboard.account_extrinsic_total_counts USING btree (value);
+CREATE INDEX "0xdbb2243b8d9f31b1" ON leaderboard.account_extrinsic_failed_total_counts USING btree (updated_at);
+CREATE INDEX "0xe3fc37f3b8d89c8d" ON leaderboard.operator_total_rewards_collecteds USING btree (created_at);
+CREATE INDEX "0xe8f087b3187060f5" ON leaderboard.farmer_vote_total_counts USING btree (created_at);
+CREATE INDEX "0xea4fb11415169d44" ON leaderboard.farmer_block_total_counts USING btree (updated_at);
+CREATE INDEX "0xed196db1fdf8e1ba" ON leaderboard.nominator_deposits_total_counts USING btree (updated_at);
+CREATE INDEX "0xed89d2ba5685cb9f" ON leaderboard.account_transfer_sender_total_counts USING btree (rank);
+CREATE INDEX "0xefc871c495be2e8b" ON leaderboard.nominator_withdrawals_total_counts USING btree (updated_at);
+CREATE INDEX "0xf08c870c8311438f" ON leaderboard.operator_withdrawals_total_counts USING btree (created_at);
+CREATE INDEX "0xf37e3b354eac5a6e" ON leaderboard.operator_withdrawals_total_counts USING btree (value);
+CREATE INDEX "0xf3b812b4322af338" ON leaderboard.farmer_block_total_values USING btree (updated_at);
+CREATE INDEX "0xf3ee1a0c9ddee938" ON leaderboard.account_transfer_receiver_total_counts USING btree (rank);
+CREATE INDEX "0xf59765eb34448af2" ON leaderboard.account_transaction_fee_paid_total_values USING btree (updated_at);
+CREATE INDEX "0xf8a25fbf0822721a" ON leaderboard.account_remark_counts USING btree (rank);
+CREATE INDEX "0xf8b032ae97b931bd" ON leaderboard.operator_deposits_total_counts USING btree (updated_at);
+CREATE INDEX "0xfe4c85f6ab059ff1" ON leaderboard.account_transfer_sender_total_values USING btree (updated_at);
