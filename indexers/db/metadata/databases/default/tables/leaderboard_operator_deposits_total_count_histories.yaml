@@ -1,0 +1,3 @@
+table:
+  name: operator_deposits_total_count_histories
+  schema: leaderboard
