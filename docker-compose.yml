@@ -71,6 +71,7 @@ services:
     volumes:
       - postgres_db:/var/lib/postgresql/data
       - ./indexers/db/docker-entrypoint-initdb.d/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - ./indexers/db/postgresql.conf:/etc/postgresql/postgresql.conf
     restart: unless-stopped
     hostname: postgres
     environment:
@@ -85,6 +86,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
   # Hasura GraphQL Engine
   hasura:
