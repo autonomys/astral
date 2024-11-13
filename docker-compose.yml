@@ -252,7 +252,8 @@ services:
       - --workers=1
       - --unsafe
       - --batch-size=15
-      - --disable-historical=true
+      - --unfinalized-blocks=true
+      - --disable-historical=false
       - --port 3002
     healthcheck:
       test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3002/ready"]
