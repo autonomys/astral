@@ -55,7 +55,6 @@ services:
         "1000",
         "--rpc-max-connections",
         "20000",
-        "--farmer",
         "--name",
         "astral",
         "--sync",
@@ -153,7 +152,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/dictionary/${DICTIONARY_DIRECTORY}:/dictionary
     healthcheck:
@@ -181,7 +180,7 @@ services:
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     command:
       - --name=dictionary
       - --playground
@@ -201,12 +200,12 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:3000
+      DICTIONARY: http://dictionary_subquery_node:${DICTIONARY_SUBQUERY_NODE_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/${NETWORK_ID}/consensus:/${NETWORK_ID}/consensus
     command:
@@ -238,12 +237,12 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:3000
+      DICTIONARY: http://dictionary_subquery_node:${DICTIONARY_SUBQUERY_NODE_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/${NETWORK_ID}/leaderboard:/${NETWORK_ID}/leaderboard
     command:
@@ -274,12 +273,12 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:3000
+      DICTIONARY: http://dictionary_subquery_node:${DICTIONARY_SUBQUERY_NODE_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
       DB_HOST: ${DB_HOST}
-      DB_PORT: 5432
+      DB_PORT: ${DB_PORT}
     volumes:
       - ./indexers/${NETWORK_ID}/staking:/${NETWORK_ID}/staking
     command:
