@@ -75,7 +75,7 @@ export const limitStringDecimals = (number: string, precision = 4): string => {
   return integer + '.' + decimalsToUse
 }
 
-export const formatSpacePledged = (value: number, decimals = 2) => {
+export const formatSpaceInDecimal = (value: number, decimals = 2) => {
   if (value === 0) return '0 Bytes'
 
   const k = 1000
