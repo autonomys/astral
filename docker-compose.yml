@@ -196,8 +196,6 @@ services:
     depends_on:
       "postgres":
         condition: service_healthy
-      "dictionary_subquery_node":
-        condition: service_healthy
     restart: unless-stopped
     environment:
       ENDPOINT: ${RPC_URLS}
@@ -239,7 +237,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:3000
+      DICTIONARY: http://localhost:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -276,7 +274,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:3000
+      DICTIONARY: http://localhost:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
