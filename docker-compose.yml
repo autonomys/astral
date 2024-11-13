@@ -192,7 +192,7 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3001:3000"
+      - "3001:3001"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -202,7 +202,6 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:${DICTIONARY_SUBQUERY_NODE_PORT}
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -219,8 +218,9 @@ services:
       - --batch-size=250
       - --unfinalized-blocks=true
       - --disable-historical=false
+      - --port 3001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3000/ready"]
+      test: ["CMD", "curl", "-f", "http://consensus_subquery_node:3001/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -229,7 +229,7 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3002:3000"
+      - "3002:3002"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -239,7 +239,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:${DICTIONARY_SUBQUERY_NODE_PORT}
+      DICTIONARY: http://dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -255,8 +255,9 @@ services:
       - --unsafe
       - --batch-size=15
       - --disable-historical=true
+      - --port 3002
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3000/ready"]
+      test: ["CMD", "curl", "-f", "http://leaderboard_subquery_node:3002/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
@@ -265,7 +266,7 @@ services:
     profiles: [indexers]
     image: subquerynetwork/subql-node-substrate:latest
     ports:
-      - "3003:3000"
+      - "3003:3003"
     depends_on:
       "postgres":
         condition: service_healthy
@@ -275,7 +276,7 @@ services:
     environment:
       ENDPOINT: ${RPC_URLS}
       CHAIN_ID: ${CHAIN_ID}
-      DICTIONARY: http://dictionary_subquery_node:${DICTIONARY_SUBQUERY_NODE_PORT}
+      DICTIONARY: http://dictionary_subquery_node:3000
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASSWORD}
       DB_DATABASE: ${DB_DATABASE}
@@ -291,8 +292,9 @@ services:
       - --unsafe
       - --batch-size=15
       - --disable-historical=true
+      - --port 3003
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://staking_subquery_node:3000/ready"]
+      test: ["CMD", "curl", "-f", "http://staking_subquery_node:3003/ready"]
       interval: 3s
       timeout: 5s
       retries: 10
