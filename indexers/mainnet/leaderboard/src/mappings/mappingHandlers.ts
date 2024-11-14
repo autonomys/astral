@@ -1,6 +1,5 @@
 import { SubstrateBlock, SubstrateEvent } from "@subql/types";
 import * as db from "./db";
-import { sortAndRankLeaderboard } from "./helper";
 
 export async function handleTransferEvent(
   event: SubstrateEvent
@@ -369,15 +368,4 @@ export async function handleWithdrewStakeEvent(
     blockNumber,
     timestamp
   );
-}
-
-export async function handleSortAndRankLeaderboard(
-  block: SubstrateBlock
-): Promise<void> {
-  const {
-    block: {
-      header: { number },
-    },
-  } = block;
-  await sortAndRankLeaderboard(BigInt(number.toString()));
 }

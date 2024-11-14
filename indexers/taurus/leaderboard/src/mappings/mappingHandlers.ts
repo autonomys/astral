@@ -1,6 +1,5 @@
 import { SubstrateBlock, SubstrateEvent } from "@subql/types";
 import * as db from "./db";
-import { sortAndRankLeaderboard } from "./helper";
 
 export async function handleTransferEvent(
   event: SubstrateEvent
@@ -379,5 +378,4 @@ export async function handleSortAndRankLeaderboard(
       header: { number },
     },
   } = block;
-  await sortAndRankLeaderboard(BigInt(number.toString()));
 }
