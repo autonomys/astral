@@ -97,16 +97,29 @@ const consensusAccountsQuery = `
     RETURNING *`;
 
 // Get unique sections from both extrinsics and events
-const updateLeaderboardRanking = (table) => `
-  WITH ranked_entries AS (
+const updateLeaderboardRanking = (sourceTable: string, targetTable: string) => `
+  WITH aggregated_entries AS (
     SELECT id, 
-           RANK() OVER (ORDER BY value DESC) AS new_rank
-    FROM leaderboard.${table}
+           SUM(value) AS total_value,
+           MAX(last_contribution_at) AS last_contribution_at,
+           MIN(created_at) AS created_at,
+           MAX(updated_at) AS updated_at
+    FROM leaderboard.${sourceTable}
+    GROUP BY id
+  ),
+  ranked_entries AS (
+    SELECT id, 
+           ROW_NUMBER() OVER (ORDER BY total_value DESC, id) AS new_rank,
+           total_value,
+           last_contribution_at,
+           created_at,
+           updated_at
+    FROM aggregated_entries
   )
-  UPDATE leaderboard.${table} t
-  SET rank = r.new_rank
-  FROM ranked_entries r
-  WHERE t.id = r.id;
+  INSERT INTO leaderboard.${targetTable} (id, rank, value, last_contribution_at, created_at, updated_at)
+  SELECT id, new_rank, total_value, last_contribution_at, created_at, updated_at FROM ranked_entries
+  ON CONFLICT (id) 
+  DO UPDATE SET rank = EXCLUDED.rank, value = EXCLUDED.value, last_contribution_at = EXCLUDED.last_contribution_at, created_at = EXCLUDED.created_at, updated_at = EXCLUDED.updated_at;
   `;
 
 const consensusUpsertAccountQuery = `
@@ -127,7 +140,10 @@ interface Queries {
   consensusEventModulesQuery: string;
   consensusLogKindsQuery: string;
   consensusAccountsQuery: string;
-  updateLeaderboardRanking: (table: string) => string;
+  updateLeaderboardRanking: (
+    sourceTable: string,
+    targetTable: string
+  ) => string;
   consensusUpsertAccountQuery: string;
 }
 

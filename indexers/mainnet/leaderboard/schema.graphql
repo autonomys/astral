@@ -3,7 +3,7 @@
 # https://academy.subquery.network/build/graphql.html#indexing-by-non-primary-key-field
 
 # account
-type AccountTransferSenderTotalCount @entity {
+type AccountTransferSenderTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -12,7 +12,7 @@ type AccountTransferSenderTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type AccountTransferSenderTotalValue @entity {
+type AccountTransferSenderTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -21,7 +21,7 @@ type AccountTransferSenderTotalValue @entity {
   updatedAt: Int! @index
 }
 
-type AccountTransferReceiverTotalCount @entity {
+type AccountTransferReceiverTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -30,7 +30,7 @@ type AccountTransferReceiverTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type AccountTransferReceiverTotalValue @entity {
+type AccountTransferReceiverTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -39,7 +39,7 @@ type AccountTransferReceiverTotalValue @entity {
   updatedAt: Int! @index
 }
 
-type AccountRemarkCount @entity {
+type AccountRemarkCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -48,7 +48,7 @@ type AccountRemarkCount @entity {
   updatedAt: Int! @index
 }
 
-type AccountExtrinsicTotalCount @entity {
+type AccountExtrinsicTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -57,7 +57,7 @@ type AccountExtrinsicTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type AccountExtrinsicSuccessTotalCount @entity {
+type AccountExtrinsicSuccessTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -66,7 +66,7 @@ type AccountExtrinsicSuccessTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type AccountExtrinsicFailedTotalCount @entity {
+type AccountExtrinsicFailedTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -75,7 +75,7 @@ type AccountExtrinsicFailedTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type AccountTransactionFeePaidTotalValue @entity {
+type AccountTransactionFeePaidTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -85,7 +85,7 @@ type AccountTransactionFeePaidTotalValue @entity {
 }
 
 # farmer
-type FarmerVoteTotalCount @entity {
+type FarmerVoteTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -94,7 +94,7 @@ type FarmerVoteTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type FarmerVoteTotalValue @entity {
+type FarmerVoteTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -103,7 +103,7 @@ type FarmerVoteTotalValue @entity {
   updatedAt: Int! @index
 }
 
-type FarmerBlockTotalCount @entity {
+type FarmerBlockTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -112,7 +112,7 @@ type FarmerBlockTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type FarmerBlockTotalValue @entity {
+type FarmerBlockTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -121,7 +121,7 @@ type FarmerBlockTotalValue @entity {
   updatedAt: Int! @index
 }
 
-type FarmerVoteAndBlockTotalCount @entity {
+type FarmerVoteAndBlockTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -130,7 +130,7 @@ type FarmerVoteAndBlockTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type FarmerVoteAndBlockTotalValue @entity {
+type FarmerVoteAndBlockTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -140,7 +140,7 @@ type FarmerVoteAndBlockTotalValue @entity {
 }
 
 # operator
-type OperatorTotalRewardsCollected @entity {
+type OperatorTotalRewardsCollectedHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -149,7 +149,7 @@ type OperatorTotalRewardsCollected @entity {
   updatedAt: Int! @index
 }
 
-type OperatorTotalTaxCollected @entity {
+type OperatorTotalTaxCollectedHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -158,7 +158,7 @@ type OperatorTotalTaxCollected @entity {
   updatedAt: Int! @index
 }
 
-type OperatorBundleTotalCount @entity {
+type OperatorBundleTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -167,7 +167,7 @@ type OperatorBundleTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type OperatorDepositsTotalCount @entity {
+type OperatorDepositsTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -176,7 +176,7 @@ type OperatorDepositsTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type OperatorDepositsTotalValue @entity {
+type OperatorDepositsTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -185,7 +185,7 @@ type OperatorDepositsTotalValue @entity {
   updatedAt: Int! @index
 }
 
-type OperatorWithdrawalsTotalCount @entity {
+type OperatorWithdrawalsTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -195,7 +195,7 @@ type OperatorWithdrawalsTotalCount @entity {
 }
 
 # nominator/account
-type NominatorDepositsTotalCount @entity {
+type NominatorDepositsTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -204,7 +204,7 @@ type NominatorDepositsTotalCount @entity {
   updatedAt: Int! @index
 }
 
-type NominatorDepositsTotalValue @entity {
+type NominatorDepositsTotalValueHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
@@ -213,7 +213,7 @@ type NominatorDepositsTotalValue @entity {
   updatedAt: Int! @index
 }
 
-type NominatorWithdrawalsTotalCount @entity {
+type NominatorWithdrawalsTotalCountHistory @entity {
   id: ID!
   rank: Int! @index
   value: BigInt! @index
