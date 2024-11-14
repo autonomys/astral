@@ -1371,4 +1371,5 @@ CREATE INDEX "0xfc26abe752b123fe" ON leaderboard.nominator_deposits_total_count_
 CREATE INDEX "0xfc93123fd50e301f" ON leaderboard.account_transfer_sender_total_value_histories USING gist (created_at, _block_range);
 CREATE INDEX "0xfe4c85f6ab059ff1" ON leaderboard.account_transfer_sender_total_values USING btree (updated_at);
 
+CREATE TRIGGER "0x648269cc35867c16" AFTER UPDATE ON consensus._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION consensus.schema_notification();
 CREATE TRIGGER "0xf3241711d3af6c36" AFTER UPDATE ON leaderboard._metadata FOR EACH ROW WHEN (((new.key)::text = 'schemaMigrationCount'::text)) EXECUTE FUNCTION leaderboard.schema_notification();
