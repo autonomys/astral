@@ -248,7 +248,6 @@ services:
       - -f=/${NETWORK_ID}/leaderboard
       - --db-schema=leaderboard
       - --workers=1
-      - --unsafe
       - --batch-size=15
       - --unfinalized-blocks=true
       - --disable-historical=false
