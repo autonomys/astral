@@ -1,4 +1,4 @@
-import { SubstrateBlock, SubstrateEvent } from "@subql/types";
+import { SubstrateEvent } from "@subql/types";
 import * as db from "./db";
 
 export async function handleTransferEvent(

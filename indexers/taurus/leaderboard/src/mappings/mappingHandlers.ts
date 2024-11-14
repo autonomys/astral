@@ -1,4 +1,4 @@
-import { SubstrateBlock, SubstrateEvent } from "@subql/types";
+import { SubstrateEvent } from "@subql/types";
 import * as db from "./db";
 
 export async function handleTransferEvent(
@@ -368,14 +368,4 @@ export async function handleWithdrewStakeEvent(
     blockNumber,
     timestamp
   );
-}
-
-export async function handleSortAndRankLeaderboard(
-  block: SubstrateBlock
-): Promise<void> {
-  const {
-    block: {
-      header: { number },
-    },
-  } = block;
 }
