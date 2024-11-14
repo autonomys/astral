@@ -23,6 +23,7 @@ import {
   createQueueMQ,
   setupBullMQProcessor,
 } from "./utils/bull";
+import { setupCronTasks } from "./utils/cron";
 import { log, returnError } from "./utils/helper";
 import { checkRedisConnection, connection } from "./utils/store";
 
@@ -109,7 +110,15 @@ const run = async () => {
       const queueName = `${queue} - ${tasksQueue.title}`;
       const _queue = createQueueMQ(queueName);
       const task = tasks[tasksQueue.name];
-      if (task) await setupBullMQProcessor(_queue.name, task);
+      if (task) {
+        await setupBullMQProcessor(_queue.name, task);
+        if (task.cron?.enabled)
+          setupCronTasks({
+            queue: _queue,
+            task: task,
+            name: tasksQueue.name,
+          });
+      }
       if (!tasksQueues[queue]) {
         tasksQueues[queue] = {};
       }

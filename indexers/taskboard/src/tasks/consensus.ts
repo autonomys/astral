@@ -1,6 +1,7 @@
 import { Job } from "bull";
 import { Pool, PoolClient } from "pg";
 import { connectToDB, queries } from "../utils/db";
+import { getStoredValue, setRedisValue } from "../utils/store";
 
 interface ConsensusResult {
   blockNumber: number;
@@ -8,18 +9,18 @@ interface ConsensusResult {
   query: string[];
 }
 
-interface JobData {
-  blockNumber: number;
-}
+interface JobData {}
+
+const LAST_BLOCK_NUMBER_KEY = "consensusUniqueRowsMapping:lastBlockNumber";
+const BLOCK_NUMBER_INCREMENT = 12; // 12 is the number of blocks to process at a time
 
 export const consensusUniqueRowsMapping = async (
   job: Job<JobData>
 ): Promise<ConsensusResult> => {
-  const { blockNumber } = job.data;
   const pool: Pool = await connectToDB();
 
   const result: ConsensusResult = {
-    blockNumber,
+    blockNumber: 0,
     updatedTables: [],
     query: [],
   };
@@ -36,8 +37,13 @@ export const consensusUniqueRowsMapping = async (
     // - For new accounts, create a new row in the consensus_account_profile and consensus_account_rewards
     // - For each rewards row, increment the total rewards value and counts for the corresponding account and reward type
 
-    // Remaining:
-    // - Should this be a cron tasks that pickup all the last rows (from the last block handled in redis) and process them in one go? instead of a single block?
+    // Get the last block number
+    const lastBlockNumber = await getStoredValue(LAST_BLOCK_NUMBER_KEY).then(
+      (reply) => (reply ? parseInt(reply) : 0)
+    );
+
+    const blockNumber = lastBlockNumber + BLOCK_NUMBER_INCREMENT;
+    result.blockNumber = blockNumber;
 
     try {
       await client.query("BEGIN");
@@ -70,6 +76,9 @@ export const consensusUniqueRowsMapping = async (
         result.updatedTables.push("consensus_accounts");
 
       await client.query("COMMIT");
+
+      // Update the last block number
+      await setRedisValue(LAST_BLOCK_NUMBER_KEY, blockNumber.toString());
     } catch (err) {
       await client.query("ROLLBACK");
       console.error("Error updating consensus tables:", err);
