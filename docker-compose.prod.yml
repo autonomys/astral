@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgres:
     volumes:
@@ -27,6 +25,12 @@ services:
       NRIA_LICENSE_KEY: "${NR_API_KEY}"
       NRIA_DISPLAY_NAME: "${NR_AGENT_IDENTIFIER}"
     restart: unless-stopped
+
+  node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
   hasura:
     image: hasura/graphql-engine:v2.40.0
