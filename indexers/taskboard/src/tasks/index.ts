@@ -30,6 +30,10 @@ export const tasks: Tasks = {
   leaderboardSortAndRank: {
     handler: leaderboardSortAndRank,
     concurrency: 1,
+    cron: {
+      pattern: "*/2 * * * *", // Runs every 2 minutes
+      enabled: true,
+    },
   },
   updateAccount: {
     handler: updateAccount,

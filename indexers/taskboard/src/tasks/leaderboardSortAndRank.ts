@@ -2,31 +2,20 @@ import { Pool, PoolClient } from "pg";
 import { LEADERBOARD_ENTRY_TYPE } from "../constants";
 import { connectToDB, entryTypeToTable, queries } from "../utils/db";
 
-interface Job {
-  data: {
-    blockNumber: number;
-  };
-}
-
 interface UpdatedTable {
   table: string;
   rowCount: number;
 }
 
 interface LeaderboardResult {
-  blockNumber: number;
   updatedTables: UpdatedTable[];
   query: string[];
 }
 
-export const leaderboardSortAndRank = async (
-  job: Job
-): Promise<LeaderboardResult> => {
-  const { blockNumber } = job.data;
+export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
   const pool: Pool = await connectToDB();
 
   const result: LeaderboardResult = {
-    blockNumber,
     updatedTables: [],
     query: [],
   };
