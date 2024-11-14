@@ -15,7 +15,7 @@ import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { ChainPageProps } from 'types/app'
-import { formatSpacePledged, numberWithCommas } from 'utils/number'
+import { formatSpaceInDecimal, numberWithCommas } from 'utils/number'
 
 // export const runtime = 'edge'
 export async function GET(req: NextRequest, { params: { chain } }: ChainPageProps) {
@@ -190,7 +190,7 @@ function Screen({
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
-              {formatSpacePledged(
+              {formatSpaceInDecimal(
                 Number(
                   (data.consensus_blocks[0] as HomeQueryQuery['consensus_blocks'][0])
                     ?.space_pledged || 0,
