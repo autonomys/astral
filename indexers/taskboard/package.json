@@ -14,6 +14,7 @@
     "@autonomys/auto-utils": "^1.0.1",
     "@bull-board/api": "^5.23.0",
     "@bull-board/express": "^5.23.0",
+    "@bull-board/ui": "^5.23.0",
     "body-parser": "^1.20.0",
     "bullmq": "^4.6.0",
     "connect-redis": "^7.1.1",
