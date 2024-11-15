@@ -94,6 +94,47 @@ export type Consensus_Account_Histories = {
   uuid: Scalars['uuid']['output'];
 };
 
+/** aggregated selection of "consensus.account_histories" */
+export type Consensus_Account_Histories_Aggregate = {
+  __typename?: 'consensus_account_histories_aggregate';
+  aggregate?: Maybe<Consensus_Account_Histories_Aggregate_Fields>;
+  nodes: Array<Consensus_Account_Histories>;
+};
+
+/** aggregate fields of "consensus.account_histories" */
+export type Consensus_Account_Histories_Aggregate_Fields = {
+  __typename?: 'consensus_account_histories_aggregate_fields';
+  avg?: Maybe<Consensus_Account_Histories_Avg_Fields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<Consensus_Account_Histories_Max_Fields>;
+  min?: Maybe<Consensus_Account_Histories_Min_Fields>;
+  stddev?: Maybe<Consensus_Account_Histories_Stddev_Fields>;
+  stddev_pop?: Maybe<Consensus_Account_Histories_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Consensus_Account_Histories_Stddev_Samp_Fields>;
+  sum?: Maybe<Consensus_Account_Histories_Sum_Fields>;
+  var_pop?: Maybe<Consensus_Account_Histories_Var_Pop_Fields>;
+  var_samp?: Maybe<Consensus_Account_Histories_Var_Samp_Fields>;
+  variance?: Maybe<Consensus_Account_Histories_Variance_Fields>;
+};
+
+
+/** aggregate fields of "consensus.account_histories" */
+export type Consensus_Account_Histories_Aggregate_FieldsCountArgs = {
+  columns?: InputMaybe<Array<Consensus_Account_Histories_Select_Column>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type Consensus_Account_Histories_Avg_Fields = {
+  __typename?: 'consensus_account_histories_avg_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
 /** Boolean expression to filter rows from the table "consensus.account_histories". All fields are combined with a logical 'AND'. */
 export type Consensus_Account_Histories_Bool_Exp = {
   _and?: InputMaybe<Array<Consensus_Account_Histories_Bool_Exp>>;
@@ -109,6 +150,32 @@ export type Consensus_Account_Histories_Bool_Exp = {
   total?: InputMaybe<Numeric_Comparison_Exp>;
   updated_at?: InputMaybe<Numeric_Comparison_Exp>;
   uuid?: InputMaybe<Uuid_Comparison_Exp>;
+};
+
+/** aggregate max on columns */
+export type Consensus_Account_Histories_Max_Fields = {
+  __typename?: 'consensus_account_histories_max_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
+};
+
+/** aggregate min on columns */
+export type Consensus_Account_Histories_Min_Fields = {
+  __typename?: 'consensus_account_histories_min_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  id?: Maybe<Scalars['String']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at?: Maybe<Scalars['numeric']['output']>;
+  uuid?: Maybe<Scalars['uuid']['output']>;
 };
 
 /** Ordering options when selecting data from "consensus.account_histories". */
@@ -147,6 +214,39 @@ export enum Consensus_Account_Histories_Select_Column {
   Uuid = 'uuid'
 }
 
+/** aggregate stddev on columns */
+export type Consensus_Account_Histories_Stddev_Fields = {
+  __typename?: 'consensus_account_histories_stddev_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Consensus_Account_Histories_Stddev_Pop_Fields = {
+  __typename?: 'consensus_account_histories_stddev_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Consensus_Account_Histories_Stddev_Samp_Fields = {
+  __typename?: 'consensus_account_histories_stddev_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
 /** Streaming cursor of the table "consensus_account_histories" */
 export type Consensus_Account_Histories_Stream_Cursor_Input = {
   /** Stream column input with initial value */
@@ -166,6 +266,50 @@ export type Consensus_Account_Histories_Stream_Cursor_Value_Input = {
   total?: InputMaybe<Scalars['numeric']['input']>;
   updated_at?: InputMaybe<Scalars['numeric']['input']>;
   uuid?: InputMaybe<Scalars['uuid']['input']>;
+};
+
+/** aggregate sum on columns */
+export type Consensus_Account_Histories_Sum_Fields = {
+  __typename?: 'consensus_account_histories_sum_fields';
+  created_at?: Maybe<Scalars['numeric']['output']>;
+  free?: Maybe<Scalars['numeric']['output']>;
+  nonce?: Maybe<Scalars['numeric']['output']>;
+  reserved?: Maybe<Scalars['numeric']['output']>;
+  total?: Maybe<Scalars['numeric']['output']>;
+  updated_at?: Maybe<Scalars['numeric']['output']>;
+};
+
+/** aggregate var_pop on columns */
+export type Consensus_Account_Histories_Var_Pop_Fields = {
+  __typename?: 'consensus_account_histories_var_pop_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate var_samp on columns */
+export type Consensus_Account_Histories_Var_Samp_Fields = {
+  __typename?: 'consensus_account_histories_var_samp_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type Consensus_Account_Histories_Variance_Fields = {
+  __typename?: 'consensus_account_histories_variance_fields';
+  created_at?: Maybe<Scalars['Float']['output']>;
+  free?: Maybe<Scalars['Float']['output']>;
+  nonce?: Maybe<Scalars['Float']['output']>;
+  reserved?: Maybe<Scalars['Float']['output']>;
+  total?: Maybe<Scalars['Float']['output']>;
+  updated_at?: Maybe<Scalars['Float']['output']>;
 };
 
 /** columns and relationships of "consensus.account_profiles" */
@@ -8345,6 +8489,8 @@ export type Query_Root = {
   __typename?: 'query_root';
   /** fetch data from the table: "consensus.account_histories" */
   consensus_account_histories: Array<Consensus_Account_Histories>;
+  /** fetch aggregated fields from the table: "consensus.account_histories" */
+  consensus_account_histories_aggregate: Consensus_Account_Histories_Aggregate;
   /** fetch data from the table: "consensus.account_histories" using primary key columns */
   consensus_account_histories_by_pk?: Maybe<Consensus_Account_Histories>;
   /** fetch data from the table: "consensus.account_profiles" */
@@ -8617,6 +8763,15 @@ export type Query_Root = {
 
 
 export type Query_RootConsensus_Account_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Account_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Account_Histories_Order_By>>;
+  where?: InputMaybe<Consensus_Account_Histories_Bool_Exp>;
+};
+
+
+export type Query_RootConsensus_Account_Histories_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Account_Histories_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -14077,6 +14232,8 @@ export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** fetch data from the table: "consensus.account_histories" */
   consensus_account_histories: Array<Consensus_Account_Histories>;
+  /** fetch aggregated fields from the table: "consensus.account_histories" */
+  consensus_account_histories_aggregate: Consensus_Account_Histories_Aggregate;
   /** fetch data from the table: "consensus.account_histories" using primary key columns */
   consensus_account_histories_by_pk?: Maybe<Consensus_Account_Histories>;
   /** fetch data from the table in a streaming manner: "consensus.account_histories" */
@@ -14443,6 +14600,15 @@ export type Subscription_Root = {
 
 
 export type Subscription_RootConsensus_Account_HistoriesArgs = {
+  distinct_on?: InputMaybe<Array<Consensus_Account_Histories_Select_Column>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  order_by?: InputMaybe<Array<Consensus_Account_Histories_Order_By>>;
+  where?: InputMaybe<Consensus_Account_Histories_Bool_Exp>;
+};
+
+
+export type Subscription_RootConsensus_Account_Histories_AggregateArgs = {
   distinct_on?: InputMaybe<Array<Consensus_Account_Histories_Select_Column>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
@@ -15894,6 +16060,7 @@ export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregat
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
+  blockHash: Scalars['String']['input'];
 }>;
 
 
