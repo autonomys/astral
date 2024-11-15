@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bull Board Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .queue-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+      }
+      .queue-item {
+        margin: 0;
+      }
+      .queue-link {
+        text-decoration: none;
+        color: #0066cc;
+        padding: 10px 15px;
+        border: 1px solid #0066cc;
+        border-radius: 4px;
+        display: inline-block;
+        text-align: center;
+      }
+      .queue-link:hover {
+        background-color: #0066cc;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Bull Board Queues</h1>
+    <ul class="queue-list">
+      <% queues.forEach(function(queue) { %>
+      <li class="queue-item">
+        <a href="/<%= queue %>" class="queue-link"><%= queue %></a>
+      </li>
+      <% }); %>
+    </ul>
+  </body>
+</html>

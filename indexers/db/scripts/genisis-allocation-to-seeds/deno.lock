@@ -1,0 +1,651 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@std/bytes@^1.0.2": "1.0.3",
+    "jsr:@std/crypto@^1.0.3": "1.0.3",
+    "jsr:@std/uuid@*": "1.0.4",
+    "jsr:@std/uuid@^1.0.4": "1.0.4",
+    "npm:@autonomys/auto-utils@*": "1.0.4_@polkadot+api@13.2.1__@polkadot+util@13.2.2__@polkadot+util-crypto@13.2.2___@polkadot+util@13.2.2___@polkadot+x-randomvalues@13.2.2____@polkadot+util@13.2.2____@polkadot+wasm-util@7.4.1_____@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2",
+    "npm:@autonomys/auto-utils@^1.0.4": "1.0.4_@polkadot+api@13.2.1__@polkadot+util@13.2.2__@polkadot+util-crypto@13.2.2___@polkadot+util@13.2.2___@polkadot+x-randomvalues@13.2.2____@polkadot+util@13.2.2____@polkadot+wasm-util@7.4.1_____@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2"
+  },
+  "jsr": {
+    "@std/bytes@1.0.3": {
+      "integrity": "e5d5b9e685966314e4edb4be60dfc4bd7624a075bfd4ec8109252b4320f76452"
+    },
+    "@std/crypto@1.0.3": {
+      "integrity": "a2a32f51ddef632d299e3879cd027c630dcd4d1d9a5285d6e6788072f4e51e7f"
+    },
+    "@std/uuid@1.0.4": {
+      "integrity": "f4233149cc8b4753cc3763fd83a7c4101699491f55c7be78dc7b30281946d7a0",
+      "dependencies": [
+        "jsr:@std/bytes",
+        "jsr:@std/crypto"
+      ]
+    }
+  },
+  "npm": {
+    "@autonomys/auto-utils@1.0.4_@polkadot+api@13.2.1__@polkadot+util@13.2.2__@polkadot+util-crypto@13.2.2___@polkadot+util@13.2.2___@polkadot+x-randomvalues@13.2.2____@polkadot+util@13.2.2____@polkadot+wasm-util@7.4.1_____@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2": {
+      "integrity": "sha512-Gag6xgTm0ig6lCk4ixt1//yRsDiM5TvrNWHpD5WOFoNQC2ObzoWMKe+yp0ijQmMJW0+Pmq1MuHfVblT8Zmpopg==",
+      "dependencies": [
+        "@polkadot/api",
+        "@polkadot/extension-dapp",
+        "fs"
+      ]
+    },
+    "@noble/curves@1.6.0": {
+      "integrity": "sha512-TlaHRXDehJuRNR9TfZDNQ45mMEd5dwUwmicsafcIX4SsNiqnCHKjE/1alYPd/lDRVhxdhUAlv8uEhMCI5zjIJQ==",
+      "dependencies": [
+        "@noble/hashes"
+      ]
+    },
+    "@noble/hashes@1.5.0": {
+      "integrity": "sha512-1j6kQFb7QRru7eKN3ZDvRcP13rugwdxZqCjbiAVZfIJwgj2A65UmT4TgARXGlXgnRkORLTDTrO19ZErt7+QXgA=="
+    },
+    "@polkadot-api/json-rpc-provider-proxy@0.1.0": {
+      "integrity": "sha512-8GSFE5+EF73MCuLQm8tjrbCqlgclcHBSRaswvXziJ0ZW7iw3UEMsKkkKvELayWyBuOPa2T5i1nj6gFOeIsqvrg=="
+    },
+    "@polkadot-api/json-rpc-provider@0.0.1": {
+      "integrity": "sha512-/SMC/l7foRjpykLTUTacIH05H3mr9ip8b5xxfwXlVezXrNVLp3Cv0GX6uItkKd+ZjzVPf3PFrDF2B2/HLSNESA=="
+    },
+    "@polkadot-api/metadata-builders@0.3.2": {
+      "integrity": "sha512-TKpfoT6vTb+513KDzMBTfCb/ORdgRnsS3TDFpOhAhZ08ikvK+hjHMt5plPiAX/OWkm1Wc9I3+K6W0hX5Ab7MVg==",
+      "dependencies": [
+        "@polkadot-api/substrate-bindings",
+        "@polkadot-api/utils"
+      ]
+    },
+    "@polkadot-api/observable-client@0.3.2_@polkadot-api+substrate-client@0.1.4_rxjs@7.8.1": {
+      "integrity": "sha512-HGgqWgEutVyOBXoGOPp4+IAq6CNdK/3MfQJmhCJb8YaJiaK4W6aRGrdQuQSTPHfERHCARt9BrOmEvTXAT257Ug==",
+      "dependencies": [
+        "@polkadot-api/metadata-builders",
+        "@polkadot-api/substrate-bindings",
+        "@polkadot-api/substrate-client",
+        "@polkadot-api/utils",
+        "rxjs"
+      ]
+    },
+    "@polkadot-api/substrate-bindings@0.6.0": {
+      "integrity": "sha512-lGuhE74NA1/PqdN7fKFdE5C1gNYX357j1tWzdlPXI0kQ7h3kN0zfxNOpPUN7dIrPcOFZ6C0tRRVrBylXkI6xPw==",
+      "dependencies": [
+        "@noble/hashes",
+        "@polkadot-api/utils",
+        "@scure/base",
+        "scale-ts"
+      ]
+    },
+    "@polkadot-api/substrate-client@0.1.4": {
+      "integrity": "sha512-MljrPobN0ZWTpn++da9vOvt+Ex+NlqTlr/XT7zi9sqPtDJiQcYl+d29hFAgpaeTqbeQKZwz3WDE9xcEfLE8c5A==",
+      "dependencies": [
+        "@polkadot-api/json-rpc-provider",
+        "@polkadot-api/utils"
+      ]
+    },
+    "@polkadot-api/utils@0.1.0": {
+      "integrity": "sha512-MXzWZeuGxKizPx2Xf/47wx9sr/uxKw39bVJUptTJdsaQn/TGq+z310mHzf1RCGvC1diHM8f593KrnDgc9oNbJA=="
+    },
+    "@polkadot/api-augment@13.2.1": {
+      "integrity": "sha512-NTkI+/Hm48eWc/4Ojh/5elxnjnow5ptXK97IZdkWAe7mWi9hJR05Uq5lGt/T/57E9LSRWEuYje8cIDS3jbbAAw==",
+      "dependencies": [
+        "@polkadot/api-base",
+        "@polkadot/rpc-augment",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-augment@13.2.1",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/api-base@13.2.1": {
+      "integrity": "sha512-00twdIjTjzdYNdU19i2YKLoWBmf2Yr6b3qrvqIVScHipUkKMbfFBgoPRB5FtcviBbEvLurgfyzHklwnrbWo8GQ==",
+      "dependencies": [
+        "@polkadot/rpc-core",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/util",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/api-derive@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-npxvS0kYcSFqmYv2G8QKWAJwFhIv/MBuGU0bV7cGP9K1A3j2Do3yYjvN1dTtY20jBavWNwmWFdXBV6/TRRsgmg==",
+      "dependencies": [
+        "@polkadot/api",
+        "@polkadot/api-augment",
+        "@polkadot/api-base",
+        "@polkadot/rpc-core",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/api@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-QvgKD3/q6KIU3ZuNYFJUNc6B8bGBoqeMF+iaPxJn3Twhh4iVD5XIymD5fVszSqiL1uPXMhzcWecjwE8rDidBoQ==",
+      "dependencies": [
+        "@polkadot/api-augment",
+        "@polkadot/api-base",
+        "@polkadot/api-derive",
+        "@polkadot/keyring@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/rpc-augment",
+        "@polkadot/rpc-core",
+        "@polkadot/rpc-provider@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-augment@13.2.1",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/types-create@13.2.1",
+        "@polkadot/types-known",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "eventemitter3",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/extension-dapp@0.54.1_@polkadot+api@13.2.1__@polkadot+util@13.2.2__@polkadot+util-crypto@13.2.2___@polkadot+util@13.2.2___@polkadot+x-randomvalues@13.2.2____@polkadot+util@13.2.2____@polkadot+wasm-util@7.4.1_____@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-wFvBlRXGOSn2Q8Cvp+Vnrx/3rrWVsoqpXknE5Nx60k/qmoTn65tYBr869iBT1yp251n00VK4PlkYwvhlheKdqw==",
+      "dependencies": [
+        "@polkadot/api",
+        "@polkadot/extension-inject",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "tslib"
+      ]
+    },
+    "@polkadot/extension-inject@0.54.1_@polkadot+api@13.2.1__@polkadot+util@13.2.2__@polkadot+util-crypto@13.2.2___@polkadot+util@13.2.2___@polkadot+x-randomvalues@13.2.2____@polkadot+util@13.2.2____@polkadot+wasm-util@7.4.1_____@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2_@polkadot+util@13.2.2": {
+      "integrity": "sha512-gVP0WWf6MKfnBAHLAIO3TyAVlpR3mQwrBM9N2xIOVWrh0scvmlDnNhYAc5BbX7mg8MkgTcXIVi76Oo3Fcb7cPQ==",
+      "dependencies": [
+        "@polkadot/api",
+        "@polkadot/rpc-provider@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "@polkadot/x-global",
+        "tslib"
+      ]
+    },
+    "@polkadot/keyring@13.2.2": {
+      "integrity": "sha512-h4bPU92CALAAC+QOp6+zttuhI5H0GKOUzj1qwnmoPVoWxh21FoekLAXO1YJlsKxciTDdK5OhjdNPOIqcF0GCXA=="
+    },
+    "@polkadot/keyring@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-h4bPU92CALAAC+QOp6+zttuhI5H0GKOUzj1qwnmoPVoWxh21FoekLAXO1YJlsKxciTDdK5OhjdNPOIqcF0GCXA==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "tslib"
+      ]
+    },
+    "@polkadot/networks@13.2.2": {
+      "integrity": "sha512-di3dLB9BcLQ9ARcDe/nizl7jZZnQbQlxB8kXtAXqTIVFtshtKT+zYcji6dTX7xX9/O9tZB7qnrvuIuI0MkwJ5A==",
+      "dependencies": [
+        "@polkadot/util",
+        "@substrate/ss58-registry",
+        "tslib"
+      ]
+    },
+    "@polkadot/rpc-augment@13.2.1": {
+      "integrity": "sha512-HkndaAJPR1fi2xrzvP3q4g48WUCb26btGTeg1AKG9FGx9P2dgtpaPRmbMitmgVSzzRurrkxf3Meip8nC7BwDeg==",
+      "dependencies": [
+        "@polkadot/rpc-core",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/rpc-core@13.2.1": {
+      "integrity": "sha512-hy0GksUlb/TfQ38m3ysIWj3qD+rIsyCdxx8Ug5rIx1u0odv86NZ7nTqtH066Ct2riVaPBgBkObFnlpDWTJ6auA==",
+      "dependencies": [
+        "@polkadot/rpc-augment",
+        "@polkadot/rpc-provider@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/util",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/rpc-provider@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-bbMVYHTNFUa89aY3UQ1hFYD+dP+v+0vhjsnHYYlv37rSUTqOGqW91rkHd63xYCpLAimFt7KRw8xR+SMSYiuDjw==",
+      "dependencies": [
+        "@polkadot/keyring@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-support@13.2.1",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "@polkadot/x-fetch",
+        "@polkadot/x-global",
+        "@polkadot/x-ws",
+        "@substrate/connect",
+        "eventemitter3",
+        "mock-socket",
+        "nock",
+        "tslib"
+      ]
+    },
+    "@polkadot/rpc-provider@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-U0aXFsQ/aRGtKYpDDM54pZ5ZdOVEz6Vngs//pS9GJqedh6tbsiU2/YPDjEKAKLCNlOt0XOtipJSjVoccrU8xCw==",
+      "dependencies": [
+        "@polkadot/keyring@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-support@14.2.3",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "@polkadot/x-fetch",
+        "@polkadot/x-global",
+        "@polkadot/x-ws",
+        "@substrate/connect",
+        "eventemitter3",
+        "mock-socket",
+        "nock",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-augment@13.2.1": {
+      "integrity": "sha512-FpV7/2kIJmmswRmwUbp41lixdNX15olueUjHnSweFk0xEn2Ur43oC0Y3eU3Ab7Y5gPJpceMCfwYz+PjCUGedDA==",
+      "dependencies": [
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-augment@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-FpV7/2kIJmmswRmwUbp41lixdNX15olueUjHnSweFk0xEn2Ur43oC0Y3eU3Ab7Y5gPJpceMCfwYz+PjCUGedDA==",
+      "dependencies": [
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-augment@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-P7+KqSTSA0vTAY420cny8VqP6SQwsmBF8XLFrikUpOvziyzgApCRu5mPKtpZcM1+oNNKXxYPeFJim0+rUR3C5w==",
+      "dependencies": [
+        "@polkadot/types@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@14.2.3",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-codec@13.2.1": {
+      "integrity": "sha512-tFAzzS8sMYItoD5a91sFMD+rskWyv4WjSmUZaj0Y4OfLtDAiQvgO0KncdGJIB6D+zZ/T7khpgsv/CZbN3YnezA==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/x-bigint",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-codec@14.2.3": {
+      "integrity": "sha512-Rz2SgKIGgRNkuLfjLzvwpxeJ+b+qls8Jdtt3rXX0/KB11rdazpLvw1lt07LJnMYWDRaLC/LHStskE0ekft/kVg==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/x-bigint",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-create@13.2.1": {
+      "integrity": "sha512-O/WKdsrNuMaZLf+XRCdum2xJYs5OKC6N3EMPF5Uhg10b80Y/hQCbzA/iWd3/aMNDLUA5XWhixwzJdrZWIMVIzg==",
+      "dependencies": [
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-create@14.2.3": {
+      "integrity": "sha512-riT17wCehR6B5ucsI9P9NoqjS2OAuPGSgvf/mSHF3cUo0Mu7u8SordkJg0ZOVl2MWc6u69OF7/1+zjea6L+3Mw==",
+      "dependencies": [
+        "@polkadot/types-codec@14.2.3",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-known@13.2.1": {
+      "integrity": "sha512-uz3c4/IvspLpgN8q15A+QH8KWFauzcrV3RfLFlMP2BkkF5qpOwNeP7c4U8j0CZGQySqBsJRCGWmgBXrXg669KA==",
+      "dependencies": [
+        "@polkadot/networks",
+        "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/types-create@13.2.1",
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-support@13.2.1": {
+      "integrity": "sha512-jSbbUTXU+yZJQPRAWmxaDoe4NRO6SjpZPzBIbpuiadx1slON8XB80fVYIGBXuM2xRVrNrB6fCjyCTG7Razj6Hg==",
+      "dependencies": [
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types-support@14.2.3": {
+      "integrity": "sha512-ZvFOMZLrt00hQCQCIYVienpNAjm2TJa7jCoacs68DO4sQK7TgiqkADhgmhiYl2tqkCV1Gbso+yzMKPgqILLNnA==",
+      "dependencies": [
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/types@13.2.1": {
+      "integrity": "sha512-5yQ0mHMNvwgXeHQ1RZOuHaeak3utAdcBqCpHoagnYrAnGHqtO7kg7YLtT4LkFw2nwL85axu8tOQMv6/3kpFy9w==",
+      "dependencies": [
+        "@polkadot/keyring@13.2.2",
+        "@polkadot/types-augment@13.2.1",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/types-create@13.2.1",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/types@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-5yQ0mHMNvwgXeHQ1RZOuHaeak3utAdcBqCpHoagnYrAnGHqtO7kg7YLtT4LkFw2nwL85axu8tOQMv6/3kpFy9w==",
+      "dependencies": [
+        "@polkadot/keyring@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-augment@13.2.1_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@13.2.1",
+        "@polkadot/types-create@13.2.1",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/types@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2": {
+      "integrity": "sha512-IG5hs7+NYz3T/n4l7/94p/gqIWwHYgnnqDrTQ8RWPVwA9BaF4D7Wx7esD1jc0Igt1FhuG60uceVfYrBIGCJLyw==",
+      "dependencies": [
+        "@polkadot/keyring@13.2.2_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-augment@14.2.3_@polkadot+util@13.2.2_@polkadot+util-crypto@13.2.2__@polkadot+util@13.2.2__@polkadot+x-randomvalues@13.2.2___@polkadot+util@13.2.2___@polkadot+wasm-util@7.4.1____@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2",
+        "@polkadot/types-codec@14.2.3",
+        "@polkadot/types-create@14.2.3",
+        "@polkadot/util",
+        "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2",
+        "rxjs",
+        "tslib"
+      ]
+    },
+    "@polkadot/util-crypto@13.2.2": {
+      "integrity": "sha512-C4vl07XC43vE6egd9LmSe0uOc7hAvBq6CIoILk5ZB95ABNBQSHOrS1pHugW4rJgVUiZgv8sdl+twmgisuSsSfg==",
+      "dependencies": [
+        "@noble/curves",
+        "@noble/hashes",
+        "@polkadot/networks"
+      ]
+    },
+    "@polkadot/util-crypto@13.2.2_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2": {
+      "integrity": "sha512-C4vl07XC43vE6egd9LmSe0uOc7hAvBq6CIoILk5ZB95ABNBQSHOrS1pHugW4rJgVUiZgv8sdl+twmgisuSsSfg==",
+      "dependencies": [
+        "@noble/curves",
+        "@noble/hashes",
+        "@polkadot/networks",
+        "@polkadot/util",
+        "@polkadot/wasm-crypto",
+        "@polkadot/wasm-util",
+        "@polkadot/x-bigint",
+        "@polkadot/x-randomvalues",
+        "@scure/base",
+        "tslib"
+      ]
+    },
+    "@polkadot/util@13.2.2": {
+      "integrity": "sha512-zhsGtR0J2a0ODesJNbCYqEXOL2rhPrmv1F6OB2JMdho7iOrkONck3PZaoT/Y0JF7IlHjGV8K6yrw7k9KUtFrEA==",
+      "dependencies": [
+        "@polkadot/x-bigint",
+        "@polkadot/x-global",
+        "@polkadot/x-textdecoder",
+        "@polkadot/x-textencoder",
+        "@types/bn.js",
+        "bn.js",
+        "tslib"
+      ]
+    },
+    "@polkadot/wasm-bridge@7.4.1_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2": {
+      "integrity": "sha512-tdkJaV453tezBxhF39r4oeG0A39sPKGDJmN81LYLf+Fihb7astzwju+u75BRmDrHZjZIv00un3razJEWCxze6g==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/wasm-util",
+        "@polkadot/x-randomvalues",
+        "tslib"
+      ]
+    },
+    "@polkadot/wasm-crypto-asmjs@7.4.1_@polkadot+util@13.2.2": {
+      "integrity": "sha512-pwU8QXhUW7IberyHJIQr37IhbB6DPkCG5FhozCiNTq4vFBsFPjm9q8aZh7oX1QHQaiAZa2m2/VjIVE+FHGbvHQ==",
+      "dependencies": [
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/wasm-crypto-init@7.4.1_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2": {
+      "integrity": "sha512-AVka33+f7MvXEEIGq5U0dhaA2SaXMXnxVCQyhJTaCnJ5bRDj0Xlm3ijwDEQUiaDql7EikbkkRtmlvs95eSUWYQ==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/wasm-bridge",
+        "@polkadot/wasm-crypto-asmjs",
+        "@polkadot/wasm-crypto-wasm",
+        "@polkadot/wasm-util",
+        "@polkadot/x-randomvalues",
+        "tslib"
+      ]
+    },
+    "@polkadot/wasm-crypto-wasm@7.4.1_@polkadot+util@13.2.2": {
+      "integrity": "sha512-PE1OAoupFR0ZOV2O8tr7D1FEUAwaggzxtfs3Aa5gr+yxlSOaWUKeqsOYe1KdrcjmZVV3iINEAXxgrbzCmiuONg==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/wasm-util",
+        "tslib"
+      ]
+    },
+    "@polkadot/wasm-crypto@7.4.1_@polkadot+util@13.2.2_@polkadot+x-randomvalues@13.2.2__@polkadot+util@13.2.2__@polkadot+wasm-util@7.4.1___@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2": {
+      "integrity": "sha512-kHN/kF7hYxm1y0WeFLWeWir6oTzvcFmR4N8fJJokR+ajYbdmrafPN+6iLgQVbhZnDdxyv9jWDuRRsDnBx8tPMQ==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/wasm-bridge",
+        "@polkadot/wasm-crypto-asmjs",
+        "@polkadot/wasm-crypto-init",
+        "@polkadot/wasm-crypto-wasm",
+        "@polkadot/wasm-util",
+        "@polkadot/x-randomvalues",
+        "tslib"
+      ]
+    },
+    "@polkadot/wasm-util@7.4.1_@polkadot+util@13.2.2": {
+      "integrity": "sha512-RAcxNFf3zzpkr+LX/ItAsvj+QyM56TomJ0xjUMo4wKkHjwsxkz4dWJtx5knIgQz/OthqSDMR59VNEycQeNuXzA==",
+      "dependencies": [
+        "@polkadot/util",
+        "tslib"
+      ]
+    },
+    "@polkadot/x-bigint@13.2.2": {
+      "integrity": "sha512-9ENDfG2wYqABWhQYYrbjJK0aPBvCqVPiFhBiKgIg6OTSJKJToa4Di9R8NxelF8eJTtz7DIvgf6gZY/jnKfbtWw==",
+      "dependencies": [
+        "@polkadot/x-global",
+        "tslib"
+      ]
+    },
+    "@polkadot/x-fetch@13.2.2": {
+      "integrity": "sha512-aDhd2kdx3JWvZSU4Ge966C0111CH8pCsDX7+9IsMGaZhjLF1NEo2xDjs+EwfUbSvNk68A4UVeJsXjG+IVor/ug==",
+      "dependencies": [
+        "@polkadot/x-global",
+        "node-fetch",
+        "tslib"
+      ]
+    },
+    "@polkadot/x-global@13.2.2": {
+      "integrity": "sha512-a+iKD7JXxDRtYVo0bp1+HHlaem6MkUHU2yE0cx2e97p9x+IKyNEY58D0L5P66kszLvhFw+t3Jq+qHIj0+2YxkQ==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "@polkadot/x-randomvalues@13.2.2_@polkadot+util@13.2.2_@polkadot+wasm-util@7.4.1__@polkadot+util@13.2.2": {
+      "integrity": "sha512-1UNImkS5PAaGHeIl2DlMjgt2iN7nlclzwrYhmxd0e9Z11RQqavGqi1a02HGREgnUu+wJ7eHmPMVe6K96+cL+aQ==",
+      "dependencies": [
+        "@polkadot/util",
+        "@polkadot/wasm-util",
+        "@polkadot/x-global",
+        "tslib"
+      ]
+    },
+    "@polkadot/x-textdecoder@13.2.2": {
+      "integrity": "sha512-elpIrgdq22yyvt4fzxwb2IRJEpswPVwizzauRipVy3uUmI/lC2f7D7u9jrC554Xy8UrrAPExX1sWJCxZA8DZ/g==",
+      "dependencies": [
+        "@polkadot/x-global",
+        "tslib"
+      ]
+    },
+    "@polkadot/x-textencoder@13.2.2": {
+      "integrity": "sha512-nxlNvK5h0KPCaAE/cx92e8JCPAlmFGbuXC9l03C1Ei1wAnOcWuJWRIk2qOkCEYkpT+G0jITPN4dgk634+pBQSw==",
+      "dependencies": [
+        "@polkadot/x-global",
+        "tslib"
+      ]
+    },
+    "@polkadot/x-ws@13.2.2": {
+      "integrity": "sha512-WEygcHPB55cKLiNoejJ0Lq3Z1fb4hUO3FmYTXdpHgk0xIOfYDrr7rTlI2cZ4Nb32MofeehN/ZStmEW5Edib6TQ==",
+      "dependencies": [
+        "@polkadot/x-global",
+        "tslib",
+        "ws"
+      ]
+    },
+    "@scure/base@1.1.9": {
+      "integrity": "sha512-8YKhl8GHiNI/pU2VMaofa2Tor7PJRAjwQLBBuilkJ9L5+13yVbC7JO/wS7piioAvPSwR3JKM1IJ/u4xQzbcXKg=="
+    },
+    "@substrate/connect-extension-protocol@2.2.1": {
+      "integrity": "sha512-GoafTgm/Jey9E4Xlj4Z5ZBt/H4drH2CNq8VrAro80rtoznrXnFDNVivLQzZN0Xaj2g8YXSn9pC9Oc9IovYZJXw=="
+    },
+    "@substrate/connect-known-chains@1.7.0": {
+      "integrity": "sha512-Qf+alxEPmNycUyrPkXWrlFA97punnBCGxSWqiLG1CNu+jQoFYqi8x7gZYfqmdUHDY4nG1F84KHPPk7Zy4ngSfg=="
+    },
+    "@substrate/connect@0.8.11_smoldot@2.0.26": {
+      "integrity": "sha512-ofLs1PAO9AtDdPbdyTYj217Pe+lBfTLltdHDs3ds8no0BseoLeAGxpz1mHfi7zB4IxI3YyAiLjH6U8cw4pj4Nw==",
+      "dependencies": [
+        "@substrate/connect-extension-protocol",
+        "@substrate/connect-known-chains",
+        "@substrate/light-client-extension-helpers",
+        "smoldot"
+      ]
+    },
+    "@substrate/light-client-extension-helpers@1.0.0_smoldot@2.0.26_@polkadot-api+substrate-client@0.1.4_rxjs@7.8.1": {
+      "integrity": "sha512-TdKlni1mBBZptOaeVrKnusMg/UBpWUORNDv5fdCaJklP4RJiFOzBCrzC+CyVI5kQzsXBisZ+2pXm+rIjS38kHg==",
+      "dependencies": [
+        "@polkadot-api/json-rpc-provider",
+        "@polkadot-api/json-rpc-provider-proxy",
+        "@polkadot-api/observable-client",
+        "@polkadot-api/substrate-client",
+        "@substrate/connect-extension-protocol",
+        "@substrate/connect-known-chains",
+        "rxjs",
+        "smoldot"
+      ]
+    },
+    "@substrate/ss58-registry@1.51.0": {
+      "integrity": "sha512-TWDurLiPxndFgKjVavCniytBIw+t4ViOi7TYp9h/D0NMmkEc9klFTo+827eyEJ0lELpqO207Ey7uGxUa+BS1jQ=="
+    },
+    "@types/bn.js@5.1.6": {
+      "integrity": "sha512-Xh8vSwUeMKeYYrj3cX4lGQgFSF/N03r+tv4AiLl1SucqV+uTQpxRcnM8AkXKHwYP9ZPXOYXRr2KPXpVlIvqh9w==",
+      "dependencies": [
+        "@types/node"
+      ]
+    },
+    "@types/node@22.5.4": {
+      "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
+      "dependencies": [
+        "undici-types"
+      ]
+    },
+    "bn.js@5.2.1": {
+      "integrity": "sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ=="
+    },
+    "data-uri-to-buffer@4.0.1": {
+      "integrity": "sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A=="
+    },
+    "debug@4.3.7": {
+      "integrity": "sha512-Er2nc/H7RrMXZBFCEim6TCmMk02Z8vLC2Rbi1KEBggpo0fS6l0S1nnapwmIi3yW/+GOJap1Krg4w0Hg80oCqgQ==",
+      "dependencies": [
+        "ms"
+      ]
+    },
+    "eventemitter3@5.0.1": {
+      "integrity": "sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA=="
+    },
+    "fetch-blob@3.2.0": {
+      "integrity": "sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==",
+      "dependencies": [
+        "node-domexception",
+        "web-streams-polyfill"
+      ]
+    },
+    "formdata-polyfill@4.0.10": {
+      "integrity": "sha512-buewHzMvYL29jdeQTVILecSaZKnt/RJWjoZCF5OW60Z67/GmSLBkOFM7qh1PI3zFNtJbaZL5eQu1vLfazOwj4g==",
+      "dependencies": [
+        "fetch-blob"
+      ]
+    },
+    "fs@0.0.1-security": {
+      "integrity": "sha512-3XY9e1pP0CVEUCdj5BmfIZxRBTSDycnbqhIOGec9QYtmVH2fbLpj86CFWkrNOkt/Fvty4KZG5lTglL9j/gJ87w=="
+    },
+    "json-stringify-safe@5.0.1": {
+      "integrity": "sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA=="
+    },
+    "mock-socket@9.3.1": {
+      "integrity": "sha512-qxBgB7Qa2sEQgHFjj0dSigq7fX4k6Saisd5Nelwp2q8mlbAFh5dHV9JTTlF8viYJLSSWgMCZFUom8PJcMNBoJw=="
+    },
+    "ms@2.1.3": {
+      "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
+    },
+    "nock@13.5.6": {
+      "integrity": "sha512-o2zOYiCpzRqSzPj0Zt/dQ/DqZeYoaQ7TUonc/xUPjCGl9WeHpNbxgVvOquXYAaJzI0M9BXV3HTzG0p8IUAbBTQ==",
+      "dependencies": [
+        "debug",
+        "json-stringify-safe",
+        "propagate"
+      ]
+    },
+    "node-domexception@1.0.0": {
+      "integrity": "sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ=="
+    },
+    "node-fetch@3.3.2": {
+      "integrity": "sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==",
+      "dependencies": [
+        "data-uri-to-buffer",
+        "fetch-blob",
+        "formdata-polyfill"
+      ]
+    },
+    "propagate@2.0.1": {
+      "integrity": "sha512-vGrhOavPSTz4QVNuBNdcNXePNdNMaO1xj9yBeH1ScQPjk/rhg9sSlCXPhMkFuaNNW/syTvYqsnbIJxMBfRbbag=="
+    },
+    "rxjs@7.8.1": {
+      "integrity": "sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "scale-ts@1.6.1": {
+      "integrity": "sha512-PBMc2AWc6wSEqJYBDPcyCLUj9/tMKnLX70jLOSndMtcUoLQucP/DM0vnQo1wJAYjTrQiq8iG9rD0q6wFzgjH7g=="
+    },
+    "smoldot@2.0.26": {
+      "integrity": "sha512-F+qYmH4z2s2FK+CxGj8moYcd1ekSIKH8ywkdqlOz88Dat35iB1DIYL11aILN46YSGMzQW/lbJNS307zBSDN5Ig==",
+      "dependencies": [
+        "ws"
+      ]
+    },
+    "tslib@2.8.1": {
+      "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="
+    },
+    "undici-types@6.19.8": {
+      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
+    },
+    "web-streams-polyfill@3.3.3": {
+      "integrity": "sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw=="
+    },
+    "ws@8.18.0": {
+      "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@std/uuid@^1.0.4",
+      "npm:@autonomys/auto-utils@^1.0.4"
+    ]
+  }
+}

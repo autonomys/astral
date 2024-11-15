@@ -29,8 +29,8 @@
       "path": "../indexers/gemini-3h"
     },
     {
-      "name": "indexer - Gemini 3G",
-      "path": "../indexers/gemini-3g"
+      "name": "Taskboard",
+      "path": "../indexers/taskboard"
     }
   ],
   "settings": {
@@ -56,6 +56,7 @@
       "gemini",
       "graphiql",
       "leaderboard",
+      "polkadot",
       "siwe",
       "subscan",
       "subspace",
