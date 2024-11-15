@@ -26,24 +26,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-
-      - name: Build processor image
-        run: docker build . --target processor -t squid-processor --tag $PROCESSOR_NAME
-        working-directory: indexers/squid-blockexplorer
-
-      - name: Build API server image
-        run: docker build . --target query-node -t graphql-server --tag $API_SERVER_NAME
-        working-directory: indexers/squid-blockexplorer
       
       - name: Build Health check image
         run: docker build . --file Dockerfile --tag $HEALTH_CHECK_NAME
         working-directory: health-check
-
-      - name: Push processor image
-        run: docker push $PROCESSOR_NAME
-
-      - name: Push API server image
-        run: docker push $API_SERVER_NAME
       
       - name: Push Health check image
         run: docker push $HEALTH_CHECK_NAME
