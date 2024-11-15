@@ -78,7 +78,7 @@ export const EXTERNAL_ROUTES = {
   novaExplorer: 'https://nova.subspace.network/',
   polkadot:
     'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
-  subscan: 'https://subspace.subscan.io/',
+  subscan: 'https://autonomys.subscan.io/',
   spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
 }
 
