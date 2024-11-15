@@ -2,31 +2,20 @@ import { Pool, PoolClient } from "pg";
 import { LEADERBOARD_ENTRY_TYPE } from "../constants";
 import { connectToDB, entryTypeToTable, queries } from "../utils/db";
 
-interface Job {
-  data: {
-    blockNumber: number;
-  };
-}
-
 interface UpdatedTable {
   table: string;
   rowCount: number;
 }
 
 interface LeaderboardResult {
-  blockNumber: number;
   updatedTables: UpdatedTable[];
   query: string[];
 }
 
-export const leaderboardSortAndRank = async (
-  job: Job
-): Promise<LeaderboardResult> => {
-  const { blockNumber } = job.data;
+export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
   const pool: Pool = await connectToDB();
 
   const result: LeaderboardResult = {
-    blockNumber,
     updatedTables: [],
     query: [],
   };
@@ -37,12 +26,18 @@ export const leaderboardSortAndRank = async (
       await client.query("BEGIN");
 
       const updateQueries = Object.keys(LEADERBOARD_ENTRY_TYPE).map((key) => {
-        const table = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key]);
-        const rankingQuery = queries.updateLeaderboardRanking(table);
+        const sourceTable = entryTypeToTable(
+          LEADERBOARD_ENTRY_TYPE[key] + "Historie"
+        );
+        const targetTable = entryTypeToTable(LEADERBOARD_ENTRY_TYPE[key]);
+        const rankingQuery = queries.updateLeaderboardRanking(
+          sourceTable,
+          targetTable
+        );
         return client.query(rankingQuery).then((queryResult) => {
           result.query.push(rankingQuery);
           return {
-            table,
+            table: targetTable,
             rowCount: queryResult.rowCount,
           };
         });

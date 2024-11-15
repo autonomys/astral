@@ -156,14 +156,6 @@ const project: SubstrateProject = {
               method: "WithdrewStake",
             },
           },
-          {
-            kind: SubstrateHandlerKind.Block,
-            handler: "handleSortAndRankLeaderboard",
-            filter: {
-              // This is the frequency of the leaderboard sort and rank
-              modulo: 50,
-            },
-          },
         ],
       },
     },

@@ -32,3 +32,28 @@ export const checkRedisConnection = async (): Promise<void> => {
     });
   });
 };
+
+export const getStoredValue = async (key: string): Promise<string | null> => {
+  const redis = new Redis(connection);
+  return new Promise((resolve, reject) => {
+    redis.get(key, (err, reply) => {
+      redis.disconnect();
+      if (err) reject(err);
+      else resolve(reply);
+    });
+  });
+};
+
+export const setRedisValue = async (
+  key: string,
+  value: string
+): Promise<void> => {
+  const redis = new Redis(connection);
+  return new Promise((resolve, reject) => {
+    redis.set(key, value, (err) => {
+      redis.disconnect();
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+};

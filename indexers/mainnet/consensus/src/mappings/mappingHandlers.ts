@@ -13,7 +13,6 @@ import {
   createAndSaveLog,
 } from "./db";
 import {
-  consensusUniqueRowsMapping,
   getBlockAuthor,
   preventIndexingTooCloseToTheHeadOfTheChain,
 } from "./helper";
@@ -98,8 +97,6 @@ export async function handleBlock(_block: SubstrateBlock): Promise<void> {
       );
     })
   );
-
-  await consensusUniqueRowsMapping(height);
 }
 
 export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {

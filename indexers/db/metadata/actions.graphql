@@ -1,9 +1,13 @@
 type Mutation {
-  slackNotification(args: SlackNotificationInput!): SlackNotificationOutput
+  slackNotification(
+    args: SlackNotificationInput!
+  ): SlackNotificationOutput
 }
 
 type Mutation {
-  updateAccount(args: UpdateAccountInput!): UpdateAccountOutput
+  updateAccount(
+    args: UpdateAccountInput!
+  ): UpdateAccountOutput
 }
 
 input UpdateAccountInput {
@@ -26,3 +30,4 @@ type UpdateAccountOutput {
 type SlackNotificationOutput {
   title: String!
 }
+

@@ -42,7 +42,6 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: process.env.RPC_URLS!?.split(",") as string[] | string,
-    dictionary: process.env.DICTIONARY_URL!,
     // @ts-ignore
     types: {
       Solution: {
