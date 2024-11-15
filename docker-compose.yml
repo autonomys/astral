@@ -14,7 +14,7 @@ services:
         hard: 65536 # Hard limit for open files
     image: caddy:latest
     ports:
-      - "8000:9944" # Map external 8000
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./indexers/Caddyfile:/etc/caddy/Caddyfile # Mount the Caddyfile
       - caddy_data:/data # Volume for Let's Encrypt certificates
@@ -31,6 +31,7 @@ services:
     ports:
       - "30333:30333/tcp"
       - "30433:30433/tcp"
+      - "127.0.0.1:9944:9944/tcp"
     restart: unless-stopped
     command:
       [
@@ -39,6 +40,10 @@ services:
         "${NETWORK_ID}",
         "--base-path",
         "/var/subspace",
+        "--state-pruning",
+        "archive",
+        "--blocks-pruning",
+        "archive",
         "--listen-on",
         "/ip4/0.0.0.0/tcp/30333",
         "--dsn-listen-on",
@@ -168,7 +173,7 @@ services:
     profiles: [dictionary, indexers]
     image: onfinality/subql-query:latest
     ports:
-      - "${DICTIONARY_SUBQUERY_NODE_PORT}:3000"
+      - "127.0.0.1:${DICTIONARY_SUBQUERY_NODE_PORT}:3000"
     depends_on:
       "postgres":
         condition: service_healthy
