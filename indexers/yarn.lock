@@ -1281,6 +1281,15 @@
     "@polkadot/util-crypto" "13.2.1"
     tslib "^2.8.0"
 
+"@polkadot/keyring@^13.2.2":
+  version "13.2.3"
+  resolved "https://registry.yarnpkg.com/@polkadot/keyring/-/keyring-13.2.3.tgz#f974c2d61bc2aa009e2728ab53dfcc83f003d0da"
+  integrity sha512-pgTo6DXNXub0wGD+MnVHYhKxf80Jl+QMOCb818ioGdXz++Uw4mTueFAwtB+N7TGo0HafhChUiNJDxFdlDkcAng==
+  dependencies:
+    "@polkadot/util" "13.2.3"
+    "@polkadot/util-crypto" "13.2.3"
+    tslib "^2.8.0"
+
 "@polkadot/networks@13.1.1", "@polkadot/networks@^13.0.2":
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/@polkadot/networks/-/networks-13.1.1.tgz#e1a05ef6f78ffc37272c6474df7b55244b311f9c"
@@ -1655,7 +1664,7 @@
     "@scure/base" "^1.1.7"
     tslib "^2.8.0"
 
-"@polkadot/util-crypto@^13.2.2":
+"@polkadot/util-crypto@13.2.3", "@polkadot/util-crypto@^13.2.2":
   version "13.2.3"
   resolved "https://registry.yarnpkg.com/@polkadot/util-crypto/-/util-crypto-13.2.3.tgz#4e43a0554a5af2a79bade26c1cf623b7a4590645"
   integrity sha512-5sbggmLbn5eiuVMyPROPlT5roHRqdKHOfSpioNbGvGIZ1qIWVoC1RfsK0NWJOVGDzy6DpQe0KYT/kgcU5Xsrzw==
