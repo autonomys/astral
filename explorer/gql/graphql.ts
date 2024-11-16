@@ -16042,6 +16042,16 @@ export type TransfersByAccountIdQueryVariables = Exact<{
 
 export type TransfersByAccountIdQuery = { __typename?: 'query_root', consensus_transfers_aggregate: { __typename?: 'consensus_transfers_aggregate', aggregate?: { __typename?: 'consensus_transfers_aggregate_fields', count: number } | null }, consensus_transfers: Array<{ __typename?: 'consensus_transfers', id: string, extrinsic_id: string, event_id: string, from: string, to: string, value: any, fee: any, success: boolean, timestamp: any, date: any, created_at: any }> };
 
+export type BalanceHistoryByAccountIdQueryVariables = Exact<{
+  limit: Scalars['Int']['input'];
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<Consensus_Account_Histories_Bool_Exp>;
+  orderBy: Array<Consensus_Account_Histories_Order_By> | Consensus_Account_Histories_Order_By;
+}>;
+
+
+export type BalanceHistoryByAccountIdQuery = { __typename?: 'query_root', consensus_account_histories_aggregate: { __typename?: 'consensus_account_histories_aggregate', aggregate?: { __typename?: 'consensus_account_histories_aggregate_fields', count: number } | null }, consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', reserved: any, total?: any | null, nonce: any, free: any, created_at: any, updated_at: any, _block_range: any, id: any }> };
+
 export type AllRewardForAccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
 }>;

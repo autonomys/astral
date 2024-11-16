@@ -21,6 +21,7 @@ import { AccountExtrinsicList } from './AccountExtrinsicList'
 import { AccountGraphs } from './AccountGraphs'
 import { AccountRewardsHistory } from './AccountRewardsHistory'
 import { AccountTransfersList } from './AccountTransfersList'
+import { BalanceHistory } from './BalanceHistory'
 import { QUERY_ACCOUNT_BY_ID } from './query'
 
 export const Account: FC = () => {
@@ -85,6 +86,9 @@ export const Account: FC = () => {
               </Tab>
               <Tab title='Transfers'>
                 <AccountTransfersList accountId={accountId} />
+              </Tab>
+              <Tab title='Balance History'>
+                <BalanceHistory accountId={accountId} />
               </Tab>
             </PageTabs>
           </>
