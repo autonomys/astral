@@ -11,7 +11,6 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
 } from 'constants/routes'
 import { WalletType } from 'constants/wallet'
-import dayjs from 'dayjs'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
@@ -20,6 +19,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
 import { formatUnitsToNumber } from 'utils/number'
+import { currentYear } from 'utils/time'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
@@ -212,7 +212,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
             <div className='flex'>
               <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
                 <p className='text-gray text-center text-sm sm:text-left'>
-                  © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                  © {currentYear()} Subspace Labs, Inc. All Rights Reserved
                 </p>
               </div>
             </div>

@@ -2,7 +2,6 @@ import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { List, StyledListItem } from 'components/common/List'
 import { StyledButton } from 'components/common/StyledButton'
 import { QUERY_EXTRINSIC_BY_HASH } from 'components/Consensus/Extrinsic/query'
-import { TOKEN } from 'constants/general'
 import { ROUTE_API, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
 import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -16,7 +15,7 @@ import { hasValue, useQueryStates } from 'states/query'
 export const ClaimStakingToken: FC = () => {
   const { inView, ref } = useInView()
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const { network } = useChains()
+  const { network, tokenSymbol } = useChains()
 
   const [claimIsPending, setClaimIsPending] = useState(false)
   const [claimIsFinalized, setClaimIsFinalized] = useState(false)
@@ -92,7 +91,7 @@ export const ClaimStakingToken: FC = () => {
               </p>
               <p>
                 {' '}
-                claim <b>100 {TOKEN.symbol}</b> to cover the operator stake.
+                claim <b>100 {tokenSymbol}</b> to cover the operator stake.
               </p>
             </>
           }

@@ -1,4 +1,6 @@
-# Subspace block explorer frontend
+# Autonomys Block Explorer Frontend
+
+![Autonomys Banner](https://github.com/autonomys/astral/blob/main/.github/images/autonomys-banner.webp)
 
 [Astral](../README.md)
 

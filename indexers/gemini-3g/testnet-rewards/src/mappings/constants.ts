@@ -1,2 +1,0 @@
-export const STAKE_WARS_START_BLOCK = 334753;
-export const STAKE_WARS_END_BLOCK = 1040169;

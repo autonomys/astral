@@ -17,7 +17,9 @@
   "scripts": {
     "console": "hasura console",
     "metadata": "hasura metadata apply --skip-update-check",
-    "start": "yarn metadata && yarn console"
+    "migrate": "hasura migrate apply --database-name default",
+    "start": "yarn metadata && yarn migrate && yarn console",
+    "apply-seeds:mainnet": "hasura seeds apply --file genesis_allocation.sql --database-name default"
   },
   "devDependencies": {
     "hasura-cli": "2.36.2"

@@ -6,8 +6,6 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -22,8 +20,6 @@ import { sort } from 'utils/sort'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EVENTS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Row = EventsByBlockIdQuery['consensus_events'][number]
 

@@ -1,0 +1,55 @@
+table:
+  name: accounts
+  schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+object_relationships:
+  - name: profile
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: account_profiles
+          schema: consensus
+array_relationships:
+  - name: extrinsics
+    using:
+      manual_configuration:
+        column_mapping:
+          id: signer
+        insertion_order: null
+        remote_table:
+          name: extrinsics
+          schema: consensus
+  - name: rewards
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: rewards
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - created_at
+        - free
+        - nonce
+        - reserved
+        - total
+        - updated_at
+        - id
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

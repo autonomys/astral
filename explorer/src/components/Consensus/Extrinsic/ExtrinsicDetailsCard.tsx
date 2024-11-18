@@ -3,16 +3,13 @@ import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
 import { parseArgs } from 'utils/indexerParsing'
 import { shortString } from 'utils/string'
-
-dayjs.extend(relativeTime)
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
 type Props = {
   extrinsic: NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>
@@ -43,7 +40,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
             <div className='w-full md:flex-1'>
               <List>
                 <StyledListItem title='Timestamp'>
-                  {dayjs(extrinsic.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
+                  {utcToLocalTime(extrinsic.timestamp)}
                 </StyledListItem>
                 <StyledListItem title='Block Number'>
                   <Link
@@ -53,7 +50,7 @@ export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }
                   </Link>
                 </StyledListItem>
                 <StyledListItem title='Block Time'>
-                  {dayjs(extrinsic.timestamp).fromNow(true)}
+                  {utcToLocalRelativeTime(extrinsic.timestamp)}
                 </StyledListItem>
                 <StyledListItem title='Hash'>
                   <CopyButton value={extrinsic.hash} message='Hash copied'>

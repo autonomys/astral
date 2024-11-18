@@ -29,6 +29,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.leaderboard,
     title: 'Leaderboard',
+    networks: [NetworkId.GEMINI_3H],
   },
   {
     name: Routes.domains,
@@ -75,9 +76,9 @@ export const EXTERNAL_ROUTES = {
     subSocial: 'https://app.subsocial.network/@NetworkSubspace',
   },
   novaExplorer: 'https://nova.subspace.network/',
-  polkadot:
-    'https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.gemini-3h.subspace.network%2Fws#/explorer',
-  subscan: 'https://subspace.subscan.io/',
+  polkadot: (network: NetworkId): string =>
+    `https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc-0.${network}.subspace.network%2Fws#/explorer`,
+  subscan: 'https://autonomys.subscan.io/',
   spaceAcres: 'https://api.github.com/repos/subspace/space-acres/releases/latest',
 }
 
@@ -88,6 +89,11 @@ export const INTERNAL_ROUTES = {
       path: ':blockId',
       page: (chain: string, domain: string, blockId: number): string =>
         `/${chain}/${domain}/blocks/${blockId}`,
+    },
+    hash: {
+      path: ':blockHash',
+      page: (chain: string, domain: string, blockHash: string): string =>
+        `/${chain}/${domain}/blocks/${blockHash}`,
     },
     list: 'blocks',
   },
@@ -162,7 +168,7 @@ export const INTERNAL_ROUTES = {
     operators: 'operators',
     nominators: 'nominators',
   },
-  notFound: '/404',
+  notFound: '/error/404',
   catchAll: '*',
 }
 

@@ -1,11 +1,8 @@
-import dayjs from 'dayjs'
-import Link from 'next/link'
-
-import type { FC } from 'react'
-
-// common
 import { LogoIcon } from 'components/icons'
 import { EXTERNAL_ROUTES } from 'constants/routes'
+import Link from 'next/link'
+import type { FC } from 'react'
+import { currentYear } from 'utils/time'
 
 const Footer: FC = () => {
   return (
@@ -21,7 +18,7 @@ const Footer: FC = () => {
               </div>
               <div className='container mx-auto hidden flex-col flex-wrap pb-1 pr-5 pt-20 sm:flex sm:flex-row'>
                 <p className='text-center text-xs text-whiteOpaque sm:text-left'>
-                  © {dayjs().year()} Autonomys Labs, Inc. All Rights Reserved
+                  © {currentYear()} Autonomys Labs, Inc. All Rights Reserved
                 </p>
               </div>
             </div>
@@ -155,7 +152,7 @@ const Footer: FC = () => {
         </div>
         <div className='container mx-auto flex flex-col flex-wrap pb-1 pr-5 pt-20 sm:hidden sm:flex-row'>
           <p className='text-center text-sm text-whiteOpaque sm:text-left'>
-            © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+            © {currentYear()} Subspace Labs, Inc. All Rights Reserved
           </p>
         </div>
       </div>

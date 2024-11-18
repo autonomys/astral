@@ -6,8 +6,6 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -19,10 +17,9 @@ import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EXTRINSICS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   isDesktop?: boolean
@@ -92,7 +89,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-extrinsic-action`}>
-            {dayjs(row.original.timestamp).fromNow(true)}
+            {utcToLocalRelativeTime(row.original.timestamp)}
           </div>
         ),
       },

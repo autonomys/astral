@@ -1,14 +1,11 @@
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { BlockByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { FC } from 'react'
 import { shortString } from 'utils/string'
+import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 import { BlockAuthor } from './BlockAuthor'
-
-dayjs.extend(relativeTime)
 
 type Props = {
   block: NonNullable<BlockByIdQuery['consensus_blocks'][number]>
@@ -44,11 +41,9 @@ export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
                 />
               </CopyButton>
             </StyledListItem>
-            <StyledListItem title='Timestamp'>
-              {dayjs(block.timestamp).format('DD MMM YYYY | HH:mm:ss(Z)')}
-            </StyledListItem>
+            <StyledListItem title='Timestamp'>{utcToLocalTime(block.timestamp)}</StyledListItem>
             <StyledListItem title='Block Time'>
-              {dayjs(block.timestamp).fromNow(true)}
+              {utcToLocalRelativeTime(block.timestamp)}
             </StyledListItem>
             <StyledListItem title='Hash'>
               <CopyButton value={block.hash} message='Hash copied'>

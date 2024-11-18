@@ -1,12 +1,32 @@
-version: "3.9"
-
 services:
   postgres:
     volumes:
       - type: bind
-        source: /home/ubuntu/postgresql/conf/postgresql.conf
+        source: /home/ubuntu/subql/postgresql/conf/postgresql.conf
         target: /etc/postgresql/postgresql.conf
         read_only: true
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  agent:
+    container_name: newrelic-infra
+    image: newrelic/infrastructure:latest
+    cap_add:
+      - SYS_PTRACE
+    network_mode: bridge
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      NRIA_LICENSE_KEY: "${NR_API_KEY}"
+      NRIA_DISPLAY_NAME: "${NR_AGENT_IDENTIFIER}"
+    restart: unless-stopped
+
+  node:
     logging:
       driver: loki
       options:
@@ -19,67 +39,31 @@ services:
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  taurus_dictionary_subquery_node:
+  dictionary_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  taurus_dictionary_graphql_engine:
+  dictionary_graphql_engine:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_dictionary_subquery_node:
+  consensus_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  gemini_3h_dictionary_graphql_engine:
+  leaderboard_subquery_node:
     logging:
       driver: loki
       options:
         loki-url: "https://logging.subspace.network/loki/api/v1/push"
 
-  taurus_consensus_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  taurus_leaderboard_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  taurus_staking_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3h_consensus_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3h_leaderboard_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3h_staking_subquery_node:
-    logging:
-      driver: loki
-      options:
-        loki-url: "https://logging.subspace.network/loki/api/v1/push"
-
-  gemini_3g_testnet_rewards_subquery_node:
+  staking_subquery_node:
     logging:
       driver: loki
       options:

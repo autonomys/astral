@@ -7,8 +7,6 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { EventsQuery, EventsQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -20,10 +18,9 @@ import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { numberWithCommas } from 'utils/number'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_EVENTS } from './query'
-
-dayjs.extend(relativeTime)
 
 type Row = EventsQuery['consensus_events'][0]
 
@@ -142,7 +139,7 @@ export const EventList: FC = () => {
         accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: false,
-        cell: ({ row }: Cell<Row>) => dayjs(row.original.block?.timestamp).fromNow(true),
+        cell: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.block?.timestamp),
       },
     ],
     [network, section],

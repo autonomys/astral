@@ -4,10 +4,8 @@ import { DocumentNode, useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, TOKEN } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import {
   AccountTransferSenderTotalCountQuery,
   AccountTransferSenderTotalCountQueryVariables,
@@ -28,10 +26,9 @@ import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { AccountIcon } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
-
-dayjs.extend(relativeTime)
 
 type LeaderboardListProps = {
   title: string
@@ -73,7 +70,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   })
   const apolloClient = useApolloClient()
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
-  const { network } = useChains()
+  const { network, tokenDecimals } = useChains()
   const inFocus = useWindowFocus()
 
   const columns = useMemo(() => {
@@ -128,7 +125,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`last_contribution_at-${row.original.id}`}>
-            {dayjs(row.original.last_contribution_at).fromNow(true) + ' ago'}
+            {utcToLocalRelativeTime(row.original.last_contribution_at)}
           </div>
         ),
       })
@@ -227,18 +224,18 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       conditions['value'] = {}
       if (filters.valueMin) {
         conditions.value._gte = BigInt(
-          Math.floor(parseFloat(filters.valueMin) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.valueMin) * 10 ** tokenDecimals),
         ).toString()
       }
       if (filters.valueMax) {
         conditions.value._lte = BigInt(
-          Math.floor(parseFloat(filters.valueMax) * 10 ** TOKEN.decimals),
+          Math.floor(parseFloat(filters.valueMax) * 10 ** tokenDecimals),
         ).toString()
       }
     }
 
     return conditions
-  }, [availableColumns, filters, myPositionOnly, subspaceAccount])
+  }, [availableColumns, filters, myPositionOnly, subspaceAccount, tokenDecimals])
 
   const variables = useMemo(
     () => ({

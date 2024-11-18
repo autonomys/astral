@@ -11,8 +11,6 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
   Routes,
 } from 'constants/routes'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
@@ -22,13 +20,12 @@ import { useSearchParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
 interface LastExtrinsicsProps {
   subspaceAccount: string
 }
-
-dayjs.extend(relativeTime)
 
 export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
@@ -105,8 +102,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
                         extrinsic.id,
                       )}
                     >
-                      <Tooltip text={dayjs(extrinsic.timestamp).toString()}>
-                        {dayjs(extrinsic.timestamp).fromNow(true)}
+                      <Tooltip text={extrinsic.timestamp}>
+                        {utcToLocalRelativeTime(extrinsic.timestamp)}
                       </Tooltip>
                     </Link>
                   }

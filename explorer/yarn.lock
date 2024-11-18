@@ -98,17 +98,17 @@
   dependencies:
     node-fetch "^2.6.1"
 
-"@autonomys/auto-consensus@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-0.7.0.tgz#009f727d284626ad75e8bbab6f43d3d6b3a81634"
-  integrity sha512-NCOsGn0G2b1pxsVypvQ7DxjH+U5jq9xaqW5yPTW4T8bx93YhpRexEQFTTrbajsyIK0oXOjtvphZhSkS5tTFviQ==
+"@autonomys/auto-consensus@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-consensus/-/auto-consensus-1.0.7.tgz#db532f3399746cffcded88406f5cc305f54f9f1b"
+  integrity sha512-eajeJFZoNaV7CRdp1p3hRJ1EO0qsoZh9eARnvkZKTv3wKKSk2fV/juKbbEvAZWtPTQ+hdhyUxiwV7OgwzKIN6Q==
   dependencies:
-    "@autonomys/auto-utils" "^0.7.0"
+    "@autonomys/auto-utils" "^1.0.7"
 
-"@autonomys/auto-utils@^0.7.0":
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-0.7.0.tgz#985eda657f9b631eabe2b4546d575fdf82c986d6"
-  integrity sha512-bntezffodw5HjOL0tPtH6xq6Vl7RnvT+JRdgUjVl0qqmWMvwDNTh3SPgbZ3FPO8NwWC+2T9eswCiBaLqMg9uZA==
+"@autonomys/auto-utils@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@autonomys/auto-utils/-/auto-utils-1.0.7.tgz#477127c60a3b52a0652a3da9d76233bedbe7f3ed"
+  integrity sha512-4gGTsCiPRNYzZbLxHYwsFLjJ9EMB9kRDWUrGwvMLTRYuEe11bo5/cU3xYMe0ba21ugfkwrK5hXfk0ojeAr4IAg==
   dependencies:
     "@polkadot/api" "^13.1.1"
     "@polkadot/extension-dapp" "^0.54.1"

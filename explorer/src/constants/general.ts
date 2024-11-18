@@ -33,19 +33,15 @@ export type SearchType = {
 
 export const searchTypes: SearchType[] = [
   { id: 1, name: 'All', unavailable: false },
-  { id: 2, name: 'Block', unavailable: false },
-  { id: 3, name: 'Extrinsic', unavailable: false },
-  { id: 4, name: 'Account', unavailable: true },
+  { id: 2, name: 'Account', unavailable: true },
+  { id: 3, name: 'Block', unavailable: false },
+  { id: 4, name: 'Extrinsic', unavailable: false },
   { id: 5, name: 'Event', unavailable: false },
 ]
 
-export const SUBSPACE_ACC_PREFIX = 2254
+export const SUBSPACE_ACC_PREFIX = 6094
+export const SUBSPACE_ACC_PREFIX_TESTNET = 2254
 
 export const BIGINT_ZERO = BigInt(0)
 
 export const SHARES_CALCULATION_MULTIPLIER = BigInt(1000000000000)
-
-export const TOKEN = {
-  symbol: 'tSSC',
-  decimals: 18,
-}

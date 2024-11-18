@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unknown-property */
+import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { QUERY_HOME } from 'components/Consensus/Home/query'
 import {
   AutonomysSymbol,
@@ -10,14 +11,12 @@ import {
 } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
 import { HomeQueryQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
 import { ChainPageProps } from 'types/app'
-import { formatSpacePledged, numberWithCommas } from 'utils/number'
+import { numberWithCommas } from 'utils/number'
 
 // export const runtime = 'edge'
 export async function GET(req: NextRequest, { params: { chain } }: ChainPageProps) {
@@ -62,8 +61,6 @@ function Screen({
   chainMatch: (typeof indexers)[number]
   data: HomeQueryQuery
 }) {
-  dayjs.extend(relativeTime)
-
   return (
     <div
       tw='relative w-full h-full flex flex-col items-center justify-between'
@@ -194,7 +191,7 @@ function Screen({
               }}
               tw='absolute text-2xl text-white p-4 mt-28 font-bold'
             >
-              {formatSpacePledged(
+              {formatSpaceToDecimal(
                 Number(
                   (data.consensus_blocks[0] as HomeQueryQuery['consensus_blocks'][0])
                     ?.space_pledged || 0,

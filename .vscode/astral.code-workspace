@@ -9,24 +9,24 @@
       "path": "../explorer"
     },
     {
-      "name": "health-check",
-      "path": "../health-check"
-    },
-    {
-      "name": "indexers",
+      "name": "Indexers",
       "path": "../indexers"
     },
     {
-      "name": "indexer - Taurus",
+      "name": "Indexer - Mainnet",
+      "path": "../indexers/mainnet"
+    },
+    {
+      "name": "Indexer - Testnet Taurus",
       "path": "../indexers/taurus"
     },
     {
-      "name": "indexer - Gemini 3H",
-      "path": "../indexers/gemini-3h"
+      "name": "Indexer - Taskboard",
+      "path": "../indexers/taskboard"
     },
     {
-      "name": "indexer - Gemini 3G",
-      "path": "../indexers/gemini-3g"
+      "name": "health-check",
+      "path": "../health-check"
     }
   ],
   "settings": {
@@ -52,6 +52,7 @@
       "gemini",
       "graphiql",
       "leaderboard",
+      "polkadot",
       "siwe",
       "subscan",
       "subspace",
