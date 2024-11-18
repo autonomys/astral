@@ -29,7 +29,7 @@ type Row = AccountsQuery['consensus_accounts'][number]
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useChains()
+  const { network, section, tokenSymbol } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -116,7 +116,7 @@ export const AccountList: FC = () => {
       },
       {
         accessorKey: 'reserved',
-        header: 'Locked (tSSC)',
+        header: `Locked (${tokenSymbol})`,
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-account-locked`}>
@@ -126,7 +126,7 @@ export const AccountList: FC = () => {
       },
       {
         accessorKey: 'free',
-        header: 'Balance (tSSC)',
+        header: `Balance (${tokenSymbol})`,
         enableSorting: false,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-account-locked`}>
@@ -135,7 +135,7 @@ export const AccountList: FC = () => {
         ),
       },
     ],
-    [isLargeLaptop, network, pagination.pageIndex, pagination.pageSize, section],
+    [isLargeLaptop, network, pagination.pageIndex, pagination.pageSize, section, tokenSymbol],
   )
 
   const pageCount = useMemo(

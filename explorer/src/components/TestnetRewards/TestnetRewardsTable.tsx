@@ -2,7 +2,7 @@
 
 import { SUBSPACE_ACC_PREFIX_TESTNET } from '@/constants/general'
 import { formatAddress } from '@/utils/formatAddress'
-import { DEFAULT_TOKEN_SYMBOL } from '@autonomys/auto-utils'
+import { DEFAULT_TOKEN_SYMBOL, TESTNET_TOKEN } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
   AriesStressTestIcon,
@@ -245,10 +245,10 @@ export const TestnetRewardsTable: FC = () => {
                     TESTNET
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
-                    EARNINGS, % tSSC
+                    EARNINGS, % {TESTNET_TOKEN.symbol}
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
-                    EARNINGS, tSSC
+                    EARNINGS, {TESTNET_TOKEN.symbol}
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300'>
                     EARNINGS, % {DEFAULT_TOKEN_SYMBOL}
@@ -279,7 +279,7 @@ export const TestnetRewardsTable: FC = () => {
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>{userTestnetRewardsByPhase(campaign.name)}</span>
                       <br /> out of {totalTestnetByPhase(campaign.name)}{' '}
-                      {campaign.label ? campaign.label : 'tSSC'}
+                      {campaign.label ? campaign.label : TESTNET_TOKEN.symbol}
                     </td>
                     <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-300'>
                       <span className='font-bold'>
@@ -308,13 +308,13 @@ export const TestnetRewardsTable: FC = () => {
                 {totalUserTestnetRewardsPercentage}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {numberFormattedString(totalUserTestnetRewards)} tSSC
+                {numberFormattedString(totalUserTestnetRewards)} {TESTNET_TOKEN.symbol}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
                 {totalMainnetRewardsPercentage}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'>
-                {numberFormattedString(totalUserMainnetAllocation)} {DEFAULT_TOKEN_SYMBOL}
+                {numberFormattedString(totalUserMainnetAllocation)} {TESTNET_TOKEN.symbol}
               </div>
               <div className='text-sm text-gray-500 dark:text-gray-300'></div>
               <div className='text-sm text-gray-500 dark:text-gray-300'></div>
