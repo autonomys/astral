@@ -3,21 +3,32 @@ name: Build
 on: [push, pull_request]
 
 jobs:
-  ts-lint-and-build-squid:
+  codegen-and-build-indexers:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: indexers/squid-blockexplorer
-    name: Run eslint, check typescript and run tests
+        working-directory: indexers
+    name: Run codegen and build
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js 📦
+        uses: actions/setup-node@v2
         with:
-          node-version: "16"
-      - run: npm ci --legacy-peer-deps
-      - run: npm test
-      - run: npm run lint
-      - run: npm run build
+          node-version: '18'
+
+      - name: Enable Corepack 📦
+        run: corepack enable
+
+      - name: Install dependencies 📦
+        run: yarn install
+
+      - name: Generate types and project manifest 🔗
+        run: yarn codegen
+
+      - name: Build project 🔧
+        run: yarn build
   ts-lint-and-build-explorer:
     runs-on: ubuntu-latest
     defaults:
@@ -27,10 +38,21 @@ jobs:
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
+
+      - name: Set up Node.js 📦
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Enable Corepack 📦
+        run: corepack enable
+
+      - name: Install dependencies 📦
+        run: yarn install
+
       - name: Run linter 🔍
-        run: |
-          yarn install
-          yarn lint:fix
+        run: yarn lint:fix
+
       - name: Build project 🔧
         env:
           NEXT_PUBLIC_GEMINI_3H_INDEXERS: ${{ secrets.NEXT_PUBLIC_GEMINI_3H_INDEXERS }}
@@ -42,10 +64,19 @@ jobs:
         working-directory: health-check
     name: Run eslint, check typescript
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js 📦
+        uses: actions/setup-node@v2
         with:
           node-version: "16"
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+
+      - name: Install dependencies 📦
+        run: npm ci
+
+      - name: Run linter 🔍
+        run: npm run lint
+
+      - name: Build project 🔧
+        run: npm run build

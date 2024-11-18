@@ -22,6 +22,8 @@ import {
 } from "./models";
 import type { ExecutionReceipt, SealedBundleHeader, TBundle } from "./types";
 
+const MAX_LIMIT = 10000;
+
 export async function handleDomainInstantiatedEvent(
   event: SubstrateEvent
 ): Promise<void> {
@@ -280,7 +282,9 @@ export async function handleDeregisterOperatorCall(
   );
   const account = await db.checkAndGetAccount(operator.accountId, blockNumber);
 
-  const nominators = await Nominator.getByOperatorId(operator.id);
+  const nominators = await Nominator.getByOperatorId(operator.id, {
+    limit: MAX_LIMIT,
+  });
   const activeNominators =
     nominators &&
     nominators.filter(
@@ -331,7 +335,9 @@ export async function handleOperatorSlashedEvent(
   operator.updatedAt = BigInt(blockNumber);
 
   // Fetch nominators associated with the operator
-  const nominators = await Nominator.getByOperatorId(operator.id);
+  const nominators = await Nominator.getByOperatorId(operator.id, {
+    limit: MAX_LIMIT,
+  });
   if (nominators) {
     nominators.forEach(async (nominator) => {
       nominator.status = NominatorStatus.SLASHED;
@@ -342,7 +348,9 @@ export async function handleOperatorSlashedEvent(
   }
 
   // Fetch withdrawals associated with the operator
-  const withdrawals = await Withdrawal.getByOperatorId(operator.id);
+  const withdrawals = await Withdrawal.getByOperatorId(operator.id, {
+    limit: MAX_LIMIT,
+  });
   if (withdrawals) {
     withdrawals.forEach(async (withdrawal) => {
       if (
@@ -956,7 +964,9 @@ export async function handleOperatorUnlockedEvent(
   operator.pendingAction = OperatorPendingAction.NO_ACTION_REQUIRED;
   operator.updatedAt = BigInt(blockNumber);
 
-  const nominators = await Nominator.getByOperatorId(operator.id);
+  const nominators = await Nominator.getByOperatorId(operator.id, {
+    limit: MAX_LIMIT,
+  });
   if (nominators) {
     nominators.forEach(async (n) => {
       if (
@@ -971,7 +981,9 @@ export async function handleOperatorUnlockedEvent(
     });
   }
 
-  const withdrawals = await Withdrawal.getByDomainId(domain.id);
+  const withdrawals = await Withdrawal.getByDomainId(domain.id, {
+    limit: MAX_LIMIT,
+  });
   if (withdrawals) {
     withdrawals.forEach(async (w) => {
       if (w.status === WithdrawalStatus.PENDING_OPERATOR) {
@@ -1017,10 +1029,13 @@ export async function handleFundsUnlockedEvent(
     blockNumber
   );
 
-  const withdrawals = await Withdrawal.getByFields([
-    ["operatorId", "=", operator.id],
-    ["accountId", "=", account.id],
-  ]);
+  const withdrawals = await Withdrawal.getByFields(
+    [
+      ["operatorId", "=", operator.id],
+      ["accountId", "=", account.id],
+    ],
+    { limit: MAX_LIMIT }
+  );
   if (withdrawals) {
     withdrawals.forEach(async (w) => {
       if (w.status === WithdrawalStatus.PENDING_LOCK) {
@@ -1034,10 +1049,13 @@ export async function handleFundsUnlockedEvent(
   }
 
   let amountToWithdraw = amountBigInt;
-  const deposits = await Deposit.getByFields([
-    ["operatorId", "=", operator.id],
-    ["accountId", "=", account.id],
-  ]);
+  const deposits = await Deposit.getByFields(
+    [
+      ["operatorId", "=", operator.id],
+      ["accountId", "=", account.id],
+    ],
+    { limit: MAX_LIMIT }
+  );
   if (deposits) {
     deposits.forEach(async (d) => {
       if (amountToWithdraw > 0) {
