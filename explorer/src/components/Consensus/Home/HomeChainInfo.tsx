@@ -1,6 +1,7 @@
+import { formatSpaceToBinary, formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import type { HomeQueryQuery } from 'gql/graphql'
 import { FC } from 'react'
-import { formatSpaceInDecimal, numberWithCommas } from 'utils/number'
+import { numberWithCommas } from 'utils/number'
 import { HomeCards } from './HomeCards'
 
 interface HomeChainInfo {
@@ -12,11 +13,13 @@ export const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   const spacePledgedVal = Number(
     (block as HomeQueryQuery['consensus_blocks'][0])?.space_pledged || 0,
   )
-  const spacePledged = formatSpaceInDecimal(spacePledgedVal)
+  const spacePledged = formatSpaceToDecimal(spacePledgedVal)
+  const spacePledgedBinary = formatSpaceToBinary(spacePledgedVal)
   const historySizeVal = Number(
     (block as HomeQueryQuery['consensus_blocks'][0])?.blockchain_size || 0,
   )
-  const historySize = formatSpaceInDecimal(historySizeVal)
+  const historySize = formatSpaceToDecimal(historySizeVal)
+  const historySizeBinary = formatSpaceToBinary(historySizeVal)
   const rewardAddresses = numberWithCommas(
     Number(data.consensus_accounts_aggregate?.aggregate?.count),
   )
@@ -32,6 +35,8 @@ export const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
       spacePledged={spacePledged}
       blocksCount={blocksCount}
       historySize={historySize}
+      spacePledgedBinary={spacePledgedBinary}
+      historySizeBinary={historySizeBinary}
     />
   )
 }
