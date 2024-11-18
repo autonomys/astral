@@ -3,19 +3,27 @@ import { FC, useMemo } from 'react'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
-  signedExtrinsics?: string
-  rewardAddresses?: string
-  spacePledged?: string
   blocksCount?: string
+  extrinsicsCount?: string
+  signedExtrinsicsCount?: string
+  accountsCount?: string
+  accountsWithBalanceCount?: string
+  spacePledged?: string
+  spacePledgedBinary?: string
   historySize?: string
+  historySizeBinary?: string
 }
 
 export const HomeCards: FC<Props> = ({
-  signedExtrinsics = '0',
-  rewardAddresses = '0',
-  spacePledged = '0',
   blocksCount = '0',
+  extrinsicsCount = '0',
+  signedExtrinsicsCount = '0',
+  accountsCount = '0',
+  accountsWithBalanceCount = '0',
+  spacePledged = '0',
+  spacePledgedBinary = '0',
   historySize = '0',
+  historySizeBinary = '0',
 }) => {
   const listOfCards = useMemo(
     () => [
@@ -29,19 +37,22 @@ export const HomeCards: FC<Props> = ({
       {
         title: 'Extrinsics',
         icon: <DocIcon />,
-        value: signedExtrinsics,
+        value: extrinsicsCount,
+        tooltip: <p className='whitespace-nowrap'>{signedExtrinsicsCount} signed</p>,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
       },
       {
         title: 'Wallet addresses',
         icon: <WalletIcon />,
-        value: rewardAddresses,
+        value: accountsCount,
+        tooltip: <p className='whitespace-nowrap'>{accountsWithBalanceCount} &gt;= 1</p>,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
       },
       {
         title: 'Total Space Pledged',
         icon: <PieChartIcon />,
         value: spacePledged,
+        tooltip: spacePledgedBinary,
         darkBgClass:
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
       },
@@ -49,20 +60,32 @@ export const HomeCards: FC<Props> = ({
         title: 'Archived History Size',
         icon: <ArchivedHistoryIcon />,
         value: historySize,
+        tooltip: historySizeBinary,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
     ],
-    [blocksCount, historySize, rewardAddresses, signedExtrinsics, spacePledged],
+    [
+      blocksCount,
+      historySize,
+      accountsCount,
+      extrinsicsCount,
+      signedExtrinsicsCount,
+      accountsWithBalanceCount,
+      spacePledged,
+      spacePledgedBinary,
+      historySizeBinary,
+    ],
   )
 
   return (
     <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
-      {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
+      {listOfCards.map(({ title, value, icon, tooltip, darkBgClass }, index) => (
         <HomeInfoCard
           key={`${title}-${index}`}
           title={title}
           value={value}
           icon={icon}
+          tooltip={tooltip}
           darkBgClass={darkBgClass}
         />
       ))}
