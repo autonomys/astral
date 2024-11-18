@@ -86,8 +86,8 @@ export const SectionHeader: FC = () => {
       id='accordion-open'
       data-accordion='open'
     >
-      <div className='container mx-auto flex w-full items-center justify-between px-5 py-3 pb-2 md:px-[25px] 2xl:px-0'>
-        <div className='flex gap-9'>{domainsOptions}</div>
+      <div className='container mx-auto flex w-full items-center justify-between px-5 pb-2 pt-0 md:px-[25px] 2xl:px-0'>
+        <div className='flex gap-9 pt-3'>{domainsOptions}</div>
         <div className='flex gap-4'>
           {!actingAccount ? (
             <WalletButton />
