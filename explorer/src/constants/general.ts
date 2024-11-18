@@ -33,9 +33,9 @@ export type SearchType = {
 
 export const searchTypes: SearchType[] = [
   { id: 1, name: 'All', unavailable: false },
-  { id: 2, name: 'Block', unavailable: false },
-  { id: 3, name: 'Extrinsic', unavailable: false },
-  { id: 4, name: 'Account', unavailable: true },
+  { id: 2, name: 'Account', unavailable: true },
+  { id: 3, name: 'Block', unavailable: false },
+  { id: 4, name: 'Extrinsic', unavailable: false },
   { id: 5, name: 'Event', unavailable: false },
 ]
 

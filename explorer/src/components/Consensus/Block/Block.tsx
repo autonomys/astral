@@ -25,7 +25,7 @@ export const Block: FC = () => {
   const { loading, setIsVisible } = useSquidQuery<BlockByIdQuery, BlockByIdQueryVariables>(
     QUERY_BLOCK_BY_ID,
     {
-      variables: { blockId: blockId ?? '0' },
+      variables: { blockId: blockId ?? '0', blockHash: blockId?.toString() ?? '' },
       skip: !inFocus,
     },
     Routes.consensus,

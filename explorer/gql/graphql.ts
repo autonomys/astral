@@ -16070,6 +16070,7 @@ export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregat
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
+  blockHash: Scalars['String']['input'];
 }>;
 
 
