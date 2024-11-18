@@ -8,6 +8,6 @@ import type { ChainPageProps } from 'types/app'
 import { isRouteSupportingNetwork } from 'utils/route'
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.staking) ? <AccountLeaderboard /> : <NotFound />
+  isRouteSupportingNetwork(chain, Routes.leaderboard) ? <AccountLeaderboard /> : <NotFound />
 
 export default Page
