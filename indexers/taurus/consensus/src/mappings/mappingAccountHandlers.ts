@@ -1,10 +1,10 @@
+import { account } from "@autonomys/auto-consensus";
 import { SubstrateEvent, SubstrateExtrinsic } from "@subql/types";
 import {
   createAndSaveAccountHistory,
   createAndSaveReward,
   createAndSaveTransfer,
 } from "./db";
-import { getAccountBalance } from "./helper";
 
 export async function handleTransferEvent(
   event: SubstrateEvent
@@ -20,8 +20,8 @@ export async function handleTransferEvent(
   const to = _to.toString();
   const amount = BigInt(_amount.toString());
 
-  const fromBalance = await getAccountBalance(from);
-  const toBalance = await getAccountBalance(to);
+  const fromBalance = await account(api as any, from);
+  const toBalance = await account(api as any, to);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(
@@ -69,7 +69,7 @@ export async function handleExtrinsic(
   const blockNumber = BigInt(number.toString());
   const address = signer.toString();
 
-  const balance = await getAccountBalance(address);
+  const balance = await account(api as any, address);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(
@@ -103,7 +103,7 @@ export async function handleFarmerVoteRewardEvent(
   const voter = _voter.toString();
   const blockNumber = BigInt(number.toString());
 
-  const balance = await getAccountBalance(voter);
+  const balance = await account(api as any, voter);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(
@@ -147,7 +147,7 @@ export async function handleFarmerBlockRewardEvent(
   const blockAuthor = _blockAuthor.toString();
   const blockNumber = BigInt(number.toString());
 
-  const balance = await getAccountBalance(blockAuthor);
+  const balance = await account(api as any, blockAuthor);
 
   // create or update and save accounts
   await createAndSaveAccountHistory(

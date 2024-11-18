@@ -1,10 +1,7 @@
-import { account } from "@autonomys/auto-consensus";
 import { SubstrateBlock } from "@subql/types";
 import { decodeLog } from "./utils";
 
 const DEFAULT_ACCOUNT_ID = "0x00";
-
-// Core Consensus Helper Functions
 
 export const getBlockAuthor = (block: SubstrateBlock): string => {
   const { digest } = block.block.header;
@@ -30,8 +27,3 @@ export const getBlockAuthor = (block: SubstrateBlock): string => {
   }
   return DEFAULT_ACCOUNT_ID;
 };
-
-// Accounts Helper Functions
-
-export const getAccountBalance = async (accountId: string) =>
-  await account(api as any, accountId);
