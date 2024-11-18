@@ -1,15 +1,16 @@
 'use client'
 
-import Footer from '@/components/layout/Footer'
 import { CookieBanner } from 'components/common/CookieBanner'
 import { ErrorFallback } from 'components/common/ErrorFallback'
 import { useOutOfSyncBanner } from 'components/common/OutOfSyncBanner'
 import { Container } from 'components/layout/Container'
+import Footer from 'components/layout/Footer'
 import { SectionHeader } from 'components/layout/SectionHeader'
 import { usePathname } from 'next/navigation'
 import { FC, ReactNode, useEffect } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import ReactGA from 'react-ga4'
+import { logError } from 'utils/log'
 
 type Props = {
   children?: ReactNode
@@ -25,7 +26,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
   }, [pathname])
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-bronze to-purpleMist font-['Montserrat'] dark:bg-dark">
+    <div className="relative flex min-h-screen w-full flex-col bg-gradient-to-b from-purpleLight to-purpleLight font-['Montserrat'] dark:bg-dark">
       <div className="relative flex min-h-screen w-full flex-col bg-[url('/images/backgroundColor.svg')] bg-cover font-['Montserrat']">
         {outOfSync}
         <SectionHeader />
@@ -33,8 +34,7 @@ export const MainLayout: FC<Props> = ({ children, subHeader }) => {
         <ErrorBoundary
           fallbackRender={ErrorFallback}
           onReset={() => window.location.reload()}
-          // TODO: consider adding error monitoring
-          onError={(error) => console.error(error)}
+          onError={async (error) => await logError(pathname, error)}
         >
           <Container>{children}</Container>
         </ErrorBoundary>

@@ -14,14 +14,19 @@
   "cSpell.words": [
     "autonomys",
     "autoid",
+    "codegen",
+    "hasura",
+    "deregister",
     "extrinsics",
     "gemini",
     "graphiql",
     "leaderboard",
+    "polkadot",
     "siwe",
     "subscan",
     "subspace",
     "subsquid",
+    "taskboard",
     "typegen"
   ]
 }

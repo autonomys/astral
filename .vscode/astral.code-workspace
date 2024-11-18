@@ -9,28 +9,24 @@
       "path": "../explorer"
     },
     {
-      "name": "health-check",
-      "path": "../health-check"
-    },
-    {
-      "name": "indexers",
+      "name": "Indexers",
       "path": "../indexers"
     },
     {
-      "name": "indexer - General Squid",
-      "path": "../indexers/general-squid"
+      "name": "Indexer - Mainnet",
+      "path": "../indexers/mainnet"
     },
     {
-      "name": "indexer - Account Squid",
-      "path": "../indexers/account-squid"
+      "name": "Indexer - Testnet Taurus",
+      "path": "../indexers/taurus"
     },
     {
-      "name": "indexer - Staking Squid",
-      "path": "../indexers/staking-squid"
+      "name": "Indexer - Taskboard",
+      "path": "../indexers/taskboard"
     },
     {
-      "name": "indexer - Rewards Squid",
-      "path": "../indexers/rewards-squid"
+      "name": "health-check",
+      "path": "../health-check"
     }
   ],
   "settings": {
@@ -49,14 +45,19 @@
     "cSpell.words": [
       "autonomys",
       "autoid",
+      "codegen",
+      "hasura",
+      "deregister",
       "extrinsics",
       "gemini",
       "graphiql",
       "leaderboard",
+      "polkadot",
       "siwe",
       "subscan",
       "subspace",
       "subsquid",
+      "taskboard",
       "typegen"
     ]
   }

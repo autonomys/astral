@@ -1,4 +1,4 @@
-import { BlockList } from 'components/Block/BlockList'
+import { BlockList } from 'components/Consensus/Block/BlockList'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'

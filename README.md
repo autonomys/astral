@@ -1,9 +1,10 @@
+# Astral Block Explorer
+
+![Autonomys Banner](https://github.com/autonomys/astral/blob/main/.github/images/autonomys-banner.webp)
+
 ![build](https://github.com/autonomys/astral/actions/workflows/build.yaml/badge.svg)
 
-# Astral
-
 - [Astral Block Explorer](https://explorer.autonomys.xyz/) Astral Block Explorer
-- [Astral Subsquid Playground](https://squid.gemini-3g.subspace.network/graphql) Astral Subspace SubSquid
 - [Health Check](https://uptime.subspace.network/status/network) Subspace Network Status Page
 
 ## Astral Block Explorer
@@ -49,18 +50,14 @@
     <tr>
 </table>
 
-## Astral Subsquid Playground
-
-![Astral Subsquid Playground](https://github.com/autonomys/astral/assets/82244926/24ee475d-b6e6-446c-a54c-3ecdb3b72dfd)
-
 ## Subspace Network Status Page
 
 ![Subspace Network Status Page](https://github.com/autonomys/astral/assets/82244926/0b1a171f-d266-4d1f-8eaf-3814032ca735)
 
 ## Overview
 
-- [Explorer](./explorer/README.md) - Next.js app based on React and Tailwind CSS, uses Apollo Client to fetch data from Astral Subsquid
-- [Indexers](./indexers/README.md) - Includes various Subsquid indexers like blockexplorer-subsquid and other smaller Subsquid services.
+- [Explorer](./explorer/README.md) - Next.js app based on React and Tailwind CSS, uses Apollo Client to fetch data from Astral Indexers
+- [Indexers](./indexers/README.md) - Includes various SubQuery indexers organized by network and functionality
 - [Health check](./health-check/README.md) - utility service to check health status of an internal service and expose it as a REST API endpoint
 
 ## Development
@@ -105,6 +102,38 @@ You can also find the instructions for setting up the Squid backend and Health c
    ```
 
    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+### Multi-Network Indexers Setup
+
+To set up the multi-network indexers, follow these steps:
+
+1. **Navigate to the indexers directory:**
+
+   ```bash
+   cd indexers
+   ```
+
+2. **Install the dependencies:**
+
+   ```bash
+   yarn
+   ```
+
+3. **Build the indexers:**
+
+   ```bash
+   yarn codegen && yarn build
+   ```
+
+4. **Start a local node, the PostgreSQL database with multiple tables, Hasura, and various SubQuery nodes and a TaskBoard (BullMQ) using Docker Compose:**
+
+   From the root directory, run:
+
+   ```bash
+   yarn dev
+   ```
+
+This command will initialize a PostgreSQL database configured with multiple tables, launch the Hasura GraphQL engine, and start multiple Subquery nodes to index all networks. This setup provides all the necessary data for different sections of the explorer, ensuring a comprehensive indexing solution for the application.
 
 ## Contributing
 

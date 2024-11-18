@@ -1,8 +1,8 @@
-import { SearchType, searchTypes } from '@/constants/general'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { sendGAEvent } from '@next/third-parties/google'
+import { SearchType, searchTypes } from 'constants/general'
 import { Field, Form, Formik } from 'formik'
 import { useSearch } from 'hooks/useSearch'
 import { FC, Fragment, useCallback } from 'react'
@@ -14,7 +14,7 @@ export interface FormValues {
   searchType: SearchType
 }
 
-export interface SearchBarProps {
+interface SearchBarProps {
   fixSearchType?: SearchType
 }
 
@@ -138,14 +138,12 @@ export const SearchBar: FC<SearchBarProps> = ({ fixSearchType }) => {
   )
 }
 
-export default SearchBar
-
-export const SearchSpinner: FC = () => {
+const SearchSpinner: FC = () => {
   return (
     <div role='status'>
       <svg
         aria-hidden='true'
-        className='mr-2 inline size-6 animate-spin fill-purpleAccent text-gray-200 dark:text-gray-600'
+        className='mr-2 inline size-6 animate-spin fill-primaryAccent text-gray-200 dark:text-gray-600'
         viewBox='0 0 100 101'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'

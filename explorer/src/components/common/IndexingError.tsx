@@ -1,9 +1,12 @@
+import { NetworkId } from '@autonomys/auto-utils'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { EXTERNAL_ROUTES } from 'constants/routes'
+import useChain from 'hooks/useChains'
 import { FC, useCallback, useState } from 'react'
 
 export const IndexingError: FC = () => {
   const [isWarningVisible, setIsWarningVisible] = useState(true)
+  const { network } = useChain()
 
   const handleHideWarning = useCallback(() => {
     setIsWarningVisible(false)
@@ -17,19 +20,23 @@ export const IndexingError: FC = () => {
         <p>
           We are currently experiencing issues with our indexing service. Please bear with us as we
           work to resolve this issue. You can check{' '}
+          {network === NetworkId.MAINNET && (
+            <>
+              <a
+                href={EXTERNAL_ROUTES.subscan}
+                target='_blank'
+                className='text-md text-whiteOpaque hover:text-primaryAccent'
+                rel='noreferrer'
+              >
+                Subscan
+              </a>{' '}
+              or{' '}
+            </>
+          )}
           <a
-            href={EXTERNAL_ROUTES.subscan}
+            href={EXTERNAL_ROUTES.polkadot(network)}
             target='_blank'
-            className='text-md text-whiteOpaque hover:text-purpleAccent'
-            rel='noreferrer'
-          >
-            Subscan
-          </a>{' '}
-          or{' '}
-          <a
-            href={EXTERNAL_ROUTES.polkadot}
-            target='_blank'
-            className='text-md text-whiteOpaque hover:text-purpleAccent'
+            className='text-md text-whiteOpaque hover:text-primaryAccent'
             rel='noreferrer'
           >
             Polkadot

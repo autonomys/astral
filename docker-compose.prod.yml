@@ -1,0 +1,82 @@
+services:
+  postgres:
+    volumes:
+      - type: bind
+        source: /home/ubuntu/subql/postgresql/conf/postgresql.conf
+        target: /etc/postgresql/postgresql.conf
+        read_only: true
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  agent:
+    container_name: newrelic-infra
+    image: newrelic/infrastructure:latest
+    cap_add:
+      - SYS_PTRACE
+    network_mode: bridge
+    pid: host
+    privileged: true
+    volumes:
+      - "/:/host:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    environment:
+      NRIA_LICENSE_KEY: "${NR_API_KEY}"
+      NRIA_DISPLAY_NAME: "${NR_AGENT_IDENTIFIER}"
+    restart: unless-stopped
+
+  node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  hasura:
+    image: hasura/graphql-engine:v2.40.0
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  dictionary_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  dictionary_graphql_engine:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  consensus_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  leaderboard_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  staking_subquery_node:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  redis:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"
+
+  taskboard:
+    logging:
+      driver: loki
+      options:
+        loki-url: "https://logging.subspace.network/loki/api/v1/push"

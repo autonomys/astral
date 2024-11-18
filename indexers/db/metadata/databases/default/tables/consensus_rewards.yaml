@@ -1,0 +1,46 @@
+table:
+  name: rewards
+  schema: consensus
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
+object_relationships:
+  - name: account
+    using:
+      manual_configuration:
+        column_mapping:
+          account_id: id
+        insertion_order: null
+        remote_table:
+          name: accounts
+          schema: consensus
+  - name: block
+    using:
+      manual_configuration:
+        column_mapping:
+          block_height: height
+        insertion_order: null
+        remote_table:
+          name: blocks
+          schema: consensus
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - amount
+        - block_height
+        - index_in_block
+        - account_id
+        - block_hash
+        - id
+        - reward_type
+        - timestamp
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

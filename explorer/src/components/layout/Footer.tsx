@@ -1,11 +1,8 @@
-import dayjs from 'dayjs'
-import Link from 'next/link'
-
-import type { FC } from 'react'
-
-// common
-import { LogoIcon } from '@/components/icons'
+import { LogoIcon } from 'components/icons'
 import { EXTERNAL_ROUTES } from 'constants/routes'
+import Link from 'next/link'
+import type { FC } from 'react'
+import { currentYear } from 'utils/time'
 
 const Footer: FC = () => {
   return (
@@ -21,7 +18,7 @@ const Footer: FC = () => {
               </div>
               <div className='container mx-auto hidden flex-col flex-wrap pb-1 pr-5 pt-20 sm:flex sm:flex-row'>
                 <p className='text-center text-xs text-whiteOpaque sm:text-left'>
-                  © {dayjs().year()} Autonomys Labs, Inc. All Rights Reserved
+                  © {currentYear()} Autonomys Labs, Inc. All Rights Reserved
                 </p>
               </div>
             </div>
@@ -34,7 +31,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.academy}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Academy
@@ -44,7 +41,7 @@ const Footer: FC = () => {
                   <a
                     href={EXTERNAL_ROUTES.forum}
                     target='_blank'
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Forum
@@ -54,7 +51,7 @@ const Footer: FC = () => {
                   <a
                     href={EXTERNAL_ROUTES.docs}
                     target='_blank'
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Docs
@@ -64,7 +61,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.autonomys}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Website
@@ -81,7 +78,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.twitter}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     X / Twitter
@@ -91,7 +88,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.discord}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Discord
@@ -101,7 +98,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.telegram}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Telegram
@@ -111,7 +108,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.github}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     GitHub
@@ -123,7 +120,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.medium}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     Medium
@@ -133,7 +130,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.youtube}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     YouTube
@@ -143,7 +140,7 @@ const Footer: FC = () => {
                   <a
                     target='_blank'
                     href={EXTERNAL_ROUTES.social.linkedin}
-                    className='text-xs text-whiteOpaque hover:text-purpleAccent'
+                    className='text-xs text-whiteOpaque hover:text-primaryAccent'
                     rel='noreferrer'
                   >
                     LinkedIn
@@ -155,7 +152,7 @@ const Footer: FC = () => {
         </div>
         <div className='container mx-auto flex flex-col flex-wrap pb-1 pr-5 pt-20 sm:hidden sm:flex-row'>
           <p className='text-center text-sm text-whiteOpaque sm:text-left'>
-            © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+            © {currentYear()} Subspace Labs, Inc. All Rights Reserved
           </p>
         </div>
       </div>

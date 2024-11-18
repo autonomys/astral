@@ -6,13 +6,8 @@ dotenv.config()
 
 const config: CodegenConfig = {
   generates: {
-    './gql/rewardTypes.ts': {
-      schema: defaultIndexer.squids.rewards,
-      documents: ['./src/**/rewardsQuery.ts'],
-      plugins: ['typescript', 'typescript-operations'],
-    },
-    './gql/oldSquidTypes.ts': {
-      schema: defaultIndexer.squids.old,
+    './gql/graphql.ts': {
+      schema: defaultIndexer.indexer,
       documents: ['./src/**/query.ts'],
       plugins: ['typescript', 'typescript-operations'],
     },

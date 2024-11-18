@@ -1,12 +1,12 @@
 'use client'
 
-import { LogoIcon } from '@/components/icons'
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
-import dayjs from 'dayjs'
+import { LogoIcon } from 'components/icons'
 import useChains from 'hooks/useChains'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, ReactNode } from 'react'
+import { currentYear } from 'utils/time'
 import { HeaderBackground } from './HeaderBackground'
 
 type MenuItem = {
@@ -21,13 +21,11 @@ type Props = {
   menuList: MenuItem[]
 }
 
-export const MobileHeader: FC<Props> = ({ isOpen, setIsOpen, menuList }) => {
-  return <Drawer menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
-}
+export const MobileHeader: FC<Props> = ({ isOpen, setIsOpen, menuList }) => (
+  <Drawer menuList={menuList} isOpen={isOpen} setIsOpen={setIsOpen} />
+)
 
-export default MobileHeader
-
-export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
+const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
   const { push } = useRouter()
   const { isDark, toggleTheme } = useTheme()
   const { network, section } = useChains()
@@ -109,7 +107,7 @@ export const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => 
           <div className='flex'>
             <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
               <p className='text-gray text-center text-sm sm:text-left'>
-                © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                © {currentYear()} Subspace Labs, Inc. All Rights Reserved
               </p>
             </div>
           </div>

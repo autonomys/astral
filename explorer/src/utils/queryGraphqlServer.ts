@@ -18,7 +18,7 @@ export const queryGraphqlServer = async (query: string, variables: object) => {
     if (!api) throw new Error('No selected chain api')
 
     // Fetch the data from the api
-    const request = await fetch(api.squids.old, {
+    const request = await fetch(api.indexer, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

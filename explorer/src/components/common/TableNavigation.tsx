@@ -1,4 +1,3 @@
-import { PAGE_SIZE_OPTIONS } from '@/constants/general'
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -6,6 +5,7 @@ import {
   ChevronRightIcon,
 } from '@heroicons/react/20/solid'
 import { Table } from '@tanstack/react-table'
+import { PAGE_SIZE_OPTIONS } from 'constants/general'
 import { DebouncedInput } from './DebouncedInput'
 import { ExportButton } from './ExportButton'
 import { LazyExportButton } from './LazyExportButton'
@@ -52,7 +52,7 @@ export const TableNavigation = <T extends object>({
         {hideDownloadButton === undefined && (
           <div className='flex w-full justify-between sm:hidden'>
             <div className='w-full'>
-              {data && <ExportButton data={data} filename='account-list' />}
+              {data && <ExportButton data={data} filename={filename ?? 'page-data'} />}
             </div>
             <div className='w-full'>
               {fullDataDownloader && (
@@ -65,7 +65,7 @@ export const TableNavigation = <T extends object>({
       <div className='hidden sm:flex sm:w-full sm:flex-col sm:items-center sm:justify-between sm:gap-4 lg:flex-row '>
         {hideDownloadButton === undefined && (
           <div className='hidden justify-between  gap-2   sm:flex sm:flex-1'>
-            {data && <ExportButton data={data} filename='account-list' />}
+            {data && <ExportButton data={data} filename={filename ?? 'page-data'} />}
             <div className='flex w-full'>
               {fullDataDownloader && (
                 <LazyExportButton query={fullDataDownloader} filename={filename ?? 'full-data'} />
@@ -75,7 +75,7 @@ export const TableNavigation = <T extends object>({
         )}
         <div className='items-center gap-2 sm:flex sm:flex-1 sm:items-center sm:justify-end'>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
@@ -85,7 +85,7 @@ export const TableNavigation = <T extends object>({
             </span>
           </button>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -95,7 +95,7 @@ export const TableNavigation = <T extends object>({
             </span>
           </button>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
@@ -105,7 +105,7 @@ export const TableNavigation = <T extends object>({
             </span>
           </button>
           <button
-            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-purpleAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
+            className='relative mr-[14px] inline-flex cursor-pointer items-center rounded-full bg-white p-2 text-sm font-medium text-primaryAccent hover:bg-gray-50 focus:z-20 dark:border-none dark:bg-blueAccent dark:text-white'
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >

@@ -1,25 +1,25 @@
 'use client'
 
-import { Routes } from '@/constants'
 import {
   ApolloClient,
   ApolloLink,
   ApolloProvider,
   InMemoryCache,
-  Operation,
   createHttpLink,
 } from '@apollo/client'
 import { RetryLink } from '@apollo/client/link/retry'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
-import Cookies from 'js-cookie'
-import { FC, ReactNode, createContext, useCallback, useState } from 'react'
+import { Routes } from 'constants/routes'
+import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
+import { getTokenDecimals, getTokenSymbol } from 'utils/network'
 
 export type ChainContextValue = {
   indexerSet: Indexer
   network: NetworkId
   section: Routes
-  isEvm: boolean
+  tokenSymbol: string
+  tokenDecimals: number
   setIndexerSet: (children: Indexer) => void
   setSection: (section: Routes) => void
 }
@@ -37,38 +37,30 @@ interface SelectedChainProps extends Props {
   indexerSet: Indexer
 }
 
-export const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
+const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
   const httpLink = createHttpLink({
-    uri: ({ getContext }: Operation) => {
-      const { clientName } = getContext()
-
-      if (clientName === 'general' && indexerSet.squids.general) return indexerSet.squids.general
-      if (clientName === 'account' && indexerSet.squids.account) return indexerSet.squids.account
-      if (clientName === 'rewards' && indexerSet.squids.rewards) return indexerSet.squids.rewards
-      if (clientName === 'nova' && indexerSet.squids.nova) return indexerSet.squids.nova
-
-      return indexerSet.squids.old
-    },
+    uri: () => indexerSet.indexer,
   })
 
-  const client = new ApolloClient({
-    link: ApolloLink.from([new RetryLink(), httpLink]),
-    cache: new InMemoryCache(),
-  })
+  const client = useMemo(
+    () =>
+      new ApolloClient({
+        link: ApolloLink.from([new RetryLink(), httpLink]),
+        cache: new InMemoryCache(),
+      }),
+    [httpLink],
+  )
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>
 }
 
 export const ChainProvider: FC<Props> = ({ children }) => {
   const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
-  const [network, setNetwork] = useState<NetworkId>(defaultIndexer.network)
   const [section, setSection] = useState<Routes>(Routes.consensus)
 
   const setIndexerSet = useCallback(
     (indexer: Indexer) => {
-      Cookies.set('selected-network', indexer.network, { expires: 1 })
       _setIndexerSet(indexer)
-      setNetwork(indexer.network)
     },
     [_setIndexerSet],
   )
@@ -77,9 +69,10 @@ export const ChainProvider: FC<Props> = ({ children }) => {
     <ChainContext.Provider
       value={{
         indexerSet,
-        network,
+        network: indexerSet.network,
         section,
-        isEvm: section === Routes.nova,
+        tokenSymbol: getTokenSymbol(indexerSet.network),
+        tokenDecimals: getTokenDecimals(indexerSet.network),
         setIndexerSet,
         setSection,
       }}

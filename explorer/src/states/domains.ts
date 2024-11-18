@@ -7,7 +7,7 @@ interface DomainsDefaultState {
 }
 
 interface DomainsState extends DomainsDefaultState {
-  setDomainsLastBlockNumber: (domainId: string, blockNumber: number) => void
+  setDomainsLastBlockNumber: (domainsLastBlockNumbers: Map<string, number>) => void
   clear: () => void
 }
 
@@ -19,12 +19,8 @@ export const useDomainsStates = create<DomainsState>()(
   persist(
     (set) => ({
       ...initialState,
-      setDomainsLastBlockNumber: (chain, blockNumber) =>
-        set((state) => {
-          const domainsLastBlockNumbers = new Map(state.domainsLastBlockNumbers)
-          domainsLastBlockNumbers.set(chain, blockNumber)
-          return { domainsLastBlockNumbers }
-        }),
+      setDomainsLastBlockNumber: (domainsLastBlockNumbers) =>
+        set(() => ({ domainsLastBlockNumbers })),
       clear: () => set(() => ({ ...initialState })),
     }),
     {

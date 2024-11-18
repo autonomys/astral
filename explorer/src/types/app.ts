@@ -5,7 +5,7 @@ export type ChildrenPageProps = {
   children: ReactNode
 }
 
-export type PageProps<T> = {
+type PageProps<T> = {
   params: T
 }
 
@@ -28,3 +28,10 @@ export type EventIdPageProps = PageProps<EventIdParam>
 export type LogIdPageProps = PageProps<LogIdParam>
 
 export type OperatorIdPageProps = PageProps<OperatorIdParam>
+
+export type Route = {
+  name: string
+  title: string
+  networks?: NetworkId[]
+  children?: Route[]
+}

@@ -1,8 +1,8 @@
-import { limitNumberDecimals } from '@/utils/number'
 import { CopyButton } from 'components/common/CopyButton'
 import { Tooltip } from 'components/common/Tooltip'
 import useWallet from 'hooks/useWallet'
 import { FC } from 'react'
+import { limitNumberDecimals } from 'utils/number'
 import { ActionsButtons } from './ActionsButtons'
 
 interface AccountHeaderProps {
@@ -23,7 +23,7 @@ export const AccountHeader: FC<AccountHeaderProps> = ({ walletBalance, tokenSymb
           type='text'
           value={subspaceAccount ?? actingAccount.address}
           readOnly
-          className='block w-[200px] rounded-xl border-purpleAccent bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
+          className='block w-[200px] rounded-xl border-primaryAccent bg-transparent px-4 text-sm text-gray-900 shadow-lg dark:bg-blueAccent dark:text-white'
         />
         <div className='ml-2'>
           <Tooltip text='Copy wallet address'>

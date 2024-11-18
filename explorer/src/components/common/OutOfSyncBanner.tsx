@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client'
-import { activate } from '@autonomys/auto-utils'
+import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import { LastBlockQuery } from 'gql/oldSquidTypes'
+import { LastBlockQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -9,7 +9,8 @@ import { LAST_BLOCK } from './query'
 
 const NORMAL_BLOCKS_DIVERGENCE = 120
 
-export const OutOfSyncBanner: FC = () => {
+const OutOfSyncBanner: FC = () => {
+  const { network } = useChains()
   return (
     <div className="container mx-auto mb-4 flex grow justify-center px-5 font-['Montserrat'] md:px-[25px] 2xl:px-0">
       <div className='sticky top-0 z-50 w-full'>
@@ -24,12 +25,14 @@ export const OutOfSyncBanner: FC = () => {
               or use Polkadot.js Apps to interact with the chain.
             </div>
             <div>
-              <Link href={EXTERNAL_ROUTES.subscan} target='_blank'>
-                <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
-                  Visit Subscan
-                </button>
-              </Link>
-              <Link className='ml-4' href={EXTERNAL_ROUTES.polkadot} target='_blank'>
+              {network === NetworkId.MAINNET && (
+                <Link href={EXTERNAL_ROUTES.subscan} target='_blank'>
+                  <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
+                    Visit Subscan
+                  </button>
+                </Link>
+              )}
+              <Link className='ml-4' href={EXTERNAL_ROUTES.polkadot(network)} target='_blank'>
                 <button className='self-start rounded-[20px] bg-white px-[33px] py-[13px] text-sm font-medium text-gray-800 hover:bg-gray-200 dark:bg-[#1E254E] dark:text-white'>
                   Visit Polkadot.js Apps
                 </button>
@@ -43,7 +46,7 @@ export const OutOfSyncBanner: FC = () => {
 }
 
 export const useOutOfSyncBanner = () => {
-  const { network, isEvm } = useChains()
+  const { network } = useChains()
   const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
@@ -62,14 +65,13 @@ export const useOutOfSyncBanner = () => {
 
   const outOfSyncBanner = useMemo(
     () =>
-      !isEvm &&
       data &&
       lastBlock &&
       lastChainBlock !== null &&
       lastBlock + NORMAL_BLOCKS_DIVERGENCE < lastChainBlock ? (
         <OutOfSyncBanner />
       ) : null,
-    [data, lastBlock, lastChainBlock, isEvm],
+    [data, lastBlock, lastChainBlock],
   )
 
   useEffect(() => {

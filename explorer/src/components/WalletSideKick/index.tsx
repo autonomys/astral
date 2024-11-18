@@ -2,17 +2,15 @@
 
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import { LogoIcon, WalletIcon } from '@/components/icons'
-import { WalletType } from '@/constants'
-import { formatUnitsToNumber } from '@/utils/number'
 import { sendGAEvent } from '@next/third-parties/google'
+import { LogoIcon, WalletIcon } from 'components/icons'
 import { HeaderBackground } from 'components/layout/HeaderBackground'
 import {
   ROUTE_EXTRA_FLAGS,
   ROUTE_EXTRA_FLAG_TYPE,
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
 } from 'constants/routes'
-import dayjs from 'dayjs'
+import { WalletType } from 'constants/wallet'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
@@ -20,6 +18,8 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTransactionsStates } from 'states/transactions'
+import { formatUnitsToNumber } from 'utils/number'
+import { currentYear } from 'utils/time'
 import { AccountHeader } from './AccountHeader'
 import { AccountSummary } from './AccountSummary'
 import { GetDiscordRoles } from './GetDiscordRoles'
@@ -33,7 +33,7 @@ type DrawerProps = {
   onClose: () => void
 }
 
-export const PendingTransactionsLabel: FC = () => {
+const PendingTransactionsLabel: FC = () => {
   const { pendingTransactions } = useTransactionsStates()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const count = useMemo(
@@ -51,8 +51,8 @@ export const PendingTransactionsLabel: FC = () => {
     <div
       className={
         !isDesktop
-          ? 'inline-flex items-center bg-pinkAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
-          : 'ml-4 rounded-full from-pinkAccent to-purpleDeepAccent p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
+          ? 'inline-flex items-center bg-primaryAccent p-2 pl-1 pr-1 text-xs shadow-md hover:bg-gray-200 focus:outline-none dark:text-white'
+          : 'ml-4 rounded-full from-primaryAccent to-purpleUndertone p-2 pl-4 pr-4 shadow-md dark:bg-gradient-to-r dark:text-white'
       }
     >
       <Link href={`?${ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK}=${ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN}`}>
@@ -104,7 +104,7 @@ export const WalletSidekick: FC = () => {
         onClick={onClick}
         className={`inline-flex items-center bg-white p-2 text-base hover:bg-gray-200 focus:outline-none ${
           isDesktop ? 'ml-4 rounded-full' : 'rounded-r-full'
-        } from-pinkAccent to-purpleDeepAccent shadow-md dark:bg-gradient-to-r`}
+        } from-primaryAccent to-purpleUndertone shadow-md dark:bg-gradient-to-r`}
       >
         <WalletIcon width='24' height='24' />
       </button>
@@ -212,7 +212,7 @@ const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
             <div className='flex'>
               <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
                 <p className='text-gray text-center text-sm sm:text-left'>
-                  © {dayjs().year()} Subspace Labs, Inc. All Rights Reserved
+                  © {currentYear()} Subspace Labs, Inc. All Rights Reserved
                 </p>
               </div>
             </div>

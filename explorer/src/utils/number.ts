@@ -24,13 +24,22 @@ export const formatUnits = (value: string): string => {
 export const floatToStringWithDecimals = (value: number, decimals = 4): string =>
   BigInt(value * 10 ** decimals).toString()
 
-export const bigNumberToNumber = (bigNumber: string | bigint, precision = 4): number => {
-  if (typeof bigNumber === 'bigint') bigNumber = bigNumber.toString()
+export const bigNumberToNumber = (bigNumber: string | bigint | number, precision = 4): number => {
+  if (!bigNumber) return 0
+  if (typeof bigNumber !== 'string') bigNumber = bigNumber.toString()
 
   const number = formatUnits(bigNumber)
 
   return limitNumberDecimals(number, precision)
 }
+
+export const numberFormattedString = (number: number): string =>
+  new Intl.NumberFormat('en-US').format(number)
+
+export const bigNumberToFormattedString = (
+  bigNumber: string | bigint | number,
+  precision = 4,
+): string => numberFormattedString(bigNumberToNumber(bigNumber, precision))
 
 export const bigNumberToString = (bigNumber: string, precision = 4): string => {
   const number = formatUnits(bigNumber)
@@ -64,18 +73,6 @@ export const limitStringDecimals = (number: string, precision = 4): string => {
   const decimalsToUse = Number(integer) >= 1 ? decimals.slice(0, 2) : decimals.slice(0, precision)
 
   return integer + '.' + decimalsToUse
-}
-
-export const formatSpacePledged = (value: number, decimals = 2) => {
-  if (value === 0) return '0 Bytes'
-
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
-
-  const i = Math.floor(Math.log(value) / Math.log(k))
-
-  return parseFloat((value / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
 export const numberWithCommas = (value: number) => {

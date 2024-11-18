@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v10'
 
-export const discordRest = () => {
+const discordRest = () => {
   if (!process.env.DISCORD_BOT_TOKEN) throw new Error('No Discord bot token')
 
   const { DISCORD_BOT_TOKEN } = process.env

@@ -1,2 +1,8 @@
 DS_Store
 */DS_Store
+
+node_modules
+
+# env files
+.env.dev
+.env.prod

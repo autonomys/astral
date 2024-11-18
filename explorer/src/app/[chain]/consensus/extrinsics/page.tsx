@@ -1,4 +1,4 @@
-import { ExtrinsicList } from 'components/Extrinsic/ExtrinsicList'
+import { ExtrinsicList } from 'components/Consensus/Extrinsic/ExtrinsicList'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'

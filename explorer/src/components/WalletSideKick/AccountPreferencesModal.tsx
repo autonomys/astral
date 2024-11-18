@@ -1,8 +1,11 @@
 import { isAddress } from '@autonomys/auto-utils'
 import { Modal } from 'components/common/Modal'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
+import useChains from 'hooks/useChains'
 import useWallet from 'hooks/useWallet'
+import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
 import { useAddressBookStates } from 'states/addressBook'
 import { usePreferencesStates } from 'states/preferences'
@@ -21,6 +24,7 @@ type AccountSetting = {
 }
 
 export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, preference, onClose }) => {
+  const { network } = useChains()
   const { actingAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const { addresses, addAddress, removeAddress } = useAddressBookStates()
@@ -131,15 +135,35 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                   >
                     <div className='flex items-center gap-4'>
                       <div className='text-sm font-medium text-grayDarker dark:text-white'>
-                        {address.label}
+                        <Link
+                          data-testid={`account-link-${address.address}`}
+                          href={INTERNAL_ROUTES.accounts.id.page(
+                            network,
+                            Routes.consensus,
+                            address.address,
+                          )}
+                          className='hover:text-purpleAccent'
+                        >
+                          {address.label}
+                        </Link>
                       </div>
                       <div className='text-sm text-grayDarker dark:text-white'>
-                        {shortString(address.address)}
+                        <Link
+                          data-testid={`account-link-${address.address}`}
+                          href={INTERNAL_ROUTES.accounts.id.page(
+                            network,
+                            Routes.consensus,
+                            address.address,
+                          )}
+                          className='hover:text-purpleAccent'
+                        >
+                          {shortString(address.address)}
+                        </Link>
                       </div>
                     </div>
                     <div className='flex items-center gap-4'>
                       <button
-                        className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                        className='flex items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                         onClick={() => handleDeleteClick(address)}
                       >
                         Delete
@@ -219,7 +243,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                   ) : (
                     <button
-                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                      className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                       type='submit'
                     >
                       Add address
@@ -260,7 +284,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
                     </div>
                   </div>
                   <button
-                    className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-purpleAccent md:space-x-4 md:text-base'
+                    className='flex w-full max-w-fit items-center gap-2 rounded-full bg-grayDarker px-2 text-sm font-medium capitalize text-white dark:bg-primaryAccent md:space-x-4 md:text-base'
                     type='submit'
                   >
                     Save Settings
@@ -280,6 +304,7 @@ export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, prefere
     addAddressBookFormValidationSchema,
     initialAccountSettingsValues,
     changeAccountSettubgsFormValidationSchema,
+    network,
     handleDeleteClick,
     handleAddInAddressBook,
     ErrorPlaceholder,
