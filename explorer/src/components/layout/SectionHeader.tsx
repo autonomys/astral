@@ -1,6 +1,16 @@
 'use client'
 
-import { CpuChipIcon, GlobeAltIcon, QueueListIcon, TrophyIcon } from '@heroicons/react/24/outline'
+import {
+  CircleStackIcon,
+  CodeBracketIcon,
+  CpuChipIcon,
+  GiftIcon,
+  GlobeAltIcon,
+  IdentificationIcon,
+  LinkIcon,
+  QueueListIcon,
+  TrophyIcon,
+} from '@heroicons/react/24/outline'
 import { WalletButton } from 'components/WalletButton'
 import { WalletSidekick } from 'components/WalletSideKick'
 import { ROUTES, Routes } from 'constants/routes'
@@ -21,16 +31,24 @@ export const SectionHeader: FC = () => {
   const domainIcon = useCallback((domain: (typeof ROUTES)[0], isActive: boolean) => {
     const className = `w-6 h-6 ${isActive ? 'text-white' : 'text-grayDark'} dark:text-white`
     switch (domain.name) {
-      case Routes.nova:
-        return <GlobeAltIcon className={className} />
       case Routes.consensus:
         return <QueueListIcon className={className} />
+      case Routes.farming:
+        return <CpuChipIcon className={className} />
+      case Routes.staking:
+        return <CircleStackIcon className={className} />
       case Routes.leaderboard:
         return <TrophyIcon className={className} />
-      case Routes.staking:
-        return <CpuChipIcon className={className} />
+      case Routes.domains:
+        return <GlobeAltIcon className={className} />
+      case Routes.nova:
+        return <CodeBracketIcon className={className} />
+      case Routes.autoid:
+        return <IdentificationIcon className={className} />
+      case Routes.testnetRewards:
+        return <GiftIcon className={className} />
       default:
-        return null
+        return <LinkIcon className={className} />
     }
   }, [])
 
