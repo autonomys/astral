@@ -20,22 +20,28 @@ export const HomeChainInfo: FC<HomeChainInfo> = ({ data }) => {
   )
   const historySize = formatSpaceToDecimal(historySizeVal)
   const historySizeBinary = formatSpaceToBinary(historySizeVal)
-  const rewardAddresses = numberWithCommas(
+  const accountsCount = numberWithCommas(
     Number(data.consensus_accounts_aggregate?.aggregate?.count),
   )
-  const signedExtrinsics = numberWithCommas(
+  const accountsWithBalanceCount = numberWithCommas(
+    Number(data.accountsWithBalanceCount?.aggregate?.count),
+  )
+  const extrinsicsCount = numberWithCommas(
     Number(data.consensus_extrinsics_aggregate?.aggregate?.count),
   )
+  const signedExtrinsicsCount = numberWithCommas(Number(data.signedExtrinsics?.aggregate?.count))
   const blocksCount = numberWithCommas(Number(block.height))
 
   return (
     <HomeCards
-      signedExtrinsics={signedExtrinsics}
-      rewardAddresses={rewardAddresses}
-      spacePledged={spacePledged}
       blocksCount={blocksCount}
-      historySize={historySize}
+      extrinsicsCount={extrinsicsCount}
+      signedExtrinsicsCount={signedExtrinsicsCount}
+      accountsCount={accountsCount}
+      accountsWithBalanceCount={accountsWithBalanceCount}
+      spacePledged={spacePledged}
       spacePledgedBinary={spacePledgedBinary}
+      historySize={historySize}
       historySizeBinary={historySizeBinary}
     />
   )

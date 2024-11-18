@@ -3,22 +3,26 @@ import { FC, useMemo } from 'react'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
-  signedExtrinsics?: string
-  rewardAddresses?: string
-  spacePledged?: string
   blocksCount?: string
-  historySize?: string
+  extrinsicsCount?: string
+  signedExtrinsicsCount?: string
+  accountsCount?: string
+  accountsWithBalanceCount?: string
+  spacePledged?: string
   spacePledgedBinary?: string
+  historySize?: string
   historySizeBinary?: string
 }
 
 export const HomeCards: FC<Props> = ({
-  signedExtrinsics = '0',
-  rewardAddresses = '0',
-  spacePledged = '0',
   blocksCount = '0',
-  historySize = '0',
+  extrinsicsCount = '0',
+  signedExtrinsicsCount = '0',
+  accountsCount = '0',
+  accountsWithBalanceCount = '0',
+  spacePledged = '0',
   spacePledgedBinary = '0',
+  historySize = '0',
   historySizeBinary = '0',
 }) => {
   const listOfCards = useMemo(
@@ -33,13 +37,15 @@ export const HomeCards: FC<Props> = ({
       {
         title: 'Extrinsics',
         icon: <DocIcon />,
-        value: signedExtrinsics,
+        value: extrinsicsCount,
+        tooltip: <p className='whitespace-nowrap'>{signedExtrinsicsCount} signed</p>,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
       },
       {
         title: 'Wallet addresses',
         icon: <WalletIcon />,
-        value: rewardAddresses,
+        value: accountsCount,
+        tooltip: <p className='whitespace-nowrap'>{accountsWithBalanceCount} &gt;= 1</p>,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
       },
       {
@@ -61,8 +67,10 @@ export const HomeCards: FC<Props> = ({
     [
       blocksCount,
       historySize,
-      rewardAddresses,
-      signedExtrinsics,
+      accountsCount,
+      extrinsicsCount,
+      signedExtrinsicsCount,
+      accountsWithBalanceCount,
       spacePledged,
       spacePledgedBinary,
       historySizeBinary,
