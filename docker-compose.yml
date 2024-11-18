@@ -216,7 +216,7 @@ services:
       - --db-schema=consensus
       - --workers=4
       - --unsafe
-      - --batch-size=15
+      - --batch-size=250
       - --unfinalized-blocks=true
       - --disable-historical=false
       - --port 3001
