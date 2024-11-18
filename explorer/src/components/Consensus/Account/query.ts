@@ -179,6 +179,31 @@ export const QUERY_ACCOUNT_TRANSFERS = gql`
   }
 `
 
+export const QUERY_ACCOUNT_BALANCE_HISTORY = gql`
+  query BalanceHistoryByAccountId(
+    $limit: Int!
+    $offset: Int
+    $where: consensus_account_histories_bool_exp
+    $orderBy: [consensus_account_histories_order_by!]!
+  ) {
+    consensus_account_histories_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    consensus_account_histories(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
+      id: uuid
+      reserved
+      total
+      nonce
+      free
+      created_at
+      updated_at
+      _block_range
+    }
+  }
+`
+
 export const QUERY_ALL_REWARDS_FOR_ACCOUNT_BY_ID = gql`
   query AllRewardForAccountById($accountId: String!) {
     consensus_rewards(where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }, limit: 1) {

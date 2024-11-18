@@ -15,38 +15,45 @@ export const QUERY_BLOCK_AND_EXTRINSIC_BY_HASH = gql`
 export const GET_RESULTS = gql`
   query GetResults(
     $term: String!
-    $blockId: BigInt!
+    $blockId: numeric!
     $isAccount: Boolean!
     $isBlock: Boolean!
+    $isBlockHash: Boolean!
     $isExtrinsic: Boolean!
     $isExtrinsicHash: Boolean!
     $isEvent: Boolean!
   ) {
-    accountById(id: $term) @include(if: $isAccount) {
+    accountById: consensus_accounts(where: { id: { _eq: $term } }) @include(if: $isAccount) {
       id
     }
-    blocks(limit: 1, where: { height_eq: $blockId }) @include(if: $isBlock) {
+    blockById: consensus_blocks(limit: 1, where: { height: { _eq: $blockId } })
+      @include(if: $isBlock) {
       height
     }
-    extrinsicById(id: $term) @include(if: $isExtrinsic) {
+    blockByHash: consensus_blocks(limit: 1, where: { hash: { _eq: $term } })
+      @include(if: $isBlockHash) {
+      height
+    }
+    extrinsicById: consensus_extrinsics(where: { id: { _eq: $term } }) @include(if: $isExtrinsic) {
       id
       name
       block {
         height
       }
-      indexInBlock
+      index_in_block
       timestamp
     }
-    extrinsics(limit: 1, where: { hash_eq: $term }) @include(if: $isExtrinsicHash) {
+    extrinsics: consensus_extrinsics(limit: 1, where: { hash: { _eq: $term } })
+      @include(if: $isExtrinsicHash) {
       id
     }
-    eventById(id: $term) @include(if: $isEvent) {
+    eventById: consensus_events(where: { id: { _eq: $term } }) @include(if: $isEvent) {
       id
       name
       block {
         height
       }
-      indexInBlock
+      index_in_block
       timestamp
     }
   }
