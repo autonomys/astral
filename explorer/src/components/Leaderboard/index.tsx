@@ -167,7 +167,7 @@ export const AccountLeaderboard: FC = () => {
           <LeaderboardList
             title='Remark Count'
             query={Query.QUERY_ACCOUNT_REMARK_COUNT}
-            table='leaderboard_account_remarks_total_counts'
+            table='leaderboard_account_remark_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
           />
@@ -246,7 +246,7 @@ export const FarmerLeaderboard: FC = () => {
           <LeaderboardList
             title='Vote Count'
             query={Query.QUERY_FARMER_VOTE_TOTAL_COUNT}
-            table='leaderboard_farmer_votes_total_counts'
+            table='leaderboard_farmer_vote_total_counts'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
@@ -256,7 +256,7 @@ export const FarmerLeaderboard: FC = () => {
           <LeaderboardList
             title='Vote Value'
             query={Query.QUERY_FARMER_VOTE_TOTAL_VALUE}
-            table='leaderboard_farmer_votes_total_values'
+            table='leaderboard_farmer_vote_total_values'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total reward'
@@ -267,7 +267,7 @@ export const FarmerLeaderboard: FC = () => {
           <LeaderboardList
             title='Block Count'
             query={Query.QUERY_FARMER_BLOCK_TOTAL_COUNT}
-            table='leaderboard_farmer_blocks_total_counts'
+            table='leaderboard_farmer_block_total_counts'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
@@ -277,7 +277,7 @@ export const FarmerLeaderboard: FC = () => {
           <LeaderboardList
             title='Block Value'
             query={Query.QUERY_FARMER_BLOCK_TOTAL_VALUE}
-            table='leaderboard_farmer_blocks_total_values'
+            table='leaderboard_farmer_block_total_values'
             idLabel='Farmer'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueLabel='Total reward'
@@ -300,7 +300,7 @@ export const OperatorLeaderboard: FC = () => {
           <LeaderboardList
             title='Rewards Collected'
             query={Query.QUERY_OPERATOR_TOTAL_REWARDS_COLLECTED}
-            table='leaderboard_operator_rewards_collected'
+            table='leaderboard_operator_total_rewards_collecteds'
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
@@ -311,7 +311,7 @@ export const OperatorLeaderboard: FC = () => {
           <LeaderboardList
             title='Tax Collected'
             query={Query.QUERY_OPERATOR_TOTAL_TAX_COLLECTED}
-            table='leaderboard_operator_tax_collected'
+            table='leaderboard_operator_total_tax_collecteds'
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
@@ -322,7 +322,7 @@ export const OperatorLeaderboard: FC = () => {
           <LeaderboardList
             title='Bundle Count'
             query={Query.QUERY_OPERATOR_BUNDLE_TOTAL_COUNT}
-            table='leaderboard_operator_bundles_total_counts'
+            table='leaderboard_operator_bundle_total_counts'
             idLabel='Operator'
             idLink={(id) => INTERNAL_ROUTES.operators.id.page(network, Routes.staking, id)}
             showAccountIcon={false}
