@@ -90,6 +90,11 @@ export const INTERNAL_ROUTES = {
       page: (chain: string, domain: string, blockId: number): string =>
         `/${chain}/${domain}/blocks/${blockId}`,
     },
+    hash: {
+      path: ':blockHash',
+      page: (chain: string, domain: string, blockHash: string): string =>
+        `/${chain}/${domain}/blocks/${blockHash}`,
+    },
     list: 'blocks',
   },
   accounts: {
@@ -163,7 +168,7 @@ export const INTERNAL_ROUTES = {
     operators: 'operators',
     nominators: 'nominators',
   },
-  notFound: '/404',
+  notFound: '/error/404',
   catchAll: '*',
 }
 

@@ -7,29 +7,26 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
-import { formatSearchResult } from 'utils//formatSearchResult'
 import useChains from './useChains'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
   isSearching: boolean
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: any
 }
 
 export const useSearch = (): Values => {
   const [isSearching, setIsSearching] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [state, setState] = useState<any>({})
   const { push } = useRouter()
   const { network, section } = useChains()
 
   const [getResults] = useLazyQuery(GET_RESULTS, { fetchPolicy: 'network-only' })
 
   const handleSearch = async (term: string, searchType: number) => {
+    console.log('handleSearch', term, searchType)
     setIsSearching(true)
 
     switch (searchType) {
+      // All
       case 1: {
         const address = formatAddress(term)
         const isHexFormat = isHex(term)
@@ -43,68 +40,47 @@ export const useSearch = (): Values => {
             isExtrinsic: typeof blockId === 'string',
             isExtrinsicHash: typeof blockId === 'string' && isHexFormat && Boolean(address),
             isBlock: !isHexFormat && typeof blockId === 'number',
+            isBlockHash: isHexFormat && typeof blockId === 'string',
             isEvent: typeof blockId === 'string',
           },
         })
 
-        if (data?.accountById) {
-          push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
-        } else if (data?.extrinsicById && data?.eventById) {
-          setState(formatSearchResult(data.eventById, data.extrinsicById))
-          push(
-            `/${network}/${section}/${INTERNAL_ROUTES.search.result.page(
-              network,
-              section,
-              'extrinsicAndEvent',
-            )}`,
-          )
-        } else if (data?.extrinsicById) {
+        if (data?.accountById) push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
+        else if (data?.extrinsicById?.length > 0 && data?.eventById?.length > 0)
           push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
-        } else if (data?.extrinsics?.length > 0) {
-          if (data.extrinsics.length > 1) {
-            setState({ extrinsics: data.extrinsics })
-            push(
-              `/${network}/${section}/${INTERNAL_ROUTES.search.result.page(
-                network,
-                section,
-                'extrinsics',
-              )}`,
-            )
-          } else {
-            const [extrinsic] = data.extrinsics
-            push(INTERNAL_ROUTES.extrinsics.id.page(network, section, extrinsic.id))
-          }
-        } else if (data?.blocks?.length > 0 && data.blocks[0].height >= 0) {
+        else if (data?.extrinsicById?.length > 0)
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
+        else if (data?.extrinsics?.length > 0)
+          push(INTERNAL_ROUTES.extrinsics.id.page(network, section, data.extrinsics[0].id))
+        else if (data?.blockById?.length > 0 && data.blockById[0].height >= 0)
           push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
-        } else if (data?.eventById) {
-          push(INTERNAL_ROUTES.events.id.page(network, section, term))
-        } else {
-          push(INTERNAL_ROUTES.search.empty(network, section))
-        }
+        else if (data?.blockByHash?.length > 0 && data.blockByHash[0].height >= 0)
+          push(INTERNAL_ROUTES.blocks.hash.page(network, section, term))
+        else if (data?.eventById) push(INTERNAL_ROUTES.events.id.page(network, section, term))
+        else push(INTERNAL_ROUTES.search.empty(network, section))
 
-        if (error) {
-          push(INTERNAL_ROUTES.notFound)
-        }
+        if (error) push(INTERNAL_ROUTES.notFound)
 
         setIsSearching(false)
 
         break
       }
-      case 2: {
+      // Account
+      case 2:
+        if (!isAddress(term)) return push(INTERNAL_ROUTES.search.empty(network, section))
+        return push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
+      // Block
+      case 3: {
         const blockId = Number(term)
-        if (isNaN(blockId)) {
-          return push(INTERNAL_ROUTES.search.empty(network, section))
-        }
-        push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
+        if (isHex(term)) push(INTERNAL_ROUTES.blocks.hash.page(network, section, term))
+        else if (isNaN(blockId)) push(INTERNAL_ROUTES.search.empty(network, section))
+        else push(INTERNAL_ROUTES.blocks.id.page(network, section, Number(term)))
         break
       }
-      case 3:
-        return push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
+      // Extrinsic
       case 4:
-        if (!isAddress(term)) {
-          return push(INTERNAL_ROUTES.search.empty(network, section))
-        }
-        return push(INTERNAL_ROUTES.accounts.id.page(network, section, term))
+        return push(INTERNAL_ROUTES.extrinsics.id.page(network, section, term))
+      // Event
       case 5:
         return push(INTERNAL_ROUTES.events.id.page(network, section, term))
       default:
@@ -115,6 +91,5 @@ export const useSearch = (): Values => {
   return {
     handleSearch,
     isSearching,
-    state,
   }
 }
