@@ -16215,7 +16215,7 @@ export type AccountTransferSenderTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type AccountTransferSenderTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transfer_sender_total_values_aggregate: { __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transfer_sender_total_values: Array<{ __typename?: 'leaderboard_account_transfer_sender_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountTransferSenderTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transfer_sender_total_values_aggregate: { __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_sender_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transfer_sender_total_values: Array<{ __typename?: 'leaderboard_account_transfer_sender_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountTransferReceiverTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16225,7 +16225,7 @@ export type AccountTransferReceiverTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type AccountTransferReceiverTotalCountQuery = { __typename?: 'query_root', leaderboard_account_transfer_receiver_total_counts_aggregate: { __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_transfer_receiver_total_counts: Array<{ __typename?: 'leaderboard_account_transfer_receiver_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountTransferReceiverTotalCountQuery = { __typename?: 'query_root', leaderboard_account_transfer_receiver_total_counts_aggregate: { __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_receiver_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_transfer_receiver_total_counts: Array<{ __typename?: 'leaderboard_account_transfer_receiver_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountTransferReceiverTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16235,7 +16235,7 @@ export type AccountTransferReceiverTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type AccountTransferReceiverTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transfer_receiver_total_values_aggregate: { __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transfer_receiver_total_values: Array<{ __typename?: 'leaderboard_account_transfer_receiver_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountTransferReceiverTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transfer_receiver_total_values_aggregate: { __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_receiver_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transfer_receiver_total_values: Array<{ __typename?: 'leaderboard_account_transfer_receiver_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountRemarkCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16245,7 +16245,7 @@ export type AccountRemarkCountQueryVariables = Exact<{
 }>;
 
 
-export type AccountRemarkCountQuery = { __typename?: 'query_root', leaderboard_account_remark_counts_aggregate: { __typename?: 'leaderboard_account_remark_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_remark_counts_aggregate_fields', count: number } | null }, leaderboard_account_remark_counts: Array<{ __typename?: 'leaderboard_account_remark_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountRemarkCountQuery = { __typename?: 'query_root', leaderboard_account_remark_counts_aggregate: { __typename?: 'leaderboard_account_remark_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_remark_counts_aggregate_fields', count: number } | null }, leaderboard_account_remark_counts: Array<{ __typename?: 'leaderboard_account_remark_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountExtrinsicTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16255,7 +16255,7 @@ export type AccountExtrinsicTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type AccountExtrinsicTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountExtrinsicTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountExtrinsicSuccessTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16265,7 +16265,7 @@ export type AccountExtrinsicSuccessTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type AccountExtrinsicSuccessTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_success_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_success_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_success_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountExtrinsicSuccessTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_success_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_success_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_success_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_success_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountExtrinsicFailedTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16275,7 +16275,7 @@ export type AccountExtrinsicFailedTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type AccountExtrinsicFailedTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_failed_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_failed_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_failed_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountExtrinsicFailedTotalCountQuery = { __typename?: 'query_root', leaderboard_account_extrinsic_failed_total_counts_aggregate: { __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_extrinsic_failed_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_extrinsic_failed_total_counts: Array<{ __typename?: 'leaderboard_account_extrinsic_failed_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountTransactionFeePaidTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16285,7 +16285,7 @@ export type AccountTransactionFeePaidTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type AccountTransactionFeePaidTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transaction_fee_paid_total_values_aggregate: { __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transaction_fee_paid_total_values: Array<{ __typename?: 'leaderboard_account_transaction_fee_paid_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountTransactionFeePaidTotalValueQuery = { __typename?: 'query_root', leaderboard_account_transaction_fee_paid_total_values_aggregate: { __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_account_transaction_fee_paid_total_values_aggregate_fields', count: number } | null }, leaderboard_account_transaction_fee_paid_total_values: Array<{ __typename?: 'leaderboard_account_transaction_fee_paid_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type FarmerVoteTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16295,7 +16295,7 @@ export type FarmerVoteTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type FarmerVoteTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_vote_total_counts_aggregate: { __typename?: 'leaderboard_farmer_vote_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_total_counts: Array<{ __typename?: 'leaderboard_farmer_vote_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type FarmerVoteTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_vote_total_counts_aggregate: { __typename?: 'leaderboard_farmer_vote_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_total_counts: Array<{ __typename?: 'leaderboard_farmer_vote_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type FarmerVoteTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16305,7 +16305,7 @@ export type FarmerVoteTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type FarmerVoteTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_vote_total_values_aggregate: { __typename?: 'leaderboard_farmer_vote_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_total_values: Array<{ __typename?: 'leaderboard_farmer_vote_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type FarmerVoteTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_vote_total_values_aggregate: { __typename?: 'leaderboard_farmer_vote_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_total_values: Array<{ __typename?: 'leaderboard_farmer_vote_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type FarmerBlockTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16315,7 +16315,7 @@ export type FarmerBlockTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type FarmerBlockTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_block_total_counts_aggregate: { __typename?: 'leaderboard_farmer_block_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_block_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_block_total_counts: Array<{ __typename?: 'leaderboard_farmer_block_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type FarmerBlockTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_block_total_counts_aggregate: { __typename?: 'leaderboard_farmer_block_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_block_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_block_total_counts: Array<{ __typename?: 'leaderboard_farmer_block_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type FarmerBlockTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16325,7 +16325,7 @@ export type FarmerBlockTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type FarmerBlockTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_block_total_values_aggregate: { __typename?: 'leaderboard_farmer_block_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_block_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_block_total_values: Array<{ __typename?: 'leaderboard_farmer_block_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type FarmerBlockTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_block_total_values_aggregate: { __typename?: 'leaderboard_farmer_block_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_block_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_block_total_values: Array<{ __typename?: 'leaderboard_farmer_block_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type OperatorTotalRewardsCollectedQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16335,7 +16335,7 @@ export type OperatorTotalRewardsCollectedQueryVariables = Exact<{
 }>;
 
 
-export type OperatorTotalRewardsCollectedQuery = { __typename?: 'query_root', leaderboard_operator_total_rewards_collecteds_aggregate: { __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate', aggregate?: { __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate_fields', count: number } | null }, leaderboard_operator_total_rewards_collecteds: Array<{ __typename?: 'leaderboard_operator_total_rewards_collecteds', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type OperatorTotalRewardsCollectedQuery = { __typename?: 'query_root', leaderboard_operator_total_rewards_collecteds_aggregate: { __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate', aggregate?: { __typename?: 'leaderboard_operator_total_rewards_collecteds_aggregate_fields', count: number } | null }, leaderboard_operator_total_rewards_collecteds: Array<{ __typename?: 'leaderboard_operator_total_rewards_collecteds', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type OperatorTotalTaxCollectedQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16345,7 +16345,7 @@ export type OperatorTotalTaxCollectedQueryVariables = Exact<{
 }>;
 
 
-export type OperatorTotalTaxCollectedQuery = { __typename?: 'query_root', leaderboard_operator_total_tax_collecteds_aggregate: { __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate', aggregate?: { __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate_fields', count: number } | null }, leaderboard_operator_total_tax_collecteds: Array<{ __typename?: 'leaderboard_operator_total_tax_collecteds', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type OperatorTotalTaxCollectedQuery = { __typename?: 'query_root', leaderboard_operator_total_tax_collecteds_aggregate: { __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate', aggregate?: { __typename?: 'leaderboard_operator_total_tax_collecteds_aggregate_fields', count: number } | null }, leaderboard_operator_total_tax_collecteds: Array<{ __typename?: 'leaderboard_operator_total_tax_collecteds', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type OperatorBundleTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16355,7 +16355,7 @@ export type OperatorBundleTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type OperatorBundleTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_bundle_total_counts_aggregate: { __typename?: 'leaderboard_operator_bundle_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_bundle_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_bundle_total_counts: Array<{ __typename?: 'leaderboard_operator_bundle_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type OperatorBundleTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_bundle_total_counts_aggregate: { __typename?: 'leaderboard_operator_bundle_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_bundle_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_bundle_total_counts: Array<{ __typename?: 'leaderboard_operator_bundle_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type OperatorDepositsTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16365,7 +16365,7 @@ export type OperatorDepositsTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type OperatorDepositsTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_deposits_total_counts_aggregate: { __typename?: 'leaderboard_operator_deposits_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_deposits_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_deposits_total_counts: Array<{ __typename?: 'leaderboard_operator_deposits_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type OperatorDepositsTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_deposits_total_counts_aggregate: { __typename?: 'leaderboard_operator_deposits_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_deposits_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_deposits_total_counts: Array<{ __typename?: 'leaderboard_operator_deposits_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type OperatorDepositsTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16375,7 +16375,7 @@ export type OperatorDepositsTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type OperatorDepositsTotalValueQuery = { __typename?: 'query_root', leaderboard_operator_deposits_total_values_aggregate: { __typename?: 'leaderboard_operator_deposits_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_operator_deposits_total_values_aggregate_fields', count: number } | null }, leaderboard_operator_deposits_total_values: Array<{ __typename?: 'leaderboard_operator_deposits_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type OperatorDepositsTotalValueQuery = { __typename?: 'query_root', leaderboard_operator_deposits_total_values_aggregate: { __typename?: 'leaderboard_operator_deposits_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_operator_deposits_total_values_aggregate_fields', count: number } | null }, leaderboard_operator_deposits_total_values: Array<{ __typename?: 'leaderboard_operator_deposits_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type OperatorWithdrawalsTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16385,7 +16385,7 @@ export type OperatorWithdrawalsTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type OperatorWithdrawalsTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_withdrawals_total_counts_aggregate: { __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_withdrawals_total_counts: Array<{ __typename?: 'leaderboard_operator_withdrawals_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type OperatorWithdrawalsTotalCountQuery = { __typename?: 'query_root', leaderboard_operator_withdrawals_total_counts_aggregate: { __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_operator_withdrawals_total_counts_aggregate_fields', count: number } | null }, leaderboard_operator_withdrawals_total_counts: Array<{ __typename?: 'leaderboard_operator_withdrawals_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type NominatorDepositsTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16395,7 +16395,7 @@ export type NominatorDepositsTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type NominatorDepositsTotalCountQuery = { __typename?: 'query_root', leaderboard_nominator_deposits_total_counts_aggregate: { __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate_fields', count: number } | null }, leaderboard_nominator_deposits_total_counts: Array<{ __typename?: 'leaderboard_nominator_deposits_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type NominatorDepositsTotalCountQuery = { __typename?: 'query_root', leaderboard_nominator_deposits_total_counts_aggregate: { __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_deposits_total_counts_aggregate_fields', count: number } | null }, leaderboard_nominator_deposits_total_counts: Array<{ __typename?: 'leaderboard_nominator_deposits_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type NominatorDepositsTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16405,7 +16405,7 @@ export type NominatorDepositsTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type NominatorDepositsTotalValueQuery = { __typename?: 'query_root', leaderboard_nominator_deposits_total_values_aggregate: { __typename?: 'leaderboard_nominator_deposits_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_deposits_total_values_aggregate_fields', count: number } | null }, leaderboard_nominator_deposits_total_values: Array<{ __typename?: 'leaderboard_nominator_deposits_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type NominatorDepositsTotalValueQuery = { __typename?: 'query_root', leaderboard_nominator_deposits_total_values_aggregate: { __typename?: 'leaderboard_nominator_deposits_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_deposits_total_values_aggregate_fields', count: number } | null }, leaderboard_nominator_deposits_total_values: Array<{ __typename?: 'leaderboard_nominator_deposits_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type NominatorWithdrawalsTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16415,7 +16415,7 @@ export type NominatorWithdrawalsTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type NominatorWithdrawalsTotalCountQuery = { __typename?: 'query_root', leaderboard_nominator_withdrawals_total_counts_aggregate: { __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate_fields', count: number } | null }, leaderboard_nominator_withdrawals_total_counts: Array<{ __typename?: 'leaderboard_nominator_withdrawals_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type NominatorWithdrawalsTotalCountQuery = { __typename?: 'query_root', leaderboard_nominator_withdrawals_total_counts_aggregate: { __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_nominator_withdrawals_total_counts_aggregate_fields', count: number } | null }, leaderboard_nominator_withdrawals_total_counts: Array<{ __typename?: 'leaderboard_nominator_withdrawals_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type FarmerVoteAndBlockTotalCountQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16425,7 +16425,7 @@ export type FarmerVoteAndBlockTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type FarmerVoteAndBlockTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_vote_and_block_total_counts_aggregate: { __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_and_block_total_counts: Array<{ __typename?: 'leaderboard_farmer_vote_and_block_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type FarmerVoteAndBlockTotalCountQuery = { __typename?: 'query_root', leaderboard_farmer_vote_and_block_total_counts_aggregate: { __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_and_block_total_counts_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_and_block_total_counts: Array<{ __typename?: 'leaderboard_farmer_vote_and_block_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type FarmerVoteAndBlockTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16435,7 +16435,7 @@ export type FarmerVoteAndBlockTotalValueQueryVariables = Exact<{
 }>;
 
 
-export type FarmerVoteAndBlockTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_vote_and_block_total_values_aggregate: { __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_and_block_total_values: Array<{ __typename?: 'leaderboard_farmer_vote_and_block_total_values', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type FarmerVoteAndBlockTotalValueQuery = { __typename?: 'query_root', leaderboard_farmer_vote_and_block_total_values_aggregate: { __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate', aggregate?: { __typename?: 'leaderboard_farmer_vote_and_block_total_values_aggregate_fields', count: number } | null }, leaderboard_farmer_vote_and_block_total_values: Array<{ __typename?: 'leaderboard_farmer_vote_and_block_total_values', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type NominationsListQueryVariables = Exact<{
   limit: Scalars['Int']['input'];

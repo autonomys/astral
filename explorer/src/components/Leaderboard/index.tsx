@@ -1,5 +1,6 @@
 'use client'
 
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -71,8 +72,7 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
   return (
     <div className='flex w-full flex-col space-y-6'>
       <TableSettings
-        tableName='Leaderboard'
-        totalCount={totalCount}
+        tableName={capitalizeFirstLetter(TABLE)}
         availableColumns={availableColumns}
         selectedColumns={selectedColumns}
         filters={filters}
@@ -104,6 +104,43 @@ export const AccountLeaderboard: FC = () => {
   return (
     <Leaderboard>
       <PageTabs isDesktop={isDesktop}>
+        <Tab title='Extrinsic Count'>
+          <LeaderboardList
+            title='Extrinsic Count'
+            query={Query.QUERY_ACCOUNT_EXTRINSIC_TOTAL_COUNT}
+            table='leaderboard_account_extrinsic_total_counts'
+            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueType='number'
+          />
+        </Tab>
+        <Tab title='Extrinsic Success Count'>
+          <LeaderboardList
+            title='Extrinsic Success Count'
+            query={Query.QUERY_ACCOUNT_EXTRINSIC_SUCCESS_TOTAL_COUNT}
+            table='leaderboard_account_extrinsic_success_total_counts'
+            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueType='number'
+          />
+        </Tab>
+        <Tab title='Extrinsic Failed Count'>
+          <LeaderboardList
+            title='Extrinsic Failed Count'
+            query={Query.QUERY_ACCOUNT_EXTRINSIC_FAILED_TOTAL_COUNT}
+            table='leaderboard_account_extrinsic_failed_total_counts'
+            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueType='number'
+          />
+        </Tab>
+        <Tab title='Transaction Fee Paid Value'>
+          <LeaderboardList
+            title='Transaction Fee Paid Value'
+            query={Query.QUERY_ACCOUNT_TRANSACTION_FEE_PAID_TOTAL_VALUE}
+            table='leaderboard_account_transaction_fee_paid_total_values'
+            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
+            valueLabel='Total fee paid'
+            valueSuffix={tokenSymbol}
+          />
+        </Tab>
         <Tab title='Transfer Sender Count'>
           <LeaderboardList
             title='Transfer Sender Count'
@@ -149,43 +186,6 @@ export const AccountLeaderboard: FC = () => {
             table='leaderboard_account_remark_counts'
             idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
             valueType='number'
-          />
-        </Tab>
-        <Tab title='Extrinsic Count'>
-          <LeaderboardList
-            title='Extrinsic Count'
-            query={Query.QUERY_ACCOUNT_EXTRINSIC_TOTAL_COUNT}
-            table='leaderboard_account_extrinsic_total_counts'
-            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
-            valueType='number'
-          />
-        </Tab>
-        <Tab title='Extrinsic Success Count'>
-          <LeaderboardList
-            title='Extrinsic Success Count'
-            query={Query.QUERY_ACCOUNT_EXTRINSIC_SUCCESS_TOTAL_COUNT}
-            table='leaderboard_account_extrinsic_success_total_counts'
-            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
-            valueType='number'
-          />
-        </Tab>
-        <Tab title='Extrinsic Failed Count'>
-          <LeaderboardList
-            title='Extrinsic Failed Count'
-            query={Query.QUERY_ACCOUNT_EXTRINSIC_FAILED_TOTAL_COUNT}
-            table='leaderboard_account_extrinsic_failed_total_counts'
-            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
-            valueType='number'
-          />
-        </Tab>
-        <Tab title='Transaction Fee Paid Value'>
-          <LeaderboardList
-            title='Transaction Fee Paid Value'
-            query={Query.QUERY_ACCOUNT_TRANSACTION_FEE_PAID_TOTAL_VALUE}
-            table='leaderboard_account_transaction_fee_paid_total_values'
-            idLink={(id) => INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, id)}
-            valueLabel='Total fee paid'
-            valueSuffix={tokenSymbol}
           />
         </Tab>
       </PageTabs>

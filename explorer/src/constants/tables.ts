@@ -216,7 +216,7 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'id', label: 'Id', isSelected: true, searchable: true },
     { name: 'rank', label: 'Rank', isSelected: true, searchable: true },
     { name: 'value', label: 'Value', isSelected: true, searchable: true },
-    { name: 'lastContributionAt', label: 'Last Contribution At', isSelected: true },
+    { name: 'lastContributionAt', label: 'Last Contribution', isSelected: true },
     { name: 'createdAt', label: 'Created At', isSelected: true },
     { name: 'updatedAt', label: 'Updated At', isSelected: true },
   ],
