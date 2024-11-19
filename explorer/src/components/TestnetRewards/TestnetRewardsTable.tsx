@@ -1,7 +1,5 @@
 'use client'
 
-import { SUBSPACE_ACC_PREFIX_TESTNET } from '@/constants/general'
-import { formatAddress } from '@/utils/formatAddress'
 import { DEFAULT_TOKEN_SYMBOL, TESTNET_TOKEN } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import {
@@ -11,9 +9,11 @@ import {
   GeminiITestnetIcon,
   StakeWarsIIcon,
 } from 'components/icons/TestnetIcon'
+import { SUBSPACE_ACC_PREFIX_TESTNET } from 'constants/general'
 import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useViewStates } from 'states/view'
+import { formatAddress } from 'utils/formatAddress'
 import { numberFormattedString } from 'utils/number'
 import {
   AllRewards,

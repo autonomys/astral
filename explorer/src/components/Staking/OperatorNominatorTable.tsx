@@ -1,7 +1,7 @@
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { Routes } from 'constants/routes'
 import {
   OperatorByIdQuery,
   OperatorNominatorsByIdQuery,
@@ -9,11 +9,9 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -22,9 +20,8 @@ import { hasValue, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import type { Cell } from 'types/table'
 import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/number'
-import { shortString } from 'utils/string'
 import { countTablePages } from 'utils/table'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIconWithLink } from '../common/AccountIcon'
 import { Spinner } from '../common/Spinner'
 import { QUERY_OPERATOR_NOMINATORS_BY_ID } from './query'
 
@@ -40,7 +37,6 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
   const { network, tokenSymbol } = useChains()
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -62,22 +58,11 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         header: 'Account Id',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div className='row flex items-center gap-3'>
-            <AccountIcon address={row.original.account_id} size={26} />
-            <Link
-              data-testid={`nominator-link-${row.original.id}-${row.original.account_id}-${row.index}}`}
-              className='hover:text-primaryAccent'
-              href={INTERNAL_ROUTES.accounts.id.page(
-                network,
-                Routes.consensus,
-                row.original.account_id,
-              )}
-            >
-              <div>
-                {isLargeLaptop ? row.original.account_id : shortString(row.original.account_id)}
-              </div>
-            </Link>
-          </div>
+          <AccountIconWithLink
+            address={row.original.account_id}
+            network={network}
+            section={Routes.consensus}
+          />
         ),
       },
       {
@@ -166,17 +151,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
         },
       })
     return cols
-  }, [
-    deposits,
-    isLargeLaptop,
-    op,
-    operator,
-    operatorId,
-    network,
-    subspaceAccount,
-    useRpcData,
-    tokenSymbol,
-  ])
+  }, [deposits, op, operator, operatorId, network, subspaceAccount, useRpcData, tokenSymbol])
 
   const orderBy = useMemo(
     () =>

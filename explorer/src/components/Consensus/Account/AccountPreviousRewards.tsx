@@ -1,5 +1,12 @@
-import { Spinner } from '@/components/common/Spinner'
-import { SUBSPACE_ACC_PREFIX_TESTNET } from '@/constants/general'
+import { DEFAULT_TOKEN_SYMBOL, TESTNET_TOKEN } from '@autonomys/auto-utils'
+import { sendGAEvent } from '@next/third-parties/google'
+import { Spinner } from 'components/common/Spinner'
+import { SUBSPACE_ACC_PREFIX_TESTNET } from 'constants/general'
+import { useParams } from 'next/navigation'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import { AccountIdParam } from 'types/app'
+import { formatAddress } from 'utils//formatAddress'
 import {
   AllRewards,
   CAMPAIGNS,
@@ -11,14 +18,7 @@ import {
   getUserTestnetRewardsByPhase,
   getUserTestnetRewardsPercentageByPhase,
   Rewards,
-} from '@/utils/testnetRewards'
-import { DEFAULT_TOKEN_SYMBOL, TESTNET_TOKEN } from '@autonomys/auto-utils'
-import { sendGAEvent } from '@next/third-parties/google'
-import { useParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { AccountIdParam } from 'types/app'
-import { formatAddress } from 'utils//formatAddress'
+} from 'utils/testnetRewards'
 
 interface AccountPreviousRewardsProps {
   isDesktop: boolean

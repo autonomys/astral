@@ -1,10 +1,10 @@
+import { shortString } from '@autonomys/auto-utils'
 import { Extrinsic } from 'components/Consensus/Extrinsic/Extrinsic'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps, ExtrinsicIdPageProps } from 'types/app'
-import { shortString } from 'utils/string'
 
 export async function generateMetadata({
   params: { chain, extrinsicId },

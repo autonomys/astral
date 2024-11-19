@@ -15992,10 +15992,12 @@ export type Uuid_Comparison_Exp = {
 export type AccountsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Accounts_Order_By> | Consensus_Accounts_Order_By;
+  where?: InputMaybe<Consensus_Accounts_Bool_Exp>;
 }>;
 
 
-export type AccountsQuery = { __typename?: 'query_root', consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, free: any, reserved: any, total?: any | null, updated_at: any, extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } }> };
+export type AccountsQuery = { __typename?: 'query_root', consensus_accounts_aggregate: { __typename?: 'consensus_accounts_aggregate', aggregate?: { __typename?: 'consensus_accounts_aggregate_fields', count: number } | null }, consensus_accounts: Array<{ __typename?: 'consensus_accounts', id: string, nonce: any, free: any, reserved: any, total?: any | null, createdAt: any, updatedAt: any, extrinsicsCount: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null } }> };
 
 export type AccountByIdQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
@@ -16063,10 +16065,11 @@ export type BlocksQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy: Array<Consensus_Blocks_Order_By> | Consensus_Blocks_Order_By;
+  where?: InputMaybe<Consensus_Blocks_Bool_Exp>;
 }>;
 
 
-export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', blockchain_size: any, extrinsics_root: string, hash: string, height: any, id: string, parent_hash: string, space_pledged: any, spec_id: string, state_root: string, timestamp: any, author_id: string, events: Array<{ __typename?: 'consensus_events', id: string }>, extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string }> }> };
+export type BlocksQuery = { __typename?: 'query_root', consensus_blocks_aggregate: { __typename?: 'consensus_blocks_aggregate', aggregate?: { __typename?: 'consensus_blocks_aggregate_fields', count: number } | null }, consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, hash: string, timestamp: any, sortId: string, parentHash: string, specId: string, stateRoot: string, extrinsicsRoot: string, spacePledged: any, blockchainSize: any, extrinsicsCount: number, eventsCount: number, authorId: string }> };
 
 export type BlockByIdQueryVariables = Exact<{
   blockId: Scalars['numeric']['input'];
@@ -16104,11 +16107,12 @@ export type BlocksByHashQuery = { __typename?: 'query_root', consensus_blocks: A
 export type EventsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Events_Order_By> | Consensus_Events_Order_By;
   where?: InputMaybe<Consensus_Events_Bool_Exp>;
 }>;
 
 
-export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', args: string, id: string, index_in_block: any, name: string, phase: string, timestamp: any, block?: { __typename?: 'consensus_blocks', id: string, timestamp: any, height: any } | null }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
+export type EventsQuery = { __typename?: 'query_root', consensus_events_aggregate: { __typename?: 'consensus_events_aggregate', aggregate?: { __typename?: 'consensus_events_aggregate_fields', count: number } | null }, consensus_events: Array<{ __typename?: 'consensus_events', id: string, section: string, module: string, name: string, timestamp: any, phase: string, sortId: string, blockHeight: any, blockHash: string, extrinsicId: string, extrinsicHash: string, indexInBlock: any }>, consensus_event_modules: Array<{ __typename?: 'consensus_event_modules', method: string }> };
 
 export type EventByIdQueryVariables = Exact<{
   eventId: Scalars['String']['input'];
@@ -16120,11 +16124,12 @@ export type EventByIdQuery = { __typename?: 'query_root', consensus_events: Arra
 export type ExtrinsicsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Extrinsics_Order_By> | Consensus_Extrinsics_Order_By;
   where?: InputMaybe<Consensus_Extrinsics_Bool_Exp>;
 }>;
 
 
-export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, index_in_block: number, success: boolean, name: string, nonce: any, timestamp: any }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
+export type ExtrinsicsQuery = { __typename?: 'query_root', consensus_extrinsics_aggregate: { __typename?: 'consensus_extrinsics_aggregate', aggregate?: { __typename?: 'consensus_extrinsics_aggregate_fields', count: number } | null }, consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, section: string, module: string, name: string, success: boolean, timestamp: any, nonce: any, signer: string, signature: string, tip: any, fee: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }>, consensus_extrinsic_modules: Array<{ __typename?: 'consensus_extrinsic_modules', method: string }> };
 
 export type ExtrinsicsByIdQueryVariables = Exact<{
   extrinsicId: Scalars['String']['input'];
@@ -16151,11 +16156,12 @@ export type HomeQueryQuery = { __typename?: 'query_root', consensus_blocks: Arra
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy: Array<Consensus_Logs_Order_By> | Consensus_Logs_Order_By;
   where?: InputMaybe<Consensus_Logs_Bool_Exp>;
 }>;
 
 
-export type LogsQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, value?: string | null, block_height: any, timestamp: any }> };
+export type LogsQuery = { __typename?: 'query_root', consensus_logs_aggregate: { __typename?: 'consensus_logs_aggregate', aggregate?: { __typename?: 'consensus_logs_aggregate_fields', count: number } | null }, consensus_logs: Array<{ __typename?: 'consensus_logs', id: string, kind: string, timestamp: any, sortId: string, blockHeight: any, blockHash: string, indexInBlock: number }> };
 
 export type LogByIdQueryVariables = Exact<{
   logId: Scalars['String']['input'];
@@ -16172,7 +16178,7 @@ export type DomainsListQueryVariables = Exact<{
 }>;
 
 
-export type DomainsListQuery = { __typename?: 'query_root', staking_domains_aggregate: { __typename?: 'staking_domains_aggregate', aggregate?: { __typename?: 'staking_domains_aggregate_fields', count: number } | null }, staking_domains: Array<{ __typename?: 'staking_domains', id: string, sort_id: any, name: string, account_id: string, bundle_count: any, total_volume: any, total_tax_collected: any, total_rewards_collected: any, total_domain_execution_fee: any, total_deposits: any, total_consensus_storage_fee: any, total_burned_balance: any, runtime_info: string, runtime_id: number, runtime: string, last_domain_block_number: any, last_bundle_at: any, current_total_stake: any, current_storage_fee_deposit: any, created_at: any, completed_epoch: any, total_transfers_in: any, transfers_in_count: any, total_transfers_out: any, transfers_out_count: any, total_rejected_transfers_claimed: any, rejected_transfers_claimed_count: any, total_transfers_rejected: any, transfers_rejected_count: any, updated_at: any, total_estimated_withdrawals: any, total_withdrawals: any, current_total_shares: any, current_share_price: any, accumulated_epoch_stake: any, accumulated_epoch_storage_fee_deposit: any, accumulated_epoch_rewards: any, accumulated_epoch_shares: any, current_epoch_duration: any, last_epoch_duration: any, last6_epochs_duration: any, last144_epoch_duration: any, last1k_epoch_duration: any, operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } }> };
+export type DomainsListQuery = { __typename?: 'query_root', staking_domains_aggregate: { __typename?: 'staking_domains_aggregate', aggregate?: { __typename?: 'staking_domains_aggregate_fields', count: number } | null }, staking_domains: Array<{ __typename?: 'staking_domains', id: string, name: string, runtime: string, transfers_out_count: any, current_share_price: any, accumulated_epoch_stake: any, sortId: any, accountId: string, bundleCount: any, totalVolume: any, totalTaxCollected: any, totalRewardsCollected: any, totalDomainExecutionFee: any, totalDeposits: any, totalConsensusStorageFee: any, totalBurnedBalance: any, runtimeInfo: string, runtimeId: number, lastDomainBlockNumber: any, lastBundleAt: any, currentTotalStake: any, currentStorageFeeDeposit: any, currentSharePrice: any, createdAt: any, completedEpoch: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, updatedAt: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, currentTotalShares: any, accumulatedEpochStorageFeeDeposit: any, accumulatedEpochRewards: any, accumulatedEpochShares: any, currentEpochDuration: any, lastEpochDuration: any, last6EpochsDuration: any, last144EpochDuration: any, last1kEpochDuration: any, operatorsAggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null } }> };
 
 export type DomainsStatusQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16199,7 +16205,7 @@ export type AccountTransferSenderTotalCountQueryVariables = Exact<{
 }>;
 
 
-export type AccountTransferSenderTotalCountQuery = { __typename?: 'query_root', leaderboard_account_transfer_sender_total_counts_aggregate: { __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_transfer_sender_total_counts: Array<{ __typename?: 'leaderboard_account_transfer_sender_total_counts', id: string, rank: number, value: any, last_contribution_at: any, created_at: number, updated_at: number }> };
+export type AccountTransferSenderTotalCountQuery = { __typename?: 'query_root', leaderboard_account_transfer_sender_total_counts_aggregate: { __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate', aggregate?: { __typename?: 'leaderboard_account_transfer_sender_total_counts_aggregate_fields', count: number } | null }, leaderboard_account_transfer_sender_total_counts: Array<{ __typename?: 'leaderboard_account_transfer_sender_total_counts', id: string, rank: number, value: any, lastContributionAt: any, createdAt: number, updatedAt: number }> };
 
 export type AccountTransferSenderTotalValueQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16449,7 +16455,7 @@ export type OperatorsListQueryVariables = Exact<{
 }>;
 
 
-export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, sort_id: any, account_id: string, domain_id: string, current_epoch_rewards: any, current_total_stake: any, current_total_shares: any, current_share_price: any, current_storage_fee_deposit: any, minimum_nominator_stake: any, nomination_tax: number, signing_key: string, status: string, raw_status: string, pending_action: string, total_deposits: any, total_estimated_withdrawals: any, total_withdrawals: any, total_tax_collected: any, total_rewards_collected: any, total_transfers_in: any, transfers_in_count: any, total_transfers_out: any, transfers_out_count: any, total_rejected_transfers_claimed: any, rejected_transfers_claimed_count: any, total_transfers_rejected: any, transfers_rejected_count: any, total_volume: any, total_consensus_storage_fee: any, total_domain_execution_fee: any, total_burned_balance: any, accumulated_epoch_shares: any, accumulated_epoch_storage_fee_deposit: any, active_epoch_count: any, bundle_count: any, last_bundle_at: any, created_at: any, updated_at: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: any, last_domain_block_number: any } | null, nominators_aggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, deposits_aggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any }> }> };
+export type OperatorsListQuery = { __typename?: 'query_root', staking_operators_aggregate: { __typename?: 'staking_operators_aggregate', aggregate?: { __typename?: 'staking_operators_aggregate_fields', count: number } | null }, staking_operators: Array<{ __typename?: 'staking_operators', id: string, status: string, sortId: any, accountId: string, domainId: string, currentEpochRewards: any, currentTotalStake: any, currentTotalShares: any, currentSharePrice: any, currentStorageFeeDeposit: any, minimumNominatorStake: any, nominationTax: number, signingKey: string, rawStatus: string, pendingAction: string, totalDeposits: any, totalEstimatedWithdrawals: any, totalWithdrawals: any, totalTaxCollected: any, totalRewardsCollected: any, totalTransfersIn: any, transfersInCount: any, totalTransfersOut: any, transfersOutCount: any, totalRejectedTransfersClaimed: any, rejectedTransfersClaimedCount: any, totalTransfersRejected: any, transfersRejectedCount: any, totalVolume: any, totalConsensusStorageFee: any, totalDomainExecutionFee: any, totalBurnedBalance: any, accumulatedEpochShares: any, accumulatedEpochStorageFeeDeposit: any, activeEpochCount: any, bundleCount: any, lastBundleAt: any, createdAt: any, updatedAt: any, domain?: { __typename?: 'staking_domains', id: string, sort_id: any, last_domain_block_number: any } | null, nominatorsAggregate: { __typename?: 'staking_nominators_aggregate', aggregate?: { __typename?: 'staking_nominators_aggregate_fields', count: number } | null }, depositsAggregate: { __typename?: 'staking_deposits_aggregate', aggregate?: { __typename?: 'staking_deposits_aggregate_fields', count: number } | null }, nominators: Array<{ __typename?: 'staking_nominators', id: string, account_id: string, known_shares: any, unlock_at_confirmed_domain_block_number: any }> }> };
 
 export type OperatorByIdQueryVariables = Exact<{
   operatorId: Scalars['String']['input'];

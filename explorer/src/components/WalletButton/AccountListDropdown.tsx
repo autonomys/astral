@@ -1,5 +1,6 @@
 'use client'
 
+import { shortString } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { PolkadotIcon } from 'components/icons/PolkadotIcon'
@@ -9,7 +10,7 @@ import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import { Fragment, useCallback, useMemo } from 'react'
 import { formatAddress } from 'utils//formatAddress'
-import { limitText, shortString } from 'utils/string'
+import { limitText } from 'utils/string'
 
 function AccountListDropdown() {
   const { actingAccount, subspaceAccount, accounts, changeAccount, disconnectWallet } = useWallet()

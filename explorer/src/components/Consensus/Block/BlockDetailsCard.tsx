@@ -1,11 +1,11 @@
+import { shortString } from '@autonomys/auto-utils'
+import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { BlockByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { FC } from 'react'
-import { shortString } from 'utils/string'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
-import { BlockAuthor } from './BlockAuthor'
 
 type Props = {
   block: NonNullable<BlockByIdQuery['consensus_blocks'][number]>
@@ -14,7 +14,6 @@ type Props = {
 
 export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
   const { network, section } = useChains()
-  const chain = network
 
   return (
     <div className='w-full'>
@@ -33,11 +32,10 @@ export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
           <List>
             <StyledListItem title='Author'>
               <CopyButton value={block.author_id} message='Block author copied'>
-                <BlockAuthor
-                  domain={section}
-                  chain={chain}
-                  author={block.author_id}
-                  isDesktop={isDesktop}
+                <AccountIconWithLink
+                  address={block.author_id}
+                  network={network}
+                  section={section}
                 />
               </CopyButton>
             </StyledListItem>

@@ -1,9 +1,13 @@
+import { shortString } from '@autonomys/auto-utils'
 import Identicon from '@polkadot/react-identicon'
 import { IconTheme } from '@polkadot/react-identicon/types'
+import { INTERNAL_ROUTES } from 'constants/routes'
+import useMediaQuery from 'hooks/useMediaQuery'
+import Link from 'next/link'
 import { FC } from 'react'
 
 interface AccountIconProps {
-  address?: string | Uint8Array | null | undefined
+  address: string
   isAlternative?: boolean
   isHighlight?: boolean
   onCopy?: (value: string) => void
@@ -28,5 +32,30 @@ export const AccountIcon: FC<AccountIconProps> = ({
       theme={theme}
       value={address}
     />
+  )
+}
+
+export const AccountIconWithLink = ({
+  address,
+  network,
+  section,
+  forceShortString = false,
+  ...props
+}: AccountIconProps & {
+  network: string
+  section: string
+  forceShortString?: boolean
+}) => {
+  const isDesktop = useMediaQuery('(min-width: 1440px)')
+  return (
+    <div className='flex items-center gap-2'>
+      <AccountIcon address={address} size={26} theme='beachball' {...props} />
+      <Link
+        href={INTERNAL_ROUTES.accounts.id.page(network, section, address)}
+        className='hover:text-primaryAccent'
+      >
+        <div>{!isDesktop || forceShortString ? shortString(address) : address}</div>
+      </Link>
+    </div>
   )
 }

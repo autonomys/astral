@@ -12,7 +12,6 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -24,10 +23,9 @@ import { useViewStates } from 'states/view'
 import type { Cell, LeaderboardFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { shortString } from 'utils/string'
-import { countTablePages } from 'utils/table'
+import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIconWithLink } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 
 type LeaderboardListProps = {
@@ -43,6 +41,7 @@ type LeaderboardListProps = {
 }
 type Row =
   AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts'][0]
+const TABLE = 'leaderboard'
 
 export const LeaderboardList: FC<LeaderboardListProps> = ({
   title,
@@ -58,129 +57,85 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const { ref, inView } = useInView()
   const { myPositionOnly } = useViewStates()
   const { subspaceAccount } = useWallet()
-  const {
-    leaderboard: { columns: availableColumns, selectedColumns, filters: leaderboardFilters },
-  } = useTableStates()
-  const filters = useMemo(() => leaderboardFilters as LeaderboardFilters, [leaderboardFilters])
-
   const [sorting, setSorting] = useState<SortingState>([{ id: 'rank', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
   const apolloClient = useApolloClient()
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { network, tokenDecimals } = useChains()
   const inFocus = useWindowFocus()
+  const availableColumns = useTableStates((state) => state[TABLE].columns)
+  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
+  const filters = useTableStates((state) => state[TABLE].filters) as LeaderboardFilters
 
-  const columns = useMemo(() => {
-    const cols = []
-    if (selectedColumns.includes('id'))
-      cols.push({
-        accessorKey: 'rank',
-        header: 'Rank',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`rank-${row.original.id}`}>{row.original.rank}</div>
-        ),
-      })
-    if (selectedColumns.includes('id'))
-      cols.push({
-        accessorKey: 'id',
-        header: idLabel,
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => {
-          return (
-            <div key={`id-${row.original.id}`} className='row flex items-center gap-3'>
-              {showAccountIcon && <AccountIcon address={row.original.id} size={26} />}
-              <Link
-                data-testid={`account-link-${row.index}`}
-                href={idLink(row.original.id)}
-                className='hover:text-primaryAccent'
-              >
-                <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
-              </Link>
-            </div>
-          )
+  const columns = useMemo(
+    () =>
+      getTableColumns<Row>(
+        TABLE,
+        selectedColumns,
+        {
+          rank: ({ row }: Cell<Row>) => row.original.rank.toString(),
+          id: ({ row }: Cell<Row>) =>
+            showAccountIcon ? (
+              <AccountIconWithLink
+                address={idLink(row.original.id)}
+                network={network}
+                section={Routes.consensus}
+              />
+            ) : (
+              idLink(row.original.id)
+            ),
+          value: ({ row }: Cell<Row>) =>
+            `${numberWithCommas(
+              valueType === 'bigNumber'
+                ? bigNumberToNumber(row.original.value)
+                : row.original.value,
+            )} ${valueSuffix && ` ${valueSuffix}`}`,
+          lastContributionAt: ({ row }: Cell<Row>) =>
+            utcToLocalRelativeTime(row.original.lastContributionAt),
+          createdAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`created_at-${row.original.id}`}
+              data-testid={`created-at-${row.index}`}
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                row.original.createdAt,
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.createdAt}</div>
+            </Link>
+          ),
+          updatedAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`updated_at-${row.original.id}`}
+              data-testid={`updated-at-${row.index}`}
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                row.original.updatedAt,
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.updatedAt}</div>
+            </Link>
+          ),
         },
-      })
-    if (selectedColumns.includes('value'))
-      cols.push({
-        accessorKey: 'value',
-        header: valueLabel,
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`value-${row.original.id}`}>
-            {row.original.value
-              ? `${numberWithCommas(valueType === 'bigNumber' ? bigNumberToNumber(row.original.value) : row.original.value)}`
-              : 0}
-            {valueSuffix && ` ${valueSuffix}`}
-          </div>
-        ),
-      })
-    if (selectedColumns.includes('last_contribution_at'))
-      cols.push({
-        accessorKey: 'last_contribution_at',
-        header: 'Last contribution',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`last_contribution_at-${row.original.id}`}>
-            {utcToLocalRelativeTime(row.original.last_contribution_at)}
-          </div>
-        ),
-      })
-    if (selectedColumns.includes('created_at'))
-      cols.push({
-        accessorKey: 'created_at',
-        header: 'First contribution block',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`created_at-${row.original.id}`}
-            data-testid={`created-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              row.original.created_at,
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.created_at}</div>
-          </Link>
-        ),
-      })
-    if (selectedColumns.includes('updated_at'))
-      cols.push({
-        accessorKey: 'updated_at',
-        header: 'Last contribution block',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`updated_at-${row.original.id}`}
-            data-testid={`updated-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              row.original.updated_at,
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.updated_at}</div>
-          </Link>
-        ),
-      })
-    return cols
-  }, [
-    selectedColumns,
-    idLabel,
-    valueLabel,
-    showAccountIcon,
-    idLink,
-    isLargeLaptop,
-    valueType,
-    valueSuffix,
-    network,
-  ])
+        { id: idLabel, value: valueLabel },
+      ),
+    [
+      selectedColumns,
+      idLabel,
+      valueLabel,
+      showAccountIcon,
+      idLink,
+      network,
+      valueType,
+      valueSuffix,
+    ],
+  )
 
   const orderBy = useMemo(
     () =>
