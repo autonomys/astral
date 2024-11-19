@@ -7,8 +7,7 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import useChains from 'hooks/useChains'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
-import React, { FC, useCallback, useMemo } from 'react'
-import { hasValue, useQueryStates } from 'states/query'
+import React, { FC, useCallback } from 'react'
 import { useTableStates } from 'states/tables'
 import type { LeaderboardFilters, TableSettingsTabs } from 'types/table'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
@@ -34,19 +33,6 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
   const hideSettings = useTableStates((state) => state.hideSettings)
   const resetSettings = useTableStates((state) => state.resetSettings)
   const showReset = useTableStates((state) => state.showReset)
-
-  const {
-    leaderboard: { leaderboard },
-  } = useQueryStates()
-
-  const totalCount = useMemo(
-    () =>
-      (hasValue(leaderboard) &&
-        leaderboard.value.leaderboard_account_transfer_sender_total_counts_aggregate.aggregate
-          ?.count) ||
-      0,
-    [leaderboard],
-  )
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | boolean) => {
