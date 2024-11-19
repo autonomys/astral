@@ -61,6 +61,7 @@ export const EXTERNAL_ROUTES = {
   gemini2guide:
     'https://forum.autonomys.xyz/t/how-to-check-your-balance-for-gemini-ii-incentivized-testnet/1081',
   docs: 'https://docs.autonomys.xyz/',
+  status: 'https://status.autonomys.xyz/',
   operatorDocs:
     'https://docs.autonomys.xyz/docs/farming-&-staking/staking/operators/register-operator',
   social: {
