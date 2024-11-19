@@ -35,8 +35,14 @@ export const formatSeconds = (seconds: number | bigint): string => {
   )
 }
 
-export const utcToLocalRelativeTime = (timestamp: string): string =>
-  dayjs.utc(timestamp).local().fromNow(true) + ' ago'
+export const utcToLocalRelativeTime = (timestamp: string): string => {
+  const now = dayjs()
+  const time = dayjs.utc(timestamp).local()
+  const diffInSeconds = now.diff(time, 'second')
+
+  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`
+  return time.fromNow(true) + ' ago'
+}
 
 export const utcToLocalTime = (timestamp: string): string =>
   dayjs.utc(timestamp).local().format('DD MMM YYYY | HH:mm:ss(Z)')
