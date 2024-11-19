@@ -32,8 +32,8 @@ import {
   numberWithCommas,
 } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
-import { allCapsToNormal, shortString } from 'utils/string'
-import { countTablePages } from 'utils/table'
+import { allCapsToNormal, capitalizeFirstLetter, shortString } from 'utils/string'
+import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
@@ -100,8 +100,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     [filters, setFilters],
   )
 
-  const handleReset = useCallback(() => resetSettings(TABLE), [resetSettings])
-
   const handleAction = useCallback((value: OperatorAction) => {
     setAction(value)
     if (value.type !== OperatorActionType.None) setIsOpen(true)
@@ -117,494 +115,268 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
 
   const apolloClient = useApolloClient()
 
-  const columns = useMemo(() => {
-    const cols = []
-    if (selectedColumns.includes('id'))
-      cols.push({
-        accessorKey: 'sort_id',
-        header: 'Id',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.operators.id.page(network, Routes.staking, row.original.id)}
-          >
-            <div>{row.original.id}</div>
-          </Link>
-        ),
-      })
-    if (selectedColumns.includes('account_id') || selectedColumns.includes('account'))
-      cols.push({
-        accessorKey: 'account_id',
-        header: 'Owner',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            className='flex items-center gap-2 hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.accounts.id.page(
-              network,
-              Routes.consensus,
-              row.original.account_id,
-            )}
-          >
-            <AccountIcon address={row.original.account_id} size={26} />
-            <div>{shortString(row.original.account_id)}</div>
-          </Link>
-        ),
-      })
-    if (!domainId && (selectedColumns.includes('domain_id') || selectedColumns.includes('domain')))
-      cols.push({
-        accessorKey: 'domain_id',
-        header: 'Domain',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => {
-          const domain = domainRegistry.find((d) => d.domainId === row.original.domain_id)
-          return (
+  const columns = useMemo(
+    () =>
+      getTableColumns<Row>(
+        TABLE,
+        selectedColumns,
+        {
+          id: ({ row }: Cell<Row>) => (
             <Link
               className='hover:text-primaryAccent'
-              href={INTERNAL_ROUTES.domains.id.page(
+              href={INTERNAL_ROUTES.operators.id.page(network, Routes.staking, row.original.id)}
+            >
+              <div>{row.original.id}</div>
+            </Link>
+          ),
+          accountId: ({ row }: Cell<Row>) => (
+            <Link
+              className='flex items-center gap-2 hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.accounts.id.page(
                 network,
-                Routes.domains,
-                row.original.domain_id,
+                Routes.consensus,
+                row.original.accountId,
               )}
             >
-              <div>
-                {domain
-                  ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
-                    domain.domainConfig.domainName.slice(1)
-                  : '#' + row.original.domain_id}
-              </div>
+              <AccountIcon address={row.original.accountId} size={26} />
+              <div>{shortString(row.original.accountId)}</div>
             </Link>
-          )
-        },
-      })
-    if (selectedColumns.includes('signing_key'))
-      cols.push({
-        accessorKey: 'signing_key',
-        header: 'Signing Key',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div className='row flex items-center gap-3'>
-            {row.original.account_id === subspaceAccount && (
-              <Tooltip text='You are the operator' direction='bottom'>
-                <AccountIcon address={row.original.account_id} size={26} />
-              </Tooltip>
-            )}
-            <div>{shortString(row.original.signing_key)}</div>
-          </div>
-        ),
-      })
-    if (selectedColumns.includes('current_total_stake'))
-      cols.push({
-        accessorKey: 'current_total_stake',
-        header: 'Total Stake',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.current_total_stake)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('current_total_shares'))
-      cols.push({
-        accessorKey: 'current_total_shares',
-        header: 'Total Shares',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.current_total_shares)}</div>
-        ),
-      })
-    if (selectedColumns.includes('current_share_price'))
-      cols.push({
-        accessorKey: 'current_share_price',
-        header: 'Current Share Price',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_deposits'))
-      cols.push({
-        accessorKey: 'total_deposits',
-        header: 'Total Deposits',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_estimated_withdrawals'))
-      cols.push({
-        accessorKey: 'total_estimated_withdrawals',
-        header: 'Total Estimated Withdrawals',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_withdrawals'))
-      cols.push({
-        accessorKey: 'total_withdrawals',
-        header: 'Total Withdrawals',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_tax_collected'))
-      cols.push({
-        accessorKey: 'total_tax_collected',
-        header: 'Total Tax Collected',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_rewards_collected'))
-      cols.push({
-        accessorKey: 'total_rewards_collected',
-        header: 'Total Rewards Collected',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_transfers_in'))
-      cols.push({
-        accessorKey: 'total_transfers_in',
-        header: 'Total Transfer In',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('transfers_in_count'))
-      cols.push({
-        accessorKey: 'transfers_in_count',
-        header: 'Total Transfer In (Count)',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.transfers_in_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_transfers_out'))
-      cols.push({
-        accessorKey: 'total_transfers_out',
-        header: 'Total Transfer Out',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('transfers_out_count'))
-      cols.push({
-        accessorKey: 'transfers_out_count',
-        header: 'Total Transfer Out (Count)',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.transfers_out_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_rejected_transfers_claimed'))
-      cols.push({
-        accessorKey: 'total_rejected_transfers_claimed',
-        header: 'Total Transfer Rejected Claimed',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('rejected_transfers_claimed_count'))
-      cols.push({
-        accessorKey: 'rejected_transfers_claimed_count',
-        header: 'Total Transfer Rejected Claimed (Count)',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.rejected_transfers_claimed_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_transfers_rejected'))
-      cols.push({
-        accessorKey: 'total_transfers_rejected',
-        header: 'Total Transfer Rejected',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('transfers_rejected_count'))
-      cols.push({
-        accessorKey: 'transfers_rejected_count',
-        header: 'Total Transfer Rejected (Count)',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.transfers_rejected_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_volume'))
-      cols.push({
-        accessorKey: 'total_volume',
-        header: 'Total volume',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_consensus_storage_fee'))
-      cols.push({
-        accessorKey: 'total_consensus_storage_fee',
-        header: 'Total Consensus Storage Fee',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_domain_execution_fee'))
-      cols.push({
-        accessorKey: 'total_domain_execution_fee',
-        header: 'Total Domain Execution Fee',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_burned_balance'))
-      cols.push({
-        accessorKey: 'total_burned_balance',
-        header: 'Total Burned Balance',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('accumulated_epoch_shares'))
-      cols.push({
-        accessorKey: 'accumulated_epoch_shares',
-        header: 'Accumulated Epoch Shares',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{bigNumberToFormattedString(row.original.accumulated_epoch_shares)}</div>
-        ),
-      })
-    if (selectedColumns.includes('accumulated_epoch_storage_fee_deposit'))
-      cols.push({
-        accessorKey: 'accumulated_epoch_storage_fee_deposit',
-        header: 'Accumulated Epoch Storage Fee Deposit',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>
-            {bigNumberToFormattedString(row.original.accumulated_epoch_storage_fee_deposit)}
-          </div>
-        ),
-      })
-    if (selectedColumns.includes('active_epoch_count'))
-      cols.push({
-        accessorKey: 'active_epoch_count',
-        header: 'Active Epoch (Count)',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.active_epoch_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('bundle_count'))
-      cols.push({
-        accessorKey: 'bundle_count',
-        header: 'Bundle (Count)',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{numberFormattedString(row.original.bundle_count)}</div>,
-      })
-    if (selectedColumns.includes('status'))
-      cols.push({
-        accessorKey: 'status',
-        header: 'Status',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{allCapsToNormal(row.original.status)}</div>,
-      })
-    if (selectedColumns.includes('raw_status'))
-      cols.push({
-        accessorKey: 'raw_status',
-        header: 'Raw Status',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => {
-          const status = operatorStatus(JSON.parse(row.original.raw_status ?? '{}'))
-          return <div>{allCapsToNormal(status)}</div>
-        },
-      })
-    if (selectedColumns.includes('pending_action'))
-      cols.push({
-        accessorKey: 'pending_action',
-        header: 'Pending Action',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{allCapsToNormal(row.original.pending_action)}</div>,
-      })
-    if (selectedColumns.includes('last_bundle_at'))
-      cols.push({
-        accessorKey: 'last_bundle_at',
-        header: 'Last Bundle',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`created_at-${row.original.id}`}
-            data-testid={`created-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              parseInt(row.original.last_bundle_at?.toString() ?? '0'),
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.last_bundle_at}</div>
-          </Link>
-        ),
-      })
-    if (selectedColumns.includes('created_at'))
-      cols.push({
-        accessorKey: 'created_at',
-        header: 'Created',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`created_at-${row.original.id}`}
-            data-testid={`created-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              parseInt(row.original.created_at?.toString() ?? '0'),
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.created_at}</div>
-          </Link>
-        ),
-      })
-    if (selectedColumns.includes('updated_at'))
-      cols.push({
-        accessorKey: 'updated_at',
-        header: 'Updated',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`created_at-${row.original.id}`}
-            data-testid={`created-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              parseInt(row.original.created_at?.toString() ?? '0'),
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.updated_at}</div>
-          </Link>
-        ),
-      })
-    if (selectedColumns.includes('minimum_nominator_stake'))
-      cols.push({
-        accessorKey: 'minimum_nominator_stake',
-        header: 'Min. Stake',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.minimum_nominator_stake)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('nomination_tax'))
-      cols.push({
-        accessorKey: 'nomination_tax',
-        header: 'Nominator Tax',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{`${row.original.nomination_tax}%`}</div>,
-      })
-    if (selectedColumns.includes('nominators_aggregate'))
-      cols.push({
-        accessorKey: 'nominators_aggregate',
-        header: 'Nominators',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.nominatorsCount}</div>,
-      })
-    if (deposits.find((d) => d.account === subspaceAccount))
-      cols.push({
-        accessorKey: 'myStake',
-        header: 'My Stake',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => {
-          const deposit = deposits.find(
-            (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
-          )
-          const op = rpcOperators.find((o) => o.id === row.original.id)
-          const sharesValue =
-            op && BigInt(op.currentTotalShares) > BIGINT_ZERO
-              ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
-                BigInt(op.currentTotalShares)
-              : BIGINT_ZERO
-          const pendingAmount =
-            deposit && deposit.pending
-              ? deposit.pending.amount + deposit.pending.storageFeeDeposit
-              : BIGINT_ZERO
-          const depositShares = deposit ? deposit.shares : BIGINT_ZERO
-          const total = deposit
-            ? (deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER + pendingAmount
-            : BIGINT_ZERO
-          let tooltip = ''
-          if (pendingAmount > BIGINT_ZERO)
-            tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${tokenSymbol}`
-          if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
-          if (depositShares > BIGINT_ZERO)
-            tooltip += `Staked: ${bigNumberToNumber(
-              (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
-            )} ${tokenSymbol}`
-          return (
-            <div>
-              <Tooltip text={tooltip} direction='bottom'>
-                {bigNumberToFormattedString(total)} {tokenSymbol}
-              </Tooltip>
+          ),
+          domainId: ({ row }: Cell<Row>) => {
+            const domain = domainRegistry.find((d) => d.domainId === row.original.domainId)
+            return (
+              <Link
+                className='hover:text-primaryAccent'
+                href={INTERNAL_ROUTES.domains.id.page(
+                  network,
+                  Routes.domains,
+                  row.original.domainId,
+                )}
+              >
+                <div>
+                  {domain
+                    ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
+                      domain.domainConfig.domainName.slice(1)
+                    : '#' + row.original.domainId}
+                </div>
+              </Link>
+            )
+          },
+          domain: ({ row }: Cell<Row>) => {
+            const domain = domainRegistry.find((d) => d.domainId === row.original.domainId)
+            return (
+              <Link
+                className='hover:text-primaryAccent'
+                href={INTERNAL_ROUTES.domains.id.page(
+                  network,
+                  Routes.domains,
+                  row.original.domainId,
+                )}
+              >
+                <div>
+                  {domain
+                    ? domain.domainConfig.domainName.charAt(0).toUpperCase() +
+                      domain.domainConfig.domainName.slice(1)
+                    : '#' + row.original.domainId}
+                </div>
+              </Link>
+            )
+          },
+          signingKey: ({ row }: Cell<Row>) => (
+            <div className='row flex items-center gap-3'>
+              {row.original.accountId === subspaceAccount && (
+                <Tooltip text='You are the operator' direction='bottom'>
+                  <AccountIcon address={row.original.accountId} size={26} />
+                </Tooltip>
+              )}
+              <div>{shortString(row.original.signingKey)}</div>
             </div>
-          )
-        },
-      })
-    if (subspaceAccount)
-      cols.push({
-        accessorKey: 'actions',
-        header: 'Actions',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => {
-          const isOperator = row.original.account_id === subspaceAccount
-          const nominator = row.original.nominators.find(
-            (nominator) => nominator.account_id === subspaceAccount,
-          )
-          const excludeActions = []
-          if (!isOperator)
-            excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
+          ),
+          currentTotalStake: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.currentTotalStake)} ${tokenSymbol}`,
+          currentTotalShares: ({ row }: Cell<Row>) =>
+            bigNumberToFormattedString(row.original.currentTotalShares),
+          currentSharePrice: ({ row }: Cell<Row>) =>
+            `${formatUnitsToNumber((row.original.currentSharePrice * 1000000).toString())} ${tokenSymbol}`,
+          totalDeposits: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalDeposits)} ${tokenSymbol}`,
+          totalEstimatedWithdrawals: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalEstimatedWithdrawals)} ${tokenSymbol}`,
+          totalWithdrawals: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalWithdrawals)} ${tokenSymbol}`,
+          totalTaxCollected: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalTaxCollected)} ${tokenSymbol}`,
+          totalRewardsCollected: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalRewardsCollected)} ${tokenSymbol}`,
+          totalTransfersIn: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalTransfersIn)} ${tokenSymbol}`,
+          transfersInCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.transfersInCount),
+          totalTransfersOut: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalTransfersOut)} ${tokenSymbol}`,
+          transfersOutCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.transfersOutCount),
+          totalTransfersRejected: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalTransfersRejected)} ${tokenSymbol}`,
+          totalRejectedTransfersClaimed: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalRejectedTransfersClaimed)} ${tokenSymbol}`,
+          rejectedTransfersClaimedCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.rejectedTransfersClaimedCount),
+          transfersRejectedCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.transfersRejectedCount),
+          totalVolume: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalVolume)} ${tokenSymbol}`,
+          totalConsensusStorageFee: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalConsensusStorageFee)} ${tokenSymbol}`,
+          totalDomainExecutionFee: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalDomainExecutionFee)} ${tokenSymbol}`,
+          totalBurnedBalance: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.totalBurnedBalance)} ${tokenSymbol}`,
+          accumulatedEpochShares: ({ row }: Cell<Row>) =>
+            bigNumberToFormattedString(row.original.accumulatedEpochShares),
+          accumulatedEpochStorageFeeDeposit: ({ row }: Cell<Row>) =>
+            bigNumberToFormattedString(row.original.accumulatedEpochStorageFeeDeposit),
+          activeEpochCount: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.activeEpochCount),
+          bundleCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.bundleCount),
+          status: ({ row }: Cell<Row>) => allCapsToNormal(row.original.status),
+          rawStatus: ({ row }: Cell<Row>) =>
+            allCapsToNormal(operatorStatus(JSON.parse(row.original.rawStatus ?? '{}'))),
+          pendingAction: ({ row }: Cell<Row>) => allCapsToNormal(row.original.pendingAction),
+          lastBundleAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`created_at-${row.original.id}`}
+              data-testid={`created-at-${row.index}`}
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                parseInt(row.original.lastBundleAt?.toString() ?? '0'),
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.lastBundleAt}</div>
+            </Link>
+          ),
+          createdAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`created_at-${row.original.id}`}
+              data-testid={`created-at-${row.index}`}
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                parseInt(row.original.createdAt?.toString() ?? '0'),
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.createdAt}</div>
+            </Link>
+          ),
+          updatedAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`created_at-${row.original.id}`}
+              data-testid={`created-at-${row.index}`}
+              href={INTERNAL_ROUTES.blocks.id.page(
+                network,
+                Routes.consensus,
+                parseInt(row.original.updatedAt?.toString() ?? '0'),
+              )}
+              className='hover:text-primaryAccent'
+            >
+              <div>{row.original.updatedAt}</div>
+            </Link>
+          ),
+          minimumNominatorStake: ({ row }: Cell<Row>) =>
+            `${bigNumberToFormattedString(row.original.minimumNominatorStake)} ${tokenSymbol}`,
+          nominationTax: ({ row }: Cell<Row>) => `${row.original.nominationTax}%`,
+          nominatorsAggregate: ({ row }: Cell<Row>) =>
+            numberFormattedString(row.original.nominatorsCount),
+          myStake: ({ row }: Cell<Row>) => {
+            const deposit = deposits.find(
+              (d) => d.account === subspaceAccount && d.operatorId.toString() === row.original.id,
+            )
+            const op = rpcOperators.find((o) => o.id === row.original.id)
+            const sharesValue =
+              op && BigInt(op.currentTotalShares) > BIGINT_ZERO
+                ? (BigInt(op.currentTotalStake) * SHARES_CALCULATION_MULTIPLIER) /
+                  BigInt(op.currentTotalShares)
+                : BIGINT_ZERO
+            const pendingAmount =
+              deposit && deposit.pending
+                ? deposit.pending.amount + deposit.pending.storageFeeDeposit
+                : BIGINT_ZERO
+            const depositShares = deposit ? deposit.shares : BIGINT_ZERO
+            const total = deposit
+              ? (deposit.shares * sharesValue) / SHARES_CALCULATION_MULTIPLIER + pendingAmount
+              : BIGINT_ZERO
+            let tooltip = ''
+            if (pendingAmount > BIGINT_ZERO)
+              tooltip += `Pending; ${bigNumberToNumber(pendingAmount)} ${tokenSymbol}`
+            if (depositShares > BIGINT_ZERO && pendingAmount > BIGINT_ZERO) tooltip += ' - '
+            if (depositShares > BIGINT_ZERO)
+              tooltip += `Staked: ${bigNumberToNumber(
+                (depositShares * sharesValue) / SHARES_CALCULATION_MULTIPLIER,
+              )} ${tokenSymbol}`
+            return (
+              <div>
+                <Tooltip text={tooltip} direction='bottom'>
+                  {bigNumberToFormattedString(total)} {tokenSymbol}
+                </Tooltip>
+              </div>
+            )
+          },
+          actions: ({ row }: Cell<Row>) => {
+            const isOperator = row.original.accountId === subspaceAccount
+            const nominator = row.original.nominators.find(
+              (nominator) => nominator.account_id === subspaceAccount,
+            )
+            const excludeActions = []
+            if (!isOperator)
+              excludeActions.push(OperatorActionType.Deregister, OperatorActionType.UnlockNominator)
 
-          if (row.original.status === OperatorStatus.DEREGISTERED)
-            excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
-          if (row.original.pending_action !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
-            excludeActions.push(OperatorActionType.UnlockNominator)
+            if (row.original.status === OperatorStatus.DEREGISTERED)
+              excludeActions.push(OperatorActionType.Nominating, OperatorActionType.Deregister)
+            if (row.original.pendingAction !== OperatorPendingAction.READY_FOR_UNLOCK_NOMINATOR)
+              excludeActions.push(OperatorActionType.UnlockNominator)
 
-          if (!nominator)
-            excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
-          if (!nominator || nominator.unlock_at_confirmed_domain_block_number.length === 0)
-            excludeActions.push(OperatorActionType.UnlockFunds)
-          if (row.original.status === OperatorStatus.SLASHED) return <></>
-          return (
-            <ActionsDropdown
-              action={action}
-              handleAction={handleAction}
-              row={row as ActionsDropdownRow}
-              excludeActions={excludeActions}
-              nominatorMaxShares={nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO}
-            />
-          )
+            if (!nominator)
+              excludeActions.push(OperatorActionType.Withdraw, OperatorActionType.UnlockFunds)
+            if (!nominator || nominator.unlock_at_confirmed_domain_block_number.length === 0)
+              excludeActions.push(OperatorActionType.UnlockFunds)
+            if (row.original.status === OperatorStatus.SLASHED) return <></>
+            return (
+              <ActionsDropdown
+                action={action}
+                handleAction={handleAction}
+                row={
+                  {
+                    original: {
+                      ...row.original,
+                      // eslint-disable-next-line camelcase
+                      current_total_shares: row.original.currentTotalShares,
+                    },
+                  } as ActionsDropdownRow
+                }
+                excludeActions={excludeActions}
+                nominatorMaxShares={nominator ? BigInt(nominator.known_shares) : BIGINT_ZERO}
+              />
+            )
+          },
         },
-      })
-    return cols
-  }, [
-    selectedColumns,
-    domainId,
-    deposits,
-    subspaceAccount,
-    network,
-    domainRegistry,
-    rpcOperators,
-    action,
-    handleAction,
-    tokenSymbol,
-  ])
+        {},
+        { myStake: false, actions: false },
+      ),
+    [
+      selectedColumns,
+      deposits,
+      subspaceAccount,
+      network,
+      domainRegistry,
+      rpcOperators,
+      action,
+      handleAction,
+      tokenSymbol,
+    ],
+  )
 
   const orderBy = useMemo(
     () =>
@@ -796,7 +568,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       return operators.value.staking_operators.map((o) => {
         return {
           ...o,
-          nominatorsCount: o.nominators_aggregate.aggregate?.count || 0,
+          nominatorsCount: o.nominatorsAggregate.aggregate?.count || 0,
         }
       })
     return []
@@ -830,18 +602,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     [selectedColumns, setColumns],
   )
 
-  const _showSettings = useCallback(
-    (setting: TableSettingsTabs) => showSettings(TABLE, setting),
-    [showSettings],
-  )
-  const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
-
-  const _showReset = useCallback(
-    () => showReset(TABLE),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [showReset, selectedColumns, operatorFilters],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -858,7 +618,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       </div>
       <div className='my-4' ref={ref}>
         <TableSettings
-          tableName='Operators'
+          tableName={capitalizeFirstLetter(TABLE)}
           totalLabel={totalLabel}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
@@ -871,13 +631,13 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             )
           }
           showTableSettings={showTableSettings}
-          showSettings={_showSettings}
-          hideSettings={_hideSettings}
+          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
+          hideSettings={() => hideSettings(TABLE)}
           handleColumnChange={handleClickOnColumnToEditTable}
           handleFilterChange={handleFilterChange}
           filterOptions={filtersOptions}
-          handleReset={handleReset}
-          showReset={_showReset()}
+          handleReset={() => resetSettings(TABLE)}
+          showReset={showReset(TABLE)}
         />
         {!loading && operatorsList ? (
           <SortedTable

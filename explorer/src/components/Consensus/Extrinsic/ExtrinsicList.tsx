@@ -1,5 +1,8 @@
 'use client'
 
+import { TableSettings } from '@/components/common/TableSettings'
+import { useTableStates } from '@/states/tables'
+import { getTableColumns } from '@/utils/table'
 import type { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SearchBar } from 'components/common/SearchBar'
@@ -8,37 +11,102 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE, searchTypes } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import { ExtrinsicsQuery, ExtrinsicsQueryVariables } from 'gql/graphql'
+import { ExtrinsicsQuery, ExtrinsicsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import Link from 'next/link'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import type { Cell } from 'types/table'
+import { Cell, ExtrinsicsFilters, TableSettingsTabs } from 'types/table'
 import { numberWithCommas } from 'utils/number'
-import { shortString } from 'utils/string'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_EXTRINSICS } from './query'
 
 type Row = ExtrinsicsQuery['consensus_extrinsics'][0]
+const TABLE = 'extrinsics'
 
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
   const { network, section } = useChains()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
 
+  const {
+    extrinsics: {
+      columns: availableColumns,
+      selectedColumns,
+      filtersOptions,
+      filters: operatorFilters,
+      showTableSettings,
+    },
+    setColumns,
+    setFilters,
+    showSettings,
+    hideSettings,
+    resetSettings,
+    showReset,
+  } = useTableStates()
+  const filters = useMemo(() => operatorFilters as ExtrinsicsFilters, [operatorFilters])
+
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { id: OrderBy.Asc },
+    [sorting],
+  )
+
+  const where = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const conditions: Record<string, any> = {}
+
+    // Add search conditions
+    availableColumns
+      .filter((column) => column.searchable)
+      .forEach((column) => {
+        const searchKey = `search-${column.name}` as keyof ExtrinsicsFilters
+        const searchValue = filters[searchKey]
+        if (searchValue) {
+          conditions[column.name] = { _ilike: `%${searchValue}%` }
+        }
+      })
+
+    // Block Height
+    if (filters.blockHeightMin || filters.blockHeightMax) {
+      conditions['block_height'] = {}
+      if (filters.blockHeightMin) conditions.block_height._gte = filters.blockHeightMin
+      if (filters.blockHeightMax) conditions.block_height._lte = filters.blockHeightMax
+    }
+
+    // Section
+    if (filters.section) {
+      conditions['section'] = { _ilike: `%${filters.section}%` }
+    }
+
+    // Module
+    if (filters.module) {
+      conditions['module'] = { _ilike: `%${filters.module}%` }
+    }
+
+    return conditions
+  }, [filters, availableColumns])
+
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
+      where,
+      orderBy,
     }),
-    [pagination.pageSize, pagination.pageIndex],
+    [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
   const { loading, setIsVisible } = useSquidQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
@@ -48,7 +116,7 @@ export const ExtrinsicList: FC = () => {
       pollInterval: 6000,
     },
     Routes.consensus,
-    'extrinsics',
+    TABLE,
   )
 
   const {
@@ -72,42 +140,48 @@ export const ExtrinsicList: FC = () => {
     [totalCount, pagination],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
-  const modules = useMemo(
-    () => data && data.consensus_extrinsic_modules.map((module) => module.method),
-    [data],
-  )
 
   const columns = useMemo(
-    () => [
-      {
-        accessorKey: 'block',
-        header: 'Extrinsic Id',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
+    () =>
+      getTableColumns<Row>(TABLE, selectedColumns, {
+        sortId: ({ row }: Cell<Row>) => (
           <Link
-            key={`${row.index}-extrinsic-block`}
+            key={`${row.index}-extrinsic-id`}
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            <div>{`${row.original.block_height}-${row.index}`}</div>
+            <div>{row.original.id}</div>
           </Link>
         ),
-      },
-      {
-        accessorKey: 'timestamp',
-        header: 'Time',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-time`}>
-            {utcToLocalRelativeTime(row.original.timestamp)}
+        timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
+        hash: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-extrinsic-hash`}>
+            <CopyButton value={row.original.hash} message='Hash copied'>
+              {shortString(row.original.hash)}
+            </CopyButton>
           </div>
         ),
-      },
-      {
-        accessorKey: 'status',
-        header: 'Status',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
+        section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
+        module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
+        name: ({ row }: Cell<Row>) => row.original.name.toUpperCase(),
+        blockHeight: ({ row }: Cell<Row>) => (
+          <Link
+            key={`${row.index}-extrinsic-block_height`}
+            className='hover:text-primaryAccent'
+            href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.blockHeight)}
+          >
+            <div>{row.original.blockHeight}</div>
+          </Link>
+        ),
+        blockHash: ({ row }: Cell<Row>) => (
+          <div key={`${row.index}-extrinsic-block_hash`}>
+            <CopyButton value={row.original.blockHash} message='Block hash copied'>
+              {shortString(row.original.blockHash)}
+            </CopyButton>
+          </div>
+        ),
+        indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock.toString(),
+        success: ({ row }: Cell<Row>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
             key={`${row.index}-home-extrinsic-status`}
@@ -115,31 +189,21 @@ export const ExtrinsicList: FC = () => {
             <StatusIcon status={row.original.success} />
           </div>
         ),
-      },
-      {
-        accessorKey: 'action',
-        header: 'Action',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-action`}>
-            {row.original.name.split('.')[1].toUpperCase()}
-          </div>
+        nonce: ({ row }: Cell<Row>) => row.original.nonce,
+        signer: ({ row }: Cell<Row>) => (
+          <Link
+            key={`${row.index}-extrinsic-signer`}
+            className='hover:text-primaryAccent'
+            href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.signer)}
+          >
+            <div>{row.original.signer}</div>
+          </Link>
         ),
-      },
-      {
-        accessorKey: 'blockhash',
-        header: 'Block hash',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-hash}`}>
-            <CopyButton value={row.original.hash} message='Hash copied'>
-              {shortString(row.original.hash)}
-            </CopyButton>
-          </div>
-        ),
-      },
-    ],
-    [network, section],
+        signature: ({ row }: Cell<Row>) => row.original.signature,
+        tip: ({ row }: Cell<Row>) => row.original.tip,
+        fee: ({ row }: Cell<Row>) => row.original.fee,
+      }),
+    [network, section, selectedColumns],
   )
 
   const noData = useMemo(() => {
@@ -147,6 +211,27 @@ export const ExtrinsicList: FC = () => {
     if (!data) return <NotFound />
     return null
   }, [data, consensusEntry, loading])
+
+  const handleFilterChange = useCallback(
+    (filterName: string, value: string | boolean) => {
+      setFilters(TABLE, {
+        ...filters,
+        [filterName]: value,
+      })
+    },
+    [filters, setFilters],
+  )
+
+  const handleClickOnColumnToEditTable = useCallback(
+    (column: string, checked: boolean) =>
+      checked
+        ? setColumns(TABLE, [...selectedColumns, column])
+        : setColumns(
+            TABLE,
+            selectedColumns.filter((c) => c !== column),
+          ),
+    [selectedColumns, setColumns],
+  )
 
   useEffect(() => {
     setIsVisible(inView)
@@ -157,33 +242,37 @@ export const ExtrinsicList: FC = () => {
       <div className='grid w-full lg:grid-cols-2'>
         <SearchBar fixSearchType={searchTypes[2]} />
       </div>
-      {modules && (
-        <div className='mt-5 flex w-full justify-between'>
-          <div className=' font-medium text-grayDark dark:text-white'>Extrinsics {totalLabel}</div>
-        </div>
-      )}
-      <div className='mt-8 flex w-full flex-col sm:mt-0'>
-        <div className='w-full'>
-          <div className='my-6 rounded'>
-            <div ref={ref}>
-              {!loading && extrinsics ? (
-                <SortedTable
-                  data={extrinsics}
-                  columns={columns}
-                  showNavigation={true}
-                  sorting={sorting}
-                  onSortingChange={setSorting}
-                  pagination={pagination}
-                  pageCount={pageCount}
-                  onPaginationChange={setPagination}
-                  filename='extrinsics-list'
-                />
-              ) : (
-                noData
-              )}
-            </div>
-          </div>
-        </div>
+      <div className='my-4' ref={ref}>
+        <TableSettings
+          tableName={capitalizeFirstLetter(TABLE)}
+          totalLabel={totalLabel}
+          availableColumns={availableColumns}
+          selectedColumns={selectedColumns}
+          filters={filters}
+          showTableSettings={showTableSettings}
+          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
+          hideSettings={() => hideSettings(TABLE)}
+          handleColumnChange={handleClickOnColumnToEditTable}
+          handleFilterChange={handleFilterChange}
+          filterOptions={filtersOptions}
+          handleReset={() => resetSettings(TABLE)}
+          showReset={showReset(TABLE)}
+        />
+        {!loading && extrinsics ? (
+          <SortedTable
+            data={extrinsics}
+            columns={columns}
+            showNavigation={true}
+            sorting={sorting}
+            onSortingChange={setSorting}
+            pagination={pagination}
+            pageCount={pageCount}
+            onPaginationChange={setPagination}
+            filename={TABLE}
+          />
+        ) : (
+          noData
+        )}
       </div>
     </div>
   )

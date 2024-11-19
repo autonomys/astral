@@ -26,7 +26,7 @@ import {
   numberWithCommas,
 } from 'utils/number'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
-import { countTablePages } from 'utils/table'
+import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIcon } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
@@ -67,14 +67,10 @@ export const DomainsList: FC = () => {
   } = useTableStates()
   const filters = useMemo(() => operatorFilters as DomainsFilters, [operatorFilters])
 
-  const columns = useMemo(() => {
-    const cols = []
-    if (selectedColumns.includes('id'))
-      cols.push({
-        accessorKey: 'sort_id',
-        header: 'Id',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+  const columns = useMemo(
+    () =>
+      getTableColumns<Row>(TABLE, selectedColumns, {
+        sortId: ({ row }: Cell<Row>) => (
           <Link
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.domains.id.page(network, section, row.original.id)}
@@ -82,38 +78,26 @@ export const DomainsList: FC = () => {
             <div>{row.original.id}</div>
           </Link>
         ),
-      })
-    if (selectedColumns.includes('account_id'))
-      cols.push({
-        accessorKey: 'account_id',
-        header: 'Owner',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        accountId: ({ row }: Cell<Row>) => (
           <Link
             className='flex items-center gap-2 hover:text-primaryAccent'
             href={INTERNAL_ROUTES.accounts.id.page(
               network,
               Routes.consensus,
-              row.original.account_id,
+              row.original.accountId,
             )}
           >
-            <AccountIcon address={row.original.account_id} size={26} />
-            <div>{shortString(row.original.account_id)}</div>
+            <AccountIcon address={row.original.accountId} size={26} />
+            <div>{shortString(row.original.accountId)}</div>
           </Link>
         ),
-      })
-    if (selectedColumns.includes('name'))
-      cols.push({
-        accessorKey: 'name',
-        header: 'Domain Name',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        name: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
             <Tooltip
               text={
                 <span>
                   Runtime: {row.original.runtime} <br />
-                  Details: {row.original.runtime_info}
+                  Details: {row.original.runtimeInfo}
                 </span>
               }
               direction='bottom'
@@ -122,437 +106,173 @@ export const DomainsList: FC = () => {
             </Tooltip>
           </div>
         ),
-      })
-    if (selectedColumns.includes('runtime_id'))
-      cols.push({
-        accessorKey: 'runtime_id',
-        header: 'Runtime Id',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.runtime_id}</div>,
-      })
-    if (selectedColumns.includes('runtime'))
-      cols.push({
-        accessorKey: 'runtime',
-        header: 'Runtime',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.runtime}</div>,
-      })
-    if (selectedColumns.includes('runtime_info'))
-      cols.push({
-        accessorKey: 'runtime_info',
-        header: 'Runtime Info',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{row.original.runtime_info}</div>,
-      })
-    if (selectedColumns.includes('completed_epoch'))
-      cols.push({
-        accessorKey: 'completed_epoch',
-        header: 'Completed epoch',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        runtimeId: ({ row }: Cell<Row>) => row.original.runtimeId.toString(),
+        runtime: ({ row }: Cell<Row>) => row.original.runtime,
+        runtimeInfo: ({ row }: Cell<Row>) => row.original.runtimeInfo,
+        completedEpoch: ({ row }: Cell<Row>) => (
           <div>
             <Tooltip
               text={
                 <span>
-                  Completed epoch: {numberFormattedString(row.original.completed_epoch)} <br />
-                  Last block #: {row.original.last_domain_block_number}
+                  Completed epoch: {numberFormattedString(row.original.completedEpoch)} <br />
+                  Last block #: {row.original.lastDomainBlockNumber}
                 </span>
               }
               direction='bottom'
             >
-              {row.original.completed_epoch}
+              {row.original.completedEpoch}
             </Tooltip>
           </div>
         ),
-      })
-    if (selectedColumns.includes('last_domain_block_number'))
-      cols.push({
-        accessorKey: 'last_domain_block_number',
-        header: 'Last Domain Block Number',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        lastDomainBlockNumber: ({ row }: Cell<Row>) => (
           <div>
             <Tooltip
               text={
                 <span>
-                  Last block #: {row.original.last_domain_block_number} <br />
-                  Completed epoch: {numberFormattedString(row.original.completed_epoch)}
+                  Last block #: {row.original.lastDomainBlockNumber} <br />
+                  Completed epoch: {numberFormattedString(row.original.completedEpoch)}
                 </span>
               }
               direction='bottom'
             >
-              {row.original.last_domain_block_number}
+              {row.original.lastDomainBlockNumber}
             </Tooltip>
           </div>
         ),
-      })
-    if (selectedColumns.includes('total_deposits'))
-      cols.push({
-        accessorKey: 'total_deposits',
-        header: 'Total deposits',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_deposits)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_estimated_withdrawals'))
-      cols.push({
-        accessorKey: 'total_estimated_withdrawals',
-        header: 'Total Estimated Withdrawals',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_estimated_withdrawals)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_withdrawals'))
-      cols.push({
-        accessorKey: 'total_withdrawals',
-        header: 'Total Withdrawals',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_withdrawals)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_tax_collected'))
-      cols.push({
-        accessorKey: 'total_tax_collected',
-        header: 'Total Tax Collected',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_tax_collected)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_rewards_collected'))
-      cols.push({
-        accessorKey: 'total_rewards_collected',
-        header: 'Rewards collected',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rewards_collected)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_transfers_in'))
-      cols.push({
-        accessorKey: 'total_transfers_in',
-        header: 'Total Transfers In',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_in)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('transfers_in_count'))
-      cols.push({
-        accessorKey: 'transfers_in_count',
-        header: 'Transfers In Count',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.transfers_in_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_transfers_out'))
-      cols.push({
-        accessorKey: 'total_transfers_out',
-        header: 'Total Transfers Out',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_out)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('transfers_out_count'))
-      cols.push({
-        accessorKey: 'transfers_out_count',
-        header: 'Transfers Out Count',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.transfers_out_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_rejected_transfers_claimed'))
-      cols.push({
-        accessorKey: 'total_rejected_transfers_claimed',
-        header: 'Total Rejected Transfers Claimed',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_rejected_transfers_claimed)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('rejected_transfers_claimed_count'))
-      cols.push({
-        accessorKey: 'rejected_transfers_claimed_count',
-        header: 'Rejected Transfers Claimed Count',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.rejected_transfers_claimed_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_transfers_rejected'))
-      cols.push({
-        accessorKey: 'total_transfers_rejected',
-        header: 'Total Transfers Rejected',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_transfers_rejected)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('transfers_rejected_count'))
-      cols.push({
-        accessorKey: 'transfers_rejected_count',
-        header: 'Transfers Rejected Count',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.transfers_rejected_count)}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_volume'))
-      cols.push({
-        accessorKey: 'total_volume',
-        header: 'Total Volume',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_volume)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_consensus_storage_fee'))
-      cols.push({
-        accessorKey: 'total_consensus_storage_fee',
-        header: 'Consensus storage fee',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_consensus_storage_fee)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_domain_execution_fee'))
-      cols.push({
-        accessorKey: 'total_domain_execution_fee',
-        header: 'Domain execution fee',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_domain_execution_fee)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('total_burned_balance'))
-      cols.push({
-        accessorKey: 'total_burned_balance',
-        header: 'Total Burned Balance',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${bigNumberToFormattedString(row.original.total_burned_balance)} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('current_total_stake'))
-      cols.push({
-        accessorKey: 'current_total_stake',
-        header: 'Total stake',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        totalDeposits: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalDeposits)} ${tokenSymbol}`,
+        totalEstimatedWithdrawals: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalEstimatedWithdrawals)} ${tokenSymbol}`,
+        totalWithdrawals: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalWithdrawals)} ${tokenSymbol}`,
+        totalTaxCollected: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalTaxCollected)} ${tokenSymbol}`,
+        totalRewardsCollected: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalRewardsCollected)} ${tokenSymbol}`,
+        totalTransfersIn: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalTransfersIn)} ${tokenSymbol}`,
+        transfersInCount: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.transfersInCount),
+        totalTransfersOut: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalTransfersOut)} ${tokenSymbol}`,
+        transfersOutCount: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.transfers_out_count),
+        totalRejectedTransfersClaimed: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalRejectedTransfersClaimed)} ${tokenSymbol}`,
+        rejectedTransfersClaimedCount: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.rejectedTransfersClaimedCount),
+        totalTransfersRejected: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalTransfersRejected)} ${tokenSymbol}`,
+        transfersRejectedCount: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.transfersRejectedCount),
+        totalVolume: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalVolume)} ${tokenSymbol}`,
+        totalConsensusStorageFee: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalConsensusStorageFee)} ${tokenSymbol}`,
+        totalDomainExecutionFee: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalDomainExecutionFee)} ${tokenSymbol}`,
+        totalBurnedBalance: ({ row }: Cell<Row>) =>
+          `${bigNumberToFormattedString(row.original.totalBurnedBalance)} ${tokenSymbol}`,
+        currentTotalStake: ({ row }: Cell<Row>) => (
           <Tooltip
             text={
               <span>
-                Current total stake: {bigNumberToFormattedString(row.original.current_total_stake)}
+                Current total stake: {bigNumberToFormattedString(row.original.currentTotalStake)}
                 {tokenSymbol}
                 <br />
                 Storage fee deposit:{' '}
-                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)} {tokenSymbol}
+                {bigNumberToFormattedString(row.original.currentStorageFeeDeposit)} {tokenSymbol}
               </span>
             }
             direction='bottom'
           >
-            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_total_stake) + BigInt(row.original.current_storage_fee_deposit))} ${tokenSymbol}`}</div>
+            <div>{`${bigNumberToFormattedString(BigInt(row.original.currentTotalStake) + BigInt(row.original.currentStorageFeeDeposit))} ${tokenSymbol}`}</div>
           </Tooltip>
         ),
-      })
-    if (selectedColumns.includes('current_storage_fee_deposit'))
-      cols.push({
-        accessorKey: 'current_storage_fee_deposit',
-        header: 'Storage Fee Deposit',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        accumulatedEpochStake: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.accumulated_epoch_stake),
+        accumulatedEpochStorageFeeDeposit: ({ row }: Cell<Row>) =>
+          bigNumberToFormattedString(row.original.accumulatedEpochStorageFeeDeposit),
+        bundleCount: ({ row }: Cell<Row>) => numberFormattedString(row.original.bundleCount),
+        lastBundleAt: ({ row }: Cell<Row>) => (
+          <Link
+            key={`created_at-${row.original.id}`}
+            data-testid={`created-at-${row.index}`}
+            href={INTERNAL_ROUTES.blocks.id.page(
+              network,
+              Routes.consensus,
+              parseInt(row.original.lastBundleAt?.toString() ?? '0'),
+            )}
+            className='hover:text-primaryAccent'
+          >
+            <div>{row.original.lastBundleAt}</div>
+          </Link>
+        ),
+        currentStorageFeeDeposit: ({ row }: Cell<Row>) => (
           <Tooltip
             text={
               <span>
-                Storage fee deposit:{' '}
-                {bigNumberToFormattedString(row.original.current_storage_fee_deposit)} {tokenSymbol}
-                <br />
-                Current total stake: {bigNumberToFormattedString(row.original.current_total_stake)}
+                Current total stake: {bigNumberToFormattedString(row.original.currentTotalStake)}
                 {tokenSymbol}
+                <br />
+                Storage fee deposit:{' '}
+                {bigNumberToFormattedString(row.original.currentStorageFeeDeposit)} {tokenSymbol}
               </span>
             }
             direction='bottom'
           >
-            <div>{`${bigNumberToFormattedString(BigInt(row.original.current_storage_fee_deposit))} ${tokenSymbol}`}</div>
+            <div>{`${bigNumberToFormattedString(BigInt(row.original.currentTotalStake) + BigInt(row.original.currentStorageFeeDeposit))} ${tokenSymbol}`}</div>
           </Tooltip>
         ),
-      })
-    if (selectedColumns.includes('accumulated_epoch_stake'))
-      cols.push({
-        accessorKey: 'accumulated_epoch_stake',
-        header: 'Accumulated Epoch Stake',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.accumulated_epoch_stake)}</div>
-        ),
-      })
-    if (selectedColumns.includes('accumulated_epoch_storage_fee_deposit'))
-      cols.push({
-        accessorKey: 'accumulated_epoch_storage_fee_deposit',
-        header: 'Accumulated Epoch Storage Fee Deposit',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>
-            {bigNumberToFormattedString(row.original.accumulated_epoch_storage_fee_deposit)}
-          </div>
-        ),
-      })
-    if (selectedColumns.includes('bundle_count'))
-      cols.push({
-        accessorKey: 'bundle_count',
-        header: 'Bundle Count',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => <div>{numberFormattedString(row.original.bundle_count)}</div>,
-      })
-    if (selectedColumns.includes('last_bundle_at'))
-      cols.push({
-        accessorKey: 'last_bundle_at',
-        header: 'Last Bundle',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        createdAt: ({ row }: Cell<Row>) => (
           <Link
             key={`created_at-${row.original.id}`}
             data-testid={`created-at-${row.index}`}
             href={INTERNAL_ROUTES.blocks.id.page(
               network,
               Routes.consensus,
-              parseInt(row.original.last_bundle_at?.toString() ?? '0'),
+              parseInt(row.original.createdAt?.toString() ?? '0'),
             )}
             className='hover:text-primaryAccent'
           >
-            <div>{row.original.last_bundle_at}</div>
+            <div>{row.original.createdAt}</div>
           </Link>
         ),
-      })
-    if (selectedColumns.includes('created_at'))
-      cols.push({
-        accessorKey: 'created_at',
-        header: 'Created',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
+        updatedAt: ({ row }: Cell<Row>) => (
           <Link
             key={`created_at-${row.original.id}`}
             data-testid={`created-at-${row.index}`}
             href={INTERNAL_ROUTES.blocks.id.page(
               network,
               Routes.consensus,
-              parseInt(row.original.created_at?.toString() ?? '0'),
+              parseInt(row.original.updatedAt?.toString() ?? '0'),
             )}
             className='hover:text-primaryAccent'
           >
-            <div>{row.original.created_at}</div>
+            <div>{row.original.updatedAt}</div>
           </Link>
         ),
-      })
-    if (selectedColumns.includes('updated_at'))
-      cols.push({
-        accessorKey: 'updated_at',
-        header: 'Updated',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <Link
-            key={`created_at-${row.original.id}`}
-            data-testid={`created-at-${row.index}`}
-            href={INTERNAL_ROUTES.blocks.id.page(
-              network,
-              Routes.consensus,
-              parseInt(row.original.created_at?.toString() ?? '0'),
-            )}
-            className='hover:text-primaryAccent'
-          >
-            <div>{row.original.updated_at}</div>
-          </Link>
-        ),
-      })
-    if (selectedColumns.includes('current_total_shares'))
-      cols.push({
-        accessorKey: 'current_total_shares',
-        header: 'Current Total Shares',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.current_total_shares)}</div>
-        ),
-      })
-    if (selectedColumns.includes('current_share_price'))
-      cols.push({
-        accessorKey: 'current_share_price',
-        header: 'Current Share Price',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{`${formatUnitsToNumber((row.original.current_share_price * 1000000).toString())} ${tokenSymbol}`}</div>
-        ),
-      })
-    if (selectedColumns.includes('accumulated_epoch_rewards'))
-      cols.push({
-        accessorKey: 'accumulated_epoch_rewards',
-        header: 'Accumulated Epoch Rewards',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.accumulated_epoch_rewards)}</div>
-        ),
-      })
-    if (selectedColumns.includes('accumulated_epoch_shares'))
-      cols.push({
-        accessorKey: 'accumulated_epoch_shares',
-        header: 'Accumulated Epoch Shares',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.accumulated_epoch_shares)}</div>
-        ),
-      })
-    if (selectedColumns.includes('current_epoch_duration'))
-      cols.push({
-        accessorKey: 'current_epoch_duration',
-        header: 'Current Epoch Duration',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.current_epoch_duration)}</div>
-        ),
-      })
-    if (selectedColumns.includes('last_epoch_duration'))
-      cols.push({
-        accessorKey: 'last_epoch_duration',
-        header: 'Last Epoch Duration',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.last_epoch_duration)}</div>
-        ),
-      })
-    if (selectedColumns.includes('last6_epochs_duration'))
-      cols.push({
-        accessorKey: 'last6_epochs_duration',
-        header: 'Last 6 Epochs Duration',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.last6_epochs_duration)}</div>
-        ),
-      })
-    if (selectedColumns.includes('last144_epoch_duration'))
-      cols.push({
-        accessorKey: 'last144_epoch_duration',
-        header: 'Last 144 Epoch Duration',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.last144_epoch_duration)}</div>
-        ),
-      })
-    if (selectedColumns.includes('last1k_epoch_duration'))
-      cols.push({
-        accessorKey: 'last1k_epoch_duration',
-        header: 'Last 1K Epoch Duration',
-        enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div>{numberFormattedString(row.original.last1k_epoch_duration)}</div>
-        ),
-      })
-    return cols
-  }, [selectedColumns, network, section, tokenSymbol])
+        currentTotalShares: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.currentTotalShares),
+        currentSharePrice: ({ row }: Cell<Row>) =>
+          `${formatUnitsToNumber((row.original.currentSharePrice * 1000000).toString())} ${tokenSymbol}`,
+        accumulatedEpochRewards: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.accumulatedEpochRewards),
+        accumulatedEpochShares: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.accumulatedEpochShares),
+        currentEpochDuration: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.currentEpochDuration),
+        lastEpochDuration: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.currentEpochDuration),
+        last6EpochsDuration: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.last6EpochsDuration),
+        last144EpochDuration: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.last144EpochDuration),
+        last1kEpochDuration: ({ row }: Cell<Row>) =>
+          numberFormattedString(row.original.last1kEpochDuration),
+      }),
+    [selectedColumns, network, section, tokenSymbol],
+  )
 
   const orderBy = useMemo(
     () =>
@@ -715,8 +435,6 @@ export const DomainsList: FC = () => {
     [filters, setFilters],
   )
 
-  const handleReset = useCallback(() => resetSettings(TABLE), [resetSettings])
-
   const handleClickOnColumnToEditTable = useCallback(
     (column: string, checked: boolean) =>
       checked
@@ -728,18 +446,6 @@ export const DomainsList: FC = () => {
     [selectedColumns, setColumns],
   )
 
-  const _showSettings = useCallback(
-    (setting: TableSettingsTabs) => showSettings(TABLE, setting),
-    [showSettings],
-  )
-  const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
-
-  const _showReset = useCallback(
-    () => showReset(TABLE),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [showReset, selectedColumns, operatorFilters],
-  )
-
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
@@ -748,19 +454,19 @@ export const DomainsList: FC = () => {
     <div className='flex w-full flex-col align-middle'>
       <div className='my-4' ref={ref}>
         <TableSettings
-          tableName='Domains'
+          tableName={capitalizeFirstLetter(TABLE)}
           totalLabel={totalLabel}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}
           showTableSettings={showTableSettings}
-          showSettings={_showSettings}
-          hideSettings={_hideSettings}
+          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
+          hideSettings={() => hideSettings(TABLE)}
           handleColumnChange={handleClickOnColumnToEditTable}
           handleFilterChange={handleFilterChange}
           filterOptions={filtersOptions}
-          handleReset={handleReset}
-          showReset={_showReset()}
+          handleReset={() => resetSettings(TABLE)}
+          showReset={showReset(TABLE)}
         />
         {!loading && domainsList ? (
           <SortedTable
