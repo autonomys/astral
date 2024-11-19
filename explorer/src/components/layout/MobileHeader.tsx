@@ -107,7 +107,7 @@ const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
           <div className='flex'>
             <div className='flex flex-col flex-wrap justify-items-end pb-1 pl-5 pt-10 sm:hidden sm:flex-row'>
               <p className='text-gray text-center text-sm sm:text-left'>
-                © {currentYear()} Subspace Labs, Inc. All Rights Reserved
+                © {currentYear()} Autonomys Network, Inc. All Rights Reserved
               </p>
             </div>
           </div>

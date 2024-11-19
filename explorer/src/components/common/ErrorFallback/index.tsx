@@ -1,5 +1,6 @@
 import { ArrowButton } from 'components/common/ArrowButton'
 
+import { EXTERNAL_ROUTES } from '@/constants/routes'
 import AstronautImage from './AstronautImage'
 
 interface Props {
@@ -18,7 +19,7 @@ export const ErrorFallback = ({ resetErrorBoundary }: Props) => {
           If the problem persists, visit our{' '}
           <a
             className='font-medium text-purpleShade dark:text-primaryAccent'
-            href='https://status.subspace.network'
+            href={EXTERNAL_ROUTES.status}
             target='_blank'
             rel='noreferrer'
           >
