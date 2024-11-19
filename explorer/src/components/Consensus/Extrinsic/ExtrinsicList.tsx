@@ -36,23 +36,17 @@ export const ExtrinsicList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-
-  const {
-    extrinsics: {
-      columns: availableColumns,
-      selectedColumns,
-      filtersOptions,
-      filters: operatorFilters,
-      showTableSettings,
-    },
-    setColumns,
-    setFilters,
-    showSettings,
-    hideSettings,
-    resetSettings,
-    showReset,
-  } = useTableStates()
-  const filters = useMemo(() => operatorFilters as ExtrinsicsFilters, [operatorFilters])
+  const availableColumns = useTableStates((state) => state[TABLE].columns)
+  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
+  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
+  const filters = useTableStates((state) => state[TABLE].filters) as ExtrinsicsFilters
+  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
+  const setColumns = useTableStates((state) => state.setColumns)
+  const setFilters = useTableStates((state) => state.setFilters)
+  const showSettings = useTableStates((state) => state.showSettings)
+  const hideSettings = useTableStates((state) => state.hideSettings)
+  const resetSettings = useTableStates((state) => state.resetSettings)
+  const showReset = useTableStates((state) => state.showReset)
 
   const orderBy = useMemo(
     () =>

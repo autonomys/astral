@@ -40,23 +40,17 @@ export const BlockList: FC = () => {
     pageIndex: 0,
   })
   const inFocus = useWindowFocus()
-
-  const {
-    blocks: {
-      columns: availableColumns,
-      selectedColumns,
-      filtersOptions,
-      filters: operatorFilters,
-      showTableSettings,
-    },
-    setColumns,
-    setFilters,
-    showSettings,
-    hideSettings,
-    resetSettings,
-    showReset,
-  } = useTableStates()
-  const filters = useMemo(() => operatorFilters as BlocksFilters, [operatorFilters])
+  const availableColumns = useTableStates((state) => state[TABLE].columns)
+  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
+  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
+  const filters = useTableStates((state) => state[TABLE].filters) as BlocksFilters
+  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
+  const setColumns = useTableStates((state) => state.setColumns)
+  const setFilters = useTableStates((state) => state.setFilters)
+  const showSettings = useTableStates((state) => state.showSettings)
+  const hideSettings = useTableStates((state) => state.hideSettings)
+  const resetSettings = useTableStates((state) => state.resetSettings)
+  const showReset = useTableStates((state) => state.showReset)
 
   const orderBy = useMemo(
     () =>

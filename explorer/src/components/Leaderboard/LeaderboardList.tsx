@@ -43,6 +43,7 @@ type LeaderboardListProps = {
 }
 type Row =
   AccountTransferSenderTotalCountQuery['leaderboard_account_transfer_sender_total_counts'][0]
+const TABLE = 'leaderboard'
 
 export const LeaderboardList: FC<LeaderboardListProps> = ({
   title,
@@ -58,11 +59,6 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const { ref, inView } = useInView()
   const { myPositionOnly } = useViewStates()
   const { subspaceAccount } = useWallet()
-  const {
-    leaderboard: { columns: availableColumns, selectedColumns, filters: leaderboardFilters },
-  } = useTableStates()
-  const filters = useMemo(() => leaderboardFilters as LeaderboardFilters, [leaderboardFilters])
-
   const [sorting, setSorting] = useState<SortingState>([{ id: 'rank', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -72,11 +68,14 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
   const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { network, tokenDecimals } = useChains()
   const inFocus = useWindowFocus()
+  const availableColumns = useTableStates((state) => state[TABLE].columns)
+  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
+  const filters = useTableStates((state) => state[TABLE].filters) as LeaderboardFilters
 
   const columns = useMemo(
     () =>
       getTableColumns<Row>(
-        'leaderboard',
+        TABLE,
         selectedColumns,
         {
           rank: ({ row }: Cell<Row>) => row.original.rank.toString(),
