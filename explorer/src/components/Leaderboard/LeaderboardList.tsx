@@ -79,9 +79,10 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
           id: ({ row }: Cell<Row>) =>
             showAccountIcon ? (
               <AccountIconWithLink
-                address={idLink(row.original.id)}
+                address={row.original.id}
                 network={network}
                 section={Routes.consensus}
+                link={idLink(row.original.id)}
               />
             ) : (
               idLink(row.original.id)
@@ -105,7 +106,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
               )}
               className='hover:text-primaryAccent'
             >
-              <div>{row.original.createdAt}</div>
+              {row.original.createdAt}
             </Link>
           ),
           updatedAt: ({ row }: Cell<Row>) => (
