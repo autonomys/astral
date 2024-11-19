@@ -49,7 +49,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
         <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
-          <span className='flex items-center'>
+          <span className='flex items-center text-xl font-medium'>
             {tableName} ({totalLabel})
           </span>
           <div className='flex items-center'>
@@ -258,6 +258,21 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                     id={filter.key}
                                     type='number'
                                     placeholder='Minimum'
+                                    className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
+                                    value={filters[filter.key]}
+                                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                                  />
+                                </>
+                              )}
+                              {filter.type === 'text' && (
+                                <>
+                                  <label htmlFor={filter.key} className='mb-1 block font-medium'>
+                                    {filter.label}
+                                  </label>
+                                  <input
+                                    id={filter.key}
+                                    type='text'
+                                    placeholder='Search...'
                                     className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
                                     value={filters[filter.key]}
                                     onChange={(e) => handleFilterChange(filter.key, e.target.value)}
