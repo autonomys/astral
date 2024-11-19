@@ -8,7 +8,6 @@ import {
 import React, { useState } from 'react'
 import { AvailableColumn, FilterOption } from 'types/table'
 import { numberWithCommas } from 'utils/number'
-import { Tooltip } from './Tooltip'
 
 interface TableSettingsProps {
   tableName: string
@@ -54,47 +53,39 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             {tableName} ({numberWithCommas(totalCount)})
           </span>
           <div className='flex items-center'>
-            <div className='hidden sm:flex'>
+            <div className='sm:flex'>
               {addExtraIcons && addExtraIcons}
-              <Tooltip text='Search' direction='right'>
-                <MagnifyingGlassIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
-                  stroke='currentColor'
-                  key='search'
-                  onClick={() =>
-                    showTableSettings !== 'search' ? showSettings('search') : hideSettings()
-                  }
-                />
-              </Tooltip>
-              <Tooltip text='Edit Columns' direction='right'>
-                <PencilIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                  stroke='currentColor'
-                  key='pencil'
-                  onClick={() =>
-                    showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
-                  }
-                />
-              </Tooltip>
-              <Tooltip text='Filters Results' direction='right'>
-                <FunnelIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                  stroke='currentColor'
-                  key='funnel'
-                  onClick={() =>
-                    showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
-                  }
-                />
-              </Tooltip>
+              <MagnifyingGlassIcon
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
+                stroke='currentColor'
+                key='search'
+                onClick={() =>
+                  showTableSettings !== 'search' ? showSettings('search') : hideSettings()
+                }
+              />
+              <PencilIcon
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
+                key='pencil'
+                onClick={() =>
+                  showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
+                }
+              />
+              <FunnelIcon
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
+                key='funnel'
+                onClick={() =>
+                  showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
+                }
+              />
               {showReset && (
-                <Tooltip text='Reset all filters and columns' direction='right'>
-                  <XMarkIcon
-                    className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                    stroke='currentColor'
-                    key='reset'
-                    onClick={handleReset}
-                  />
-                </Tooltip>
+                <XMarkIcon
+                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='reset'
+                  onClick={handleReset}
+                />
               )}
             </div>
             <div className='sm:hidden'>
