@@ -152,7 +152,7 @@ const Footer: FC = () => {
         </div>
         <div className='container mx-auto flex flex-col flex-wrap pb-1 pr-5 pt-20 sm:hidden sm:flex-row'>
           <p className='text-center text-sm text-whiteOpaque sm:text-left'>
-            © {currentYear()} Subspace Labs, Inc. All Rights Reserved
+            © {currentYear()} Autonomys Network, Inc. All Rights Reserved
           </p>
         </div>
       </div>
