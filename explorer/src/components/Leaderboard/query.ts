@@ -21,9 +21,9 @@ export const QUERY_ACCOUNT_TRANSFER_SENDER_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `

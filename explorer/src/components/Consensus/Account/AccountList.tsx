@@ -1,49 +1,147 @@
 'use client'
 
 import { useApolloClient } from '@apollo/client'
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
-import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import type { AccountsQuery, AccountsQueryVariables } from 'gql/graphql'
+import { AccountsQuery, AccountsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
-import type { Cell } from 'types/table'
+import { useTableStates } from 'states/tables'
+import type { AccountsFilters, Cell, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { shortString } from 'utils/string'
-import { countTablePages } from 'utils/table'
-import { AccountIcon } from '../../common/AccountIcon'
+import { countTablePages, getTableColumns } from 'utils/table'
+import { AccountIconWithLink } from '../../common/AccountIcon'
 import { QUERY_ACCOUNTS } from './query'
 
 type Row = AccountsQuery['consensus_accounts'][number]
+const TABLE = 'accounts'
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, tokenSymbol } = useChains()
+  const { network, section, tokenDecimals } = useChains()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const inFocus = useWindowFocus()
+  const apolloClient = useApolloClient()
+  const availableColumns = useTableStates((state) => state[TABLE].columns)
+  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
+  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
+  const filters = useTableStates((state) => state[TABLE].filters) as AccountsFilters
+  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
+  const setColumns = useTableStates((state) => state.setColumns)
+  const setFilters = useTableStates((state) => state.setFilters)
+  const showSettings = useTableStates((state) => state.showSettings)
+  const hideSettings = useTableStates((state) => state.hideSettings)
+  const resetSettings = useTableStates((state) => state.resetSettings)
+  const showReset = useTableStates((state) => state.showReset)
+
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { id: OrderBy.Asc },
+    [sorting],
+  )
+
+  const where = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const conditions: Record<string, any> = {}
+
+    // Add search conditions
+    availableColumns
+      .filter((column) => column.searchable)
+      .forEach((column) => {
+        const searchKey = `search-${column.name}` as keyof AccountsFilters
+        const searchValue = filters[searchKey]
+        if (searchValue) {
+          conditions[column.name] = { _ilike: `%${searchValue}%` }
+        }
+      })
+
+    // Nonce
+    if (filters.nonceMin || filters.nonceMax) {
+      conditions['nonce'] = {}
+      if (filters.nonceMin) {
+        conditions.nonce._gte = filters.nonceMin
+      }
+      if (filters.nonceMax) {
+        conditions.nonce._lte = filters.nonceMax
+      }
+    }
+
+    // Free
+    if (filters.freeMin || filters.freeMax) {
+      conditions['free'] = {}
+      if (filters.freeMin) {
+        conditions.free._gte = BigInt(
+          Math.floor(parseFloat(filters.freeMin) * 10 ** tokenDecimals),
+        ).toString()
+      }
+      if (filters.freeMax) {
+        conditions.free._lte = BigInt(
+          Math.floor(parseFloat(filters.freeMax) * 10 ** tokenDecimals),
+        ).toString()
+      }
+    }
+
+    // Reserved
+    if (filters.reservedMin || filters.reservedMax) {
+      conditions['reserved'] = {}
+      if (filters.reservedMin) {
+        conditions.reserved._gte = BigInt(
+          Math.floor(parseFloat(filters.reservedMin) * 10 ** tokenDecimals),
+        ).toString()
+      }
+      if (filters.reservedMax) {
+        conditions.reserved._lte = BigInt(
+          Math.floor(parseFloat(filters.reservedMax) * 10 ** tokenDecimals),
+        ).toString()
+      }
+    }
+
+    // Total
+    if (filters.totalMin || filters.totalMax) {
+      conditions['total'] = {}
+      if (filters.totalMin) {
+        conditions.total._gte = BigInt(
+          Math.floor(parseFloat(filters.totalMin) * 10 ** tokenDecimals),
+        ).toString()
+      }
+      if (filters.totalMax) {
+        conditions.total._lte = BigInt(
+          Math.floor(parseFloat(filters.totalMax) * 10 ** tokenDecimals),
+        ).toString()
+      }
+    }
+
+    return conditions
+  }, [availableColumns, filters, tokenDecimals])
 
   const variables = useMemo(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
+      orderBy,
+      where,
     }),
-    [pagination.pageSize, pagination.pageIndex],
+    [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
   const { loading, setIsVisible } = useSquidQuery<AccountsQuery, AccountsQueryVariables>(
@@ -54,7 +152,7 @@ export const AccountList: FC = () => {
       pollInterval: 6000,
     },
     Routes.consensus,
-    'accounts',
+    TABLE,
   )
 
   const {
@@ -73,69 +171,46 @@ export const AccountList: FC = () => {
         : 0,
     [data],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const columns = useMemo(
-    () => [
-      {
-        accessorKey: 'id',
-        header: 'Id',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-index`}>
-            {pagination.pageIndex * pagination.pageSize + row.index + 1}
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'account',
-        header: 'Account',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-id`} className='row flex items-center gap-3'>
-            <AccountIcon address={row.original.id} size={26} theme='beachball' />
+    () =>
+      getTableColumns<Row>(
+        TABLE,
+        selectedColumns,
+        {
+          id: ({ row }: Cell<Row>) => (
+            <AccountIconWithLink address={row.original.id} network={network} section={section} />
+          ),
+          nonce: ({ row }: Cell<Row>) => row.original.nonce.toString(),
+          extrinsicsCount: ({ row }: Cell<Row>) =>
+            row.original.extrinsicsCount.aggregate?.count.toString() || '0',
+          free: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.free)),
+          reserved: ({ row }: Cell<Row>) =>
+            numberWithCommas(bigNumberToNumber(row.original.reserved)),
+          total: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.total)),
+          createdAt: ({ row }: Cell<Row>) => (
             <Link
-              data-testid={`account-link-${row.index}`}
-              href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.id)}
+              key={`${row.index}-account-createdAt`}
               className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.createdAt)}
             >
-              <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
+              <div>{row.original.createdAt}</div>
             </Link>
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'extrinsics',
-        header: 'Extrinsics',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-extrinsic`}>
-            {row.original.extrinsics_aggregate.aggregate?.count}
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'reserved',
-        header: `Locked (${tokenSymbol})`,
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-locked`}>
-            {row.original.reserved ? numberWithCommas(bigNumberToNumber(row.original.reserved)) : 0}
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'free',
-        header: `Balance (${tokenSymbol})`,
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-locked`}>
-            {row.original.free ? numberWithCommas(bigNumberToNumber(row.original.free)) : 0}
-          </div>
-        ),
-      },
-    ],
-    [isLargeLaptop, network, pagination.pageIndex, pagination.pageSize, section, tokenSymbol],
+          ),
+          updatedAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`${row.index}-account-updatedAt`}
+              className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.updatedAt)}
+            >
+              <div>{row.original.updatedAt}</div>
+            </Link>
+          ),
+        },
+        {},
+        { extrinsicsCount: false },
+      ),
+    [network, section, selectedColumns],
   )
 
   const pageCount = useMemo(
@@ -143,10 +218,13 @@ export const AccountList: FC = () => {
     [totalCount, pagination],
   )
 
-  const apolloClient = useApolloClient()
   const fullDataDownloader = useCallback(
-    () => downloadFullData(apolloClient, QUERY_ACCOUNTS, 'consensus_accounts'),
-    [apolloClient],
+    () =>
+      downloadFullData(apolloClient, QUERY_ACCOUNTS, 'consensus_' + TABLE, {
+        orderBy,
+        where,
+      }),
+    [apolloClient, orderBy, where],
   )
 
   const noData = useMemo(() => {
@@ -155,41 +233,65 @@ export const AccountList: FC = () => {
     return null
   }, [data, loading, consensusEntry])
 
+  const handleFilterChange = useCallback(
+    (filterName: string, value: string | boolean) => {
+      setFilters(TABLE, {
+        ...filters,
+        [filterName]: value,
+      })
+    },
+    [filters, setFilters],
+  )
+
+  const handleClickOnColumnToEditTable = useCallback(
+    (column: string, checked: boolean) =>
+      checked
+        ? setColumns(TABLE, [...selectedColumns, column])
+        : setColumns(
+            TABLE,
+            selectedColumns.filter((c) => c !== column),
+          ),
+    [selectedColumns, setColumns],
+  )
+
   useEffect(() => {
     setIsVisible(inView)
   }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar fixSearchType={searchTypes[3]} />
-      </div>
-      <div className='mt-5 flex w-full justify-between'>
-        <div className='text-base font-medium text-grayDark dark:text-white'>{`Holders (${totalLabel})`}</div>
-      </div>
-      <div className='mt-5 flex w-full flex-col sm:mt-0'>
-        <div className='w-full'>
-          <div className='my-6 rounded'>
-            <div ref={ref}>
-              {!loading && accounts ? (
-                <SortedTable
-                  data={accounts}
-                  columns={columns}
-                  showNavigation={true}
-                  sorting={sorting}
-                  onSortingChange={setSorting}
-                  pagination={pagination}
-                  pageCount={pageCount}
-                  onPaginationChange={setPagination}
-                  filename='accounts-list'
-                  fullDataDownloader={fullDataDownloader}
-                />
-              ) : (
-                noData
-              )}
-            </div>
-          </div>
-        </div>
+      <div className='my-4' ref={ref}>
+        <TableSettings
+          tableName={capitalizeFirstLetter(TABLE)}
+          totalCount={totalCount}
+          availableColumns={availableColumns}
+          selectedColumns={selectedColumns}
+          filters={filters}
+          showTableSettings={showTableSettings}
+          showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
+          hideSettings={() => hideSettings(TABLE)}
+          handleColumnChange={handleClickOnColumnToEditTable}
+          handleFilterChange={handleFilterChange}
+          filterOptions={filtersOptions}
+          handleReset={() => resetSettings(TABLE)}
+          showReset={showReset(TABLE)}
+        />
+        {!loading && accounts ? (
+          <SortedTable
+            data={accounts}
+            columns={columns}
+            showNavigation={true}
+            sorting={sorting}
+            onSortingChange={setSorting}
+            pagination={pagination}
+            pageCount={pageCount}
+            onPaginationChange={setPagination}
+            filename={TABLE}
+            fullDataDownloader={fullDataDownloader}
+          />
+        ) : (
+          noData
+        )}
       </div>
     </div>
   )

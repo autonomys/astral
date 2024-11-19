@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { useApolloClient } from '@apollo/client'
 import { SortingState } from '@tanstack/react-table'
-import { AccountIcon } from 'components/common/AccountIcon'
+import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
@@ -18,7 +18,6 @@ import {
   Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -27,7 +26,7 @@ import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
-import { formatExtrinsicId, shortString } from 'utils/string'
+import { formatExtrinsicId } from 'utils/string'
 import { countTablePages } from 'utils/table'
 import { QUERY_ACCOUNT_TRANSFERS } from './query'
 
@@ -46,7 +45,6 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { network, tokenSymbol } = useChains()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
@@ -169,16 +167,11 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         header: 'From',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`from-${row.original.id}`} className='row flex items-center gap-3'>
-            {isLargeLaptop && <AccountIcon address={row.original.from} size={26} />}
-            <Link
-              data-testid={`transfer-from-${row.index}`}
-              href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, row.original.from)}
-              className='hover:text-primaryAccent'
-            >
-              <div>{shortString(row.original.from)}</div>
-            </Link>
-          </div>
+          <AccountIconWithLink
+            address={row.original.from}
+            network={network}
+            section={Routes.consensus}
+          />
         ),
       },
       {
@@ -186,16 +179,11 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         header: 'To',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`to-${row.original.id}`} className='row flex items-center gap-3'>
-            {isLargeLaptop && <AccountIcon address={row.original.to} size={26} />}
-            <Link
-              data-testid={`transfer-to-${row.index}`}
-              href={INTERNAL_ROUTES.accounts.id.page(network, Routes.consensus, row.original.to)}
-              className='hover:text-primaryAccent'
-            >
-              <div>{shortString(row.original.to)}</div>
-            </Link>
-          </div>
+          <AccountIconWithLink
+            address={row.original.to}
+            network={network}
+            section={Routes.consensus}
+          />
         ),
       },
       {
@@ -246,7 +234,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
         ),
       },
     ],
-    [accountId, isLargeLaptop, network, tokenSymbol],
+    [accountId, network, tokenSymbol],
   )
 
   const noData = useMemo(() => {

@@ -10,7 +10,6 @@ import React, { FC, useCallback, useMemo } from 'react'
 import { hasValue, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import type { LeaderboardFilters, TableSettingsTabs } from 'types/table'
-import { numberWithCommas } from 'utils/number'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { LeaderboardList } from './LeaderboardList'
@@ -23,22 +22,17 @@ const TABLE = 'leaderboard'
 
 const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
   const { subspaceAccount } = useWallet()
-  const {
-    leaderboard: {
-      columns: availableColumns,
-      selectedColumns,
-      filtersOptions,
-      filters: leaderboardFilters,
-      showTableSettings,
-    },
-    setColumns,
-    setFilters,
-    showSettings,
-    hideSettings,
-    resetSettings,
-    showReset,
-  } = useTableStates()
-  const filters = useMemo(() => leaderboardFilters as LeaderboardFilters, [leaderboardFilters])
+  const availableColumns = useTableStates((state) => state[TABLE].columns)
+  const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
+  const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
+  const filters = useTableStates((state) => state[TABLE].filters) as LeaderboardFilters
+  const showTableSettings = useTableStates((state) => state[TABLE].showTableSettings)
+  const setColumns = useTableStates((state) => state.setColumns)
+  const setFilters = useTableStates((state) => state.setFilters)
+  const showSettings = useTableStates((state) => state.showSettings)
+  const hideSettings = useTableStates((state) => state.hideSettings)
+  const resetSettings = useTableStates((state) => state.resetSettings)
+  const showReset = useTableStates((state) => state.showReset)
 
   const {
     leaderboard: { leaderboard },
@@ -52,7 +46,6 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
       0,
     [leaderboard],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | boolean) => {
@@ -63,8 +56,6 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
     },
     [filters, setFilters],
   )
-
-  const handleReset = useCallback(() => resetSettings(TABLE), [resetSettings])
 
   const handleClickOnColumnToEditTable = useCallback(
     (column: string, checked: boolean) =>
@@ -77,23 +68,11 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
     [selectedColumns, setColumns],
   )
 
-  const _showSettings = useCallback(
-    (setting: TableSettingsTabs) => showSettings(TABLE, setting),
-    [showSettings],
-  )
-  const _hideSettings = useCallback(() => hideSettings(TABLE), [hideSettings])
-
-  const _showReset = useCallback(
-    () => showReset(TABLE),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [showReset, selectedColumns, leaderboardFilters],
-  )
-
   return (
     <div className='flex w-full flex-col space-y-6'>
       <TableSettings
         tableName='Leaderboard'
-        totalLabel={totalLabel}
+        totalCount={totalCount}
         availableColumns={availableColumns}
         selectedColumns={selectedColumns}
         filters={filters}
@@ -105,13 +84,13 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
           )
         }
         showTableSettings={showTableSettings}
-        showSettings={_showSettings}
-        hideSettings={_hideSettings}
+        showSettings={(setting: TableSettingsTabs) => showSettings(TABLE, setting)}
+        hideSettings={() => hideSettings(TABLE)}
         handleColumnChange={handleClickOnColumnToEditTable}
         handleFilterChange={handleFilterChange}
         filterOptions={filtersOptions}
-        handleReset={handleReset}
-        showReset={_showReset()}
+        handleReset={() => resetSettings(TABLE)}
+        showReset={showReset(TABLE)}
       />
       {children}
     </div>

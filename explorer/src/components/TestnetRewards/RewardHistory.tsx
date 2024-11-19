@@ -1,5 +1,6 @@
 'use client'
 
+import { shortString } from '@autonomys/auto-utils'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { WalletButton } from 'components/WalletButton'
 import AccountListDropdown from 'components/WalletButton/AccountListDropdown'
@@ -11,7 +12,6 @@ import Link from 'next/link'
 import { FC, useCallback, useMemo } from 'react'
 import { useViewStates } from 'states/view'
 import { formatAddress } from 'utils/formatAddress'
-import { shortString } from 'utils/string'
 import { AccountIcon } from '../common/AccountIcon'
 
 export const RewardHistory: FC = () => {

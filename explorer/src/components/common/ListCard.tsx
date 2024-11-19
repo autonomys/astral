@@ -18,7 +18,7 @@ export const ListCard = <T extends object>({ table, emptyMessage }: ListCardProp
               const header = table.getHeaderGroups()[0].headers[index]
               return (
                 <div className='flex items-center justify-between py-2' key={`cell-${index}`}>
-                  <div className='text-xs text-purpleShade  dark:text-white/75'>
+                  <div className='text-xs text-purpleShade dark:text-white/75'>
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}

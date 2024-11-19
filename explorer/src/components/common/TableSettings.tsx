@@ -7,11 +7,11 @@ import {
 } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import { AvailableColumn, FilterOption } from 'types/table'
-import { Tooltip } from './Tooltip'
+import { numberWithCommas } from 'utils/number'
 
 interface TableSettingsProps {
   tableName: string
-  totalLabel: string
+  totalCount: number
   availableColumns: AvailableColumn[]
   selectedColumns: string[]
   filterOptions: FilterOption[]
@@ -29,7 +29,7 @@ interface TableSettingsProps {
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
   tableName,
-  totalLabel,
+  totalCount,
   availableColumns,
   selectedColumns,
   filterOptions,
@@ -49,51 +49,43 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
     <div className='mb-4 w-full' id='accordion-open' data-accordion='open'>
       <h2 id='accordion-open-heading-1'>
         <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
-          <span className='flex items-center'>
-            {tableName} ({totalLabel})
+          <span className='flex items-center text-xl font-medium'>
+            {tableName} ({numberWithCommas(totalCount)})
           </span>
           <div className='flex items-center'>
-            <div className='hidden sm:flex'>
+            <div className='sm:flex'>
               {addExtraIcons && addExtraIcons}
-              <Tooltip text='Search' direction='right'>
-                <MagnifyingGlassIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
-                  stroke='currentColor'
-                  key='search'
-                  onClick={() =>
-                    showTableSettings !== 'search' ? showSettings('search') : hideSettings()
-                  }
-                />
-              </Tooltip>
-              <Tooltip text='Edit Columns' direction='right'>
-                <PencilIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                  stroke='currentColor'
-                  key='pencil'
-                  onClick={() =>
-                    showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
-                  }
-                />
-              </Tooltip>
-              <Tooltip text='Filters Results' direction='right'>
-                <FunnelIcon
-                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                  stroke='currentColor'
-                  key='funnel'
-                  onClick={() =>
-                    showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
-                  }
-                />
-              </Tooltip>
+              <MagnifyingGlassIcon
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1  dark:border-white'
+                stroke='currentColor'
+                key='search'
+                onClick={() =>
+                  showTableSettings !== 'search' ? showSettings('search') : hideSettings()
+                }
+              />
+              <PencilIcon
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
+                key='pencil'
+                onClick={() =>
+                  showTableSettings !== 'columns' ? showSettings('columns') : hideSettings()
+                }
+              />
+              <FunnelIcon
+                className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                stroke='currentColor'
+                key='funnel'
+                onClick={() =>
+                  showTableSettings !== 'filters' ? showSettings('filters') : hideSettings()
+                }
+              />
               {showReset && (
-                <Tooltip text='Reset all filters and columns' direction='right'>
-                  <XMarkIcon
-                    className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
-                    stroke='currentColor'
-                    key='reset'
-                    onClick={handleReset}
-                  />
-                </Tooltip>
+                <XMarkIcon
+                  className='m-4 size-10 rounded-full border-2 border-grayDark p-1 dark:border-white'
+                  stroke='currentColor'
+                  key='reset'
+                  onClick={handleReset}
+                />
               )}
             </div>
             <div className='sm:hidden'>
@@ -264,6 +256,21 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
                                   />
                                 </>
                               )}
+                              {filter.type === 'text' && (
+                                <>
+                                  <label htmlFor={filter.key} className='mb-1 block font-medium'>
+                                    {filter.label}
+                                  </label>
+                                  <input
+                                    id={filter.key}
+                                    type='text'
+                                    placeholder='Search...'
+                                    className='w-full rounded border p-2 dark:bg-blueAccent dark:text-white'
+                                    value={filters[filter.key]}
+                                    onChange={(e) => handleFilterChange(filter.key, e.target.value)}
+                                  />
+                                </>
+                              )}
                             </li>
                           ))}
                       </ul>
@@ -289,7 +296,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             )}
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('search')
                 setMobileMenuOpen(false)
@@ -301,7 +308,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             </button>
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('columns')
                 setMobileMenuOpen(false)
@@ -313,7 +320,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             </button>
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('filters')
                 setMobileMenuOpen(false)
@@ -326,7 +333,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             </button>
             {showReset && (
               <button
-                className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+                className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
                 onClick={() => {
                   handleReset()
                   setMobileMenuOpen(false)

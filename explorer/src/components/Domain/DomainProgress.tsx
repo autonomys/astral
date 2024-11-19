@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
@@ -8,7 +9,6 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
-import { capitalizeFirstLetter } from 'utils/string'
 import { formatSeconds } from 'utils/time'
 import { QUERY_DOMAIN_STATUS } from './query'
 
