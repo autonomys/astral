@@ -1,3 +1,4 @@
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
@@ -6,7 +7,6 @@ import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC } from 'react'
 import { bigNumberToFormattedString } from 'utils/number'
-import { capitalizeFirstLetter } from 'utils/string'
 import { AccountIconWithLink } from '../common/AccountIcon'
 
 type Props = {

@@ -1,7 +1,7 @@
 'use client'
 
 import { registerOperator } from '@autonomys/auto-consensus'
-import { createAccountIdType, isHex, Keyring, u8aToHex } from '@autonomys/auto-utils'
+import { createAccountIdType, isHex, Keyring, shortString, u8aToHex } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon, ExclamationTriangleIcon } from '@heroicons/react/20/solid'
 import { sendGAEvent } from '@next/third-parties/google'
@@ -18,7 +18,6 @@ import Link from 'next/link'
 import React, { Fragment, useCallback, useMemo, useState } from 'react'
 import { useConsensusStates } from 'states/consensus'
 import { floatToStringWithDecimals } from 'utils/number'
-import { shortString } from 'utils/string'
 import * as Yup from 'yup'
 import { WalletButton } from '../WalletButton'
 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useApolloClient } from '@apollo/client'
+import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { PaginationState, SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
@@ -31,7 +32,7 @@ import {
   numberFormattedString,
 } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
-import { allCapsToNormal, capitalizeFirstLetter, shortString } from 'utils/string'
+import { allCapsToNormal } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIcon, AccountIconWithLink } from '../common/AccountIcon'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'

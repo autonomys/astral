@@ -1,10 +1,10 @@
-import useMediaQuery from '@/hooks/useMediaQuery'
+import { shortString } from '@autonomys/auto-utils'
 import Identicon from '@polkadot/react-identicon'
 import { IconTheme } from '@polkadot/react-identicon/types'
 import { INTERNAL_ROUTES } from 'constants/routes'
+import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
-import { shortString } from 'utils/string'
 
 interface AccountIconProps {
   address: string

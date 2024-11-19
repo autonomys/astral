@@ -1,10 +1,10 @@
-import { AccountIconWithLink } from '@/components/common/AccountIcon'
+import { shortString } from '@autonomys/auto-utils'
+import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { BlockByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { FC } from 'react'
-import { shortString } from 'utils/string'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
 type Props = {

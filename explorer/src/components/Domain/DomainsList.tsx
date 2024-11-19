@@ -1,6 +1,7 @@
 'use client'
 
 import { useApolloClient } from '@apollo/client'
+import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
@@ -24,7 +25,6 @@ import {
   formatUnitsToNumber,
   numberFormattedString,
 } from 'utils/number'
-import { capitalizeFirstLetter } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { AccountIconWithLink } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'

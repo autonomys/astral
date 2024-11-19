@@ -1,10 +1,10 @@
+import { shortString } from '@autonomys/auto-utils'
 import { AccountRewardList } from 'components/Consensus/Account/AccountRewardList'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { AccountIdPageProps, ChainPageProps } from 'types/app'
-import { shortString } from 'utils/string'
 
 export async function generateMetadata({
   params: { chain, accountId },

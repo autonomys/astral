@@ -1,4 +1,4 @@
-import { isAddress } from '@autonomys/auto-utils'
+import { capitalizeFirstLetter, isAddress, shortString } from '@autonomys/auto-utils'
 import { Modal } from 'components/common/Modal'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
@@ -10,7 +10,7 @@ import { FC, useCallback, useMemo, useState } from 'react'
 import { useAddressBookStates } from 'states/addressBook'
 import { usePreferencesStates } from 'states/preferences'
 import type { AddressBookEntry } from 'types/wallet'
-import { camelToNormal, capitalizeFirstLetter, shortString } from 'utils/string'
+import { camelToNormal } from 'utils/string'
 import * as Yup from 'yup'
 
 type ActionsModalProps = {
