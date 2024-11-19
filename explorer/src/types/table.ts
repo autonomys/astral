@@ -20,7 +20,7 @@ export type AvailableColumns = {
 export type Filters = object
 
 export type FilterOption = {
-  type: 'range' | 'checkbox' | 'number'
+  type: 'range' | 'checkbox' | 'number' | 'text'
   label: string
   key: string
   options?: string[]
@@ -44,6 +44,46 @@ export interface Table {
 }
 
 export type InitialTables = { [key: string]: Table }
+
+export type AccountsFilters = {
+  nonceMin: string
+  nonceMax: string
+  freeMin: string
+  freeMax: string
+  reservedMin: string
+  reservedMax: string
+  totalMin: string
+  totalMax: string
+}
+
+export type BlocksFilters = {
+  heightMin: string
+  heightMax: string
+  spacePledgedMin: string
+  spacePledgedMax: string
+  blockchainSizeMin: string
+  blockchainSizeMax: string
+}
+
+export type ExtrinsicsFilters = {
+  blockHeightMin: string
+  blockHeightMax: string
+  section: string
+  module: string
+}
+
+export type EventsFilters = {
+  blockHeightMin: string
+  blockHeightMax: string
+  section: string
+  module: string
+}
+
+export type LogsFilters = {
+  blockHeightMin: string
+  blockHeightMax: string
+  kind: string
+}
 
 export type DomainsFilters = {
   totalStakeMin: string
