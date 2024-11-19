@@ -29,12 +29,11 @@ import {
   bigNumberToNumber,
   formatUnitsToNumber,
   numberFormattedString,
-  numberWithCommas,
 } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { allCapsToNormal, capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIcon, AccountIconWithLink } from '../common/AccountIcon'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
@@ -125,17 +124,11 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
             </Link>
           ),
           accountId: ({ row }: Cell<Row>) => (
-            <Link
-              className='flex items-center gap-2 hover:text-primaryAccent'
-              href={INTERNAL_ROUTES.accounts.id.page(
-                network,
-                Routes.consensus,
-                row.original.accountId,
-              )}
-            >
-              <AccountIcon address={row.original.accountId} size={26} />
-              <div>{shortString(row.original.accountId)}</div>
-            </Link>
+            <AccountIconWithLink
+              address={row.original.id}
+              network={network}
+              section={Routes.consensus}
+            />
           ),
           domainId: ({ row }: Cell<Row>) => {
             const domain = domainRegistry.find((d) => d.domainId === row.original.domainId)
@@ -574,7 +567,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       (hasValue(operators) && operators.value.staking_operators_aggregate.aggregate?.count) || 0,
     [operators],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
@@ -614,7 +606,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

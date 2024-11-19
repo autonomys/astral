@@ -3,6 +3,8 @@ export const shortString = (value: string, initialLength = 6, endLength = -4): s
 
 export const camelToNormal = (text: string) => text.replace(/([A-Z])/g, ' $1').trim()
 
+export const camelToSnake = (text: string) => text.replace(/([A-Z])/g, '_$1').toLowerCase()
+
 export const allCapsToNormal = (text: string) =>
   text
     .split('_')

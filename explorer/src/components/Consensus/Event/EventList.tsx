@@ -1,14 +1,11 @@
 'use client'
 
-import { TableSettings } from '@/components/common/TableSettings'
-import { useTableStates } from '@/states/tables'
-import { capitalizeFirstLetter, shortString } from '@/utils/string'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
-import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
-import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { TableSettings } from 'components/common/TableSettings'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { EventsQuery, EventsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -18,8 +15,9 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useTableStates } from 'states/tables'
 import { Cell, EventsFilters, TableSettingsTabs } from 'types/table'
-import { numberWithCommas } from 'utils/number'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
@@ -131,25 +129,19 @@ export const EventList: FC = () => {
         : 0,
     [data],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const columns = useMemo(
     () =>
       getTableColumns<Row>(TABLE, selectedColumns, {
         sortId: ({ row }: Cell<Row>) => (
-          <div className='flex w-full gap-1' key={`${row.index}-event-id`}>
+          <div className='flex w-full gap-1 whitespace-nowrap'>
             <Link
               className='w-full hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
-              data-testid={`event-link-${row.index}`}
             >
               {row.original.id}
             </Link>
-            <CopyButton
-              data-testid={`testCopyButton-${row.index}`}
-              value={row.original.id}
-              message='Id copied'
-            />
+            <CopyButton value={row.original.id} message='Id copied' />
           </div>
         ),
         blockHeight: ({ row }: Cell<Row>) => (
@@ -162,15 +154,9 @@ export const EventList: FC = () => {
           </Link>
         ),
         blockHash: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-event-block_hash`}>
-            <CopyButton
-              data-testid={`testCopy-${row.index}`}
-              value={row.original.blockHash}
-              message='Block hash copied'
-            >
-              {shortString(row.original.blockHash)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.blockHash} message='Block hash copied'>
+            {shortString(row.original.blockHash)}
+          </CopyButton>
         ),
         extrinsicId: ({ row }: Cell<Row>) => (
           <Link
@@ -182,15 +168,9 @@ export const EventList: FC = () => {
           </Link>
         ),
         extrinsicHash: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-event-extrinsic_hash`}>
-            <CopyButton
-              data-testid={`testCopy-${row.index}`}
-              value={row.original.extrinsicHash}
-              message='Extrinsic hash copied'
-            >
-              {shortString(row.original.extrinsicHash)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.extrinsicHash} message='Extrinsic hash copied'>
+            {shortString(row.original.extrinsicHash)}
+          </CopyButton>
         ),
         section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
         module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
@@ -239,13 +219,10 @@ export const EventList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar fixSearchType={searchTypes[4]} />
-      </div>
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

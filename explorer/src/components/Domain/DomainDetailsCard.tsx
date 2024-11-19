@@ -3,21 +3,18 @@ import { List, StyledListItem } from 'components/common/List'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import type { DomainByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
 import { bigNumberToFormattedString } from 'utils/number'
-import { capitalizeFirstLetter, shortString } from 'utils/string'
-import { AccountIcon } from '../common/AccountIcon'
+import { capitalizeFirstLetter } from 'utils/string'
+import { AccountIconWithLink } from '../common/AccountIcon'
 
 type Props = {
   domain: DomainByIdQuery['staking_domains_by_pk']
-  isDesktop?: boolean
 }
 
-export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
+export const DomainDetailsCard: FC<Props> = ({ domain }) => {
   const { network, tokenSymbol } = useChains()
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   if (!domain) return null
 
@@ -37,30 +34,11 @@ export const DomainDetailsCard: FC<Props> = ({ domain, isDesktop = false }) => {
               </CopyButton>
             </StyledListItem>
             <StyledListItem title='Domain Owner'>
-              <CopyButton value={domain.account_id || ''} message='Operator owner key copied'>
-                {isDesktop ? (
-                  <>
-                    <AccountIcon address={domain.account_id} size={26} />
-                    {domain.account_id && (
-                      <Link
-                        data-testid={`nominator-link-${domain.account_id}}`}
-                        className='hover:text-primaryAccent'
-                        href={INTERNAL_ROUTES.accounts.id.page(
-                          network,
-                          Routes.consensus,
-                          domain.account_id,
-                        )}
-                      >
-                        <div>
-                          {isLargeLaptop ? domain.account_id : shortString(domain.account_id)}
-                        </div>
-                      </Link>
-                    )}
-                  </>
-                ) : (
-                  shortString(domain.account_id || '')
-                )}
-              </CopyButton>
+              <AccountIconWithLink
+                address={domain.account_id}
+                network={network}
+                section={Routes.consensus}
+              />
             </StyledListItem>
             <StyledListItem title='Completed epoch'>
               <CopyButton

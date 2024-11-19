@@ -12,7 +12,6 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -24,10 +23,9 @@ import { useViewStates } from 'states/view'
 import type { Cell, LeaderboardFilters } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { shortString } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIconWithLink } from '../common/AccountIcon'
 import { NotFound } from '../layout/NotFound'
 
 type LeaderboardListProps = {
@@ -65,7 +63,6 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     pageIndex: 0,
   })
   const apolloClient = useApolloClient()
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const { network, tokenDecimals } = useChains()
   const inFocus = useWindowFocus()
   const availableColumns = useTableStates((state) => state[TABLE].columns)
@@ -79,18 +76,16 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
         selectedColumns,
         {
           rank: ({ row }: Cell<Row>) => row.original.rank.toString(),
-          id: ({ row }: Cell<Row>) => (
-            <div key={`id-${row.original.id}`} className='row flex items-center gap-3'>
-              {showAccountIcon && <AccountIcon address={row.original.id} size={26} />}
-              <Link
-                data-testid={`account-link-${row.index}`}
-                href={idLink(row.original.id)}
-                className='hover:text-primaryAccent'
-              >
-                <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
-              </Link>
-            </div>
-          ),
+          id: ({ row }: Cell<Row>) =>
+            showAccountIcon ? (
+              <AccountIconWithLink
+                address={idLink(row.original.id)}
+                network={network}
+                section={Routes.consensus}
+              />
+            ) : (
+              idLink(row.original.id)
+            ),
           value: ({ row }: Cell<Row>) =>
             `${numberWithCommas(
               valueType === 'bigNumber'
@@ -136,10 +131,9 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
       valueLabel,
       showAccountIcon,
       idLink,
-      isLargeLaptop,
+      network,
       valueType,
       valueSuffix,
-      network,
     ],
   )
 

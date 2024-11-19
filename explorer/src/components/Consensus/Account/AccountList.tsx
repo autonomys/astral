@@ -1,30 +1,28 @@
 'use client'
 
-import { TableSettings } from '@/components/common/TableSettings'
-import { useTableStates } from '@/states/tables'
 import { useApolloClient } from '@apollo/client'
 import type { SortingState } from '@tanstack/react-table'
-import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountsQuery, AccountsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useTableStates } from 'states/tables'
 import type { AccountsFilters, Cell, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { capitalizeFirstLetter } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
-import { AccountIcon } from '../../common/AccountIcon'
+import { AccountIconWithLink } from '../../common/AccountIcon'
 import { QUERY_ACCOUNTS } from './query'
 
 type Row = AccountsQuery['consensus_accounts'][number]
@@ -38,7 +36,6 @@ export const AccountList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
   const inFocus = useWindowFocus()
   const apolloClient = useApolloClient()
   const availableColumns = useTableStates((state) => state[TABLE].columns)
@@ -174,34 +171,46 @@ export const AccountList: FC = () => {
         : 0,
     [data],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const columns = useMemo(
     () =>
-      getTableColumns<Row>(TABLE, selectedColumns, {
-        account: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-account-id`} className='row flex items-center gap-3'>
-            <AccountIcon address={row.original.id} size={26} theme='beachball' />
+      getTableColumns<Row>(
+        TABLE,
+        selectedColumns,
+        {
+          id: ({ row }: Cell<Row>) => (
+            <AccountIconWithLink address={row.original.id} network={network} section={section} />
+          ),
+          nonce: ({ row }: Cell<Row>) => row.original.nonce.toString(),
+          extrinsicsCount: ({ row }: Cell<Row>) =>
+            row.original.extrinsicsCount.aggregate?.count.toString() || '0',
+          free: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.free)),
+          reserved: ({ row }: Cell<Row>) =>
+            numberWithCommas(bigNumberToNumber(row.original.reserved)),
+          total: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.total)),
+          createdAt: ({ row }: Cell<Row>) => (
             <Link
-              data-testid={`account-link-${row.index}`}
-              href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.id)}
+              key={`${row.index}-account-createdAt`}
               className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.createdAt)}
             >
-              <div>{isLargeLaptop ? row.original.id : shortString(row.original.id)}</div>
+              <div>{row.original.createdAt}</div>
             </Link>
-          </div>
-        ),
-        nonce: ({ row }: Cell<Row>) => row.original.nonce.toString(),
-        extrinsicsCount: ({ row }: Cell<Row>) =>
-          row.original.extrinsicsCount.aggregate?.count.toString() || '0',
-        free: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.free)),
-        reserved: ({ row }: Cell<Row>) =>
-          numberWithCommas(bigNumberToNumber(row.original.reserved)),
-        total: ({ row }: Cell<Row>) => numberWithCommas(bigNumberToNumber(row.original.total)),
-        createdAt: ({ row }: Cell<Row>) => String(row.original.createdAt),
-        updatedAt: ({ row }: Cell<Row>) => String(row.original.updatedAt),
-      }),
-    [isLargeLaptop, network, section, selectedColumns],
+          ),
+          updatedAt: ({ row }: Cell<Row>) => (
+            <Link
+              key={`${row.index}-account-updatedAt`}
+              className='hover:text-primaryAccent'
+              href={INTERNAL_ROUTES.blocks.id.page(network, section, row.original.updatedAt)}
+            >
+              <div>{row.original.updatedAt}</div>
+            </Link>
+          ),
+        },
+        {},
+        { extrinsicsCount: false },
+      ),
+    [network, section, selectedColumns],
   )
 
   const pageCount = useMemo(
@@ -251,13 +260,10 @@ export const AccountList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar fixSearchType={searchTypes[1]} />
-      </div>
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

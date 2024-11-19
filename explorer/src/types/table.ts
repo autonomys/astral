@@ -11,6 +11,7 @@ export type AvailableColumn = {
   label: string
   isSelected: boolean
   searchable?: true
+  accessorKey?: string
 }
 
 export type AvailableColumns = {

@@ -3,13 +3,12 @@ import { List, StyledListItem } from 'components/common/List'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import type { OperatorByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
-import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { FC } from 'react'
 import { bigNumberToFormattedString } from 'utils/number'
 import { operatorStatus } from 'utils/operator'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIconWithLink } from '../common/AccountIcon'
 
 type Props = {
   operator: OperatorByIdQuery['staking_operators_by_pk']
@@ -18,7 +17,6 @@ type Props = {
 
 export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) => {
   const { network, tokenSymbol } = useChains()
-  const isLargeLaptop = useMediaQuery('(min-width: 1440px)')
 
   if (!operator) return null
 
@@ -33,30 +31,11 @@ export const OperatorDetailsCard: FC<Props> = ({ operator, isDesktop = false }) 
         <div className='flow-root'>
           <List>
             <StyledListItem title='Operator Owner'>
-              <CopyButton value={operator.account_id || ''} message='Operator owner key copied'>
-                {isDesktop ? (
-                  <>
-                    <AccountIcon address={operator.account_id} size={26} />
-                    {operator.account_id && (
-                      <Link
-                        data-testid={`nominator-link-${operator.account_id}}`}
-                        className='hover:text-primaryAccent'
-                        href={INTERNAL_ROUTES.accounts.id.page(
-                          network,
-                          Routes.consensus,
-                          operator.account_id,
-                        )}
-                      >
-                        <div>
-                          {isLargeLaptop ? operator.account_id : shortString(operator.account_id)}
-                        </div>
-                      </Link>
-                    )}
-                  </>
-                ) : (
-                  shortString(operator.account_id || '')
-                )}
-              </CopyButton>
+              <AccountIconWithLink
+                address={operator.account_id}
+                network={network}
+                section={Routes.consensus}
+              />
             </StyledListItem>
             <StyledListItem title='Signing Key'>
               <CopyButton value={operator.signing_key || ''} message='Operator signing key copied'>

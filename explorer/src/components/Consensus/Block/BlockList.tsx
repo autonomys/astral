@@ -1,15 +1,14 @@
 'use client'
 
-import { TableSettings } from '@/components/common/TableSettings'
-import { useTableStates } from '@/states/tables'
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
 import { SortingState } from '@tanstack/react-table'
+import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
-import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { TableSettings } from 'components/common/TableSettings'
 import { NotFound } from 'components/layout/NotFound'
-import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { BlocksQuery, BlocksQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -19,12 +18,11 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useTableStates } from 'states/tables'
 import { BlocksFilters, Cell, TableSettingsTabs } from 'types/table'
-import { numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
-import { BlockAuthor } from './BlockAuthor'
 import { QUERY_BLOCKS } from './query'
 
 type Row = BlocksQuery['consensus_blocks'][number]
@@ -154,7 +152,6 @@ export const BlockList: FC = () => {
         : 0,
     [data],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const columns = useMemo(
     () =>
@@ -173,61 +170,32 @@ export const BlockList: FC = () => {
         extrinsicsCount: ({ row }: Cell<Row>) => row.original.extrinsicsCount.toString(),
         eventsCount: ({ row }: Cell<Row>) => row.original.eventsCount.toString(),
         hash: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-hash`}>
-            <CopyButton
-              data-testid={`testCopy-${row.index}`}
-              value={row.original.hash}
-              message='Hash copied'
-            >
-              {shortString(row.original.hash)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.hash} message='Hash copied'>
+            {shortString(row.original.hash)}
+          </CopyButton>
         ),
         parentHash: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-parent-hash`}>
-            <CopyButton
-              data-testid={`testCopy-${row.index}`}
-              value={row.original.parentHash}
-              message='Parent hash copied'
-            >
-              {shortString(row.original.parentHash)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.parentHash} message='Parent hash copied'>
+            {shortString(row.original.parentHash)}
+          </CopyButton>
         ),
         authorId: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-author`}>
-            <CopyButton value={row.original.authorId || 'Unknown'} message='Author account copied'>
-              <BlockAuthor
-                domain={section}
-                chain={network}
-                author={row.original.authorId}
-                isDesktop={false}
-              />
-            </CopyButton>
-          </div>
+          <AccountIconWithLink
+            address={row.original.authorId}
+            network={network}
+            section={section}
+          />
         ),
-        specId: ({ row }: Cell<Row>) => shortString(row.original.specId),
+        specId: ({ row }: Cell<Row>) => row.original.specId,
         stateRoot: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-state-root`}>
-            <CopyButton
-              data-testid={`testCopy-${row.index}`}
-              value={row.original.stateRoot}
-              message='State Root copied'
-            >
-              {shortString(row.original.stateRoot)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.stateRoot} message='State Root copied'>
+            {shortString(row.original.stateRoot)}
+          </CopyButton>
         ),
         extrinsicsRoot: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-extrinsics-root`}>
-            <CopyButton
-              data-testid={`testCopy-${row.index}`}
-              value={row.original.extrinsicsRoot}
-              message='Extrinsics Root copied'
-            >
-              {shortString(row.original.extrinsicsRoot)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.extrinsicsRoot} message='Extrinsics Root copied'>
+            {shortString(row.original.extrinsicsRoot)}
+          </CopyButton>
         ),
         spacePledged: ({ row }: Cell<Row>) => formatSpaceToDecimal(row.original.spacePledged),
         blockchainSize: ({ row }: Cell<Row>) => formatSpaceToDecimal(row.original.blockchainSize),
@@ -273,14 +241,10 @@ export const BlockList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar fixSearchType={searchTypes[1]} />
-      </div>
-
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

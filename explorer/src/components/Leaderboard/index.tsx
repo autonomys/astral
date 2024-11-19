@@ -10,7 +10,6 @@ import React, { FC, useCallback, useMemo } from 'react'
 import { hasValue, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import type { LeaderboardFilters, TableSettingsTabs } from 'types/table'
-import { numberWithCommas } from 'utils/number'
 import { MyPositionSwitch } from '../common/MyPositionSwitch'
 import { TableSettings } from '../common/TableSettings'
 import { LeaderboardList } from './LeaderboardList'
@@ -47,7 +46,6 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
       0,
     [leaderboard],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | boolean) => {
@@ -74,7 +72,7 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
     <div className='flex w-full flex-col space-y-6'>
       <TableSettings
         tableName='Leaderboard'
-        totalLabel={totalLabel}
+        totalCount={totalCount}
         availableColumns={availableColumns}
         selectedColumns={selectedColumns}
         filters={filters}

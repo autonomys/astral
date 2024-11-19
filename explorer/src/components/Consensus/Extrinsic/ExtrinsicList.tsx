@@ -1,15 +1,13 @@
 'use client'
 
-import { TableSettings } from '@/components/common/TableSettings'
-import { useTableStates } from '@/states/tables'
-import { getTableColumns } from '@/utils/table'
 import type { SortingState } from '@tanstack/react-table'
+import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
-import { SearchBar } from 'components/common/SearchBar'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
-import { PAGE_SIZE, searchTypes } from 'constants/general'
+import { TableSettings } from 'components/common/TableSettings'
+import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { ExtrinsicsQuery, ExtrinsicsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useChains from 'hooks/useChains'
@@ -18,9 +16,10 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useTableStates } from 'states/tables'
 import { Cell, ExtrinsicsFilters, TableSettingsTabs } from 'types/table'
-import { numberWithCommas } from 'utils/number'
 import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { getTableColumns } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_EXTRINSICS } from './query'
@@ -133,7 +132,6 @@ export const ExtrinsicList: FC = () => {
     () => Math.ceil(Number(totalCount) / pagination.pageSize),
     [totalCount, pagination],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const columns = useMemo(
     () =>
@@ -141,7 +139,7 @@ export const ExtrinsicList: FC = () => {
         sortId: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-extrinsic-id`}
-            className='hover:text-primaryAccent'
+            className='w-full whitespace-nowrap hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
             <div>{row.original.id}</div>
@@ -149,11 +147,9 @@ export const ExtrinsicList: FC = () => {
         ),
         timestamp: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
         hash: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-hash`}>
-            <CopyButton value={row.original.hash} message='Hash copied'>
-              {shortString(row.original.hash)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.hash} message='Hash copied'>
+            {shortString(row.original.hash)}
+          </CopyButton>
         ),
         section: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.section),
         module: ({ row }: Cell<Row>) => capitalizeFirstLetter(row.original.module),
@@ -168,32 +164,26 @@ export const ExtrinsicList: FC = () => {
           </Link>
         ),
         blockHash: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-extrinsic-block_hash`}>
-            <CopyButton value={row.original.blockHash} message='Block hash copied'>
-              {shortString(row.original.blockHash)}
-            </CopyButton>
-          </div>
+          <CopyButton value={row.original.blockHash} message='Block hash copied'>
+            {shortString(row.original.blockHash)}
+          </CopyButton>
         ),
         indexInBlock: ({ row }: Cell<Row>) => row.original.indexInBlock.toString(),
-        success: ({ row }: Cell<Row>) => (
-          <div
-            className='md:flex md:items-center md:justify-start md:pl-5'
-            key={`${row.index}-home-extrinsic-status`}
-          >
-            <StatusIcon status={row.original.success} />
-          </div>
-        ),
+        success: ({ row }: Cell<Row>) => <StatusIcon status={row.original.success} />,
         nonce: ({ row }: Cell<Row>) => row.original.nonce,
         signer: ({ row }: Cell<Row>) => (
-          <Link
-            key={`${row.index}-extrinsic-signer`}
-            className='hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.accounts.id.page(network, section, row.original.signer)}
-          >
-            <div>{row.original.signer}</div>
-          </Link>
+          <AccountIconWithLink
+            address={row.original.signer}
+            network={network}
+            section={Routes.consensus}
+            forceShortString={true}
+          />
         ),
-        signature: ({ row }: Cell<Row>) => row.original.signature,
+        signature: ({ row }: Cell<Row>) => (
+          <CopyButton value={row.original.signature} message='Signature copied'>
+            {shortString(row.original.signature)}
+          </CopyButton>
+        ),
         tip: ({ row }: Cell<Row>) => row.original.tip,
         fee: ({ row }: Cell<Row>) => row.original.fee,
       }),
@@ -233,13 +223,10 @@ export const ExtrinsicList: FC = () => {
 
   return (
     <div className='flex w-full flex-col align-middle'>
-      <div className='grid w-full lg:grid-cols-2'>
-        <SearchBar fixSearchType={searchTypes[2]} />
-      </div>
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

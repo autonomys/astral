@@ -7,11 +7,12 @@ import {
 } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
 import { AvailableColumn, FilterOption } from 'types/table'
+import { numberWithCommas } from 'utils/number'
 import { Tooltip } from './Tooltip'
 
 interface TableSettingsProps {
   tableName: string
-  totalLabel: string
+  totalCount: number
   availableColumns: AvailableColumn[]
   selectedColumns: string[]
   filterOptions: FilterOption[]
@@ -29,7 +30,7 @@ interface TableSettingsProps {
 
 export const TableSettings: React.FC<TableSettingsProps> = ({
   tableName,
-  totalLabel,
+  totalCount,
   availableColumns,
   selectedColumns,
   filterOptions,
@@ -50,7 +51,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
       <h2 id='accordion-open-heading-1'>
         <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
           <span className='flex items-center text-xl font-medium'>
-            {tableName} ({totalLabel})
+            {tableName} ({numberWithCommas(totalCount)})
           </span>
           <div className='flex items-center'>
             <div className='hidden sm:flex'>
@@ -304,7 +305,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             )}
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('search')
                 setMobileMenuOpen(false)
@@ -316,7 +317,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             </button>
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('columns')
                 setMobileMenuOpen(false)
@@ -328,7 +329,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
               </div>
             </button>
             <button
-              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+              className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
               onClick={() => {
                 showSettings('filters')
                 setMobileMenuOpen(false)
@@ -341,7 +342,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
             </button>
             {showReset && (
               <button
-                className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-white'
+                className='w-full rounded-full bg-white/10 p-3 text-[13px] font-semibold text-gray-900 dark:text-white/75'
                 onClick={() => {
                   handleReset()
                   setMobileMenuOpen(false)

@@ -23,11 +23,10 @@ import {
   bigNumberToFormattedString,
   formatUnitsToNumber,
   numberFormattedString,
-  numberWithCommas,
 } from 'utils/number'
-import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { capitalizeFirstLetter } from 'utils/string'
 import { countTablePages, getTableColumns } from 'utils/table'
-import { AccountIcon } from '../common/AccountIcon'
+import { AccountIconWithLink } from '../common/AccountIcon'
 import { TableSettings } from '../common/TableSettings'
 import { Tooltip } from '../common/Tooltip'
 import { NotFound } from '../layout/NotFound'
@@ -72,17 +71,11 @@ export const DomainsList: FC = () => {
           </Link>
         ),
         accountId: ({ row }: Cell<Row>) => (
-          <Link
-            className='flex items-center gap-2 hover:text-primaryAccent'
-            href={INTERNAL_ROUTES.accounts.id.page(
-              network,
-              Routes.consensus,
-              row.original.accountId,
-            )}
-          >
-            <AccountIcon address={row.original.accountId} size={26} />
-            <div>{shortString(row.original.accountId)}</div>
-          </Link>
+          <AccountIconWithLink
+            address={row.original.accountId}
+            network={network}
+            section={Routes.consensus}
+          />
         ),
         name: ({ row }: Cell<Row>) => (
           <div className='row flex items-center gap-3'>
@@ -406,7 +399,6 @@ export const DomainsList: FC = () => {
     () => (hasValue(domains) && domains.value.staking_domains_aggregate.aggregate?.count) || 0,
     [domains],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
@@ -448,7 +440,7 @@ export const DomainsList: FC = () => {
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

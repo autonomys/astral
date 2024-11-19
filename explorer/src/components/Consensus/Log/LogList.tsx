@@ -1,14 +1,10 @@
 'use client'
 
-import { TableSettings } from '@/components/common/TableSettings'
-import { useTableStates } from '@/states/tables'
-import { capitalizeFirstLetter, shortString } from '@/utils/string'
-import { getTableColumns } from '@/utils/table'
-import { utcToLocalRelativeTime } from '@/utils/time'
 import { SortingState } from '@tanstack/react-table'
 import { CopyButton } from 'components/common/CopyButton'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
+import { TableSettings } from 'components/common/TableSettings'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { LogsQuery, LogsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
@@ -19,9 +15,11 @@ import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
+import { useTableStates } from 'states/tables'
 import { Cell, LogsFilters, TableSettingsTabs } from 'types/table'
-import { numberWithCommas } from 'utils/number'
-import { countTablePages } from 'utils/table'
+import { capitalizeFirstLetter, shortString } from 'utils/string'
+import { countTablePages, getTableColumns } from 'utils/table'
+import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_LOGS } from './query'
 
@@ -126,15 +124,14 @@ export const LogList: FC = () => {
         : 0,
     [data],
   )
-  const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const columns = useMemo(
     () =>
       getTableColumns<Row>(TABLE, selectedColumns, {
-        id: ({ row }: Cell<Row>) => (
+        sortId: ({ row }: Cell<Row>) => (
           <div className='flex w-full' key={`${row.index}-log-index`}>
             <Link
-              className='w-full hover:text-primaryAccent'
+              className='w-full whitespace-nowrap hover:text-primaryAccent'
               data-testid={`log-link-${row.index}`}
               href={INTERNAL_ROUTES.logs.id.page(network, section, row.original.id)}
             >
@@ -211,7 +208,7 @@ export const LogList: FC = () => {
       <div className='my-4' ref={ref}>
         <TableSettings
           tableName={capitalizeFirstLetter(TABLE)}
-          totalLabel={totalLabel}
+          totalCount={totalCount}
           availableColumns={availableColumns}
           selectedColumns={selectedColumns}
           filters={filters}

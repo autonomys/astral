@@ -25,8 +25,8 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
     { name: 'spacePledged', label: 'Space Pledged', isSelected: true },
     { name: 'blockchainSize', label: 'Blockchain Size', isSelected: false },
     { name: 'extrinsicsCount', label: 'Extrinsics', isSelected: true },
-    { name: 'events_count', label: 'Events', isSelected: true },
-    { name: 'author_id', label: 'Block Author', isSelected: true, searchable: true },
+    { name: 'eventsCount', label: 'Events', isSelected: true },
+    { name: 'authorId', label: 'Block Author', isSelected: true, searchable: true },
   ],
   extrinsics: [
     { name: 'sortId', label: 'Extrinsic Id', isSelected: true, searchable: true },
@@ -60,8 +60,8 @@ export const AVAILABLE_COLUMNS: AvailableColumns = {
   logs: [
     { name: 'sortId', label: 'Log Id', isSelected: true, searchable: true },
     { name: 'blockHeight', label: 'Block Height', isSelected: true, searchable: true },
-    { name: 'blockHash', label: 'Block Hash', isSelected: false, searchable: true },
-    { name: 'indexInBlock', label: 'Index in Block', isSelected: false },
+    { name: 'blockHash', label: 'Block Hash', isSelected: true, searchable: true },
+    { name: 'indexInBlock', label: 'Index in Block', isSelected: true },
     { name: 'kind', label: 'Kind', isSelected: true, searchable: true },
     { name: 'timestamp', label: 'Time', isSelected: true },
   ],
