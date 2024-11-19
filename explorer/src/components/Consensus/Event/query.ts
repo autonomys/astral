@@ -1,24 +1,30 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_EVENTS = gql`
-  query Events($limit: Int!, $offset: Int, $where: consensus_events_bool_exp) {
+  query Events(
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_events_order_by!]!
+    $where: consensus_events_bool_exp
+  ) {
     consensus_events_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    consensus_events(order_by: { sort_id: desc }, limit: $limit, offset: $offset, where: $where) {
-      args
+    consensus_events(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
-      index_in_block
+      sortId: sort_id
+      blockHeight: block_height
+      blockHash: block_hash
+      extrinsicId: extrinsic_id
+      extrinsicHash: extrinsic_hash
+      section
+      module
       name
-      phase
+      indexInBlock: index_in_block
       timestamp
-      block {
-        id
-        timestamp
-        height
-      }
+      phase
     }
     consensus_event_modules(limit: 300) {
       method

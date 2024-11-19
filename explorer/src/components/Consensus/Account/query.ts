@@ -1,25 +1,26 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_ACCOUNTS = gql`
-  query Accounts($limit: Int!, $offset: Int) {
-    consensus_accounts_aggregate(where: { total: { _gt: "0" } }) {
+  query Accounts(
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_accounts_order_by!]!
+    $where: consensus_accounts_bool_exp
+  ) {
+    consensus_accounts_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    consensus_accounts(
-      order_by: { total: desc }
-      where: { total: { _gt: "0" } }
-      limit: $limit
-      offset: $offset
-    ) {
+    consensus_accounts(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
-      free
+      nonce
       free
       reserved
       total
-      updated_at
-      extrinsics_aggregate {
+      createdAt: created_at
+      updatedAt: updated_at
+      extrinsicsCount: extrinsics_aggregate {
         aggregate {
           count
         }

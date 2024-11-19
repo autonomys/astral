@@ -87,53 +87,53 @@ export const QUERY_OPERATOR_LIST = gql`
     }
     staking_operators(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
-      sort_id
-      account_id
-      domain_id
+      sortId: sort_id
+      accountId: account_id
+      domainId: domain_id
       domain {
         id
         sort_id
         last_domain_block_number
       }
-      current_epoch_rewards
-      current_total_stake
-      current_total_shares
-      current_share_price
-      current_storage_fee_deposit
-      minimum_nominator_stake
-      nomination_tax
-      signing_key
+      currentEpochRewards: current_epoch_rewards
+      currentTotalStake: current_total_stake
+      currentTotalShares: current_total_shares
+      currentSharePrice: current_share_price
+      currentStorageFeeDeposit: current_storage_fee_deposit
+      minimumNominatorStake: minimum_nominator_stake
+      nominationTax: nomination_tax
+      signingKey: signing_key
       status
-      raw_status
-      pending_action
-      total_deposits
-      total_estimated_withdrawals
-      total_withdrawals
-      total_tax_collected
-      total_rewards_collected
-      total_transfers_in
-      transfers_in_count
-      total_transfers_out
-      transfers_out_count
-      total_rejected_transfers_claimed
-      rejected_transfers_claimed_count
-      total_transfers_rejected
-      transfers_rejected_count
-      total_volume
-      total_consensus_storage_fee
-      total_domain_execution_fee
-      total_burned_balance
-      accumulated_epoch_shares
-      accumulated_epoch_storage_fee_deposit
-      active_epoch_count
-      bundle_count
-      last_bundle_at
-      nominators_aggregate {
+      rawStatus: raw_status
+      pendingAction: pending_action
+      totalDeposits: total_deposits
+      totalEstimatedWithdrawals: total_estimated_withdrawals
+      totalWithdrawals: total_withdrawals
+      totalTaxCollected: total_tax_collected
+      totalRewardsCollected: total_rewards_collected
+      totalTransfersIn: total_transfers_in
+      transfersInCount: transfers_in_count
+      totalTransfersOut: total_transfers_out
+      transfersOutCount: transfers_out_count
+      totalRejectedTransfersClaimed: total_rejected_transfers_claimed
+      rejectedTransfersClaimedCount: rejected_transfers_claimed_count
+      totalTransfersRejected: total_transfers_rejected
+      transfersRejectedCount: transfers_rejected_count
+      totalVolume: total_volume
+      totalConsensusStorageFee: total_consensus_storage_fee
+      totalDomainExecutionFee: total_domain_execution_fee
+      totalBurnedBalance: total_burned_balance
+      accumulatedEpochShares: accumulated_epoch_shares
+      accumulatedEpochStorageFeeDeposit: accumulated_epoch_storage_fee_deposit
+      activeEpochCount: active_epoch_count
+      bundleCount: bundle_count
+      lastBundleAt: last_bundle_at
+      nominatorsAggregate: nominators_aggregate {
         aggregate {
           count
         }
       }
-      deposits_aggregate {
+      depositsAggregate: deposits_aggregate {
         aggregate {
           count
         }
@@ -144,8 +144,8 @@ export const QUERY_OPERATOR_LIST = gql`
         known_shares
         unlock_at_confirmed_domain_block_number
       }
-      created_at
-      updated_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `

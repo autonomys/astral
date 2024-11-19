@@ -1,30 +1,32 @@
 import { gql } from '@apollo/client'
 
 export const QUERY_BLOCKS = gql`
-  query Blocks($limit: Int!, $offset: Int, $orderBy: [consensus_blocks_order_by!]!) {
-    consensus_blocks_aggregate {
+  query Blocks(
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_blocks_order_by!]!
+    $where: consensus_blocks_bool_exp
+  ) {
+    consensus_blocks_aggregate(where: $where) {
       aggregate {
         count
       }
     }
-    consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset) {
-      blockchain_size
-      extrinsics_root
-      hash
-      height
+    consensus_blocks(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
-      parent_hash
-      space_pledged
-      spec_id
-      state_root
+      sortId: sort_id
+      height
+      hash
       timestamp
-      events(limit: 10) {
-        id
-      }
-      extrinsics(limit: 10) {
-        id
-      }
-      author_id
+      parentHash: parent_hash
+      specId: spec_id
+      stateRoot: state_root
+      extrinsicsRoot: extrinsics_root
+      spacePledged: space_pledged
+      blockchainSize: blockchain_size
+      extrinsicsCount: extrinsics_count
+      eventsCount: events_count
+      authorId: author_id
     }
   }
 `
