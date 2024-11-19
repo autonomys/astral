@@ -11,7 +11,7 @@ import { numberWithCommas } from 'utils/number'
 
 interface TableSettingsProps {
   tableName: string
-  totalCount: number
+  totalCount?: number
   availableColumns: AvailableColumn[]
   selectedColumns: string[]
   filterOptions: FilterOption[]
@@ -50,7 +50,7 @@ export const TableSettings: React.FC<TableSettingsProps> = ({
       <h2 id='accordion-open-heading-1'>
         <div className='flex w-full items-center justify-between truncate pb-5 text-left font-light text-gray-900 dark:text-white/75'>
           <span className='flex items-center text-xl font-medium'>
-            {tableName} ({numberWithCommas(totalCount)})
+            {tableName} {totalCount && `(${numberWithCommas(totalCount)})`}
           </span>
           <div className='flex items-center'>
             <div className='sm:flex'>

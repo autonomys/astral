@@ -49,9 +49,9 @@ export const QUERY_ACCOUNT_TRANSFER_SENDER_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -80,9 +80,9 @@ export const QUERY_ACCOUNT_TRANSFER_RECEIVER_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -111,9 +111,9 @@ export const QUERY_ACCOUNT_TRANSFER_RECEIVER_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -139,9 +139,9 @@ export const QUERY_ACCOUNT_REMARK_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -167,9 +167,9 @@ export const QUERY_ACCOUNT_EXTRINSIC_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -198,9 +198,9 @@ export const QUERY_ACCOUNT_EXTRINSIC_SUCCESS_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -226,9 +226,9 @@ export const QUERY_ACCOUNT_EXTRINSIC_FAILED_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -257,9 +257,9 @@ export const QUERY_ACCOUNT_TRANSACTION_FEE_PAID_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -285,9 +285,9 @@ export const QUERY_FARMER_VOTE_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -313,9 +313,9 @@ export const QUERY_FARMER_VOTE_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -341,9 +341,9 @@ export const QUERY_FARMER_BLOCK_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -369,9 +369,9 @@ export const QUERY_FARMER_BLOCK_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -397,9 +397,9 @@ export const QUERY_OPERATOR_TOTAL_REWARDS_COLLECTED = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -425,9 +425,9 @@ export const QUERY_OPERATOR_TOTAL_TAX_COLLECTED = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -453,9 +453,9 @@ export const QUERY_OPERATOR_BUNDLE_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -481,9 +481,9 @@ export const QUERY_OPERATOR_DEPOSITS_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -509,9 +509,9 @@ export const QUERY_OPERATOR_DEPOSITS_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -537,9 +537,9 @@ export const QUERY_OPERATOR_WITHDRAWALS_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -565,9 +565,9 @@ export const QUERY_NOMINATOR_DEPOSITS_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -593,9 +593,9 @@ export const QUERY_NOMINATOR_DEPOSITS_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -621,9 +621,9 @@ export const QUERY_NOMINATOR_WITHDRAWALS_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -649,9 +649,9 @@ export const QUERY_FARMER_VOTE_AND_BLOCK_TOTAL_COUNT = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `
@@ -677,9 +677,9 @@ export const QUERY_FARMER_VOTE_AND_BLOCK_TOTAL_VALUE = gql`
       id
       rank
       value
-      last_contribution_at
-      created_at
-      updated_at
+      lastContributionAt: last_contribution_at
+      createdAt: created_at
+      updatedAt: updated_at
     }
   }
 `

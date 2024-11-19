@@ -39,11 +39,13 @@ export const AccountIconWithLink = ({
   address,
   network,
   section,
+  link,
   forceShortString = false,
   ...props
 }: AccountIconProps & {
   network: string
   section: string
+  link?: string
   forceShortString?: boolean
 }) => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
@@ -51,7 +53,7 @@ export const AccountIconWithLink = ({
     <div className='flex items-center gap-2'>
       <AccountIcon address={address} size={26} theme='beachball' {...props} />
       <Link
-        href={INTERNAL_ROUTES.accounts.id.page(network, section, address)}
+        href={link ?? INTERNAL_ROUTES.accounts.id.page(network, section, address)}
         className='hover:text-primaryAccent'
       >
         <div>{!isDesktop || forceShortString ? shortString(address) : address}</div>
