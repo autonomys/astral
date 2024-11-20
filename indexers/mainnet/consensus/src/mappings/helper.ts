@@ -1,5 +1,8 @@
+import { cidOfNode, cidToString, decodeNode } from "@autonomys/auto-dag-data";
+import { stringify } from "@autonomys/auto-utils";
 import { SubstrateBlock } from "@subql/types";
-import { decodeLog } from "./utils";
+import { Cid, ModifiedArgs, ParsedArgs } from "./types";
+import { decodeLog, hexToUint8Array } from "./utils";
 
 const DEFAULT_ACCOUNT_ID = "0x00";
 
@@ -26,4 +29,18 @@ export const getBlockAuthor = (block: SubstrateBlock): string => {
     }
   }
   return DEFAULT_ACCOUNT_ID;
+};
+
+export const parseDataToCid = (data: string): ParsedArgs => {
+  let cid: Cid = undefined;
+  let modifiedArgs: ModifiedArgs = undefined;
+  try {
+    const node = decodeNode(hexToUint8Array(data));
+    cid = cidToString(cidOfNode(node));
+    modifiedArgs = stringify({ cid });
+  } catch (error) {
+    logger.error("Error decoding remark or seedHistory extrinsic");
+    logger.error(error);
+  }
+  return { cid, modifiedArgs };
 };
