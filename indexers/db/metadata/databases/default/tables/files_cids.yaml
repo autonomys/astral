@@ -1,3 +1,13 @@
 table:
   name: cids
   schema: files
+object_relationships:
+  - name: chunk
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: chunks
+          schema: files

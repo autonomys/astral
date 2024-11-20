@@ -1,3 +1,32 @@
 table:
   name: metadata
   schema: files
+object_relationships:
+  - name: chunk
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: chunks
+          schema: files
+  - name: cid
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: cids
+          schema: files
+array_relationships:
+  - name: metadata_cids
+    using:
+      manual_configuration:
+        column_mapping:
+          id: parent_cid
+        insertion_order: null
+        remote_table:
+          name: metadata_cids
+          schema: files
