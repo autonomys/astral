@@ -100,7 +100,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     block: {
       timestamp,
       block: {
-        header: { number },
+        header: { number, hash: blockHash },
       },
     },
     extrinsic: { method, hash, nonce, signer, signature, tip },
@@ -136,7 +136,7 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
   await createAndSaveExtrinsic(
     hash.toString(),
     BigInt(number.toString()),
-    hash.toString(),
+    blockHash.toString(),
     idx,
     methodToHuman.section,
     methodToHuman.method,
