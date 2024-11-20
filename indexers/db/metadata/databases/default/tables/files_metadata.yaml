@@ -30,3 +30,15 @@ array_relationships:
         remote_table:
           name: metadata_cids
           schema: files
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - size
+        - id
+        - name
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

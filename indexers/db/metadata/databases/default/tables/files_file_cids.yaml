@@ -11,3 +11,14 @@ object_relationships:
         remote_table:
           name: chunks
           schema: files
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - child_cid
+        - id
+        - parent_cid
+        - _id
+      filter: {}
+    comment: ""
