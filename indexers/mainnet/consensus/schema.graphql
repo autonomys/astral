@@ -42,12 +42,13 @@ type Extrinsic @entity {
   timestamp: Date! @index
   nonce: BigInt!
   signer: String! @index
-  signature: String! @index
+  signature: String!
   args: String!
   error: String!
   tip: BigInt!
   fee: BigInt!
   pos: Int!
+  cid: String @index
 }
 
 type Event @entity {
@@ -65,6 +66,7 @@ type Event @entity {
   phase: String!
   pos: Int!
   args: String!
+  cid: String @index
 }
 
 # Accounts Entities
