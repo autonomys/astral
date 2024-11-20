@@ -1,4 +1,13 @@
-import { Chunk, Cid, File } from "../types";
+import {
+  Chunk,
+  Cid,
+  File,
+  FileCid,
+  Folder,
+  FolderCid,
+  Metadata,
+  MetadataCid,
+} from "../types";
 
 export async function createAndSaveCid(
   cid: string,
@@ -46,18 +55,68 @@ export async function createAndSaveChunk(
   return chunk;
 }
 
+const prepareRelation = (cid: string, link: string) => ({
+  id: `${cid}-${link}`,
+  parent: cid,
+  chunk: link,
+});
+
+export async function createAndSaveMetadata(
+  cid: string,
+  links: string[],
+  name?: string
+): Promise<Metadata> {
+  const metadata = Metadata.create({
+    id: cid,
+    size: BigInt(0),
+    name,
+  });
+  await metadata.save();
+  if (links.length > 0) {
+    const relations = links.map((link) =>
+      MetadataCid.create(prepareRelation(cid, link))
+    );
+    await Promise.all(relations.map((relation) => relation.save()));
+  }
+  return metadata;
+}
+
+export async function createAndSaveFolder(
+  cid: string,
+  links: string[],
+  name?: string
+): Promise<Folder> {
+  const folder = Folder.create({
+    id: cid,
+    size: BigInt(0),
+    name,
+  });
+  await folder.save();
+  if (links.length > 0) {
+    const relations = links.map((link) =>
+      FolderCid.create(prepareRelation(cid, link))
+    );
+    await Promise.all(relations.map((relation) => relation.save()));
+  }
+  return folder;
+}
+
 export async function createAndSaveFile(
   cid: string,
   links: string[],
-  size: bigint,
   name?: string
 ): Promise<File> {
   const file = File.create({
     id: cid,
-    links,
-    size,
+    size: BigInt(0),
     name,
   });
   await file.save();
+  if (links.length > 0) {
+    const relations = links.map((link) =>
+      FileCid.create(prepareRelation(cid, link))
+    );
+    await Promise.all(relations.map((relation) => relation.save()));
+  }
   return file;
 }

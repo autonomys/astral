@@ -19,9 +19,38 @@ type Chunk @entity {
   uploadOptions: String
 }
 
-type File @entity {
+type Metadata @entity {
   id: ID!
-  links: [String]!
   size: BigInt! @index
   name: String @index
+}
+
+type MetadataCid @entity {
+  id: ID!
+  parent: String! @index
+  chunk: String! @index
+}
+
+type Folder @entity {
+  id: ID!
+  size: BigInt! @index
+  name: String @index
+}
+
+type FolderCid @entity {
+  id: ID!
+  parent: String! @index
+  chunk: String! @index
+}
+
+type File @entity {
+  id: ID!
+  size: BigInt! @index
+  name: String @index
+}
+
+type FileCid @entity {
+  id: ID!
+  parent: String! @index
+  chunk: String! @index
 }

@@ -6,10 +6,17 @@ import {
   cidToString,
   decodeNode,
   IPLDNodeData,
+  MetadataType,
 } from "@autonomys/auto-dag-data";
 import { stringify } from "@autonomys/auto-utils";
 import { SubstrateExtrinsic } from "@subql/types";
-import { createAndSaveChunk, createAndSaveCid, createAndSaveFile } from "./db";
+import {
+  createAndSaveChunk,
+  createAndSaveCid,
+  createAndSaveFile,
+  createAndSaveFolder,
+  createAndSaveMetadata,
+} from "./db";
 import { ExtrinsicPrimitive } from "./types";
 
 const hexToUint8Array = (hex: string): Uint8Array => {
@@ -65,13 +72,27 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
           stringify(nodeData.uploadOptions)
         );
 
-        if (nodeData.type === "File")
-          await createAndSaveFile(
-            cid,
-            links,
-            nodeData.size ?? BigInt(0),
-            nodeData.name
-          );
+        switch (nodeData.type) {
+          case MetadataType.Metadata:
+            await createAndSaveMetadata(cid, links, nodeData.name);
+            break;
+          case MetadataType.Folder:
+            await createAndSaveFolder(cid, links, nodeData.name);
+            break;
+          case MetadataType.File:
+            await createAndSaveFile(cid, links, nodeData.name);
+            break;
+          // Skip inlinks and chunks as they are already saved in chunks table
+          case MetadataType.FileInlink:
+          case MetadataType.FileChunk:
+          case MetadataType.FolderInlink:
+          case MetadataType.MetadataInlink:
+          case MetadataType.MetadataChunk:
+            break;
+          default:
+            logger.warn(`Unknown node type: ${nodeData.type} for cid: ${cid}`);
+            break;
+        }
       }
     }
   } catch (error) {
