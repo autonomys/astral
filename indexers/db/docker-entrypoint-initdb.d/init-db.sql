@@ -1148,13 +1148,13 @@ CREATE INDEX "0xf303d79993939441" ON consensus.rewards USING gist (reward_type, 
 CREATE INDEX "0xf6317466d2b3ee74" ON consensus.logs USING gist (block_height, _block_range);
 CREATE INDEX "0xfa91e9294de2a975" ON consensus.extrinsics USING gist (block_hash, _block_range);
 CREATE INDEX "0xff37291e107f6ca9" ON consensus.blocks USING gist (author_id, _block_range);
+
 CREATE INDEX "0x288575ef7a7aaf75" ON dictionary.extrinsics USING btree (module);
 CREATE INDEX "0x46e7a495bb4c21d1" ON dictionary.events USING btree (event);
 CREATE INDEX "0x57c58da22539b57d" ON dictionary.extrinsics USING btree (block_height);
 CREATE INDEX "0x5b57ecd94445ad2e" ON dictionary.extrinsics USING btree (call);
 CREATE INDEX "0x62b8f3181611d490" ON dictionary.events USING btree (module);
 CREATE INDEX "0xc0c9768d1987b60f" ON dictionary.events USING btree (block_height);
-
 
 CREATE INDEX "0x0237b4bb45c8cd3d" ON leaderboard.farmer_vote_and_block_total_values USING btree (created_at);
 CREATE INDEX "0x02f8da0e922b0056" ON leaderboard.account_transfer_sender_total_count_histories USING gist (created_at, _block_range);
