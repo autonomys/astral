@@ -56,9 +56,9 @@ export async function createAndSaveChunk(
 }
 
 const prepareRelation = (cid: string, link: string) => ({
-  id: `${cid}-${link}`,
-  parent: cid,
-  chunk: link,
+  id: `${cid}:${link}`,
+  parentCid: cid,
+  childCid: link,
 });
 
 export async function createAndSaveMetadata(

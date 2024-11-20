@@ -27,8 +27,8 @@ type Metadata @entity {
 
 type MetadataCid @entity {
   id: ID!
-  parent: String! @index
-  chunk: String! @index
+  parentCid: String! @index
+  childCid: String! @index
 }
 
 type Folder @entity {
@@ -39,8 +39,8 @@ type Folder @entity {
 
 type FolderCid @entity {
   id: ID!
-  parent: String! @index
-  chunk: String! @index
+  parentCid: String! @index
+  childCid: String! @index
 }
 
 type File @entity {
@@ -51,6 +51,6 @@ type File @entity {
 
 type FileCid @entity {
   id: ID!
-  parent: String! @index
-  chunk: String! @index
+  parentCid: String! @index
+  childCid: String! @index
 }
