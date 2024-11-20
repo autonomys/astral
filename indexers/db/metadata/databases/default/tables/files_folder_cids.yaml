@@ -1,0 +1,3 @@
+table:
+  name: folder_cids
+  schema: files
