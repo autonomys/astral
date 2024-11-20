@@ -1,0 +1,27 @@
+type Cid @entity {
+  id: ID!
+  blockHeight: BigInt! @index
+  blockHash: String! @index
+  extrinsicId: String! @index
+  extrinsicHash: String! @index
+  indexInBlock: Int! @index
+  links: [String]!
+  timestamp: Date! @index
+}
+
+type Chunk @entity {
+  id: ID!
+  type: String! @index
+  linkDepth: Int! @index
+  size: BigInt
+  name: String
+  data: String
+  uploadOptions: String
+}
+
+type File @entity {
+  id: ID!
+  links: [String]!
+  size: BigInt! @index
+  name: String @index
+}
