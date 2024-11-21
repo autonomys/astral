@@ -91,7 +91,8 @@ export async function createAndSaveExtrinsic(
   error: string,
   tip: bigint,
   fee: bigint,
-  pos: number
+  pos: number,
+  cid?: string
 ): Promise<Extrinsic> {
   const extrinsicId = `${blockHeight}-${indexInBlock}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
@@ -115,6 +116,7 @@ export async function createAndSaveExtrinsic(
     tip,
     fee,
     pos,
+    cid,
   });
   await extrinsic.save();
   return extrinsic;
@@ -131,7 +133,8 @@ export async function createAndSaveEvent(
   timestamp: Date,
   phase: string,
   pos: number,
-  args: string
+  args: string,
+  cid?: string
 ): Promise<Event> {
   const id = `${blockHeight}-${indexInBlock.toString()}`;
   const sortId = getSortId(blockHeight, BigInt(indexInBlock));
@@ -150,6 +153,7 @@ export async function createAndSaveEvent(
     phase,
     pos,
     args,
+    cid,
   });
   await event.save();
   return event;

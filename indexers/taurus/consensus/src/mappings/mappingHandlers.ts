@@ -1,3 +1,6 @@
+global.TextEncoder = require("util").TextEncoder;
+global.TextDecoder = require("util").TextDecoder;
+
 import { blockchainSize, spacePledge } from "@autonomys/auto-consensus";
 import type { ApiAtBlockHash } from "@autonomys/auto-utils";
 import { stringify } from "@autonomys/auto-utils";
@@ -12,7 +15,7 @@ import {
   createAndSaveExtrinsic,
   createAndSaveLog,
 } from "./db";
-import { getBlockAuthor } from "./helper";
+import { getBlockAuthor, parseDataToCid } from "./helper";
 import {
   handleExtrinsic,
   handleFarmerBlockRewardEvent,
@@ -133,6 +136,22 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
       : 0
     : 0;
 
+  // Detect data storage extrinsics and parse args to cid
+  let cid: string | undefined = undefined;
+  let args: string = stringify(methodToPrimitive.args);
+  if (
+    (methodToHuman.section === "historySeeding" &&
+      methodToHuman.method === "seedHistory") ||
+    (methodToHuman.section === "system" &&
+      (methodToHuman.method === "remarkWithEvent" ||
+        methodToHuman.method === "remark"))
+  ) {
+    const parsedArgs = parseDataToCid(methodToPrimitive.args.remark);
+    cid = parsedArgs.cid;
+    // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
+    args = parsedArgs.modifiedArgs ?? stringify(methodToPrimitive.args);
+  }
+
   await createAndSaveExtrinsic(
     hash.toString(),
     BigInt(number.toString()),
@@ -145,11 +164,12 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
     BigInt(nonce.toString()),
     signer.toString(),
     signature.toString(),
-    stringify(methodToPrimitive.args),
+    args,
     error,
     BigInt(tip.toString()),
     fee,
-    pos
+    pos,
+    cid
   );
 
   return await handleExtrinsic(_call);
@@ -182,6 +202,16 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
   const extrinsicId = extrinsic ? number + "-" + extrinsic.idx.toString() : "";
   const extrinsicHash = extrinsic ? extrinsic.extrinsic.hash.toString() : "";
 
+  // Detect data storage extrinsics and parse args to cid
+  let cid: string | undefined = undefined;
+  let args: string = stringify(primitive.data);
+  if (human.section === "system" && human.method === "Remarked") {
+    const parsedArgs = parseDataToCid(primitive.data[1]);
+    cid = parsedArgs.cid;
+    // The args parameter will be replaced by `{ "cid": "bafkr6i..." }` to minimize the size of the db
+    args = parsedArgs.modifiedArgs ?? stringify(primitive.data);
+  }
+
   await createAndSaveEvent(
     BigInt(number.toString()),
     hash.toString(),
@@ -193,7 +223,8 @@ export async function handleEvent(_event: SubstrateEvent): Promise<void> {
     timestamp ? timestamp : new Date(0),
     eventRecord ? eventRecord.phase.type : "",
     pos,
-    stringify(primitive.data)
+    args,
+    cid
   );
 
   switch (`${event.section}.${event.method}`) {
