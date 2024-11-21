@@ -9,6 +9,8 @@ import {
   MetadataType,
 } from "@autonomys/auto-dag-data";
 import { stringify } from "@autonomys/auto-utils";
+import { Bytes } from "@polkadot/types";
+import { compactStripLength } from "@polkadot/util";
 import { SubstrateExtrinsic } from "@subql/types";
 import {
   createAndSaveChunk,
@@ -44,7 +46,12 @@ export async function handleCall(_call: SubstrateExtrinsic): Promise<void> {
 
   const methodToPrimitive = method.toPrimitive() as ExtrinsicPrimitive;
   try {
-    const node = decodeNode(hexToUint8Array(methodToPrimitive.args.remark));
+    const data = methodToPrimitive.args.remark;
+    const buffer = Buffer.from(data, "hex");
+    const [length, bytes] = compactStripLength(buffer);
+    const isValidLength = length === bytes.length;
+    const encoded = isValidLength ? Bytes.from(buffer) : hexToUint8Array(data);
+    const node = decodeNode(encoded);
     const cid = cidToString(cidOfNode(node));
     const links = node.Links.map((l) => cidToString(l.Hash));
 
