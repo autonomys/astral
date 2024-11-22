@@ -23,6 +23,11 @@ export const leaderboardSortAndRank = async (): Promise<LeaderboardResult> => {
   try {
     const client: PoolClient = await pool.connect();
     try {
+      // Set temp_buffers for this session
+      await client.query("SET temp_buffers = '2GB'");
+      // Set work_mem for this session
+      await client.query("SET work_mem = '256MB'");
+
       await client.query("BEGIN");
 
       const updateQueries = Object.keys(LEADERBOARD_ENTRY_TYPE).map((key) => {
