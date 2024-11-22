@@ -6,6 +6,11 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
 interface TableStates {
+  accounts: Table
+  blocks: Table
+  extrinsics: Table
+  events: Table
+  logs: Table
   domains: Table
   operators: Table
   leaderboard: Table
@@ -24,6 +29,11 @@ interface TableStatesAndFn extends TableStates {
 }
 
 const initialState: TableStates = {
+  accounts: INITIAL_TABLES.accounts,
+  blocks: INITIAL_TABLES.blocks,
+  extrinsics: INITIAL_TABLES.extrinsics,
+  events: INITIAL_TABLES.events,
+  logs: INITIAL_TABLES.logs,
   domains: INITIAL_TABLES.domains,
   operators: INITIAL_TABLES.operators,
   leaderboard: INITIAL_TABLES.leaderboard,
@@ -98,7 +108,7 @@ export const useTableStates = create<TableStatesAndFn>()(
     }),
     {
       name: 'table-storage',
-      version: 3,
+      version: 4,
       storage: createJSONStorage(() => localStorage),
       serialize: (state) => JSON.stringify(state, bigIntSerializer),
       deserialize: (str) => JSON.parse(str, bigIntDeserializer),

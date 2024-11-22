@@ -1,5 +1,5 @@
 import { remark, transfer } from '@autonomys/auto-consensus'
-import { SignerResult } from '@autonomys/auto-utils'
+import { shortString, SignerResult } from '@autonomys/auto-utils'
 import { Listbox, Transition } from '@headlessui/react'
 import { sendGAEvent } from '@next/third-parties/google'
 import { CopyButton } from 'components/common/CopyButton'
@@ -24,7 +24,7 @@ import { useAddressBookStates } from 'states/addressBook'
 import { usePreferencesStates } from 'states/preferences'
 import { formatAddress } from 'utils//formatAddress'
 import { floatToStringWithDecimals, formatUnitsToNumber } from 'utils/number'
-import { camelToNormal, shortString } from 'utils/string'
+import { camelToNormal } from 'utils/string'
 import * as Yup from 'yup'
 import {
   CustomExtrinsicFormValues,

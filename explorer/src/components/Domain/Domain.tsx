@@ -4,7 +4,6 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { DomainByIdQuery, DomainByIdQueryVariables } from 'gql/graphql'
-import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
@@ -20,7 +19,6 @@ export const Domain: FC = () => {
   const { domainId } = useParams<{ domainId?: string }>()
   const { push } = useRouter()
   const inFocus = useWindowFocus()
-  const isDesktop = useMediaQuery('(min-width: 1024px)')
 
   // eslint
   const variables = useMemo(() => ({ domainId: domainId ?? '' }), [domainId])
@@ -58,7 +56,7 @@ export const Domain: FC = () => {
     <div className='flex w-full flex-col space-y-4' ref={ref}>
       {domainDetails ? (
         <>
-          <DomainDetailsCard domain={domainDetails} isDesktop={isDesktop} />
+          <DomainDetailsCard domain={domainDetails} />
           <div className='mt-5 flex w-full flex-col align-middle'>
             <div className='mb-5 flex justify-between'>
               <button

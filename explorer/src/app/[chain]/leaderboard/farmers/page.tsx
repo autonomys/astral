@@ -26,6 +26,6 @@ export async function generateMetadata({ params: { chain } }: ChainPageProps): P
 }
 
 const Page: FC<ChainPageProps> = ({ params: { chain } }) =>
-  isRouteSupportingNetwork(chain, Routes.staking) ? <FarmerLeaderboard /> : <NotFound />
+  isRouteSupportingNetwork(chain, Routes.leaderboard) ? <FarmerLeaderboard /> : <NotFound />
 
 export default Page

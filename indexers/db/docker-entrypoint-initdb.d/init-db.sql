@@ -192,6 +192,7 @@ CREATE TABLE consensus.events (
     phase text NOT NULL,
     pos integer NOT NULL,
     args text NOT NULL,
+    cid text,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -226,6 +227,7 @@ CREATE TABLE consensus.extrinsics (
     tip numeric NOT NULL,
     fee numeric NOT NULL,
     pos integer NOT NULL,
+    cid text,
     _id uuid NOT NULL,
     _block_range int8range NOT NULL
 );
@@ -1093,11 +1095,11 @@ CREATE INDEX "0x30b779cc3aeeeec6" ON consensus.events USING gist (extrinsic_id, 
 CREATE INDEX "0x358cafe370ac92ef" ON consensus.accounts USING gist (total, _block_range);
 CREATE INDEX "0x3ae5d1670e99e612" ON consensus.transfers USING gist ("timestamp", _block_range);
 CREATE INDEX "0x3d8ee08d232943ea" ON consensus.sections USING btree (id);
-CREATE INDEX "0x3fa25df2b17c6d2f" ON consensus.extrinsics USING gist (signature, _block_range);
 CREATE INDEX "0x4131da2c2ec8b5b7" ON consensus.transfers USING gist (date, _block_range);
 CREATE INDEX "0x43615b2452f72359" ON consensus.account_profiles USING btree (id);
 CREATE INDEX "0x444de3b3611c1fcd" ON consensus.account_histories USING gist (created_at, _block_range);
 CREATE INDEX "0x4a66afa700f00759" ON consensus.events USING gist (block_hash, _block_range);
+CREATE INDEX "0x4b2e240a52e09d22" ON consensus.extrinsics USING gist (cid, _block_range);
 CREATE INDEX "0x4c738865df5c227d" ON consensus.account_profiles USING gist (created_at, _block_range);
 CREATE INDEX "0x4cb388e53e3e30f3" ON consensus.accounts USING btree (id);
 CREATE INDEX "0x53fb0cf455c914c8" ON consensus.account_profiles USING gist (updated_at, _block_range);
@@ -1106,6 +1108,7 @@ CREATE INDEX "0x57fc196dcc99a091" ON consensus.events USING gist (block_height, 
 CREATE INDEX "0x5921649101eeb57a" ON consensus.transfers USING gist (created_at, _block_range);
 CREATE INDEX "0x59386a58438fa05a" ON consensus.extrinsics USING gist (section, _block_range);
 CREATE INDEX "0x59f75d2bc1e6a0bc" ON consensus.blocks USING gist ("timestamp", _block_range);
+CREATE INDEX "0x5b5ab04a8ff6f214" ON consensus.events USING gist (cid, _block_range);
 CREATE INDEX "0x5c04eee35ba10ef1" ON consensus.extrinsic_modules USING gist (method, _block_range);
 CREATE INDEX "0x6008270492da5713" ON consensus.events USING gist ("timestamp", _block_range);
 CREATE INDEX "0x6131d72d57f2a188" ON consensus.blocks USING gist (hash, _block_range);
@@ -1152,7 +1155,6 @@ CREATE INDEX "0x57c58da22539b57d" ON dictionary.extrinsics USING btree (block_he
 CREATE INDEX "0x5b57ecd94445ad2e" ON dictionary.extrinsics USING btree (call);
 CREATE INDEX "0x62b8f3181611d490" ON dictionary.events USING btree (module);
 CREATE INDEX "0xc0c9768d1987b60f" ON dictionary.events USING btree (block_height);
-
 
 CREATE INDEX "0x0237b4bb45c8cd3d" ON leaderboard.farmer_vote_and_block_total_values USING btree (created_at);
 CREATE INDEX "0x02f8da0e922b0056" ON leaderboard.account_transfer_sender_total_count_histories USING gist (created_at, _block_range);

@@ -1,4 +1,4 @@
-import { Tooltip } from '@/components/common/Tooltip'
+import { Tooltip } from 'components/common/Tooltip'
 import { FC, ReactElement, useMemo } from 'react'
 
 type Props = {

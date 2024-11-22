@@ -1,3 +1,4 @@
+import { shortString } from '@autonomys/auto-utils'
 import { Accordion } from 'components/common/Accordion'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
@@ -6,7 +7,6 @@ import { AccountByIdQuery } from 'gql/graphql'
 import useChains from 'hooks/useChains'
 import { FC } from 'react'
 import { accountIdToHex } from 'utils//formatAddress'
-import { shortString } from 'utils/string'
 import { AccountIcon } from '../../common/AccountIcon'
 
 type Props = {

@@ -42,6 +42,11 @@ export const consensusUniqueRowsMapping =
       result.blockNumber = blockNumber;
 
       try {
+        // Set temp_buffers for this session
+        await client.query("SET temp_buffers = '2GB'");
+        // Set work_mem for this session
+        await client.query("SET work_mem = '256MB'");
+
         await client.query("BEGIN");
 
         // Execute queries

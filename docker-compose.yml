@@ -123,6 +123,16 @@ services:
       HASURA_GRAPHQL_CONNECTIONS_PER_STRIPE: 50 # Connections per stripe
       HASURA_GRAPHQL_IDLE_TIMEOUT: 180 # Idle connection timeout in seconds
       HASURA_GRAPHQL_TIMEOUT: 60 # Request timeout in seconds
+      HASURA_GRAPHQL_ENABLE_QUERY_CACHE: true # Enable query caching
+      HASURA_GRAPHQL_PG_CONNECTIONS: 180 # Number of connections per PG connection pool
+      HASURA_GRAPHQL_PG_TIMEOUT: 180 # Query timeout in seconds
+
+      # Subscriptions
+      HASURA_GRAPHQL_ENABLE_SUBSCRIPTIONS: true # Enable subscriptions
+      HASURA_GRAPHQL_ENABLE_WEBSOCKETS: true # Enable WebSockets
+      HASURA_GRAPHQL_SUBSCRIPTIONS_PER_STRIPE: 10 # Subscriptions per stripe
+      HASURA_GRAPHQL_SUBSCRIPTIONS_TIMEOUT: 180 # Subscription timeout in seconds
+      HASURA_GRAPHQL_WS_READ_COOKIE: true # Read cookies over WebSockets
 
       # Logging Settings
       HASURA_GRAPHQL_LOG_LEVEL: "warn" # Log verbosity level
@@ -296,6 +306,41 @@ services:
       - --port 3003
     healthcheck:
       test: ["CMD", "curl", "-f", "http://staking_subquery_node:3003/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  files_subquery_node:
+    profiles: [indexers]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3004:3004"
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    volumes:
+      - ./indexers/${NETWORK_ID}/files:/${NETWORK_ID}/files
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/${NETWORK_ID}/files
+      - --db-schema=files
+      - --workers=1
+      - --unsafe
+      - --batch-size=15
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --port 3004
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://files_subquery_node:3004/ready"]
       interval: 3s
       timeout: 5s
       retries: 10

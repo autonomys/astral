@@ -1,0 +1,28 @@
+table:
+  name: chunks
+  schema: files
+object_relationships:
+  - name: cid
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: cids
+          schema: files
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - link_depth
+        - size
+        - data
+        - id
+        - name
+        - type
+        - upload_options
+        - _id
+      filter: {}
+    comment: ""

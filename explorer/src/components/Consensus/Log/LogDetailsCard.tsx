@@ -1,9 +1,9 @@
+import { shortString } from '@autonomys/auto-utils'
 import { Arguments } from 'components/common/Arguments'
 import { List, StyledListItem } from 'components/common/List'
 import { LogByIdQuery } from 'gql/graphql'
 import { FC, useMemo } from 'react'
 import { parseArgs, parseLogValue } from 'utils/indexerParsing'
-import { shortString } from 'utils/string'
 
 type Props = {
   log: NonNullable<LogByIdQuery['consensus_logs'][number]>

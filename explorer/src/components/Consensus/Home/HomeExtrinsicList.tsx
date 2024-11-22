@@ -1,5 +1,6 @@
 'use client'
 
+import { shortString } from '@autonomys/auto-utils'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
@@ -9,7 +10,6 @@ import useChains from 'hooks/useChains'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
-import { shortString } from 'utils/string'
 import { utcToLocalRelativeTime } from 'utils/time'
 
 interface HomeExtrinsicListProps {

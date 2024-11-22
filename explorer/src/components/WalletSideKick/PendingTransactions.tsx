@@ -1,5 +1,6 @@
 'use client'
 
+import { shortString } from '@autonomys/auto-utils'
 import { TrashIcon } from '@heroicons/react/24/outline'
 import { Accordion } from 'components/common/Accordion'
 import { List, StyledListItem } from 'components/common/List'
@@ -19,7 +20,6 @@ import { FC, useCallback, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useTransactionsStates } from 'states/transactions'
 import { Transaction } from 'types/transaction'
-import { shortString } from 'utils/string'
 import { QUERY_PENDING_TX } from './query'
 
 interface PendingTransactionsProps {
