@@ -1,0 +1,30 @@
+table:
+  name: cids
+  schema: files
+object_relationships:
+  - name: chunk
+    using:
+      manual_configuration:
+        column_mapping:
+          id: id
+        insertion_order: null
+        remote_table:
+          name: chunks
+          schema: files
+select_permissions:
+  - role: user
+    permission:
+      columns:
+        - _block_range
+        - index_in_block
+        - links
+        - block_height
+        - block_hash
+        - extrinsic_hash
+        - extrinsic_id
+        - id
+        - timestamp
+        - _id
+      filter: {}
+      allow_aggregations: true
+    comment: ""

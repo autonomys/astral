@@ -300,6 +300,41 @@ services:
       timeout: 5s
       retries: 10
 
+  files_subquery_node:
+    profiles: [indexers]
+    image: subquerynetwork/subql-node-substrate:latest
+    ports:
+      - "3004:3004"
+    depends_on:
+      "postgres":
+        condition: service_healthy
+    restart: unless-stopped
+    environment:
+      ENDPOINT: ${RPC_URLS}
+      CHAIN_ID: ${CHAIN_ID}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+    volumes:
+      - ./indexers/${NETWORK_ID}/files:/${NETWORK_ID}/files
+    command:
+      - ${SUB_COMMAND:-} # set SUB_COMMAND env variable to "test" to run tests
+      - -f=/${NETWORK_ID}/files
+      - --db-schema=files
+      - --workers=1
+      - --unsafe
+      - --batch-size=15
+      - --unfinalized-blocks=true
+      - --disable-historical=false
+      - --port 3004
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://files_subquery_node:3004/ready"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
   # Redis
   redis:
     profiles: [task]
