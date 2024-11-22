@@ -123,6 +123,9 @@ services:
       HASURA_GRAPHQL_CONNECTIONS_PER_STRIPE: 50 # Connections per stripe
       HASURA_GRAPHQL_IDLE_TIMEOUT: 180 # Idle connection timeout in seconds
       HASURA_GRAPHQL_TIMEOUT: 60 # Request timeout in seconds
+      HASURA_GRAPHQL_ENABLE_QUERY_CACHE: true # Enable query caching
+      HASURA_GRAPHQL_PG_CONNECTIONS: 180 # Number of connections per PG connection pool
+      HASURA_GRAPHQL_PG_TIMEOUT: 180 # Query timeout in seconds
 
       # Logging Settings
       HASURA_GRAPHQL_LOG_LEVEL: "warn" # Log verbosity level
