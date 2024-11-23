@@ -10,7 +10,6 @@ import { NextRequest } from 'next/server'
 import { AccountIdPageProps, ChainPageProps } from 'types/app'
 import { getTokenSymbol } from 'utils/network'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
-import { utcToLocalRelativeTime } from 'utils/time'
 
 // export const runtime = 'edge'
 export async function GET(
@@ -25,7 +24,7 @@ export async function GET(
   if (!accountId || !chainMatch) notFound()
 
   const {
-    data: { consensus_accounts: accountById },
+    data: { consensus_account_histories: accountById },
   }: {
     data: AccountByIdQuery
   } = await fetch(chainMatch.indexer, {
@@ -70,7 +69,7 @@ function Screen({
 }: {
   chainMatch: (typeof indexers)[number]
   accountId: string
-  accountById: AccountByIdQuery['consensus_accounts'][number]
+  accountById: AccountByIdQuery['consensus_account_histories'][number]
   tokenSymbol: string
 }) {
   const account = {
@@ -79,7 +78,6 @@ function Screen({
     reserved: accountById?.reserved ?? '0',
     nonce: accountById?.nonce ?? '0',
   }
-  const lastExtrinsic = accountById?.extrinsics[0]
   const title = `${metadata.title} - ${chainMatch.title} - Account`
 
   return (
@@ -169,35 +167,6 @@ function Screen({
             >
               Total nonces used {numberWithCommas(account.nonce)}
             </span>
-            {lastExtrinsic ? (
-              <div tw='absolute flex flex-col'>
-                <span
-                  style={{
-                    fontFamily: 'Montserrat',
-                  }}
-                  tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
-                >
-                  Last extrinsic {lastExtrinsic.name.split('.')[1].toUpperCase()}
-                </span>
-                <span
-                  style={{
-                    fontFamily: 'Montserrat',
-                  }}
-                  tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
-                >
-                  {utcToLocalRelativeTime(lastExtrinsic.timestamp)}
-                </span>
-              </div>
-            ) : (
-              <span
-                style={{
-                  fontFamily: 'Montserrat',
-                }}
-                tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
-              >
-                This account has no extrinsics
-              </span>
-            )}
           </div>
         </div>
       </div>

@@ -36,6 +36,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       limit: 1
       order_by: { _block_range: desc }
     ) {
+      id
       free
       reserved
       total
@@ -46,6 +47,7 @@ export const QUERY_ACCOUNT_BY_ID = gql`
       order_by: { block_height: desc }
       where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
     ) {
+      id
       blockHeight: block_height
       rewardType: reward_type
       amount

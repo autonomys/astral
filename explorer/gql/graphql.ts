@@ -16004,7 +16004,7 @@ export type AccountByIdQueryVariables = Exact<{
 }>;
 
 
-export type AccountByIdQuery = { __typename?: 'query_root', consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', free: any, reserved: any, total?: any | null, nonce: any }>, consensus_rewards: Array<{ __typename?: 'consensus_rewards', index_in_block: any, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
+export type AccountByIdQuery = { __typename?: 'query_root', consensus_account_histories: Array<{ __typename?: 'consensus_account_histories', id: string, free: any, reserved: any, total?: any | null, nonce: any }>, consensus_rewards: Array<{ __typename?: 'consensus_rewards', id: string, amount: any, timestamp: any, blockHeight: any, rewardType: string }> };
 
 export type LatestRewardsWeekQueryVariables = Exact<{
   accountId: Scalars['String']['input'];
