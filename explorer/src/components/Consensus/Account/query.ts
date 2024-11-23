@@ -31,35 +31,22 @@ export const QUERY_ACCOUNTS = gql`
 
 export const QUERY_ACCOUNT_BY_ID = gql`
   query AccountById($accountId: String!) {
-    consensus_accounts(where: { id: { _eq: $accountId } }) {
-      id
+    consensus_account_histories(
+      where: { id: { _eq: $accountId } }
+      limit: 1
+      order_by: { _block_range: desc }
+    ) {
       free
       reserved
       total
       nonce
-      updated_at
-      extrinsics(limit: 10, order_by: { block_height: desc }) {
-        hash
-        id
-        index_in_block
-        name
-        success
-        timestamp
-        tip
-        block {
-          id
-          height
-        }
-      }
     }
     consensus_rewards(
       limit: 10
       order_by: { block_height: desc }
       where: { account_id: { _eq: $accountId }, amount: { _gt: 0 } }
     ) {
-      id
       blockHeight: block_height
-      index_in_block
       rewardType: reward_type
       amount
       timestamp
