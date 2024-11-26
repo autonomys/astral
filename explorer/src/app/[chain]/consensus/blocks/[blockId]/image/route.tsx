@@ -1,55 +1,48 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
-import { DocIcon, WalletIcon } from 'components/icons'
+import { utcToLocalRelativeTime } from '@/utils/time'
+import { shortString } from '@autonomys/auto-utils'
+import { QUERY_BLOCK_BY_ID } from 'components/Consensus/Block/query'
+import { BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
-import { AccountByIdQuery } from 'gql/graphql'
+import { BlockByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
-import { AccountIdPageProps, ChainPageProps } from 'types/app'
-import { getTokenSymbol } from 'utils/network'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { BlockIdPageProps, ChainPageProps } from 'types/app'
+import { numberWithCommas } from 'utils/number'
 
 // export const runtime = 'edge'
 export async function GET(
   req: NextRequest,
-  { params: { chain, accountId } }: ChainPageProps & AccountIdPageProps,
+  { params: { chain, blockId } }: ChainPageProps & BlockIdPageProps,
 ) {
   if (!chain) notFound()
 
   const chainMatch = indexers.find((c) => c.network === chain)
-  const tokenSymbol = getTokenSymbol(chain)
 
-  if (!accountId || !chainMatch) notFound()
+  if (!blockId || !chainMatch) notFound()
 
   const {
-    data: { consensus_account_histories: accountById },
+    data: { consensus_blocks: blockById },
   }: {
-    data: AccountByIdQuery
+    data: BlockByIdQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_ACCOUNT_BY_ID['loc']?.source.body,
-      variables: { accountId },
+      query: QUERY_BLOCK_BY_ID['loc']?.source.body,
+      variables: { blockId, blockHash: blockId },
     }),
   }).then((res) => res.json())
 
-  if (!accountById) notFound()
+  if (!blockById) notFound()
 
   try {
     return new ImageResponse(
-      (
-        <Screen
-          chainMatch={chainMatch}
-          accountId={accountId}
-          accountById={accountById[0]}
-          tokenSymbol={tokenSymbol}
-        />
-      ),
+      <Screen chainMatch={chainMatch} blockId={blockId} blockById={blockById[0]} />,
       {
         width: 1200,
         height: 630,
@@ -63,22 +56,22 @@ export async function GET(
 
 function Screen({
   chainMatch,
-  accountId,
-  accountById,
-  tokenSymbol,
+  blockId,
+  blockById,
 }: {
   chainMatch: (typeof indexers)[number]
-  accountId: string
-  accountById: AccountByIdQuery['consensus_account_histories'][number]
-  tokenSymbol: string
+  blockId: string
+  blockById: BlockByIdQuery['consensus_blocks'][number]
 }) {
-  const account = {
-    total: accountById?.total ?? '0',
-    free: accountById?.free ?? '0',
-    reserved: accountById?.reserved ?? '0',
-    nonce: accountById?.nonce ?? '0',
+  const block = {
+    height: blockById?.height ?? '0',
+    hash: blockById?.hash ?? '0',
+    timestamp: blockById?.state_root ?? '0',
+    extrinsicsCount: blockById?.extrinsics_count ?? '0',
+    eventsCount: blockById?.events_count ?? '0',
+    blockAuthor: blockById?.author_id ?? '',
   }
-  const title = `${metadata.title} - ${chainMatch.title} - Account`
+  const title = `${metadata.title} - ${chainMatch.title} - Block`
 
   return (
     <div
@@ -113,7 +106,7 @@ function Screen({
           }}
           tw='absolute text-2xl text-white p-4 mt-18 font-bold'
         >
-          {accountId}
+          {blockId}
         </h3>
       </div>
       <div tw='absolute flex flex-col w-full'>
@@ -124,14 +117,14 @@ function Screen({
           }}
         >
           <div tw='absolute flex flex-col w-100 m-6'>
-            <WalletIcon />
+            <BlockIcon />
             <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total {numberWithCommas(bigNumberToNumber(account.total))} ({tokenSymbol})
+              Height {numberWithCommas(block.height)}
             </span>
             <span
               style={{
@@ -139,7 +132,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} ({tokenSymbol})
+              Hash {shortString(block.hash)}
             </span>
             <span
               style={{
@@ -147,7 +140,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Free {numberWithCommas(bigNumberToNumber(account.free))} ({tokenSymbol})
+              Timestamp {utcToLocalRelativeTime(block.timestamp)}
             </span>
           </div>
         </div>
@@ -165,7 +158,15 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total nonces used {numberWithCommas(account.nonce)}
+              Extrinsics {numberWithCommas(block.extrinsicsCount)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
+            >
+              Events {numberWithCommas(block.eventsCount)}
             </span>
           </div>
         </div>
