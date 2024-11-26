@@ -29,10 +29,10 @@ const consensusSectionsQuery = `
       int8range($1::int8, $2::int8) as _block_range
     FROM (
       SELECT section FROM consensus.extrinsics 
-      WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
+      WHERE _block_range && int8range($1::int8, $2::int8)
       UNION
       SELECT section FROM consensus.events 
-      WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
+      WHERE _block_range && int8range($1::int8, $2::int8)
     ) combined_sections
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
@@ -47,7 +47,7 @@ const consensusExtrinsicModulesQuery = `
       module as method,
       int8range($1::int8, $2::int8) as _block_range
     FROM consensus.extrinsics 
-    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
+    WHERE _block_range && int8range($1::int8, $2::int8)
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
 
@@ -61,7 +61,7 @@ const consensusEventModulesQuery = `
       module as method,
       int8range($1::int8, $2::int8) as _block_range
     FROM consensus.events 
-    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
+    WHERE _block_range && int8range($1::int8, $2::int8)
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
 
@@ -72,7 +72,7 @@ const consensusLogKindsQuery = `
       gen_random_uuid() as _id,
       int8range($1::int8, $2::int8) as _block_range
     FROM consensus.logs 
-    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
+    WHERE _block_range && int8range($1::int8, $2::int8)
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
 
@@ -90,7 +90,7 @@ const consensusAccountsQuery = `
       updated_at,
       int8range($1::int8, $2::int8) as _block_range
     FROM consensus.account_histories
-    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
+    WHERE _block_range && int8range($1::int8, $2::int8)
     ON CONFLICT (id) 
     DO UPDATE SET
       nonce = EXCLUDED.nonce,
