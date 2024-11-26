@@ -92,7 +92,9 @@ export const AccountRewardList: FC = () => {
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const account = useMemo(
-    () => rewards && (rewards[0].account as AccountByIdQuery['consensus_accounts'][number]),
+    () =>
+      rewards &&
+      (rewards[0].account as unknown as AccountByIdQuery['consensus_account_histories'][number]),
     [rewards],
   )
   const convertedAddress = useMemo(() => (account ? formatAddress(account.id) : ''), [account])
