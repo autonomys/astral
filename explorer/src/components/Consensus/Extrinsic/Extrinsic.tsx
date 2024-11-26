@@ -4,8 +4,8 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables } from 'gql/graphql'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -23,7 +23,7 @@ export const Extrinsic: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
   const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
 
-  const { loading, setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByIdQuery,
     ExtrinsicsByIdQueryVariables
   >(

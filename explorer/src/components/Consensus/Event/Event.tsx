@@ -4,7 +4,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { EventByIdQuery, EventByIdQueryVariables } from 'gql/graphql'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -18,7 +18,7 @@ export const Event: FC = () => {
   const { ref, inView } = useInView()
   const { eventId } = useParams<EventIdParam>()
   const inFocus = useWindowFocus()
-  const { loading, setIsVisible } = useSquidQuery<EventByIdQuery, EventByIdQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<EventByIdQuery, EventByIdQueryVariables>(
     QUERY_EVENT_BY_ID,
     {
       variables: { eventId: eventId ?? '' },

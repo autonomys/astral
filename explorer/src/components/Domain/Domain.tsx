@@ -4,7 +4,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { DomainByIdQuery, DomainByIdQueryVariables } from 'gql/graphql'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -22,7 +22,7 @@ export const Domain: FC = () => {
 
   // eslint
   const variables = useMemo(() => ({ domainId: domainId ?? '' }), [domainId])
-  const { setIsVisible } = useSquidQuery<DomainByIdQuery, DomainByIdQueryVariables>(
+  const { setIsVisible } = useIndexersQuery<DomainByIdQuery, DomainByIdQueryVariables>(
     QUERY_DOMAIN_BY_ID,
     {
       variables,

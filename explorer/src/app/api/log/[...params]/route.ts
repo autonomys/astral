@@ -16,14 +16,14 @@ export const POST = async (req: NextRequest) => {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `Path: ${req.nextUrl.pathname}`,
+          text: `Path: ${req.nextUrl.pathname.replace('/api/log/', '')}`,
         },
       },
       {
         type: 'section',
         text: {
           type: 'mrkdwn',
-          text: `\`\`\`${JSON.stringify(logData, null, 2).slice(0, 25000)}\`\`\``,
+          text: `\`\`\`${JSON.stringify(logData, null, 2).slice(0, 5000)}\`\`\``,
         },
       },
     ])

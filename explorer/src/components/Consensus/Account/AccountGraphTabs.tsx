@@ -1,5 +1,5 @@
 import { TabTitle } from 'components/common/Tabs'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import React, { FC, ReactElement, useState } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 
@@ -11,7 +11,7 @@ type Props = {
 
 export const AccountGraphTabs: FC<Props> = ({ children, total, isDesktop = false }) => {
   const [selectedTab, setSelectedTab] = useState(0)
-  const { tokenSymbol } = useChains()
+  const { tokenSymbol } = useIndexers()
 
   const tabStyle = isDesktop
     ? 'bg-white border border-slate-100 shadow rounded-[20px] p-4 dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo dark:border-none'

@@ -3,7 +3,7 @@
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { useTheme } from 'providers/ThemeProvider'
@@ -15,7 +15,7 @@ export const EmptyHeader = () => {
   const { isDark, toggleTheme } = useTheme()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { network } = useChains()
+  const { network } = useIndexers()
 
   return (
     <header className="body-font z-9 py-[30px] font-['Montserrat'] text-gray-600">

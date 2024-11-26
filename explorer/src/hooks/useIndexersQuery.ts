@@ -14,7 +14,7 @@ interface UseCustomQueryOptions<TData, TVariables extends OperationVariables>
   pollInterval?: number
 }
 
-export const useSquidQuery = <TData, TVariables extends OperationVariables>(
+export const useIndexersQuery = <TData, TVariables extends OperationVariables>(
   query: DocumentNode,
   options: UseCustomQueryOptions<TData, TVariables>,
   section?: ExplorerSection,

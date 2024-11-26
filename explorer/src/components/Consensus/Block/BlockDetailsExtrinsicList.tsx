@@ -8,8 +8,8 @@ import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -30,7 +30,7 @@ type Row = ExtrinsicsByBlockIdQuery['consensus_extrinsics'][number]
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -39,7 +39,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const inFocus = useWindowFocus()
 
   const limit = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
   >(QUERY_BLOCK_EXTRINSICS, {

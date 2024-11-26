@@ -3,8 +3,8 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import utc from 'dayjs/plugin/utc'
 import { LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, useEffect, useMemo } from 'react'
@@ -24,17 +24,17 @@ type Props = {
 export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const { ref, inView } = useInView()
   const { isDark } = useTheme()
-  const { tokenSymbol } = useChains()
+  const { tokenSymbol } = useIndexers()
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
   const inFocus = useWindowFocus()
 
-  const { setIsVisible } = useSquidQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(
-    QUERY_LAST_WEEK_REWARDS,
-    {
-      variables: { accountId: accountId, timestampComparison: { _gte: lastWeek } },
-      skip: !inFocus,
-    },
-  )
+  const { setIsVisible } = useIndexersQuery<
+    LatestRewardsWeekQuery,
+    LatestRewardsWeekQueryVariables
+  >(QUERY_LAST_WEEK_REWARDS, {
+    variables: { accountId: accountId, timestampComparison: { _gte: lastWeek } },
+    skip: !inFocus,
+  })
 
   const {
     consensus: { accountRewardGraph: consensusEntry },

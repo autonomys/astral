@@ -5,7 +5,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { ExtrinsicsByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 import type { Cell } from 'types/table'
@@ -18,7 +18,7 @@ type Props = {
 type Row = NonNullable<ExtrinsicsByIdQuery['consensus_extrinsics'][number]>['events'][number]
 
 export const ExtrinsicDetailsEventList: FC<Props> = ({ events }) => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

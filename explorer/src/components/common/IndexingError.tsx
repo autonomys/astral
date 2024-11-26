@@ -1,7 +1,7 @@
 import { NetworkId } from '@autonomys/auto-utils'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { EXTERNAL_ROUTES } from 'constants/routes'
-import useChain from 'hooks/useChains'
+import useChain from 'hooks/useIndexers'
 import { FC, useCallback, useState } from 'react'
 
 export const IndexingError: FC = () => {
