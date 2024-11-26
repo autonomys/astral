@@ -10,7 +10,7 @@ import { accountIdToHex } from 'utils//formatAddress'
 import { AccountIcon } from '../../common/AccountIcon'
 
 type Props = {
-  account: AccountByIdQuery['consensus_accounts'][number] | undefined
+  account: AccountByIdQuery['consensus_account_histories'][number] | undefined
   accountAddress: string
   isDesktop?: boolean
 }
