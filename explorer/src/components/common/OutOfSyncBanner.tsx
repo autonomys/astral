@@ -50,7 +50,7 @@ export const useOutOfSyncBanner = () => {
   const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
-    pollInterval: 6000,
+    pollInterval: 30000,
   })
 
   const getChainLastBlock = useCallback(async () => {
