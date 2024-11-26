@@ -1,0 +1,189 @@
+/* eslint-disable react/no-unknown-property */
+import { utcToLocalRelativeTime } from '@/utils/time'
+import { shortString } from '@autonomys/auto-utils'
+import { QUERY_EXTRINSIC_BY_ID } from 'components/Consensus/Extrinsic/query'
+import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
+import { indexers } from 'constants/indexers'
+import { metadata, url } from 'constants/metadata'
+import { ExtrinsicsByIdQuery } from 'gql/graphql'
+import { notFound } from 'next/navigation'
+import { ImageResponse } from 'next/og'
+import { NextRequest } from 'next/server'
+import { ChainPageProps, ExtrinsicIdPageProps } from 'types/app'
+import { numberWithCommas } from 'utils/number'
+
+// export const runtime = 'edge'
+export async function GET(
+  req: NextRequest,
+  { params: { chain, extrinsicId } }: ChainPageProps & ExtrinsicIdPageProps,
+) {
+  if (!chain) notFound()
+
+  const chainMatch = indexers.find((c) => c.network === chain)
+
+  if (!extrinsicId || !chainMatch) notFound()
+
+  const {
+    data: { consensus_extrinsics: extrinsicById },
+  }: {
+    data: ExtrinsicsByIdQuery
+  } = await fetch(chainMatch.indexer, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: QUERY_EXTRINSIC_BY_ID['loc']?.source.body,
+      variables: { extrinsicId },
+    }),
+  }).then((res) => res.json())
+
+  if (!extrinsicById) notFound()
+
+  try {
+    return new ImageResponse(
+      <Screen chainMatch={chainMatch} extrinsicId={extrinsicId} extrinsicById={extrinsicById[0]} />,
+      {
+        width: 1200,
+        height: 630,
+      },
+    )
+  } catch (e) {
+    console.error('Error in image route', e)
+    notFound()
+  }
+}
+
+function Screen({
+  chainMatch,
+  extrinsicId,
+  extrinsicById,
+}: {
+  chainMatch: (typeof indexers)[number]
+  extrinsicId: string
+  extrinsicById: ExtrinsicsByIdQuery['consensus_extrinsics'][number]
+}) {
+  const extrinsic = {
+    success: extrinsicById?.success ?? false,
+    hash: extrinsicById?.hash ?? '0',
+    timestamp: extrinsicById?.timestamp ?? '0',
+    blockHeight: extrinsicById?.block_height ?? '0',
+    action: extrinsicById?.name ?? '',
+    eventsCount: extrinsicById?.events.length ?? '0',
+    signer: extrinsicById?.signer ?? '',
+  }
+  const title = `${metadata.title} - ${chainMatch.title} - Extrinsic`
+
+  return (
+    <div
+      tw='relative w-full h-full flex flex-col items-center justify-between'
+      style={{
+        background: 'linear-gradient(180deg, #0B050F 0%, #4D2F92 50%, #BC8EDA 100%)',
+      }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={url + '/images/backgroundColor.svg'}
+        tw='w-[1200px] h-[630px]'
+        alt={'Background Color'}
+      />
+      <div
+        tw='absolute flex flex-row border-none rounded-[20px] p-4 w-240 h-40'
+        style={{
+          background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: 'Montserrat',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+          tw='absolute text-4xl text-white p-4 font-bold'
+        >
+          <AutonomysSymbol fill='white' />
+          {title}
+        </h2>
+        <h3
+          style={{
+            fontFamily: 'Montserrat',
+          }}
+          tw='absolute text-2xl text-white p-4 mt-18 font-bold'
+        >
+          {extrinsicId}
+        </h3>
+      </div>
+      <div tw='absolute flex flex-col w-full'>
+        <div
+          tw='absolute flex flex-row border-none rounded-[20px] ml-30 mt-70 mb-4 p-6 w-100 h-40'
+          style={{
+            background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
+          }}
+        >
+          <div tw='absolute flex flex-col w-100 m-6'>
+            <BlockIcon />
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 font-bold'
+            >
+              Height {numberWithCommas(extrinsic.blockHeight)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
+            >
+              Hash {shortString(extrinsic.hash)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
+            >
+              Timestamp {utcToLocalRelativeTime(extrinsic.timestamp)}
+            </span>
+          </div>
+        </div>
+        <div
+          tw='absolute flex flex-row border-none rounded-[20px] ml-140 mt-70 mb-4 p-6 w-130 h-40'
+          style={{
+            background: 'linear-gradient(180deg, #4141B3 0%, #6B5ACF 50%, #896BD2 100%)',
+          }}
+        >
+          <div tw='absolute flex flex-col w-130 m-6'>
+            <DocIcon />
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 font-bold'
+            >
+              Events {numberWithCommas(extrinsic.eventsCount)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
+            >
+              Signer {shortString(extrinsic.signer)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
+            >
+              Action {extrinsic.action}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
