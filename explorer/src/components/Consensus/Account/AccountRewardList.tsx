@@ -75,24 +75,24 @@ export const AccountRewardList: FC = () => {
 
   const consensusEntry = useQueryStates((state) => state.consensus.accountReward)
 
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
-
-  const rewards = useMemo(() => data && data.consensus_rewards, [data])
+  const rewards = useMemo(
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_rewards,
+    [consensusEntry],
+  )
   const totalCount = useMemo(
     () =>
-      data && data.consensus_rewards_aggregate.aggregate
-        ? data.consensus_rewards_aggregate.aggregate.count
+      hasValue(consensusEntry) && consensusEntry.value.consensus_rewards_aggregate.aggregate
+        ? consensusEntry.value.consensus_rewards_aggregate.aggregate.count
         : 0,
-    [data],
+    [consensusEntry],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
 
   const account = useMemo(
     () =>
-      rewards &&
-      (rewards[0].account as unknown as AccountByIdQuery['consensus_account_histories'][number]),
+      rewards
+        ? (rewards[0].account as unknown as AccountByIdQuery['consensus_account_histories'][number])
+        : undefined,
     [rewards],
   )
   const convertedAddress = useMemo(() => (account ? formatAddress(account.id) : ''), [account])
@@ -174,12 +174,8 @@ export const AccountRewardList: FC = () => {
 
   const apolloClient = useApolloClient()
   const fullDataDownloader = useCallback(
-    () =>
-      downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'rewardEventsConnection', {
-        sortBy,
-        accountId: accountId ?? '',
-      }),
-    [accountId, apolloClient, sortBy],
+    () => downloadFullData(apolloClient, QUERY_REWARDS_LIST, 'consensus_rewards', variables),
+    [apolloClient, variables],
   )
 
   useEffect(() => {
@@ -187,10 +183,10 @@ export const AccountRewardList: FC = () => {
   }, [accountId])
 
   const noData = useMemo(() => {
-    if (loading && isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [data, loading, consensusEntry])
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)

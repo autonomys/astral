@@ -85,11 +85,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     'accountExtrinsic',
   )
 
-  const accountExtrinsic = useQueryStates((state) => state.consensus.accountExtrinsic)
+  const consensusEntry = useQueryStates((state) => state.consensus.accountExtrinsic)
 
-  const data = useMemo(() => {
-    if (hasValue(accountExtrinsic)) return accountExtrinsic.value
-  }, [accountExtrinsic])
+  const extrinsics = useMemo(
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics,
+    [consensusEntry],
+  )
 
   const fullDataDownloader = useCallback(
     () =>
@@ -97,13 +98,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     [apolloClient, variables],
   )
 
-  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const totalCount = useMemo(
     () =>
-      data && data.consensus_extrinsics_aggregate.aggregate
-        ? data.consensus_extrinsics_aggregate.aggregate.count
+      hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics_aggregate.aggregate
+        ? consensusEntry.value.consensus_extrinsics_aggregate.aggregate.count
         : 0,
-    [data],
+    [consensusEntry],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
@@ -176,10 +176,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(accountExtrinsic)) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [data, loading, accountExtrinsic])
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)

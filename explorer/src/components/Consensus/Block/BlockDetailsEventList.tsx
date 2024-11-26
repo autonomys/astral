@@ -73,10 +73,10 @@ export const BlockDetailsEventList: FC = () => {
     'blockDetailsEvent',
   )
 
-  const blockDetailsEvent = useQueryStates((state) => state.consensus.blockDetailsEvent)
+  const consensusEntry = useQueryStates((state) => state.consensus.blockDetailsEvent)
   const events = useMemo(
-    () => hasValue(blockDetailsEvent) && blockDetailsEvent.value.consensus_events,
-    [blockDetailsEvent],
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_events,
+    [consensusEntry],
   )
 
   const columns = useMemo(
@@ -129,17 +129,23 @@ export const BlockDetailsEventList: FC = () => {
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(() => (events ? events.length : 0), [events])
+  const totalCount = useMemo(
+    () =>
+      hasValue(consensusEntry) && consensusEntry.value.consensus_events_aggregate.aggregate
+        ? consensusEntry.value.consensus_events_aggregate.aggregate.count
+        : 0,
+    [consensusEntry],
+  )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(blockDetailsEvent)) return <Spinner isSmall />
-    if (!hasValue(blockDetailsEvent)) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [loading, blockDetailsEvent])
+  }, [loading, consensusEntry])
 
   useEffect(() => {
     setIsVisible(inView)

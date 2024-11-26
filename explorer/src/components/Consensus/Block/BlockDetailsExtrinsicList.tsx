@@ -80,10 +80,10 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     'blockDetailsExtrinsic',
   )
 
-  const blockDetailsExtrinsic = useQueryStates((state) => state.consensus.blockDetailsExtrinsic)
+  const consensusEntry = useQueryStates((state) => state.consensus.blockDetailsExtrinsic)
   const extrinsics = useMemo(
-    () => hasValue(blockDetailsExtrinsic) && blockDetailsExtrinsic.value.consensus_extrinsics,
-    [blockDetailsExtrinsic],
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics,
+    [consensusEntry],
   )
 
   const columns = useMemo(
@@ -150,17 +150,23 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     [apolloClient, variables],
   )
 
-  const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
+  const totalCount = useMemo(
+    () =>
+      hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics_aggregate.aggregate
+        ? consensusEntry.value.consensus_extrinsics_aggregate.aggregate.count
+        : 0,
+    [consensusEntry],
+  )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(blockDetailsExtrinsic)) return <Spinner isSmall />
-    if (!hasValue(blockDetailsExtrinsic)) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [blockDetailsExtrinsic, loading])
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
