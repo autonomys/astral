@@ -1,5 +1,6 @@
 'use client'
 
+import { useWindowFocus } from '@/hooks/useWindowFocus'
 import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { SortingState, createColumnHelper } from '@tanstack/react-table'
@@ -18,7 +19,7 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useViewStates } from 'states/view'
 import { bigNumberToFormattedString, numberWithCommas } from 'utils/number'
@@ -38,6 +39,7 @@ export const NominationsTable: FC = () => {
   const { network, tokenSymbol } = useIndexers()
   const [sorting] = useState<SortingState>([{ id: 'operator_id', desc: false }])
   const { myPositionOnly } = useViewStates()
+  const inFocus = useWindowFocus()
 
   const [action, setAction] = useState<OperatorAction>({
     type: OperatorActionType.None,
@@ -75,19 +77,15 @@ export const NominationsTable: FC = () => {
     [myPositionOnly, orderBy, subspaceAccount],
   )
 
-  const { loading, data, setIsVisible } = useIndexersQuery<
-    NominationsListQuery,
-    NominationsListQueryVariables
-  >(QUERY_NOMINATIONS_LIST, {
-    variables,
-    skip: !inView,
-    pollInterval: 6000,
-    context: { clientName: 'staking' },
-  })
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  const { loading, data } = useIndexersQuery<NominationsListQuery, NominationsListQueryVariables>(
+    QUERY_NOMINATIONS_LIST,
+    {
+      variables,
+      pollInterval: 6000,
+    },
+    inView,
+    inFocus,
+  )
 
   const nominatorsList = useMemo(() => data?.staking_nominators || [], [data])
   const totalCount = useMemo(

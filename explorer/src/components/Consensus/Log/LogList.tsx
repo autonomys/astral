@@ -7,15 +7,14 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { TableSettings } from 'components/common/TableSettings'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import { LogsQuery, LogsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import { Cell, LogsFilters, TableSettingsTabs } from 'types/table'
 import { countTablePages, getTableColumns } from 'utils/table'
@@ -97,24 +96,15 @@ export const LogList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<LogsQuery, LogsQueryVariables>(
+  const { data, loading } = useIndexersQuery<LogsQuery, LogsQueryVariables>(
     QUERY_LOGS,
     {
       variables,
-      skip: !inFocus,
       pollInterval: 6000,
     },
-    Routes.consensus,
-    TABLE,
+    inView,
+    inFocus,
   )
-
-  const {
-    consensus: { logs: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
 
   const logs = useMemo(() => data && data.consensus_logs, [data])
   const totalCount = useMemo(
@@ -173,10 +163,10 @@ export const LogList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, consensusEntry, loading])
+  }, [data, loading])
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | boolean) => {
@@ -198,10 +188,6 @@ export const LogList: FC = () => {
           ),
     [selectedColumns, setColumns],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>

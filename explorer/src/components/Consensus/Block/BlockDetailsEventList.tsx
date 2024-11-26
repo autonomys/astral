@@ -16,7 +16,7 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
@@ -58,13 +58,14 @@ export const BlockDetailsEventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { data, loading, setIsVisible } = useIndexersQuery<
-    EventsByBlockIdQuery,
-    EventsByBlockIdQueryVariables
-  >(QUERY_BLOCK_EVENTS, {
-    variables,
-    skip: !inFocus,
-  })
+  const { data, loading } = useIndexersQuery<EventsByBlockIdQuery, EventsByBlockIdQueryVariables>(
+    QUERY_BLOCK_EVENTS,
+    {
+      variables,
+    },
+    inView,
+    inFocus,
+  )
 
   const events = useMemo(() => data && data.consensus_events, [data])
 
@@ -139,10 +140,6 @@ export const BlockDetailsEventList: FC = () => {
     if (!data) return <NotFound />
     return null
   }, [data, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>

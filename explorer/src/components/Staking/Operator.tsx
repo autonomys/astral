@@ -2,7 +2,6 @@
 
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { Routes } from 'constants/routes'
 import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
@@ -11,7 +10,6 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorDetailsCard } from './OperatorDetailsCard'
 import { OperatorNominatorTable } from './OperatorNominatorTable'
 import { QUERY_OPERATOR_BY_ID } from './query'
@@ -25,35 +23,22 @@ export const Operator: FC = () => {
   const { loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
-  const { loading, setIsVisible } = useIndexersQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
+  const { data, loading } = useIndexersQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
     QUERY_OPERATOR_BY_ID,
     {
       variables,
-      skip: !inFocus,
-      context: { clientName: 'staking' },
     },
-    Routes.staking,
-    'operator',
+    inView,
+    inFocus,
   )
 
-  const {
-    staking: { operator },
-  } = useQueryStates()
-
-  const operatorDetails = useMemo(
-    () => hasValue(operator) && operator.value.staking_operators_by_pk,
-    [operator],
-  )
+  const operatorDetails = useMemo(() => data && data.staking_operators_by_pk, [data])
 
   const noData = useMemo(() => {
-    if (isLoading(operator) || loading) return <Spinner isSmall />
-    if (!hasValue(operator)) return <NotFound />
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
     return null
-  }, [loading, operator])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data, loading])
 
   useEffect(() => {
     if (operatorId) loadDataByOperatorId(operatorId)

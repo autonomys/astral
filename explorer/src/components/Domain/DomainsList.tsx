@@ -14,9 +14,8 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import type { Cell, DomainsFilters, TableSettingsTabs } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
@@ -366,21 +365,15 @@ export const DomainsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
+  const { data, loading } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
     QUERY_DOMAIN_LIST,
     {
       variables,
-      skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: 'staking' },
     },
-    Routes.domains,
-    TABLE,
+    inView,
+    inFocus,
   )
-
-  const {
-    domains: { domains },
-  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -390,14 +383,11 @@ export const DomainsList: FC = () => {
     [apolloClient, orderBy],
   )
 
-  const domainsList = useMemo(
-    () => (hasValue(domains) ? domains.value.staking_domains : []),
-    [domains],
-  )
+  const domainsList = useMemo(() => (data ? data.staking_domains : []), [data])
 
   const totalCount = useMemo(
-    () => (hasValue(domains) && domains.value.staking_domains_aggregate.aggregate?.count) || 0,
-    [domains],
+    () => (data && data.staking_domains_aggregate.aggregate?.count) || 0,
+    [data],
   )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
@@ -405,10 +395,10 @@ export const DomainsList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (isLoading(domains)) return <Spinner isSmall />
-    if (!hasValue(domains)) return <NotFound />
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
     return null
-  }, [domains])
+  }, [data, loading])
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | boolean) => {
@@ -430,10 +420,6 @@ export const DomainsList: FC = () => {
           ),
     [selectedColumns, setColumns],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>

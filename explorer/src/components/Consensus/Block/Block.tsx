@@ -2,15 +2,13 @@
 
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { Routes } from 'constants/routes'
 import { BlockByIdQuery, BlockByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { BlockIdParam } from 'types/app'
 import { BlockDetailsCard } from './BlockDetailsCard'
 import { BlockDetailsTabs } from './BlockDetailsTabs'
@@ -22,35 +20,22 @@ export const Block: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const inFocus = useWindowFocus()
 
-  const { loading, setIsVisible } = useIndexersQuery<BlockByIdQuery, BlockByIdQueryVariables>(
+  const { data, loading } = useIndexersQuery<BlockByIdQuery, BlockByIdQueryVariables>(
     QUERY_BLOCK_BY_ID,
     {
       variables: { blockId: blockId ?? '0', blockHash: blockId?.toString() ?? '' },
-      skip: !inFocus,
     },
-    Routes.consensus,
-    'block',
+    inView,
+    inFocus,
   )
-
-  const {
-    consensus: { block: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
 
   const block = useMemo(() => data && data.consensus_blocks[0], [data])
 
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [consensusEntry, data, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data, loading])
 
   return (
     <div className='w-full'>

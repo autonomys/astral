@@ -6,7 +6,7 @@ import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection } from 'constants/wallet'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useState } from 'react'
+import { FC, useCallback, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { usePreferencesStates } from 'states/preferences'
 import { limitNumberDecimals } from 'utils/number'
@@ -30,7 +30,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
 }) => {
   const { ref, inView } = useInView()
   const { network } = useIndexers()
-  const { topFarmers, topOperators, topNominators, setIsVisible } = useLeaderboard(subspaceAccount)
+  const { topFarmers, topOperators, topNominators } = useLeaderboard(subspaceAccount, inView)
   const { enableDevMode } = usePreferencesStates()
   const [preference, setPreference] = useState<AccountPreferenceSection>(
     AccountPreferenceSection.None,
@@ -43,10 +43,6 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
     setPreference(section)
     setPreferenceIsOpen(true)
   }, [])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='m-2 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>

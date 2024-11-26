@@ -40,23 +40,26 @@ const CountdownTimer: FC<{ initialTime: bigint }> = ({ initialTime }) => {
 }
 
 export const DomainProgress: FC = () => {
-  const { ref } = useInView()
+  const { ref, inView } = useInView()
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
   const { data, loading, error } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
-  >(QUERY_DOMAIN_STATUS, {
-    variables: {
-      limit: 10,
-      orderBy: [{ id: OrderBy.Asc }],
-      where: {},
+  >(
+    QUERY_DOMAIN_STATUS,
+    {
+      variables: {
+        limit: 10,
+        orderBy: [{ id: OrderBy.Asc }],
+        where: {},
+      },
+      pollInterval: 2000,
     },
-    skip: !inFocus,
-    pollInterval: 2000,
-    context: { clientName: 'staking' },
-  })
+    inView,
+    inFocus,
+  )
 
   const cards = useMemo<CardData[]>(() => {
     if (loading || error || !data) return []

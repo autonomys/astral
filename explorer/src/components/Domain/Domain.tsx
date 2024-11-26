@@ -2,14 +2,12 @@
 
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { Routes } from 'constants/routes'
 import type { DomainByIdQuery, DomainByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { OperatorsList } from '../Staking/OperatorsList'
 import { DomainDetailsCard } from './DomainDetailsCard'
 import { QUERY_DOMAIN_BY_ID } from './query'
@@ -22,35 +20,22 @@ export const Domain: FC = () => {
 
   // eslint
   const variables = useMemo(() => ({ domainId: domainId ?? '' }), [domainId])
-  const { setIsVisible } = useIndexersQuery<DomainByIdQuery, DomainByIdQueryVariables>(
+  const { data, loading } = useIndexersQuery<DomainByIdQuery, DomainByIdQueryVariables>(
     QUERY_DOMAIN_BY_ID,
     {
       variables,
-      skip: !inFocus,
-      context: { clientName: 'staking' },
     },
-    Routes.domains,
-    'domain',
+    inView,
+    inFocus,
   )
 
-  const {
-    domains: { domain },
-  } = useQueryStates()
-
-  const domainDetails = useMemo(
-    () => hasValue(domain) && domain.value.staking_domains_by_pk,
-    [domain],
-  )
+  const domainDetails = useMemo(() => data && data.staking_domains_by_pk, [data])
 
   const noData = useMemo(() => {
-    if (isLoading(domain)) return <Spinner isSmall />
-    if (!hasValue(domain)) return <NotFound />
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
     return null
-  }, [domain])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data, loading])
 
   return (
     <div className='flex w-full flex-col space-y-4' ref={ref}>

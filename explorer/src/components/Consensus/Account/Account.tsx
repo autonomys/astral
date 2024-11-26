@@ -5,7 +5,6 @@ import { PageTabs } from 'components/common/PageTabs'
 import { Spinner } from 'components/common/Spinner'
 import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
-import { Routes } from 'constants/routes'
 import { AccountByIdQuery, AccountByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
@@ -13,7 +12,6 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { AccountIdParam } from 'types/app'
 import { formatAddress } from 'utils/formatAddress'
 import { AccountDetailsCard } from './AccountDetailsCard'
@@ -31,23 +29,14 @@ export const Account: FC = () => {
   const accountId = formatAddress(rawAccountId)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
-  const { loading, setIsVisible } = useIndexersQuery<AccountByIdQuery, AccountByIdQueryVariables>(
+  const { data, loading } = useIndexersQuery<AccountByIdQuery, AccountByIdQueryVariables>(
     QUERY_ACCOUNT_BY_ID,
     {
       variables: { accountId: accountId ?? '' },
-      skip: !inFocus,
     },
-    Routes.consensus,
-    'account',
+    inView,
+    inFocus,
   )
-
-  const {
-    consensus: { account: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
 
   const account = useMemo(() => data && data.consensus_account_histories[0], [data])
   const rewards = useMemo(() => (data ? data.consensus_rewards : []), [data])
@@ -57,14 +46,10 @@ export const Account: FC = () => {
   }, [accountId])
 
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!hasValue(consensusEntry)) return <NotFound />
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
     return null
-  }, [loading, consensusEntry])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [loading, data])
 
   return (
     <div className='flex w-full flex-col space-y-4'>

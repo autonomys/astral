@@ -16,7 +16,7 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useTableStates } from 'states/tables'
 import { useViewStates } from 'states/view'
@@ -203,19 +203,18 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const {
-    loading,
-    data: listData,
-    setIsVisible,
-  } = useIndexersQuery<
+  const { loading, data: listData } = useIndexersQuery<
     AccountTransferSenderTotalCountQuery,
     AccountTransferSenderTotalCountQueryVariables
-  >(query, {
-    variables,
-    skip: !inFocus,
-    pollInterval: 6000,
-    context: { clientName: 'leaderboard' },
-  })
+  >(
+    query,
+    {
+      variables,
+      pollInterval: 6000,
+    },
+    inView,
+    inFocus,
+  )
 
   const fullDataDownloader = useCallback(
     () => downloadFullData(apolloClient, query, table, { orderBy }),
@@ -252,10 +251,6 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     if (!listData) return <NotFound />
     return null
   }, [listData, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>

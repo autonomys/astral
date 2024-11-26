@@ -17,7 +17,7 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { countTablePages } from 'utils/table'
@@ -62,13 +62,17 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { data, loading, setIsVisible } = useIndexersQuery<
+  const { data, loading } = useIndexersQuery<
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
-  >(QUERY_BLOCK_EXTRINSICS, {
-    variables,
-    skip: !inFocus,
-  })
+  >(
+    QUERY_BLOCK_EXTRINSICS,
+    {
+      variables,
+    },
+    inView,
+    inFocus,
+  )
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
 
@@ -150,10 +154,6 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     if (!data) return <NotFound />
     return null
   }, [data, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='mt-5 flex w-full flex-col space-y-4 sm:mt-0' ref={ref}>

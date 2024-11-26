@@ -1,5 +1,6 @@
 'use client'
 
+import { useWindowFocus } from '@/hooks/useWindowFocus'
 import { capitalizeFirstLetter, shortString } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
 import { AccountIconWithLink } from 'components/common/AccountIcon'
@@ -14,9 +15,8 @@ import { ExtrinsicsQuery, ExtrinsicsQueryVariables, Order_By as OrderBy } from '
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import { Cell, ExtrinsicsFilters, TableSettingsTabs } from 'types/table'
 import { getTableColumns } from 'utils/table'
@@ -35,6 +35,7 @@ export const ExtrinsicList: FC = () => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
+  const inFocus = useWindowFocus()
   const availableColumns = useTableStates((state) => state[TABLE].columns)
   const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
   const filtersOptions = useTableStates((state) => state[TABLE].filtersOptions)
@@ -102,23 +103,15 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
+  const { data, loading } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
     QUERY_EXTRINSICS,
     {
       variables,
       pollInterval: 6000,
     },
-    Routes.consensus,
-    TABLE,
+    inView,
+    inFocus,
   )
-
-  const {
-    consensus: { extrinsics: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
   const totalCount = useMemo(
@@ -191,10 +184,10 @@ export const ExtrinsicList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, consensusEntry, loading])
+  }, [data, loading])
 
   const handleFilterChange = useCallback(
     (filterName: string, value: string | boolean) => {
@@ -216,10 +209,6 @@ export const ExtrinsicList: FC = () => {
           ),
     [selectedColumns, setColumns],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>

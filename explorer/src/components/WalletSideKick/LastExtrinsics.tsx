@@ -17,9 +17,8 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { QUERY_EXTRINSIC_SUMMARY } from './query'
 
@@ -41,32 +40,20 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
     }),
     [subspaceAccount],
   )
-  const { setIsVisible } = useIndexersQuery<
+  const { data, loading } = useIndexersQuery<
     ExtrinsicsSummaryQuery,
     ExtrinsicsSummaryQueryVariables
   >(
     QUERY_EXTRINSIC_SUMMARY,
     {
       variables,
-      skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
       pollInterval: 6000,
     },
-    ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
-    'lastExtrinsics',
+    inView,
+    inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
   )
 
-  const {
-    walletSidekick: { lastExtrinsics },
-  } = useQueryStates()
-
-  const extrinsics = useMemo(
-    () => hasValue(lastExtrinsics) && lastExtrinsics.value.extrinsics,
-    [lastExtrinsics],
-  )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  const extrinsics = useMemo(() => data && data.extrinsics, [data])
 
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
@@ -80,10 +67,8 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
         }
       >
         <div ref={ref}>
-          {isLoading(lastExtrinsics) && (
-            <ExclamationTriangleIcon className='size-5' stroke='orange' />
-          )}
-          {isError(lastExtrinsics) && (
+          {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
+          {!data && (
             <div className='m-2 flex items-center pt-4'>
               <span className='text-base font-medium text-grayDarker dark:text-white'>
                 We are unable to load your wallet data

@@ -19,7 +19,7 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
@@ -67,14 +67,18 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { data, loading, setIsVisible } = useIndexersQuery<
+  const { data, loading } = useIndexersQuery<
     BalanceHistoryByAccountIdQuery,
     BalanceHistoryByAccountIdQueryVariables
-  >(QUERY_ACCOUNT_BALANCE_HISTORY, {
-    variables,
-    skip: !inFocus,
-    pollInterval: 6000,
-  })
+  >(
+    QUERY_ACCOUNT_BALANCE_HISTORY,
+    {
+      variables,
+      pollInterval: 6000,
+    },
+    inView,
+    inFocus,
+  )
 
   const fullDataDownloader = useCallback(
     () =>
@@ -173,10 +177,6 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     if (!data) return <NotFound />
     return null
   }, [data, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col sm:mt-0'>

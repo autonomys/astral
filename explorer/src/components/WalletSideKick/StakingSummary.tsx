@@ -9,9 +9,8 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { bigNumberToNumber } from 'utils/number'
 import { QUERY_STAKING_SUMMARY } from './query'
 
@@ -34,33 +33,24 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     }),
     [subspaceAccount],
   )
-  const { setIsVisible } = useIndexersQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
+  const { data, loading } = useIndexersQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
     QUERY_STAKING_SUMMARY,
     {
       variables,
-      skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
       pollInterval: 6000,
-      context: { clientName: 'staking' },
     },
-    ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
-    'stakingSummary',
+    inView,
+    inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
   )
 
-  const {
-    walletSidekick: { stakingSummary },
-  } = useQueryStates()
-
   const totalOperatorCount = useMemo(
-    () =>
-      (hasValue(stakingSummary) &&
-        stakingSummary.value.staking_operators_aggregate.aggregate?.count) ||
-      0,
-    [stakingSummary],
+    () => (data && data.staking_operators_aggregate.aggregate?.count) || 0,
+    [data],
   )
   const totalOperatorStake = useMemo(
     () =>
-      hasValue(stakingSummary)
-        ? stakingSummary.value.staking_nominators
+      data
+        ? data.staking_nominators
             .filter((n) => n.operator?.account_id === subspaceAccount)
             .reduce(
               (acc, nominator) =>
@@ -74,21 +64,18 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
               BIGINT_ZERO,
             )
         : BIGINT_ZERO,
-    [stakingSummary, subspaceAccount],
+    [data, subspaceAccount],
   )
 
   const totalNominatedCount = useMemo(
-    () =>
-      (hasValue(stakingSummary) &&
-        stakingSummary.value.staking_nominators_aggregate.aggregate?.count) ||
-      0,
-    [stakingSummary],
+    () => (data && data.staking_nominators_aggregate.aggregate?.count) || 0,
+    [data],
   )
 
   const totalNominatedStake = useMemo(
     () =>
-      hasValue(stakingSummary)
-        ? stakingSummary.value.staking_nominators
+      data
+        ? data.staking_nominators
             .filter((n) => n.operator?.account_id !== subspaceAccount)
             .reduce(
               (acc, nominator) =>
@@ -102,17 +89,13 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
               BIGINT_ZERO,
             )
         : BIGINT_ZERO,
-    [stakingSummary, subspaceAccount],
+    [data, subspaceAccount],
   )
 
   const totalStaked = useMemo(
     () => totalOperatorStake + totalNominatedStake,
     [totalOperatorStake, totalNominatedStake],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>
@@ -126,10 +109,8 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
         }
       >
         <div ref={ref}>
-          {isLoading(stakingSummary) && (
-            <ExclamationTriangleIcon className='size-5' stroke='orange' />
-          )}
-          {isError(stakingSummary) && (
+          {loading && <ExclamationTriangleIcon className='size-5' stroke='orange' />}
+          {!data && (
             <div className='m-2 flex items-center pt-4'>
               <span className='text-base font-medium text-grayDarker dark:text-white'>
                 We are unable to load your wallet data

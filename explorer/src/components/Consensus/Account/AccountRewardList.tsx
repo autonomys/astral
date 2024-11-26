@@ -7,7 +7,7 @@ import { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   AccountByIdQuery,
   Order_By as OrderBy,
@@ -22,7 +22,6 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { AccountIdParam } from 'types/app'
 import type { Cell } from 'types/table'
 import { formatAddress } from 'utils//formatAddress'
@@ -62,24 +61,15 @@ export const AccountRewardList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, sortBy, accountId],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<RewardsListQuery, RewardsListQueryVariables>(
+  const { data, loading } = useIndexersQuery<RewardsListQuery, RewardsListQueryVariables>(
     QUERY_REWARDS_LIST,
     {
       variables,
-      skip: !inFocus,
       pollInterval: 6000,
     },
-    Routes.consensus,
-    'accountReward',
+    inView,
+    inFocus,
   )
-
-  const {
-    consensus: { accountReward: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
 
   const rewards = useMemo(() => data && data.consensus_rewards, [data])
   const totalCount = useMemo(
@@ -189,14 +179,10 @@ export const AccountRewardList: FC = () => {
   }, [accountId])
 
   const noData = useMemo(() => {
-    if (loading && isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading, consensusEntry])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data, loading])
 
   return (
     <div className='flex w-full flex-col align-middle'>

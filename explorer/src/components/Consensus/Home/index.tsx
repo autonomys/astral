@@ -1,14 +1,13 @@
 'use client'
 
+import { useWindowFocus } from '@/hooks/useWindowFocus'
 import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
-import { Routes } from 'constants/routes'
 import type { HomeQueryQuery, HomeQueryQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { NotFound } from '../../layout/NotFound'
 import { HomeBlockList } from './HomeBlockList'
 import { HomeChainInfo } from './HomeChainInfo'
@@ -19,34 +18,23 @@ export const Home: FC = () => {
   const { ref, inView } = useInView()
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
+  const inFocus = useWindowFocus()
 
-  const { loading, setIsVisible } = useIndexersQuery<HomeQueryQuery, HomeQueryQueryVariables>(
+  const { data, loading } = useIndexersQuery<HomeQueryQuery, HomeQueryQueryVariables>(
     QUERY_HOME,
     {
       variables: { limit: PAGE_SIZE, offset: 0 },
       pollInterval: 6000,
     },
-    Routes.consensus,
-    'home',
+    inView,
+    inFocus,
   )
 
-  const {
-    consensus: { home: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
-
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, consensusEntry, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data, loading])
 
   return (
     <div className='flex w-full flex-col align-middle'>

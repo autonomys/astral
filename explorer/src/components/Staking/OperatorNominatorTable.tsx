@@ -13,10 +13,9 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useConsensusStates } from 'states/consensus'
-import { hasValue, useQueryStates } from 'states/query'
 import { useViewStates } from 'states/view'
 import type { Cell } from 'types/table'
 import { bigNumberToNumber, limitNumberDecimals, numberWithCommas } from 'utils/number'
@@ -174,45 +173,29 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy, operatorId],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<
+  const { data, loading } = useIndexersQuery<
     OperatorNominatorsByIdQuery,
     OperatorNominatorsByIdQueryVariables
   >(
     QUERY_OPERATOR_NOMINATORS_BY_ID,
     {
       variables,
-      skip: !inFocus,
-      context: { clientName: 'staking' },
     },
-    Routes.staking,
-    'operatorNominators',
+    inView,
+    inFocus,
   )
 
-  const {
-    staking: { operatorNominators },
-  } = useQueryStates()
-
-  const nominators = useMemo(
-    () => (hasValue(operatorNominators) ? operatorNominators.value.staking_nominators : []),
-    [operatorNominators],
-  )
+  const nominators = useMemo(() => (data ? data.staking_nominators : []), [data])
 
   const totalCount = useMemo(
-    () =>
-      (hasValue(operatorNominators) &&
-        operatorNominators.value.staking_nominators_aggregate.aggregate?.count) ||
-      0,
-    [operatorNominators],
+    () => (data && data.staking_nominators_aggregate.aggregate?.count) || 0,
+    [data],
   )
   const totalLabel = useMemo(() => numberWithCommas(Number(totalCount)), [totalCount])
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   if (!operator) return null
 

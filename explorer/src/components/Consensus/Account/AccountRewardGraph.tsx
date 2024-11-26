@@ -7,9 +7,8 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useTheme } from 'providers/ThemeProvider'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, useQueryStates } from 'states/query'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { QUERY_LAST_WEEK_REWARDS } from './query'
 
@@ -28,21 +27,14 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   const lastWeek = dayjs().subtract(3, 'month').utc().format()
   const inFocus = useWindowFocus()
 
-  const { setIsVisible } = useIndexersQuery<
-    LatestRewardsWeekQuery,
-    LatestRewardsWeekQueryVariables
-  >(QUERY_LAST_WEEK_REWARDS, {
-    variables: { accountId: accountId, timestampComparison: { _gte: lastWeek } },
-    skip: !inFocus,
-  })
-
-  const {
-    consensus: { accountRewardGraph: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
+  const { data } = useIndexersQuery<LatestRewardsWeekQuery, LatestRewardsWeekQueryVariables>(
+    QUERY_LAST_WEEK_REWARDS,
+    {
+      variables: { accountId: accountId, timestampComparison: { _gte: lastWeek } },
+    },
+    inView,
+    inFocus,
+  )
 
   const parsedData = useMemo(
     () =>
@@ -78,10 +70,6 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
   }
 
   const fillColor = isDark ? '#E970F8' : '#9179EC'
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col p-5 lg:p-0' ref={ref}>

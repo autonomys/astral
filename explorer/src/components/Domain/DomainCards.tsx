@@ -7,7 +7,7 @@ import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { numberWithCommas } from 'utils/number'
 import { QUERY_DOMAIN_STATUS } from './query'
@@ -27,19 +27,22 @@ export const DomainCards: FC = () => {
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
-  const { data, loading, error, setIsVisible } = useIndexersQuery<
+  const { data, loading, error } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
-  >(QUERY_DOMAIN_STATUS, {
-    variables: {
-      limit: 10,
-      orderBy: [{ id: OrderBy.Asc }],
-      where: {},
+  >(
+    QUERY_DOMAIN_STATUS,
+    {
+      variables: {
+        limit: 10,
+        orderBy: [{ id: OrderBy.Asc }],
+        where: {},
+      },
+      pollInterval: 6000,
     },
-    skip: !inFocus,
-    pollInterval: 6000,
-    context: { clientName: 'staking' },
-  })
+    inView,
+    inFocus,
+  )
 
   const cards = useMemo<CardData[]>(() => {
     if (loading || error || !data) return []
@@ -63,10 +66,6 @@ export const DomainCards: FC = () => {
     if (!data) return <NotFound />
     return null
   }, [data, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full items-center justify-center gap-5 overflow-x-auto' ref={ref}>

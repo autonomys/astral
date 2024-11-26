@@ -13,9 +13,8 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isError, isLoading, useQueryStates } from 'states/query'
 import { numberPositionSuffix } from 'utils/number'
 import { QUERY_TOP_LEADERBOARD } from './query'
 
@@ -23,7 +22,7 @@ interface LeaderboardProps {
   subspaceAccount: string
 }
 
-export const useLeaderboard = (subspaceAccount: string) => {
+export const useLeaderboard = (subspaceAccount: string, inView: boolean) => {
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -34,27 +33,18 @@ export const useLeaderboard = (subspaceAccount: string) => {
     }),
     [],
   )
-  const { setIsVisible } = useIndexersQuery<
+  const { data, loading } = useIndexersQuery<
     AccountsTopLeaderboardQuery,
     AccountsTopLeaderboardQueryVariables
   >(
     QUERY_TOP_LEADERBOARD,
     {
       variables,
-      skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
       pollInterval: 6000,
     },
-    ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
-    'leaderboard',
+    inView,
+    inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
   )
-
-  const {
-    walletSidekick: { leaderboard },
-  } = useQueryStates()
-
-  const loading = useMemo(() => isLoading(leaderboard), [leaderboard])
-  const data = useMemo(() => hasValue(leaderboard) && leaderboard.value, [leaderboard])
-  const error = useMemo(() => isError(leaderboard), [leaderboard])
 
   // TODO: change this for the right logic
   const topFarmers = useMemo(() => {
@@ -88,21 +78,16 @@ export const useLeaderboard = (subspaceAccount: string) => {
     topOperators,
     topNominators,
     hasTopPositions,
-    error,
     loading,
-    setIsVisible,
+    error: !data,
   }
 }
 
 export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
   const { network } = useIndexers()
-  const { topFarmers, topOperators, topNominators, hasTopPositions, error, loading, setIsVisible } =
-    useLeaderboard(subspaceAccount)
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  const { topFarmers, topOperators, topNominators, hasTopPositions, loading, error } =
+    useLeaderboard(subspaceAccount, inView)
 
   return (
     <div className='m-2 mt-0 rounded-[20px] bg-grayLight p-5 dark:bg-blueAccent dark:text-white'>

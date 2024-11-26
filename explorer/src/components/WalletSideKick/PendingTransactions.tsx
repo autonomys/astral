@@ -50,14 +50,15 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
     }),
     [pendingTransactions, subspaceAccount],
   )
-  const { data, setIsVisible } = useIndexersQuery<
-    PendingTransactionQuery,
-    PendingTransactionQueryVariables
-  >(QUERY_PENDING_TX, {
-    variables,
-    skip: !inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
-    pollInterval: 6000,
-  })
+  const { data } = useIndexersQuery<PendingTransactionQuery, PendingTransactionQueryVariables>(
+    QUERY_PENDING_TX,
+    {
+      variables,
+      pollInterval: 6000,
+    },
+    inView,
+    inFocus || isSideKickOpen !== ROUTE_FLAG_VALUE_OPEN_CLOSE.OPEN,
+  )
 
   const handleRemove = useCallback(
     (tx: Transaction) => removePendingTransactions(tx),
@@ -99,10 +100,6 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [transactions],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   useEffect(() => {
     if (data && data.consensus_accounts[0] && data.consensus_accounts[0].extrinsics)

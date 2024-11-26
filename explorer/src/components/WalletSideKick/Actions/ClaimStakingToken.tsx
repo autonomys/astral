@@ -2,7 +2,7 @@ import { CheckCircleIcon, ClockIcon } from '@heroicons/react/24/outline'
 import { List, StyledListItem } from 'components/common/List'
 import { StyledButton } from 'components/common/StyledButton'
 import { QUERY_EXTRINSIC_BY_HASH } from 'components/Consensus/Extrinsic/query'
-import { ROUTE_API, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
+import { ROUTE_API } from 'constants/routes'
 import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
@@ -10,7 +10,6 @@ import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, useQueryStates } from 'states/query'
 
 export const ClaimStakingToken: FC = () => {
   const { inView, ref } = useInView()
@@ -23,20 +22,15 @@ export const ClaimStakingToken: FC = () => {
   const [claimHash, setClaimHash] = useState<string | null>(null)
   const inFocus = useWindowFocus()
 
-  const { setIsVisible } = useIndexersQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
+  const { data } = useIndexersQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
     QUERY_EXTRINSIC_BY_HASH,
     {
       variables: { hash: claimHash ?? '' },
-      skip: !inFocus || claimHash === null || claimIsFinalized,
       pollInterval: 6000,
     },
-    ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK,
-    'claim',
+    inView,
+    inFocus || claimHash === null || claimIsFinalized,
   )
-
-  const {
-    walletSidekick: { claim },
-  } = useQueryStates()
 
   const handleClaimOperatorDisbursement = useCallback(async () => {
     setClaimError(null)
@@ -68,17 +62,9 @@ export const ClaimStakingToken: FC = () => {
   }, [actingAccount, injector, network, subspaceAccount])
 
   useEffect(() => {
-    if (
-      hasValue(claim) &&
-      claim.value.consensus_extrinsics &&
-      claim.value.consensus_extrinsics.length > 0
-    )
+    if (data && data.consensus_extrinsics && data.consensus_extrinsics.length > 0)
       setClaimIsFinalized(true)
-  }, [claim])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data])
 
   return (
     <div ref={ref}>

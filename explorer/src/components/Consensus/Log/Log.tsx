@@ -2,14 +2,12 @@
 
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
-import { Routes } from 'constants/routes'
 import type { LogByIdQuery, LogByIdQueryVariables } from 'gql/graphql'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { LogIdParam } from 'types/app'
 import { LogDetailsCard } from './LogDetailsCard'
 import { LogDetailsTab } from './LogDetailsTab'
@@ -19,34 +17,22 @@ export const Log: FC = () => {
   const { ref, inView } = useInView()
   const { logId } = useParams<LogIdParam>()
   const inFocus = useWindowFocus()
-  const { loading, setIsVisible } = useIndexersQuery<LogByIdQuery, LogByIdQueryVariables>(
+  const { data, loading } = useIndexersQuery<LogByIdQuery, LogByIdQueryVariables>(
     QUERY_LOG_BY_ID,
     {
       variables: { logId: logId ?? '' },
-      skip: !inFocus,
     },
-    Routes.consensus,
-    'log',
+    inView,
+    inFocus,
   )
 
-  const {
-    consensus: { log: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
-
   const log = useMemo(() => data && data.consensus_logs[0], [data])
+
   const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, consensusEntry, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
+  }, [data, loading])
 
   return (
     <div className='w-full'>

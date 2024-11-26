@@ -17,10 +17,9 @@ import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
-import { FC, useCallback, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useConsensusStates } from 'states/consensus'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import { useTableStates } from 'states/tables'
 import { useViewStates } from 'states/view'
 import type { Cell, OperatorsFilters, TableSettingsTabs } from 'types/table'
@@ -528,24 +527,15 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     [pagination, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useIndexersQuery<
-    OperatorsListQuery,
-    OperatorsListQueryVariables
-  >(
+  const { data, loading } = useIndexersQuery<OperatorsListQuery, OperatorsListQueryVariables>(
     QUERY_OPERATOR_LIST,
     {
       variables,
-      skip: !inFocus,
       pollInterval: 6000,
-      context: { clientName: 'staking' },
     },
-    Routes.staking,
-    TABLE,
+    inView,
+    inFocus,
   )
-
-  const {
-    staking: { operators },
-  } = useQueryStates()
 
   const fullDataDownloader = useCallback(
     () =>
@@ -556,20 +546,22 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   )
 
   const operatorsList = useMemo(() => {
-    if (hasValue(operators))
-      return operators.value.staking_operators.map((o) => {
+    if (data)
+      return data.staking_operators.map((o) => {
         return {
           ...o,
           nominatorsCount: o.nominatorsAggregate.aggregate?.count || 0,
         }
       })
     return []
-  }, [operators])
+  }, [data])
 
   const totalCount = useMemo(
     () =>
-      (hasValue(operators) && operators.value.staking_operators_aggregate.aggregate?.count) || 0,
-    [operators],
+      data && data.staking_operators_aggregate.aggregate
+        ? data.staking_operators_aggregate.aggregate.count
+        : 0,
+    [data],
   )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
@@ -577,10 +569,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading || isLoading(operators)) return <Spinner isSmall />
-    if (!hasValue(operators)) return <NotFound />
+    if (loading) return <Spinner isSmall />
+    if (!data) return <NotFound />
     return null
-  }, [loading, operators])
+  }, [loading, data])
 
   const handleClickOnColumnToEditTable = useCallback(
     (column: string, checked: boolean) =>
@@ -592,10 +584,6 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
           ),
     [selectedColumns, setColumns],
   )
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
 
   return (
     <div className='flex w-full flex-col align-middle'>
