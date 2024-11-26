@@ -8,7 +8,7 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -47,7 +47,7 @@ export const BlockDetailsEventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useIndexersQuery<
     EventsByBlockIdQuery,
     EventsByBlockIdQueryVariables
   >(QUERY_BLOCK_EVENTS, {

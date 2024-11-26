@@ -13,7 +13,7 @@ import {
 } from 'constants/routes'
 import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -41,7 +41,10 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
     }),
     [subspaceAccount],
   )
-  const { setIsVisible } = useSquidQuery<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>(
+  const { setIsVisible } = useIndexersQuery<
+    ExtrinsicsSummaryQuery,
+    ExtrinsicsSummaryQueryVariables
+  >(
     QUERY_EXTRINSIC_SUMMARY,
     {
       variables,

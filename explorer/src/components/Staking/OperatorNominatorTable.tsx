@@ -9,7 +9,7 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -174,7 +174,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy, operatorId],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     OperatorNominatorsByIdQuery,
     OperatorNominatorsByIdQueryVariables
   >(

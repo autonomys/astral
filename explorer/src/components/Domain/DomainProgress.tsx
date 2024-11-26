@@ -4,7 +4,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -44,19 +44,19 @@ export const DomainProgress: FC = () => {
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
-  const { data, loading, error } = useSquidQuery<DomainsStatusQuery, DomainsStatusQueryVariables>(
-    QUERY_DOMAIN_STATUS,
-    {
-      variables: {
-        limit: 10,
-        orderBy: [{ id: OrderBy.Asc }],
-        where: {},
-      },
-      skip: !inFocus,
-      pollInterval: 2000,
-      context: { clientName: 'staking' },
+  const { data, loading, error } = useIndexersQuery<
+    DomainsStatusQuery,
+    DomainsStatusQueryVariables
+  >(QUERY_DOMAIN_STATUS, {
+    variables: {
+      limit: 10,
+      orderBy: [{ id: OrderBy.Asc }],
+      where: {},
     },
-  )
+    skip: !inFocus,
+    pollInterval: 2000,
+    context: { clientName: 'staking' },
+  })
 
   const cards = useMemo<CardData[]>(() => {
     if (loading || error || !data) return []

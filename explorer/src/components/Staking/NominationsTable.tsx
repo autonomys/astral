@@ -15,7 +15,7 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -75,7 +75,7 @@ export const NominationsTable: FC = () => {
     [myPositionOnly, orderBy, subspaceAccount],
   )
 
-  const { loading, data, setIsVisible } = useSquidQuery<
+  const { loading, data, setIsVisible } = useIndexersQuery<
     NominationsListQuery,
     NominationsListQueryVariables
   >(QUERY_NOMINATIONS_LIST, {

@@ -9,7 +9,7 @@ import {
 } from 'constants/routes'
 import { AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -34,7 +34,7 @@ export const useLeaderboard = (subspaceAccount: string) => {
     }),
     [],
   )
-  const { setIsVisible } = useSquidQuery<
+  const { setIsVisible } = useIndexersQuery<
     AccountsTopLeaderboardQuery,
     AccountsTopLeaderboardQueryVariables
   >(

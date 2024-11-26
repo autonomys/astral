@@ -14,7 +14,7 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -63,7 +63,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { loading, setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByAccountIdQuery,
     ExtrinsicsByAccountIdQueryVariables
   >(

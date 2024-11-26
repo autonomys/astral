@@ -12,7 +12,7 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { ExtrinsicsQuery, ExtrinsicsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -102,7 +102,7 @@ export const ExtrinsicList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, where, orderBy],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<ExtrinsicsQuery, ExtrinsicsQueryVariables>(
     QUERY_EXTRINSICS,
     {
       variables,

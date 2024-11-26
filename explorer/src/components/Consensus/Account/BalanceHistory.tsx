@@ -16,7 +16,7 @@ import {
   Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -67,7 +67,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useIndexersQuery<
     BalanceHistoryByAccountIdQuery,
     BalanceHistoryByAccountIdQueryVariables
   >(QUERY_ACCOUNT_BALANCE_HISTORY, {

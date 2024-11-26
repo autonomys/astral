@@ -12,7 +12,7 @@ import {
   Order_By as OrderBy,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -207,7 +207,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     loading,
     data: listData,
     setIsVisible,
-  } = useSquidQuery<
+  } = useIndexersQuery<
     AccountTransferSenderTotalCountQuery,
     AccountTransferSenderTotalCountQueryVariables
   >(query, {

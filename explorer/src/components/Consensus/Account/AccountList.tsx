@@ -11,7 +11,7 @@ import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountsQuery, AccountsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -144,7 +144,7 @@ export const AccountList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<AccountsQuery, AccountsQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<AccountsQuery, AccountsQueryVariables>(
     QUERY_ACCOUNTS,
     {
       variables,

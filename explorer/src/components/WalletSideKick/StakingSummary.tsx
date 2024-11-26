@@ -5,7 +5,7 @@ import { BIGINT_ZERO } from 'constants/general'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
 import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -34,7 +34,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     }),
     [subspaceAccount],
   )
-  const { setIsVisible } = useSquidQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
+  const { setIsVisible } = useIndexersQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
     QUERY_STAKING_SUMMARY,
     {
       variables,

@@ -4,7 +4,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
@@ -27,7 +27,7 @@ export const DomainCards: FC = () => {
   const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
-  const { data, loading, error, setIsVisible } = useSquidQuery<
+  const { data, loading, error, setIsVisible } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
   >(QUERY_DOMAIN_STATUS, {

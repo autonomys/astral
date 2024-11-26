@@ -12,7 +12,7 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { PendingTransactionQuery, PendingTransactionQueryVariables } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useSearchParams } from 'next/navigation'
@@ -50,7 +50,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
     }),
     [pendingTransactions, subspaceAccount],
   )
-  const { data, setIsVisible } = useSquidQuery<
+  const { data, setIsVisible } = useIndexersQuery<
     PendingTransactionQuery,
     PendingTransactionQueryVariables
   >(QUERY_PENDING_TX, {

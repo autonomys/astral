@@ -15,8 +15,8 @@ import {
   RewardsListQueryVariables,
 } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -62,7 +62,7 @@ export const AccountRewardList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, sortBy, accountId],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<RewardsListQuery, RewardsListQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<RewardsListQuery, RewardsListQueryVariables>(
     QUERY_REWARDS_LIST,
     {
       variables,

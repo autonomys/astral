@@ -11,7 +11,7 @@ import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
 import useIndexers from 'hooks/useIndexers'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -366,7 +366,7 @@ export const DomainsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<DomainsListQuery, DomainsListQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
     QUERY_DOMAIN_LIST,
     {
       variables,
