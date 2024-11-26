@@ -47,6 +47,8 @@ interface ExplorerQueryState {
     accountPreviousReward: QueryState<GqlT.AllRewardForAccountByIdQuery>
     accountRewardGraph: QueryState<GqlT.LatestRewardsWeekQuery>
     accountReward: QueryState<GqlT.RewardsListQuery>
+    accountTransfers: QueryState<GqlT.TransfersByAccountIdQuery>
+    accountBalanceHistory: QueryState<GqlT.BalanceHistoryByAccountIdQuery>
 
     blockDetailsExtrinsic: QueryState<GqlT.ExtrinsicsByBlockIdQuery>
     blockDetailsEvent: QueryState<GqlT.EventsByBlockIdQuery>
@@ -108,6 +110,8 @@ const initialState: ExplorerQueryState = {
     accountPreviousReward: initialized,
     accountRewardGraph: initialized,
     accountReward: initialized,
+    accountTransfers: initialized,
+    accountBalanceHistory: initialized,
 
     blockDetailsExtrinsic: initialized,
     blockDetailsEvent: initialized,
