@@ -14,7 +14,7 @@ import { Routes } from 'constants/routes'
 import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
 import { getTokenDecimals, getTokenSymbol } from 'utils/network'
 
-export type ChainContextValue = {
+export type IndexersContextValue = {
   indexerSet: Indexer
   network: NetworkId
   section: Routes
@@ -24,7 +24,7 @@ export type ChainContextValue = {
   setSection: (section: Routes) => void
 }
 
-export const ChainContext = createContext<ChainContextValue>(
+export const IndexersContext = createContext<IndexersContextValue>(
   // @ts-expect-error It's a good practice not to give a default value even though the linter tells you so
   {},
 )
@@ -33,11 +33,9 @@ type Props = {
   children?: ReactNode
 }
 
-interface SelectedChainProps extends Props {
-  indexerSet: Indexer
-}
-
-const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children }) => {
+export const IndexersProvider: FC<Props> = ({ children }) => {
+  const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
+  const [section, setSection] = useState<Routes>(Routes.consensus)
   const httpLink = createHttpLink({
     uri: () => indexerSet.indexer,
   })
@@ -51,13 +49,6 @@ const SelectedChainProvider: FC<SelectedChainProps> = ({ indexerSet, children })
     [httpLink],
   )
 
-  return <ApolloProvider client={client}>{children}</ApolloProvider>
-}
-
-export const ChainProvider: FC<Props> = ({ children }) => {
-  const [indexerSet, _setIndexerSet] = useState<Indexer>(defaultIndexer)
-  const [section, setSection] = useState<Routes>(Routes.consensus)
-
   const setIndexerSet = useCallback(
     (indexer: Indexer) => {
       _setIndexerSet(indexer)
@@ -66,7 +57,7 @@ export const ChainProvider: FC<Props> = ({ children }) => {
   )
 
   return (
-    <ChainContext.Provider
+    <IndexersContext.Provider
       value={{
         indexerSet,
         network: indexerSet.network,
@@ -77,7 +68,7 @@ export const ChainProvider: FC<Props> = ({ children }) => {
         setSection,
       }}
     >
-      <SelectedChainProvider indexerSet={indexerSet}>{children}</SelectedChainProvider>
-    </ChainContext.Provider>
+      <ApolloProvider client={client}>{children}</ApolloProvider>
+    </IndexersContext.Provider>
   )
 }

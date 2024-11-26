@@ -6,7 +6,7 @@ import useChains from 'hooks/useChains'
 import { SessionProvider } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
-import { ChainProvider } from 'providers/ChainProvider'
+import { IndexersProvider } from 'providers/IndexersProvider'
 import { ThemeProvider } from 'providers/ThemeProvider'
 import { FC, ReactNode, useEffect } from 'react'
 
@@ -52,7 +52,7 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
 
 export const Provider: FC<ProviderProps> = ({ children }) => {
   return (
-    <ChainProvider>
+    <IndexersProvider>
       <ThemeProvider>
         <SessionProvider>
           <WalletProvider>
@@ -60,6 +60,6 @@ export const Provider: FC<ProviderProps> = ({ children }) => {
           </WalletProvider>
         </SessionProvider>
       </ThemeProvider>
-    </ChainProvider>
+    </IndexersProvider>
   )
 }
