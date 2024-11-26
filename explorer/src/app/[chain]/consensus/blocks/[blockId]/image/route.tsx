@@ -2,7 +2,7 @@
 import { utcToLocalRelativeTime } from '@/utils/time'
 import { shortString } from '@autonomys/auto-utils'
 import { QUERY_BLOCK_BY_ID } from 'components/Consensus/Block/query'
-import { BlockIcon, DocIcon } from 'components/icons'
+import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
 import { BlockByIdQuery } from 'gql/graphql'
@@ -95,9 +95,13 @@ function Screen({
         <h2
           style={{
             fontFamily: 'Montserrat',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}
           tw='absolute text-4xl text-white p-4 font-bold'
         >
+          <AutonomysSymbol fill='white' />
           {title}
         </h2>
         <h3

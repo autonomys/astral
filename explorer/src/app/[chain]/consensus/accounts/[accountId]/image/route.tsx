@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
-import { DocIcon, WalletIcon } from 'components/icons'
+import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
 import { AccountByIdQuery } from 'gql/graphql'
@@ -102,9 +102,13 @@ function Screen({
         <h2
           style={{
             fontFamily: 'Montserrat',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}
           tw='absolute text-4xl text-white p-4 font-bold'
         >
+          <AutonomysSymbol fill='white' />
           {title}
         </h2>
         <h3
