@@ -3,7 +3,7 @@ import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import type { DomainByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
 import { bigNumberToFormattedString } from 'utils/number'
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const DomainDetailsCard: FC<Props> = ({ domain }) => {
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
 
   if (!domain) return null
 

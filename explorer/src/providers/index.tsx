@@ -2,7 +2,7 @@
 
 import { indexers } from 'constants/indexers'
 import { Routes } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { SessionProvider } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
@@ -26,7 +26,7 @@ const WalletProvider = dynamic(
 )
 
 const UpdateSelectedChainByPath = ({ children }: Props) => {
-  const { setIndexerSet, setSection, network, section } = useChains()
+  const { setIndexerSet, setSection, network, section } = useIndexers()
 
   const pathname = usePathname()
 

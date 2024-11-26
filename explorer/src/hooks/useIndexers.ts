@@ -3,7 +3,7 @@
 import { IndexersContext, IndexersContextValue } from 'providers/IndexersProvider'
 import { useContext } from 'react'
 
-export const useChains = (): IndexersContextValue => {
+export const useIndexers = (): IndexersContextValue => {
   const context = useContext(IndexersContext)
 
   if (!context) throw new Error('IndexersContext must be used within IndexersProvider')
@@ -11,4 +11,4 @@ export const useChains = (): IndexersContextValue => {
   return context
 }
 
-export default useChains
+export default useIndexers

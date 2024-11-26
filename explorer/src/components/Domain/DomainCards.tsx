@@ -3,7 +3,7 @@ import { BlockIcon, DocIcon } from 'components/icons'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -24,7 +24,7 @@ interface CardData {
 
 export const DomainCards: FC = () => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
   const { data, loading, error, setIsVisible } = useSquidQuery<

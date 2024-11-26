@@ -15,7 +15,7 @@ import {
   Consensus_Transfers_Select_Column as TransferColumn,
   Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -42,7 +42,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 

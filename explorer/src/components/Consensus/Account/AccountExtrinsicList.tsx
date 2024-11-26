@@ -13,7 +13,7 @@ import {
   ExtrinsicsByAccountIdQueryVariables,
   Order_By as OrderBy,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -40,7 +40,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     pageIndex: 0,
   })
 
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 

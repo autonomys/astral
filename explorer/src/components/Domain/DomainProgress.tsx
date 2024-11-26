@@ -3,7 +3,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useEffect, useMemo, useState } from 'react'
@@ -41,7 +41,7 @@ const CountdownTimer: FC<{ initialTime: bigint }> = ({ initialTime }) => {
 
 export const DomainProgress: FC = () => {
   const { ref } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
   const { data, loading, error } = useSquidQuery<DomainsStatusQuery, DomainsStatusQueryVariables>(

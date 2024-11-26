@@ -14,7 +14,7 @@ import {
   RewardsListQuery,
   RewardsListQueryVariables,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -38,7 +38,7 @@ type Row = RewardsListQuery['consensus_rewards'][number]
 
 export const AccountRewardList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, tokenSymbol } = useChains()
+  const { network, section, tokenSymbol } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

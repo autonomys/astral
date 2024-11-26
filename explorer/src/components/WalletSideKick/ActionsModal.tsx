@@ -13,7 +13,7 @@ import {
   WalletType,
 } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useTxHelper } from 'hooks/useTxHelper'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -54,7 +54,7 @@ interface MessageFormValues extends OptionalTxFormValues {
 }
 
 export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose }) => {
-  const { network } = useChains()
+  const { network } = useIndexers()
   const { api, actingAccount, accounts, injector, subspaceAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const [tokenDecimals, setTokenDecimals] = useState<number>(0)

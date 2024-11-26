@@ -10,7 +10,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountsQuery, AccountsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -30,7 +30,7 @@ const TABLE = 'accounts'
 
 export const AccountList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section, tokenDecimals } = useChains()
+  const { network, section, tokenDecimals } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

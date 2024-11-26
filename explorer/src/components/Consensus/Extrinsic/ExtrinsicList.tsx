@@ -11,7 +11,7 @@ import { TableSettings } from 'components/common/TableSettings'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { ExtrinsicsQuery, ExtrinsicsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -29,7 +29,7 @@ const TABLE = 'extrinsics'
 
 export const ExtrinsicList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

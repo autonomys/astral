@@ -8,9 +8,9 @@ import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -44,7 +44,7 @@ export const DomainsList: FC = () => {
   })
   useDomainsData()
   useConsensusData()
-  const { network, section, tokenSymbol, tokenDecimals } = useChains()
+  const { network, section, tokenSymbol, tokenDecimals } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
   const availableColumns = useTableStates((state) => state[TABLE].columns)

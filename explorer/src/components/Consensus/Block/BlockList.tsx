@@ -12,7 +12,7 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { BlocksQuery, BlocksQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -31,7 +31,7 @@ const TABLE = 'blocks'
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

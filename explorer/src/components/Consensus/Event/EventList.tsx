@@ -9,7 +9,7 @@ import { TableSettings } from 'components/common/TableSettings'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { EventsQuery, EventsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -28,7 +28,7 @@ const TABLE = 'events'
 
 export const EventList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,

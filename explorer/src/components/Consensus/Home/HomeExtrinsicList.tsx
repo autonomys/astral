@@ -6,7 +6,7 @@ import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { HomeQueryQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
@@ -19,7 +19,7 @@ interface HomeExtrinsicListProps {
 type Row = HomeQueryQuery['consensus_extrinsics'][number]
 
 export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const extrinsics = useMemo(() => data.consensus_extrinsics, [data.consensus_extrinsics])
 

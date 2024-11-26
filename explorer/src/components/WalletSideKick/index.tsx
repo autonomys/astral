@@ -11,7 +11,7 @@ import {
   ROUTE_FLAG_VALUE_OPEN_CLOSE,
 } from 'constants/routes'
 import { WalletType } from 'constants/wallet'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
@@ -115,7 +115,7 @@ export const WalletSidekick: FC = () => {
 
 const Drawer: FC<DrawerProps> = ({ isOpen, onClose }) => {
   const { push } = useRouter()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const { api, actingAccount, subspaceAccount } = useWallet()
   const [tokenSymbol, setTokenSymbol] = useState<string>('')
   const [walletBalance, setWalletBalance] = useState<number>(0)

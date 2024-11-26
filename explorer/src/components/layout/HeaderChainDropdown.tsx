@@ -3,12 +3,12 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { AutonomysSymbol } from 'components/icons'
 import { Indexer, indexers } from 'constants/indexers'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useRouter } from 'next/navigation'
 import { FC, Fragment, useCallback, useMemo } from 'react'
 
 export const HeaderChainDropdown: FC = () => {
-  const { indexerSet, section } = useChains()
+  const { indexerSet, section } = useIndexers()
   const { push } = useRouter()
 
   const handleChainChange = useCallback(

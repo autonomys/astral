@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client'
 import { activate, NetworkId } from '@autonomys/auto-utils'
 import { EXTERNAL_ROUTES } from 'constants/routes'
 import { LastBlockQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { LAST_BLOCK } from './query'
@@ -10,7 +10,7 @@ import { LAST_BLOCK } from './query'
 const NORMAL_BLOCKS_DIVERGENCE = 120
 
 const OutOfSyncBanner: FC = () => {
-  const { network } = useChains()
+  const { network } = useIndexers()
   return (
     <div className="container mx-auto mb-4 flex grow justify-center px-5 font-['Montserrat'] md:px-[25px] 2xl:px-0">
       <div className='sticky top-0 z-50 w-full'>
@@ -46,7 +46,7 @@ const OutOfSyncBanner: FC = () => {
 }
 
 export const useOutOfSyncBanner = () => {
-  const { network } = useChains()
+  const { network } = useIndexers()
   const [lastChainBlock, setLastChainBlock] = useState<number | null>(null)
 
   const { data } = useQuery<LastBlockQuery>(LAST_BLOCK, {
