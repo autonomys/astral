@@ -7,6 +7,9 @@ export const connectToDB = async (): Promise<Pool> => {
     database: process.env.DB_DATABASE || "postgres",
     password: process.env.DB_PASSWORD || "postgres",
     port: Number(process.env.DB_PORT) || 5432,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
   };
 
   const pool = new Pool(dbConfig);
@@ -23,11 +26,13 @@ const consensusSectionsQuery = `
     INSERT INTO consensus.sections (id, _id, _block_range)
     SELECT DISTINCT section as id, 
       gen_random_uuid() as _id,
-      int8range($1::int8, $1::int8) as _block_range
+      int8range($1::int8, $2::int8) as _block_range
     FROM (
-      SELECT section FROM consensus.extrinsics WHERE _block_range @> $1::int8
+      SELECT section FROM consensus.extrinsics 
+      WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
       UNION
-      SELECT section FROM consensus.events WHERE _block_range @> $1::int8
+      SELECT section FROM consensus.events 
+      WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
     ) combined_sections
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
@@ -40,9 +45,9 @@ const consensusExtrinsicModulesQuery = `
       gen_random_uuid() as _id,
       section,
       module as method,
-      int8range($1::int8, $1::int8) as _block_range
+      int8range($1::int8, $2::int8) as _block_range
     FROM consensus.extrinsics 
-    WHERE _block_range @> $1::int8
+    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
 
@@ -54,9 +59,9 @@ const consensusEventModulesQuery = `
       gen_random_uuid() as _id,
       section,
       module as method,
-      int8range($1::int8, $1::int8) as _block_range
+      int8range($1::int8, $2::int8) as _block_range
     FROM consensus.events 
-    WHERE _block_range @> $1::int8
+    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
 
@@ -65,9 +70,9 @@ const consensusLogKindsQuery = `
     INSERT INTO consensus.log_kinds (id, _id, _block_range)
     SELECT DISTINCT kind as id, 
       gen_random_uuid() as _id,
-      int8range($1::int8, $1::int8) as _block_range
+      int8range($1::int8, $2::int8) as _block_range
     FROM consensus.logs 
-    WHERE _block_range @> $1::int8
+    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
     ON CONFLICT (id) DO NOTHING
     RETURNING *`;
 
@@ -83,9 +88,9 @@ const consensusAccountsQuery = `
       total,
       created_at,
       updated_at,
-      int8range($1::int8, $1::int8) as _block_range
+      int8range($1::int8, $2::int8) as _block_range
     FROM consensus.account_histories
-    WHERE _block_range @> $1::int8
+    WHERE lower(_block_range) >= $1::int8 AND upper(_block_range) <= $2::int8
     ON CONFLICT (id) 
     DO UPDATE SET
       nonce = EXCLUDED.nonce,
