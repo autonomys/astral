@@ -73,9 +73,7 @@ export const AccountRewardList: FC = () => {
     'accountReward',
   )
 
-  const {
-    consensus: { accountReward: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.accountReward)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

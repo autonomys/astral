@@ -48,9 +48,7 @@ export const useLeaderboard = (subspaceAccount: string) => {
     'leaderboard',
   )
 
-  const {
-    walletSidekick: { leaderboard },
-  } = useQueryStates()
+  const leaderboard = useQueryStates((state) => state.walletSidekick.leaderboard)
 
   const loading = useMemo(() => isLoading(leaderboard), [leaderboard])
   const data = useMemo(() => hasValue(leaderboard) && leaderboard.value, [leaderboard])

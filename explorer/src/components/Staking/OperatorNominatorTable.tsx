@@ -188,9 +188,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     'operatorNominators',
   )
 
-  const {
-    staking: { operatorNominators },
-  } = useQueryStates()
+  const operatorNominators = useQueryStates((state) => state.staking.operatorNominators)
 
   const nominators = useMemo(
     () => (hasValue(operatorNominators) ? operatorNominators.value.staking_nominators : []),

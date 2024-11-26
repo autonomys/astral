@@ -543,9 +543,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     TABLE,
   )
 
-  const {
-    staking: { operators },
-  } = useQueryStates()
+  const operators = useQueryStates((state) => state.staking.operators)
 
   const fullDataDownloader = useCallback(
     () =>

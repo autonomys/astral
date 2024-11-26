@@ -23,7 +23,9 @@ export const useIndexersQuery = <TData, TVariables extends OperationVariables>(
   isVisible: boolean
   setIsVisible: (isVisible: boolean) => void
 } => {
-  const { setIsLoading, setValue, setError } = useQueryStates()
+  const setIsLoading = useQueryStates((state) => state.setIsLoading)
+  const setValue = useQueryStates((state) => state.setValue)
+  const setError = useQueryStates((state) => state.setError)
 
   const [_isVisible, _setIsVisible] = useState<{ [key: string]: boolean }>(
     section && component ? { [`${section}.${component}`]: true } : { '0': true },

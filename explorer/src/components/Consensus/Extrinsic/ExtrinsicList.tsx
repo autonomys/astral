@@ -112,9 +112,7 @@ export const ExtrinsicList: FC = () => {
     TABLE,
   )
 
-  const {
-    consensus: { extrinsics: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.extrinsics)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

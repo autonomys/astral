@@ -36,9 +36,7 @@ export const Extrinsic: FC = () => {
     'extrinsic',
   )
 
-  const {
-    consensus: { extrinsic: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.extrinsic)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value
