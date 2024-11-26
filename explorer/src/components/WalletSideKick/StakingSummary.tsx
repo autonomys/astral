@@ -4,8 +4,8 @@ import { List, StyledListItem } from 'components/common/List'
 import { BIGINT_ZERO } from 'constants/general'
 import { ROUTE_EXTRA_FLAG_TYPE, ROUTE_FLAG_VALUE_OPEN_CLOSE, Routes } from 'constants/routes'
 import { StakingSummaryQuery, StakingSummaryQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -22,7 +22,7 @@ interface StakingSummaryProps {
 
 export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, tokenSymbol }) => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -34,7 +34,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     }),
     [subspaceAccount],
   )
-  const { setIsVisible } = useSquidQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
+  const { setIsVisible } = useIndexersQuery<StakingSummaryQuery, StakingSummaryQueryVariables>(
     QUERY_STAKING_SUMMARY,
     {
       variables,

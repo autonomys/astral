@@ -12,8 +12,8 @@ import {
   Routes,
 } from 'constants/routes'
 import { ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -29,7 +29,7 @@ interface LastExtrinsicsProps {
 
 export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -41,7 +41,10 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
     }),
     [subspaceAccount],
   )
-  const { setIsVisible } = useSquidQuery<ExtrinsicsSummaryQuery, ExtrinsicsSummaryQueryVariables>(
+  const { setIsVisible } = useIndexersQuery<
+    ExtrinsicsSummaryQuery,
+    ExtrinsicsSummaryQueryVariables
+  >(
     QUERY_EXTRINSIC_SUMMARY,
     {
       variables,

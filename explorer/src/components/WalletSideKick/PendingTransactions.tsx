@@ -11,8 +11,8 @@ import { TransactionStatus } from 'constants/transaction'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import { PendingTransactionQuery, PendingTransactionQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useSearchParams } from 'next/navigation'
@@ -30,7 +30,7 @@ dayjs.extend(relativeTime)
 
 export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const inFocus = useWindowFocus()
   const { get } = useSearchParams()
   const isSideKickOpen = get(ROUTE_EXTRA_FLAG_TYPE.WALLET_SIDEKICK)
@@ -50,7 +50,7 @@ export const PendingTransactions: FC<PendingTransactionsProps> = ({ subspaceAcco
     }),
     [pendingTransactions, subspaceAccount],
   )
-  const { data, setIsVisible } = useSquidQuery<
+  const { data, setIsVisible } = useIndexersQuery<
     PendingTransactionQuery,
     PendingTransactionQueryVariables
   >(QUERY_PENDING_TX, {

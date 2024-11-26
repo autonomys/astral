@@ -3,7 +3,7 @@
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
 import { EXTERNAL_ROUTES, INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -17,7 +17,7 @@ export const FarmingHeader = () => {
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { network } = useChains()
+  const { network } = useIndexers()
 
   const menuList = useMemo(
     () => [

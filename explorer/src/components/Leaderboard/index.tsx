@@ -4,7 +4,7 @@ import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { PageTabs } from 'components/common/PageTabs'
 import { Tab } from 'components/common/Tabs'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import useWallet from 'hooks/useWallet'
 import React, { FC, useCallback } from 'react'
@@ -85,7 +85,7 @@ const Leaderboard: FC<LeaderboardProps> = ({ children }) => {
 
 export const AccountLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
 
   return (
     <Leaderboard>
@@ -181,7 +181,7 @@ export const AccountLeaderboard: FC = () => {
 
 export const FarmerLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
 
   return (
     <Leaderboard>
@@ -256,7 +256,7 @@ export const FarmerLeaderboard: FC = () => {
 
 export const OperatorLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
 
   return (
     <Leaderboard>
@@ -334,7 +334,7 @@ export const OperatorLeaderboard: FC = () => {
 
 export const NominatorLeaderboard: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
 
   return (
     <Leaderboard>

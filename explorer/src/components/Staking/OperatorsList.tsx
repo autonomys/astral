@@ -10,10 +10,10 @@ import { BIGINT_ZERO, PAGE_SIZE, SHARES_CALCULATION_MULTIPLIER } from 'constants
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { OperatorPendingAction, OperatorStatus } from 'constants/staking'
 import { OperatorsListQuery, OperatorsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -59,7 +59,7 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const { network, tokenSymbol, tokenDecimals } = useChains()
+  const { network, tokenSymbol, tokenDecimals } = useIndexers()
   const { subspaceAccount } = useWallet()
   const { operators: rpcOperators, domainRegistry, deposits } = useConsensusStates()
   useConsensusData()
@@ -528,7 +528,10 @@ export const OperatorsList: FC<OperatorsListProps> = ({ domainId }) => {
     [pagination, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<OperatorsListQuery, OperatorsListQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<
+    OperatorsListQuery,
+    OperatorsListQueryVariables
+  >(
     QUERY_OPERATOR_LIST,
     {
       variables,

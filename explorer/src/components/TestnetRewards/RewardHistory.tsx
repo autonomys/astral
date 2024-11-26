@@ -6,7 +6,7 @@ import { WalletButton } from 'components/WalletButton'
 import AccountListDropdown from 'components/WalletButton/AccountListDropdown'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { WalletType } from 'constants/wallet'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useMemo } from 'react'
@@ -15,7 +15,7 @@ import { formatAddress } from 'utils/formatAddress'
 import { AccountIcon } from '../common/AccountIcon'
 
 export const RewardHistory: FC = () => {
-  const { network } = useChains()
+  const { network } = useIndexers()
   const { actingAccount, subspaceAccount, accounts } = useWallet()
   const { mySubspaceWallets, addSubspaceWallet, removeSubspaceWallet } = useViewStates()
 

@@ -2,11 +2,11 @@
 
 import { indexers } from 'constants/indexers'
 import { Routes } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { SessionProvider } from 'next-auth/react'
 import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
-import { ChainProvider } from 'providers/ChainProvider'
+import { IndexersProvider } from 'providers/IndexersProvider'
 import { ThemeProvider } from 'providers/ThemeProvider'
 import { FC, ReactNode, useEffect } from 'react'
 
@@ -26,7 +26,7 @@ const WalletProvider = dynamic(
 )
 
 const UpdateSelectedChainByPath = ({ children }: Props) => {
-  const { setIndexerSet, setSection, network, section } = useChains()
+  const { setIndexerSet, setSection, network, section } = useIndexers()
 
   const pathname = usePathname()
 
@@ -52,7 +52,7 @@ const UpdateSelectedChainByPath = ({ children }: Props) => {
 
 export const Provider: FC<ProviderProps> = ({ children }) => {
   return (
-    <ChainProvider>
+    <IndexersProvider>
       <ThemeProvider>
         <SessionProvider>
           <WalletProvider>
@@ -60,6 +60,6 @@ export const Provider: FC<ProviderProps> = ({ children }) => {
           </WalletProvider>
         </SessionProvider>
       </ThemeProvider>
-    </ChainProvider>
+    </IndexersProvider>
   )
 }

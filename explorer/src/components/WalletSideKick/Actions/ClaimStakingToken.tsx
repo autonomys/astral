@@ -4,8 +4,8 @@ import { StyledButton } from 'components/common/StyledButton'
 import { QUERY_EXTRINSIC_BY_HASH } from 'components/Consensus/Extrinsic/query'
 import { ROUTE_API, ROUTE_EXTRA_FLAG_TYPE } from 'constants/routes'
 import { ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useCallback, useEffect, useState } from 'react'
@@ -15,7 +15,7 @@ import { hasValue, useQueryStates } from 'states/query'
 export const ClaimStakingToken: FC = () => {
   const { inView, ref } = useInView()
   const { actingAccount, subspaceAccount, injector } = useWallet()
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
 
   const [claimIsPending, setClaimIsPending] = useState(false)
   const [claimIsFinalized, setClaimIsFinalized] = useState(false)
@@ -23,7 +23,7 @@ export const ClaimStakingToken: FC = () => {
   const [claimHash, setClaimHash] = useState<string | null>(null)
   const inFocus = useWindowFocus()
 
-  const { setIsVisible } = useSquidQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
+  const { setIsVisible } = useIndexersQuery<ExtrinsicsByHashQuery, ExtrinsicsByHashQueryVariables>(
     QUERY_EXTRINSIC_BY_HASH,
     {
       variables: { hash: claimHash ?? '' },

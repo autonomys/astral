@@ -7,8 +7,8 @@ import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
@@ -26,7 +26,7 @@ type Row = EventsByBlockIdQuery['consensus_events'][number]
 export const BlockDetailsEventList: FC = () => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const apolloClient = useApolloClient()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
@@ -47,7 +47,7 @@ export const BlockDetailsEventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
   )
 
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useIndexersQuery<
     EventsByBlockIdQuery,
     EventsByBlockIdQueryVariables
   >(QUERY_BLOCK_EVENTS, {

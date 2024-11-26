@@ -17,8 +17,8 @@ import {
   TransfersByAccountIdQueryVariables,
   Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -45,7 +45,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
@@ -75,7 +75,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const { data, loading, setIsVisible } = useIndexersQuery<
     TransfersByAccountIdQuery,
     TransfersByAccountIdQueryVariables
   >(QUERY_ACCOUNT_TRANSFERS, {

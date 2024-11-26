@@ -4,8 +4,8 @@ import { SearchBar } from 'components/common/SearchBar'
 import { Spinner } from 'components/common/Spinner'
 import { Routes } from 'constants/routes'
 import type { HomeQueryQuery, HomeQueryQueryVariables } from 'gql/graphql'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { FC, useEffect, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { hasValue, isLoading, useQueryStates } from 'states/query'
@@ -20,7 +20,7 @@ export const Home: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
 
-  const { loading, setIsVisible } = useSquidQuery<HomeQueryQuery, HomeQueryQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<HomeQueryQuery, HomeQueryQueryVariables>(
     QUERY_HOME,
     {
       variables: { limit: PAGE_SIZE, offset: 0 },

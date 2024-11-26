@@ -3,7 +3,7 @@ import { List, StyledListItem } from 'components/common/List'
 import { NotFound } from 'components/layout/NotFound'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { EventByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
 import { parseArgs } from 'utils/indexerParsing'
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const EventDetailsCard: FC<Props> = ({ event }) => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   if (!event) return <NotFound />
   return (

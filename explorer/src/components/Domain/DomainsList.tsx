@@ -8,10 +8,10 @@ import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { DomainsListQuery, DomainsListQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
 import { useConsensusData } from 'hooks/useConsensusData'
 import { useDomainsData } from 'hooks/useDomainsData'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -44,7 +44,7 @@ export const DomainsList: FC = () => {
   })
   useDomainsData()
   useConsensusData()
-  const { network, section, tokenSymbol, tokenDecimals } = useChains()
+  const { network, section, tokenSymbol, tokenDecimals } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
   const availableColumns = useTableStates((state) => state[TABLE].columns)
@@ -366,7 +366,7 @@ export const DomainsList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<DomainsListQuery, DomainsListQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<DomainsListQuery, DomainsListQueryVariables>(
     QUERY_DOMAIN_LIST,
     {
       variables,

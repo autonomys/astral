@@ -3,7 +3,7 @@ import { AccountIconWithLink } from 'components/common/AccountIcon'
 import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { BlockByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { FC } from 'react'
 import { utcToLocalRelativeTime, utcToLocalTime } from 'utils/time'
 
@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const BlockDetailsCard: FC<Props> = ({ block, isDesktop = false }) => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   return (
     <div className='w-full'>

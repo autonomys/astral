@@ -1,12 +1,12 @@
 import { StatItem } from 'components/common/StatItem'
 import { AccountByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { FC } from 'react'
 import { bigNumberToNumber, numberWithCommas } from 'utils/number'
 import { AccountBalancePieChart } from './AccountBalancePieChart'
 
 type Props = {
-  account: AccountByIdQuery['consensus_accounts'][number] | undefined
+  account: AccountByIdQuery['consensus_account_histories'][number] | undefined
   isDesktop?: boolean
 }
 
@@ -16,7 +16,7 @@ export const AccountBalanceStats: FC<Props> = ({ account, isDesktop = false }) =
   const accountReserved = bigNumberToNumber(account ? account.reserved : 0)
   const freePercent = accountTotal ? (100 * accountFree) / accountTotal : 0
   const reservedPercent = accountTotal ? (100 * accountReserved) / accountTotal : 0
-  const { tokenSymbol } = useChains()
+  const { tokenSymbol } = useIndexers()
 
   const backgroundStyle = !isDesktop
     ? 'dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo rounded-[20px]'

@@ -2,7 +2,7 @@ import { capitalizeFirstLetter } from '@autonomys/auto-utils'
 import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { FC, useMemo } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -141,19 +141,19 @@ export const DomainBlockTime: FC = () => {
   const { ref } = useInView()
   const inFocus = useWindowFocus()
 
-  const { data, loading, error } = useSquidQuery<DomainsStatusQuery, DomainsStatusQueryVariables>(
-    QUERY_DOMAIN_STATUS,
-    {
-      variables: {
-        limit: 10,
-        orderBy: [{ id: OrderBy.Asc }],
-        where: {},
-      },
-      skip: !inFocus,
-      pollInterval: 2000,
-      context: { clientName: 'staking' },
+  const { data, loading, error } = useIndexersQuery<
+    DomainsStatusQuery,
+    DomainsStatusQueryVariables
+  >(QUERY_DOMAIN_STATUS, {
+    variables: {
+      limit: 10,
+      orderBy: [{ id: OrderBy.Asc }],
+      where: {},
     },
-  )
+    skip: !inFocus,
+    pollInterval: 2000,
+    context: { clientName: 'staking' },
+  })
 
   const cards = useMemo(() => {
     if (loading || error || !data) return []

@@ -7,8 +7,8 @@ import { Tab } from 'components/common/Tabs'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { AccountByIdQuery, AccountByIdQueryVariables } from 'gql/graphql'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -31,7 +31,7 @@ export const Account: FC = () => {
   const accountId = formatAddress(rawAccountId)
   const isDesktop = useMediaQuery('(min-width: 1024px)')
 
-  const { loading, setIsVisible } = useSquidQuery<AccountByIdQuery, AccountByIdQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<AccountByIdQuery, AccountByIdQueryVariables>(
     QUERY_ACCOUNT_BY_ID,
     {
       variables: { accountId: accountId ?? '' },
@@ -49,7 +49,7 @@ export const Account: FC = () => {
     if (hasValue(consensusEntry)) return consensusEntry.value
   }, [consensusEntry])
 
-  const account = useMemo(() => data && data.consensus_accounts[0], [data])
+  const account = useMemo(() => data && data.consensus_account_histories[0], [data])
   const rewards = useMemo(() => (data ? data.consensus_rewards : []), [data])
 
   useEffect(() => {

@@ -8,8 +8,8 @@ import {
   Routes,
 } from 'constants/routes'
 import { AccountsTopLeaderboardQuery, AccountsTopLeaderboardQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -34,7 +34,7 @@ export const useLeaderboard = (subspaceAccount: string) => {
     }),
     [],
   )
-  const { setIsVisible } = useSquidQuery<
+  const { setIsVisible } = useIndexersQuery<
     AccountsTopLeaderboardQuery,
     AccountsTopLeaderboardQueryVariables
   >(
@@ -96,7 +96,7 @@ export const useLeaderboard = (subspaceAccount: string) => {
 
 export const Leaderboard: FC<LeaderboardProps> = ({ subspaceAccount }) => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const { topFarmers, topOperators, topNominators, hasTopPositions, error, loading, setIsVisible } =
     useLeaderboard(subspaceAccount)
 

@@ -1,7 +1,7 @@
 import type { ISubmittableResult, Signer, SubmittableExtrinsic } from '@autonomys/auto-utils'
 import { sendGAEvent } from '@next/third-parties/google'
 import { TransactionStatus } from 'constants/transaction'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useWallet from 'hooks/useWallet'
 import { usePathname } from 'next/navigation'
 import { useCallback } from 'react'
@@ -23,7 +23,7 @@ interface SendAndSaveTx {
 }
 
 export const useTxHelper = () => {
-  const { network } = useChains()
+  const { network } = useIndexers()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
   const { addPendingTransactions, getNextNonceForAccount } = useTransactionsStates()
   const pathname = usePathname()

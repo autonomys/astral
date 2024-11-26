@@ -4,20 +4,20 @@ import { CopyButton } from 'components/common/CopyButton'
 import { List, StyledListItem } from 'components/common/List'
 import { Routes } from 'constants/routes'
 import { AccountByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { FC } from 'react'
 import { accountIdToHex } from 'utils//formatAddress'
 import { AccountIcon } from '../../common/AccountIcon'
 
 type Props = {
-  account: AccountByIdQuery['consensus_accounts'][number] | undefined
+  account: AccountByIdQuery['consensus_account_histories'][number] | undefined
   accountAddress: string
   isDesktop?: boolean
 }
 
 export const AccountDetailsCard: FC<Props> = ({ account, accountAddress, isDesktop = false }) => {
   const publicKey = accountIdToHex(accountAddress)
-  const { section } = useChains()
+  const { section } = useIndexers()
 
   const theme = section === Routes.nova ? 'ethereum' : 'beachball'
   return (

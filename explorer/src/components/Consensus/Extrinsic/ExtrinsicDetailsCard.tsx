@@ -5,7 +5,7 @@ import { List, StyledListItem } from 'components/common/List'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { ExtrinsicsByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
 import { parseArgs } from 'utils/indexerParsing'
@@ -17,7 +17,7 @@ type Props = {
 }
 
 export const ExtrinsicDetailsCard: FC<Props> = ({ extrinsic, isDesktop = false }) => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const [module, call] = extrinsic.name.split('.')
 

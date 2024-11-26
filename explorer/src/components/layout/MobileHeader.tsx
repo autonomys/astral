@@ -2,7 +2,7 @@
 
 import { MoonIcon, SunIcon } from '@heroicons/react/20/solid'
 import { LogoIcon } from 'components/icons'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import { useRouter } from 'next/navigation'
 import { useTheme } from 'providers/ThemeProvider'
 import { FC, ReactNode } from 'react'
@@ -28,7 +28,7 @@ export const MobileHeader: FC<Props> = ({ isOpen, setIsOpen, menuList }) => (
 const Drawer: FC<Props> = ({ children, menuList, isOpen, setIsOpen }) => {
   const { push } = useRouter()
   const { isDark, toggleTheme } = useTheme()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const handleNavigate = (url: string) => {
     setIsOpen(false)
