@@ -50,6 +50,8 @@ interface ExplorerQueryState {
 
     blockDetailsExtrinsic: QueryState<GqlT.ExtrinsicsByBlockIdQuery>
     blockDetailsEvent: QueryState<GqlT.EventsByBlockIdQuery>
+
+    extrinsicDetailsEvent: QueryState<GqlT.EventsByExtrinsicIdQuery>
   }
   [Routes.staking]: {
     operators: QueryState<GqlT.OperatorsListQuery>
@@ -109,6 +111,8 @@ const initialState: ExplorerQueryState = {
 
     blockDetailsExtrinsic: initialized,
     blockDetailsEvent: initialized,
+
+    extrinsicDetailsEvent: initialized,
   },
   staking: {
     operators: initialized,

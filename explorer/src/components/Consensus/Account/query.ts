@@ -131,6 +131,7 @@ export const QUERY_ACCOUNT_EXTRINSICS = gql`
     }
     consensus_extrinsics(order_by: $orderBy, limit: $limit, offset: $offset, where: $where) {
       id
+      sort_id
       hash
       name
       success

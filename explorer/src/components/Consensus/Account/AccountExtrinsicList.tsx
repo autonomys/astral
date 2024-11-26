@@ -34,7 +34,7 @@ type Row = ExtrinsicsByAccountIdQuery['consensus_extrinsics'][0]
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
@@ -44,8 +44,16 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
-  // eslint-disable-next-line camelcase
-  const orderBy = useMemo(() => ({ block_height: OrderBy.Desc }), [])
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : // eslint-disable-next-line camelcase
+          { sort_id: OrderBy.Desc },
+    [sorting],
+  )
 
   const where = useMemo(
     () => ({
@@ -77,21 +85,16 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     'accountExtrinsic',
   )
 
-  const {
-    consensus: { accountExtrinsic: consensusEntry },
-  } = useQueryStates()
+  const accountExtrinsic = useQueryStates((state) => state.consensus.accountExtrinsic)
 
   const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
+    if (hasValue(accountExtrinsic)) return accountExtrinsic.value
+  }, [accountExtrinsic])
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'extrinsicsConnection', {
-        orderBy,
-        where,
-      }),
-    [apolloClient, orderBy, where],
+      downloadFullData(apolloClient, QUERY_ACCOUNT_EXTRINSICS, 'consensus_extrinsics', variables),
+    [apolloClient, variables],
   )
 
   const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
@@ -110,7 +113,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'block.height',
+        accessorKey: 'sort_id',
         header: 'Extrinsic Id',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
@@ -119,12 +122,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            <div>{`${row.original.block_height}-${row.original.index_in_block}`}</div>
+            <div>{row.original.id}</div>
           </Link>
         ),
       },
       {
-        accessorKey: 'block.timestamp',
+        accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: true,
         cell: ({ row }) => (
@@ -173,10 +176,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading && isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading || isLoading(accountExtrinsic)) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading, consensusEntry])
+  }, [data, loading, accountExtrinsic])
 
   useEffect(() => {
     setIsVisible(inView)

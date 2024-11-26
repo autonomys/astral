@@ -86,12 +86,8 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   })
 
   const fullDataDownloader = useCallback(
-    () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_TRANSFERS, 'extrinsicsConnection', {
-        orderBy,
-        where,
-      }),
-    [apolloClient, orderBy, where],
+    () => downloadFullData(apolloClient, QUERY_ACCOUNT_TRANSFERS, 'consensus_transfers', variables),
+    [apolloClient, variables],
   )
 
   const transfers = useMemo(() => data && data.consensus_transfers, [data])
@@ -260,7 +256,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
-            filename='account-extrinsic-list'
+            filename='account-transfers-list'
             fullDataDownloader={fullDataDownloader}
           />
         ) : (

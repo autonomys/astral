@@ -78,11 +78,13 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_BALANCE_HISTORY, 'consensus_account_histories', {
-        orderBy,
-        where,
-      }),
-    [apolloClient, orderBy, where],
+      downloadFullData(
+        apolloClient,
+        QUERY_ACCOUNT_BALANCE_HISTORY,
+        'consensus_account_histories',
+        variables,
+      ),
+    [apolloClient, variables],
   )
 
   const histories = useMemo(() => data && data.consensus_account_histories, [data])
