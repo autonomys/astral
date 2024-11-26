@@ -60,19 +60,25 @@ export const QUERY_BLOCK_BY_ID = gql`
 `
 
 export const QUERY_BLOCK_EXTRINSICS = gql`
-  query ExtrinsicsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int) {
+  query ExtrinsicsByBlockId(
+    $blockId: numeric!
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_extrinsics_order_by!]
+  ) {
     consensus_extrinsics_aggregate(where: { block_height: { _eq: $blockId } }) {
       aggregate {
         count
       }
     }
     consensus_extrinsics(
-      order_by: { index_in_block: asc }
+      order_by: $orderBy
       limit: $limit
       offset: $offset
       where: { block_height: { _eq: $blockId } }
     ) {
       id
+      sort_id
       hash
       name
       success
@@ -84,19 +90,25 @@ export const QUERY_BLOCK_EXTRINSICS = gql`
 `
 
 export const QUERY_BLOCK_EVENTS = gql`
-  query EventsByBlockId($blockId: numeric!, $limit: Int!, $offset: Int) {
+  query EventsByBlockId(
+    $blockId: numeric!
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_events_order_by!]
+  ) {
     consensus_events_aggregate(where: { block_height: { _eq: $blockId } }) {
       aggregate {
         count
       }
     }
     consensus_events(
-      order_by: { index_in_block: asc }
+      order_by: $orderBy
       limit: $limit
       offset: $offset
       where: { block_height: { _eq: $blockId } }
     ) {
       id
+      sort_id
       name
       phase
       index_in_block

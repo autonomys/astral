@@ -7,7 +7,11 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
+import {
+  ExtrinsicsByBlockIdQuery,
+  ExtrinsicsByBlockIdQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -31,19 +35,38 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
   const { network, section } = useIndexers()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
+    pageSize: isDesktop ? PAGE_SIZE : 5,
     pageIndex: 0,
   })
   const inFocus = useWindowFocus()
 
-  const limit = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { id: OrderBy.Asc },
+    [sorting],
+  )
+
+  const variables = useMemo(
+    () => ({
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
+      orderBy,
+      blockId: Number(blockId),
+    }),
+    [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
+  )
+
   const { data, loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
   >(QUERY_BLOCK_EXTRINSICS, {
-    variables: { blockId: Number(blockId), limit },
+    variables,
     skip: !inFocus,
   })
 
@@ -52,23 +75,23 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'block',
+        accessorKey: 'sort_id',
         header: 'Extrinsic Id',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-block-extrinsic-id`}
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            {`${row.original.block_height}-${row.index}`}
+            {row.original.id}
           </Link>
         ),
       },
       {
         accessorKey: 'hash',
         header: 'Block hash',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-extrinsic-hash`}>{shortString(row.original.hash)}</div>
         ),
@@ -76,7 +99,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       {
         accessorKey: 'name',
         header: 'Action',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div key={`${row.index}-block-extrinsic-action`}>
             {row.original.name.split('.')[1].toUpperCase()}
@@ -84,7 +107,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
         ),
       },
       {
-        accessorKey: 'block.timestamp',
+        accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
@@ -96,7 +119,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
       {
         accessorKey: 'success',
         header: 'Status',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
@@ -110,7 +133,13 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     [network, section],
   )
 
-  const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
+  const totalCount = useMemo(
+    () =>
+      data && data.consensus_extrinsics_aggregate.aggregate
+        ? data.consensus_extrinsics_aggregate.aggregate.count
+        : 0,
+    [data],
+  )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],

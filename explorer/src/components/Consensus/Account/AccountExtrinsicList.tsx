@@ -7,7 +7,7 @@ import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import { INTERNAL_ROUTES } from 'constants/routes'
 import {
   ExtrinsicsByAccountIdQuery,
   ExtrinsicsByAccountIdQueryVariables,
@@ -19,7 +19,6 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
@@ -34,7 +33,7 @@ type Row = ExtrinsicsByAccountIdQuery['consensus_extrinsics'][0]
 
 export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const { ref, inView } = useInView()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'block_height', desc: true }])
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
     pageIndex: 0,
@@ -44,8 +43,15 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
-  // eslint-disable-next-line camelcase
-  const orderBy = useMemo(() => ({ block_height: OrderBy.Desc }), [])
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { id: OrderBy.Asc },
+    [sorting],
+  )
 
   const where = useMemo(
     () => ({
@@ -63,27 +69,14 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { loading, setIsVisible } = useIndexersQuery<
+  const { data, loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByAccountIdQuery,
     ExtrinsicsByAccountIdQueryVariables
-  >(
-    QUERY_ACCOUNT_EXTRINSICS,
-    {
-      variables,
-      skip: !inFocus,
-      pollInterval: 6000,
-    },
-    Routes.consensus,
-    'accountExtrinsic',
-  )
-
-  const {
-    consensus: { accountExtrinsic: consensusEntry },
-  } = useQueryStates()
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
+  >(QUERY_ACCOUNT_EXTRINSICS, {
+    variables,
+    skip: !inFocus,
+    pollInterval: 6000,
+  })
 
   const fullDataDownloader = useCallback(
     () =>
@@ -110,7 +103,7 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'block.height',
+        accessorKey: 'sort_id',
         header: 'Extrinsic Id',
         enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
@@ -119,12 +112,12 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            <div>{`${row.original.block_height}-${row.original.index_in_block}`}</div>
+            <div>{row.original.id}</div>
           </Link>
         ),
       },
       {
-        accessorKey: 'block.timestamp',
+        accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: true,
         cell: ({ row }) => (
@@ -173,10 +166,10 @@ export const AccountExtrinsicList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading && isLoading(consensusEntry)) return <Spinner isSmall />
+    if (loading) return <Spinner isSmall />
     if (!data) return <NotFound />
     return null
-  }, [data, loading, consensusEntry])
+  }, [data, loading])
 
   useEffect(() => {
     setIsVisible(inView)

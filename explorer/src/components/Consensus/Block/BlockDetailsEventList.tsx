@@ -6,7 +6,11 @@ import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { EventsByBlockIdQuery, EventsByBlockIdQueryVariables } from 'gql/graphql'
+import {
+  EventsByBlockIdQuery,
+  EventsByBlockIdQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
@@ -16,7 +20,6 @@ import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
-import { sort } from 'utils/sort'
 import { countTablePages } from 'utils/table'
 import { NotFound } from '../../layout/NotFound'
 import { QUERY_BLOCK_EVENTS } from './query'
@@ -35,7 +38,15 @@ export const BlockDetailsEventList: FC = () => {
   })
   const inFocus = useWindowFocus()
 
-  const orderBy = useMemo(() => sort(sorting, 'id_ASC'), [sorting])
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : { id: OrderBy.Asc },
+    [sorting],
+  )
 
   const variables = useMemo(
     () => ({
@@ -60,16 +71,16 @@ export const BlockDetailsEventList: FC = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: 'sort_id',
         header: 'Event Id',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div className='flex w-full gap-1' key={`${row.index}-block-event-id`}>
             <Link
               className='w-full hover:text-primaryAccent'
               href={INTERNAL_ROUTES.events.id.page(network, section, row.original.id)}
             >
-              {`${row.original.block_height}-${row.index}`}
+              {row.original.id}
             </Link>
           </div>
         ),
@@ -111,7 +122,13 @@ export const BlockDetailsEventList: FC = () => {
     [apolloClient, orderBy],
   )
 
-  const totalCount = useMemo(() => (events ? events.length : 0), [events])
+  const totalCount = useMemo(
+    () =>
+      data && data.consensus_events_aggregate.aggregate
+        ? data.consensus_events_aggregate.aggregate.count
+        : 0,
+    [data],
+  )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],

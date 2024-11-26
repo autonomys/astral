@@ -51,15 +51,41 @@ export const QUERY_EXTRINSIC_BY_ID = gql`
       tip
       args
       signer
-      events(limit: 10) {
-        id
-        phase
-        timestamp
-        name
-        args
-        extrinsic_id
+      events_aggregate {
+        aggregate {
+          count
+        }
       }
       name
+    }
+  }
+`
+
+export const QUERY_EXTRINSIC_EVENTS = gql`
+  query EventsByExtrinsicId(
+    $extrinsicId: String!
+    $limit: Int!
+    $offset: Int
+    $orderBy: [consensus_events_order_by!]
+  ) {
+    consensus_events_aggregate(where: { extrinsic_id: { _eq: $extrinsicId } }) {
+      aggregate {
+        count
+      }
+    }
+    consensus_events(
+      order_by: $orderBy
+      limit: $limit
+      offset: $offset
+      where: { extrinsic_id: { _eq: $extrinsicId } }
+    ) {
+      id
+      sort_id
+      name
+      phase
+      index_in_block
+      block_height
+      extrinsic_id
     }
   }
 `
