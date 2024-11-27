@@ -1,6 +1,5 @@
 import { ArrowButton } from 'components/common/ArrowButton'
-
-import { EXTERNAL_ROUTES } from '@/constants/routes'
+import { EXTERNAL_ROUTES } from 'constants/routes'
 import AstronautImage from './AstronautImage'
 
 interface Props {

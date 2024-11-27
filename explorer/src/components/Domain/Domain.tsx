@@ -33,9 +33,7 @@ export const Domain: FC = () => {
     'domain',
   )
 
-  const {
-    domains: { domain },
-  } = useQueryStates()
+  const domain = useQueryStates((state) => state.domains.domain)
 
   const domainDetails = useMemo(
     () => hasValue(domain) && domain.value.staking_domains_by_pk,

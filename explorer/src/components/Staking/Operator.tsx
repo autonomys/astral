@@ -36,9 +36,7 @@ export const Operator: FC = () => {
     'operator',
   )
 
-  const {
-    staking: { operator },
-  } = useQueryStates()
+  const operator = useQueryStates((state) => state.staking.operator)
 
   const operatorDetails = useMemo(
     () => hasValue(operator) && operator.value.staking_operators_by_pk,

@@ -378,9 +378,7 @@ export const DomainsList: FC = () => {
     TABLE,
   )
 
-  const {
-    domains: { domains },
-  } = useQueryStates()
+  const domains = useQueryStates((state) => state.domains.domains)
 
   const fullDataDownloader = useCallback(
     () =>
