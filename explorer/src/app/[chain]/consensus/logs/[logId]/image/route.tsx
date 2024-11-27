@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unknown-property */
 import { utcToLocalRelativeTime } from '@/utils/time'
-import { shortString } from '@autonomys/auto-utils'
 import { QUERY_LOG_BY_ID } from 'components/Consensus/Log/query'
 import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
