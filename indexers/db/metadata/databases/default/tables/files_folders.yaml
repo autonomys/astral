@@ -1,6 +1,13 @@
 table:
   name: folders
   schema: files
+configuration:
+  column_config:
+    _id:
+      custom_name: uuid
+  custom_column_names:
+    _id: uuid
+  custom_root_fields: {}
 object_relationships:
   - name: chunk
     using:
