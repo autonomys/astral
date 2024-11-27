@@ -4,7 +4,7 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { LogByIdQuery, LogByIdQueryVariables } from 'gql/graphql'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -19,7 +19,7 @@ export const Log: FC = () => {
   const { ref, inView } = useInView()
   const { logId } = useParams<LogIdParam>()
   const inFocus = useWindowFocus()
-  const { loading, setIsVisible } = useSquidQuery<LogByIdQuery, LogByIdQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<LogByIdQuery, LogByIdQueryVariables>(
     QUERY_LOG_BY_ID,
     {
       variables: { logId: logId ?? '' },
@@ -29,9 +29,7 @@ export const Log: FC = () => {
     'log',
   )
 
-  const {
-    consensus: { log: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.log)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

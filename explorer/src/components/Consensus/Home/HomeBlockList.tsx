@@ -4,7 +4,7 @@ import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { HomeQueryQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
@@ -17,7 +17,7 @@ interface HomeBlockListProps {
 type Row = HomeQueryQuery['consensus_blocks'][number]
 
 export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const blocks = useMemo(() => data.consensus_blocks, [data.consensus_blocks])
 

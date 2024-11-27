@@ -9,7 +9,7 @@ import {
 import { sendGAEvent } from '@next/third-parties/google'
 import { Tooltip } from 'components/common/Tooltip'
 import { WalletAction } from 'constants/wallet'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useWallet from 'hooks/useWallet'
 import { FC, useCallback, useState } from 'react'
 import { ActionsModal } from './ActionsModal'
@@ -20,7 +20,7 @@ interface ActionsButtonsProps {
 
 export const ActionsButtons: FC<ActionsButtonsProps> = ({ tokenSymbol }) => {
   const { subspaceAccount } = useWallet()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const [isOpen, setIsOpen] = useState(false)
   const [action, setAction] = useState<WalletAction>(WalletAction.None)
 

@@ -1,6 +1,6 @@
 import { INTERNAL_ROUTES } from 'constants/routes'
 import { AccountByIdQuery } from 'gql/graphql'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { FC } from 'react'
@@ -13,7 +13,7 @@ interface AccountLatestRewardsProps {
 }
 
 export const AccountLatestRewards: FC<AccountLatestRewardsProps> = ({ rewards }) => {
-  const { network, section, tokenSymbol } = useChains()
+  const { network, section, tokenSymbol } = useIndexers()
   const { accountId } = useParams<AccountIdParam>()
   const { push } = useRouter()
 

@@ -3,8 +3,8 @@ import { BlockIcon, DocIcon } from 'components/icons'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { DomainsStatusQuery, DomainsStatusQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useEffect, useMemo } from 'react'
@@ -24,10 +24,10 @@ interface CardData {
 
 export const DomainCards: FC = () => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const inFocus = useWindowFocus()
 
-  const { data, loading, error, setIsVisible } = useSquidQuery<
+  const { data, loading, error, setIsVisible } = useIndexersQuery<
     DomainsStatusQuery,
     DomainsStatusQueryVariables
   >(QUERY_DOMAIN_STATUS, {

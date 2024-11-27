@@ -15,12 +15,13 @@ import {
   Consensus_Transfers_Select_Column as TransferColumn,
   Consensus_Transfers_Bool_Exp as TransferWhere,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
@@ -42,7 +43,7 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     pageSize: PAGE_SIZE,
     pageIndex: 0,
   })
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
   const apolloClient = useApolloClient()
   const inFocus = useWindowFocus()
 
@@ -67,31 +68,44 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     BalanceHistoryByAccountIdQuery,
     BalanceHistoryByAccountIdQueryVariables
-  >(QUERY_ACCOUNT_BALANCE_HISTORY, {
-    variables,
-    skip: !inFocus,
-    pollInterval: 6000,
-  })
+  >(
+    QUERY_ACCOUNT_BALANCE_HISTORY,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+    },
+    Routes.consensus,
+    'accountBalanceHistory',
+  )
+
+  const consensusEntry = useQueryStates((state) => state.consensus.accountBalanceHistory)
+
+  const histories = useMemo(
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_account_histories,
+    [consensusEntry],
+  )
 
   const fullDataDownloader = useCallback(
     () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_BALANCE_HISTORY, 'consensus_account_histories', {
-        orderBy,
-        where,
-      }),
-    [apolloClient, orderBy, where],
+      downloadFullData(
+        apolloClient,
+        QUERY_ACCOUNT_BALANCE_HISTORY,
+        'consensus_account_histories',
+        variables,
+      ),
+    [apolloClient, variables],
   )
 
-  const histories = useMemo(() => data && data.consensus_account_histories, [data])
   const totalCount = useMemo(
     () =>
-      data && data.consensus_account_histories_aggregate
-        ? data.consensus_account_histories_aggregate.aggregate?.count
+      hasValue(consensusEntry) && consensusEntry.value.consensus_account_histories_aggregate
+        ? consensusEntry.value.consensus_account_histories_aggregate.aggregate?.count
         : 0,
-    [data],
+    [consensusEntry],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
@@ -169,10 +183,10 @@ export const BalanceHistory: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [data, loading])
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)

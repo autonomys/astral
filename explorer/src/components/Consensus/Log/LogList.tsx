@@ -9,8 +9,8 @@ import { TableSettings } from 'components/common/TableSettings'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { LogsQuery, LogsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -28,7 +28,7 @@ const TABLE = 'logs'
 
 export const LogList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -97,7 +97,7 @@ export const LogList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<LogsQuery, LogsQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<LogsQuery, LogsQueryVariables>(
     QUERY_LOGS,
     {
       variables,
@@ -108,9 +108,7 @@ export const LogList: FC = () => {
     TABLE,
   )
 
-  const {
-    consensus: { logs: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.logs)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

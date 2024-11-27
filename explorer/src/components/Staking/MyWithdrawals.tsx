@@ -1,6 +1,6 @@
 import { BIGINT_ZERO, SHARES_CALCULATION_MULTIPLIER } from 'constants/general'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
@@ -40,7 +40,7 @@ type MyUnlockedWithdrawal = {
 
 export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, handleAction }) => {
   const { subspaceAccount } = useWallet()
-  const { section, network, tokenSymbol } = useChains()
+  const { section, network, tokenSymbol } = useIndexers()
   const { withdrawals } = useConsensusStates()
 
   const myUnlockedWithdrawals = useMemo(() => {
@@ -182,7 +182,7 @@ export const MyUnlockedWithdrawals: FC<MyUnlockedWithdrawalsProps> = ({ action, 
 
 export const MyPendingWithdrawals: FC = () => {
   const { subspaceAccount } = useWallet()
-  const { section, network, tokenSymbol } = useChains()
+  const { section, network, tokenSymbol } = useIndexers()
   const { operators, withdrawals } = useConsensusStates()
 
   const myPendingWithdrawals = useMemo(

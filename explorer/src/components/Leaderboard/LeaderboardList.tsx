@@ -11,8 +11,8 @@ import {
   AccountTransferSenderTotalCountQueryVariables,
   Order_By as OrderBy,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
@@ -63,7 +63,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     pageIndex: 0,
   })
   const apolloClient = useApolloClient()
-  const { network, tokenDecimals } = useChains()
+  const { network, tokenDecimals } = useIndexers()
   const inFocus = useWindowFocus()
   const availableColumns = useTableStates((state) => state[TABLE].columns)
   const selectedColumns = useTableStates((state) => state[TABLE].selectedColumns)
@@ -207,7 +207,7 @@ export const LeaderboardList: FC<LeaderboardListProps> = ({
     loading,
     data: listData,
     setIsVisible,
-  } = useSquidQuery<
+  } = useIndexersQuery<
     AccountTransferSenderTotalCountQuery,
     AccountTransferSenderTotalCountQueryVariables
   >(query, {

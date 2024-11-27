@@ -9,8 +9,8 @@ import { TableSettings } from 'components/common/TableSettings'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { EventsQuery, EventsQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -28,7 +28,7 @@ const TABLE = 'events'
 
 export const EventList: FC = () => {
   const { ref, inView } = useInView()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -102,7 +102,7 @@ export const EventList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<EventsQuery, EventsQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<EventsQuery, EventsQueryVariables>(
     QUERY_EVENTS,
     {
       variables,
@@ -113,9 +113,7 @@ export const EventList: FC = () => {
     TABLE,
   )
 
-  const {
-    consensus: { events: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.events)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

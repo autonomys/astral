@@ -4,8 +4,8 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { BlockByIdQuery, BlockByIdQueryVariables } from 'gql/graphql'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -22,7 +22,7 @@ export const Block: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 640px)')
   const inFocus = useWindowFocus()
 
-  const { loading, setIsVisible } = useSquidQuery<BlockByIdQuery, BlockByIdQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<BlockByIdQuery, BlockByIdQueryVariables>(
     QUERY_BLOCK_BY_ID,
     {
       variables: { blockId: blockId ?? '0', blockHash: blockId?.toString() ?? '' },
@@ -32,9 +32,7 @@ export const Block: FC = () => {
     'block',
   )
 
-  const {
-    consensus: { block: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.block)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

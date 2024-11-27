@@ -1,13 +1,13 @@
 'use client'
 
 import { ArrowButton } from 'components/common/ArrowButton'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC } from 'react'
 import { NotFoundImage } from './NotFoundImage'
 
 export const NotFound: FC = () => {
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   return (
     <section className='flex h-full items-center p-16'>

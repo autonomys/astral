@@ -3,7 +3,7 @@ import { Modal } from 'components/common/Modal'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection, WalletType } from 'constants/wallet'
 import { Field, FieldArray, Form, Formik, FormikState } from 'formik'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useWallet from 'hooks/useWallet'
 import Link from 'next/link'
 import { FC, useCallback, useMemo, useState } from 'react'
@@ -24,7 +24,7 @@ type AccountSetting = {
 }
 
 export const AccountPreferencesModal: FC<ActionsModalProps> = ({ isOpen, preference, onClose }) => {
-  const { network } = useChains()
+  const { network } = useIndexers()
   const { actingAccount } = useWallet()
   const [formError, setFormError] = useState<string | null>(null)
   const { addresses, addAddress, removeAddress } = useAddressBookStates()

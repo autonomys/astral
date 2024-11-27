@@ -4,7 +4,7 @@ import { Accordion } from 'components/common/Accordion'
 import { Tooltip } from 'components/common/Tooltip'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { AccountPreferenceSection } from 'constants/wallet'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -29,7 +29,7 @@ export const AccountSummary: FC<AccountSummaryProps> = ({
   tokenSymbol,
 }) => {
   const { ref, inView } = useInView()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const { topFarmers, topOperators, topNominators, setIsVisible } = useLeaderboard(subspaceAccount)
   const { enableDevMode } = usePreferencesStates()
   const [preference, setPreference] = useState<AccountPreferenceSection>(

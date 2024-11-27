@@ -5,8 +5,8 @@ import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import type { OperatorByIdQuery, OperatorByIdQueryVariables } from 'gql/graphql'
 import { useConsensusData } from 'hooks/useConsensusData'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams, useRouter } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -25,7 +25,7 @@ export const Operator: FC = () => {
   const { loadDataByOperatorId } = useConsensusData()
 
   const variables = useMemo(() => ({ operatorId: operatorId ?? '' }), [operatorId])
-  const { loading, setIsVisible } = useSquidQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<OperatorByIdQuery, OperatorByIdQueryVariables>(
     QUERY_OPERATOR_BY_ID,
     {
       variables,
@@ -36,9 +36,7 @@ export const Operator: FC = () => {
     'operator',
   )
 
-  const {
-    staking: { operator },
-  } = useQueryStates()
+  const operator = useQueryStates((state) => state.staking.operator)
 
   const operatorDetails = useMemo(
     () => hasValue(operator) && operator.value.staking_operators_by_pk,

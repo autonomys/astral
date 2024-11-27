@@ -12,8 +12,8 @@ import { NotFound } from 'components/layout/NotFound'
 import { PAGE_SIZE } from 'constants/general'
 import { INTERNAL_ROUTES, Routes } from 'constants/routes'
 import { BlocksQuery, BlocksQueryVariables, Order_By as OrderBy } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
@@ -31,7 +31,7 @@ const TABLE = 'blocks'
 export const BlockList: FC = () => {
   const { ref, inView } = useInView()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: true }])
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -125,7 +125,7 @@ export const BlockList: FC = () => {
     [pagination.pageSize, pagination.pageIndex, orderBy, where],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<BlocksQuery, BlocksQueryVariables>(
+  const { loading, setIsVisible } = useIndexersQuery<BlocksQuery, BlocksQueryVariables>(
     QUERY_BLOCKS,
     {
       variables,
@@ -136,9 +136,7 @@ export const BlockList: FC = () => {
     TABLE,
   )
 
-  const {
-    consensus: { blocks: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.blocks)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

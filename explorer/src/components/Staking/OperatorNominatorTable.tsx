@@ -8,8 +8,8 @@ import {
   OperatorNominatorsByIdQueryVariables,
   Order_By as OrderBy,
 } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useWallet from 'hooks/useWallet'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
@@ -36,7 +36,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
   const { subspaceAccount } = useWallet()
   const { operatorId } = useParams<{ operatorId?: string }>()
   const inFocus = useWindowFocus()
-  const { network, tokenSymbol } = useChains()
+  const { network, tokenSymbol } = useIndexers()
   const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
   const [pagination, setPagination] = useState({
     pageSize: PAGE_SIZE,
@@ -174,7 +174,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     [pagination.pageSize, pagination.pageIndex, orderBy, operatorId],
   )
 
-  const { loading, setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     OperatorNominatorsByIdQuery,
     OperatorNominatorsByIdQueryVariables
   >(
@@ -188,9 +188,7 @@ export const OperatorNominatorTable: FC<Props> = ({ operator }) => {
     'operatorNominators',
   )
 
-  const {
-    staking: { operatorNominators },
-  } = useQueryStates()
+  const operatorNominators = useQueryStates((state) => state.staking.operatorNominators)
 
   const nominators = useMemo(
     () => (hasValue(operatorNominators) ? operatorNominators.value.staking_nominators : []),

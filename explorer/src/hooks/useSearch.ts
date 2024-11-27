@@ -7,7 +7,7 @@ import { INTERNAL_ROUTES } from 'constants/routes'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { formatAddress } from 'utils//formatAddress'
-import useChains from './useChains'
+import useIndexers from './useIndexers'
 
 type Values = {
   handleSearch: (term: string, searchType: number) => void
@@ -17,7 +17,7 @@ type Values = {
 export const useSearch = (): Values => {
   const [isSearching, setIsSearching] = useState(false)
   const { push } = useRouter()
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const [getResults] = useLazyQuery(GET_RESULTS, { fetchPolicy: 'network-only' })
 

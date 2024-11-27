@@ -1,12 +1,12 @@
 import { useFormikContext } from 'formik'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import React, { FC } from 'react'
 import { FormValues } from './SearchBar'
 
 export const SearchInput: FC = () => {
   const { values, errors, touched, handleChange } = useFormikContext<FormValues>()
-  const { network } = useChains()
+  const { network } = useIndexers()
   const isDesktop = useMediaQuery('(min-width: 640px)')
 
   let placeholder: string

@@ -3,7 +3,7 @@
 import { Bars3BottomRightIcon, MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 import { LogoIcon } from 'components/icons'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import useChains from 'hooks/useChains'
+import useIndexers from 'hooks/useIndexers'
 import useMediaQuery from 'hooks/useMediaQuery'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -17,7 +17,7 @@ export const ConsensusHeader: FC = () => {
   const pathname = usePathname()
   const isDesktop = useMediaQuery('(min-width: 1024px)')
   const [isOpen, setIsOpen] = useState(false)
-  const { network, section } = useChains()
+  const { network, section } = useIndexers()
 
   const menuList = useMemo(
     () => [

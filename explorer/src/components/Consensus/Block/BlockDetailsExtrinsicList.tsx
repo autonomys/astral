@@ -1,21 +1,28 @@
 'use client'
 
+import { useApolloClient } from '@apollo/client'
 import { shortString } from '@autonomys/auto-utils'
 import type { SortingState } from '@tanstack/react-table'
 import { SortedTable } from 'components/common/SortedTable'
 import { Spinner } from 'components/common/Spinner'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { PAGE_SIZE } from 'constants/general'
-import { INTERNAL_ROUTES } from 'constants/routes'
-import { ExtrinsicsByBlockIdQuery, ExtrinsicsByBlockIdQueryVariables } from 'gql/graphql'
-import useChains from 'hooks/useChains'
-import { useSquidQuery } from 'hooks/useSquidQuery'
+import { INTERNAL_ROUTES, Routes } from 'constants/routes'
+import {
+  ExtrinsicsByBlockIdQuery,
+  ExtrinsicsByBlockIdQueryVariables,
+  Order_By as OrderBy,
+} from 'gql/graphql'
+import useIndexers from 'hooks/useIndexers'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
+import { downloadFullData } from 'utils/downloadFullData'
 import { countTablePages } from 'utils/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 import { NotFound } from '../../layout/NotFound'
@@ -30,73 +37,101 @@ type Row = ExtrinsicsByBlockIdQuery['consensus_extrinsics'][number]
 export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
   const { ref, inView } = useInView()
   const { blockId } = useParams()
-  const { network, section } = useChains()
-  const [sorting, setSorting] = useState<SortingState>([{ id: 'id', desc: false }])
+  const { network, section } = useIndexers()
+  const apolloClient = useApolloClient()
+  const [sorting, setSorting] = useState<SortingState>([{ id: 'sort_id', desc: false }])
   const [pagination, setPagination] = useState({
-    pageSize: PAGE_SIZE,
+    pageSize: isDesktop ? PAGE_SIZE : 5,
     pageIndex: 0,
   })
   const inFocus = useWindowFocus()
 
-  const limit = useMemo(() => (isDesktop ? 10 : 5), [isDesktop])
-  const { data, loading, setIsVisible } = useSquidQuery<
+  const orderBy = useMemo(
+    () =>
+      sorting && sorting.length > 0
+        ? sorting[0].id.endsWith('aggregate')
+          ? { [sorting[0].id]: sorting[0].desc ? { count: OrderBy.Desc } : { count: OrderBy.Asc } }
+          : { [sorting[0].id]: sorting[0].desc ? OrderBy.Desc : OrderBy.Asc }
+        : // eslint-disable-next-line camelcase
+          { sort_id: OrderBy.Desc },
+    [sorting],
+  )
+
+  const variables = useMemo(
+    () => ({
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex > 0 ? pagination.pageIndex * pagination.pageSize : undefined,
+      orderBy,
+      blockId: Number(blockId),
+    }),
+    [pagination.pageSize, pagination.pageIndex, orderBy, blockId],
+  )
+
+  const { loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByBlockIdQuery,
     ExtrinsicsByBlockIdQueryVariables
-  >(QUERY_BLOCK_EXTRINSICS, {
-    variables: { blockId: Number(blockId), limit },
-    skip: !inFocus,
-  })
+  >(
+    QUERY_BLOCK_EXTRINSICS,
+    {
+      variables,
+      skip: !inFocus,
+    },
+    Routes.consensus,
+    'blockDetailsExtrinsic',
+  )
 
-  const extrinsics = useMemo(() => data && data.consensus_extrinsics, [data])
+  const consensusEntry = useQueryStates((state) => state.consensus.blockDetailsExtrinsic)
+  const extrinsics = useMemo(
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics,
+    [consensusEntry],
+  )
 
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'block',
+        accessorKey: 'sort_id',
         header: 'Extrinsic Id',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <Link
             key={`${row.index}-block-extrinsic-id`}
             className='hover:text-primaryAccent'
             href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.id)}
           >
-            {`${row.original.block_height}-${row.index}`}
+            {row.original.id}
           </Link>
         ),
       },
       {
         accessorKey: 'hash',
         header: 'Block hash',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-extrinsic-hash`}>{shortString(row.original.hash)}</div>
+          <Link
+            key={`${row.index}-block-extrinsic-id`}
+            className='hover:text-primaryAccent'
+            href={INTERNAL_ROUTES.extrinsics.id.page(network, section, row.original.hash)}
+          >
+            {shortString(row.original.hash)}
+          </Link>
         ),
       },
       {
         accessorKey: 'name',
         header: 'Action',
-        enableSorting: false,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-extrinsic-action`}>
-            {row.original.name.split('.')[1].toUpperCase()}
-          </div>
-        ),
+        enableSorting: true,
+        cell: ({ row }: Cell<Row>) => row.original.name.split('.')[1].toUpperCase(),
       },
       {
-        accessorKey: 'block.timestamp',
+        accessorKey: 'timestamp',
         header: 'Time',
         enableSorting: true,
-        cell: ({ row }: Cell<Row>) => (
-          <div key={`${row.index}-block-extrinsic-action`}>
-            {utcToLocalRelativeTime(row.original.timestamp)}
-          </div>
-        ),
+        cell: ({ row }: Cell<Row>) => utcToLocalRelativeTime(row.original.timestamp),
       },
       {
         accessorKey: 'success',
         header: 'Status',
-        enableSorting: false,
+        enableSorting: true,
         cell: ({ row }: Cell<Row>) => (
           <div
             className='md:flex md:items-center md:justify-start md:pl-5'
@@ -110,17 +145,28 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
     [network, section],
   )
 
-  const totalCount = useMemo(() => (extrinsics ? extrinsics.length : 0), [extrinsics])
+  const fullDataDownloader = useCallback(
+    () => downloadFullData(apolloClient, QUERY_BLOCK_EXTRINSICS, 'consensus_extrinsics', variables),
+    [apolloClient, variables],
+  )
+
+  const totalCount = useMemo(
+    () =>
+      hasValue(consensusEntry) && consensusEntry.value.consensus_extrinsics_aggregate.aggregate
+        ? consensusEntry.value.consensus_extrinsics_aggregate.aggregate.count
+        : 0,
+    [consensusEntry],
+  )
   const pageCount = useMemo(
     () => countTablePages(totalCount, pagination.pageSize),
     [totalCount, pagination],
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [data, loading])
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -139,6 +185,7 @@ export const BlockDetailsExtrinsicList: FC<Props> = ({ isDesktop = false }) => {
           pageCount={pageCount}
           onPaginationChange={setPagination}
           filename='block-details-extrinsics-list'
+          fullDataDownloader={fullDataDownloader}
         />
       ) : (
         noData

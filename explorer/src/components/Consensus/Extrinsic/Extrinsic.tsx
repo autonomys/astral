@@ -4,8 +4,8 @@ import { Spinner } from 'components/common/Spinner'
 import { NotFound } from 'components/layout/NotFound'
 import { Routes } from 'constants/routes'
 import { ExtrinsicsByIdQuery, ExtrinsicsByIdQueryVariables } from 'gql/graphql'
+import { useIndexersQuery } from 'hooks/useIndexersQuery'
 import useMediaQuery from 'hooks/useMediaQuery'
-import { useSquidQuery } from 'hooks/useSquidQuery'
 import { useWindowFocus } from 'hooks/useWindowFocus'
 import { useParams } from 'next/navigation'
 import { FC, useEffect, useMemo } from 'react'
@@ -23,7 +23,7 @@ export const Extrinsic: FC = () => {
   const isDesktop = useMediaQuery('(min-width: 1440px)')
   const isLargeDesktop = useMediaQuery('(min-width: 1440px)')
 
-  const { loading, setIsVisible } = useSquidQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     ExtrinsicsByIdQuery,
     ExtrinsicsByIdQueryVariables
   >(
@@ -36,9 +36,7 @@ export const Extrinsic: FC = () => {
     'extrinsic',
   )
 
-  const {
-    consensus: { extrinsic: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.extrinsic)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value
@@ -62,7 +60,10 @@ export const Extrinsic: FC = () => {
         {!loading && extrinsic ? (
           <>
             <ExtrinsicDetailsCard extrinsic={extrinsic} isDesktop={isLargeDesktop} />
-            <ExtrinsicDetailsTab events={extrinsic.events} isDesktop={isDesktop} />
+            <ExtrinsicDetailsTab
+              eventsCount={extrinsic.events_aggregate.aggregate?.count ?? 0}
+              isDesktop={isDesktop}
+            />
           </>
         ) : (
           noData
