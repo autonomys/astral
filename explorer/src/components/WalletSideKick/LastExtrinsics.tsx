@@ -55,9 +55,7 @@ export const LastExtrinsics: FC<LastExtrinsicsProps> = ({ subspaceAccount }) => 
     'lastExtrinsics',
   )
 
-  const {
-    walletSidekick: { lastExtrinsics },
-  } = useQueryStates()
+  const lastExtrinsics = useQueryStates((state) => state.walletSidekick.lastExtrinsics)
 
   const extrinsics = useMemo(
     () => hasValue(lastExtrinsics) && lastExtrinsics.value.extrinsics,

@@ -23,6 +23,7 @@ import { useWindowFocus } from 'hooks/useWindowFocus'
 import Link from 'next/link'
 import { FC, useCallback, useEffect, useMemo, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { hasValue, isLoading, useQueryStates } from 'states/query'
 import type { Cell } from 'types/table'
 import { downloadFullData } from 'utils/downloadFullData'
 import { bigNumberToNumber } from 'utils/number'
@@ -75,32 +76,38 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
     }
   }, [orderBy, pagination.pageIndex, pagination.pageSize, where])
 
-  const { data, loading, setIsVisible } = useIndexersQuery<
+  const { loading, setIsVisible } = useIndexersQuery<
     TransfersByAccountIdQuery,
     TransfersByAccountIdQueryVariables
-  >(QUERY_ACCOUNT_TRANSFERS, {
-    variables,
-    skip: !inFocus,
-    pollInterval: 6000,
-    context: { clientName: 'accounts' },
-  })
-
-  const fullDataDownloader = useCallback(
-    () =>
-      downloadFullData(apolloClient, QUERY_ACCOUNT_TRANSFERS, 'extrinsicsConnection', {
-        orderBy,
-        where,
-      }),
-    [apolloClient, orderBy, where],
+  >(
+    QUERY_ACCOUNT_TRANSFERS,
+    {
+      variables,
+      skip: !inFocus,
+      pollInterval: 6000,
+      context: { clientName: 'accounts' },
+    },
+    Routes.consensus,
+    'accountTransfers',
   )
 
-  const transfers = useMemo(() => data && data.consensus_transfers, [data])
+  const consensusEntry = useQueryStates((state) => state.consensus.accountTransfers)
+
+  const transfers = useMemo(
+    () => hasValue(consensusEntry) && consensusEntry.value.consensus_transfers,
+    [consensusEntry],
+  )
+
+  const fullDataDownloader = useCallback(
+    () => downloadFullData(apolloClient, QUERY_ACCOUNT_TRANSFERS, 'consensus_transfers', variables),
+    [apolloClient, variables],
+  )
   const totalCount = useMemo(
     () =>
-      data && data.consensus_transfers_aggregate.aggregate
-        ? data.consensus_transfers_aggregate.aggregate.count
+      hasValue(consensusEntry) && consensusEntry.value.consensus_transfers_aggregate.aggregate
+        ? consensusEntry.value.consensus_transfers_aggregate.aggregate.count
         : 0,
-    [data],
+    [consensusEntry],
   )
   const pageCount = useMemo(
     () => (totalCount ? countTablePages(totalCount, pagination.pageSize) : 0),
@@ -238,10 +245,10 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
-    if (!data) return <NotFound />
+    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
+    if (!hasValue(consensusEntry)) return <NotFound />
     return null
-  }, [data, loading])
+  }, [consensusEntry, loading])
 
   useEffect(() => {
     setIsVisible(inView)
@@ -260,7 +267,7 @@ export const AccountTransfersList: FC<Props> = ({ accountId }) => {
             pagination={pagination}
             pageCount={pageCount}
             onPaginationChange={setPagination}
-            filename='account-extrinsic-list'
+            filename='account-transfers-list'
             fullDataDownloader={fullDataDownloader}
           />
         ) : (

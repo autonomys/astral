@@ -46,9 +46,7 @@ export const StakingSummary: FC<StakingSummaryProps> = ({ subspaceAccount, token
     'stakingSummary',
   )
 
-  const {
-    walletSidekick: { stakingSummary },
-  } = useQueryStates()
+  const stakingSummary = useQueryStates((state) => state.walletSidekick.stakingSummary)
 
   const totalOperatorCount = useMemo(
     () =>
