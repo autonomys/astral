@@ -5,7 +5,7 @@ import { Block } from 'types/consensus'
 
 export const useDomainsData = () => {
   const { domainsApis } = useWallet()
-  const { setDomainsLastBlockNumber } = useDomainsStates()
+  const setDomainsLastBlockNumber = useDomainsStates((state) => state.setDomainsLastBlockNumber)
   const [isLoading, setIsLoading] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
 
