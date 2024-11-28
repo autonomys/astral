@@ -229,7 +229,7 @@ export const RegisterOperators = () => {
               validationSchema={registerOperatorValidationSchema}
               onSubmit={(values, { resetForm }) => handleRegister(values, resetForm)}
             >
-              {({ errors, touched, values, handleSubmit, setFieldValue, resetForm }) => (
+              {({ errors, touched, values, handleSubmit, setFieldValue }) => (
                 <Form
                   className='my-8 w-full'
                   onSubmit={handleSubmit}
