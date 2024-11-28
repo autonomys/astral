@@ -24,7 +24,8 @@ interface SendAndSaveTx {
 export const useTxHelper = () => {
   const { network } = useIndexers()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
-  const { addPendingTransactions, getNextNonceForAccount } = useTransactionsStates()
+  const addPendingTransactions = useTransactionsStates((state) => state.addPendingTransactions)
+  const getNextNonceForAccount = useTransactionsStates((state) => state.getNextNonceForAccount)
   const pathname = usePathname()
 
   const handleTxSuccess = useCallback(

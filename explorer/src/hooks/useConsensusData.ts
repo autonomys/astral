@@ -13,21 +13,23 @@ import { formatDeposits, formatOperators, formatWithdrawals } from 'utils/chainS
 export const useConsensusData = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-  const {
-    setProperties,
-    setDomain,
-    setSystem,
-    setDomainRegistry,
-    setDomainStakingSummary,
-    setLatestConfirmedDomainExecutionReceipt,
-    setNominatorCount,
-    setOperatorIdOwner,
-    setOperators,
-    setPendingStakingOperationCount,
-    setSuccessfulBundles,
-    setDeposits,
-    setWithdrawals,
-  } = useConsensusStates()
+  const setProperties = useConsensusStates((state) => state.setProperties)
+  const setDomain = useConsensusStates((state) => state.setDomain)
+  const setSystem = useConsensusStates((state) => state.setSystem)
+  const setDomainRegistry = useConsensusStates((state) => state.setDomainRegistry)
+  const setDomainStakingSummary = useConsensusStates((state) => state.setDomainStakingSummary)
+  const setLatestConfirmedDomainExecutionReceipt = useConsensusStates(
+    (state) => state.setLatestConfirmedDomainExecutionReceipt,
+  )
+  const setNominatorCount = useConsensusStates((state) => state.setNominatorCount)
+  const setOperatorIdOwner = useConsensusStates((state) => state.setOperatorIdOwner)
+  const setOperators = useConsensusStates((state) => state.setOperators)
+  const setPendingStakingOperationCount = useConsensusStates(
+    (state) => state.setPendingStakingOperationCount,
+  )
+  const setSuccessfulBundles = useConsensusStates((state) => state.setSuccessfulBundles)
+  const setDeposits = useConsensusStates((state) => state.setDeposits)
+  const setWithdrawals = useConsensusStates((state) => state.setWithdrawals)
   const { api } = useWallet()
 
   const loadData = useCallback(async () => {
