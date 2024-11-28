@@ -3,9 +3,7 @@ import type { AnyTuple, Codec, StorageKey } from '@autonomys/auto-utils'
 import { Operators } from 'types/consensus'
 
 export const formatOperators = (
-  // @ts-expect-error TODO: fix this
   operators: [StorageKey<AnyTuple>, Codec][],
-  // @ts-expect-error TODO: fix this
   operatorIdOwner: [StorageKey<AnyTuple>, Codec][],
 ) =>
   operators.map((operator, key) => {
@@ -22,10 +20,8 @@ export const formatOperators = (
     } as Operators
   })
 
-// @ts-expect-error TODO: fix this
 export const formatDeposits = (deposits: [StorageKey<AnyTuple>, Codec][]) =>
   deposits.map((deposit) => parseDeposit(deposit))
 
-// @ts-expect-error TODO: fix this
 export const formatWithdrawals = (withdrawals: [StorageKey<AnyTuple>, Codec][]) =>
   withdrawals.map((withdrawal) => parseWithdrawal(withdrawal))

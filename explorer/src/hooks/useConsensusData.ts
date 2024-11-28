@@ -127,7 +127,6 @@ export const useConsensusData = () => {
           owner: operator[1].toJSON() as string,
         })),
       )
-      // @ts-expect-error TODO: fix this
       const formattedOperators = formatOperators(operators, operatorIdOwner)
       setOperators(formattedOperators)
       setPendingStakingOperationCount(
@@ -155,9 +154,7 @@ export const useConsensusData = () => {
       const withdrawals = await Promise.all(
         formattedOperators.map((o) => api.query.domains.withdrawals.entries(o.id)),
       )
-      // @ts-expect-error TODO: fix this
       setDeposits(formatDeposits(deposits.flat()))
-      // @ts-expect-error TODO: fix this
       setWithdrawals(formatWithdrawals(withdrawals.flat()))
       setIsLoaded(true)
       setIsLoading(false)
@@ -176,9 +173,7 @@ export const useConsensusData = () => {
           api.query.domains.deposits.entries(operatorId),
           api.query.domains.withdrawals.entries(operatorId),
         ])
-        // @ts-expect-error TODO: fix this
         setDeposits(formatDeposits(deposits))
-        // @ts-expect-error TODO: fix this
         setWithdrawals(formatWithdrawals(withdrawals))
       } catch (error) {
         console.error('useConsensusData', error)
