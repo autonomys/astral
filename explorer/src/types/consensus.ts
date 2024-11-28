@@ -10,7 +10,6 @@ export interface Domain {
     refTime: number
     proofSize: number
   }
-  maxBundlesPerBlock: string
   maxDomainNameLength: string
   domainInstantiationDeposit: string
   initialDomainTxRange: string

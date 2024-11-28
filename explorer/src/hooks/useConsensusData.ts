@@ -82,7 +82,6 @@ export const useConsensusData = () => {
           refTime: number
           proofSize: number
         },
-        maxBundlesPerBlock: domains.maxBundlesPerBlock.toHuman() as string,
         maxDomainNameLength: domains.maxDomainNameLength.toHuman() as string,
         domainInstantiationDeposit: domains.domainInstantiationDeposit.toHuman() as string,
         initialDomainTxRange: domains.initialDomainTxRange.toHuman() as string,
