@@ -1,31 +1,15 @@
+import { getMetadata } from '@/utils/metadata/basic'
 import { Block } from 'components/Consensus/Block/Block'
-import { indexers } from 'constants/indexers'
-import { metadata } from 'constants/metadata'
+import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { BlockIdPageProps, ChainPageProps } from 'types/app'
 
-export async function generateMetadata({
+export const generateMetadata = ({
   params: { chain, blockId },
-}: ChainPageProps & BlockIdPageProps): Promise<Metadata> {
-  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
-  const title = `${metadata.title} - ${chainTitle} - Block ${blockId}`
-  return {
-    ...metadata,
-    title,
-    openGraph: {
-      ...metadata.openGraph,
-      title,
-    },
-    twitter: {
-      ...metadata.twitter,
-      title,
-    },
-  }
-}
+}: ChainPageProps & BlockIdPageProps): Metadata =>
+  getMetadata(chain, 'Block', blockId, `${chain}/${Routes.consensus}/blocks/${blockId}`)
 
-const Page: FC = () => {
-  return <Block />
-}
+const Page: FC = () => <Block />
 
 export default Page

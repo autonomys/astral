@@ -1,55 +1,47 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
-import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
+import { utcToLocalRelativeTime } from '@/utils/time'
+import { QUERY_LOG_BY_ID } from 'components/Consensus/Log/query'
+import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
-import { AccountByIdQuery } from 'gql/graphql'
+import { LogByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
-import { AccountIdPageProps, ChainPageProps } from 'types/app'
-import { getTokenSymbol } from 'utils/network'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { ChainPageProps, LogIdPageProps } from 'types/app'
+import { numberWithCommas } from 'utils/number'
 
 // export const runtime = 'edge'
 export async function GET(
   req: NextRequest,
-  { params: { chain, accountId } }: ChainPageProps & AccountIdPageProps,
+  { params: { chain, logId } }: ChainPageProps & LogIdPageProps,
 ) {
   if (!chain) notFound()
 
   const chainMatch = indexers.find((c) => c.network === chain)
-  const tokenSymbol = getTokenSymbol(chain)
 
-  if (!accountId || !chainMatch) notFound()
+  if (!logId || !chainMatch) notFound()
 
   const {
-    data: { consensus_account_histories: accountById },
+    data: { consensus_logs: logById },
   }: {
-    data: AccountByIdQuery
+    data: LogByIdQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_ACCOUNT_BY_ID['loc']?.source.body,
-      variables: { accountId },
+      query: QUERY_LOG_BY_ID['loc']?.source.body,
+      variables: { logId },
     }),
   }).then((res) => res.json())
 
-  if (!accountById) notFound()
+  if (!logById) notFound()
 
   try {
     return new ImageResponse(
-      (
-        <Screen
-          chainMatch={chainMatch}
-          accountId={accountId}
-          accountById={accountById[0]}
-          tokenSymbol={tokenSymbol}
-        />
-      ),
+      <Screen chainMatch={chainMatch} logId={logId} logById={logById[0]} />,
       {
         width: 1200,
         height: 630,
@@ -63,22 +55,20 @@ export async function GET(
 
 function Screen({
   chainMatch,
-  accountId,
-  accountById,
-  tokenSymbol,
+  logId,
+  logById,
 }: {
   chainMatch: (typeof indexers)[number]
-  accountId: string
-  accountById: AccountByIdQuery['consensus_account_histories'][number]
-  tokenSymbol: string
+  logId: string
+  logById: LogByIdQuery['consensus_logs'][number]
 }) {
-  const account = {
-    total: accountById?.total ?? '0',
-    free: accountById?.free ?? '0',
-    reserved: accountById?.reserved ?? '0',
-    nonce: accountById?.nonce ?? '0',
+  const log = {
+    height: logById?.block_height ?? '0',
+    kind: logById?.kind ?? '0',
+    timestamp: logById?.timestamp ?? '0',
+    value: logById?.value ?? '',
   }
-  const title = `${metadata.title} - ${chainMatch.title} - Account`
+  const title = `${metadata.title} - ${chainMatch.title} - Log`
 
   return (
     <div
@@ -117,7 +107,7 @@ function Screen({
           }}
           tw='absolute text-2xl text-white p-4 mt-18 font-bold'
         >
-          {accountId}
+          {logId}
         </h3>
       </div>
       <div tw='absolute flex flex-col w-full'>
@@ -128,14 +118,14 @@ function Screen({
           }}
         >
           <div tw='absolute flex flex-col w-100 m-6'>
-            <WalletIcon />
+            <BlockIcon />
             <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total {numberWithCommas(bigNumberToNumber(account.total))} ({tokenSymbol})
+              Height {numberWithCommas(log.height)}
             </span>
             <span
               style={{
@@ -143,7 +133,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} ({tokenSymbol})
+              Kind {log.kind}
             </span>
             <span
               style={{
@@ -151,7 +141,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Free {numberWithCommas(bigNumberToNumber(account.free))} ({tokenSymbol})
+              Timestamp {utcToLocalRelativeTime(log.timestamp)}
             </span>
           </div>
         </div>
@@ -167,9 +157,9 @@ function Screen({
               style={{
                 fontFamily: 'Montserrat',
               }}
-              tw='absolute text-xl text-white p-4 ml-30 font-bold'
+              tw='absolute text-md text-white p-4 ml-30 font-bold'
             >
-              Total nonces used {numberWithCommas(account.nonce)}
+              Value {log.value.slice(0, 40)}...
             </span>
           </div>
         </div>
