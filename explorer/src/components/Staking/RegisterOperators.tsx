@@ -434,7 +434,6 @@ export const RegisterOperators = () => {
                       </button>
                     ) : (
                       <button
-                        onClick={() => handleRegister(values, resetForm)}
                         className='block rounded-full bg-grayDarker px-5 py-3 text-[13px] font-semibold leading-4 text-white dark:bg-primaryAccent'
                         type='submit'
                       >
