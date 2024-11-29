@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { FC, useMemo, useState } from 'react'
 // import { ClaimStakingToken } from './Actions/ClaimStakingToken'
 import { ConnectDiscord } from './Actions/ConnectDiscord'
+import { ConnectGitHub } from './Actions/ConnectGitHub'
 import { JoinDiscord } from './Actions/JoinDiscord'
 import { VerifyWalletOwnership } from './Actions/VerifyWalletOwnership'
 
@@ -85,6 +86,7 @@ export const GetDiscordRoles: FC = () => {
             )}
             <VerifyWalletOwnership />
             <ConnectDiscord />
+            <ConnectGitHub />
           </List>
           {/* <ClaimStakingToken /> */}
         </Accordion>
@@ -99,6 +101,7 @@ export const GetDiscordRoles: FC = () => {
           <VerifyWalletOwnership />
           <JoinDiscord />
           <ConnectDiscord />
+          <ConnectGitHub />
         </List>
       </Accordion>
       <ExplainerLinkAndModal />
