@@ -67,7 +67,7 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
       graphQLErrors.forEach(({ message, locations, path }) =>
         logError(
           pathname,
-          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, [Network]: ${indexerSet.network}, [Section]: ${section}`,
+          `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}, [Network]: ${indexerSet.network}, [Section]: ${section}, [Operation]: ${operation.operationName}`,
         ),
       )
     if (networkError)
