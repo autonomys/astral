@@ -1,32 +1,21 @@
 import { shortString } from '@autonomys/auto-utils'
 import { Extrinsic } from 'components/Consensus/Extrinsic/Extrinsic'
-import { indexers } from 'constants/indexers'
-import { metadata } from 'constants/metadata'
+import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps, ExtrinsicIdPageProps } from 'types/app'
+import { getMetadata } from 'utils/metadata/basic'
 
-export async function generateMetadata({
+export const generateMetadata = ({
   params: { chain, extrinsicId },
-}: ChainPageProps & ExtrinsicIdPageProps): Promise<Metadata> {
-  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
-  const title = `${metadata.title} - ${chainTitle} - Extrinsic ${extrinsicId ? shortString(extrinsicId) : ''}`
-  return {
-    ...metadata,
-    title,
-    openGraph: {
-      ...metadata.openGraph,
-      title,
-    },
-    twitter: {
-      ...metadata.twitter,
-      title,
-    },
-  }
-}
+}: ChainPageProps & ExtrinsicIdPageProps): Metadata =>
+  getMetadata(
+    chain,
+    'Extrinsic',
+    extrinsicId ? shortString(extrinsicId) : '',
+    `${chain}/${Routes.consensus}/extrinsics/${extrinsicId}`,
+  )
 
-const Page: FC = () => {
-  return <Extrinsic />
-}
+const Page: FC = () => <Extrinsic />
 
 export default Page

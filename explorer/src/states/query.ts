@@ -47,9 +47,13 @@ interface ExplorerQueryState {
     accountPreviousReward: QueryState<GqlT.AllRewardForAccountByIdQuery>
     accountRewardGraph: QueryState<GqlT.LatestRewardsWeekQuery>
     accountReward: QueryState<GqlT.RewardsListQuery>
+    accountTransfers: QueryState<GqlT.TransfersByAccountIdQuery>
+    accountBalanceHistory: QueryState<GqlT.BalanceHistoryByAccountIdQuery>
 
     blockDetailsExtrinsic: QueryState<GqlT.ExtrinsicsByBlockIdQuery>
     blockDetailsEvent: QueryState<GqlT.EventsByBlockIdQuery>
+
+    extrinsicDetailsEvent: QueryState<GqlT.EventsByExtrinsicIdQuery>
   }
   [Routes.staking]: {
     operators: QueryState<GqlT.OperatorsListQuery>
@@ -106,9 +110,13 @@ const initialState: ExplorerQueryState = {
     accountPreviousReward: initialized,
     accountRewardGraph: initialized,
     accountReward: initialized,
+    accountTransfers: initialized,
+    accountBalanceHistory: initialized,
 
     blockDetailsExtrinsic: initialized,
     blockDetailsEvent: initialized,
+
+    extrinsicDetailsEvent: initialized,
   },
   staking: {
     operators: initialized,

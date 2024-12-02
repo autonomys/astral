@@ -3,20 +3,21 @@ import { connectToDB, queries } from "../utils/db";
 import { getStoredValue, setRedisValue } from "../utils/store";
 
 interface ConsensusResult {
-  blockNumber: number;
+  blockNumber: [number, number];
   updatedTables: string[];
   query: string[];
 }
 
 const LAST_BLOCK_NUMBER_KEY = "consensusUniqueRowsMapping:lastBlockNumber";
 const BLOCK_NUMBER_INCREMENT = 12; // 12 is the number of blocks to process at a time
+const BLOCK_NUMBER_RE_ORG_POSSIBILITY = 10;
 
 export const consensusUniqueRowsMapping =
   async (): Promise<ConsensusResult> => {
     const pool: Pool = await connectToDB();
 
     const result: ConsensusResult = {
-      blockNumber: 0,
+      blockNumber: [0, 0],
       updatedTables: [],
       query: [],
     };
@@ -37,9 +38,13 @@ export const consensusUniqueRowsMapping =
       const lastBlockNumber = await getStoredValue(LAST_BLOCK_NUMBER_KEY).then(
         (reply) => (reply ? parseInt(reply) : 0)
       );
+      const startBlockNumber =
+        lastBlockNumber > BLOCK_NUMBER_RE_ORG_POSSIBILITY
+          ? lastBlockNumber - BLOCK_NUMBER_RE_ORG_POSSIBILITY
+          : 0;
 
-      const blockNumber = lastBlockNumber + BLOCK_NUMBER_INCREMENT;
-      result.blockNumber = blockNumber;
+      const endBlockNumber = lastBlockNumber + BLOCK_NUMBER_INCREMENT;
+      result.blockNumber = [startBlockNumber, endBlockNumber];
 
       try {
         // Set temp_buffers for this session
@@ -49,37 +54,46 @@ export const consensusUniqueRowsMapping =
 
         await client.query("BEGIN");
 
-        // Execute queries
-        const [
-          sectionsResult,
-          extrinsicModuleResult,
-          eventModuleResult,
-          logResult,
-          accountResult,
-        ] = await Promise.all([
-          client.query(queries.consensusSectionsQuery, [blockNumber]),
-          client.query(queries.consensusExtrinsicModulesQuery, [blockNumber]),
-          client.query(queries.consensusEventModulesQuery, [blockNumber]),
-          client.query(queries.consensusLogKindsQuery, [blockNumber]),
-          client.query(queries.consensusAccountsQuery, [blockNumber]),
-        ]);
-
-        // Track updated tables
+        // Execute queries sequentially to reduce load
+        const sectionsResult = await client.query(
+          queries.consensusSectionsQuery,
+          [startBlockNumber, endBlockNumber]
+        );
         if (sectionsResult.rows.length > 0)
           result.updatedTables.push("consensus_sections");
+
+        const extrinsicModuleResult = await client.query(
+          queries.consensusExtrinsicModulesQuery,
+          [startBlockNumber, endBlockNumber]
+        );
         if (extrinsicModuleResult.rows.length > 0)
           result.updatedTables.push("consensus_extrinsic_module");
+
+        const eventModuleResult = await client.query(
+          queries.consensusEventModulesQuery,
+          [startBlockNumber, endBlockNumber]
+        );
         if (eventModuleResult.rows.length > 0)
           result.updatedTables.push("consensus_event_module");
+
+        const logResult = await client.query(queries.consensusLogKindsQuery, [
+          startBlockNumber,
+          endBlockNumber,
+        ]);
         if (logResult.rows.length > 0)
           result.updatedTables.push("consensus_log_kinds");
+
+        const accountResult = await client.query(
+          queries.consensusAccountsQuery,
+          [startBlockNumber, endBlockNumber]
+        );
         if (accountResult.rows.length > 0)
           result.updatedTables.push("consensus_accounts");
 
         await client.query("COMMIT");
 
         // Update the last block number
-        await setRedisValue(LAST_BLOCK_NUMBER_KEY, blockNumber.toString());
+        await setRedisValue(LAST_BLOCK_NUMBER_KEY, endBlockNumber.toString());
       } catch (err) {
         await client.query("ROLLBACK");
         console.error("Error updating consensus tables:", err);

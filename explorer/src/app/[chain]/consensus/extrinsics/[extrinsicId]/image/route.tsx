@@ -1,55 +1,48 @@
 /* eslint-disable react/no-unknown-property */
-import { QUERY_ACCOUNT_BY_ID } from 'components/Consensus/Account/query'
-import { AutonomysSymbol, DocIcon, WalletIcon } from 'components/icons'
+import { utcToLocalRelativeTime } from '@/utils/time'
+import { shortString } from '@autonomys/auto-utils'
+import { QUERY_EXTRINSIC_BY_ID } from 'components/Consensus/Extrinsic/query'
+import { AutonomysSymbol, BlockIcon, DocIcon } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata, url } from 'constants/metadata'
-import { AccountByIdQuery } from 'gql/graphql'
+import { ExtrinsicsByIdQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
-import { AccountIdPageProps, ChainPageProps } from 'types/app'
-import { getTokenSymbol } from 'utils/network'
-import { bigNumberToNumber, numberWithCommas } from 'utils/number'
+import { ChainPageProps, ExtrinsicIdPageProps } from 'types/app'
+import { numberWithCommas } from 'utils/number'
 
 // export const runtime = 'edge'
 export async function GET(
   req: NextRequest,
-  { params: { chain, accountId } }: ChainPageProps & AccountIdPageProps,
+  { params: { chain, extrinsicId } }: ChainPageProps & ExtrinsicIdPageProps,
 ) {
   if (!chain) notFound()
 
   const chainMatch = indexers.find((c) => c.network === chain)
-  const tokenSymbol = getTokenSymbol(chain)
 
-  if (!accountId || !chainMatch) notFound()
+  if (!extrinsicId || !chainMatch) notFound()
 
   const {
-    data: { consensus_account_histories: accountById },
+    data: { consensus_extrinsics: extrinsicById },
   }: {
-    data: AccountByIdQuery
+    data: ExtrinsicsByIdQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_ACCOUNT_BY_ID['loc']?.source.body,
-      variables: { accountId },
+      query: QUERY_EXTRINSIC_BY_ID['loc']?.source.body,
+      variables: { extrinsicId },
     }),
   }).then((res) => res.json())
 
-  if (!accountById) notFound()
+  if (!extrinsicById) notFound()
 
   try {
     return new ImageResponse(
-      (
-        <Screen
-          chainMatch={chainMatch}
-          accountId={accountId}
-          accountById={accountById[0]}
-          tokenSymbol={tokenSymbol}
-        />
-      ),
+      <Screen chainMatch={chainMatch} extrinsicId={extrinsicId} extrinsicById={extrinsicById[0]} />,
       {
         width: 1200,
         height: 630,
@@ -63,22 +56,23 @@ export async function GET(
 
 function Screen({
   chainMatch,
-  accountId,
-  accountById,
-  tokenSymbol,
+  extrinsicId,
+  extrinsicById,
 }: {
   chainMatch: (typeof indexers)[number]
-  accountId: string
-  accountById: AccountByIdQuery['consensus_account_histories'][number]
-  tokenSymbol: string
+  extrinsicId: string
+  extrinsicById: ExtrinsicsByIdQuery['consensus_extrinsics'][number]
 }) {
-  const account = {
-    total: accountById?.total ?? '0',
-    free: accountById?.free ?? '0',
-    reserved: accountById?.reserved ?? '0',
-    nonce: accountById?.nonce ?? '0',
+  const extrinsic = {
+    success: extrinsicById?.success ?? false,
+    hash: extrinsicById?.hash ?? '0',
+    timestamp: extrinsicById?.timestamp ?? '0',
+    blockHeight: extrinsicById?.block_height ?? '0',
+    action: extrinsicById?.name ?? '',
+    eventsCount: extrinsicById?.events_aggregate.aggregate?.count ?? 0,
+    signer: extrinsicById?.signer ?? '',
   }
-  const title = `${metadata.title} - ${chainMatch.title} - Account`
+  const title = `${metadata.title} - ${chainMatch.title} - Extrinsic`
 
   return (
     <div
@@ -117,7 +111,7 @@ function Screen({
           }}
           tw='absolute text-2xl text-white p-4 mt-18 font-bold'
         >
-          {accountId}
+          {extrinsicId}
         </h3>
       </div>
       <div tw='absolute flex flex-col w-full'>
@@ -128,14 +122,14 @@ function Screen({
           }}
         >
           <div tw='absolute flex flex-col w-100 m-6'>
-            <WalletIcon />
+            <BlockIcon />
             <span
               style={{
                 fontFamily: 'Montserrat',
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total {numberWithCommas(bigNumberToNumber(account.total))} ({tokenSymbol})
+              Height {numberWithCommas(extrinsic.blockHeight)}
             </span>
             <span
               style={{
@@ -143,7 +137,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
             >
-              Reserved {numberWithCommas(bigNumberToNumber(account.reserved))} ({tokenSymbol})
+              Hash {shortString(extrinsic.hash)}
             </span>
             <span
               style={{
@@ -151,7 +145,7 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30  mt-16 font-bold'
             >
-              Free {numberWithCommas(bigNumberToNumber(account.free))} ({tokenSymbol})
+              Timestamp {utcToLocalRelativeTime(extrinsic.timestamp)}
             </span>
           </div>
         </div>
@@ -169,7 +163,23 @@ function Screen({
               }}
               tw='absolute text-xl text-white p-4 ml-30 font-bold'
             >
-              Total nonces used {numberWithCommas(account.nonce)}
+              Events {numberWithCommas(extrinsic.eventsCount)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 mt-8 font-bold'
+            >
+              Signer {shortString(extrinsic.signer)}
+            </span>
+            <span
+              style={{
+                fontFamily: 'Montserrat',
+              }}
+              tw='absolute text-xl text-white p-4 ml-30 mt-16 font-bold'
+            >
+              Action {extrinsic.action}
             </span>
           </div>
         </div>

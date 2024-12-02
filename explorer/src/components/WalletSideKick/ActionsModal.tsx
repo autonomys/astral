@@ -302,7 +302,6 @@ export const ActionsModal: FC<ActionsModalProps> = ({ isOpen, action, onClose })
         )
         const hash = await sendAndSaveTx({
           call: `${selectedCategory}.${selectedMethod}`,
-          // @ts-expect-error TODO: fix this
           tx,
           signer: injector.signer,
           nonce: typeof values.nonce === 'string' ? parseInt(values.nonce) : values.nonce,

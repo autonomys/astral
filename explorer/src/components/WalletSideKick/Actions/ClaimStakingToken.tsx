@@ -34,9 +34,7 @@ export const ClaimStakingToken: FC = () => {
     'claim',
   )
 
-  const {
-    walletSidekick: { claim },
-  } = useQueryStates()
+  const claim = useQueryStates((state) => state.walletSidekick.claim)
 
   const handleClaimOperatorDisbursement = useCallback(async () => {
     setClaimError(null)

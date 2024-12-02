@@ -113,9 +113,7 @@ export const EventList: FC = () => {
     TABLE,
   )
 
-  const {
-    consensus: { events: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.events)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

@@ -13,21 +13,23 @@ import { formatDeposits, formatOperators, formatWithdrawals } from 'utils/chainS
 export const useConsensusData = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-  const {
-    setProperties,
-    setDomain,
-    setSystem,
-    setDomainRegistry,
-    setDomainStakingSummary,
-    setLatestConfirmedDomainExecutionReceipt,
-    setNominatorCount,
-    setOperatorIdOwner,
-    setOperators,
-    setPendingStakingOperationCount,
-    setSuccessfulBundles,
-    setDeposits,
-    setWithdrawals,
-  } = useConsensusStates()
+  const setProperties = useConsensusStates((state) => state.setProperties)
+  const setDomain = useConsensusStates((state) => state.setDomain)
+  const setSystem = useConsensusStates((state) => state.setSystem)
+  const setDomainRegistry = useConsensusStates((state) => state.setDomainRegistry)
+  const setDomainStakingSummary = useConsensusStates((state) => state.setDomainStakingSummary)
+  const setLatestConfirmedDomainExecutionReceipt = useConsensusStates(
+    (state) => state.setLatestConfirmedDomainExecutionReceipt,
+  )
+  const setNominatorCount = useConsensusStates((state) => state.setNominatorCount)
+  const setOperatorIdOwner = useConsensusStates((state) => state.setOperatorIdOwner)
+  const setOperators = useConsensusStates((state) => state.setOperators)
+  const setPendingStakingOperationCount = useConsensusStates(
+    (state) => state.setPendingStakingOperationCount,
+  )
+  const setSuccessfulBundles = useConsensusStates((state) => state.setSuccessfulBundles)
+  const setDeposits = useConsensusStates((state) => state.setDeposits)
+  const setWithdrawals = useConsensusStates((state) => state.setWithdrawals)
   const { api } = useWallet()
 
   const loadData = useCallback(async () => {
@@ -82,7 +84,6 @@ export const useConsensusData = () => {
           refTime: number
           proofSize: number
         },
-        maxBundlesPerBlock: domains.maxBundlesPerBlock.toHuman() as string,
         maxDomainNameLength: domains.maxDomainNameLength.toHuman() as string,
         domainInstantiationDeposit: domains.domainInstantiationDeposit.toHuman() as string,
         initialDomainTxRange: domains.initialDomainTxRange.toHuman() as string,
@@ -127,7 +128,6 @@ export const useConsensusData = () => {
           owner: operator[1].toJSON() as string,
         })),
       )
-      // @ts-expect-error TODO: fix this
       const formattedOperators = formatOperators(operators, operatorIdOwner)
       setOperators(formattedOperators)
       setPendingStakingOperationCount(
@@ -155,9 +155,7 @@ export const useConsensusData = () => {
       const withdrawals = await Promise.all(
         formattedOperators.map((o) => api.query.domains.withdrawals.entries(o.id)),
       )
-      // @ts-expect-error TODO: fix this
       setDeposits(formatDeposits(deposits.flat()))
-      // @ts-expect-error TODO: fix this
       setWithdrawals(formatWithdrawals(withdrawals.flat()))
       setIsLoaded(true)
       setIsLoading(false)
@@ -176,9 +174,7 @@ export const useConsensusData = () => {
           api.query.domains.deposits.entries(operatorId),
           api.query.domains.withdrawals.entries(operatorId),
         ])
-        // @ts-expect-error TODO: fix this
         setDeposits(formatDeposits(deposits))
-        // @ts-expect-error TODO: fix this
         setWithdrawals(formatWithdrawals(withdrawals))
       } catch (error) {
         console.error('useConsensusData', error)

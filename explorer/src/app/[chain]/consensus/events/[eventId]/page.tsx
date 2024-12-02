@@ -1,31 +1,15 @@
 import { Event } from 'components/Consensus/Event/Event'
-import { indexers } from 'constants/indexers'
-import { metadata } from 'constants/metadata'
+import { Routes } from 'constants/routes'
 import { Metadata } from 'next'
 import { FC } from 'react'
 import type { ChainPageProps, EventIdPageProps } from 'types/app'
+import { getMetadata } from 'utils/metadata/basic'
 
-export async function generateMetadata({
+export const generateMetadata = ({
   params: { chain, eventId },
-}: ChainPageProps & EventIdPageProps): Promise<Metadata> {
-  const chainTitle = indexers.find((c) => c.network === chain)?.title || 'Unknown chain'
-  const title = `${metadata.title} - ${chainTitle} - Event ${eventId}`
-  return {
-    ...metadata,
-    title,
-    openGraph: {
-      ...metadata.openGraph,
-      title,
-    },
-    twitter: {
-      ...metadata.twitter,
-      title,
-    },
-  }
-}
+}: ChainPageProps & EventIdPageProps): Metadata =>
+  getMetadata(chain, 'Event', eventId, `${chain}/${Routes.consensus}/events/${eventId}`)
 
-const Page: FC = () => {
-  return <Event />
-}
+const Page: FC = () => <Event />
 
 export default Page

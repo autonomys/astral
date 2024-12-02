@@ -24,7 +24,7 @@ export const ROUTES: Route[] = [
   {
     name: Routes.staking,
     title: 'Staking',
-    networks: [NetworkId.GEMINI_3H],
+    networks: [NetworkId.TAURUS],
   },
   {
     name: Routes.leaderboard,

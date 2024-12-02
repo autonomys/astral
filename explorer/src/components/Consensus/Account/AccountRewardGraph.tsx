@@ -36,9 +36,7 @@ export const AccountRewardGraph: FC<Props> = ({ accountId, total }) => {
     skip: !inFocus,
   })
 
-  const {
-    consensus: { accountRewardGraph: consensusEntry },
-  } = useQueryStates()
+  const consensusEntry = useQueryStates((state) => state.consensus.accountRewardGraph)
 
   const data = useMemo(() => {
     if (hasValue(consensusEntry)) return consensusEntry.value

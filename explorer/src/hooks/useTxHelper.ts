@@ -11,7 +11,6 @@ import { logError, logTx } from 'utils/log'
 
 interface SendAndSaveTx {
   call: string
-  // @ts-expect-error TODO: fix this
   tx: SubmittableExtrinsic<'promise', ISubmittableResult>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signer: Signer | any
@@ -25,7 +24,8 @@ interface SendAndSaveTx {
 export const useTxHelper = () => {
   const { network } = useIndexers()
   const { api, actingAccount, subspaceAccount, injector } = useWallet()
-  const { addPendingTransactions, getNextNonceForAccount } = useTransactionsStates()
+  const addPendingTransactions = useTransactionsStates((state) => state.addPendingTransactions)
+  const getNextNonceForAccount = useTransactionsStates((state) => state.getNextNonceForAccount)
   const pathname = usePathname()
 
   const handleTxSuccess = useCallback(
