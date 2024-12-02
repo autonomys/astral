@@ -5,9 +5,7 @@ import { HomeInfoCard } from './HomeInfoCard'
 type Props = {
   blocksCount?: string
   extrinsicsCount?: string
-  signedExtrinsicsCount?: string
   accountsCount?: string
-  accountsWithBalanceCount?: string
   spacePledged?: string
   spacePledgedBinary?: string
   historySize?: string
@@ -17,9 +15,7 @@ type Props = {
 export const HomeCards: FC<Props> = ({
   blocksCount = '0',
   extrinsicsCount = '0',
-  signedExtrinsicsCount = '0',
   accountsCount = '0',
-  accountsWithBalanceCount = '0',
   spacePledged = '0',
   spacePledgedBinary = '0',
   historySize = '0',
@@ -38,14 +34,12 @@ export const HomeCards: FC<Props> = ({
         title: 'Extrinsics',
         icon: <DocIcon />,
         value: extrinsicsCount,
-        tooltip: <p className='whitespace-nowrap'>{signedExtrinsicsCount} signed</p>,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
       },
       {
         title: 'Wallet addresses',
         icon: <WalletIcon />,
         value: accountsCount,
-        tooltip: <p className='whitespace-nowrap'>{accountsWithBalanceCount} &gt;= 1</p>,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
       },
       {
@@ -69,8 +63,6 @@ export const HomeCards: FC<Props> = ({
       historySize,
       accountsCount,
       extrinsicsCount,
-      signedExtrinsicsCount,
-      accountsWithBalanceCount,
       spacePledged,
       spacePledgedBinary,
       historySizeBinary,
