@@ -1,27 +1,33 @@
 'use client'
 
+import { Spinner } from '@/components/common/Spinner'
+import { NotFound } from '@/components/layout/NotFound'
+import { PAGE_SIZE } from '@/constants/general'
 import { shortString } from '@autonomys/auto-utils'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { HomeQueryQuery } from 'gql/graphql'
+import {
+  HomeSubscriptionExtrinsicsListSubscription,
+  useHomeSubscriptionExtrinsicsListSubscription,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
-interface HomeExtrinsicListProps {
-  data: HomeQueryQuery
-}
+type Row = HomeSubscriptionExtrinsicsListSubscription['consensus_extrinsics'][number]
 
-type Row = HomeQueryQuery['consensus_extrinsics'][number]
-
-export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
+export const HomeExtrinsicList: FC = () => {
   const { network, section } = useIndexers()
 
-  const extrinsics = useMemo(() => data.consensus_extrinsics, [data.consensus_extrinsics])
+  const { loading, data, error } = useHomeSubscriptionExtrinsicsListSubscription({
+    variables: { limit: PAGE_SIZE, offset: 0 },
+  })
+
+  const extrinsics = useMemo(() => data?.consensus_extrinsics, [data?.consensus_extrinsics])
 
   const columns = useMemo(
     () => [
@@ -79,6 +85,12 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
     [network, section],
   )
 
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!extrinsics || error) return <NotFound />
+    return null
+  }, [extrinsics, loading, error])
+
   return (
     <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-purpleUndertone dark:to-gradientToSecondary'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
@@ -93,13 +105,17 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
           <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
         </Link>
       </div>
-      <SortedTable
-        data={extrinsics}
-        columns={columns}
-        showNavigation={false}
-        pageCount={1}
-        filename='home-latest-extrinsics'
-      />
+      {noData || !extrinsics ? (
+        noData
+      ) : (
+        <SortedTable
+          data={extrinsics}
+          columns={columns}
+          showNavigation={false}
+          pageCount={1}
+          filename='home-latest-extrinsics'
+        />
+      )}
     </div>
   )
 }

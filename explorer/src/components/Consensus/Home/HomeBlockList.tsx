@@ -1,25 +1,31 @@
 'use client'
 
+import { Spinner } from '@/components/common/Spinner'
+import { NotFound } from '@/components/layout/NotFound'
+import { PAGE_SIZE } from '@/constants/general'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { HomeQueryQuery } from 'gql/graphql'
+import {
+  HomeSubscriptionBlocksListSubscription,
+  useHomeSubscriptionBlocksListSubscription,
+} from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
-interface HomeBlockListProps {
-  data: HomeQueryQuery
-}
+type Row = HomeSubscriptionBlocksListSubscription['consensus_blocks'][number]
 
-type Row = HomeQueryQuery['consensus_blocks'][number]
-
-export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
+export const HomeBlockList: FC = () => {
   const { network, section } = useIndexers()
 
-  const blocks = useMemo(() => data.consensus_blocks, [data.consensus_blocks])
+  const { loading, data, error } = useHomeSubscriptionBlocksListSubscription({
+    variables: { limit: PAGE_SIZE, offset: 0 },
+  })
+
+  const blocks = useMemo(() => data?.consensus_blocks, [data?.consensus_blocks])
 
   const columns = useMemo(
     () => [
@@ -63,6 +69,12 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
     [network, section],
   )
 
+  const noData = useMemo(() => {
+    if (loading) return <Spinner isSmall />
+    if (!blocks || error) return <NotFound />
+    return null
+  }, [blocks, loading, error])
+
   return (
     <div className='w-full flex-col rounded-[20px] border border-gray-200 bg-white p-4 dark:border-none dark:bg-gradient-to-r dark:from-gradientFrom dark:via-gradientVia dark:to-gradientTo'>
       <div className='mb-6 inline-flex w-full items-center justify-between align-middle'>
@@ -77,13 +89,17 @@ export const HomeBlockList: FC<HomeBlockListProps> = ({ data }) => {
           <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
         </Link>
       </div>
-      <SortedTable
-        data={blocks}
-        columns={columns}
-        showNavigation={false}
-        pageCount={1}
-        filename='home-latest-blocks'
-      />
+      {noData || !blocks ? (
+        noData
+      ) : (
+        <SortedTable
+          data={blocks}
+          columns={columns}
+          showNavigation={false}
+          pageCount={1}
+          filename='home-latest-blocks'
+        />
+      )}
     </div>
   )
 }
