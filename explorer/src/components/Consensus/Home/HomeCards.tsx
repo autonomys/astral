@@ -1,11 +1,9 @@
-import { ArchivedHistoryIcon, BlockIcon, DocIcon, PieChartIcon, WalletIcon } from 'components/icons'
+import { ArchivedHistoryIcon, BlockIcon, PieChartIcon } from 'components/icons' // , WalletIcon, DocIcon
 import { FC, useMemo } from 'react'
 import { HomeInfoCard } from './HomeInfoCard'
 
 type Props = {
   blocksCount?: string
-  extrinsicsCount?: string
-  accountsCount?: string
   spacePledged?: string
   spacePledgedBinary?: string
   historySize?: string
@@ -14,8 +12,6 @@ type Props = {
 
 export const HomeCards: FC<Props> = ({
   blocksCount = '0',
-  extrinsicsCount = '0',
-  accountsCount = '0',
   spacePledged = '0',
   spacePledgedBinary = '0',
   historySize = '0',
@@ -31,22 +27,22 @@ export const HomeCards: FC<Props> = ({
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-pastelPurple dark:to-pastelBlue',
       },
       {
-        title: 'Extrinsics',
-        icon: <DocIcon />,
-        value: extrinsicsCount,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-purpleUndertone dark:to-pastelBlue',
+        title: 'Total Space Pledged',
+        icon: <PieChartIcon />,
+        value: spacePledgedBinary,
+        darkBgClass:
+          'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
       },
       {
-        title: 'Wallet addresses',
-        icon: <WalletIcon />,
-        value: accountsCount,
-        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelPurple dark:to-pastelPink',
+        title: 'Archived History Size',
+        icon: <ArchivedHistoryIcon />,
+        value: historySizeBinary,
+        darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
       {
         title: 'Total Space Pledged',
         icon: <PieChartIcon />,
         value: spacePledged,
-        tooltip: spacePledgedBinary,
         darkBgClass:
           'dark:bg-gradient-to-b dark:from-purpleLighterAccent dark:via-purpleShade dark:to-pastelPurple',
       },
@@ -54,24 +50,15 @@ export const HomeCards: FC<Props> = ({
         title: 'Archived History Size',
         icon: <ArchivedHistoryIcon />,
         value: historySize,
-        tooltip: historySizeBinary,
         darkBgClass: 'dark:bg-gradient-to-b dark:from-pastelBlue dark:to-pastelPink',
       },
     ],
-    [
-      blocksCount,
-      historySize,
-      accountsCount,
-      extrinsicsCount,
-      spacePledged,
-      spacePledgedBinary,
-      historySizeBinary,
-    ],
+    [blocksCount, historySize, spacePledged, spacePledgedBinary, historySizeBinary],
   )
 
   return (
     <div className='mb-12 flex w-full items-center gap-5 overflow-x-auto'>
-      {listOfCards.map(({ title, value, icon, tooltip, darkBgClass }, index) => (
+      {listOfCards.map(({ title, value, icon, darkBgClass }, index) => (
         <HomeInfoCard
           key={`${title}-${index}`}
           title={title}
