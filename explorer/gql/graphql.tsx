@@ -16171,7 +16171,7 @@ export type HomeBlocksQueryQueryVariables = Exact<{
 }>;
 
 
-export type HomeBlocksQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, hash: string, height: any, timestamp: any, state_root: string, blockchain_size: any, space_pledged: any, extrinsics_count: number, events_count: number }> };
+export type HomeBlocksQueryQuery = { __typename?: 'query_root', consensus_blocks: Array<{ __typename?: 'consensus_blocks', id: string, height: any, timestamp: any, extrinsics_count: number, events_count: number }> };
 
 export type HomeExtrinsicsQueryQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -16179,7 +16179,7 @@ export type HomeExtrinsicsQueryQueryVariables = Exact<{
 }>;
 
 
-export type HomeExtrinsicsQueryQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', hash: string, id: string, success: boolean, index_in_block: number, timestamp: any, block_height: any, name: string }> };
+export type HomeExtrinsicsQueryQuery = { __typename?: 'query_root', consensus_extrinsics: Array<{ __typename?: 'consensus_extrinsics', id: string, hash: string, block_height: any, name: string, timestamp: any, success: boolean }> };
 
 export type LogsQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
@@ -17740,12 +17740,8 @@ export const HomeBlocksQueryDocument = gql`
     query HomeBlocksQuery($limit: Int!, $offset: Int!) {
   consensus_blocks(limit: $limit, offset: $offset, order_by: {sort_id: desc}) {
     id
-    hash
     height
     timestamp
-    state_root
-    blockchain_size
-    space_pledged
     extrinsics_count
     events_count
   }
@@ -17792,13 +17788,12 @@ export const HomeExtrinsicsQueryDocument = gql`
     offset: $offset
     order_by: {timestamp: desc}
   ) {
-    hash
     id
-    success
-    index_in_block
-    timestamp
+    hash
     block_height
     name
+    timestamp
+    success
   }
 }
     `;

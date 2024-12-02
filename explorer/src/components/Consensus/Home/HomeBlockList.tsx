@@ -22,6 +22,7 @@ export const HomeBlockList: FC = () => {
 
   const { data, loading } = useHomeBlocksQueryQuery({
     variables: { limit: PAGE_SIZE, offset: 0 },
+    pollInterval: 6000,
   })
 
   const blocks = useMemo(() => data?.consensus_blocks, [data?.consensus_blocks])

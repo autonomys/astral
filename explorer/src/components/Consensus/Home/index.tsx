@@ -1,66 +1,19 @@
 'use client'
 
 import { SearchBar } from 'components/common/SearchBar'
-import { Spinner } from 'components/common/Spinner'
-import { Routes } from 'constants/routes'
-import type { HomeCardsQueryQuery, HomeCardsQueryQueryVariables } from 'gql/graphql'
-import { useIndexersQuery } from 'hooks/useIndexersQuery'
-import { FC, useEffect, useMemo } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { hasValue, isLoading, useQueryStates } from 'states/query'
-import { NotFound } from '../../layout/NotFound'
+import { FC } from 'react'
 import { HomeBlockList } from './HomeBlockList'
 import { HomeChainInfo } from './HomeChainInfo'
 import { HomeExtrinsicList } from './HomeExtrinsicList'
-import { QUERY_HOME_CARDS } from './query'
 
 export const Home: FC = () => {
-  const { ref, inView } = useInView()
-
-  const { loading, setIsVisible } = useIndexersQuery<
-    HomeCardsQueryQuery,
-    HomeCardsQueryQueryVariables
-  >(
-    QUERY_HOME_CARDS,
-    {
-      variables: {},
-      pollInterval: 6000,
-    },
-    Routes.consensus,
-    'home',
-  )
-
-  const consensusEntry = useQueryStates((state) => state.consensus.home)
-
-  const data = useMemo(() => {
-    if (hasValue(consensusEntry)) return consensusEntry.value
-  }, [consensusEntry])
-
-  const noData = useMemo(() => {
-    if (loading || isLoading(consensusEntry)) return <Spinner isSmall />
-    if (!data) return <NotFound />
-    return null
-  }, [data, consensusEntry, loading])
-
-  useEffect(() => {
-    setIsVisible(inView)
-  }, [inView, setIsVisible])
-
   return (
     <div className='flex w-full flex-col align-middle'>
       <SearchBar />
-      <div ref={ref}>
-        {!loading && data ? (
-          <>
-            <HomeChainInfo data={data} />
-            <div className='flex w-full flex-col items-center gap-5 xl:flex-row'>
-              <HomeBlockList />
-              <HomeExtrinsicList />
-            </div>
-          </>
-        ) : (
-          noData
-        )}
+      <HomeChainInfo />
+      <div className='flex w-full flex-col items-center gap-5 xl:flex-row'>
+        <HomeBlockList />
+        <HomeExtrinsicList />
       </div>
     </div>
   )

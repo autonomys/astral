@@ -24,6 +24,7 @@ export const HomeExtrinsicList: FC = () => {
 
   const { data, loading } = useHomeExtrinsicsQueryQuery({
     variables: { limit: PAGE_SIZE, offset: 0 },
+    pollInterval: 6000,
   })
 
   const extrinsics = useMemo(() => data?.consensus_extrinsics, [data?.consensus_extrinsics])
