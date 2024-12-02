@@ -86,7 +86,7 @@ export const HomeExtrinsicList: FC = () => {
   )
 
   const noData = useMemo(() => {
-    if (loading) return <Spinner isSmall />
+    if (loading) return <Spinner isXSmall />
     if (!extrinsics || error) return <NotFound />
     return null
   }, [extrinsics, loading, error])
