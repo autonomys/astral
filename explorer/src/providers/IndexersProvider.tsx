@@ -1,19 +1,21 @@
 'use client'
 
-import {
-  ApolloClient,
-  ApolloLink,
-  ApolloProvider,
-  InMemoryCache,
-  createHttpLink,
-} from '@apollo/client'
+import { createHttpLink, from, split } from '@apollo/client'
 import { onError } from '@apollo/client/link/error'
 import { RetryLink } from '@apollo/client/link/retry'
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+import { getMainDefinition } from '@apollo/client/utilities'
+import {
+  ApolloClient,
+  ApolloNextAppProvider,
+  InMemoryCache,
+} from '@apollo/experimental-nextjs-app-support'
 import { NetworkId } from '@autonomys/auto-utils'
 import { Indexer, defaultIndexer } from 'constants/indexers'
 import { Routes } from 'constants/routes'
+import { createClient } from 'graphql-ws'
 import { usePathname } from 'next/navigation'
-import { FC, ReactNode, createContext, useCallback, useMemo, useState } from 'react'
+import { FC, ReactNode, createContext, useCallback, useState } from 'react'
 import { logError } from 'utils/log'
 import { getTokenDecimals, getTokenSymbol } from 'utils/network'
 
@@ -44,7 +46,23 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
     uri: () => indexerSet.indexer,
   })
 
-  const errorLink = onError(({ graphQLErrors, networkError }) => {
+  const wsLink =
+    typeof window !== 'undefined'
+      ? new GraphQLWsLink(
+          createClient({
+            url: indexerSet.indexer.replace('http', 'ws'),
+            // TODO: might need to
+            retryAttempts: Infinity,
+            shouldRetry: () => true,
+            keepAlive: 10000,
+          }),
+        )
+      : null
+
+  const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+    console.log('graphQLErrors', graphQLErrors)
+    console.log('networkError', networkError)
+    console.log('operation', operation)
     if (graphQLErrors)
       graphQLErrors.forEach(({ message, locations, path }) =>
         logError(
@@ -57,31 +75,40 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
         pathname,
         `[Network error]: ${networkError}, [Network]: ${indexerSet.network}, [Section]: ${section}`,
       )
+    return forward(operation)
   })
 
-  const link = ApolloLink.from([errorLink, new RetryLink(), httpLink])
+  const link =
+    typeof window !== 'undefined' && wsLink != null
+      ? split(
+          ({ query }) => {
+            const definition = getMainDefinition(query)
+            return (
+              definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
+            )
+          },
+          split(({ query }) => getMainDefinition(query).name?.kind === 'Name', wsLink),
+          httpLink,
+        )
+      : httpLink
 
-  const client = useMemo(
-    () =>
-      new ApolloClient({
-        link,
-        cache: new InMemoryCache(),
-        defaultOptions: {
-          watchQuery: {
-            fetchPolicy: 'cache-and-network',
-            errorPolicy: 'all',
-          },
-          query: {
-            fetchPolicy: 'network-only',
-            errorPolicy: 'all',
-          },
-          mutate: {
-            errorPolicy: 'all',
-          },
-        },
-      }),
-    [link],
-  )
+  const client = new ApolloClient({
+    link: from([errorLink, new RetryLink(), link]),
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'cache-and-network',
+        errorPolicy: 'all',
+      },
+      query: {
+        fetchPolicy: 'network-only',
+        errorPolicy: 'all',
+      },
+      mutate: {
+        errorPolicy: 'all',
+      },
+    },
+  })
 
   const setIndexerSet = useCallback(
     (indexer: Indexer) => {
@@ -102,7 +129,7 @@ export const IndexersProvider: FC<Props> = ({ children }) => {
         setSection,
       }}
     >
-      <ApolloProvider client={client}>{children}</ApolloProvider>
+      <ApolloNextAppProvider makeClient={() => client}>{children}</ApolloNextAppProvider>
     </IndexersContext.Provider>
   )
 }
