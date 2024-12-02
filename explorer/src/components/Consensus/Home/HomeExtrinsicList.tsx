@@ -1,27 +1,33 @@
 'use client'
 
+import { Spinner } from '@/components/common/Spinner'
+import useMediaQuery from '@/hooks/useMediaQuery'
 import { shortString } from '@autonomys/auto-utils'
 import { ArrowLongRightIcon } from '@heroicons/react/24/outline'
 import { SortedTable } from 'components/common/SortedTable'
 import { StatusIcon } from 'components/common/StatusIcon'
 import { INTERNAL_ROUTES } from 'constants/routes'
-import { HomeQueryQuery } from 'gql/graphql'
+import { HomeExtrinsicsQueryQuery, useHomeExtrinsicsQueryQuery } from 'gql/graphql'
 import useIndexers from 'hooks/useIndexers'
 import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import type { Cell } from 'types/table'
 import { utcToLocalRelativeTime } from 'utils/time'
 
-interface HomeExtrinsicListProps {
-  data: HomeQueryQuery
-}
+type Row = HomeExtrinsicsQueryQuery['consensus_extrinsics'][number]
 
-type Row = HomeQueryQuery['consensus_extrinsics'][number]
-
-export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
+export const HomeExtrinsicList: FC = () => {
   const { network, section } = useIndexers()
 
-  const extrinsics = useMemo(() => data.consensus_extrinsics, [data.consensus_extrinsics])
+  const isDesktop = useMediaQuery('(min-width: 640px)')
+  const PAGE_SIZE = useMemo(() => (isDesktop ? 10 : 3), [isDesktop])
+
+  const { data, loading } = useHomeExtrinsicsQueryQuery({
+    variables: { limit: PAGE_SIZE, offset: 0 },
+    pollInterval: 6000,
+  })
+
+  const extrinsics = useMemo(() => data?.consensus_extrinsics, [data?.consensus_extrinsics])
 
   const columns = useMemo(
     () => [
@@ -93,13 +99,17 @@ export const HomeExtrinsicList: FC<HomeExtrinsicListProps> = ({ data }) => {
           <ArrowLongRightIcon stroke='#DE67E4' className='size-6' />
         </Link>
       </div>
-      <SortedTable
-        data={extrinsics}
-        columns={columns}
-        showNavigation={false}
-        pageCount={1}
-        filename='home-latest-extrinsics'
-      />
+      {loading || !extrinsics ? (
+        <Spinner isXSmall />
+      ) : (
+        <SortedTable
+          data={extrinsics}
+          columns={columns}
+          showNavigation={false}
+          pageCount={1}
+          filename='home-latest-extrinsics'
+        />
+      )}
     </div>
   )
 }

@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { formatSpaceToDecimal } from '@autonomys/auto-consensus'
-import { QUERY_HOME } from 'components/Consensus/Home/query'
+import { QUERY_HOME_CARDS } from 'components/Consensus/Home/query'
 import {
   AutonomysSymbol,
   BlockIcon,
@@ -11,7 +11,7 @@ import {
 } from 'components/icons'
 import { indexers } from 'constants/indexers'
 import { metadata } from 'constants/metadata'
-import { HomeQueryQuery } from 'gql/graphql'
+import { HomeCardsQueryQuery } from 'gql/graphql'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { NextRequest } from 'next/server'
@@ -29,15 +29,15 @@ export async function GET(req: NextRequest, { params: { chain } }: ChainPageProp
   const {
     data,
   }: {
-    data: HomeQueryQuery
+    data: HomeCardsQueryQuery
   } = await fetch(chainMatch.indexer, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      query: QUERY_HOME['loc']?.source.body,
-      variables: { limit: 3, offset: 0 },
+      query: QUERY_HOME_CARDS['loc']?.source.body,
+      variables: {},
     }),
   }).then((res) => res.json())
 
@@ -59,7 +59,7 @@ function Screen({
   data,
 }: {
   chainMatch: (typeof indexers)[number]
-  data: HomeQueryQuery
+  data: HomeCardsQueryQuery
 }) {
   return (
     <div
@@ -193,7 +193,7 @@ function Screen({
             >
               {formatSpaceToDecimal(
                 Number(
-                  (data.consensus_blocks[0] as HomeQueryQuery['consensus_blocks'][0])
+                  (data.consensus_blocks[0] as HomeCardsQueryQuery['consensus_blocks'][0])
                     ?.space_pledged || 0,
                 ),
               )}
